@@ -1,0 +1,129 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+	
+<!-- 
+<tr rendered="#{SessionForm.bitteAusloggen!=''}">
+	<td>
+		<x:div
+			style="border: 2px solid black; padding:7px; background-color: #ffd;position: fixed;top: 10px;left: 20px;">
+			<h:outputText value="#{SessionForm.bitteAusloggen}"
+				style="color: red;font-weight: bold;font-size:30px" />
+		</x:div>
+	</td>
+</tr>
+ -->
+<tr valign="top">
+
+	<td colspan="2">
+
+		<table width="100%" class="layoutKopf"
+			style="#{HelperForm.applicationHeaderBackground}" cellpadding="0"
+			cellspacing="0" border="0">
+			<tr valign="top">
+				<td valign="middle" style="padding-left:1px;">
+					<h:graphicImage value="#{HelperForm.applicationLogo}"/>
+				</td>
+				<td valign="middle" align="center">
+
+					<h:outputText style="#{HelperForm.applicationTitleStyle}"
+						value="#{HelperForm.applicationTitle}" />
+
+					<noscript>
+						<h:outputText style="color: red;font-weight: bold;"
+							value="#{msgs.keinJavascript}" />
+					</noscript>
+
+				</td>
+
+				<td valign="middle" align="right" style="padding:3px">
+					<h:outputText value="#{HelperForm.applicationIndividualHeader}"
+						escape="false" />
+				</td>
+
+
+				<td valign="top" align="right" style="padding:3px">
+					<h:form style="margin:0px" id="headform">
+										
+						<h:commandLink action="#{SpracheForm.changeLocale('de')}" id="lang1"
+							title="deutsche Version">
+							<h:graphicImage value="/newpages/images/flag_de_ganzklein.gif" />
+						</h:commandLink>
+						<h:commandLink action="#{SpracheForm.changeLocale('en')}" id="lang2"
+							title="english version" >
+							<h:graphicImage value="/newpages/images/flag_en_ganzklein.gif" />
+							<f:param name="locale" value="en" />
+						</h:commandLink>			
+						<h:commandLink action="#{SpracheForm.changeLocale('es')}" id="lang4"
+							title="spanish version" style="margin-left:0px;">
+							<h:graphicImage value="/newpages/images/flag_es_ganzklein.gif" />
+							<f:param name="locale" value="es" />
+						</h:commandLink>
+						<br/>
+
+							<h:commandLink action="#{LoginForm.Ausloggen}" id="logout2"
+    							rendered="#{LoginForm.myBenutzer != null}"
+								styleClass="text_head">
+
+								<!-- Mouse-Over für Benutzergruppenmitgliedschaft -->
+								<x:popup
+									style="background-color: white; color: #000000; border:1px solid #e3c240; font-size: smaller;"
+									closePopupOnExitingElement="true"
+									closePopupOnExitingPopup="true" displayAtDistanceX="-210"
+									displayAtDistanceY="10">
+
+								<h:outputText style="text-align:right;line-height:20px" value="#{msgs.logout}" />
+
+									<f:facet name="popup">
+										<h:panelGroup>
+											<h:panelGrid columns="1" width="200">
+												<h:outputText rendered="#{LoginForm.myBenutzer != null}"
+										style="font-weight:bold"
+										value="#{LoginForm.myBenutzer.nachname}, #{LoginForm.myBenutzer.vorname}" />
+										
+									
+
+												<x:dataList var="intern" style="font-weight: normal"
+													rendered="#{LoginForm.myBenutzer.benutzergruppenSize != 0}"
+													value="#{LoginForm.myBenutzer.benutzergruppenList}"
+													layout="ordered list" rowCountVar="rowCount"
+													rowIndexVar="rowIndex">
+													<h:outputText value="#{intern.titel}" />
+													<h:outputText value=";"	rendered="#{rowIndex + 1 lt rowCount}" />
+												</x:dataList>
+
+											</h:panelGrid>
+										</h:panelGroup>
+									</f:facet>
+								</x:popup>
+
+							</h:commandLink>
+
+					</h:form>
+
+
+
+
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+	</composite:implementation>
+
+</ui:composition>
+
+
+
+
+

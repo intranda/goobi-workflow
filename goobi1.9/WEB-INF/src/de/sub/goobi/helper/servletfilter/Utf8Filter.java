@@ -1,4 +1,3 @@
-package de.sub.goobi.Forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,30 +25,35 @@ package de.sub.goobi.Forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.Locale;
+package de.sub.goobi.helper.servletfilter;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
+import java.io.IOException;
 
-import de.sub.goobi.helper.Helper;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
- * Klasse SpracheForm für die Umstellung der Sprache aus dem 
- * laufenden Servlet
+ * Use this filter to make sure, every request gets encoded as UTF8
+ * 
+ * @author Steffen Hankiewicz
  */
-@ManagedBean(name="SpracheForm") 
-@SessionScoped
-public class SpracheForm {
-	private Locale locale = Locale.GERMAN;
-
-	public String changeLocale(String inLocale) {
-		locale = new Locale(inLocale);
-		FacesContext.getCurrentInstance().getViewRoot().setLocale(locale);
-		return "";
+public class Utf8Filter implements Filter {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		chain.doFilter(request, response);
 	}
 
-   public Locale getLocale() {
-      return this.locale;
-   }
+	@Override
+	public void destroy() {
+	}
+
+	@Override
+	public void init(FilterConfig arg0) throws ServletException {
+	}
+
 }

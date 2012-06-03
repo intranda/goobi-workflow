@@ -28,6 +28,10 @@ package de.sub.goobi.Forms;
  */
 import java.util.HashSet;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -41,6 +45,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="BenutzergruppenForm") 
+@SessionScoped
 public class BenutzergruppenForm extends BasisForm {
 	private static final long serialVersionUID = 8051160917458068675L;
 	private Benutzergruppe myBenutzergruppe = new Benutzergruppe();

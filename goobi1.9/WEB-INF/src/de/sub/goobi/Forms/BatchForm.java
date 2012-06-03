@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
@@ -59,6 +62,8 @@ import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="BatchForm") 
+@SessionScoped
 public class BatchForm extends BasisForm {
 
 	private static final long serialVersionUID = 8234897225425856549L;

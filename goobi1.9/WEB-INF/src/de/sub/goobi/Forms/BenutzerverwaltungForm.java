@@ -39,6 +39,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
@@ -64,6 +66,8 @@ import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.Ldap;
 
+@ManagedBean(name="BenutzerverwaltungForm") 
+@SessionScoped
 public class BenutzerverwaltungForm extends BasisForm {
 	private static final long serialVersionUID = -3635859455444639614L;
 	private Benutzer myClass = new Benutzer();

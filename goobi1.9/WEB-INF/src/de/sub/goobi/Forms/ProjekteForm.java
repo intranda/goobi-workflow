@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -77,6 +79,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="ProjekteForm") 
+@SessionScoped
 public class ProjekteForm extends BasisForm {
 	private static final long serialVersionUID = 6735912903249358786L;
 	private static final Logger myLogger = Logger.getLogger(ProjekteForm.class);

@@ -33,6 +33,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
@@ -45,6 +47,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.Ldap;
 
+@ManagedBean(name="LoginForm") 
+@SessionScoped
 public class LoginForm {
 	private String login;
 	private String passwort;

@@ -26,6 +26,9 @@ package de.sub.goobi.Persistence;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -36,6 +39,8 @@ import org.hibernate.cfg.Configuration;
 
 //TODO: Fix for Hibernate-Session-Management, old Version reactivated
 
+@ManagedBean(name="HibernateSessionLong") 
+@SessionScoped
 public class HibernateSessionLong {
    private static final Logger mylogger = Logger.getLogger(HibernateSessionLong.class);
 

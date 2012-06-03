@@ -16,7 +16,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-jxpath-1.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/commons-validator-1.1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/EasySI-0.9.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ehcache-1.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/goobi-api.jar"/>
@@ -28,9 +27,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/jakarta-oro.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jcommon-1.0.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jdom.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jenia4faces_1.2.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jfreechart-1.0.0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jstl.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/junit-4.3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/mets-1.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/mods-3.3.jar"/>
@@ -42,7 +39,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/saxon9.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/tomahawk-sandbox-1.1.5-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/truezip-6.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xbean_xpath-2.4.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xercesImpl-2.9.1.jar"/>
@@ -60,13 +56,8 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/c3p0-0.9.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/fop-0.9.5.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-api-1.1.5.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-impl-1.1.5.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/joda-time-1.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/tomahawk-1.1.9.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/richfaces-api-3.1.6.GA.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/richfaces-impl-3.1.6.GA.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/richfaces-ui-3.1.6.GA.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/lucene-core-3.0.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/lucene-analyzers-3.0.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-cli-1.2.jar"/>
@@ -88,6 +79,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-pool-1.5.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/hibernate-c3p0-4.1.3.Final.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-compress-1.4.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jspf.core-1.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/avalon-framework-4.2.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/barcode4j-fop-ext-complete.jar"/>
@@ -95,7 +87,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/xml-apis-1.3.04.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xml-apis-ext-1.3.04.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xmlgraphics-commons-1.3.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jspf.core-1.0.0.jar"/>
 	<classpathentry kind="src" output="work" path="work"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ugh-1.10.jar"/>
@@ -111,5 +102,16 @@
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/el-impl-2.2.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jsf-api.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jsf-impl.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jstl-api-1.2.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jstl-impl-1.2.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/primefaces-3.3.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-validator-1.3.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/tomahawk20-1.1.13.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

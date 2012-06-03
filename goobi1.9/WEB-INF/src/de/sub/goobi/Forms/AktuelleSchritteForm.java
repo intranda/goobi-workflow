@@ -40,6 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.apache.log4j.Logger;
 import org.goobi.production.api.property.xmlbasedprovider.impl.PropertyTemplate;
 import org.goobi.production.cli.helper.WikiFieldHelper;
@@ -84,6 +87,8 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="AktuelleSchritteForm") 
+@SessionScoped
 public class AktuelleSchritteForm extends BasisForm {
 	private static final long serialVersionUID = 5841566727939692509L;
 	private static final Logger myLogger = Logger.getLogger(AktuelleSchritteForm.class);

@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +52,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="HelperForm") 
+@SessionScoped
 public class HelperForm {
 	// Helper help = new Helper();
 
