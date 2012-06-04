@@ -71,7 +71,7 @@ public class LoginForm {
 		if (mySession != null) {
 			mySession.invalidate();
 		}
-		return "newMain";
+		return "index";
 	}
 
 	public String Einloggen() {
@@ -153,7 +153,7 @@ public class LoginForm {
 
 	public String EinloggenAls() {
 		if (getMaximaleBerechtigung() != 1) {
-			return "newMain";
+			return "index";
 		}
 		this.myBenutzer = null;
 		Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
@@ -166,7 +166,7 @@ public class LoginForm {
 			Helper.setFehlerMeldung("could not read database", e.getMessage());
 			return "";
 		}
-		return "newMain";
+		return "index";
 	}
 
 	/*
@@ -178,7 +178,7 @@ public class LoginForm {
 	 * Bearbeitungsvorgang abbrechen
 	 */
 	public String PasswortAendernAbbrechen() {
-		return "newMain";
+		return "index";
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class LoginForm {
 //		} else {
 			/* ist das neue Passwort beide Male gleich angegeben? */
 			if (!this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
-				Helper.setFehlerMeldung(Helper.getTranslation("neuesPasswortNichtGleich"));
+				Helper.setFehlerMeldung("neuesPasswortNichtGleich");
 			} else {
 				// myBenutzer.setPasswortCrypt(passwortAendernNeu1);
 				try {
@@ -204,7 +204,7 @@ public class LoginForm {
 					new BenutzerDAO().save(temp);
 					this.myBenutzer = temp;
 
-					Helper.setMeldung(Helper.getTranslation("passwortGeaendert"));
+					Helper.setMeldung("passwortGeaendert");
 				} catch (DAOException e) {
 					Helper.setFehlerMeldung("could not save", e.getMessage());
 				} catch (NoSuchAlgorithmException e) {

@@ -9,18 +9,17 @@
 	<ui:define name="breadcrumb">
 		<h:commandLink value="#{msgs.startseite}" action="index" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
-		<h:outputText value="#{msgs.technischerHintergrund}" />
+		<h:outputText value="#{msgs.impressum}" />
 	</ui:define>
 
 	<ui:define name="title">
-		<h:outputText value="#{msgs.technischerHintergrund}" />
+		<h:outputText value="#{msgs.impressum}" />
 	</ui:define>
 
 	<ui:define name="content">
 		<p style="text-align: justify;">
 			<h:outputText id="id6" style="text-align: justify;"
-				value="#{HelperForm.applicationTechnicalBackgroundMsg}"
-				escape="false" />
+				value="#{HelperForm.applicationImpressumMsg}" escape="false" />
 		</p>
 	</ui:define>
 

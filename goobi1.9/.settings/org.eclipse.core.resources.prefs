@@ -1,3 +1,21 @@
-#Wed Sep 15 16:19:00 CEST 2010
 eclipse.preferences.version=1
+encoding//themes/default/css/default.css=UTF-8
+encoding//themes/default/css/print.css=UTF-8
+encoding//themes/default/currentUsers.xhtml=UTF-8
+encoding//themes/default/imprint.xhtml=UTF-8
+encoding//themes/default/includes/datascroller.xhtml=UTF-8
+encoding//themes/default/index.xhtml=UTF-8
+encoding//themes/default/ldap_all.xhtml=UTF-8
+encoding//themes/default/ldap_edit.xhtml=UTF-8
+encoding//themes/default/ruleset_all.xhtml=UTF-8
+encoding//themes/default/ruleset_edit.xhtml=UTF-8
+encoding//themes/default/technicalBackground.xhtml=UTF-8
+encoding//themes/default/template/inc_footer.xhtml=UTF-8
+encoding//themes/default/template/inc_head.xhtml=UTF-8
+encoding//themes/default/template/inc_login.xhtml=UTF-8
+encoding//themes/default/template/inc_navigation.xhtml=UTF-8
+encoding//themes/default/template/template.html=UTF-8
+encoding//themes/default/user_config.xhtml=UTF-8
+encoding//themes/default/user_password.xhtml=UTF-8
 encoding/<project>=UTF-8
+encoding/index.html=UTF-8

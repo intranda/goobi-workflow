@@ -271,7 +271,7 @@
 									value="- #{msgs.benutzerdaten} -" />
 		
 								<!-- Benutzerkonfiguration -->
-								<h:commandLink styleClass="mlink" action="Benutzerkonfiguration"  id="userconfig"
+								<h:commandLink styleClass="mlink" action="user_config"  id="userconfig"
 									style="#{NavigationForm.aktuell == '40' ? 'font-weight: bold;':'font-weight:normal ;'}">
 									<h:panelGroup rendered="#{NavigationForm.aktuell == '40'}">
 										<f:verbatim>&#8250; </f:verbatim>
@@ -282,7 +282,7 @@
 								</h:commandLink>
 		
 								<!-- Passwort aendern -->
-								<h:commandLink styleClass="mlink" action="newPasswortAendern" id="changePW"
+								<h:commandLink styleClass="mlink" action="user_password" id="changePW"
 									style="#{NavigationForm.aktuell == '41' ? 'font-weight: bold;':'font-weight:normal ;'}">
 									<h:panelGroup rendered="#{NavigationForm.aktuell == '41'}">
 										<f:verbatim>&#8250; </f:verbatim>

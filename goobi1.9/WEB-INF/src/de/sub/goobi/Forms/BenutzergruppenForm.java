@@ -54,13 +54,13 @@ public class BenutzergruppenForm extends BasisForm {
 
 	public String Neu() {
 		this.myBenutzergruppe = new Benutzergruppe();
-		return "BenutzergruppenBearbeiten";
+		return "usergroup_edit";
 	}
 
 	public String Speichern() {
 		try {
 			this.dao.save(this.myBenutzergruppe);
-			return "BenutzergruppenAlle";
+			return "usergroup_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
 			return "";
@@ -86,7 +86,7 @@ public class BenutzergruppenForm extends BasisForm {
 			Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
 			return "";
 		}
-		return "BenutzergruppenAlle";
+		return "usergroup_all";
 	}
 
 	public String FilterKein() {
@@ -102,7 +102,7 @@ public class BenutzergruppenForm extends BasisForm {
 			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
 			return "";
 		}
-		return "BenutzergruppenAlle";
+		return "usergroup_all";
 	}
 
 	public String FilterKeinMitZurueck() {
