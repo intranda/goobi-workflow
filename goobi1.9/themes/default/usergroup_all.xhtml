@@ -18,7 +18,8 @@
 
 	<ui:define name="content">
 
-		<h:form>
+		<h:form id="myform"
+			onkeypress="ifEnterClick(event, 'myform:absenden');">
 			<!-- Neu-Schaltknopf -->
 			<h:commandLink id="id5" action="#{BenutzergruppenForm.Neu}"
 				immediate="true"
@@ -76,16 +77,15 @@
 
 			</x:dataTable>
 
-			<!-- Neu-Schaltknopf -->
-			<h:commandLink id="id52" action="#{BenutzergruppenForm.Neu}"
-				immediate="true"
-				rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (BenutzergruppenForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
-				<h:outputText id="id62" value="#{msgs.neueBenutzergruppeAnlegen}" />
-			</h:commandLink>
-
 			<table width="100%" border="0">
 				<tr valign="top">
-					<td align="left"></td>
+					<td align="left">
+						<!-- Neu-Schaltknopf --> <h:commandLink id="id52"
+							action="#{BenutzergruppenForm.Neu}" immediate="true"
+							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (BenutzergruppenForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
+							<h:outputText id="id62" value="#{msgs.neueBenutzergruppeAnlegen}" />
+						</h:commandLink>
+					</td>
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}" value="#{BenutzergruppenForm.page}">

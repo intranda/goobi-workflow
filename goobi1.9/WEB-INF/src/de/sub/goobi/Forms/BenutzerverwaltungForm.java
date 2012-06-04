@@ -74,6 +74,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 	private BenutzerDAO dao = new BenutzerDAO();
 	private boolean hideInactiveUsers = true;
 	private static final Logger logger = Logger.getLogger(BenutzerverwaltungForm.class);
+	private String displayMode = "";
 	
 	public String Neu() {
 		this.myClass = new Benutzer();
@@ -82,10 +83,11 @@ public class BenutzerverwaltungForm extends BasisForm {
 		this.myClass.setLogin("");
 		this.myClass.setLdaplogin("");
 		this.myClass.setPasswortCrypt("Passwort");
-		return "BenutzerBearbeiten";
+		return "user_edit";
 	}
 
 	public String FilterKein() {
+		displayMode = "";
 		this.filter = null;
 		try {
 			//	HibernateUtil.clearSession();
@@ -104,7 +106,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
 			return "";
 		}
-		return "BenutzerAlle";
+		return "user_all";
 	}
 
 	public String FilterKeinMitZurueck() {
@@ -141,7 +143,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
 			return "";
 		}
-		return "BenutzerAlle";
+		return "user_all";
 	}
 
 	public String Speichern() {
@@ -158,7 +160,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 			/* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
 			if (this.dao.count("from Benutzer where login='" + bla + "'AND BenutzerID<>" + blub) == 0) {
 				this.dao.save(this.myClass);
-				return "BenutzerAlle";
+				return "user_all";
 			} else {
 				Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
 				return "";
@@ -207,7 +209,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 		this.myClass.setProjekte(new HashSet<Projekt>());
 		this.myClass.setIstAktiv(false);
 		this.myClass.setIsVisible("deleted");
-		return "BenutzerAlle";
+		return "user_all";
 	}
 
 	public String AusGruppeLoeschen() {
@@ -232,6 +234,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
 		}
+		displayMode="";
 		return "";
 	}
 
@@ -256,6 +259,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
 		}
+		displayMode="";
 		return "";
 	}
 
@@ -339,6 +343,14 @@ public class BenutzerverwaltungForm extends BasisForm {
 
 	public void setHideInactiveUsers(boolean hideInactiveUsers) {
 		this.hideInactiveUsers = hideInactiveUsers;
+	}
+	
+	public String getDisplayMode() {
+		return displayMode;
+	}
+	
+	public void setDisplayMode(String displayMode) {
+		this.displayMode = displayMode;
 	}
 
 }

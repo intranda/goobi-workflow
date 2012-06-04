@@ -27,7 +27,8 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}">
+		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}" id="myform"
+			onkeypress="ifEnterClick(event, 'myform:absenden');">
 			<table cellpadding="3" cellspacing="0" width="100%"
 				class="eingabeBoxen">
 

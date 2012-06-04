@@ -76,20 +76,19 @@
 				</h:column>
 
 			</x:dataTable>
-			<h:commandLink id="id52" action="#{RegelsaetzeForm.Neu}"
-				immediate="true"
-				rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (RegelsaetzeForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
-				<h:outputText id="id62" value="#{msgs.neuenRegelsatzAnlegen}" />
-			</h:commandLink>
+
 			<table width="100%" border="0">
 				<tr valign="top">
-					<td align="left"></td>
+					<td align="left"><h:commandLink id="id52"
+							action="#{RegelsaetzeForm.Neu}" immediate="true"
+							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (RegelsaetzeForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
+							<h:outputText id="id62" value="#{msgs.neuenRegelsatzAnlegen}" />
+						</h:commandLink></td>
 					<td align="center">
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}" value="#{RegelsaetzeForm.page}">
 							<ui:include src="includes/datascroller.xhtml" />
-						</x:aliasBean> 
-						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+						</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 					</td>
 				</tr>
 			</table>

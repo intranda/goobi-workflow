@@ -71,16 +71,16 @@
 					</h:commandLink>
 				</x:column>
 			</x:dataTable>
-			<h:commandLink id="id52" action="#{LdapGruppenForm.Neu}"
-				immediate="true"
-				rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (LdapGruppenForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
-				<h:outputText id="id62" value="#{msgs.neueLdapgruppeAnlegen}" />
-			</h:commandLink>
+
 
 			<table width="100%" border="0">
 				<tr valign="top">
 					<td align="left">
-						<!-- Neu-Schaltknopf -->
+						<!-- Neu-Schaltknopf --> <h:commandLink id="id52"
+							action="#{LdapGruppenForm.Neu}" immediate="true"
+							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (LdapGruppenForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
+							<h:outputText id="id62" value="#{msgs.neueLdapgruppeAnlegen}" />
+						</h:commandLink>
 					</td>
 					<td align="center">
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
