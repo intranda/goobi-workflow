@@ -104,7 +104,8 @@ public class ProjekteForm extends BasisForm {
 	private String projectStatImages;
 	private String projectStatVolumes;
 	private boolean showStatistics;
-
+	private String displayMode="";
+	
 	public ProjekteForm() {
 		super();
 	}
@@ -159,12 +160,13 @@ public class ProjekteForm extends BasisForm {
 		this.projectProgressImage = null;
 		this.projectStatImages = null;
 		this.projectStatVolumes = null;
-		return "ProjekteAlle";
+		displayMode="";
+		return "project_all";
 	}
 
 	public String Neu() {
 		this.myProjekt = new Projekt();
-		return "ProjekteBearbeiten";
+		return "project_edit";
 	}
 
 	public String Speichern() {
@@ -172,7 +174,8 @@ public class ProjekteForm extends BasisForm {
 		this.commitFileGroups();
 		try {
 			this.dao.save(this.myProjekt);
-			return "ProjekteAlle";
+			displayMode="";
+			return "project_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("could not save", e.getMessage());
 			myLogger.error(e);
@@ -201,16 +204,18 @@ public class ProjekteForm extends BasisForm {
 		} else {
 		try {
 			this.dao.remove(this.myProjekt);
+			displayMode="";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("could not delete", e.getMessage());
 			myLogger.error(e.getMessage());
 			return "";
 		}
 		}
-		return "ProjekteAlle";
+		return "project_all";
 	}
 
 	public String FilterKein() {
+		displayMode="";
 		try {
 			Session session = Helper.getHibernateSession();
 			// session.flush();
@@ -224,7 +229,7 @@ public class ProjekteForm extends BasisForm {
 			myLogger.error(he.getMessage());
 			return "";
 		}
-		return "ProjekteAlle";
+		return "project_all";
 	}
 
 	public String FilterKeinMitZurueck() {
@@ -236,7 +241,7 @@ public class ProjekteForm extends BasisForm {
 		this.myFilegroup = new ProjectFileGroup();
 		this.myFilegroup.setProject(this.myProjekt);
 		this.newFileGroups.add(this.myFilegroup.getId());
-		return this.zurueck;
+		return "";
 	}
 
 	public String filegroupSave() {
@@ -246,12 +251,15 @@ public class ProjekteForm extends BasisForm {
 		if (!this.myProjekt.getFilegroups().contains(this.myFilegroup)) {
 			this.myProjekt.getFilegroups().add(this.myFilegroup);
 		}
-
-		return "jeniaClosePopupFrameWithAction";
+		return "";
 	}
 
 	public String filegroupEdit() {
-		return this.zurueck;
+		return "";
+	}
+	
+	public String filegroupCancel() {
+		return "";
 	}
 
 	public String filegroupDelete() {
@@ -260,7 +268,7 @@ public class ProjekteForm extends BasisForm {
 		this.deletedFileGroups.add(this.myFilegroup.getId());
 		// original line
 		// myProjekt.getFilegroups().remove(myFilegroup);
-		return "ProjekteBearbeiten";
+		return "";
 	}
 
 	/*
@@ -736,4 +744,11 @@ public class ProjekteForm extends BasisForm {
 		this.showStatistics = showStatistics;
 	}
 
+	public String getDisplayMode() {
+		return displayMode;
+	}
+	
+	public void setDisplayMode(String displayMode) {
+		this.displayMode = displayMode;
+	}
 }

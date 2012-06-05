@@ -174,24 +174,24 @@ public class HelperForm {
 		return myPrefs;
 	}
 
-	public List<String> getFileFormats() {
-		ArrayList<String> ffs = new ArrayList<String>();
+	
+	public List<SelectItem> getFileFormats() {
+		ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
 		for (MetadataFormat ffh : MetadataFormat.values()) {
 			if (!ffh.equals(MetadataFormat.RDF)) {
-				ffs.add(ffh.getName());
+				ffs.add(new SelectItem(ffh.getName(), null));
 			}
 		}
 		return ffs;
 	}
 
-	public List<String> getFileFormatsInternalOnly() {
-		ArrayList<String> ffs = new ArrayList<String>();
+	public List<SelectItem> getFileFormatsInternalOnly() {
+		ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
 		for (MetadataFormat ffh : MetadataFormat.values()) {
-			if (ffh.isUsableForInternal()) {
+			if (ffh.isUsableForInternal())
 				if (!ffh.equals(MetadataFormat.RDF)) {
-					ffs.add(ffh.getName());
+					ffs.add(new SelectItem(ffh.getName(), null));
 				}
-			}
 		}
 		return ffs;
 	}
