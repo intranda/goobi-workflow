@@ -21,4 +21,21 @@
 
 	</application>
 
+		<!-- StatisticsTimeUnitConverter for Select-Boxes -->
+	<converter>
+		<converter-id>StatisticsTimeUnitConverter</converter-id>
+		<converter-class>org.goobi.production.converters.StatisticsTimeUnitConverter</converter-class>
+	</converter>
+		
+	<!-- StatisticResultOutputConverter for Select-Boxes -->
+	<converter>
+		<converter-id>StatisticsResultOutputConverter</converter-id>
+		<converter-class>org.goobi.production.converters.StatisticsResultOutputConverter</converter-class>
+	</converter>
+	
+	<!-- StatisticCalculationUnitConverter for Select-Boxes -->
+	<converter>
+		<converter-id>StatisticsCalculationUnitConverter</converter-id>
+		<converter-class>org.goobi.production.converters.StatisticsCalculationUnitConverter</converter-class>
+	</converter>
 </faces-config>
