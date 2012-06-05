@@ -681,17 +681,17 @@
 													<h:selectManyListbox id="vinput5"
 														value="#{ProjekteForm.projectProgressInterface.selectedSteps}">
 														<f:selectItems
-								value="#{ProjekteForm.projectProgressInterface.selectableSteps}"
-								var="item" itemLabel="#{item}" itemValue="#{item}" />
+															value="#{ProjekteForm.projectProgressInterface.selectableSteps}"
+															var="item" itemLabel="#{item}" itemValue="#{item}" />
 													</h:selectManyListbox>
 
 													<h:selectOneMenu id="pcid10" style="height:20px"
 														value="#{ProjekteForm.projectProgressInterface.timeUnit}"
 														converter="StatisticsTimeUnitConverter">
-<f:selectItems id="pcid11"
-								value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}"
-								var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
-								
+														<f:selectItems id="pcid11"
+															value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}"
+															var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+
 													</h:selectOneMenu>
 
 													<h:panelGroup id="pcid12" style="height:20px">
@@ -703,9 +703,10 @@
 															for="pcid13" />
 													</h:panelGroup>
 
-													<h:commandButton id="pcid20" value="#{msgs.rerender}">
+													<h:commandButton id="pcid20" value="#{msgs.rerender}"
+														action="#{ProjekteForm.filegroupEdit}">
 													</h:commandButton>
-<!-- 
+													<!-- 
 
 													<h:commandButton id="pcid20" value="#{msgs.rerender}">
 														<a4j:support id="vwid13" event="onclick" reRender="vzid36" />
@@ -723,54 +724,50 @@
 
 											</div>
 										</x:panelTab>
-											<!-- 
 										<x:panelTab label="#{msgs.productionStatistics}">
-											<div id="stab3" styleClass="subTab3">
+											<div id="stab3" class="subTab3">
 												<x:aliasBeansScope>
 													<x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
 													<f:subview id="vzid420101">
-														<jsp:include
-															page="/newpages/inc_statistic/StatisticProduction.jsp" />
+														<ui:include src="includes/stat_StatisticProduction.xhtml" />
 													</f:subview>
 												</x:aliasBeansScope>
 											</div>
 										</x:panelTab>
 										<x:panelTab label="#{msgs.productionThroughput}">
 
-											<div id="stab4" styleClass="subTab4">
+											<div id="stab4" class="subTab4">
 												<x:aliasBeansScope>
 													<x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
 													<f:subview id="vzid430101">
-														<jsp:include
-															page="/newpages/inc_statistic/StatisticThroughput.jsp" />
+														<ui:include src="includes/stat_StatisticThroughput.xhtml" />
 													</f:subview>
 												</x:aliasBeansScope>
 											</div>
 										</x:panelTab>
 										<x:panelTab label="#{msgs.errorTracking}">
 
-											<div id="stab5" styleClass="subTab5">
+											<div id="stab5" class="subTab5">
 												<x:aliasBeansScope>
 													<x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
 													<f:subview id="vzid440101">
-														<jsp:include
-															page="/newpages/inc_statistic/StatisticCorrection.jsp" />
+														<ui:include src="includes/stat_StatisticCorrection.xhtml" />
 													</f:subview>
 												</x:aliasBeansScope>
 											</div>
 										</x:panelTab>
 										<x:panelTab label="#{msgs.storageCalculator}">
 
-											<div id="stab6" styleClass="subTab6">
+											<div id="stab6" class="subTab6">
 												<x:aliasBeansScope>
 													<x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
 													<f:subview id="vzid450101">
-														<jsp:include
-															page="/newpages/inc_statistic/StatisticStorage.jsp" />
+														<ui:include src="includes/stat_StatisticStorage.xhtml" />
 													</f:subview>
 												</x:aliasBeansScope>
 											</div>
 										</x:panelTab>
+										<!-- 
 										 -->
 
 									</x:panelTabbedPane>
