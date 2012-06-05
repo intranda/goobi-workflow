@@ -57,7 +57,7 @@ public class SessionForm {
 private List alleSessions = new ArrayList();
    private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
    private String aktuelleZeit = this.formatter.format(new Date());
-   private String bitteAusloggen = "";
+   private String bitteAusloggen = "abcd";
       
    
 
@@ -245,7 +245,9 @@ public void alteSessionsDesSelbenBenutzersAufraeumen(HttpSession inSession, Benu
       return this.bitteAusloggen;
    }
 
-   
+   public String sendLogoutMessage(){
+	   return "admin";
+   }
 
    public void setBitteAusloggen(String bitteAusloggen) {
       this.bitteAusloggen = bitteAusloggen;
