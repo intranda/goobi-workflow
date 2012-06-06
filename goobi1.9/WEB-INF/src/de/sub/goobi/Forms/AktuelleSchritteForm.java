@@ -179,7 +179,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			Helper.setFehlerMeldung("error on reading database", he.getMessage());
 			return "";
 		}
-		return "AktuelleSchritteAlle";
+		return "task_all";
 	}
 
 	private void sortList(Criteria inCrit) {
@@ -295,7 +295,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			}
 			this.flagWait = false;
 		}
-		return "AktuelleSchritteBearbeiten";
+		return "task_edit";
 
 	}
 
@@ -376,7 +376,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		}
 		
 		this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch));
-		return "BatchesEdit";
+		return "batches_edit";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -399,17 +399,17 @@ public class AktuelleSchritteForm extends BasisForm {
 			crit.add(Restrictions.eq("proc.batchID", batchNumber));
 			currentStepsOfBatch = crit.list();
 		} else {
-			return "AktuelleSchritteBearbeiten";
+			return "task_edit";
 		}
 		// if only one step is asigned for this batch, use the single
 
 //		Helper.setMeldung("found " + currentStepsOfBatch.size() + " elements in batch");
 
 		if (currentStepsOfBatch.size() == 1) {
-			return "AktuelleSchritteBearbeiten";
+			return "task_edit";
 		}
 		this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch));
-		return "BatchesEdit";
+		return "batches_edit";
 	}
 
 	public void saveProperties() {
@@ -452,7 +452,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		} catch (DAOException e) {
 		}
 		// calcHomeImages();
-		return "AktuelleSchritteAlle";
+		return "task_all";
 	}
 
 	public String SchrittDurchBenutzerAbschliessen() {

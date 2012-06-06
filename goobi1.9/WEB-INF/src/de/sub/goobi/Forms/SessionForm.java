@@ -57,7 +57,7 @@ public class SessionForm {
 private List alleSessions = new ArrayList();
    private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
    private String aktuelleZeit = this.formatter.format(new Date());
-   private String bitteAusloggen = "abcd";
+   private String bitteAusloggen = "";
       
    
 
