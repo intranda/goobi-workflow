@@ -31,9 +31,6 @@
 		</f:subview>
 		-->
 
-		<!-- +++++++++++++++++  // Anzeigefilter ++++++++++++++++++++++++ -->
-
-		<!-- Datentabelle -->
 		<x:dataTable id="auflistung" styleClass="standardTable" width="100%"
 			cellspacing="1px" cellpadding="1px"
 			headerClass="standardTable_Header"
@@ -45,7 +42,6 @@
 				rendered="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}">
 				<f:facet name="header">
 					<x:div>
-						<!-- Header -->
 						<h:outputText value="#{msgs.auswahl2}" />
 						<h:commandLink action="#{AktuelleSchritteForm.SelectionAll}"
 							id="selectAll" title="#{msgs.alleAuswaehlen}"
@@ -68,6 +64,7 @@
 						property="#{item.selected}" />
 				</h:commandLink>
 			</x:column>
+			
 
 			<!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
 			<x:column style="text-align:center"
@@ -77,8 +74,10 @@
 				</f:facet>
 				<h:outputText value="#{item.prozess.id}" />
 			</x:column>
+			
 
-			<x:column style="text-align:left" rendered="#{true}">
+			
+ 	<x:column style="text-align:left" rendered="#{true}">
 				<f:facet name="header">
 					<x:div>
 						<!-- Header -->
@@ -129,344 +128,14 @@
 
 					<x:div style="width:90%;margin-top;margin-left:12px;margin-top:5px"
 						rendered="#{item.panelAusgeklappt}">
-						<!-- Schrittdetails -->
+						<!-- Schrittdetails 
 						<ui:include src="includes/task/list_details.xhtml" />
+						-->
 					</x:div>
 				</h:panelGroup>
 			</x:column>
-
-			<x:column style="text-align:left">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.prozess}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort6"
-							rendered="#{AktuelleSchritteForm.sortierung=='prozessAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="prozessDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort7"
-							rendered="#{AktuelleSchritteForm.sortierung=='prozessDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="prozessAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort8"
-							rendered="#{AktuelleSchritteForm.sortierung!='prozessDesc' and AktuelleSchritteForm.sortierung!='prozessAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="prozessAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-				<h:panelGrid columns="2">
-					<!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-					<h:commandLink action="process_all" id="edit1"
-						title="#{msgs.prozessBearbeiten}">
-						<h:graphicImage value="/newpages/images/buttons/goInto.gif"
-							style="margin-right:3px" />
-						<x:updateActionListener
-							property="#{ProzessverwaltungForm.myProzess}"
-							value="#{item.prozess}" />
-						<x:updateActionListener
-							property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-					</h:commandLink>
-					<h:outputText value="#{item.prozess.titel}" />
-				</h:panelGrid>
-			</x:column>
-
-			<x:column style="text-align:center"
-				rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.vorgangsdatum}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort10"
-							rendered="#{AktuelleSchritteForm.sortierung=='prozessdateAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="prozessdateDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort11"
-							rendered="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="prozessdateAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort12"
-							rendered="#{AktuelleSchritteForm.sortierung!='prozessdateDesc' and AktuelleSchritteForm.sortierung!='prozessdateAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="prozessdateAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-				<h:outputText value="#{item.prozess.erstellungsdatum}" />
-			</x:column>
-
-			<x:column style="text-align:center"
-				rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.modules}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort13"
-							rendered="#{AktuelleSchritteForm.sortierung=='modulesAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="modulesDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort14"
-							rendered="#{AktuelleSchritteForm.sortierung=='modulesDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="modulesAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort15"
-							rendered="#{AktuelleSchritteForm.sortierung!='modulesDesc' and AktuelleSchritteForm.sortierung!='modulesAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="modulesAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-				<h:outputText value="#{item.typModulName}" />
-			</x:column>
-
-			<x:column style="text-align:center">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.projekt}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort16"
-							rendered="#{AktuelleSchritteForm.sortierung=='projektAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="projektDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort17"
-							rendered="#{AktuelleSchritteForm.sortierung=='projektDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="projektAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort18"
-							rendered="#{AktuelleSchritteForm.sortierung!='projektDesc' and AktuelleSchritteForm.sortierung!='projektAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="projektAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-				<h:outputText value="#{item.prozess.projekt.titel}" />
-			</x:column>
-
-			<!-- +++++++++++++++++  Sperrungen ++++++++++++++++++++++++ -->
-			<x:column style="text-align:center"
-				rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.sperrungen}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort19"
-							rendered="#{AktuelleSchritteForm.sortierung=='sperrungenAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="sperrungenDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort20"
-							rendered="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="sperrungenAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort21"
-							rendered="#{AktuelleSchritteForm.sortierung!='sperrungenDesc' and AktuelleSchritteForm.sortierung!='sperrungenAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}"
-								value="sperrungenAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-				<h:outputText value="#{item.benutzerGesperrt.nachVorname}"
-					rendered="#{item.prozess.benutzerGesperrt != null}" />
-			</x:column>
-
-			<!-- +++++++++++++++++  Batch ID ++++++++++++++++++++++++ -->
-			<x:column style="text-align:center"
-				rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.batch}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort19a"
-							rendered="#{AktuelleSchritteForm.sortierung=='batchAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="batchDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort20a"
-							rendered="#{AktuelleSchritteForm.sortierung=='batchDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="batchAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort21a"
-							rendered="#{AktuelleSchritteForm.sortierung!='batchDesc' and AktuelleSchritteForm.sortierung!='batchAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="batchAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-				<h:outputText value="#{item.prozess.batchID}"
-					rendered="#{item.prozess.batchID != null}" />
-			</x:column>
-
-			<x:column style="text-align:center">
-				<f:facet name="header">
-					<x:div>
-						<!-- Header -->
-						<h:outputText value="#{msgs.status}" />
-						<!-- Sortierung Asc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort22"
-							rendered="#{AktuelleSchritteForm.sortierung=='statusAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/asc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="statusDesc" />
-						</h:commandLink>
-						<!-- Sortierung Desc -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort23"
-							rendered="#{AktuelleSchritteForm.sortierung=='statusDesc'}">
-							<h:graphicImage value="/newpages/images/sorting/desc.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="statusAsc" />
-						</h:commandLink>
-						<!-- Sortierung none -->
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
-							id="sort24"
-							rendered="#{AktuelleSchritteForm.sortierung!='statusDesc' and AktuelleSchritteForm.sortierung!='statusAsc'}">
-							<h:graphicImage value="/newpages/images/sorting/none.gif"
-								style="vertical-align:middle;margin-left:5px" />
-							<x:updateActionListener
-								property="#{AktuelleSchritteForm.sortierung}" value="statusAsc" />
-						</h:commandLink>
-					</x:div>
-				</f:facet>
-
-				<h:graphicImage value="#{item.bearbeitungsstatusEnum.bigImagePath}"
-					title="#{item.bearbeitungsstatusEnum.title}" />
-
-				<h:outputText value="!"
-					style="color:red;font-weight:bold;font-size:20px;margin-left:5px"
-					rendered="#{item.prioritaet == 1}" />
-				<h:outputText value="!!"
-					style="color:red;font-weight:bold;font-size:20px;margin-left:5px"
-					rendered="#{item.prioritaet == 2}" />
-				<h:outputText value="!!!"
-					style="color:red;font-weight:bold;font-size:20px;margin-left:5px"
-					rendered="#{item.prioritaet == 3}" />
-
-				<!-- Popup -->
-				<x:popup id="popup" closePopupOnExitingElement="true"
-					closePopupOnExitingPopup="true" displayAtDistanceX="-400"
-					displayAtDistanceY="5" rendered="#{item.prioritaet == 10}">
-
-					<f:facet name="popup">
-						<div>
-							<h:panelGrid columns="1" width="400"
-								style="background-color:#f3ebeb; font-size:11px; border: 1px solid #a24033; padding: 1px;">
-
-								<x:dataTable var="intern"
-									rendered="#{item.eigenschaftenSize!=0}"
-									value="#{item.eigenschaftenList}">
-									<x:column style="vertical-align: top;">
-										<h:outputText value="#{intern.titel}:" />
-									</x:column>
-									<x:column style="vertical-align: top;">
-										<h:outputText value="#{intern.wert}" />
-									</x:column>
-								</x:dataTable>
-
-							</h:panelGrid>
-						</div>
-					</f:facet>
-
-					<h:outputText value="K"
-						style="color:red;font-weight:bold;font-size:20px;margin-left:5px" />
-				</x:popup>
-
-
-			</x:column>
-
+			 	
+			 	
 			<!-- ===================== Action ====================== -->
 			<x:column style="text-align:center" styleClass="action">
 				<f:facet name="header">
@@ -533,19 +202,20 @@
 				</h:commandLink>
 			</x:column>
 			<!-- ===================== // Action ====================== -->
-
+			
 		</x:dataTable>
 
-		<!-- ===================== Datascroller für die Ergebnisse ======================
+<!-- ===================== Datascroller für die Ergebnisse ======================
 		 -->
 		<x:aliasBean alias="#{mypage}" value="#{AktuelleSchritteForm.page}">
 			<ui:include src="includes/datascroller.xhtml" />
 		</x:aliasBean>
 		<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 
-		<!-- Schritte auflisten 
+		<!-- Schritte auflisten -->
 		<ui:include src="includes/task/list_action.xhtml" />
-		-->
+		
+		
 </h:form>
 		
 	</ui:define>
