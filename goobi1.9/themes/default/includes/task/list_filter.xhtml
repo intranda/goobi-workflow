@@ -19,11 +19,8 @@
 				<!-- Filter Liste -->
 				<x:selectOneMenu forceId="true" id="select" style="width:18%;"
 					value="#{Form.filter}" onclick="setFilter();">
-					
-					<f:selectItems id="pcid11"
-						value="#{Form.user.filters}" var="item"
+					<f:selectItems id="pcid11" value="#{Form.user.filters}" var="item"
 						itemLabel="#{item}" itemValue="#{item}" />
-						
 				</x:selectOneMenu>
 
 				<!--Filter zur User-Liste hinzufuegen -->
@@ -112,33 +109,23 @@
 -->
 </script>
 		<!-- 
-<h:panelGrid id="myFilterGrid" width="100%"
-			columnClasses="standardTable_ColumnRight"
-			rowClasses="standardTable_Row_bottom" columns="1">
-			<h:panelGroup id="myFilter">
-				<h:outputText value="#{msgs.selectFilter}" />
+<h:panelGrid id="myFilterGrid" width="100%" columnClasses="standardTable_ColumnRight" rowClasses="standardTable_Row_bottom" columns="1">
+	<h:panelGroup id="myFilter">
+		<h:outputText value="#{msgs.selectFilter}" />
+	
+		<x:selectOneMenu forceId="true" id="select" style="width:15%;height:20px" value="#{Form.user.filter}" onclick="setFilter();">
+			<si:selectItems id="pcid11" value="#{Form.user.filters}" var="item" itemLabel="#{item.value}" itemValue="#{item}" />
+		</x:selectOneMenu>
 
-				<x:selectOneMenu forceId="true" id="select"
-					style="width:15%;height:20px" value="#{Form.user.filter}"
-					onclick="setFilter();">
-					<si:selectItems id="pcid11" value="#{Form.user.filters}" var="item"
-						itemLabel="#{item.value}" itemValue="#{item}" />
-				</x:selectOneMenu>
+		<h:commandLink id="newFilterubid11" action="#{Form.user.addFilter}" title="#{msgs.addFilter}" style="margin-left:5px">
+			<h:graphicImage id="newFilterubid12" alt="Filter" value="/images/buttons/reload.gif" />
+		</h:commandLink>
 
-				<h:commandLink id="newFilterubid11" action="#{Form.user.addFilter}"
-					title="#{msgs.addFilter}" style="margin-left:5px">
-					<h:graphicImage id="newFilterubid12" alt="Filter"
-						value="/images/buttons/reload.gif" />
-				</h:commandLink>
-
-				<h:commandLink id="removeFilterubid11"
-					action="#{Form.user.removeFilter}" title="#{msgs.removeFilter}"
-					style="margin-left:5px">
-					<h:graphicImage id="removeFilterubid12" alt="Filter"
-						value="/images/buttons/reload.gif" />
-				</h:commandLink>
-			</h:panelGroup>
-		</h:panelGrid>
+		<h:commandLink id="removeFilterubid11" action="#{Form.user.removeFilter}" title="#{msgs.removeFilter}" style="margin-left:5px">
+			<h:graphicImage id="removeFilterubid12" alt="Filter" value="/images/buttons/reload.gif" />
+		</h:commandLink>
+	</h:panelGroup>
+</h:panelGrid>
 -->
 
 

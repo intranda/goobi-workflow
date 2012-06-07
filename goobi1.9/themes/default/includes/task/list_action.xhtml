@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://myfaces.apache.org/sandbox">
 
 	<composite:interface>
 	</composite:interface>
@@ -65,8 +66,7 @@
 								<h:outputText id="calcNumber"
 									value="#{AktuelleSchritteForm.allImages}" />
 
-								<h:commandLink
-									action="#{AktuelleSchritteForm.calcHomeImages}">
+								<h:commandLink action="#{AktuelleSchritteForm.calcHomeImages}">
 									<h:graphicImage value="/newpages/images/reload.gif"
 										style="margin-right:4px" rendered="#{item.selected}" />
 								</h:commandLink>
@@ -74,18 +74,21 @@
 							</h:panelGrid></td>
 					</tr>
 				</h:panelGroup>
-				<!-- 
 				<tr valign="top">
-					<td class="eingabeBoxen_row2" colspan="2"><h:panelGroup
+					<td class="eingabeBoxen_row2" colspan="2" ><h:panelGroup
 							id="viewgroup">
-							<jd:hideableController for="changeView" id="viewswitcher"
-								title="#{msgs.anzeigeAnpassen}">
+
+							<h:commandLink id="expandbutton">
 								<h:graphicImage value="/newpages/images/buttons/view3.gif"
 									style="margin-left:5px;margin-right:8px;vertical-align:middle" />
 								<h:outputText value="#{msgs.anzeigeAnpassen}" />
-							</jd:hideableController>
+								<s:effectToggle event="click" forId="possibleActions"
+									mode="blind" appendJs="return false;" />
 
-							<jd:hideableArea id="changeView" saveState="view">
+								<f:ajax render="expandbutton" />
+							</h:commandLink>
+
+							<x:div id="possibleActions" style="display:none">
 								<h:panelGrid columns="2" style="margin-left:40px">
 									<h:outputText value="#{msgs.auswahlboxen}" rendered="#{false}" />
 									<h:selectBooleanCheckbox rendered="#{false}"
@@ -110,13 +113,14 @@
 										value="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
 								</h:panelGrid>
 								<h:commandLink action="#{NavigationForm.Reload}"
-									style="margin-left:44px" title="#{msgs.uebernehmen}">
+									style="margin-left:44px; margin-bottom:10px" title="#{msgs.uebernehmen}">
 									<h:outputText value="#{msgs.uebernehmen}" />
 								</h:commandLink>
-							</jd:hideableArea>
+								
+							</x:div>
+
 						</h:panelGroup></td>
 				</tr>
- -->
 
 
 			</table>
