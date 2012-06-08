@@ -542,8 +542,6 @@
 						action="#{AktuelleSchritteForm.BatchesEdit}"
 						rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}"
 						title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-
-
 						<h:graphicImage value="/newpages/images/buttons/admin3c.gif" />
 						<x:updateActionListener property="#{AktuelleSchritteForm.step}"
 							value="#{item}" />
