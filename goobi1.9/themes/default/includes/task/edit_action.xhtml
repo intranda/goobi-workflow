@@ -60,8 +60,9 @@
 				</table>
 			</h:panelGroup>
 			<!-- ++++++++++++++++     // Import      ++++++++++++++++ -->
-			
-			<h:form id="actionform" rendered="#{AktuelleSchritteForm.modusBearbeiten==''}">
+
+			<h:form id="actionform"
+				rendered="#{AktuelleSchritteForm.modusBearbeiten==''}">
 				<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
 				<table cellpadding="3" cellspacing="0" width="100%"
 					class="eingabeBoxen" style="margin-top: 20px">
@@ -248,65 +249,68 @@
 									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
 								</h:commandLink>
 
-								<!-- Schritt zurückgeben an vorherige Station für Korrekturzwecke 
-								<h:panelGroup>
-									<jd:hideableController for="korrektur" id="korrekturswitcher"
-										title="#{msgs.korrekturmeldungAnVorherigeStationSenden}">
-										<h:graphicImage
-											value="/newpages/images/buttons/step_back_20px.gif"
-											style="margin-right:3px;vertical-align:middle" />
-										<h:outputText
-											value="#{msgs.korrekturmeldungAnVorherigeStationSenden}" />
-									</jd:hideableController>
+								<!-- Schritt zurückgeben an vorherige Station für Korrekturzwecke -->
+								<h:commandLink id="correctionbutton">
+									<h:graphicImage
+										value="/newpages/images/buttons/step_back_20px.gif"
+										style="margin-right:3px;vertical-align:middle" />
+									<h:outputText
+										value="#{msgs.korrekturmeldungAnVorherigeStationSenden}" />
+									<s:effectToggle event="click" forId="correction" mode="blind"
+										appendJs="return false;" />
 
-									<jd:hideableArea id="korrektur" saveState="view">
-										<h:panelGrid columns="2" style="margin-left:40px;" id="grid3"
-											rowClasses="top"
-											columnClasses="standardTable_Column,standardTable_ColumnRight">
-											<h:outputText value="#{msgs.zurueckZuArbeitsschritt}" />
-											<h:selectOneMenu style="width:350px"
-												value="#{AktuelleSchritteForm.myProblemID}">
-												<si:selectItems
-													value="#{AktuelleSchritteForm.previousStepsForProblemReporting}"
-													var="step1" itemLabel="#{step1.titelMitBenutzername}"
-													itemValue="#{step1.id}" />
-											</h:selectOneMenu>
-											<h:outputText value="#{msgs.bemerkung}" />
-											<h:inputTextarea style="width:350px;height:80px"
-												value="#{AktuelleSchritteForm.problemMessage}" />
-											<h:outputText value="" />
-											<h:commandLink id="action13"
-												action="#{AktuelleSchritteForm.ReportProblem}"
-												title="#{msgs.korrekturmeldungSenden}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
-												<h:outputText value="#{msgs.korrekturmeldungSenden}" />
-											</h:commandLink>
-										</h:panelGrid>
-									</jd:hideableArea>
-								</h:panelGroup>
-								-->
+									<f:ajax render="correctionbutton" />
+								</h:commandLink>
+
+								<x:div id="correction" style="display:none">
+									<h:panelGrid columns="2" style="margin-left:40px;" id="grid3"
+										rowClasses="top"
+										columnClasses="standardTable_Column,standardTable_ColumnRight">
+										<h:outputText value="#{msgs.zurueckZuArbeitsschritt}" />
+										<h:selectOneMenu style="width:350px"
+											value="#{AktuelleSchritteForm.myProblemID}">
+											<f:selectItems
+												value="#{AktuelleSchritteForm.previousStepsForProblemReporting}"
+												var="step1" itemLabel="#{step1.titelMitBenutzername}"
+												itemValue="#{step1.id}" />
+										</h:selectOneMenu>
+										<h:outputText value="#{msgs.bemerkung}" />
+										<h:inputTextarea style="width:350px;height:80px"
+											value="#{AktuelleSchritteForm.problemMessage}" />
+										<h:outputText value="" />
+										<h:commandLink id="action13"
+											action="#{AktuelleSchritteForm.ReportProblem}"
+											title="#{msgs.korrekturmeldungSenden}"
+											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return">
+											<h:outputText value="#{msgs.korrekturmeldungSenden}" />
+										</h:commandLink>
+									</h:panelGrid>
+								</x:div>
 
 								<!-- Schritt weitergeben an nachfolgende Station für KorrekturBehobenZwecke -->
 								<h:panelGroup
 									rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
-									<!-- 
-									<jd:hideableController for="solution" id="solutionswitcher"
-										title="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}">
+
+									<h:commandLink id="solvebutton">
 										<h:graphicImage
 											value="/newpages/images/buttons/step_for_20px.gif"
 											style="margin-right:3px;vertical-align:middle" />
 										<h:outputText
 											value="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}" />
-									</jd:hideableController>
+										<s:effectToggle event="click" forId="solve" mode="blind"
+											appendJs="return false;" />
 
-									<jd:hideableArea id="solution" saveState="view">
+										<f:ajax render="solvebutton" />
+									</h:commandLink>
+
+									<x:div id="solve" style="display:none">
 										<h:panelGrid columns="2" style="margin-left:40px;"
 											rowClasses="top" id="grid1"
 											columnClasses="standardTable_Column,standardTable_ColumnRight">
 											<h:outputText value="#{msgs.weiterZuArbeitsschritt}" />
 											<h:selectOneMenu style="width:350px" id="select1"
 												value="#{AktuelleSchritteForm.mySolutionID}">
-												<si:selectItems
+												<f:selectItems
 													value="#{AktuelleSchritteForm.nextStepsForProblemSolution}"
 													var="step2" itemLabel="#{step2.titelMitBenutzername}"
 													itemValue="#{step2.id}" />
@@ -323,8 +327,8 @@
 													value="#{msgs.meldungUeberProblemloesungSenden}" />
 											</h:commandLink>
 										</h:panelGrid>
-									</jd:hideableArea>
-									 -->
+									</x:div>
+
 								</h:panelGroup>
 
 								<!-- Abschliessen-Schaltknopf -->
