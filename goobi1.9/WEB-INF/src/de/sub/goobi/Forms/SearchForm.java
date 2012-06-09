@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
@@ -50,6 +53,8 @@ import de.sub.goobi.Beans.Werkstueckeigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 
+@ManagedBean(name="SearchForm") 
+@RequestScoped
 public class SearchForm {
 
 	private List<String> projects = new ArrayList<String>(); // proj:

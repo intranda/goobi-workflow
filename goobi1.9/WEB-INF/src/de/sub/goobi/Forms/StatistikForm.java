@@ -33,6 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -46,7 +50,8 @@ import de.sub.goobi.Persistence.SchrittDAO;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
-
+@ManagedBean(name="StatistikForm") 
+@ApplicationScoped
 public class StatistikForm {
 	private static final Logger myLogger = Logger.getLogger(StatistikForm.class);
 	Calendar cal = new GregorianCalendar();

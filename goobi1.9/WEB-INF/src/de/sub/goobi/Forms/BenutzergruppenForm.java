@@ -28,6 +28,10 @@ package de.sub.goobi.Forms;
  */
 import java.util.HashSet;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -41,6 +45,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="BenutzergruppenForm") 
+@SessionScoped
 public class BenutzergruppenForm extends BasisForm {
 	private static final long serialVersionUID = 8051160917458068675L;
 	private Benutzergruppe myBenutzergruppe = new Benutzergruppe();
@@ -48,13 +54,13 @@ public class BenutzergruppenForm extends BasisForm {
 
 	public String Neu() {
 		this.myBenutzergruppe = new Benutzergruppe();
-		return "BenutzergruppenBearbeiten";
+		return "usergroup_edit";
 	}
 
 	public String Speichern() {
 		try {
 			this.dao.save(this.myBenutzergruppe);
-			return "BenutzergruppenAlle";
+			return "usergroup_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
 			return "";
@@ -80,7 +86,7 @@ public class BenutzergruppenForm extends BasisForm {
 			Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
 			return "";
 		}
-		return "BenutzergruppenAlle";
+		return "usergroup_all";
 	}
 
 	public String FilterKein() {
@@ -96,7 +102,7 @@ public class BenutzergruppenForm extends BasisForm {
 			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
 			return "";
 		}
-		return "BenutzergruppenAlle";
+		return "usergroup_all";
 	}
 
 	public String FilterKeinMitZurueck() {

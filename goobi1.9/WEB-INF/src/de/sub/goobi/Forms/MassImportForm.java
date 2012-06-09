@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -71,6 +73,8 @@ import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 
 // TODO FIXME alle Meldungen durch  messages-Meldungen ersetzen
+@ManagedBean(name="MassImportForm") 
+@SessionScoped
 public class MassImportForm {
 	private static final Logger logger = Logger.getLogger(MassImportForm.class);
 	private Prozess template;

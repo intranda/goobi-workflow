@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+		<table cellpadding="3" cellspacing="0" width="100%"
+			class="main_statistikboxen">
+
+			<tr>
+				<td class="main_statistikboxen_row1"><h:outputText
+						value="#{msgs.eigenschaften}" /></td>
+			</tr>
+
+			<tr>
+				<td class="main_statistikboxen_row2">
+
+					<table border="0" width="90%" cellpadding="2">
+						<tr valign="top">
+							<td width="150"><h:outputText value="#{msgs.titel}:" /></td>
+							<td><h:outputText value="#{item.titelLokalisiert}" /></td>
+						</tr>
+						<h:panelGroup rendered="false">
+							<tr>
+								<td width="150"><h:outputText value="#{msgs.id}:" /></td>
+								<td><h:outputText value="#{item.id}" /></td>
+							</tr>
+						</h:panelGroup>
+						<tr>
+							<td width="150"><h:outputText value="#{msgs.prioritaet}:" />
+							</td>
+							<td><h:outputText value="#{item.prioritaet}" /></td>
+						</tr>
+						<h:panelGroup
+							rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+							<tr>
+								<td width="150"><h:outputText
+										value="#{msgs.bearbeitungsbeginn}:" /></td>
+								<td><h:outputText
+										value="#{item.bearbeitungsbeginnAsFormattedString}" /></td>
+							</tr>
+						</h:panelGroup>
+						<h:panelGroup
+								rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+						
+						<tr>
+							<td width="150"><h:outputText
+									value="#{msgs.zuletztBearbeitet}:" /></td>
+							<td><h:outputText
+									value="#{item.bearbeitungszeitpunktAsFormattedString}" /></td>
+						</tr>
+						</h:panelGroup>
+						<h:panelGroup
+							rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}">
+						
+						<tr>
+							<td width="150"><h:outputText
+									value="#{msgs.letzteAktualisierungDurch}:" /></td>
+							<td><h:outputText
+									value="#{item.bearbeitungsbenutzer.nachVorname}" /></td>
+						</tr>
+						</h:panelGroup>
+						<tr>
+							<td width="150"><h:outputText
+									value="#{msgs.aktualisierungstyp}:" /></td>
+							<td><h:outputText value="#{item.editTypeEnum.title}" /></td>
+						</tr>
+						<x:dataList var="intern" style="font-weight: normal"
+							rendered="#{item.eigenschaftenSize!=0}"
+							value="#{item.eigenschaftenList}" layout="ordered list"
+							rowCountVar="rowCount" rowIndexVar="rowIndex">
+
+							<h:panelGroup rendered="#{item.bearbeitungsbenutzer.id !=0}">
+								<tr>
+									<td width="150"><h:outputText value="#{intern.titel}:" />
+									</td>
+									<td><h:outputText value="#{intern.wert}" /></td>
+								</tr>
+							</h:panelGroup>
+						</x:dataList>
+					</table>
+				</td>
+			</tr>
+
+		</table>
+	</composite:implementation>
+
+</ui:composition>
+
+

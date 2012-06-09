@@ -28,6 +28,8 @@ package de.sub.goobi.Forms;
  */
 import java.util.Locale;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import de.sub.goobi.helper.Helper;
@@ -36,54 +38,16 @@ import de.sub.goobi.helper.Helper;
  * Klasse SpracheForm für die Umstellung der Sprache aus dem 
  * laufenden Servlet
  */
+@ManagedBean(name="SpracheForm") 
+@SessionScoped
 public class SpracheForm {
-   private Locale locale;
+	private Locale locale = Locale.GERMAN;
 
-   
-
-   public SpracheForm() {
-	   while (FacesContext.getCurrentInstance().getApplication().getSupportedLocales().hasNext()){
-		   this.locale = (Locale) FacesContext.getCurrentInstance().getApplication().getSupportedLocales().next();
-		   break;
-	   }
-//      locale = Locale.GERMANY;
-      FacesContext.getCurrentInstance().getViewRoot().setLocale(this.locale);
-      Helper.loadLanguageBundle();
-   }
-
-   
-
-   /**
-    * ermitteln auf welche Sprache umgestellt werden soll
-    * 
-    * @return Navigationsanweisung "null" als String - daher ein Reload der gleichen Seite mit neuer Sprache
-    */
-   public String SpracheUmschalten() {
-//      Helper help = new Helper();
-      String aktuelleSprache = Helper.getRequestParameter("locale");
-
-      if ("en".equals(aktuelleSprache)) {
-		this.locale = Locale.UK;
+	public String changeLocale(String inLocale) {
+		locale = new Locale(inLocale);
+		FacesContext.getCurrentInstance().getViewRoot().setLocale(locale);
+		return "";
 	}
-
-      if ("de".equals(aktuelleSprache)) {
-		this.locale = Locale.GERMANY;
-	}
-
-      if ("ru".equals(aktuelleSprache)) {
-		this.locale = new Locale("ru", "RU");
-	}
-
-		if ("es".equals(aktuelleSprache)) {
-			this.locale = new Locale("es");
-		}
-		
-      FacesContext.getCurrentInstance().getViewRoot().setLocale(this.locale);
-      Helper.loadLanguageBundle();
-      return Helper.getRequestParameter("ziel");
-   }
-
-   
 
    public Locale getLocale() {
       return this.locale;

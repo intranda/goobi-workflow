@@ -87,7 +87,7 @@ public class Helper implements Serializable, Observer {
 	private String myMetadatenVerzeichnis;
 	private String myConfigVerzeichnis;
 	static ResourceBundle bundle;
-	static ResourceBundle localBundle;
+//	static ResourceBundle localBundle;
 
 	/**
 	 * Ermitteln eines bestimmten Paramters des Requests
@@ -391,50 +391,17 @@ public class Helper implements Serializable, Observer {
 		callShell(command);
 	}
 
-	public static void loadLanguageBundle() {
+	public static void loadResourceBundle() {
 		bundle = ResourceBundle.getBundle("Messages.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-		File file = new File(ConfigMain.getParameter("localMessages", "/opt/digiverso/goobi/messages/"));
-		if (file.exists()) {
-			// Load local message bundle from file system only if file exists;
-			// if value not exists in bundle, use default bundle from classpath
-
-			try {
-				final URL resourceURL = file.toURI().toURL();
-				URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
-					@Override
-					public URLClassLoader run() {
-						return new URLClassLoader(new URL[] { resourceURL });
-					}
-				});
-				localBundle = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale(), urlLoader);
-			} catch (Exception e) {
-			}
-		}
-
 	}
-
-	public static String getTranslation(String dbTitel) {
-		// running instance of ResourceBundle doesn't respond on user language
-		// changes, workaround by instanciating it every time
-		// SprachbundleLaden();
-
+	
+	public static String getTranslation(String text) {
 		try {
-			if (localBundle != null) {
-				if (localBundle.containsKey(dbTitel)) {
-					String trans = localBundle.getString(dbTitel);
-					return trans;
-				}
-				if (localBundle.containsKey(dbTitel.toLowerCase())) {
-					return localBundle.getString(dbTitel.toLowerCase());
-				}
-			}
-		} catch (RuntimeException e) {
-		}
-		try {
-			String msg = bundle.getString(dbTitel);
+			loadResourceBundle();
+			String msg = bundle.getString(text);
 			return msg;
 		} catch (RuntimeException e) {
-			return dbTitel;
+			return text;
 		}
 	}
 

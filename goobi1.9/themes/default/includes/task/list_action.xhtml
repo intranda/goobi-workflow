@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://myfaces.apache.org/sandbox">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
+		<h:panelGroup rendered="#{AktuelleSchritteForm.page.totalResults > 0}">
+
+			<table cellpadding="3" cellspacing="0" width="100%"
+				class="eingabeBoxen" style="margin-top: 20px">
+				<tr>
+					<td class="eingabeBoxen_row1" colspan="2"><h:outputText
+							value="#{msgs.moeglicheAktionen}" /></td>
+				</tr>
+				<h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload}">
+
+					<tr valign="top">
+						<td class="eingabeBoxen_row2"><h:panelGrid columns="1">
+
+								<!-- Upload-Schaltknopf -->
+								<h:commandLink
+									action="#{AktuelleSchritteForm.UploadFromHomeAlle}"
+									title="#{msgs.verzeichnisFertigHochladen}"
+									onclick="if (!confirm('#{msgs.upload}?')) return">
+									<h:graphicImage value="/newpages/images/buttons/load_up1.gif"
+										style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
+								</h:commandLink>
+
+								<!-- Download-Schaltknopf für Page-->
+								<h:commandLink
+									action="#{AktuelleSchritteForm.DownloadToHomePage}"
+									title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
+									onclick="if (!confirm('#{msgs.download}?')) return">
+									<h:graphicImage value="/newpages/images/buttons/load_down1.gif"
+										style="margin-right:3px;vertical-align:middle" />
+									<h:outputText
+										value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
+								</h:commandLink>
+
+								<!-- Download-Schaltknopf für gesamtes Trefferset -->
+								<h:commandLink
+									action="#{AktuelleSchritteForm.DownloadToHomeHits}"
+									title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
+									onclick="if (!confirm('#{msgs.download}?')) return">
+									<h:graphicImage value="/newpages/images/buttons/load_down1.gif"
+										style="margin-right:3px;vertical-align:middle" />
+									<h:outputText
+										value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
+								</h:commandLink>
+
+							</h:panelGrid></td>
+						<td class="eingabeBoxen_row2" align="right"><h:panelGrid
+								columns="3" styleClass="text_light">
+								<!-- Anzahl der Images aller Treffer -->
+								<h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
+								<h:outputText id="calcNumber"
+									value="#{AktuelleSchritteForm.allImages}" />
+
+								<h:commandLink action="#{AktuelleSchritteForm.calcHomeImages}">
+									<h:graphicImage value="/newpages/images/reload.gif"
+										style="margin-right:4px" rendered="#{item.selected}" />
+								</h:commandLink>
+
+							</h:panelGrid></td>
+					</tr>
+				</h:panelGroup>
+				<tr valign="top">
+					<td class="eingabeBoxen_row2" colspan="2" ><h:panelGroup
+							id="viewgroup">
+
+							<h:commandLink id="expandbutton">
+								<h:graphicImage value="/newpages/images/buttons/view3.gif"
+									style="margin-left:5px;margin-right:8px;vertical-align:middle" />
+								<h:outputText value="#{msgs.anzeigeAnpassen}" />
+								<s:effectToggle event="click" forId="possibleActions"
+									mode="blind" appendJs="return false;" />
+
+								<f:ajax render="expandbutton" />
+							</h:commandLink>
+
+							<x:div id="possibleActions" style="display:none">
+								<h:panelGrid columns="2" style="margin-left:40px">
+									<h:outputText value="#{msgs.auswahlboxen}" rendered="#{false}" />
+									<h:selectBooleanCheckbox rendered="#{false}"
+										value="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}" />
+									<h:outputText value="#{msgs.id}" />
+									<h:selectBooleanCheckbox
+										value="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" />
+									<h:outputText value="#{msgs.batch}" />
+									<h:selectBooleanCheckbox
+										value="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" />
+
+									<h:outputText value="#{msgs.module}" />
+									<h:selectBooleanCheckbox
+										value="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
+
+									<h:outputText value="#{msgs.vorgangsdatum}" />
+									<h:selectBooleanCheckbox
+										value="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" />
+
+									<h:outputText value="#{msgs.sperrungen}" />
+									<h:selectBooleanCheckbox
+										value="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
+								</h:panelGrid>
+								<h:commandLink action="#{NavigationForm.Reload}"
+									style="margin-left:44px; margin-bottom:10px" title="#{msgs.uebernehmen}">
+									<h:outputText value="#{msgs.uebernehmen}" />
+								</h:commandLink>
+								
+							</x:div>
+
+						</h:panelGroup></td>
+				</tr>
+
+
+			</table>
+		</h:panelGroup>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

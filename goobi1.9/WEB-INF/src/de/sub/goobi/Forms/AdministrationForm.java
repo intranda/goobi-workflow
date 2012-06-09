@@ -41,6 +41,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -80,6 +85,8 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
+@ManagedBean(name="AdministrationForm") 
+@ViewScoped
 public class AdministrationForm implements Serializable {
 	private static final long serialVersionUID = 5648439270064158243L;
 	private static final Logger myLogger = Logger.getLogger(AdministrationForm.class);

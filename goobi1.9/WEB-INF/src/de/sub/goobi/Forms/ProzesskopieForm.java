@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
@@ -98,6 +100,8 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
+@ManagedBean(name="ProzesskopieForm") 
+@SessionScoped
 public class ProzesskopieForm {
 	private static final Logger myLogger = Logger.getLogger(ProzesskopieForm.class);
 	private Helper help = new Helper();

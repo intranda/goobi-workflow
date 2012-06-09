@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:m="http://jsftutorials.net/htmLib">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Script-Type" content="type" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta name="date" content="1970-01-01T00:00:00+01:00" />
+	<link rel="shortcut icon" href="favicon.ico" />
+
+	<x:stylesheet media="screen" path="/themes/default/css/default.css" />
+	<x:stylesheet media="print" path="/themes/default/css/print.css" />
+
+	<title><h:outputText
+			value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
+
+</h:head>
+
+<ui:insert name="metadata" />
+
+<h:body>
+	<f:view locale="#{SpracheForm.locale}">
+
+		<table class="headTable" cellspacing="0" cellpadding="0"
+			style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
+			<ui:include src="inc_head.xhtml" />
+		</table>
+
+		<table cellspacing="5" cellpadding="0" class="layoutTable"
+			align="center">
+
+			<tr>
+
+				<ui:include src="inc_navigation.xhtml" />
+
+				<td valign="top" class="layoutInhalt"><h:panelGrid id="id2"
+						columns="1" styleClass="layoutInhaltKopf">
+						<h:panelGroup id="id3">
+							<h:form id="useform">
+								<ui:insert name="breadcrumb" />
+							</h:form>
+						</h:panelGroup>
+					</h:panelGrid>
+
+					<div style="margin:15px">
+						<h3>
+							<ui:insert name="title" />
+						</h3>
+
+						<x:messages globalOnly="true" errorClass="text_red"
+							infoClass="text_blue" showDetail="true" showSummary="true"
+							tooltip="true" />
+
+						<ui:insert name="content" />
+
+					</div></td>
+			</tr>
+			<ui:include src="inc_footer.xhtml" />
+		</table>
+
+	</f:view>
+</h:body>
+</html>

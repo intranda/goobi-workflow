@@ -487,6 +487,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 		return selectableList;
 	}
 
+	
 	public void setSelectedSteps(List<String> inSteps) {
 		this.isDirty = true;
 		if (inSteps.contains(Helper.getTranslation("selectAll"))) {

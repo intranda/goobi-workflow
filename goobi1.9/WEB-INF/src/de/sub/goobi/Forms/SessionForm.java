@@ -33,6 +33,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -45,6 +48,8 @@ import de.sub.goobi.Beans.Benutzer;
  * @author Steffen Hankiewicz
  * @version 1.00 - 16.01.2005
  */
+@ManagedBean(name="SessionForm") 
+@ApplicationScoped
 public class SessionForm {
    //   private static final Logger logger = Logger.getLogger(SessionForm.class);
    private int sessionZeit = 3600 * 2; // 2 Stunden
@@ -240,7 +245,9 @@ public void alteSessionsDesSelbenBenutzersAufraeumen(HttpSession inSession, Benu
       return this.bitteAusloggen;
    }
 
-   
+   public String sendLogoutMessage(){
+	   return "admin";
+   }
 
    public void setBitteAusloggen(String bitteAusloggen) {
       this.bitteAusloggen = bitteAusloggen;

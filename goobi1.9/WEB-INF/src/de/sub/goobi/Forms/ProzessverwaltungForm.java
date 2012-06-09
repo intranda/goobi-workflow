@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
@@ -118,6 +120,8 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 
+@ManagedBean(name="ProzessverwaltungForm") 
+@SessionScoped
 public class ProzessverwaltungForm extends BasisForm {
 	private static final long serialVersionUID = 2838270843176821134L;
 	private static final Logger logger = Logger.getLogger(ProzessverwaltungForm.class);

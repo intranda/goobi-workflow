@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +54,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="HelperForm") 
+@SessionScoped
 public class HelperForm {
 	// Helper help = new Helper();
 
@@ -187,24 +191,24 @@ public class HelperForm {
 	}
 	
 
-	public List<String> getFileFormats() {
-		ArrayList<String> ffs = new ArrayList<String>();
+	
+	public List<SelectItem> getFileFormats() {
+		ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
 		for (MetadataFormat ffh : MetadataFormat.values()) {
 			if (!ffh.equals(MetadataFormat.RDF)) {
-				ffs.add(ffh.getName());
+				ffs.add(new SelectItem(ffh.getName(), null));
 			}
 		}
 		return ffs;
 	}
 
-	public List<String> getFileFormatsInternalOnly() {
-		ArrayList<String> ffs = new ArrayList<String>();
+	public List<SelectItem> getFileFormatsInternalOnly() {
+		ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
 		for (MetadataFormat ffh : MetadataFormat.values()) {
-			if (ffh.isUsableForInternal()) {
+			if (ffh.isUsableForInternal())
 				if (!ffh.equals(MetadataFormat.RDF)) {
-					ffs.add(ffh.getName());
+					ffs.add(new SelectItem(ffh.getName(), null));
 				}
-			}
 		}
 		return ffs;
 	}
