@@ -11,6 +11,7 @@
 	</composite:interface>
 
 	<composite:implementation>
+	<br/>
 		<h:form id="propform2"
 			rendered="#{AktuelleSchritteForm.propertyListSize>0}">
 
@@ -20,7 +21,7 @@
 				<table cellspacing="1px" cellpadding="1px" width="100%"
 					class="standardTable">
 
-					<thead styleClass="standardTable_Header">
+					<thead class="standardTable_Header">
 						<th><h:outputText value="#{msgs.titel}" /></th>
 						<th><h:outputText value="#{msgs.wert}" /></th>
 						<th><h:outputText value="#{msgs.auswahl}" /></th>
@@ -73,9 +74,10 @@
 								<tr class="standardTable_Row1">
 									<td><h:outputText value="#{process_item.name}" /></td>
 									<td><h:outputText value="#{process_item.value}" /></td>
+									<h:panelGroup rendered="#{propInd ==0}">
+									
 									<td class="standardTable_ColumnCentered"
-										rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}"
-										rendered="#{propInd ==0}"><h:panelGroup
+										rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}"><h:panelGroup
 											rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 											<h:commandLink action="task_edit" title="#{msgs.bearbeiten}">
 												<h:graphicImage value="/newpages/images/buttons/edit.gif" />
@@ -90,7 +92,7 @@
 												<a4j:support event="onchange" reRender="editBatch" />
 												-->
 											</h:commandLink>
-										</h:panelGroup></td>
+										</h:panelGroup></td></h:panelGroup>
 								</tr>
 							</h:panelGroup>
 						</x:dataList>
@@ -139,38 +141,49 @@
 													<f:validateLongRange minimum="0" />
 												</h:inputText>
 											</h:panelGroup> 
-											<!--  SelectOneMenu 
+											<!--  SelectOneMenu -->
 											<h:panelGroup id="prpvw15_2"
 												rendered="#{(myprocess_item.type.name == 'list')}">
 												<h:selectOneMenu value="#{myprocess_item.value}"
 													style="width: 500px;margin-right:15px" id="prpvw15_2_1">
-													<si:selectItems id="prpvw15_2_2"
+													<f:selectItems id="prpvw15_2_2"
 														value="#{myprocess_item.possibleValues}"
 														var="myprocess_items" itemLabel="#{myprocess_items}"
 														itemValue="#{myprocess_items}" />
 												</h:selectOneMenu>
 												</h:panelGroup>
-											--> 
-											 <!--  SelectManyMenu 
+											 
+											 <!--  SelectManyMenu --> 
 											<h:panelGroup id="prpvw15_3"
 												rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
 												<h:selectManyListbox id="prpvw15_3_1"
 													style="width: 500px;margin-right:15px"
 													value="#{myprocess_item.valueList}" size="5">
-													<si:selectItems id="prpvw15_3_2"
+													<f:selectItems id="prpvw15_3_2"
 														value="#{myprocess_item.possibleValues}"
 														var="myprocess_items" itemLabel="#{myprocess_items}"
 														itemValue="#{myprocess_items}" />
 												</h:selectManyListbox>
 											</h:panelGroup>
-											--> 
+											
 											 <!--  Boolean --> 
 											 <h:panelGroup id="prpvw15_4"
 												rendered="#{(myprocess_item.type.name == 'boolean')}">
 												<h:selectBooleanCheckbox
 													value="#{myprocess_item.booleanValue}" />
 											</h:panelGroup> 
-											<!--  Date  
+											<!--  Date --> 
+											<h:panelGroup id="prpvw15_5"
+												rendered="#{(myprocess_item.type.name == 'date')}">
+												<x:inputCalendar id="prpvw15_5_1" value="#{myprocess_item.dateValue}" style="width:110px" renderAsPopup="true"
+						renderPopupButtonAsImage="true" popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}" 
+						styleClass="projekteBearbeiten"
+						imageLocation="/newpages/images/calendarImages"
+						popupButtonImageUrl="/newpages/images/calendarImages/calendar.gif">
+												</x:inputCalendar>
+												
+											</h:panelGroup>
+												<!--  Date  
 											<h:panelGroup id="prpvw15_5"
 												rendered="#{(myprocess_item.type.name == 'date')}">
 												<rich:calendar id="prpvw15_5_1"

@@ -29,8 +29,12 @@ package org.goobi.production.properties;
  */
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -159,6 +163,20 @@ public class ProcessProperty implements IProperty, Serializable {
 		this.value = value;
 	}
 
+	public Date getDateValue() {
+		DateFormat formatter = new SimpleDateFormat();
+  	    try {
+			return (Date)formatter.parse(value);
+		} catch (Exception e) {
+			return new Date();
+		}  
+	}
+	
+	public void setDateValue(Date date) {
+		DateFormat formatter = new SimpleDateFormat();
+		value= formatter.format(date);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
