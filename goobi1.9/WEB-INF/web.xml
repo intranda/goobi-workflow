@@ -129,11 +129,20 @@
  -->
 
 
+ 	<servlet>
+		<description>
+        </description>
+		<display-name>Plugin Servlet</display-name>
+		<servlet-name>PluginServlet</servlet-name>
+		<servlet-class>
+			org.goobi.production.servlets.PluginServlet
+		</servlet-class>
+	</servlet>
  
 
 	<!-- goobiContentServer -->
 	
-		<servlet>
+	<servlet>
 		<description>
         </description>
 		<display-name>GoobiContentServer</display-name>
@@ -159,6 +168,11 @@
 	<servlet-mapping>
 		<servlet-name>ContentServer</servlet-name>
 		<url-pattern>/cs/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>PluginServlet</servlet-name>
+		<url-pattern>/ps</url-pattern>
 	</servlet-mapping>
 
 	<session-config>
