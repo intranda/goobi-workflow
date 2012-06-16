@@ -29,13 +29,13 @@ package org.goobi.production.enums;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
-import org.goobi.production.plugin.interfaces.IServletPlugin;
+import org.goobi.production.plugin.interfaces.IServletPlugin1;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
 public enum PluginType {
 
-	Import(1, "import", IImportPlugin.class), Step(2, "step", IStepPlugin.class), Validator(3, "validate", IValidatorPlugin.class), Command(4, "command", ICommandPlugin.class), Servlet(5, "servlet", IServletPlugin.class);
+	Import(1, "import", IImportPlugin.class), Step(2, "step", IStepPlugin.class), Validator(3, "validate", IValidatorPlugin.class), Command(4, "command", ICommandPlugin.class), Servlet(5, "servlet", IServletPlugin1.class);
 	
 	private int id;
 	private String name;
