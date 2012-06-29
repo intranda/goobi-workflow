@@ -48,6 +48,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -131,6 +132,8 @@ public class ProzesskopieForm {
 	private String atstsl = "";
 	private List<String> possibleDigitalCollection;
 	private Integer guessedImages = 0;
+	private String addToWikiField = "";
+
 
 	public final static String DIRECTORY_SUFFIX = "_tif";
 
@@ -1376,4 +1379,20 @@ public class ProzesskopieForm {
 	public Integer getImagesGuessed() {
 		return this.guessedImages;
 	}
+	
+	
+	public String getAddToWikiField() {
+		return this.addToWikiField;
+	}
+
+	public void setAddToWikiField(String addToWikiField) {
+		this.addToWikiField = addToWikiField;
+		Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
+		this.prozessVorlage.setWikifield(WikiFieldHelper.getWikiMessage("","info", message));
+		
+		
+	}
+
+	
 }

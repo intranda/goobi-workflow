@@ -106,7 +106,15 @@ private void sessionAdd(HttpSession insession) {
       if (context != null) {
          HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
          
-         map.put("address", request.getRemoteAddr());
+         String address = request.getRemoteAddr();
+         if (address.startsWith("127.0.0.1")) {
+        	 address = request.getHeader("x-forwarded-for");
+        	 if (address == null) {
+        		 address = "127.0.0.1";
+        	 }
+         }
+         map.put("address", address);
+         
          String mybrowser = request.getHeader("User-Agent");
          if (mybrowser==null) {
 			mybrowser="-";

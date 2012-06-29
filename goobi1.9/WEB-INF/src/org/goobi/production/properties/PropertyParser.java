@@ -154,11 +154,13 @@ public class PropertyParser {
 				for (int j = 0; j <= count; j++) {
 					ShowStepCondition ssc = new ShowStepCondition();
 					ssc.setName(config.getString("property(" + i + ").showStep(" + j + ")[@name]"));
-					if (ssc.getName().equals(stepTitle)) {
-						containsCurrentStepTitle = true;
-					}
 					String access = config.getString("property(" + i + ").showStep(" + j + ")[@access]");
 					ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
+					if (ssc.getName().equals(stepTitle)) {
+						containsCurrentStepTitle = true;
+						pp.setCurrentStepAccessCondition(AccessCondition.getAccessConditionByName(access));
+					}
+					
 					pp.getShowStepConditions().add(ssc);
 				}
 
@@ -166,8 +168,12 @@ public class PropertyParser {
 				if (containsCurrentStepTitle) {
 					// showProcessGroupAccessCondition
 					String groupAccess = config.getString("property(" + i + ").showProcessGroup[@access]");
-					pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
-
+					if (groupAccess != null) {
+						pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
+					} else {
+						pp.setShowProcessGroupAccessCondition(AccessCondition.WRITE);
+					}
+					
 					// validation expression
 					pp.setValidation(config.getString("property(" + i + ").validation"));
 					// type

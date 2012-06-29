@@ -1,6 +1,4 @@
-package org.goobi.production.Import;
-
-
+package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -8,7 +6,7 @@ package org.goobi.production.Import;
  * 			- http://digiverso.com 
  * 			- http://www.intranda.com
  * 
- * Copyright 2011, intranda GmbH, Göttingen
+ * Copyright 2012, intranda GmbH, Göttingen
  * 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -28,26 +26,35 @@ package org.goobi.production.Import;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import org.hibernate.Session;
 
-public class DocstructElement {
-	private String docStruct;
-	private int order;
+import de.sub.goobi.Beans.Prozess;
+import de.sub.goobi.Beans.Schritt;
+import de.sub.goobi.Persistence.ProzessDAO;
+import de.sub.goobi.Persistence.SchrittDAO;
+import de.sub.goobi.helper.exceptions.DAOException;
+
+// FIXME remove this class, find a better way to update process status in hibernate
+public class RefreshObject {
+	private static ProzessDAO dao = new ProzessDAO();
+	private static SchrittDAO sdao = new SchrittDAO();
 	
-	public DocstructElement(String docStruct,  int order) {
-		this.docStruct = docStruct;
-		this.order = order;
+	public static void refreshProcess(int processID) {
+		try {
+			Session session = Helper.getHibernateSession();
+			Prozess o = dao.load(processID);
+			session.refresh(o);
+		} catch (DAOException e) {
+		}
 	}
 	
-	public String getDocStruct() {
-		return docStruct;
+	public static void refreshStep(int stepID) {
+		try {
+			Session session = Helper.getHibernateSession();
+			Schritt o = sdao.load(stepID);
+			session.refresh(o);
+		} catch (DAOException e) {
+		}
 	}
-	public void setDocStruct(String docStruct) {
-		this.docStruct = docStruct;
-	}
-	public int getOrder() {
-		return order;
-	}
-	public void setOrder(int order) {
-		this.order = order;
-	}
+
 }

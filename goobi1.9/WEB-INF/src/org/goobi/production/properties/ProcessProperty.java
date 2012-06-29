@@ -33,6 +33,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +56,8 @@ public class ProcessProperty implements IProperty, Serializable {
 	private List<ShowStepCondition> showStepConditions;
 	private AccessCondition showProcessGroupAccessCondition;
 	private Prozesseigenschaft prozesseigenschaft;
-
+	private AccessCondition currentStepAccessCondition;
+	
 	public ProcessProperty() {
 		this.possibleValues = new ArrayList<String>();
 		this.projects = new ArrayList<String>();
@@ -162,20 +164,6 @@ public class ProcessProperty implements IProperty, Serializable {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-	public Date getDateValue() {
-		DateFormat formatter = new SimpleDateFormat();
-  	    try {
-			return (Date)formatter.parse(value);
-		} catch (Exception e) {
-			return new Date();
-		}  
-	}
-	
-	public void setDateValue(Date date) {
-		DateFormat formatter = new SimpleDateFormat();
-		value= formatter.format(date);
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -197,6 +185,28 @@ public class ProcessProperty implements IProperty, Serializable {
 		this.possibleValues = possibleValues;
 	}
 
+	
+	public void setDateValue(Date inDate) {
+		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		value= format.format(inDate);
+	}
+
+	
+	public Date getDateValue() {
+		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(format.parse(value));
+			cal.set(Calendar.HOUR, 12);
+			return cal.getTime();
+		} catch (ParseException e) {
+			return new Date();
+		} catch (NullPointerException e) {
+			return new Date();
+		}
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -399,5 +409,13 @@ public class ProcessProperty implements IProperty, Serializable {
 			return true;
 		}
 		return false;
+	}
+
+	public AccessCondition getCurrentStepAccessCondition() {
+		return currentStepAccessCondition;
+	}
+
+	public void setCurrentStepAccessCondition(AccessCondition currentStepAccessCondition) {
+		this.currentStepAccessCondition = currentStepAccessCondition;
 	}
 }
