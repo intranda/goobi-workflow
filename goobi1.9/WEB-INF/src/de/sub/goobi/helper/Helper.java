@@ -45,6 +45,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -61,6 +65,7 @@ import org.jdom.Element;
 
 import de.sub.goobi.Beans.Benutzer;
 import de.sub.goobi.Forms.LoginForm;
+import de.sub.goobi.Forms.SpracheForm;
 import de.sub.goobi.Persistence.HibernateSessionLong;
 import de.sub.goobi.Persistence.HibernateUtilOld;
 import de.sub.goobi.config.ConfigMain;
@@ -86,8 +91,9 @@ public class Helper implements Serializable, Observer {
 
 	private String myMetadatenVerzeichnis;
 	private String myConfigVerzeichnis;
-	static ResourceBundle bundle;
-//	static ResourceBundle localBundle;
+
+	private static Map<Locale, ResourceBundle> commonMessages = new HashMap<Locale, ResourceBundle>();
+	private static Map<Locale, ResourceBundle> localMessages = new HashMap<Locale, ResourceBundle>();
 
 	/**
 	 * Ermitteln eines bestimmten Paramters des Requests
@@ -188,7 +194,7 @@ public class Helper implements Serializable, Observer {
 			if (nurInfo) {
 				myLogger.info(meldung + " " + beschreibung);
 			} else {
-//				myLogger.error(meldung + " " + beschreibung);
+				// myLogger.error(meldung + " " + beschreibung);
 			}
 			return;
 		}
@@ -196,13 +202,19 @@ public class Helper implements Serializable, Observer {
 		// context.getViewRoot().getLocale());
 		String msg = "";
 		String beschr = "";
+		Locale language = Locale.ENGLISH;
+		SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
+		if (sf != null) {
+			language = sf.getLocale();
+		}
+
 		try {
-			msg = bundle.getString(meldung);
+			msg = getString(language, meldung);
 		} catch (RuntimeException e) {
 			msg = meldung;
 		}
 		try {
-			beschr = bundle.getString(beschreibung);
+			beschr = getString(language, beschreibung);
 		} catch (RuntimeException e) {
 			beschr = beschreibung;
 		}
@@ -211,6 +223,24 @@ public class Helper implements Serializable, Observer {
 			context.addMessage(control, new FacesMessage(FacesMessage.SEVERITY_INFO, msg, beschr));
 		} else {
 			context.addMessage(control, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, beschr));
+		}
+	}
+
+	public static String getString(Locale language, String key) {
+		
+		if (localMessages.containsKey(language)) {
+			ResourceBundle languageLocal = localMessages.get(language);
+			if (languageLocal.containsKey(key))
+				return languageLocal.getString(key);
+			String lowKey = key.toLowerCase();
+			if (languageLocal.containsKey(lowKey))
+				return languageLocal.getString(lowKey);
+		}
+		try {
+
+			return commonMessages.get(language).getString(key);
+		} catch (RuntimeException irrelevant) {
+			return key;
 		}
 	}
 
@@ -391,18 +421,74 @@ public class Helper implements Serializable, Observer {
 		callShell(command);
 	}
 
-	public static void loadResourceBundle() {
-		bundle = ResourceBundle.getBundle("Messages.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-	}
-	
-	public static String getTranslation(String text) {
-		try {
-			loadResourceBundle();
-			String msg = bundle.getString(text);
-			return msg;
-		} catch (RuntimeException e) {
-			return text;
+	static {
+
+		Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
+		while (polyglot.hasNext()) {
+			Locale language = polyglot.next();
+			commonMessages.put(language, ResourceBundle.getBundle("Messages.messages", language));
+			File file = new File(ConfigMain.getParameter("localMessages", "/opt/digiverso/goobi/messages/"));
+			if (file.exists()) {
+				// Load local message bundle from file system only if file exists;
+				// if value not exists in bundle, use default bundle from classpath
+
+				try {
+					final URL resourceURL = file.toURI().toURL();
+					URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+						@Override
+						public URLClassLoader run() {
+							return new URLClassLoader(new URL[] { resourceURL });
+						}
+					});
+					ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
+					if (localBundle != null) {
+						localMessages.put(language, localBundle);
+					}
+
+				} catch (Exception e) {
+				}
+			}
 		}
+	}
+
+	public static String getTranslation(String dbTitel) {
+		// running instance of ResourceBundle doesn't respond on user language
+		// changes, workaround by instanciating it every time
+		// SprachbundleLaden();
+
+		Locale desiredLanguage = null;
+		try {
+			desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+		} catch (NullPointerException skip) {
+		}
+		if (desiredLanguage != null) {
+			return getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+		} else {
+			return getString(Locale.ENGLISH, dbTitel);
+		}
+	}
+
+	public static String getTranslation(String dbTitel, List<String> parameterList) {
+		String value = "";
+		Locale desiredLanguage = null;
+		try {
+			desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+		} catch (NullPointerException skip) {
+		}
+		if (desiredLanguage != null) {
+			value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+		} else {
+			value = getString(Locale.ENGLISH, dbTitel);
+		}
+		if (parameterList != null && parameterList.size() > 0) {
+			int parameterCount = 0;
+			for (String parameter : parameterList ) {
+				value = value.replace("{"+ parameterCount + "}", parameter);
+				parameterCount++;
+			}
+		}
+
+		return value;
 	}
 
 	/**
@@ -516,8 +602,6 @@ public class Helper implements Serializable, Observer {
 		return true;
 	}
 
-
-	
 	/**
 	 * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
 	 */
@@ -540,8 +624,6 @@ public class Helper implements Serializable, Observer {
 			inRoot.addContent(file);
 		}
 	}
-
-	
 
 	public static FilenameFilter imageNameFilter = new FilenameFilter() {
 		@Override

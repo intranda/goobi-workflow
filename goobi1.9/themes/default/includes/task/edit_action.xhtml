@@ -256,7 +256,7 @@
 										style="margin-right:3px;vertical-align:middle" />
 									<h:outputText
 										value="#{msgs.korrekturmeldungAnVorherigeStationSenden}" />
-									<s:effectToggle event="click" forId="correction" mode="blind"
+									<s:effectToggle event="click" forId="correction" duration="0.1" mode="blind"
 										appendJs="return false;" />
 
 									<f:ajax render="correctionbutton" />
@@ -297,7 +297,7 @@
 											style="margin-right:3px;vertical-align:middle" />
 										<h:outputText
 											value="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}" />
-										<s:effectToggle event="click" forId="solve" mode="blind"
+										<s:effectToggle event="click" duration="0.1" forId="solve" mode="blind"
 											appendJs="return false;" />
 
 										<f:ajax render="solvebutton" />
