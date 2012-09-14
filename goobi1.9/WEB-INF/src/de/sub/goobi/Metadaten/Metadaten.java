@@ -701,7 +701,7 @@ public class Metadaten {
 		this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
 		this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
 		try {
-			this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory())));
+			this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory(true))));
 			new ProzessDAO().save(this.myProzess);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1489,7 +1489,7 @@ public class Metadaten {
 //		}
 
 		if (!this.allTifFolders.contains(this.currentTifFolder)) {
-			this.currentTifFolder = new File(this.myProzess.getImagesTifDirectory()).getName();
+			this.currentTifFolder = new File(this.myProzess.getImagesTifDirectory(true)).getName();
 		}
 	}
 
@@ -1589,9 +1589,9 @@ public class Metadaten {
 						String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + File.separator + this.myBild;
 						myLogger.trace("tiffconverterpfad: " + tiffconverterpfad);
 						if (!new File(tiffconverterpfad).exists()) {
-							tiffconverterpfad = this.myProzess.getImagesTifDirectory() + this.myBild;
+							tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
 							Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
-									+ this.currentTifFolder + ", using image from " + new File(this.myProzess.getImagesTifDirectory()).getName());
+									+ this.currentTifFolder + ", using image from " + new File(this.myProzess.getImagesTifDirectory(true)).getName());
 						}
 						this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, this.myImageRotation);
 						myLogger.trace("scaleFile");

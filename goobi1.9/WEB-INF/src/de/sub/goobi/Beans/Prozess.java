@@ -260,7 +260,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	 * Metadaten- und ImagePfad
 	 */
 
-	public String getImagesTifDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+	public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
 		File dir = new File(getImagesDirectory());
 		DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
 		DIRECTORY_PREFIX = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
@@ -281,7 +281,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 			}
 		}
 
-		if (tifOrdner.equals("")) {
+		if (tifOrdner.equals("") && useFallBack) {
 			String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
 			if (!suffix.equals("")) {
 				String[] folderList = dir.list();
@@ -316,7 +316,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	public Boolean getTifDirectoryExists() {
 		File testMe;
 		try {
-			testMe = new File(getImagesTifDirectory());
+			testMe = new File(getImagesTifDirectory(true));
 		} catch (IOException e) {
 			return false;
 		} catch (InterruptedException e) {
@@ -336,7 +336,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 		}
 	}
 
-	public String getImagesOrigDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+	public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
 		if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
 			File dir = new File(getImagesDirectory());
 			DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
@@ -355,7 +355,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 				origOrdner = verzeichnisse[i];
 			}
 
-			if (origOrdner.equals("")) {
+			if (origOrdner.equals("") && useFallBack) {
 				String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
 				if (!suffix.equals("")) {
 					String[] folderList = dir.list();
@@ -377,7 +377,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 			}
 			return rueckgabe;
 		} else {
-			return getImagesTifDirectory();
+			return getImagesTifDirectory(useFallBack);
 		}
 	}
 
@@ -1159,7 +1159,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 		}
 
 		try {
-			String folder = this.getImagesTifDirectory();
+			String folder = this.getImagesTifDirectory(false);
 			folder = folder.substring(0, folder.lastIndexOf("_"));
 			folder = folder + "_" + methodName;
 			if (new File(folder).exists()) {

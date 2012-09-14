@@ -359,7 +359,7 @@ public class AktuelleSchritteForm extends BasisForm {
 
 				if (s.isTypImagesLesen() || s.isTypImagesSchreiben()) {
 					try {
-						new File(s.getProzess().getImagesOrigDirectory());
+						new File(s.getProzess().getImagesOrigDirectory(false));
 					} catch (Exception e1) {
 
 					}
@@ -494,7 +494,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			if (this.mySchritt.isTypImagesSchreiben()) {
 				MetadatenImagesHelper mih = new MetadatenImagesHelper(null, null);
 				try {
-					if (!mih.checkIfImagesValid(this.mySchritt.getProzess().getTitel(), this.mySchritt.getProzess().getImagesOrigDirectory())) {
+					if (!mih.checkIfImagesValid(this.mySchritt.getProzess().getTitel(), this.mySchritt.getProzess().getImagesOrigDirectory(false))) {
 						return "";
 					}
 				} catch (Exception e) {
@@ -755,7 +755,7 @@ public class AktuelleSchritteForm extends BasisForm {
 
 	public String DownloadToHome() {
 		try {
-			new File(this.mySchritt.getProzess().getImagesOrigDirectory());
+			new File(this.mySchritt.getProzess().getImagesOrigDirectory(false));
 		} catch (Exception e1) {
 
 		}
@@ -936,7 +936,7 @@ public class AktuelleSchritteForm extends BasisForm {
 					if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
 						// gesamtAnzahlImages +=
 						// myDav.getAnzahlImages(step.getProzess().getImagesOrigDirectory());
-						this.gesamtAnzahlImages += FileUtils.getNumberOfFiles(step.getProzess().getImagesOrigDirectory());
+						this.gesamtAnzahlImages += FileUtils.getNumberOfFiles(step.getProzess().getImagesOrigDirectory(false));
 					}
 				} catch (Exception e) {
 					myLogger.error(e);
