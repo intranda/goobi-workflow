@@ -75,20 +75,66 @@
 					</tr>
 				</h:panelGroup>
 				<tr valign="top">
-					<td class="eingabeBoxen_row2" colspan="2" ><h:panelGroup
+					<td class="eingabeBoxen_row2" colspan="2" >
+					
+					<h:panelGroup style="display:block"
+							id="filtergroup">
+
+							<h:commandLink id="expandbutton1">
+								<h:graphicImage value="/newpages/images/buttons/view3.gif"
+									style="margin-left:5px;margin-right:8px;vertical-align:middle" />
+								<h:outputText value="#{msgs.filterAnpassen}" />
+								<s:effectToggle event="click" duration="0.1" forId="possibleActions1"
+									mode="blind" appendJs="return false;" />
+
+								<f:ajax render="expandbutton1" />
+							</h:commandLink>
+
+							<x:div id="possibleActions1" style="display:none">
+								<h:panelGrid columns="2" style="margin-left:40px">
+									<h:outputText value="#{msgs.showAutomaticTasks}:" />
+							<h:selectBooleanCheckbox id="check3" value="#{AktuelleSchritteForm.showAutomaticTasks}" style="margin-right:40px" />
+
+
+							<h:outputText value="#{msgs.hideCorrectionTasks}:" />
+							<h:selectBooleanCheckbox id="check4" value="#{AktuelleSchritteForm.hideCorrectionTasks}" style="margin-right:40px" />
+
+
+							<h:outputText id="aslsid5" value="#{msgs.nurEigeneAufgabenAnzeigen}:" />
+							<h:selectBooleanCheckbox id="check1" value="#{AktuelleSchritteForm.nurEigeneSchritte}" style="margin-right:40px" 
+								onchange="document.getElementById('taskform:check2').checked=false; "/>
+
+							<h:outputText id="aslsid6" value="#{msgs.nurOffeneAufgabenAnzeigen}:" />
+							<h:selectBooleanCheckbox id="check2" value="#{AktuelleSchritteForm.nurOffeneSchritte}" style="margin-right:40px" 
+								onchange="document.getElementById('taskform:check1').checked=false; "
+					/>
+									
+								</h:panelGrid>
+								<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}"
+									style="margin-left:44px; margin-bottom:10px" title="#{msgs.uebernehmen}">
+									<h:outputText value="#{msgs.uebernehmen}" />
+								</h:commandLink>
+								
+							</x:div>
+
+						</h:panelGroup>
+						
+						
+						
+						<h:panelGroup
 							id="viewgroup">
 
-							<h:commandLink id="expandbutton">
+							<h:commandLink id="expandbutton2">
 								<h:graphicImage value="/newpages/images/buttons/view3.gif"
 									style="margin-left:5px;margin-right:8px;vertical-align:middle" />
 								<h:outputText value="#{msgs.anzeigeAnpassen}" />
-								<s:effectToggle event="click" duration="0.1" forId="possibleActions"
+								<s:effectToggle event="click" duration="0.1" forId="possibleActions2"
 									mode="blind" appendJs="return false;" />
 
-								<f:ajax render="expandbutton" />
+								<f:ajax render="expandbutton2" />
 							</h:commandLink>
 
-							<x:div id="possibleActions" style="display:none">
+							<x:div id="possibleActions2" style="display:none">
 								<h:panelGrid columns="2" style="margin-left:40px">
 									<h:outputText value="#{msgs.auswahlboxen}" rendered="#{false}" />
 									<h:selectBooleanCheckbox rendered="#{false}"
