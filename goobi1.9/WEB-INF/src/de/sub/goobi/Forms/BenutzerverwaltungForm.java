@@ -58,6 +58,7 @@ import de.sub.goobi.Beans.Benutzer;
 import de.sub.goobi.Beans.Benutzergruppe;
 import de.sub.goobi.Beans.LdapGruppe;
 import de.sub.goobi.Beans.Projekt;
+import de.sub.goobi.Forms.BasisForm;
 import de.sub.goobi.Persistence.BenutzerDAO;
 import de.sub.goobi.Persistence.BenutzergruppenDAO;
 import de.sub.goobi.Persistence.LdapGruppenDAO;
@@ -367,5 +368,4 @@ public class BenutzerverwaltungForm extends BasisForm {
 	public boolean getLdapUsage() {
 		return ConfigMain.getBooleanParameter("ldap_use");
 	}
-
 }
