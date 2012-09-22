@@ -147,7 +147,7 @@ public class MetadatenImagesHelper {
 
 		if (directory == null) {
 			checkIfImagesValid(inProzess.getTitel(),
-					inProzess.getImagesTifDirectory());
+					inProzess.getImagesTifDirectory(true));
 		} else {
 			checkIfImagesValid(inProzess.getTitel(),
 					inProzess.getImagesDirectory() + directory);
@@ -347,7 +347,7 @@ public class MetadatenImagesHelper {
 		if (dir.exists()) {
 			String[] dateien = dir.list(Helper.dataFilter);
 			if (dateien == null || dateien.length == 0) {
-				Helper.setFehlerMeldung("[" + title + "] No images found");
+				Helper.setFehlerMeldung("[" + title + "] No objects found");
 				return false;
 			}
 
@@ -427,7 +427,7 @@ public class MetadatenImagesHelper {
 			throws InvalidImagesException {
 		File dir;
 		try {
-			dir = new File(myProzess.getImagesTifDirectory());
+			dir = new File(myProzess.getImagesTifDirectory(true));
 			// throw new NullPointerException("wer das liest ist doof");
 		} catch (Exception e) {
 			throw new InvalidImagesException(e);
@@ -454,7 +454,7 @@ public class MetadatenImagesHelper {
 			throws InvalidImagesException {
 		File dir;
 		try {
-			dir = new File(myProzess.getImagesTifDirectory());
+			dir = new File(myProzess.getImagesTifDirectory(true));
 			// throw new NullPointerException("wer das liest ist doof");
 		} catch (Exception e) {
 			throw new InvalidImagesException(e);

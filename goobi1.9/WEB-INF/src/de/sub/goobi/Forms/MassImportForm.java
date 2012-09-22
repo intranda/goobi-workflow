@@ -787,6 +787,6 @@ public class MassImportForm {
 	}
 
 	public String getInclude() {
-		return "plugins/" + plugin.getId() + ".jsp";
+		return "plugins/" + plugin.getTitle() + ".jsp";
 	}
 }

@@ -8,10 +8,10 @@
 
 <%-- ######################################## 
 
-							edit dockets
+							Regelsaetze bearbeiten
 
 	#########################################--%>
-<a4j:keepAlive beanName="DocketForm" />
+<a4j:keepAlive beanName="RegelsaetzeForm" />
 <html>
 <f:view locale="#{SpracheForm.locale}">
 	<%@include file="inc/head.jsp"%>
@@ -34,13 +34,13 @@
 								<h:commandLink id="id2" value="#{msgs.startseite}"
 									action="newMain" />
 								<f:verbatim> &#8250;&#8250; </f:verbatim>
-								<h:commandLink id="id3" value="#{msgs.dockets}"
+								<h:commandLink id="id3" value="#{msgs.regelsaetze}"
 									action="RegelsaetzeAlle" />
 								<f:verbatim> &#8250;&#8250; </f:verbatim>
-								<h:outputText id="id4" value="#{msgs.createNewDocket}"
-									rendered="#{DocketForm.myDocket.id == null}" />
-								<h:outputText id="id5" value="#{msgs.editDocket}"
-									rendered="#{DocketForm.myDocket.id != null}" />
+								<h:outputText id="id4" value="#{msgs.neuenRegelsatzAnlegen}"
+									rendered="#{RegelsaetzeForm.myRegelsatz.id == null}" />
+								<h:outputText id="id5" value="#{msgs.regelsatzBearbeiten}"
+									rendered="#{RegelsaetzeForm.myRegelsatz.id != null}" />
 							</h:panelGroup>
 						</h:panelGrid>
 
@@ -48,10 +48,10 @@
 							<htm:tr>
 								<htm:td>
 									<htm:h3>
-										<h:outputText id="id6" value="#{msgs.createNewDocket}"
-											rendered="#{DocketForm.myDocket.id == null}" />
-										<h:outputText id="id7" value="#{msgs.editDocket}"
-											rendered="#{DocketForm.myDocket.id != null}" />
+										<h:outputText id="id6" value="#{msgs.neuenRegelsatzAnlegen}"
+											rendered="#{RegelsaetzeForm.myRegelsatz.id == null}" />
+										<h:outputText id="id7" value="#{msgs.regelsatzBearbeiten}"
+											rendered="#{RegelsaetzeForm.myRegelsatz.id != null}" />
 									</htm:h3>
 
 									<%-- globale Warn- und Fehlermeldungen --%>
@@ -85,7 +85,7 @@
 													<h:panelGroup id="id14">
 														<h:inputText id="titel"
 															style="width: 300px;margin-right:15px"
-															value="#{DocketForm.myDocket.name}"
+															value="#{RegelsaetzeForm.myRegelsatz.titel}"
 															required="true" />
 														<x:message id="id15" for="titel" style="color: red"
 															replaceIdWithLabel="true" />
@@ -96,11 +96,19 @@
 													<h:panelGroup id="id17">
 														<h:inputText id="file"
 															style="width: 300px;margin-right:15px"
-															value="#{DocketForm.myDocket.file}"
+															value="#{RegelsaetzeForm.myRegelsatz.datei}"
 															required="true" />
 														<x:message id="id18" for="file" style="color: red"
 															replaceIdWithLabel="true" />
-													</h:panelGroup>									
+													</h:panelGroup>
+
+													<%-- Sortierung nach Regelsatz alphabetisch --%>
+													<h:outputText id="id19"
+														value="#{msgs.metadatenSortierungNachRegelsatz}:" />
+													<h:selectBooleanCheckbox id="id20"
+														style="margin-right:15px"
+														value="#{RegelsaetzeForm.myRegelsatz.orderMetadataByRuleset}" />
+
 												</h:panelGrid>
 											</htm:td>
 										</htm:tr>
@@ -108,15 +116,15 @@
 										<htm:tr>
 											<htm:td styleClass="eingabeBoxen_row3" align="left">
 												<h:commandButton id="id21" value="#{msgs.abbrechen}"
-													action="DocketList" immediate="true" />
+													action="RegelsaetzeAlle" immediate="true" />
 											</htm:td>
 											<htm:td styleClass="eingabeBoxen_row3" align="right">
 												<h:commandButton id="id22" value="#{msgs.loeschen}"
-													action="#{DocketForm.Loeschen}"
+													action="#{RegelsaetzeForm.Loeschen}"
 													onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')"
-													rendered="#{DocketForm.myDocket.id != null}" />
+													rendered="#{RegelsaetzeForm.myRegelsatz.id != null}" />
 												<h:commandButton id="absenden" value="#{msgs.speichern}"
-													action="#{DocketForm.Speichern}" />
+													action="#{RegelsaetzeForm.Speichern}" />
 											</htm:td>
 										</htm:tr>
 									</htm:table>

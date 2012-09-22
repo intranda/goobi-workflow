@@ -55,8 +55,10 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -226,7 +228,7 @@ public class Helper implements Serializable, Observer {
 	}
 
 	public static String getString(Locale language, String key) {
-		if (commonMessages == null) {
+		if (commonMessages == null || commonMessages.size() <= 1) {
 			loadMsgs();
 		}
 
@@ -266,7 +268,15 @@ public class Helper implements Serializable, Observer {
 		if (context == null) {
 			return null;
 		} else {
-			return context.getApplication().createValueBinding(expr).getValue(context);
+			Object value = null;
+			Application application = context.getApplication();
+			if (application != null) {
+				ValueBinding vb = application.createValueBinding(expr);
+				if (vb != null) {
+					value = vb.getValue(context);
+				}
+			}
+			return value;
 		}
 	}
 
@@ -426,31 +436,36 @@ public class Helper implements Serializable, Observer {
 	private static void loadMsgs() {
 		commonMessages = new HashMap<Locale, ResourceBundle>();
 		localMessages = new HashMap<Locale, ResourceBundle>();
-		Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
-		while (polyglot.hasNext()) {
-			Locale language = polyglot.next();
-			commonMessages.put(language, ResourceBundle.getBundle("Messages.messages", language));
-			File file = new File(ConfigMain.getParameter("localMessages", "/opt/digiverso/goobi/messages/"));
-			if (file.exists()) {
-				// Load local message bundle from file system only if file exists;
-				// if value not exists in bundle, use default bundle from classpath
+		if (FacesContext.getCurrentInstance() != null) {
+			Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
+			while (polyglot.hasNext()) {
+				Locale language = polyglot.next();
+				commonMessages.put(language, ResourceBundle.getBundle("Messages.messages", language));
+				File file = new File(ConfigMain.getParameter("localMessages", "/opt/digiverso/goobi/messages/"));
+				if (file.exists()) {
+					// Load local message bundle from file system only if file exists;
+					// if value not exists in bundle, use default bundle from classpath
 
-				try {
-					final URL resourceURL = file.toURI().toURL();
-					URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
-						@Override
-						public URLClassLoader run() {
-							return new URLClassLoader(new URL[] { resourceURL });
+					try {
+						final URL resourceURL = file.toURI().toURL();
+						URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+							@Override
+							public URLClassLoader run() {
+								return new URLClassLoader(new URL[] { resourceURL });
+							}
+						});
+						ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
+						if (localBundle != null) {
+							localMessages.put(language, localBundle);
 						}
-					});
-					ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
-					if (localBundle != null) {
-						localMessages.put(language, localBundle);
-					}
 
-				} catch (Exception e) {
+					} catch (Exception e) {
+					}
 				}
 			}
+		} else {
+			Locale defaullLocale = new Locale("EN");
+			commonMessages.put(defaullLocale, ResourceBundle.getBundle("Messages.messages", defaullLocale));
 		}
 	}
 
@@ -485,8 +500,8 @@ public class Helper implements Serializable, Observer {
 		}
 		if (parameterList != null && parameterList.size() > 0) {
 			int parameterCount = 0;
-			for (String parameter : parameterList ) {
-				value = value.replace("{"+ parameterCount + "}", parameter);
+			for (String parameter : parameterList) {
+				value = value.replace("{" + parameterCount + "}", parameter);
 				parameterCount++;
 			}
 		}
@@ -671,19 +686,33 @@ public class Helper implements Serializable, Observer {
 				fileOk = true;
 			} else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.avi")) {
+			} else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.mp4")) {
+			} else if (name.matches(prefix + "\\.[mM][pP][gG]")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.mp3")) {
+			} else if (name.matches(prefix + "\\.[mM][pP]4")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.wav")) {
+			} else if (name.matches(prefix + "\\.[mM][pP]3")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.wmv")) {
+			} else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.flv")) {
+			} else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.ogg")) {
+			} else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.docx")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.doc")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.xls")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.xlsx")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.pptx")) {
+				fileOk = true;
+			} else if (name.matches(prefix + "\\.ppt")) {
 				fileOk = true;
 			}
 			return fileOk;

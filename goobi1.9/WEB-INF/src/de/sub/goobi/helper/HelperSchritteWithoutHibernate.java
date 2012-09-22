@@ -126,8 +126,7 @@ public class HelperSchritteWithoutHibernate {
 					}
 					StepManager.updateStep(myStep);
 					matched = true;
-					// TODO remove this later
-					RefreshObject.refreshStep(myStep.getId());
+
 				} else {
 					if (matched) {
 						break;
@@ -137,17 +136,21 @@ public class HelperSchritteWithoutHibernate {
 		}
 		ProcessObject po = ProcessManager.getProcessObjectForId(processId);
 		FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
-		if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory()))) {
-			ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory())), processId);
+		if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true)))) {
+			ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true))), processId);
 		}
-		
-		
-		updateProcessStatus(processId);
 
+		updateProcessStatus(processId);
+		// TODO remove this later
+		try {
+			RefreshObject.refreshProcess(processId);
+		} catch (Exception e) {
+			logger.error("Exception during update of hibernate cache", e);
+		}
 		for (StepObject automaticStep : automatischeSchritte) {
 			ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
 			myThread.start();
-		}		
+		}
 	}
 
 	public void updateProcessStatus(int processId) {
@@ -195,9 +198,9 @@ public class HelperSchritteWithoutHibernate {
 			}
 			if (script != null && !script.equals(" ") && script.length() != 0) {
 				if (automatic && (count == size)) {
-					returnParameter= executeScriptForStepObject(step, script, true);
+					returnParameter = executeScriptForStepObject(step, script, true);
 				} else {
-					returnParameter= executeScriptForStepObject(step, script, false);
+					returnParameter = executeScriptForStepObject(step, script, false);
 				}
 			}
 			count++;
@@ -251,7 +254,8 @@ public class HelperSchritteWithoutHibernate {
 	}
 
 	public void executeDmsExport(StepObject step, boolean automatic) {
-		AutomaticDmsExportWithoutHibernate dms = new AutomaticDmsExportWithoutHibernate(ConfigMain.getBooleanParameter("automaticExportWithImages", true));
+		AutomaticDmsExportWithoutHibernate dms = new AutomaticDmsExportWithoutHibernate(ConfigMain.getBooleanParameter("automaticExportWithImages",
+				true));
 		if (!ConfigMain.getBooleanParameter("automaticExportWithOcr", true)) {
 			dms.setExportFulltext(false);
 		}
@@ -270,7 +274,7 @@ public class HelperSchritteWithoutHibernate {
 		} catch (PreferencesException e) {
 			logger.error(e);
 			abortStep(step);
-			return;	
+			return;
 		} catch (WriteException e) {
 			logger.error(e);
 			abortStep(step);
@@ -288,22 +292,21 @@ public class HelperSchritteWithoutHibernate {
 			abortStep(step);
 			return;
 		} catch (InterruptedException e) {
-			// validation error 
+			// validation error
 			abortStep(step);
 			return;
 		}
-		
+
 	}
 
-	
 	private void abortStep(StepObject step) {
-	
+
 		step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
 		step.setEditType(StepEditType.AUTOMATIC.getValue());
-		
+
 		StepManager.updateStep(step);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws SQLException {
 		Date d = new Date(System.currentTimeMillis());

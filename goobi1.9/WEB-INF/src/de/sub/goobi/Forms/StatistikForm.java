@@ -47,6 +47,7 @@ import de.sub.goobi.Beans.Schritt;
 import de.sub.goobi.Persistence.BenutzerDAO;
 import de.sub.goobi.Persistence.ProzessDAO;
 import de.sub.goobi.Persistence.SchrittDAO;
+import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -266,5 +267,9 @@ public class StatistikForm {
 			Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
 			return 0;
 		}
+	}
+	
+	public boolean getShowStatistics() {
+		return ConfigMain.getBooleanParameter("showStatisticsOnStartPage", true);
 	}
 }

@@ -46,7 +46,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.goobi.production.api.property.xmlbasedprovider.Status;
 import org.goobi.production.export.ExportDocket;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -60,9 +59,6 @@ import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 import ugh.fileformats.mets.XStream;
-import de.sub.goobi.Beans.Property.DisplayPropertyList;
-import de.sub.goobi.Beans.Property.IGoobiEntity;
-import de.sub.goobi.Beans.Property.IGoobiProperty;
 import de.sub.goobi.Metadaten.MetadatenHelper;
 import de.sub.goobi.Metadaten.MetadatenSperrung;
 import de.sub.goobi.Persistence.BenutzerDAO;
@@ -76,7 +72,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 
-public class Prozess implements Serializable, IGoobiEntity {
+public class Prozess implements Serializable {
 	private static final Logger myLogger = Logger.getLogger(Prozess.class);
 	private static final long serialVersionUID = -6503348094655786275L;
 	private Integer id;
@@ -114,8 +110,6 @@ public class Prozess implements Serializable, IGoobiEntity {
 	private static int numberOfBackups = 0;
 	private static String FORMAT = "";
 
-	@SuppressWarnings("deprecation")
-	private DisplayPropertyList displayProperties;
 	private String wikifield = "";
 
 	public Prozess() {
@@ -133,7 +127,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	 * Getter und Setter
 	 */
 
-	@Override
+	
 	public Integer getId() {
 		return this.id;
 	}
@@ -260,7 +254,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	 * Metadaten- und ImagePfad
 	 */
 
-	public String getImagesTifDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+	public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
 		File dir = new File(getImagesDirectory());
 		DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
 		DIRECTORY_PREFIX = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
@@ -281,6 +275,18 @@ public class Prozess implements Serializable, IGoobiEntity {
 			}
 		}
 
+		if (tifOrdner.equals("") && useFallBack) {
+			String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+			if (!suffix.equals("")) {
+				String[] folderList = dir.list();
+				for (String folder : folderList) {
+					if (folder.endsWith(suffix)) {
+						tifOrdner = folder;
+						break;
+					}
+				}
+			}
+		}
 		if (tifOrdner.equals("")) {
 			tifOrdner = this.titel + "_" + DIRECTORY_SUFFIX;
 		}
@@ -304,7 +310,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	public Boolean getTifDirectoryExists() {
 		File testMe;
 		try {
-			testMe = new File(getImagesTifDirectory());
+			testMe = new File(getImagesTifDirectory(true));
 		} catch (IOException e) {
 			return false;
 		} catch (InterruptedException e) {
@@ -324,7 +330,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 		}
 	}
 
-	public String getImagesOrigDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+	public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
 		if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
 			File dir = new File(getImagesDirectory());
 			DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
@@ -342,6 +348,19 @@ public class Prozess implements Serializable, IGoobiEntity {
 			for (int i = 0; i < verzeichnisse.length; i++) {
 				origOrdner = verzeichnisse[i];
 			}
+
+			if (origOrdner.equals("") && useFallBack) {
+				String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+				if (!suffix.equals("")) {
+					String[] folderList = dir.list();
+					for (String folder : folderList) {
+						if (folder.endsWith(suffix)) {
+							origOrdner = folder;
+							break;
+						}
+					}
+				}
+			}
 			if (origOrdner.equals("")) {
 				origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
 			}
@@ -351,7 +370,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 			}
 			return rueckgabe;
 		} else {
-			return getImagesTifDirectory();
+			return getImagesTifDirectory(useFallBack);
 		}
 	}
 
@@ -439,10 +458,8 @@ public class Prozess implements Serializable, IGoobiEntity {
 	}
 
 	/*
-	 * #####################################################
-	 * ##################################################### ## ## Helper ##
-	 * #####################################################
-	 * ####################################################
+	 * ##################################################### ##################################################### ## ## Helper ##
+	 * ##################################################### ####################################################
 	 */
 
 	public Projekt getProjekt() {
@@ -810,16 +827,16 @@ public class Prozess implements Serializable, IGoobiEntity {
 		myLogger.debug("current meta.xml file type for id " + getId() + ": " + type);
 		Fileformat ff = null;
 		if (type.equals("metsmods")) {
-//			Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.mets.xml"));
+			// Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.mets.xml"));
 			ff = new MetsModsImportExport(this.regelsatz.getPreferences());
 		} else if (type.equals("mets")) {
-//			Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.mets.xml"));
+			// Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.mets.xml"));
 			ff = new MetsMods(this.regelsatz.getPreferences());
 		} else if (type.equals("xstream")) {
-//			Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.xstream.xml"));
+			// Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.xstream.xml"));
 			ff = new XStream(this.regelsatz.getPreferences());
 		} else {
-//			Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.rdf.xml"));
+			// Helper.copyFile(new File(getMetadataFilePath()), new File(getProcessDataDirectory(), "meta.rdf.xml"));
 			ff = new RDFFile(this.regelsatz.getPreferences());
 		}
 		try {
@@ -959,8 +976,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	}
 
 	/**
-	 * prüfen, ob der Vorgang Schritte enthält, die keinem Benutzer und keiner
-	 * Benutzergruppe zugewiesen ist
+	 * prüfen, ob der Vorgang Schritte enthält, die keinem Benutzer und keiner Benutzergruppe zugewiesen ist
 	 * ================================================================
 	 */
 	public boolean getContainsUnreachableSteps() {
@@ -976,8 +992,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	}
 
 	/**
-	 * check if there is one task in edit mode, where the user has the rights to
-	 * write to image folder
+	 * check if there is one task in edit mode, where the user has the rights to write to image folder
 	 * ================================================================
 	 */
 	public boolean isImageFolderInUse() {
@@ -990,8 +1005,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	}
 
 	/**
-	 * get user of task in edit mode with rights to write to image folder
-	 * ================================================================
+	 * get user of task in edit mode with rights to write to image folder ================================================================
 	 */
 	public Benutzer getImageFolderInUseUser() {
 		for (Schritt s : getSchritteList()) {
@@ -1003,10 +1017,8 @@ public class Prozess implements Serializable, IGoobiEntity {
 	}
 
 	/**
-	 * here differet Getters and Setters for the same value, because Hibernate
-	 * does not like bit-Fields with null Values (thats why Boolean) and MyFaces
-	 * seams not to like Boolean (thats why boolean for the GUI)
-	 * ================================================================
+	 * here differet Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
+	 * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
 	 */
 	public Boolean isSwappedOutHibernate() {
 		return this.swappedOut;
@@ -1035,49 +1047,6 @@ public class Prozess implements Serializable, IGoobiEntity {
 		this.wikifield = wikifield;
 	}
 
-	@Override
-	public Status getStatus() {
-		return Status.getProcessStatus(this);
-	}
-
-	@Override
-	public List<IGoobiProperty> getProperties() {
-		List<IGoobiProperty> returnlist = new ArrayList<IGoobiProperty>();
-		returnlist.addAll(getEigenschaftenList());
-
-		return returnlist;
-	}
-
-	@Override
-	public void addProperty(IGoobiProperty toAdd) {
-		Hibernate.initialize(this.eigenschaften);
-		this.eigenschaften.add((Prozesseigenschaft) toAdd);
-	}
-
-	@Override
-	public void removeProperty(IGoobiProperty toRemove) {
-		getEigenschaften().remove(toRemove);
-		toRemove.setOwningEntity(null);
-	}
-
-	/**
-	 * 
-	 * @return instance of {@link DisplayPropertyList}
-	 */
-
-	@SuppressWarnings("deprecation")
-	public DisplayPropertyList getDisplayProperties() {
-		if (this.displayProperties == null) {
-			this.displayProperties = new DisplayPropertyList(this);
-		}
-		return this.displayProperties;
-	}
-
-	@Override
-	public void refreshProperties() {
-		this.displayProperties = null;
-	}
-
 	public String downloadDocket() {
 
 		myLogger.debug("generate docket for process " + this.id);
@@ -1098,7 +1067,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 			String contentType = servletContext.getMimeType(fileName);
 			response.setContentType(contentType);
 			response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
-			
+
 			// write run note to servlet output stream
 			try {
 				ServletOutputStream out = response.getOutputStream();
@@ -1140,7 +1109,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 		}
 
 		try {
-			String folder = this.getImagesTifDirectory();
+			String folder = this.getImagesTifDirectory(false);
 			folder = folder.substring(0, folder.lastIndexOf("_"));
 			folder = folder + "_" + methodName;
 			if (new File(folder).exists()) {

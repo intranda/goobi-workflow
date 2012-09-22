@@ -53,6 +53,9 @@
 				</patternset>
 			</fileset>
 		</copy>
+		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false" >
+			<fileset dir="${private.dir}" />
+		</copy>
 	</target>
 
 	<!-- Copy configuration files. -->
@@ -83,15 +86,12 @@
 		<copy todir="${dir.build.src}">
 			<fileset dir="${dir.src}" />
 		</copy>
-		<copy todir="${dir.build.src}" overwrite="true" failonerror="false" >
-			<fileset dir="${private.dir}" />
-		</copy>
 	</target>
 
 	<!-- Normal build of application. -->
 	<target name="compile" depends="copySources, createDirs, writeVersion" description="Normal build of application.">
 
-		<javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="1.5" encoding="UTF8" debug="true" debuglevel="lines, vars, source">
+		<javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="1.5" encoding="UTF8" source="1.5" debug="true" debuglevel="lines,vars,source">
 			<compilerarg value="-Xlint" />
 			<classpath refid="classpath" />
 		</javac>

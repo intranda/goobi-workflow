@@ -7,6 +7,7 @@
 <%@ taglib uri="https://ajax4jsf.dev.java.net/ajax" prefix="a4j"%>
 
 <%-- ++++++++++++++++     Action      ++++++++++++++++ --%>
+
 <htm:table cellpadding="3" cellspacing="0" width="100%" styleClass="eingabeBoxen" style="margin-top:20px">
 	<htm:tr>
 		<htm:td styleClass="eingabeBoxen_row1" colspan="2">
@@ -65,6 +66,7 @@
 
 					<jd:hideableArea id="changeSearch" saveState="view">
 						<h:panelGrid columns="2" style="margin-left:40px">
+
 
 							<h:outputText value="#{msgs.showAutomaticTasks}:" />
 							<h:selectBooleanCheckbox id="check3" value="#{AktuelleSchritteForm.showAutomaticTasks}" style="margin-right:40px" />

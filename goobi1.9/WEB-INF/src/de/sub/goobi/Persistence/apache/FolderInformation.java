@@ -1,4 +1,5 @@
 package de.sub.goobi.Persistence.apache;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -69,7 +70,7 @@ public class FolderInformation {
 	// String sourcepath = this.process.getSourceDirectory().replace("\\", "/");
 	// String myprefs = ConfigMain.getParameter("RegelsaetzeVerzeichnis") + this.process.getRegelsatz().getDatei();
 
-	public String getImagesTifDirectory() {
+	public String getImagesTifDirectory(boolean useFallBack) {
 		File dir = new File(getImagesDirectory());
 		DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
 		DIRECTORY_PREFIX = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
@@ -90,6 +91,18 @@ public class FolderInformation {
 			}
 		}
 
+		if (tifOrdner.equals("") && useFallBack) {
+			String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+			if (!suffix.equals("")) {
+				String[] folderList = dir.list();
+				for (String folder : folderList) {
+					if (folder.endsWith(suffix)) {
+						tifOrdner = folder;
+						break;
+					}
+				}
+			}
+		}
 		if (tifOrdner.equals("")) {
 			tifOrdner = this.title + "_" + DIRECTORY_SUFFIX;
 		}
@@ -113,7 +126,7 @@ public class FolderInformation {
 	public Boolean getTifDirectoryExists() {
 		File testMe;
 
-		testMe = new File(getImagesTifDirectory());
+		testMe = new File(getImagesTifDirectory(true));
 
 		if (testMe.list() == null) {
 			return false;
@@ -125,7 +138,7 @@ public class FolderInformation {
 		}
 	}
 
-	public String getImagesOrigDirectory() {
+	public String getImagesOrigDirectory(boolean useFallBack) {
 		if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
 			File dir = new File(getImagesDirectory());
 			DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
@@ -143,16 +156,30 @@ public class FolderInformation {
 			for (int i = 0; i < verzeichnisse.length; i++) {
 				origOrdner = verzeichnisse[i];
 			}
+
+			if (origOrdner.equals("") && useFallBack) {
+				String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+				if (!suffix.equals("")) {
+					String[] folderList = dir.list();
+					for (String folder : folderList) {
+						if (folder.endsWith(suffix)) {
+							origOrdner = folder;
+							break;
+						}
+					}
+				}
+			}
 			if (origOrdner.equals("")) {
 				origOrdner = DIRECTORY_PREFIX + "_" + this.title + "_" + DIRECTORY_SUFFIX;
 			}
+
 			String rueckgabe = getImagesDirectory() + origOrdner + File.separator;
 			// if (!new File(rueckgabe).exists() && ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false)) {
 			// new Helper().createMetaDirectory(rueckgabe);
 			// }
 			return rueckgabe;
 		} else {
-			return getImagesTifDirectory();
+			return getImagesTifDirectory(useFallBack);
 		}
 	}
 
@@ -196,9 +223,7 @@ public class FolderInformation {
 	public String getMetadataFilePath() {
 		return getProcessDataDirectory() + "meta.xml";
 	}
-	
-	
-	
+
 	public String getSourceDirectory() {
 		File dir = new File(getImagesDirectory());
 		FilenameFilter filterVerz = new FilenameFilter() {
@@ -209,25 +234,24 @@ public class FolderInformation {
 		};
 		File sourceFolder = null;
 		String[] verzeichnisse = dir.list(filterVerz);
-		if (verzeichnisse == null || verzeichnisse.length == 0 ) {
+		if (verzeichnisse == null || verzeichnisse.length == 0) {
 			sourceFolder = new File(dir, title + "_source");
 			if (ConfigMain.getBooleanParameter("createSourceFolder", false)) {
-				sourceFolder.mkdir();				
+				sourceFolder.mkdir();
 			}
 		} else {
 			sourceFolder = new File(dir, verzeichnisse[0]);
 		}
-		
+
 		return sourceFolder.getAbsolutePath();
 	}
-	
 
-	public Map<String, String> getFolderForProcess() {
+	public Map<String, String> getFolderForProcess(boolean useFallBack) {
 		Map<String, String> answer = new HashMap<String, String>();
 		String processpath = getProcessDataDirectory().replace("\\", "/");
-		String tifpath = getImagesTifDirectory().replace("\\", "/");
+		String tifpath = getImagesTifDirectory(useFallBack).replace("\\", "/");
 		String imagepath = getImagesDirectory().replace("\\", "/");
-		String origpath = getImagesOrigDirectory().replace("\\", "/");
+		String origpath = getImagesOrigDirectory(useFallBack).replace("\\", "/");
 		String metaFile = getMetadataFilePath().replace("\\", "/");
 		String ocrBasisPath = getOcrDirectory().replace("\\", "/");
 		String ocrPlaintextPath = getTxtDirectory().replace("\\", "/");
@@ -295,7 +319,7 @@ public class FolderInformation {
 		} catch (IllegalAccessException e) {
 		} catch (InvocationTargetException e) {
 		}
-		String folder = this.getImagesTifDirectory();
+		String folder = this.getImagesTifDirectory(false);
 		folder = folder.substring(0, folder.lastIndexOf("_"));
 		folder = folder + "_" + methodName;
 		if (new File(folder).exists()) {
@@ -303,11 +327,11 @@ public class FolderInformation {
 		}
 		return null;
 	}
-	
+
 	public List<String> getDataFiles() throws InvalidImagesException {
 		File dir;
 		try {
-			dir = new File(getImagesTifDirectory());
+			dir = new File(getImagesTifDirectory(true));
 			// throw new NullPointerException("wer das liest ist doof");
 		} catch (Exception e) {
 			throw new InvalidImagesException(e);
@@ -322,14 +346,14 @@ public class FolderInformation {
 			}
 			/* alle Dateien durchlaufen */
 			if (dataList != null && dataList.size() != 0) {
-				Collections.sort(dataList,  new GoobiImageFileComparator());
+				Collections.sort(dataList, new GoobiImageFileComparator());
 			}
 			return dataList;
 		} else {
 			return null;
 		}
 	}
-	
+
 	public static class GoobiImageFileComparator implements Comparator<String> {
 
 		@Override
