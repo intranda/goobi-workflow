@@ -194,7 +194,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.myProzess = new Prozess();
 		this.myNewProcessTitle = "";
 		this.modusBearbeiten = "prozess";
-		return "ProzessverwaltungBearbeiten";
+		return "process_edit";
 	}
 
 	public String NeuVorlage() {
@@ -202,13 +202,13 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.myNewProcessTitle = "";
 		this.myProzess.setIstTemplate(true);
 		this.modusBearbeiten = "prozess";
-		return "ProzessverwaltungBearbeiten";
+		return "process_edit";
 	}
 
 	public String editProcess() {
 		Reload();
 
-		return "ProzessverwaltungBearbeiten";
+		return "process_edit";
 	}
 
 	public String Speichern() {
@@ -383,7 +383,7 @@ public class ProzessverwaltungForm extends BasisForm {
 			return "";
 		}
 		this.modusAnzeige = "aktuell";
-		return "ProzessverwaltungAlle";
+		return "process_all";
 	}
 
 	public String FilterVorlagen() {
@@ -407,7 +407,7 @@ public class ProzessverwaltungForm extends BasisForm {
 			return "";
 		}
 		this.modusAnzeige = "vorlagen";
-		return "ProzessverwaltungAlle";
+		return "process_all";
 	}
 
 	public String NeuenVorgangAnlegen() {
@@ -418,7 +418,7 @@ public class ProzessverwaltungForm extends BasisForm {
 			pkf.setProzessVorlage(einziger);
 			return pkf.Prepare();
 		} else {
-			return "ProzessverwaltungAlle";
+			return "process_all";
 		}
 	}
 
@@ -498,7 +498,7 @@ public class ProzessverwaltungForm extends BasisForm {
 			logger.error(e);
 		}
 
-		return "ProzessverwaltungAlle";
+		return "process_all";
 	}
 
 	private void sortList(Criteria inCrit, boolean addCriteria) {
@@ -645,7 +645,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	public String SchrittNeu() {
 		this.mySchritt = new Schritt();
 		this.modusBearbeiten = "schritt";
-		return "ProzessverwaltungBearbeitenSchritt";
+		return "process_edit_step";
 	}
 
 	public void SchrittUebernehmen() {
@@ -664,7 +664,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.myProzess.getSchritte().remove(this.mySchritt);
 		Speichern();
 		deleteSymlinksFromUserHomes();
-		return "ProzessverwaltungBearbeiten";
+		return "process_edit";
 	}
 
 	private void deleteSymlinksFromUserHomes() {
@@ -720,7 +720,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.myProzess.getVorlagen().add(this.myVorlage);
 		this.myVorlage.setProzess(this.myProzess);
 		Speichern();
-		return "ProzessverwaltungBearbeitenVorlage";
+		return "process_edit_template";
 	}
 
 	public String VorlageUebernehmen() {
@@ -733,7 +733,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	public String VorlageLoeschen() {
 		this.myProzess.getVorlagen().remove(this.myVorlage);
 		Speichern();
-		return "ProzessverwaltungBearbeiten";
+		return "process_edit";
 	}
 
 	/*
@@ -758,7 +758,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	public String WerkstueckLoeschen() {
 		this.myProzess.getWerkstuecke().remove(this.myWerkstueck);
 		Speichern();
-		return "ProzessverwaltungBearbeiten";
+		return "process_edit";
 	}
 
 	/*
