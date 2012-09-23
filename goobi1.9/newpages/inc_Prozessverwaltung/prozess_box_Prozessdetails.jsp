@@ -227,10 +227,9 @@
 </h:form>
 <%-- // Box für die Bearbeitung der Details --%>
 
-<h:outputText value="<script src=\" " escape="false" />
+<h:outputText value="<script src=&quot;" escape="false" />
 <h:outputText value="#{HelperForm.servletPathWithHostAsUrl}/js/tiny_mce/tiny_mce.js" />
-<h:outputText value="\" type=\"text/javascript\">
-	</script>" escape="false"/>
+<h:outputText value="&quot; type=&quot;text/javascript&quot;&gt; &lt;/script&gt;" escape="false"/>
 
 
 <script type="text/javascript">
