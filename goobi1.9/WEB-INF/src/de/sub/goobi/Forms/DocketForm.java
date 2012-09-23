@@ -26,6 +26,9 @@ package de.sub.goobi.Forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -38,6 +41,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 
+@ManagedBean(name="DocketForm") 
+@SessionScoped
 public class DocketForm extends BasisForm {
 	private static final long serialVersionUID = -445707928042517243L;
 	private Docket myDocket = new Docket();
@@ -46,13 +51,13 @@ public class DocketForm extends BasisForm {
 
 	public String Neu() {
 		this.myDocket = new Docket();
-		return "DocketEdit";
+		return "docket_edit";
 	}
 
 	public String Speichern() {
 		try {
 			this.dao.save(this.myDocket);
-			return "DocketList";
+			return "docket_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
 			logger.error(e);
@@ -67,7 +72,7 @@ public class DocketForm extends BasisForm {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
 			return "";
 		}
-		return "DocketList";
+		return "docket_all";
 	}
 
 	public String FilterKein() {
@@ -83,7 +88,7 @@ public class DocketForm extends BasisForm {
 			Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
 			return "";
 		}
-		return "DocketList";
+		return "docket_all";
 	}
 
 	public String FilterKeinMitZurueck() {

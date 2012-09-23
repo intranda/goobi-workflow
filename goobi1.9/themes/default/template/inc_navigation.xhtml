@@ -226,6 +226,18 @@
 									<x:updateActionListener property="#{NavigationForm.aktuell}"
 										value="33" />
 								</h:commandLink>
+								
+								<!-- Laufzettel -->
+								<h:commandLink styleClass="mlink" id="dockets"
+									action="#{DocketForm.FilterKein}"
+									style="#{NavigationForm.aktuell == '35' ? 'font-weight: bold;':'font-weight:normal ;'}">
+									<h:panelGroup rendered="#{NavigationForm.aktuell == '35'}">
+										<f:verbatim>&#8250; </f:verbatim>
+									</h:panelGroup>
+									<h:outputText value="#{msgs.dockets}" />
+									<x:updateActionListener property="#{NavigationForm.aktuell}"
+										value="35" />
+								</h:commandLink>
 		
 								<!-- Ldapgruppen -->
 								<h:commandLink styleClass="mlink" id="ldapgroups"
