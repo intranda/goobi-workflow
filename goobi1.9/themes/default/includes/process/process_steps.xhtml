@@ -1,0 +1,246 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://myfaces.apache.org/sandbox">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<!-- ===================== GROSSE SCHRITT BOX IM GELADENEN PROZESS ====================== -->
+
+		<h4 style="margin-top: 15">
+			<h:outputText value="#{msgs.arbeitsschritte}" />
+		</h4>
+
+		<x:dataTable id="steps" styleClass="standardTable" width="100%"
+			cellspacing="1px" cellpadding="1px"
+			headerClass="standardTable_Header"
+			rowClasses="standardTable_Row1,standardTable_Row2"
+			columnClasses="standardTable_ColumnCentered,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered,standardTable_ColumnCentered"
+			var="item" value="#{ProzessverwaltungForm.myProzess.schritteList}">
+
+			<!-- ===================== Reihenfolge ====================== -->
+			<h:column id="ordercolumn">
+				<f:facet name="header">
+					<h:outputText value="#{msgs.nr}" />
+				</f:facet>
+				<h:outputText value="#{item.reihenfolge}" />
+				<!-- Schaltknopf: Reihenfolge nach oben -->
+				<h:commandLink action="#{ProzessverwaltungForm.reihenfolgeUp}"
+					rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+					<h:graphicImage value="/newpages/images/buttons/order_up_klein.gif"
+						style="margin-left:5px;vertical-align:middle" />
+					<x:updateActionListener
+						property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
+						<f:ajax render="@form" />
+				</h:commandLink>
+				<!-- Schaltknopf: Reihenfolge nach unten -->
+				<h:commandLink action="#{ProzessverwaltungForm.reihenfolgeDown}"
+					rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+					<h:graphicImage
+						value="/newpages/images/buttons/order_down_klein.gif"
+						style="vertical-align:middle" />
+					<x:updateActionListener
+						property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
+						<f:ajax render="@form" />
+				</h:commandLink>
+			</h:column>
+			<!-- ===================== // Reihenfolge ====================== -->
+
+			<!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
+			<h:column >
+					<f:facet name="header">
+			<h:outputText value="#{msgs.titel}" />
+		</f:facet>
+
+				<h:panelGroup>
+
+					<h:commandLink id="expandbutton1" >
+						<h:graphicImage value="/newpages/images/plus.gif"
+							style="margin-right:5px;display:none;" />
+						<h:graphicImage value="/newpages/images/minus.gif"
+							style="margin-right:5px;" />
+						<h:outputText value="#{item.titelLokalisiert}" />
+						<s:effectToggle event="click" duration="0.1"
+							forId="possibleActions1" mode="blind" appendJs="return false;" />
+					</h:commandLink>
+					
+					
+
+					<x:div id="possibleActions1" style="display:none;padding:10px;">
+
+							<table cellpadding="3" cellspacing="0" width="100%"
+								class="main_statistikboxen" border="0">
+
+								<tr>
+									<td class="main_statistikboxen_row1" >
+									<h:outputText
+											value="#{msgs.eigenschaften}" /></td>
+								</tr>
+
+								<tr>
+									<td class="main_statistikboxen_row2">
+
+										<table border="0px" width="90%" cellpadding="2">
+											<tr>
+												<td width="150"><h:outputText value="#{msgs.titel}:" />
+												</td>
+												<td><h:outputText value="#{item.titelLokalisiert}" />
+												</td>
+											</tr>
+											<tr>
+												<td width="150"><h:outputText
+														value="#{msgs.prioritaet}:" /></td>
+												<td><h:outputText value="#{item.prioritaet}" /></td>
+											</tr>
+											<h:panelGroup
+												rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+												<tr>
+													<td width="150"><h:outputText
+															value="#{msgs.bearbeitungsbeginn}:" /></td>
+													<td><h:outputText
+															value="#{item.bearbeitungsbeginnAsFormattedString}" /></td>
+												</tr>
+												<tr>
+													<td width="150"><h:outputText
+															value="#{msgs.zuletztBearbeitet}:" /></td>
+													<td><h:outputText
+															value="#{item.bearbeitungszeitpunktAsFormattedString}" />
+													</td>
+												</tr>
+												<tr>
+													<td width="150"><h:outputText
+															value="#{msgs.bearbeitungsende}:" /></td>
+													<td><h:outputText
+															value="#{item.bearbeitungsendeAsFormattedString}" /></td>
+												</tr>
+											</h:panelGroup>
+											<h:panelGroup
+												rendered="#{item.bearbeitungsbenutzer !=null and item.bearbeitungsbenutzer.id !=0 and !HelperForm.anonymized}">
+												<tr>
+													<td width="150"><h:outputText
+															value="#{msgs.letzteAktualisierungDurch}:" /></td>
+													<td><h:outputText
+															value="#{item.bearbeitungsbenutzer.nachVorname}" /></td>
+												</tr>
+											</h:panelGroup>
+
+											<h:panelGroup rendered="#{item.editTypeEnum !=null}">
+												<tr>
+													<td width="150"><h:outputText
+															value="#{msgs.aktualisierungstyp}:" /></td>
+													<td><h:outputText value="#{item.editTypeEnum.title}" />
+													</td>
+												</tr>
+											</h:panelGroup>
+											<h:panelGroup
+												rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
+												<tr>
+													<td width="150"><h:outputText
+															value="#{msgs.automatischerSchritt}:" /></td>
+													<td><h:outputText
+															value="#{item.typAutomatischScriptpfad}" /></td>
+												</tr>
+											</h:panelGroup>
+											<h:panelGroup
+												rendered="#{item.typModulName != null and item.typModulName != ''}">
+												<tr>
+													<td width="150"><h:outputText value="#{msgs.module}:" />
+													</td>
+													<td><h:outputText value="#{item.typModulName}" /></td>
+												</tr>
+											</h:panelGroup>
+											<x:dataList var="intern" value="#{item.eigenschaftenList}"
+												rowCountVar="rowCount" rowIndexVar="rowIndex"
+												rendered="#{item.eigenschaftenSize!=0}">
+												<tr>
+													<td width="150"><h:outputText value="#{intern.titel}:" />
+													</td>
+													<td><h:outputText value="#{intern.wert}" /></td>
+												</tr>
+											</x:dataList>
+
+										</table>
+									</td>
+								</tr>
+
+							</table>
+						
+					</x:div>
+				</h:panelGroup>
+			</h:column>
+			<!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
+
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="#{msgs.status}" />
+				</f:facet>
+				<h:panelGrid columns="2" align="center" id="statuscolumn" width="30px" style="text-align:center;margin-left:auto;margin-right:auto;">
+
+					<h:graphicImage value="#{item.bearbeitungsstatusEnum.bigImagePath}"
+						title="#{item.bearbeitungsstatusEnum.title}" />
+
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0"
+						rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+						<!-- Bearbeitungsstatus hoch und runter -->
+						<h:commandLink action="#{ProzessverwaltungForm.SchrittStatusUp}"
+							title="#{msgs.statusHoeherSetzen}">
+							<h:graphicImage
+								value="/newpages/images/buttons/order_right_klein.gif" />
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.mySchrittReload}"
+								value="#{item}" />
+							<f:ajax render="@form" />
+						</h:commandLink>
+						<!-- Bearbeitungsstatus hoch und runter -->
+						<h:commandLink action="#{ProzessverwaltungForm.SchrittStatusDown}"
+							title="#{msgs.statusRunterSetzen}">
+							<h:graphicImage
+								value="/newpages/images/buttons/order_left_klein.gif" />
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.mySchrittReload}"
+								value="#{item}" />
+							<f:ajax render="@form" />
+						</h:commandLink>
+					</h:panelGrid>
+
+				</h:panelGrid>
+			</h:column>
+
+			<h:column
+				rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+				<f:facet name="header">
+					<h:outputText value="#{msgs.auswahl}" />
+				</f:facet>
+				<!-- Bearbeiten-Schaltknopf -->
+				<h:commandLink action="process_edit_step"
+					title="#{msgs.detailsDesSchritts}">
+					<h:graphicImage value="/newpages/images/buttons/goInto.gif" />
+					<x:updateActionListener
+						property="#{ProzessverwaltungForm.mySchrittReload}"
+						value="#{item}" />
+					<x:updateActionListener
+						property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+				</h:commandLink>
+			</h:column>
+
+		</x:dataTable>
+
+		<!-- Neu-Schaltknopf -->
+		<h:commandLink id="addStepLink"
+			action="#{ProzessverwaltungForm.SchrittNeu}"
+			value="#{msgs.schrittHinzufuegen}" title="#{msgs.schrittHinzufuegen}"
+			rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2) and (ProzessverwaltungForm.myProzess.titel != '')}">
+		</h:commandLink>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

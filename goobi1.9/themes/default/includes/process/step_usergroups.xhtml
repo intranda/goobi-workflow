@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+		<!-- ++++++++++     Benutzergruppenberechtigungentabelle      +++++++++++++++ -->
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+		<h4 style="margin-top: 15">
+			<h:outputText value="#{msgs.benutzergruppen}" />
+		</h4>
+
+
+		<x:dataTable id="benutzergruppen" styleClass="standardTable"
+			width="100%" cellspacing="1px" cellpadding="1px"
+			headerClass="standardTable_Header" rowClasses="standardTable_Row1"
+			columnClasses="standardTable_Column,standardTable_ColumnCentered"
+			var="item"
+			value="#{ProzessverwaltungForm.mySchritt.benutzergruppenList}"
+			rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="#{msgs.titel}" />
+				</f:facet>
+				<h:outputText value="#{item.titel}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="#{msgs.loeschen}" />
+				</f:facet>
+				<!-- Löschen-Schaltknopf -->
+				<h:commandLink
+					action="#{ProzessverwaltungForm.BenutzergruppeLoeschen}"
+					title="#{msgs.berechtigungLoeschen}">
+					<h:graphicImage value="/newpages/images/buttons/waste1a_20px.gif" />
+					<x:updateActionListener
+						property="#{ProzessverwaltungForm.myBenutzergruppe}"
+						value="#{item}" />
+				</h:commandLink>
+			</h:column>
+		</x:dataTable>
+
+		<!-- Neu-Schaltknopf -->
+
+		<h:commandLink action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
+			value="#{msgs.benutzergruppenHinzufuegen}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+			<f:setPropertyActionListener
+				target="#{ProzessverwaltungForm.userDisplayMode}"
+				value="#{ProzessverwaltungForm.userDisplayMode eq ''?'usergroup':''}" />
+		</h:commandLink>
+
+			<h:panelGroup
+				rendered="#{ProzessverwaltungForm.userDisplayMode eq 'usergroup'}">
+
+				<x:dataTable styleClass="standardTable" width="100%"
+					cellspacing="1px" cellpadding="1px"
+					headerClass="standardTable_Header"
+					rowClasses="standardTable_Row1,standardTable_Row2"
+					columnClasses="standardTable_Column,standardTable_ColumnCentered"
+					var="item" value="#{BenutzergruppenForm.page.listReload}">
+
+					<h:column id="id9">
+						<f:facet name="header">
+							<h:outputText id="id10" value="#{msgs.benutzergruppe}" />
+						</f:facet>
+						<h:outputText id="id11" value="#{item.titel}" />
+					</h:column>
+
+					<h:column id="id12">
+						<f:facet name="header">
+							<h:outputText id="id13" value="#{msgs.auswahl}" />
+						</f:facet>
+						<!-- Hinzufügen-Schaltknopf -->
+						<h:commandLink
+							action="#{ProzessverwaltungForm.BenutzergruppeHinzufuegen}"
+							title="#{msgs.uebernehmen}">
+							<h:graphicImage value="/newpages/images/buttons/addUser.gif" />
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.myBenutzergruppe}"
+								value="#{item}" />
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.userDisplayMode}"
+								value="" />
+						</h:commandLink>
+
+					</h:column>
+
+				</x:dataTable>
+
+				<table width="100%" border="0">
+					<tr valign="top">
+						<td align="center">
+							<!-- ===================== Datascroller für die Ergebnisse ====================== -->
+							<x:aliasBean alias="#{mypage}"
+								value="#{BenutzergruppenForm.page}">
+								<ui:include src="../../includes/datascroller2.xhtml" />
+							</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+						</td>
+					</tr>
+				</table>
+			</h:panelGroup>
+			
+	</composite:implementation>
+
+</ui:composition>
+
+

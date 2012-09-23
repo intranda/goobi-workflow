@@ -155,6 +155,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
 	private Integer container;
 	private String addToWikiField = "";
+	private String userDisplayMode = "";
 
 	private boolean showStatistics = false;
 
@@ -2250,6 +2251,14 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.processPropertyList.add(pp);
 		this.processProperty = pp;
 		// saveProcessProperties();
+	}
+
+	public String getUserDisplayMode() {
+		return userDisplayMode;
+	}
+
+	public void setUserDisplayMode(String userDisplayMode) {
+		this.userDisplayMode = userDisplayMode;
 	}
 
 }

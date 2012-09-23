@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+		<!-- ++++++++++     Benutzerberechtigungentabelle      +++++++++++++++ -->
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+		<h4 style="margin-top: 15">
+			<h:outputText value="#{msgs.benutzer}" />
+		</h4>
+
+		<x:dataTable id="benutzer" styleClass="standardTable" width="100%"
+			cellspacing="1px" cellpadding="1px"
+			headerClass="standardTable_Header" rowClasses="standardTable_Row1"
+			columnClasses="standardTable_Column,standardTable_ColumnCentered"
+			var="item" value="#{ProzessverwaltungForm.mySchritt.benutzerList}"
+			rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="#{msgs.benutzer}" />
+				</f:facet>
+				<h:outputText value="#{item.nachname}, #{item.vorname}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="#{msgs.loeschen}" />
+				</f:facet>
+				<!-- Löschen-Schaltknopf -->
+				<h:commandLink action="#{ProzessverwaltungForm.BenutzerLoeschen}"
+					title="#{msgs.berechtigungLoeschen}">
+					<h:graphicImage value="/newpages/images/buttons/waste1a_20px.gif" />
+					<x:updateActionListener
+						property="#{ProzessverwaltungForm.myBenutzer}" value="#{item}" />
+				</h:commandLink>
+			</h:column>
+		</x:dataTable>
+
+		<!-- Neu-Schaltknopf -->
+		<h:commandLink action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}"
+			value="#{msgs.benutzerHinzufuegen}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+			<f:setPropertyActionListener
+				target="#{ProzessverwaltungForm.userDisplayMode}"
+				value="#{ProzessverwaltungForm.userDisplayMode eq ''?'user':''}" />
+		</h:commandLink>
+
+		<h:panelGroup
+			rendered="#{ProzessverwaltungForm.userDisplayMode eq 'user'}">
+
+			<x:dataTable styleClass="standardTable" width="100%"
+				cellspacing="1px" cellpadding="1px"
+				headerClass="standardTable_Header"
+				rowClasses="standardTable_Row1,standardTable_Row2"
+				columnClasses="standardTable_Column,standardTable_ColumnCentered"
+				var="item" value="#{BenutzerverwaltungForm.page.listReload}">
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.benutzer}" />
+					</f:facet>
+					<h:outputText value="#{item.nachname}, #{item.vorname}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.auswahl}" />
+					</f:facet>
+					<!-- Hinzufügen-Schaltknopf -->
+					<h:commandLink
+						action="#{ProzessverwaltungForm.BenutzerHinzufuegen}"
+						title="#{msgs.uebernehmen}">
+						<h:graphicImage value="/newpages/images/buttons/addUser.gif" />
+						<f:setPropertyActionListener
+							target="#{ProzessverwaltungForm.userDisplayMode}"
+							value="" />
+						<x:updateActionListener
+							property="#{ProzessverwaltungForm.myBenutzer}" value="#{item}" />
+					</h:commandLink>
+
+				</h:column>
+
+			</x:dataTable>
+
+
+			<table width="100%" border="0">
+				<tr valign="top">
+					<td align="center">
+						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
+						<x:aliasBean alias="#{mypage}"
+							value="#{BenutzerverwaltungForm.page}">
+							<ui:include src="../../includes/datascroller.xhtml" />
+						</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+					</td>
+				</tr>
+			</table>
+		</h:panelGroup>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

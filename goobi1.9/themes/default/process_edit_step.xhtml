@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/themes/default/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<ui:define name="breadcrumb">
+		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:commandLink id="id3" value="#{msgs.prozessverwaltung}"
+			action="process_all" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:commandLink value="#{msgs.prozessDetails}" action="process_edit">
+			<x:updateActionListener property="#{ProzessverwaltungForm.reload}"
+				value="" />
+		</h:commandLink>
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:outputText value="#{msgs.schrittDetails}" />
+	</ui:define>
+
+	<ui:define name="title">
+		<h:outputText value="#{msgs.schrittHinzufuegen}"
+			rendered="#{ProzessverwaltungForm.mySchritt.id == null}" />
+		<h:outputText value="#{msgs.schrittDetails}"
+			rendered="#{ProzessverwaltungForm.mySchritt.id != null}" />
+	</ui:define>
+
+	<ui:define name="content">
+
+	<x:jsValueSet name="onload" value="txtAutomatischAnzeigen();"></x:jsValueSet>
+		<h:form id="stepform"
+			onkeypress="ifEnterClick(event, 'stepform:absenden');">
+
+			<ui:include src="includes/process/step_details.xhtml" />
+			<!-- 
+			<ui:include src="includes/process/step_properties.xhtml" />
+			 -->
+			<ui:include src="includes/process/step_users.xhtml" />
+			<ui:include src="includes/process/step_usergroups.xhtml" />
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+
+
+
+
+

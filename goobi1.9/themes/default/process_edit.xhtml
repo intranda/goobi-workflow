@@ -27,7 +27,7 @@
 
 	<ui:define name="content">
 
-		<ui:include src="includes/process/details_main.xhtml" />
+		<ui:include src="includes/process/process_main.xhtml" />
 
 		<h:form id="proceditform"
 			onkeypress="ifEnterClick(event, 'proceditform:absenden');">
@@ -36,22 +36,22 @@
 				rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 
 				<!-- Schritte -->
-				<ui:include src="includes/process/details_steps.xhtml" />
+				<ui:include src="includes/process/process_steps.xhtml" />
 
 				<!-- Vorlagen -->
 				<f:subview id="subVorlage"
 					rendered="#{ProzessverwaltungForm.myProzess.vorlagenSize != 0}">
-					<ui:include src="includes/process/details_templates.xhtml" />
+					<ui:include src="includes/process/process_templates.xhtml" />
 				</f:subview>
 
 				<!-- Werkstuecke -->
 				<f:subview id="subWerk"
 					rendered="#{ProzessverwaltungForm.myProzess.werkstueckeSize != 0}">
-					<ui:include src="includes/process/details_workpieces.xhtml" />
+					<ui:include src="includes/process/process_workpieces.xhtml" />
 				</f:subview>
 
 				<!-- Prozesseigenschaften -->
-				<ui:include src="includes/process/details_properties.xhtml" />
+				<ui:include src="includes/process/process_properties.xhtml" />
 			</f:subview>
 
 		</h:form>
