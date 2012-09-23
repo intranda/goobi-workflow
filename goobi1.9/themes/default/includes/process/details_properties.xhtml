@@ -306,15 +306,13 @@
 
 										</h:panelGroup> <!--  Date  --> <h:panelGroup 
 											rendered="#{(myprocess_item.type.name == 'date')}">
-											<h:inputText style="width: 500px;margin-right:15px"
-												value="#{myprocess_item.value}" />
-											<!-- 
-											 <rich:calendar 
-												style="width: 500px;margin-right:15px"
-												datePattern="dd.MM.yyyy" value="#{myprocess_item.dateValue}"
-												enableManualInput="true">
-											</rich:calendar>
-											 -->
+											 <x:inputCalendar id="to" style="width:110px"
+												value="#{myprocess_item.dateValue}"
+												renderAsPopup="true" renderPopupButtonAsImage="true"
+												popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}"
+												imageLocation="/newpages/images/calendarImages"
+												popupButtonImageUrl="/newpages/images/calendarImages/calendar.gif"
+											 />
 										</h:panelGroup></td>
 								</tr>
 							</x:dataList>

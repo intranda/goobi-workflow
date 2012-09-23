@@ -723,13 +723,14 @@ table.tableCalcStat .left{
 	/*background-color:  #F4BBA5;*/
 	background-image:url('gradient.php_30px_.png');
 }
-span.jscalendar-DB-title-control-normal-style:hover{
-	color: black !important;
+.jscalendar-DB-title-control-normal-style:hover{
+	border: 0px solid white;
+	color: white !important;
 }
 
 .jscalendar-DB-title-control-normal-style{
-	border: 1px solid #F4BBA5;
-	color: black;
+	border: 0px solid white;
+	color: white;
 }
 .monthYearRowClass{
 }
