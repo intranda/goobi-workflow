@@ -36,14 +36,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.goobi.production.flow.statistics.hibernate.UserDefinedStepFilter;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.Beans.Property.IGoobiProperty;
 import de.sub.goobi.Persistence.HibernateUtilOld;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -95,7 +93,6 @@ public class Schritt implements Serializable {
 	private Set<Benutzergruppe> benutzergruppen;
 	private boolean panelAusgeklappt = false;
 	private boolean selected = false;
-	@SuppressWarnings("deprecation")
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
 
 	public Schritt() {
@@ -265,7 +262,6 @@ public class Schritt implements Serializable {
 		this.bearbeitungsbenutzer = bearbeitungsbenutzer;
 	}
 
-	
 	public Integer getId() {
 		return this.id;
 	}
@@ -775,8 +771,6 @@ public class Schritt implements Serializable {
 
 	}
 
-	
-
 	/*
 	 * batch step information
 	 */
@@ -807,13 +801,15 @@ public class Schritt implements Serializable {
 		Integer batchNumber = this.prozess.getBatchID();
 		if (batchNumber != null) {
 			// only steps with same title
-			UserDefinedStepFilter userdefined = new UserDefinedStepFilter();
-			userdefined.setFilterModes(false, false);
-			userdefined.setFilter("");
-			Criteria crit = userdefined.getCriteria();
+//			UserDefinedStepFilter userdefined = new UserDefinedStepFilter();
+//			userdefined.setFilterModes(false, false);
+//			userdefined.setFilter("");
+			Session session = Helper.getHibernateSession();
+			Criteria crit = session.createCriteria(Schritt.class);
 			crit.add(Restrictions.eq("titel", this.titel));
 
 			// only steps with same batchid
+			crit.createCriteria("prozess", "proc");
 			crit.add(Restrictions.eq("proc.batchID", batchNumber));
 			crit.add(Restrictions.eq("batchStep", true));
 			if (crit.list().size() > 1) {
