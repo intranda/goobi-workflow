@@ -26,6 +26,8 @@ package de.sub.goobi.Persistence;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.File;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -63,7 +65,18 @@ public class HibernateSessionLong {
       if (this.sess == null) {
          if (factory == null) {
             mylogger.debug("getSession() - hibernate-Factory initialisieren", null);
-            factory = new Configuration().configure().buildSessionFactory();
+            
+        	File defaultFile = new File(
+					"/opt/digiverso/goobi/config/hibernate.cfg.xml");
+			if (defaultFile.exists() && defaultFile.canRead()) {
+				factory = new Configuration().configure(defaultFile)
+						.buildSessionFactory();
+			} else {
+				// Create the SessionFactory from hibernate.cfg.xml
+				factory = new Configuration().configure()
+						.buildSessionFactory();
+			}
+            
          }
          mylogger.debug("getSession() - hibernate-Session initialisieren", null);
          this.sess = factory.openSession();

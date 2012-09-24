@@ -1,4 +1,5 @@
 package de.sub.goobi.Persistence;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,8 +27,12 @@ package de.sub.goobi.Persistence;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.File;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import de.sub.goobi.helper.Helper;
 
 public class HibernateUtil {
 
@@ -35,8 +40,16 @@ public class HibernateUtil {
 
 	static {
 		try {
-			// Create the SessionFactory from hibernate.cfg.xml
-			sessionFactory = new Configuration().configure().buildSessionFactory();
+			File defaultFile = new File(new Helper().getGoobiConfigDirectory(), "hibernate.cfg.xml");
+			if (defaultFile.exists() && defaultFile.canRead()) {
+				sessionFactory = new Configuration().configure(defaultFile)
+						.buildSessionFactory();
+			} else {
+				// Create the SessionFactory from hibernate.cfg.xml
+				sessionFactory = new Configuration().configure()
+						.buildSessionFactory();
+			}
+
 		} catch (Throwable ex) {
 			// Make sure you log the exception, as it might be swallowed
 			System.err.println("Initial SessionFactory creation failed." + ex);
@@ -48,5 +61,4 @@ public class HibernateUtil {
 		return sessionFactory;
 	}
 
-	
 }

@@ -66,7 +66,8 @@ public class WebInterface extends HttpServlet {
 	private String command = null;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		resp.setContentType("text/html");
 		if (ConfigMain.getBooleanParameter("useWebApi", false)) {
 			String ip = "";
@@ -79,14 +80,15 @@ public class WebInterface extends HttpServlet {
 						ip = "127.0.0.1";
 					}
 				}
-				
+
 				Map<String, String[]> map = req.getParameterMap();
 				String[] pwMap = map.get("token");
 				password = pwMap[0];
 				// password = req.getParameterMap().get("token")[0];
 			} catch (Exception e) {
 				resp.setContentType("");
-				generateAnswer(resp, 401, "Internal error", "Missing credentials");
+				generateAnswer(resp, 401, "Internal error",
+						"Missing credentials");
 				return;
 
 			}
@@ -94,7 +96,8 @@ public class WebInterface extends HttpServlet {
 			Map<String, String[]> parameter = req.getParameterMap();
 			// command
 			if (parameter.size() == 0) {
-				generateAnswer(resp, 400,"Empty request", "no parameters given");
+				generateAnswer(resp, 400, "Empty request",
+						"no parameters given");
 				return;
 			}
 			if (parameter.get("command") == null) {
@@ -106,16 +109,20 @@ public class WebInterface extends HttpServlet {
 			this.command = parameter.get("command")[0];
 			if (this.command == null) {
 				// error, no command found
-				generateAnswer(resp, 400,"Empty command", "No command given. Use help as command to get more information.");
+				generateAnswer(resp, 400, "Empty command",
+						"No command given. Use help as command to get more information.");
 				return;
 			}
 			logger.debug("command: " + this.command);
 
 			// check if command is allowed for used IP
-			List<String> allowedCommandos = WebInterfaceConfig.getCredencials(ip, password);
+			List<String> allowedCommandos = WebInterfaceConfig.getCredencials(
+					ip, password);
 			if (!allowedCommandos.contains(this.command)) {
 				// error, no command found
-				generateAnswer(resp, 401, "command not allowed", "command " + this.command + " not allowed for your IP (" + ip + ")");
+				generateAnswer(resp, 401, "command not allowed", "command "
+						+ this.command + " not allowed for your IP (" + ip
+						+ ")");
 				return;
 			}
 
@@ -123,34 +130,39 @@ public class WebInterface extends HttpServlet {
 				generateHelp(resp);
 				return;
 			}
-			
+
 			// List all plugins
-			// List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
+			// List<IPlugin> mycommands =
+			// PluginLoader.getPluginList(PluginType.Command);
 			// for (IPlugin iPlugin : mycommands) {
 			// System.out.println(iPlugin.getTitle() + " - " + iPlugin.getId());
 			// }
 
 			// get correct plugin from list
-			ICommandPlugin myCommandPlugin = (ICommandPlugin) PluginLoader.getPluginByTitle(PluginType.Command, this.command);
+			ICommandPlugin myCommandPlugin = (ICommandPlugin) PluginLoader
+					.getPluginByTitle(PluginType.Command, this.command);
 			if (myCommandPlugin == null) {
-				generateAnswer(resp, 400, "invalid command", "command not found in list of command plugins");
+				generateAnswer(resp, 400, "invalid command",
+						"command not found in list of command plugins");
 				return;
 			}
-			// System.out.println(myCommandPlugin.getTitle() + " -> " + myCommandPlugin.getId());
+			// System.out.println(myCommandPlugin.getTitle() + " -> " +
+			// myCommandPlugin.getId());
 
 			// hand parameters over to command
 			Map<String, String[]> map = req.getParameterMap();
 			HashMap<String, String> params = new HashMap<String, String>();
 			Iterator<Entry<String, String[]>> i = map.entrySet().iterator();
 			while (i.hasNext()) {
-				Entry<String, String[]> entry =  i.next();
+				Entry<String, String[]> entry = i.next();
 				if (entry.getValue()[0] != null) {
 					params.put(entry.getKey(), entry.getValue()[0]);
 				}
 			}
 			myCommandPlugin.setParameterMap(params);
 
-			// let command validate if all parameters are correct: null means valid
+			// let command validate if all parameters are correct: null means
+			// valid
 			CommandResponse cr = myCommandPlugin.validate();
 			if (cr != null) {
 				generateAnswer(resp, cr);
@@ -166,30 +178,36 @@ public class WebInterface extends HttpServlet {
 			return;
 
 		} else {
-			generateAnswer(resp, 404, "web api deactivated", "web api not configured");
+			generateAnswer(resp, 404, "web api deactivated",
+					"web api not configured");
 		}
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		doGet(req, resp);
 	}
 
 	private void generateHelp(HttpServletResponse resp) throws IOException {
 		String allHelp = "";
-		List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
+		List<IPlugin> mycommands = PluginLoader
+				.getPluginList(PluginType.Command);
 		for (IPlugin iPlugin : mycommands) {
 			ICommandPlugin icp = (ICommandPlugin) iPlugin;
-			allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";
+			allHelp += "<h4>" + icp.help().getTitle() + "</h4>"
+					+ icp.help().getMessage() + "<br/><br/>";
 		}
 		generateAnswer(resp, 200, "Goobi Web API Help", allHelp);
 	}
 
-	private void generateAnswer(HttpServletResponse resp, int status, String title, String message) throws IOException {
+	private void generateAnswer(HttpServletResponse resp, int status,
+			String title, String message) throws IOException {
 		generateAnswer(resp, new CommandResponse(status, title, message));
 	}
 
-	private void generateAnswer(HttpServletResponse resp, CommandResponse cr) throws IOException {
+	private void generateAnswer(HttpServletResponse resp, CommandResponse cr)
+			throws IOException {
 		resp.setStatus(cr.getStatus());
 		String answer = "";
 		answer += "<html><head></head><body>";

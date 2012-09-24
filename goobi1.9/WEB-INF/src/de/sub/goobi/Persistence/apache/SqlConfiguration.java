@@ -36,6 +36,9 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+
+import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.helper.Helper;
 public class SqlConfiguration {
 
 
@@ -53,7 +56,12 @@ public class SqlConfiguration {
 
 	private SqlConfiguration() {
 		try {
-			File f = new File(Loader.getResource("hibernate.cfg.xml").getFile());
+			
+			File f = new File(new Helper().getGoobiConfigDirectory(), "hibernate.cfg.xml");
+			if (!f.exists() && !f.canRead()) {
+				f = new File(Loader.getResource("hibernate.cfg.xml").getFile());
+			}
+			
 			logger.info("loading configuration from " + f.getAbsolutePath());
 			SAXBuilder sb = new SAXBuilder(false);
 			sb.setValidation(false);

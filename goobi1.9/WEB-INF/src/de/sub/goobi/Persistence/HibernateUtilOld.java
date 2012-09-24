@@ -27,6 +27,8 @@ package de.sub.goobi.Persistence;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
@@ -36,6 +38,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.InfrastructureException;
 
 //TODO: Fix for Hibernate-Session-Management, replaced with older version, 
@@ -63,7 +66,17 @@ public class HibernateUtilOld {
 	static {
 		try {
 			configuration = new Configuration();
-			sessionFactory = configuration.configure().buildSessionFactory();
+			
+			File defaultFile = new File(new Helper().getGoobiConfigDirectory(), "hibernate.cfg.xml");
+			if (defaultFile.exists() && defaultFile.canRead()) {
+				sessionFactory = configuration.configure(defaultFile)
+						.buildSessionFactory();
+			} else {
+				// Create the SessionFactory from hibernate.cfg.xml
+				sessionFactory = configuration.configure()
+						.buildSessionFactory();
+			}
+
 			// We could also let Hibernate bind it to JNDI:
 			// configuration.configure().buildSessionFactory()
 		} catch (Throwable ex) {

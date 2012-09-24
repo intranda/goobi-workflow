@@ -11,7 +11,8 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<h:panelGrid id="grid1" columns="2" cellpadding="0" cellspacing="0">
+<h:form>
+<h:panelGrid id="grid1" columns="2" cellpadding="0" cellspacing="0">
 			<h:commandLink value="#{msgs.treelevel} " action="Metadaten3links"
 				target="links" styleClass="metadataHeaderLinks">
 				<x:updateActionListener
@@ -47,6 +48,8 @@
 			</h:commandLink>
 			<h:outputText />
 		</h:panelGrid>
+		</h:form>
+		
 	</composite:implementation>
 
 </ui:composition>
