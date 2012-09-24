@@ -36,8 +36,10 @@
 				</td>
 				<td valign="middle" align="center">
 
+					<ui:insert name="top_title" >
 					<h:outputText style="#{HelperForm.applicationTitleStyle}"
 						value="#{HelperForm.applicationTitle}" />
+					</ui:insert>
 
 					<noscript>
 						<h:outputText style="color: red;font-weight: bold;"
@@ -47,8 +49,10 @@
 				</td>
 
 				<td valign="middle" align="right" style="padding:3px">
+					<ui:insert name="top_individual" >
 					<h:outputText value="#{HelperForm.applicationIndividualHeader}"
-						escape="false" />
+			escape="false" />
+					</ui:insert>
 				</td>
 
 

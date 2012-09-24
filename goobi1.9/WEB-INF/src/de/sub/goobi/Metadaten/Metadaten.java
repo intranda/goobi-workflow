@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
@@ -93,6 +95,8 @@ import de.sub.goobi.helper.exceptions.SwapException;
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
+@ManagedBean(name="Metadaten") 
+@SessionScoped
 public class Metadaten {
 	private static final Logger myLogger = Logger.getLogger(Metadaten.class);
 	MetadatenImagesHelper imagehelper;
@@ -194,7 +198,7 @@ public class Metadaten {
 	public String AnsichtAendern() {
 		this.modusAnsicht = Helper.getRequestParameter("Ansicht");
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -204,7 +208,7 @@ public class Metadaten {
 		Modes.setBindState(BindState.create);
 		getMetadatum().setValue("");
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -214,7 +218,7 @@ public class Metadaten {
 		this.tempPersonNachname = "";
 		this.tempPersonVorname = "";
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -225,7 +229,7 @@ public class Metadaten {
 		Modes.setBindState(BindState.edit);
 		getMetadatum().setValue("");
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -233,7 +237,7 @@ public class Metadaten {
 	public String Reload() {
 		// MetadatenDebuggen(gdzfile.getDigitalDocument().getLogicalDocStruct());
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		} else {
 			try {
 				this.myProzess.writeMetadataFile(this.gdzfile);
@@ -257,7 +261,7 @@ public class Metadaten {
 		}
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -278,7 +282,7 @@ public class Metadaten {
 		}
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -306,7 +310,7 @@ public class Metadaten {
 				myLogger.error("Error while changing DocStructTypes (TypeNotAllowedForParentException): " + e.getMessage());
 			}
 		}
-		return "Metadaten3links";
+		return "metseditor";
 	}
 
 	public String Speichern() {
@@ -338,7 +342,7 @@ public class Metadaten {
 		this.tempWert = "";
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -347,7 +351,7 @@ public class Metadaten {
 		this.modusHinzufuegen = false;
 		this.modusHinzufuegenPerson = false;
 		Modes.setBindState(BindState.edit);
-		return "Metadaten2rechts";
+		return "metseditor";
 	}
 
 	public String SpeichernPerson() {
@@ -376,7 +380,7 @@ public class Metadaten {
 		this.modusHinzufuegenPerson = false;
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -385,7 +389,7 @@ public class Metadaten {
 		this.myDocStruct.removeMetadata(this.curMetadatum.getMd());
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -394,7 +398,7 @@ public class Metadaten {
 		this.myDocStruct.removePerson(this.curPerson.getP());
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -615,7 +619,7 @@ public class Metadaten {
 
 		TreeExpand();
 		this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
-		return "Metadaten";
+		return "metseditor";
 	}
 
 	/**
@@ -685,7 +689,7 @@ public class Metadaten {
 			// inserted to make Paginierung the starting view
 			this.modusAnsicht = "Paginierung";
 		}
-		return "Metadaten";
+		return "metseditor";
 	}
 
 	/**
@@ -742,7 +746,7 @@ public class Metadaten {
 		} catch (Exception e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
 			myLogger.error(e);
-			return "Metadaten";
+			return "metseditor";
 		}
 		SperrungAufheben();
 		return this.zurueck;
@@ -838,7 +842,7 @@ public class Metadaten {
 		}
 
 		if (this.logicalTopstruct == null) {
-			return "Metadaten3links";
+			return "metseditor";
 		}
 		/*
 		 * -------------------------------- Die Struktur als Tree3 aufbereiten --------------------------------
@@ -869,9 +873,9 @@ public class Metadaten {
 		}
 
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
-		return "Metadaten3links";
+		return "metseditor";
 	}
 
 	/**
@@ -1014,7 +1018,7 @@ public class Metadaten {
 		MetadatenalsTree3Einlesen1();
 		myLogger.debug(this.modusStrukturelementVerschieben);
 		this.neuesElementWohin = "1";
-		return "Metadaten3links";
+		return "metseditor";
 	}
 
 	/**
@@ -1059,17 +1063,17 @@ public class Metadaten {
 		 */
 		if (this.neuesElementWohin.equals("1")) {
 			if (this.addDocStructType1 == null || this.addDocStructType1.equals("")) {
-				return "Metadaten3links";
+				return "metseditor";
 			}
 			DocStructType dst = this.myPrefs.getDocStrctTypeByName(this.addDocStructType1);
 			ds = this.mydocument.createDocStruct(dst);
 			if (this.myDocStruct == null) {
-				return "Metadaten3links";
+				return "metseditor";
 			}
 			DocStruct parent = this.myDocStruct.getParent();
 			if (parent == null) {
 				myLogger.debug("das gewählte Element kann den Vater nicht ermitteln");
-				return "Metadaten3links";
+				return "metseditor";
 			}
 			List<DocStruct> alleDS = new ArrayList<DocStruct>();
 
@@ -1105,7 +1109,7 @@ public class Metadaten {
 			DocStruct parent = this.myDocStruct.getParent();
 			if (parent == null) {
 				myLogger.debug("das gewählte Element kann den Vater nicht ermitteln");
-				return "Metadaten3links";
+				return "metseditor";
 			}
 			List<DocStruct> alleDS = new ArrayList<DocStruct>();
 
@@ -1140,7 +1144,7 @@ public class Metadaten {
 			DocStruct parent = this.myDocStruct;
 			if (parent == null) {
 				myLogger.debug("das gewählte Element kann den Vater nicht ermitteln");
-				return "Metadaten3links";
+				return "metseditor";
 			}
 			List<DocStruct> alleDS = new ArrayList<DocStruct>();
 			alleDS.add(ds);
@@ -1384,7 +1388,7 @@ public class Metadaten {
 		this.alleSeitenAuswahl = null;
 		retrieveAllImages();
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return result;
 	}
@@ -1394,7 +1398,7 @@ public class Metadaten {
 	 */
 	public String TreeExpand() {
 		this.tree3.expandNodes(this.treeProperties.get("fullexpanded"));
-		return "Metadaten3links";
+		return "metseditor";
 	}
 
 	/*
@@ -1675,7 +1679,7 @@ public class Metadaten {
 	 */
 	public String goMain() {
 		SperrungAufheben();
-		return "newMain";
+		return "index";
 	}
 
 	/**
@@ -1717,7 +1721,7 @@ public class Metadaten {
 
 		/* zum Schluss die Sperrung aktualisieren */
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -1754,7 +1758,7 @@ public class Metadaten {
 
 		/* zum Schluss die Sperrung aktualisieren */
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return "";
 	}
@@ -1787,7 +1791,7 @@ public class Metadaten {
 				// Helper.setMeldung(null, "Opac-Fehler: ", e.getMessage());
 			}
 		}
-		return "Metadaten3links";
+		return "metseditor";
 	}
 
 	/**
@@ -1962,7 +1966,7 @@ public class Metadaten {
 	 */
 	public String SeitenStartUndEndeSetzen() {
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		int anzahlAuswahl = Integer.parseInt(this.alleSeitenAuswahl_letzteSeite) - Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) + 1;
 		// myLogger.debug("Anzahl der gewählten Seiten: " + anzahlAuswahl);
@@ -1989,7 +1993,7 @@ public class Metadaten {
 
 	public String SeitenVonChildrenUebernehmen() {
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 
 		/* alle Kinder des aktuellen DocStructs durchlaufen */
@@ -2084,7 +2088,7 @@ public class Metadaten {
 		StructSeitenErmitteln(this.myDocStruct);
 		this.alleSeitenAuswahl = null;
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return null;
 	}
@@ -2102,7 +2106,7 @@ public class Metadaten {
 		StructSeitenErmitteln(this.myDocStruct);
 		this.structSeitenAuswahl = null;
 		if (!SperrungAktualisieren()) {
-			return "SperrungAbgelaufen";
+			return "metseditor_timeout";
 		}
 		return null;
 	}

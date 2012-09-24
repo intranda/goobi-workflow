@@ -38,7 +38,26 @@
 
 			<tr>
 
-				<ui:include src="inc_navigation.xhtml" />
+				<td valign="top" height="100%" class="layoutNavigation">
+
+					<table width="100%" style="height: 100%" align="center" border="0"
+						cellpadding="3" cellspacing="0">
+						<tr>
+							<td valign="top"><ui:insert name="sidebar_top">
+									<ui:include src="inc_navigation.xhtml" />
+								</ui:insert></td>
+						</tr>
+						<tr valign="bottom">
+							<td height="5%" valign="bottom"><ui:insert
+									name="sidebar_bottom">
+									<h:form id="loginform">
+									 <ui:include src="inc_login.xhtml" />
+									</h:form>
+								</ui:insert></td>
+						</tr>
+					</table>
+
+				</td>
 
 				<td valign="top" class="layoutInhalt"><h:panelGrid id="id2"
 						columns="1" styleClass="layoutInhaltKopf">
@@ -49,7 +68,7 @@
 						</h:panelGroup>
 					</h:panelGrid>
 
-					<div style="margin:15px">
+					<div style="margin: 15px">
 						<h3>
 							<ui:insert name="title" />
 						</h3>

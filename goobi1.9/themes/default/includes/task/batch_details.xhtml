@@ -14,7 +14,7 @@
 
 		<table cellpadding="3" cellspacing="0" style="width: 100%">
 			<tr style="vertical-align: top">
-				<td><h:form>
+				<td><h:form style="margin-bottom:10px;">
 						<table cellpadding="3" cellspacing="0" width="100%"
 							class="eingabeBoxen">
 							<tr>
@@ -90,7 +90,7 @@
 									</tr>
 
 									<h:panelGroup
-										rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbeginn !=null && !HelperForm.anonymized}">
+										rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
 										<tr>
 											<td width="150"><h:outputText
 													value="#{msgs.bearbeitungsbeginn}:" /></td>
@@ -146,7 +146,7 @@
 			</tr>
 		</table>
 
-		<script src="../js/tiny_mce/tiny_mce.js" type="text/javascript"></script>
+		<script src="js/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 
 		<script type="text/javascript">
 			tinyMCE

@@ -4,7 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	template="/themes/default/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk">
-
+	
 	<ui:define name="breadcrumb">
 		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
@@ -61,26 +61,26 @@
 										action="admin" />
 								</h:panelGrid>
 
-<br/>
+								<br />
 								<h:commandLink id="renderlink"
 									action="#{AdministrationForm.startStorageCalculationForAllProcessesNow}"
 									immediate="true" value="Run complete history analyser job now" />
 
-<br/>
+								<br />
 								<h:commandLink id="adminid23" value="Lucene Index neu erzeugen"
 									onclick="if (!confirm('#{msgs.sicher}?')) return"
 									action="#{AdministrationForm.createIndex}" />
 
-<br/>
+								<br />
 								<h:commandLink
 									action="#{AdministrationForm.restartStorageCalculationScheduler}">
 									<h:outputText id="id18" value="Restart automatic job manager" />
 								</h:commandLink>
-<br/>
+								<br />
 								<x:outputText id="rendertext" forceId="true"
 									value="Run complete history analyser job now"
 									style="display:none" />
-									
+
 							</h:panelGroup>
 						</div>
 					</td>

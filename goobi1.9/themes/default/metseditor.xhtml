@@ -5,6 +5,27 @@
 	template="/themes/default/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk">
 
+	<ui:define name="top_title">
+		<h:outputText style="#{HelperForm.applicationTitleStyle}"
+			value="#{Metadaten.myProzess.titel}" />
+	</ui:define>
+
+	<ui:define name="top_individual">
+		<ui:include src="includes/metseditor_top.xhtml" />
+	</ui:define>
+
+	<ui:define name="sidebar_top">
+		<h:outputText value="ich war dort und" />
+	</ui:define>
+
+	<ui:define name="sidebar_bottom">
+		<h:outputText value="ich war hier" />
+	</ui:define>
+
+
+
+
+
 	<ui:define name="breadcrumb">
 		<h:commandLink value="#{msgs.startseite}" action="index" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
@@ -16,10 +37,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<p style="text-align: justify;">
-			<h:outputText id="id6" style="text-align: justify;"
-				value="#{HelperForm.applicationImpressumMsg}" escape="false" />
-		</p>
+
 	</ui:define>
 
 </ui:composition>
