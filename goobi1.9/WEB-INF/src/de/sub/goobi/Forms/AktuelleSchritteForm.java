@@ -386,7 +386,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		}
 
 		this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch));
-		return "batches_edit";
+		return "task_batch_edit";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -419,7 +419,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			return "task_edit";
 		}
 		this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch));
-		return "batches_edit";
+		return "task_batch_edit";
 	}
 
 	public void saveProperties() {

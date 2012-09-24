@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/themes/default/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+
+	<ui:define name="breadcrumb">
+		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:commandLink id="id3" value="#{msgs.prozessverwaltung}"
+			action="process_all" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:outputText id="id4" value="#{msgs.MassImport}" />
+	</ui:define>
+
+	<ui:define name="title">
+		<h:outputText id="id6" value="#{msgs.MassImport}" />
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+			<table cellpadding="3" cellspacing="0" width="100%"
+				class="eingabeBoxen">
+
+				<tr>
+					<td class="eingabeBoxen_row1" colspan="2"><h:outputText
+							id="utid38" value="#{msgs.nextStep}" /></td>
+				</tr>
+
+				<tr>
+					<td class="eingabeBoxen_row2" colspan="2"><h:panelGrid
+							columns="1" cellpadding="4">
+
+							<h:commandLink id="utid21"
+								action="#{MassImportForm.downloadDocket}">
+								<h:graphicImage id="utid24"
+									alt="/newpages/images/buttons/laufzettel_wide.png"
+									value="/newpages/images/buttons/laufzettel_wide.png"
+									style="vertical-align:middle" />
+								<h:outputText value="#{msgs.laufzettelDrucken}" />
+							</h:commandLink>
+
+							<h:commandLink id="utid20" action="#{MassImportForm.Prepare}">
+								<h:graphicImage id="utid25"
+									alt="/newpages/images/buttons/star_blue.gif"
+									value="/newpages/images/buttons/star_blue.gif"
+									style="vertical-align:middle" />
+								<h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
+							</h:commandLink>
+						</h:panelGrid></td>
+
+				</tr>
+			</table>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+
+
+
+
+

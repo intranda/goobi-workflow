@@ -50,4 +50,11 @@
 		<converter-id>DocketConverter</converter-id>
 		<converter-class>de.sub.goobi.Converter.DocketConverter</converter-class>
 	</converter>
+	
+	<!-- Process Converter for Select-Boxes -->
+	<converter>
+		<converter-id>ProcessConverter</converter-id>
+		<converter-class>de.sub.goobi.Converter.ProcessConverter</converter-class>
+	</converter>
+	
 </faces-config>

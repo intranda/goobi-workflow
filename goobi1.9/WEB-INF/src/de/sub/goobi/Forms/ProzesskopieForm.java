@@ -198,7 +198,7 @@ public class ProzesskopieForm {
 		this.docType = cp.getParamString("createNewProcess.defaultdoctype", this.co.getAllDoctypes().get(0).getTitle());
 		this.useOpac = cp.getParamBoolean("createNewProcess.opac[@use]");
 		this.useTemplates = cp.getParamBoolean("createNewProcess.templates[@use]");
-		this.naviFirstPage = "ProzessverwaltungKopie1";
+		this.naviFirstPage = "process_new1";
 		if (this.opacKatalog.equals("")) {
 			this.opacKatalog = cp.getParamString("createNewProcess.opac.catalogue");
 		}
@@ -541,7 +541,7 @@ public class ProzesskopieForm {
 		if (!isContentValid()) {
 			return this.naviFirstPage;
 		} else {
-			return "ProzessverwaltungKopie2";
+			return "process_new2";
 		}
 	}
 
@@ -742,7 +742,7 @@ public class ProzesskopieForm {
 
 		/* damit die Sortierung stimmt nochmal einlesen */
 		Helper.getHibernateSession().refresh(this.prozessKopie);
-		return "ProzessverwaltungKopie3";
+		return "process_new3";
 
 	}
 

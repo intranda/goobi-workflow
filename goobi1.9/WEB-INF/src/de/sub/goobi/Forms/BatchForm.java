@@ -250,7 +250,7 @@ public class BatchForm extends BasisForm {
 	public String FilterAlleStart() {
 		filterBatches();
 		filterProcesses();
-		return "BatchesAll";
+		return "batch_all";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -454,7 +454,7 @@ public class BatchForm extends BasisForm {
 				crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
 				List<Prozess> propertyBatch = crit.list();
 				this.batchHelper = new BatchProcessHelper(propertyBatch);
-				return "BatchProperties";
+				return "batch_edit";
 			} else {
 				Helper.setFehlerMeldung("noBatchSelected");
 				return "";

@@ -12,19 +12,19 @@
 		<h:commandLink value="#{msgs.aktuelleSchritte}"
 			action="task_all" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
-		<h:outputText value="#{msgs.detailsDesArbeitsschritts}" />
+		<h:outputText value="#{msgs.batch}" />
 	</ui:define>
 
 	<ui:define name="title">
-		<h:outputText value="#{msgs.detailsDesArbeitsschritts}" />
+		<h:outputText value="#{msgs.batch}" />
 	</ui:define>
 
 	<ui:define name="content">
 
 		<h:panelGroup rendered="#{LoginForm.myBenutzer!=null}">
-			<ui:include src="includes/task/task_details.xhtml" />
-			<ui:include src="includes/task/task_properties.xhtml" />
-			<ui:include src="includes/task/task_action.xhtml" />
+			<ui:include src="includes/task/batch_details.xhtml" />
+			<ui:include src="includes/task/batch_properties.xhtml" />
+			<ui:include src="includes/task/batch_action.xhtml" />
 		</h:panelGroup>
 
 	</ui:define>

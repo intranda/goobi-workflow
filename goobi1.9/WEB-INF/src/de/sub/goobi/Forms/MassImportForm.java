@@ -128,7 +128,7 @@ public class MassImportForm {
 			return "";
 		}
 		initializePossibleDigitalCollections();
-		return "MassImport";
+		return "process_import_1";
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class MassImportForm {
 			this.importFile = null;
 		}
 		this.records = "";
-		return "MassImportFormPage3";
+		return "process_import_3";
 	}
 
 	/**
@@ -708,11 +708,11 @@ public class MassImportForm {
 			@SuppressWarnings("unchecked")
 			List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
 			if (this.plugin != null && list != null) {
-				return "MultiMassImportPage2";
+				return "process_import_2";
 			}
 		} catch (Exception e) {
 		}
-		return "MassImportFormPage2";
+		return "process_import_2";
 	}
 
 	public List<ImportProperty> getProperties() {

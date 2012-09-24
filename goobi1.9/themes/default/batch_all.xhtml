@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/themes/default/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+
+	<ui:define name="breadcrumb">
+		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:outputText id="id3" value="#{msgs.batches}" />
+	</ui:define>
+
+	<ui:define name="title">
+		<h:outputText id="id4" value="#{msgs.batches}" />
+	</ui:define>
+
+	<ui:define name="content">
+<h:form>
+<table cellpadding="3" cellspacing="0" width="100%"
+			class="eingabeBoxen">
+			<tr>
+				<td colspan="2" class="eingabeBoxen_row1"><h:outputText
+						value="#{msgs.auswahl}" /></td>
+			</tr>
+			<tr>
+				<td width="50%" class="eingabeBoxen_row2"
+					style="padding-left: 20px; vertical-align: top;">
+
+					<h4>
+						<h:outputText value="#{msgs.batches}" />
+					</h4> <h:panelGroup style="margin-bottom:10px;display:block;">
+						<h:inputText value="#{BatchForm.batchfilter}" style="width:350px" />
+						<h:commandButton action="#{BatchForm.filterBatches}"
+							title="#{msgs.filter}" value="#{msgs.filter}" />
+					</h:panelGroup> <h:selectManyListbox value="#{BatchForm.selectedBatches}"
+						style="width:90%;margin-bottom:10px;display:block;" size="20">
+						<f:selectItems var="batch" value="#{BatchForm.currentBatches}"
+							itemLabel="#{batch.batchLabel}" itemValue="#{batch.batchId}" />
+					</h:selectManyListbox> <h:panelGrid columns="1" cellpadding="2px">
+						<h:commandLink action="#{BatchForm.loadProcessData}">
+							<h:graphicImage alt="reload"
+								value="/newpages/images/buttons/reload_doc.gif"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.loadProcessesOfBatch}" />
+						</h:commandLink>
+
+						<h:commandLink action="#{BatchForm.downloadDocket}">
+							<h:graphicImage
+								alt="/newpages/images/buttons/laufzettel_wide.png"
+								value="/newpages/images/buttons/laufzettel_wide.png"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.laufzettelDrucken}" />
+						</h:commandLink>
+
+						<h:commandLink action="#{BatchForm.editProperties}">
+							<h:graphicImage alt="edit"
+								value="/newpages/images/buttons/edit.gif"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.eigenschaftBearbeiten}" />
+						</h:commandLink>
+
+						<h:commandLink action="#{BatchForm.deleteBatch}"
+							style="margin-left:7px;">
+							<h:graphicImage alt="deleteBatch"
+								value="/newpages/images/buttons/waste1a_20px.gif"
+								style="vertical-align:middle;margin-right:7px" />
+							<h:outputText value="#{msgs.deleteBatch}" />
+						</h:commandLink>
+
+					</h:panelGrid>
+				</td>
+
+				<td width="50%" class="eingabeBoxen_row2"
+					style="padding-left: 20px; vertical-align: top;">
+					<h4>
+						<h:outputText value="#{msgs.prozesse}" />
+					</h4> <h:panelGroup style="margin-bottom:10px;display:block;">
+						<h:inputText value="#{BatchForm.processfilter}"
+							style="width:350px" />
+						<h:commandButton action="#{BatchForm.filterProcesses}"
+							value="#{msgs.filter}" title="#{msgs.filter}" />
+					</h:panelGroup> <h:selectManyListbox value="#{BatchForm.selectedProcesses}"
+						converter="ProcessConverter"
+						style="width:90%;margin-bottom:10px;display:block;" size="20">
+						<f:selectItems value="#{BatchForm.currentProcessesAsSelectItems}" />
+					</h:selectManyListbox> <h:panelGrid columns="1" cellpadding="2px">
+						<h:commandLink action="#{BatchForm.loadBatchData}">
+							<h:graphicImage alt="reload"
+								value="/newpages/images/buttons/reload_doc.gif"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.loadAssociatedBatchOfProcess}" />
+						</h:commandLink>
+
+						<h:commandLink action="#{BatchForm.addProcessesToBatch}">
+							<h:graphicImage alt="add" value="/newpages/images/buttons/ok.gif"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.addToSelectedBatch}" />
+						</h:commandLink>
+
+						<h:commandLink action="#{BatchForm.removeProcessesFromBatch}">
+							<h:graphicImage alt="remove"
+								value="/newpages/images/buttons/cancel1.gif"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.removeFromAssociatedBatch}" />
+						</h:commandLink>
+
+						<h:commandLink action="#{BatchForm.createNewBatch}">
+							<h:graphicImage alt="new"
+								value="/newpages/images/buttons/star_blue.gif"
+								style="vertical-align:middle" />
+							<h:outputText value="#{msgs.createNewBatchFromSelectedProcesses}" />
+						</h:commandLink>
+					</h:panelGrid>
+				</td>
+			</tr>
+
+		</table>
+</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+
+
