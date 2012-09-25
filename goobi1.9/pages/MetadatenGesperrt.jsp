@@ -11,13 +11,12 @@
 
 	<h:form id="lockform">
 		<h:outputText
-			value="Die Metadaten wurden von Ihnen 30 min nicht bearbeitet und wurden daher 
-		wieder f�r andere Benutzer freigegeben. Sie befinden sich gerade in Arbeit."
+			value="#{msgs.MetadataTimeout}"
 			style="font-size: 12px;color: red" />
 		<htm:br />
 		<htm:br />
 		<h:commandLink action="#{Metadaten.goZurueck}" target="_parent">
-			<h:outputText value="zur�ck" style="font-size: 11px" />
+			<h:outputText value="#{msgs.goBack}" style="font-size: 11px" />
 		</h:commandLink>
 
 	</h:form>
