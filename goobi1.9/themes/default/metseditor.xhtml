@@ -15,25 +15,114 @@
 	</ui:define>
 
 	<ui:define name="sidebar_top">
-		<h:outputText value="ich war dort und" />
-	</ui:define>
-
-	<ui:define name="sidebar_bottom">
-		<h:outputText value="ich war hier" />
+		<ui:include src="includes/metseditor/metseditor_left.xhtml" />
 	</ui:define>
 
 	<ui:define name="breadcrumb">
-		<h:commandLink value="#{msgs.startseite}" action="index" />
-		<f:verbatim> &#8250;&#8250; </f:verbatim>
-		<h:outputText value="#{msgs.impressum}" />
+
+		<table id="bla" width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td><h:panelGroup id="vdid3"
+						rendered="#{not Metadaten.nurLesenModus}">
+
+						<h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}"
+							value="#{msgs.paginierung}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
+							<f:param id="vdid5" name="Ansicht" value="Paginierung" />
+						</h:commandLink>
+						<h:outputText id="vdid6" value="#{msgs.paginierung}"
+							style="font-weight:bold;font-size: 11px"
+							rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
+						<h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
+
+						<h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}"
+							value="#{msgs.strukturdaten}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
+							<f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
+						</h:commandLink>
+
+						<h:outputText id="vdid10" value="#{msgs.strukturdaten}"
+							style="font-weight:bold;font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
+						<h:outputText id="vdid11" value=" | " style="font-size: 11px;" />
+
+						<h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}"
+							value="#{msgs.metadaten}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
+							<f:param id="vdid13" name="Ansicht" value="Metadaten" />
+						</h:commandLink>
+
+						<h:outputText id="vdid14" value="#{msgs.metadaten}"
+							style="font-weight:bold;font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
+
+					</h:panelGroup></td>
+
+				<td align="right"><h:commandLink
+						action="#{Metadaten.BildAnzeigen}"
+						rendered="#{Metadaten.bildAnzeigen==true}"
+						value="#{msgs.metadatenBildAusblenden}"
+						style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" />
+					<h:commandLink action="#{Metadaten.BildAnzeigen}"
+						rendered="#{Metadaten.bildAnzeigen==false}"
+						value="#{msgs.metadatenBildAnzeigen}"
+						style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" />
+					<h:outputText value=" | " style="font-size: 11px;" /> <!-- Metadaten validieren -->
+					<h:commandLink style="font-size:11px"
+						action="#{Metadaten.Validate}" value="#{msgs.validieren}"
+						rendered="#{not Metadaten.nurLesenModus}" /> <h:outputText
+						value=" | " style="font-size: 11px;"
+						rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten nicht schreiben, nur zurück gehen-->
+					<h:commandLink style="font-size:11px"
+						action="#{Metadaten.goZurueck}" value="#{msgs.goBack}"
+						target="_parent" immediate="true" id="returnButton" /> <h:outputText
+						value=" | " style="font-size: 11px;"
+						rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten schreiben -->
+					<h:commandLink style="font-size:11px" action="#{Metadaten.Reload}"
+						value="#{msgs.speichern}"
+						rendered="#{not Metadaten.nurLesenModus}" immediate="false" /> <h:outputText
+						value=" | " style="font-size: 11px;"
+						rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten schreiben und zurück gehen-->
+					<h:commandLink style="font-size:11px" target="_parent"
+						action="#{Metadaten.XMLschreiben}"
+						value="#{msgs.speichernZurueck}"
+						rendered="#{not Metadaten.nurLesenModus}" immediate="false" /></td>
+			</tr>
+		</table>
 	</ui:define>
 
 	<ui:define name="title">
-		<h:outputText value="#{msgs.impressum}" />
+		<h:outputText value="#{msgs.metadaten}"
+			rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
+		<h:outputText value="#{msgs.strukturdaten}"
+			rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
+		<h:outputText value="#{msgs.paginierung}"
+			rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
 	</ui:define>
 
 	<ui:define name="content">
+		<table id="metadatenRechts" cellpadding="2" cellspacing="0"
+			style="width: 100%; height: 100%; top: 10px; margin-top: 20px">
 
+			<tr valign="top" style="width: 100%; height: 100%">
+				<td><h:panelGroup
+						rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
+						<ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
+					</h:panelGroup> <h:panelGroup
+						rendered="#{Metadaten.modusAnsicht =='Strukturdaten'}">
+						<ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
+					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
+						<ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
+					</h:panelGroup></td>
+
+				<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
+					<td style="top: 10px;"><h:panelGroup id="BildArea2"
+							style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
+							<ui:include src="includes/metseditor/metseditor_image.xhtml" />
+						</h:panelGroup></td>
+				</h:panelGroup>
+			</tr>
+		</table>
 	</ui:define>
 
 </ui:composition>

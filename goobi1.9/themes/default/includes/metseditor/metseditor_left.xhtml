@@ -17,31 +17,27 @@
 				<td valign="top" height="100%"><h:form rendered="true"
 						id="treeform">
 
-						<x:commandButton id="reloadMyTree" forceId="true" value="reload"
-							action="Metadaten3links" style="color:#E7C342;display:none">
-						</x:commandButton>
-
-						<h:graphicImage id="veid3" alt="print" url="print.png"
+						<h:graphicImage id="veid3" alt="print" url="/newpages/images/print.png"
 							onclick="self.window.print()" styleClass="action"
-							style="position:absolute;right:5px"></h:graphicImage>
+							style="position:absolute;left:165px"></h:graphicImage>
 
 						<x:dataTable id="tabelle" forceId="true"
 							value="#{Metadaten.strukturBaum3}" var="item" cellpadding="0"
 							cellspacing="0">
 
 							<h:column>
+
 								<h:commandLink action="#{NavigationForm.Reload}" >
 									<x:updateActionListener property="#{item.node.expanded}"
 										value="#{not item.node.expanded}" />
 									<h:graphicImage value="/newpages/images/plus.gif"
-										rendered="#{item.node.hasChildren && not item.node.expanded}"
-										style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 5}px;" />
+										rendered="#{item.node.hasChildren and not item.node.expanded}"
+										style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
 									<h:graphicImage value="/newpages/images/minus.gif"
-										rendered="#{item.node.hasChildren && item.node.expanded}"
-										style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 5}px;" />
+										rendered="#{item.node.hasChildren and item.node.expanded}"
+										style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
 								</h:commandLink>
 
-							<%-- Popup --%>
 							<x:popup id="popup" closePopupOnExitingElement="true"
 									closePopupOnExitingPopup="true" displayAtDistanceX="17"
 									displayAtDistanceY="-40">
@@ -50,7 +46,7 @@
 										<div>
 											<h:panelGrid columns="1"
 												style="background-color:white; font-size:11px; border: 1px solid #e3c240; padding: 1px;"
-												rendered="#{item.node.mainTitle != '' || item.node.zblNummer != '' || item.node.firstImage != '' || item.node.zblSeiten != '' || item.node.ppnDigital != ''}">
+												rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
 												<h:panelGrid columns="1" style="font-size: 10"
 													cellspacing="0" cellpadding="0" width="110">
 
@@ -87,13 +83,13 @@
 											</h:panelGrid>
 										</div>
 									</f:facet>
-
+		
 									<h:graphicImage value="/newpages/images/document.png"
 										rendered="#{item.node.hasChildren}"
 										style="margin-right:2px;vertical-align:middle" />
 									<h:graphicImage value="/newpages/images/document.png"
 										rendered="#{!item.node.hasChildren}"
-										style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 17};" />
+										style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" />
 
 								</x:popup>
 
@@ -103,12 +99,11 @@
 
 								<h:commandLink id="link" immediate="true"
 									styleClass="#{item.node.selected ? 'documentSelected':'document'}"
-									action="#{Metadaten.loadRightFrame}"
-									onclick="if (!styleAnpassen2(this)) return">
+									action="#{Metadaten.loadRightFrame}">
 									<h:outputText value="#{item.node.description}"
-										rendered="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle && item.node.mainTitle == '')}" />
+										rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
 									<h:outputText value="#{item.node.mainTitle}"
-										rendered="#{item.node.mainTitle != '' && Metadaten.treeProperties.showtitle}" />
+										rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
 									<x:updateActionListener
 										property="#{Metadaten.myStrukturelement}"
 										value="#{item.node.struct}" />
@@ -116,11 +111,11 @@
 
 								<h:outputText value="(#{item.node.firstImage}"
 									style="color:grey;margin-left:4px"
-									rendered="#{Metadaten.treeProperties.showfirstpagenumber && item.node.firstImage!=''}" />
+									rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
 
 								<h:outputText value="-#{item.node.lastImage})"
 									style="color:grey;margin-left:0px"
-									rendered="#{Metadaten.treeProperties.showfirstpagenumber && item.node.lastImage!=''}" />
+									rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
 
 							</h:column>
 
