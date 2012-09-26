@@ -21,12 +21,12 @@
 
                           Speichern der Metadaten und Überschrift
 
- 		#########################################-->
+		 		#########################################-->
 				<table width="540">
 					<tr>
 						<td>
 							<!-- passende Überschrift -->
-							<h3 style="margin-top: 10px">
+							<h3 style="margin-top: 0px">
 								<h:outputText value="#{msgs.metadatenBearbeiten}"
 									rendered="#{not Metadaten.nurLesenModus}" />
 								<h:outputText value="#{msgs.metadatenBetrachten}"
@@ -64,13 +64,11 @@
 					</tr>
 				</table>
 
-
-
 				<!-- ########################################
 
-                                              Tabelle für die Personen
+                         Tabelle für die Personen
 
-    #########################################-->
+    			#########################################-->
 				<h:panelGroup rendered="#{!empty Metadaten.myPersonen}">
 
 					<h4 style="margin-top: 0px; margin-bottom: 1px">
@@ -79,7 +77,7 @@
 
 					<!-- öffnen der Tabelle -->
 					<h:dataTable value="#{Metadaten.myPersonen}" var="Item"
-						styleClass="Tabelle"
+						styleClass="Tabelle" style="background-color:#F0F0F0"
 						columnClasses="TabelleSpalteLinks,TabelleSpalteLinks">
 
 						<!-- Metadaten -->
@@ -146,7 +144,7 @@
 
                                                  Tabelle für die Metadaten
 
- 		#########################################-->
+ 				#########################################-->
 				<h:panelGroup rendered="#{!empty Metadaten.myMetadaten}"
 					style="#{empty Metadaten.myPersonen ? 'margin-top:0px':'margin-top:15px;'}; display:block">
 					<h4 style="margin-top: 0px; margin-bottom: 1px">
@@ -155,8 +153,7 @@
 
 					<!-- öffnen der Tabelle -->
 					<x:dataTable value="#{Metadaten.myMetadaten}" var="Item"
-						 styleClass="Tabelle"
-						headerClass="TabelleHeader"
+						styleClass="Tabelle" headerClass="TabelleHeader"
 						columnClasses="TabelleSpalteLinks,TabelleSpalteLinks,TabelleSpalteLinks">
 
 						<!-- Metadaten -->
@@ -206,10 +203,6 @@
 								styleClass="metadatenInput"
 								style="width: 350px; border: 0 none;" />
 						</h:column>
-
-
-
-
 
 						<!-- Link für Details -->
 						<h:column rendered="#{not Metadaten.nurLesenModus}">
@@ -309,12 +302,12 @@
 
 			<!-- ########################################
 
-                                 Formular für neue Metadaten
+                  Formular für neue Metadaten
 
 			#########################################-->
 			<h:panelGroup rendered="#{Metadaten.modusHinzufuegen}">
-				<h3 style="margin-top: 10px">
-					<h:outputText value="#{msgs.metadatenBearbeiten}" />
+				<h3 style="margin-top: 0px">
+					<h:outputText value="#{msgs.neuesMetadatumAnlegen}" />
 				</h3>
 				<table id="render" cellpadding="3" cellspacing="0"
 					style="width: 540px" class="eingabeBoxen">
@@ -397,8 +390,8 @@
 
   #########################################-->
 			<h:panelGroup rendered="#{Metadaten.modusHinzufuegenPerson}">
-				<h3 style="margin-top: 10px">
-					<h:outputText value="#{msgs.personBearbeiten}" />
+				<h3 style="margin-top: 0px">
+					<h:outputText value="#{msgs.neuePersonAnlegen}" />
 				</h3>
 				<table cellpadding="3" cellspacing="0" style="width: 540px"
 					class="eingabeBoxen">

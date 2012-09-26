@@ -2,7 +2,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	template="/themes/default/template/template.html"
+	template="/themes/default/template/template_metadata.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk">
 
 	<ui:define name="top_title">
@@ -89,15 +89,6 @@
 						rendered="#{not Metadaten.nurLesenModus}" immediate="false" /></td>
 			</tr>
 		</table>
-	</ui:define>
-
-	<ui:define name="title">
-		<h:outputText value="#{msgs.metadaten}"
-			rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
-		<h:outputText value="#{msgs.strukturdaten}"
-			rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
-		<h:outputText value="#{msgs.paginierung}"
-			rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
 	</ui:define>
 
 	<ui:define name="content">

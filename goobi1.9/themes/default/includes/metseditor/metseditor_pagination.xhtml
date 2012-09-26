@@ -12,6 +12,11 @@
 
 	<composite:implementation>
 		<h:form>
+		
+		<h3 style="margin-top: 0px">
+			<h:outputText value="#{msgs.paginierung}" />
+		</h3>
+				
 		<h:commandLink action="#{Metadaten.createPagination}"
 			value="#{msgs.paginierungEinlesen}" />
 			<h:panelGrid id="mygrid10" columns="2" style="margin:0px;">
@@ -50,7 +55,7 @@
 					<table cellpadding="3" cellspacing="0" id="PaginierungActionBox"
 						
 						class="eingabeBoxen"
-						style="position: fixed; top: 104px; left: 250px;">
+						style="position: fixed; top: 180px; left: 450px;">
 						<tr>
 							<td class="eingabeBoxen_row1"><h:outputText
 									value="#{msgs.paginierungFestlegen}" /></td>
@@ -58,7 +63,7 @@
 						<tr>
 							<td class="eingabeBoxen_row2"><h:selectOneMenu
 									value="#{Metadaten.paginierungArt}" style="width: 250px"
-									onchange="paginierungWertAnzeigen(this);">
+									>
 									<f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
 									<f:selectItem itemValue="4" itemLabel="#{msgs.arabischBracket}" />
 									<f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
@@ -66,9 +71,15 @@
 									<f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
 									<f:selectItem itemValue="6"
 										itemLabel="#{msgs.paginationFreetext}" />
-								</h:selectOneMenu> <br /> <x:inputText id="paginierungWert" forceId="true"
+										<f:ajax render="@all" event="change"/>
+								</h:selectOneMenu> <br /> 
+								
+								<x:inputText id="paginierungWert" forceId="true"
+									rendered="#{Metadaten.paginierungArt ne 3}"
 									value="#{Metadaten.paginierungWert}"
 									style="width: 250px;margin-top:15px;margin-bottom:5px" /> <br />
+
+
 
 								<h:commandLink
 									rendered="#{Metadaten.paginierungSeitenProImage!=1}"
