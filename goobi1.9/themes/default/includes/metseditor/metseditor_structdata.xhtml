@@ -32,7 +32,7 @@
 							columns="1">
 
 							<!-- onclick="addableTypenAnzeigen(this)" -->
-							<x:selectOneRadio id="auswahlElementWohin" forceId="true"
+							<h:selectOneRadio id="auswahlElementWohin" forceId="true"
 								layout="pageDirection" style="font-size:12px"
 								value="#{Metadaten.neuesElementWohin}">
 								<f:selectItem itemValue="1"
@@ -43,10 +43,10 @@
 									itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
 								<f:selectItem itemValue="4"
 									itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
-						    <!-- 
 						     	<f:ajax render="@all" event="change"/>
+						    <!-- 
 						     -->
-							</x:selectOneRadio>
+							</h:selectOneRadio>
 
 							<h:panelGroup>
 								<x:selectOneMenu id="auswahlAddable1" forceId="true"

@@ -211,6 +211,7 @@
 	<h:outputText value="#{msgs.aktuellerOrdner}: " />
 	<h:selectOneMenu id="TifFolders" value="#{Metadaten.currentTifFolder}">
 		<f:selectItems value="#{Metadaten.allTifFolders}" var="step" itemLabel="#{step}" itemValue="#{step}" />
+		<f:ajax render="@all" event="change" />
 <!-- 
 		<s:submitOnEvent for="cmdOrdnerWechseln" event="change" />
  -->
