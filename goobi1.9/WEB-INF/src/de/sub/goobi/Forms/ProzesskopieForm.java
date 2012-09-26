@@ -485,7 +485,7 @@ public class ProzesskopieForm {
 		/* kein Titel */
 		if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
 			valide = false;
-			Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " Process title is empty");
+			Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
 		}
 
 		// if (!prozessKopie.getTitel().matches("[\\w-]*")) {
@@ -506,7 +506,7 @@ public class ProzesskopieForm {
 			}
 			if (anzahl > 0) {
 				valide = false;
-				Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten: ") + " the process title is allready used");
+				Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
 			}
 		}
 
@@ -516,7 +516,7 @@ public class ProzesskopieForm {
 		/* keine Collektion ausgewählt */
 		if (this.standardFields.get("collections") && getDigitalCollections().size() == 0) {
 			valide = false;
-			Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " digital collection is empty");
+			Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorNoCollection"));
 		}
 
 		/*
@@ -526,7 +526,8 @@ public class ProzesskopieForm {
 			if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype()
 					&& (StringUtils.isBlank(field.getWert()))) {
 				valide = false;
-				Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " is empty");
+				Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " " + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty")); 
+
 			}
 		}
 		return valide;
@@ -915,6 +916,7 @@ public class ProzesskopieForm {
 		/* Tiffheader */
 		bh.EigenschaftHinzufuegen(werk, "TifHeaderImagedescription", this.tifHeader_imagedescription);
 		bh.EigenschaftHinzufuegen(werk, "TifHeaderDocumentname", this.tifHeader_documentname);
+		bh.EigenschaftHinzufuegen(prozessKopie, "Template", prozessVorlage.getTitel());
 	}
 
 	public String getDocType() {

@@ -1,4 +1,5 @@
 package de.sub.goobi.Forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,6 +29,7 @@ package de.sub.goobi.Forms;
  */
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -37,6 +39,8 @@ import org.hibernate.criterion.Order;
 
 import de.sub.goobi.Beans.Docket;
 import de.sub.goobi.Persistence.DocketDAO;
+import de.sub.goobi.Persistence.apache.ProcessManager;
+import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -56,8 +60,13 @@ public class DocketForm extends BasisForm {
 
 	public String Speichern() {
 		try {
-			this.dao.save(this.myDocket);
-			return "docket_all";
+			if (hasValidRulesetFilePath(myDocket, ConfigMain.getParameter("xsltFolder"))) {
+				this.dao.save(myDocket);
+				return "docket_all";
+			} else {
+				Helper.setFehlerMeldung("DocketNotFound");
+				return "";
+			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
 			logger.error(e);
@@ -65,9 +74,19 @@ public class DocketForm extends BasisForm {
 		}
 	}
 
+	private boolean hasValidRulesetFilePath(Docket d, String pathToRulesets) {
+		File rulesetFile = new File(pathToRulesets + d.getFile());
+		return rulesetFile.exists();
+	}
+
 	public String Loeschen() {
 		try {
-			this.dao.remove(this.myDocket);
+			if (hasAssignedProcesses(myDocket)) {
+				Helper.setFehlerMeldung("DocketInUse");
+				return "";
+			} else {
+				this.dao.remove(this.myDocket);
+			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
 			return "";
@@ -75,12 +94,20 @@ public class DocketForm extends BasisForm {
 		return "docket_all";
 	}
 
+	private boolean hasAssignedProcesses(Docket d) {
+		Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
+		if (number != null && number > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	public String FilterKein() {
 		try {
-			//	  HibernateUtil.clearSession();
+			// HibernateUtil.clearSession();
 			Session session = Helper.getHibernateSession();
-			//	session.flush();
-				session.clear();
+			// session.flush();
+			session.clear();
 			Criteria crit = session.createCriteria(Docket.class);
 			crit.addOrder(Order.asc("name"));
 			this.page = new Page(crit, 0);
@@ -96,13 +123,10 @@ public class DocketForm extends BasisForm {
 		return this.zurueck;
 	}
 
-	/*#####################################################
-	 #####################################################
-	 ##                                                                                              
-	 ##                                                Getter und Setter                         
-	 ##                                                                                                    
-	 #####################################################
-	 ####################################################*/
+	/*
+	 * ##################################################### ##################################################### ## ## Getter und Setter ##
+	 * ##################################################### ####################################################
+	 */
 
 	public Docket getMyDocket() {
 		return this.myDocket;

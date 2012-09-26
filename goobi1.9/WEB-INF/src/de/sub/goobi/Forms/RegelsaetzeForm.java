@@ -1,4 +1,5 @@
 package de.sub.goobi.Forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,6 +29,7 @@ package de.sub.goobi.Forms;
  */
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -37,6 +39,8 @@ import org.hibernate.criterion.Order;
 
 import de.sub.goobi.Beans.Regelsatz;
 import de.sub.goobi.Persistence.RegelsatzDAO;
+import de.sub.goobi.Persistence.apache.ProcessManager;
+import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -56,8 +60,13 @@ public class RegelsaetzeForm extends BasisForm {
 
 	public String Speichern() {
 		try {
-			this.dao.save(this.myRegelsatz);
-			return "ruleset_all";
+			if (hasValidRulesetFilePath(myRegelsatz, ConfigMain.getParameter("RegelsaetzeVerzeichnis"))) {
+				dao.save(myRegelsatz);
+				return "ruleset_all";
+			} else {
+				Helper.setFehlerMeldung("RulesetNotFound");
+				return "";
+			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
 			logger.error(e);
@@ -65,9 +74,19 @@ public class RegelsaetzeForm extends BasisForm {
 		}
 	}
 
+	private boolean hasValidRulesetFilePath(Regelsatz r, String pathToRulesets) {
+		File rulesetFile = new File(pathToRulesets + r.getDatei());
+		return rulesetFile.exists();
+	}
+
 	public String Loeschen() {
 		try {
-			this.dao.remove(this.myRegelsatz);
+			if (hasAssignedProcesses(myRegelsatz)) {
+				Helper.setFehlerMeldung("RulesetInUse");
+				return "";
+			} else {
+				dao.remove(myRegelsatz);
+			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
 			return "";
@@ -75,12 +94,20 @@ public class RegelsaetzeForm extends BasisForm {
 		return "ruleset_all";
 	}
 
+	private boolean hasAssignedProcesses(Regelsatz r) {
+		Integer number = ProcessManager.getNumberOfProcessesWithRuleset(r.getId());
+		if (number != null && number > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	public String FilterKein() {
 		try {
-			//	  HibernateUtil.clearSession();
+			// HibernateUtil.clearSession();
 			Session session = Helper.getHibernateSession();
-			//	session.flush();
-				session.clear();
+			// session.flush();
+			session.clear();
 			Criteria crit = session.createCriteria(Regelsatz.class);
 			crit.addOrder(Order.asc("titel"));
 			this.page = new Page(crit, 0);
@@ -96,13 +123,10 @@ public class RegelsaetzeForm extends BasisForm {
 		return this.zurueck;
 	}
 
-	/*#####################################################
-	 #####################################################
-	 ##                                                                                              
-	 ##                                                Getter und Setter                         
-	 ##                                                                                                    
-	 #####################################################
-	 ####################################################*/
+	/*
+	 * ##################################################### ##################################################### ## ## Getter und Setter ##
+	 * ##################################################### ####################################################
+	 */
 
 	public Regelsatz getMyRegelsatz() {
 		return this.myRegelsatz;
