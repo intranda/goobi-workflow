@@ -36,8 +36,11 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
+
+import com.sun.faces.context.flash.ELFlash;
 
 
 /**
@@ -78,7 +81,8 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
 				try {
 					requestMap.put("currentView", t.getMessage());
-					requestMap.put("exception", t.getStackTrace());
+					ELFlash flash = ELFlash.getFlash(facesContext.getExternalContext(), true);
+					flash.put("exceptioniNFO",t.getCause());  
 					navigationHandler.handleNavigation(facesContext, null, "/themes/default/error?faces-redirect=true");
 					facesContext.renderResponse();
 				} finally {
