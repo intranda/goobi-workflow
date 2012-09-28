@@ -278,7 +278,12 @@ public class PropertyParser {
 
 			// project is configured
 			if (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle)) {
-
+				String groupAccess = config.getString("property(" + i + ").showProcessGroup[@access]");
+				if (groupAccess != null) {
+					pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
+				} else {
+					pp.setShowProcessGroupAccessCondition(AccessCondition.WRITE);
+				}
 				// validation expression
 				pp.setValidation(config.getString("property(" + i + ").validation"));
 				// type
