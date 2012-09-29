@@ -141,7 +141,7 @@
 							<!-- textarea -->
 							<h:panelGroup id="prpvw15_1"
 								rendered="#{((myitem.type.name == 'string') || (myitem.type.name == 'null'))}">
-								<h:inputText id="file" style="width: 500px;margin-right:15px"
+								<h:inputText id="file" style="width: 500px;margin-right:15px" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 									value="#{myitem.selectedValue}" required="#{myitem.required}" />
 							</h:panelGroup>
 
@@ -150,7 +150,7 @@
 								rendered="#{myitem.type.name == 'integer' || myitem.type.name == 'number'}">
 
 								<h:inputText id="numberstuff122334mnktodo"
-									style="width: 500px;margin-right:15px"
+									style="width: 500px;margin-right:15px" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 									value="#{myitem.selectedValue}" required="#{myitem.required}">
 									<f:validateLongRange minimum="0" />
 								</h:inputText>
@@ -158,8 +158,8 @@
 
 							<!--  SelectOneMenu -->
 							<h:panelGroup id="prpvw15_2"
-								rendered="#{(myitem.type.name == 'list')}">
-								<h:selectOneMenu value="#{myitem.selectedValue}"
+								rendered="#{(myitem.type.name == 'list')}"> 
+								<h:selectOneMenu value="#{myitem.selectedValue}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 									style="width: 500px;margin-right:15px" id="prpvw15_2_1">
 									<f:selectItems id="prpvw15_2_2" value="#{myitem.valuesList}"
 										var="myitems" itemLabel="#{myitems}" itemValue="#{myitems}" />
@@ -169,7 +169,7 @@
 							<!--  SelectManyMenu -->
 							<h:panelGroup id="prpvw15_3"
 								rendered="#{(myitem.type.name == 'listmultiselect')}">
-								<h:selectManyListbox id="prpvw15_3_1"
+								<h:selectManyListbox id="prpvw15_3_1" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 									style="width: 500px;margin-right:15px"
 									value="#{myitem.selectedValuesList}"
 									required="#{myitem.required}" size="10">
@@ -181,7 +181,7 @@
 							<!--  Boolean -->
 							<h:panelGroup id="prpvw15_4"
 								rendered="#{(myitem.type.name == 'boolean')}">
-								<h:selectOneMenu value="#{myitem.selectedValue}"
+								<h:selectOneMenu value="#{myitem.selectedValue}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 									style="width: 500px;margin-right:15px" id="prpvw15_4_1"
 									required="#{myitem.required}">
 									<f:selectItem id="prpvw15_4_2" itemValue="true"
@@ -195,7 +195,7 @@
 							<h:panelGroup id="prpvw15_5"
 								style="width: 500px;margin-right:15px"
 								rendered="#{(myitem.type.name == 'date')}">
-								<x:inputCalendar id="to" style="width:110px"
+								<x:inputCalendar id="to" style="width:110px" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 												value="#{myitem.date}"
 												renderAsPopup="true" renderPopupButtonAsImage="true"
 												popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}"

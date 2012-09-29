@@ -57,4 +57,10 @@
 		<converter-class>de.sub.goobi.Converter.ProcessConverter</converter-class>
 	</converter>
 	
+	
+	<factory>  
+        <exception-handler-factory>  
+            de.sub.goobi.helper.exceptions.GoobiExceptionHandlerFactory  
+        </exception-handler-factory>  
+    </factory>  
 </faces-config>

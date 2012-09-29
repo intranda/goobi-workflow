@@ -263,33 +263,40 @@
 												required="true" />
 											<x:message for="title" style="color: red"
 												detailFormat="#{msgs.keinTitelAngegeben}" />
-										</h:panelGroup> <!-- textarea --> <h:panelGroup 
+										</h:panelGroup> 
+										<!-- textarea --> 
+										<h:panelGroup 
 											rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'null'))}">
 											
 											<h:outputText 
 											style="margin-left:25px;margin-right:10px"
 											value="#{msgs.wert}: " rendered="#{myprocess_item.isNew}"/>
 											<h:inputText style="width: 500px;margin-right:15px"
-												value="#{myprocess_item.value}" />
-										</h:panelGroup> <!-- numbers only --> <h:panelGroup 
+												value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"/>
+										</h:panelGroup> 
+										<!-- numbers only --> 
+										<h:panelGroup 
 											rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
-
 											<h:inputText 
 												style="width: 500px;margin-right:15px"
-												value="#{myprocess_item.value}">
+												value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 												<f:validateLongRange minimum="0" />
 											</h:inputText>
-										</h:panelGroup> <!--  SelectOneMenu --> <h:panelGroup 
+										</h:panelGroup> 
+										<!--  SelectOneMenu --> 
+										<h:panelGroup 
 											rendered="#{(myprocess_item.type.name == 'list')}">
-											<h:selectOneMenu value="#{myprocess_item.value}"
+											<h:selectOneMenu value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 												style="width: 500px;margin-right:15px" >
 												<f:selectItems 
 													value="#{myprocess_item.possibleValues}"
 													var="myprocess_items" itemLabel="#{myprocess_items}"
 													itemValue="#{myprocess_items}" />
 											</h:selectOneMenu>
-										</h:panelGroup> <!--  SelectManyMenu --> <h:panelGroup 
-											rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
+										</h:panelGroup> 
+										<!--  SelectManyMenu --> 
+										<h:panelGroup 
+											rendered="#{(myprocess_item.type.name == 'listmultiselect')}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 											<h:selectManyListbox 
 												style="width: 500px;margin-right:15px"
 												value="#{myprocess_item.valueList}" size="5">
@@ -298,13 +305,17 @@
 													var="myprocess_items" itemLabel="#{myprocess_items}"
 													itemValue="#{myprocess_items}" />
 											</h:selectManyListbox>
-										</h:panelGroup> <!--  Boolean --> <h:panelGroup 
+										</h:panelGroup> 
+										<!--  Boolean --> 
+										<h:panelGroup readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 											rendered="#{(myprocess_item.type.name == 'boolean')}">
 											<h:selectBooleanCheckbox
 												value="#{myprocess_item.booleanValue}">
 											</h:selectBooleanCheckbox>
 
-										</h:panelGroup> <!--  Date  --> <h:panelGroup 
+										</h:panelGroup> 
+										<!--  Date  --> 
+										<h:panelGroup readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 											rendered="#{(myprocess_item.type.name == 'date')}">
 											 <x:inputCalendar id="to" style="width:110px"
 												value="#{myprocess_item.dateValue}"
@@ -313,7 +324,8 @@
 												imageLocation="/newpages/images/calendarImages"
 												popupButtonImageUrl="/newpages/images/calendarImages/calendar.gif"
 											 />
-										</h:panelGroup></td>
+										</h:panelGroup>
+										</td>
 								</tr>
 							</x:dataList>
 						</table>
