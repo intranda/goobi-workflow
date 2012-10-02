@@ -36,18 +36,20 @@
 				class="eingabeBoxen">
 
 				<tr>
-					<td class="eingabeBoxen_row1" align="left"><h:outputText
-							id="id9" value="#{msgs.details}" /></td>
-					<td class="eingabeBoxen_row1" align="right"><h:commandLink
-							id="id10" action="#{NavigationForm.Reload}">
+					<td class="eingabeBoxen_row1" align="left">
+						<h:outputText id="id9" value="#{msgs.details}" />
+					</td>
+					<td class="eingabeBoxen_row1" align="right">
+						<h:commandLink id="id10" action="#{NavigationForm.Reload}">
 							<h:graphicImage id="id11" value="/newpages/images/reload.gif" />
-						</h:commandLink></td>
+						</h:commandLink>
+					</td>
 				</tr>
 
 				<!-- Formular für die Bearbeitung der Texte -->
 				<tr>
-					<td class="eingabeBoxen_row2" colspan="2"><h:panelGrid
-							id="id12" columns="2" rowClasses="top">
+					<td class="eingabeBoxen_row2" colspan="2">
+						<h:panelGrid id="id12" columns="2" rowClasses="top">
 
 							<!-- nachname -->
 							<h:outputLabel id="id13" for="nachname" value="#{msgs.nachname}" />
@@ -185,7 +187,7 @@
 									target="#{BenutzerverwaltungForm.displayMode}"
 									value="#{BenutzerverwaltungForm.displayMode eq ''?'usergroup':''}" />
 							</h:commandLink>
-							
+
 							<h:panelGroup>
 								<h:panelGroup
 									rendered="#{BenutzerverwaltungForm.displayMode eq 'usergroup'}">
@@ -223,12 +225,21 @@
 
 									<table width="100%" border="0">
 										<tr valign="top">
+											<td align="left">
+												<!-- Abbrechen-Schaltknopf -->
+												<h:commandLink action="#{NavigationForm.Reload}"
+													value="#{msgs.abbrechen}">
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.displayMode}" value="" />
+												</h:commandLink>
+											</td>
+
 											<td align="center">
 												<!-- ===================== Datascroller für die Ergebnisse ====================== -->
 												<x:aliasBean alias="#{mypage}"
 													value="#{BenutzergruppenForm.page}">
 													<ui:include src="includes/datascroller2.xhtml" />
-												</x:aliasBean> 
+												</x:aliasBean>
 												<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 											</td>
 										</tr>
@@ -264,7 +275,8 @@
 								style="border-bottom: #a24033 dashed 1px;"
 								value="#{msgs.projekte}">
 								<f:setPropertyActionListener
-									target="#{BenutzerverwaltungForm.displayMode}" value="#{BenutzerverwaltungForm.displayMode eq ''?'project':''}" />
+									target="#{BenutzerverwaltungForm.displayMode}"
+									value="#{BenutzerverwaltungForm.displayMode eq ''?'project':''}" />
 							</h:commandLink>
 
 							<h:panelGroup>
@@ -274,7 +286,8 @@
 									<table style="margin-top: 20px" align="center" width="90%"
 										border="0">
 										<tr>
-											<td><x:dataTable id="id8" styleClass="standardTable"
+											<td>
+												<x:dataTable id="id8" styleClass="standardTable"
 													width="100%" cellspacing="1px" cellpadding="1px"
 													headerClass="standardTable_Header"
 													rowClasses="standardTable_Row1,standardTable_Row2"
@@ -307,15 +320,25 @@
 
 												<table width="100%" border="0">
 													<tr valign="top">
+														<td align="left">
+															<!-- Abbrechen-Schaltknopf -->
+															<h:commandLink action="#{NavigationForm.Reload}"
+																value="#{msgs.abbrechen}">
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.displayMode}" value="" />
+															</h:commandLink>
+														</td>
 														<td align="center">
 															<!-- ===================== Datascroller für die Ergebnisse ====================== -->
 															<x:aliasBean alias="#{mypage}"
 																value="#{ProjekteForm.page}">
 																<ui:include src="includes/datascroller.xhtml" />
-															</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+															</x:aliasBean>
+															<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 														</td>
 													</tr>
-												</table></td>
+												</table>
+											</td>
 										</tr>
 									</table>
 								</h:panelGroup>
@@ -342,21 +365,24 @@
 							</h:panelGroup>
 
 
-						</h:panelGrid></td>
+						</h:panelGrid>
+					</td>
 				</tr>
 
 				<tr>
-					<td class="eingabeBoxen_row3" align="left"><h:commandButton
-							id="id58" value="#{msgs.abbrechen}" action="user_all"
-							immediate="true" /></td>
+					<td class="eingabeBoxen_row3" align="left">
+						<h:commandButton id="id58" value="#{msgs.abbrechen}"
+							action="user_all" immediate="true" />
+					</td>
 
-					<td class="eingabeBoxen_row3" align="right"><h:commandButton
-							id="id59" value="#{msgs.loeschen}"
+					<td class="eingabeBoxen_row3" align="right">
+						<h:commandButton id="id59" value="#{msgs.loeschen}"
 							action="#{BenutzerverwaltungForm.Loeschen}"
 							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')"
-							rendered="#{BenutzerverwaltungForm.myClass.id != null}" /> <h:commandButton
-							id="absenden" value="#{msgs.speichern}"
-							action="#{BenutzerverwaltungForm.Speichern}" /></td>
+							rendered="#{BenutzerverwaltungForm.myClass.id != null}" />
+						<h:commandButton id="absenden" value="#{msgs.speichern}"
+							action="#{BenutzerverwaltungForm.Speichern}" />
+					</td>
 				</tr>
 
 			</table>
