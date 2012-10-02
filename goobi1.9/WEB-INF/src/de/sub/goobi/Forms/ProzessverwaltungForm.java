@@ -746,7 +746,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.myProzess.getWerkstuecke().add(this.myWerkstueck);
 		this.myWerkstueck.setProzess(this.myProzess);
 		Speichern();
-		return "ProzessverwaltungBearbeitenWerkstueck";
+		return "process_edit_workpiece";
 	}
 
 	public String WerkstueckUebernehmen() {
