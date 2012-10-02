@@ -48,7 +48,8 @@
 
 		<!-- Neu-Schaltknopf -->
 		<h:commandLink action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}"
-			value="#{msgs.benutzerHinzufuegen}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+			value="#{msgs.benutzerHinzufuegen}"
+			rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
 			<f:setPropertyActionListener
 				target="#{ProzessverwaltungForm.userDisplayMode}"
 				value="#{ProzessverwaltungForm.userDisplayMode eq ''?'user':''}" />
@@ -81,8 +82,7 @@
 						title="#{msgs.uebernehmen}">
 						<h:graphicImage value="/newpages/images/buttons/addUser.gif" />
 						<f:setPropertyActionListener
-							target="#{ProzessverwaltungForm.userDisplayMode}"
-							value="" />
+							target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
 						<x:updateActionListener
 							property="#{ProzessverwaltungForm.myBenutzer}" value="#{item}" />
 					</h:commandLink>
@@ -91,18 +91,29 @@
 
 			</x:dataTable>
 
-
 			<table width="100%" border="0">
 				<tr valign="top">
+
+					<td align="left">
+						<!-- Abbrechen-Schaltknopf -->
+						<h:commandLink action="#{NavigationForm.Reload}"
+							value="#{msgs.abbrechen}">
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
+						</h:commandLink>
+					</td>
+
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}"
 							value="#{BenutzerverwaltungForm.page}">
 							<ui:include src="../../includes/datascroller.xhtml" />
-						</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+						</x:aliasBean>
+						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 					</td>
 				</tr>
 			</table>
+
 		</h:panelGroup>
 
 	</composite:implementation>
