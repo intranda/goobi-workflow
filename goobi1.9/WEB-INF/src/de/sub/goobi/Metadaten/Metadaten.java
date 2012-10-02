@@ -44,6 +44,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
@@ -1414,6 +1415,10 @@ public class Metadaten {
 	public String BildBlaetternZurueck() {
 		BildErmitteln(-1);
 		return "";
+	}
+	
+	public void flipImage(AjaxBehaviorEvent event) { 
+		BildBlaettern();
 	}
 
 	public String BildBlaettern() {

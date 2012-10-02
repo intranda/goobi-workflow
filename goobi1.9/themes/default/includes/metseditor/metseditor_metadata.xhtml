@@ -85,19 +85,23 @@
 							<h:panelGrid columns="2">
 								<h:outputText value="#{msgs.vorname}" style="font-size: 11px" />
 								<h:inputText value="#{Item.vorname}"
-									onchange="styleAnpassen(this)" styleClass="metadatenInput"
-									style="width: 350px;" readonly="#{Metadaten.nurLesenModus}" />
+									styleClass="metadatenInput"
+									style="width: 350px;" readonly="#{Metadaten.nurLesenModus}" >
+									<f:ajax execute="@form" event="change" render="@form" />
+									</h:inputText>
 								<h:outputText value="#{msgs.nachname}" style="font-size: 11px" />
 								<h:inputText value="#{Item.nachname}"
-									onkeyup="astyleAnpassenPerson(this)"
-									onchange="styleAnpassen(this)" styleClass="metadatenInput"
-									style="width: 350px;" readonly="#{Metadaten.nurLesenModus}" />
+								
+									 styleClass="metadatenInput"
+									style="width: 350px;" readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" /></h:inputText>
 								<h:outputText value="#{msgs.rolle}" style="font-size: 11px" />
 								<h:selectOneMenu value="#{Item.rolle}"
 									styleClass="metadatenInput" style="width: 350px;"
 									disabled="#{Metadaten.nurLesenModus}"
-									onchange="styleAnpassenPerson(this)"
+									
 									readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" />
 									<f:selectItems value="#{Item.addableRollen}" />
 								</h:selectOneMenu>
 							</h:panelGrid>
@@ -168,25 +172,28 @@
 
 								<h:inputTextarea value="#{Item.value}" immediate="true"
 									readonly="#{Metadaten.nurLesenModus}"
-									onchange="styleAnpassen(this)" styleClass="metadatenInput"
+									styleClass="metadatenInput"
 									style="width: 350px;height: 45px;">
-
+<f:ajax execute="@form" event="change" render="@form" />
 								</h:inputTextarea>
 
 							</h:panelGrid>
 							<h:panelGrid columns="1"
 								rendered="#{(Item.outputType == 'input')}">
 								<h:inputText value="#{Item.value}"
-									onchange="styleAnpassen(this)" styleClass="metadatenInput"
-									style="width: 350px;" readonly="#{Metadaten.nurLesenModus}" />
-
+									styleClass="metadatenInput"
+									style="width: 350px;" readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" />
+								</h:inputText>
+								 
 							</h:panelGrid>
 
 
-							<h:selectManyListbox onselect="styleAnpassen(this)"
+							<h:selectManyListbox 
 								value="#{Item.selectedItems}"
 								rendered="#{(Item.outputType == 'select')}"
 								readonly="#{Metadaten.nurLesenModus}">
+								<f:ajax execute="@form" event="change" render="@form" />	
 								<f:selectItems value="#{Item.items}"
 									itemValue="#{element.label}" var="element"
 									itemLabel="#{element.label}" />
@@ -194,6 +201,7 @@
 							<h:selectOneMenu value="#{Item.selectedItem}"
 								rendered="#{(Item.outputType == 'select1')}"
 								readonly="#{Metadaten.nurLesenModus}">
+								<f:ajax execute="@form" event="change" render="@form" />
 								<f:selectItems value="#{Item.items}"
 									itemValue="#{element.label}" var="element"
 									itemLabel="#{element.label}" />
@@ -340,23 +348,23 @@
 										<h:inputTextarea id="myTextarea"
 											value="#{Metadaten.metadatum.value}" immediate="true"
 											rendered="#{(Metadaten.outputType == 'textarea')}"
-											onchange="styleAnpassen(this)" styleClass="metadatenInput"
+											 styleClass="metadatenInput"
 											style="width: 350px;height: 45px;">
 										</h:inputTextarea>
 										<h:inputText id="myInput" value="#{Metadaten.metadatum.value}"
-											onchange="styleAnpassen(this)"
+											
 											rendered="#{(Metadaten.outputType == 'input')}"
 											styleClass="metadatenInput" style="width: 350px;" />
 										<h:selectManyListbox id="mySelect"
 											value="#{Metadaten.metadatum.selectedItems}"
 											rendered="#{(Metadaten.outputType == 'select')}"
-											onchange="styleAnpassen(this)" immediate="true">
+											immediate="true">
 											<f:selectItems value="#{Metadaten.metadatum.items}" />
 										</h:selectManyListbox>
 										<h:selectOneMenu id="mySelect1"
 											value="#{Metadaten.metadatum.selectedItem}"
 											rendered="#{(Metadaten.outputType == 'select1')}"
-											onchange="styleAnpassen(this)" immediate="true">
+											 immediate="true">
 											<f:selectItems value="#{Metadaten.metadatum.items}" />
 										</h:selectOneMenu>
 										<h:outputText id="myOutput"

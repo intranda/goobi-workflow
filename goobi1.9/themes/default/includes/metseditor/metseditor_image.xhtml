@@ -209,14 +209,10 @@
 
 <h:form id="formularOrdner" rendered="#{Metadaten.bildNummer != '-1'}" style="margin-top:15px">
 	<h:outputText value="#{msgs.aktuellerOrdner}: " />
-	<h:selectOneMenu id="TifFolders" value="#{Metadaten.currentTifFolder}">
+	<h:selectOneMenu id="TifFolders" value="#{Metadaten.currentTifFolder}" onchange="document.getElementById('formularOrdner:cmdOrdnerWechseln').click();">
 		<f:selectItems value="#{Metadaten.allTifFolders}" var="step" itemLabel="#{step}" itemValue="#{step}" />
-		<f:ajax render="@all" event="change" />
-<!-- 
-		<s:submitOnEvent for="cmdOrdnerWechseln" event="change" />
- -->
 	</h:selectOneMenu>
-	<h:commandLink id="cmdOrdnerWechseln" action="#{Metadaten.BildBlaettern}" value="#{msgs.ordnerWechseln}"
+	<h:commandLink id="cmdOrdnerWechseln" action="#{Metadaten.BildBlaettern}" type="submit" value="#{msgs.ordnerWechseln}"
 		style="display: none">
 		<f:param name="Anzahl" value="0" />
 	</h:commandLink>
