@@ -98,7 +98,15 @@
 
 				<table width="100%" border="0">
 					<tr valign="top">
-						<td align="center">
+						<td align="left">
+						<!-- Abbrechen-Schaltknopf -->
+						<h:commandLink action="#{NavigationForm.Reload}"
+							value="#{msgs.abbrechen}">
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
+						</h:commandLink>
+					</td>
+					<td align="center">
 							<!-- ===================== Datascroller für die Ergebnisse ====================== -->
 							<x:aliasBean alias="#{mypage}"
 								value="#{BenutzergruppenForm.page}">
