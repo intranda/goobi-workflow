@@ -27,7 +27,7 @@
 	<ui:define name="content">
 		<link href="../css/tabbedPane.css" rel="stylesheet" type="text/css" />
 
-		<h:form id="projectform">
+		<h:form id="projectform" rendered="#{LoginForm.maximaleBerechtigung == 1}">
 
 			<table cellpadding="3" cellspacing="0" width="100%"
 				class="eingabeBoxen">

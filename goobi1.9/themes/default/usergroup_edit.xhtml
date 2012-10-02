@@ -29,7 +29,7 @@
 
 	<ui:define name="content">
 
-		<h:form id="myform"
+		<h:form id="myform" rendered="#{LoginForm.maximaleBerechtigung == 1}"
 			onkeypress="ifEnterClick(event, 'myform:absenden');">
 
 

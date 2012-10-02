@@ -18,7 +18,7 @@
 
 	<ui:define name="content">
 
-		<h:form>
+		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}">
 			<h:commandLink id="id5" action="#{BenutzerverwaltungForm.Neu}"
 				immediate="true"
 				rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
