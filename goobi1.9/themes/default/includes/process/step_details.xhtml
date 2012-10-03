@@ -325,7 +325,22 @@
 		<!-- // Box für die Bearbeitung der Details -->
 
 		<script type="text/javascript">
-	
+			
+		if(window.attachEvent) {
+		    window.attachEvent('onload', txtAutomatischAnzeigen());
+		} else {
+		    if(window.onload) {
+		        var curronload = window.onload;
+		        var newonload = function() {
+		            curronload();
+		            txtAutomatischAnzeigen();
+		        };
+		        window.onload = newonload;
+		    } else {
+		        window.onload = txtAutomatischAnzeigen();
+		    }
+		}
+		
 			// Funktion, die Änderungen prüft
 			function chkManuellAutomatischSetzen(element) {
 				//alert(element.id);
