@@ -18,11 +18,13 @@
 			<table cellpadding="3" cellspacing="0" width="100%"
 				class="eingabeBoxen" style="margin-top: 20px">
 				<tr>
-					<td class="eingabeBoxen_row1"><h:outputText
-							value="#{msgs.moeglicheAktionen}" /></td>
+					<td class="eingabeBoxen_row1">
+						<h:outputText value="#{msgs.moeglicheAktionen}" />
+					</td>
 				</tr>
 				<tr>
-					<td class="eingabeBoxen_row2"><h:panelGrid columns="1">
+					<td class="eingabeBoxen_row2">
+						<h:panelGrid columns="1">
 
 							<!-- Upload-Schaltknopf -->
 							<h:commandLink
@@ -88,10 +90,9 @@
 
 							<h:panelGroup
 								rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
-								
+
 								<h:commandLink id="expandbutton2">
-									<h:graphicImage
-										value="/newpages/images/buttons/dms.png"
+									<h:graphicImage value="/newpages/images/buttons/dms.png"
 										style="margin-left:0px;margin-right:0px;vertical-align:middle" />
 									<h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
 									<s:effectToggle event="click" duration="0.1"
@@ -133,13 +134,13 @@
 									</h:panelGrid>
 
 								</x:div>
-								
+
 							</h:panelGroup>
 
 							<!-- Bearbeitungsstatus hochsetzen-->
 							<h:panelGroup
 								rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.page.totalResults > 0 }">
-								
+
 								<h:commandLink id="expandbutton3">
 									<h:graphicImage
 										value="/newpages/images/buttons/step_for_20px.gif"
@@ -180,12 +181,12 @@
 
 									</h:panelGrid>
 								</x:div>
-								
+
 							</h:panelGroup>
 
 							<h:panelGroup
 								rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
-								
+
 								<h:commandLink id="expandbutton4">
 									<h:graphicImage
 										value="/newpages/images/buttons/step_back_20px.gif"
@@ -227,15 +228,14 @@
 
 									</h:panelGrid>
 								</x:div>
-								
+
 							</h:panelGroup>
 
 							<h:panelGroup
 								rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.page.totalResults > 0 }">
-								
+
 								<h:commandLink id="expandbutton5">
-									<h:graphicImage
-										value="/newpages/images/buttons/admin4b.gif"
+									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
 										style="margin-left:0px;margin-right:0px;vertical-align:middle" />
 									<h:outputText value="#{msgs.goobiScriptAusfuehren}" />
 									<s:effectToggle event="click" duration="0.1"
@@ -254,68 +254,57 @@
 										<table>
 											<tr>
 												<td colspan="3">
-													<h:outputText
-														styleClass="goobiScriptLink" value="addUser"
-														onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="addUserGroup"
-														onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="deleteTiffHeaderFile"
-														onclick="document.getElementById('goobiScriptfield').value='action:deleteTiffHeaderFile'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="swapSteps"
-														onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot;swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="importFromFileSystem"
-														onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="swapProzessesOut"
-														onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesOut'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="setRuleset"
-														onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'" />
+
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'">addUser</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">addUserGroup</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:deleteTiffHeaderFile'">deleteTiffHeaderFile</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot;swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'">swapSteps</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'">importFromFileSystem</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesOut'">swapProzessesOut</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'">setRuleset</span>
 												</td>
 											</tr>
 											<tr>
-												<td colspan="3"><h:outputText
-														styleClass="goobiScriptLink" value="swapProzessesIn"
-														onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="deleteStep"
-														onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'" />
-													<h:outputText styleClass="goobiScriptLink" value="addStep"
-														onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="setStepStatus"
-														onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="setStepNumber"
-														onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="addModuleToStep"
-														onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="addShellScriptToStep"
-														onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="setTaskProperty"
-														onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch value:true_OR_false'" />
-													<h:outputText styleClass="goobiScriptLink"
-														value="tiffWriter"
-														onclick="document.getElementById('goobiScriptfield').value='action:tiffWriter'" />
+												<td colspan="3">
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'">swapProzessesIn</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'">setStepStatus</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'">addModuleToStep</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch value:true_OR_false'">setTaskProperty</span>
+													<span class="goobiScriptLink"
+														onclick="document.getElementById('goobiScriptfield').value='action:tiffWriter'">tiffWriter</span>
 
 												</td>
 											</tr>
 											<tr>
-												<td colspan="3"><x:inputTextarea id="goobiScriptfield"
-														forceId="true" style="width:450px;height:100px"
-														value="#{ProzessverwaltungForm.goobiScript}" /></td>
+												<td colspan="3">
+													<x:inputTextarea id="goobiScriptfield" forceId="true"
+														style="width:450px;height:100px"
+														value="#{ProzessverwaltungForm.goobiScript}" />
+												</td>
 											</tr>
 											<tr>
 												<td>
-													<!-- GoobiScript für selektierte Treffer der Seite --> <h:commandLink
-														id="script1"
+													<!-- GoobiScript für selektierte Treffer der Seite -->
+													<h:commandLink id="script1"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 														action="#{ProzessverwaltungForm.GoobiScriptSelection}"
 														title="#{msgs.auswahl2}">
@@ -324,8 +313,8 @@
 												</td>
 
 												<td>
-													<!-- GoobiScript für Treffer der Seite --> <h:commandLink
-														id="script2"
+													<!-- GoobiScript für Treffer der Seite -->
+													<h:commandLink id="script2"
 														action="#{ProzessverwaltungForm.GoobiScriptPage}"
 														title="#{msgs.trefferDieserSeite}">
 														<h:outputText value="#{msgs.trefferDieserSeite}" />
@@ -333,8 +322,8 @@
 												</td>
 
 												<td align="right">
-													<!-- GoobiScript für alle Treffer --> <h:commandLink
-														id="script3"
+													<!-- GoobiScript für alle Treffer -->
+													<h:commandLink id="script3"
 														action="#{ProzessverwaltungForm.GoobiScriptHits}"
 														title="#{msgs.gesamtesTrefferset}"
 														onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
@@ -345,8 +334,8 @@
 										</table>
 									</h:panelGrid>
 								</x:div>
-								
-								</h:panelGroup>
+
+							</h:panelGroup>
 
 							<h:panelGroup
 								rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
@@ -372,7 +361,7 @@
 
 							<h:panelGroup
 								rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
-								
+
 								<h:commandLink id="expandbutton6">
 									<h:graphicImage
 										value="/newpages/images/buttons/statistik1_20px.gif"
@@ -410,12 +399,12 @@
 										</h:commandLink>
 									</h:panelGrid>
 								</x:div>
-								
+
 							</h:panelGroup>
 
 							<h:panelGroup
 								rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
-								
+
 								<h:commandLink id="expandbutton7">
 									<h:graphicImage
 										value="/newpages/images/buttons/statistik4_20px.gif"
@@ -517,14 +506,13 @@
 
 									</h:panelGrid>
 								</x:div>
-								
+
 							</h:panelGroup>
 
 							<h:panelGroup>
-								
+
 								<h:commandLink id="expandbutton8">
-									<h:graphicImage
-										value="/newpages/images/buttons/view3.gif"
+									<h:graphicImage value="/newpages/images/buttons/view3.gif"
 										style="margin-left:5px;margin-right:8px;vertical-align:middle" />
 									<h:outputText value="#{msgs.filterAnpassen}" />
 									<s:effectToggle event="click" duration="0.1"
@@ -552,15 +540,14 @@
 										<h:outputText value="#{msgs.uebernehmen}" />
 									</h:commandLink>
 								</x:div>
-								
+
 							</h:panelGroup>
 
 
 							<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1}">
 
 								<h:commandLink id="expandbutton9">
-									<h:graphicImage
-										value="/newpages/images/buttons/view3.gif"
+									<h:graphicImage value="/newpages/images/buttons/view3.gif"
 										style="margin-left:5px;margin-right:8px;vertical-align:middle" />
 									<h:outputText value="#{msgs.anzeigeAnpassen}" />
 									<s:effectToggle event="click" duration="0.1"
@@ -596,11 +583,12 @@
 										<h:outputText value="#{msgs.uebernehmen}" />
 									</h:commandLink>
 								</x:div>
-								
+
 							</h:panelGroup>
 
 
-						</h:panelGrid></td>
+						</h:panelGrid>
+					</td>
 				</tr>
 
 			</table>
