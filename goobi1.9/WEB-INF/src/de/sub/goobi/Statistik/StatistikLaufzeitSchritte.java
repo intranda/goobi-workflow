@@ -1,4 +1,5 @@
 package de.sub.goobi.Statistik;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,36 +27,53 @@ package de.sub.goobi.Statistik;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
+import de.intranda.commons.chart.renderer.ChartRenderer;
+import de.intranda.commons.chart.renderer.IRenderer;
+import de.intranda.commons.chart.renderer.PieChartRenderer;
 import de.sub.goobi.Beans.Prozess;
 import de.sub.goobi.Beans.Schritt;
+import de.sub.goobi.config.ConfigMain;
 
 public class StatistikLaufzeitSchritte {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Dataset getDiagramm( List inProzesse) {
+	public static Dataset getDiagramm(List inProzesse) {
 		DefaultCategoryDataset categoryDataSet = new DefaultCategoryDataset();
 		for (Prozess proz : (List<Prozess>) inProzesse) {
 			for (Schritt step : proz.getSchritteList()) {
 				/* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
-				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
-					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step
-						.getTitel());
-					categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()),
-						kurztitel, proz.getTitel());
+				if (step.getBearbeitungsbeginn() != null
+						&& step.getBearbeitungsende() != null) {
+					String kurztitel = (step.getTitel().length() > 60 ? step
+							.getTitel().substring(0, 60) + "..." : step
+							.getTitel());
+					categoryDataSet.addValue(
+							dateDifference(step.getBearbeitungsbeginn(),
+									step.getBearbeitungsende()), kurztitel,
+							proz.getTitel());
 				}
 			}
 		}
 		return categoryDataSet;
 	}
-
-	
 
 	private static int dateDifference(Date datoStart, Date datoEnd) {
 		if (datoStart.before(datoEnd)) {
@@ -63,12 +81,31 @@ public class StatistikLaufzeitSchritte {
 			Date datoDifference = new Date(difference);
 			Calendar differenz = Calendar.getInstance();
 			differenz.setTime(datoDifference);
-			
+
 			int summe = differenz.get(Calendar.DAY_OF_YEAR);
 			return summe;
 		} else {
 			return 1;
 		}
+	}
+
+	public static String createChart(List inProzesse) throws IOException {
+		String imageUrl = System.currentTimeMillis() + ".png";
+
+		DefaultCategoryDataset categoryDataSet = (DefaultCategoryDataset) getDiagramm(inProzesse);
+		JFreeChart chart = ChartFactory.createStackedBarChart(
+				"", "", "", categoryDataSet,
+				PlotOrientation.HORIZONTAL, true, false, false);
+
+		chart.setBackgroundPaint(Color.white);
+		
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		plot.setBackgroundPaint(Color.white);
+		plot.setForegroundAlpha(0.6f);
+		
+		ChartUtilities.saveChartAsPNG(new File(ConfigMain.getTempImagesPathAsCompleteDirectory() + imageUrl), chart, 800, inProzesse.size() * 50);
+
+		return imageUrl;
 	}
 
 }

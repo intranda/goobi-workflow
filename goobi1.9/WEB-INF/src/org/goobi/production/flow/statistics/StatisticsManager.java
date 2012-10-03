@@ -24,6 +24,7 @@ package org.goobi.production.flow.statistics;
  * 
  */
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class StatisticsManager implements Serializable {
 	private static final Logger logger = Logger.getLogger(StatisticsManager.class);
 	/* simple JFreeChart Dataset for the old simple statistics */
 	private Dataset jfreeDataset;
+	private String jfreeImage;
 	/* internal StatisticsMode */
 	private StatisticsMode statisticMode;
 	private IDataSource myDataSource;
@@ -107,7 +109,12 @@ public class StatisticsManager implements Serializable {
 			switch (inMode) {
 
 			case SIMPLE_RUNTIME_STEPS:
-				jfreeDataset = StatistikLaufzeitSchritte.getDiagramm(inDataSource.getSourceData());
+				try {
+					jfreeImage = StatistikLaufzeitSchritte.createChart(inDataSource.getSourceData());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+//				jfreeDataset = StatistikLaufzeitSchritte.getDiagramm(inDataSource.getSourceData());
 				break;
 
 			default:
@@ -131,6 +138,10 @@ public class StatisticsManager implements Serializable {
 		} else {
 			return new DefaultValueDataset();
 		}
+	}
+	
+	public String getJfreeImage(){
+		return jfreeImage;
 	}
 
 	/**
