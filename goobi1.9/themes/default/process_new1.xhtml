@@ -25,14 +25,15 @@
 				class="eingabeBoxen">
 
 				<tr>
-					<td class="eingabeBoxen_row1" colspan="2"><h:outputText
-							value="#{msgs.details}" /></td>
+					<td class="eingabeBoxen_row1" colspan="2">
+						<h:outputText value="#{msgs.details}" />
+					</td>
 				</tr>
 
 				<tr>
-					<td class="eingabeBoxen_row2" colspan="2"><h:panelGrid
-							columns="1" width="100%">
-							<!-- ######################################## 
+					<td style="padding:10px" class="eingabeBoxen_row2" colspan="2">
+						
+						<!-- ######################################## 
 				
 								Prozessdaten (für alle DocTypes)
 					
@@ -220,47 +221,59 @@
 									<h:panelGroup rendered="#{intern.showDependingOnDoctype}">
 
 										<tr>
-											<td width="150"><h:outputText value="#{intern.titel}:" />
+											<td width="150">
+												<h:outputText value="#{intern.titel}:" />
 											</td>
-											<td><h:inputText value="#{intern.wert}"
+											<td>
+												<h:inputText value="#{intern.wert}"
 													styleClass="prozessKopieFeldbreite"
-													rendered="#{intern.selectList==null}" /> <!--  		<h:selectOneMenu  value="#{intern.wert}" styleClass="prozessKopieFeldbreite" rendered="#{intern.selectList!=null}">
+													rendered="#{intern.selectList==null}" />
+												<!--  		<h:selectOneMenu  value="#{intern.wert}" styleClass="prozessKopieFeldbreite" rendered="#{intern.selectList!=null}">
 					<f:selectItems value="#{intern.selectList}" />
-				</h:selectOneMenu> --> <h:selectOneListbox value="#{intern.wert}"
+				</h:selectOneMenu> -->
+												<h:selectOneListbox value="#{intern.wert}"
 													styleClass="prozessKopieFeldbreite"
 													rendered="#{intern.selectList!=null}">
 													<f:selectItems value="#{intern.selectList}" />
-												</h:selectOneListbox> <h:outputText value="*" rendered="#{intern.required}" /></td>
+												</h:selectOneListbox>
+												<h:outputText value="*" rendered="#{intern.required}" />
+											</td>
 										</tr>
 									</h:panelGroup>
 								</x:dataList>
 
 								<tr class="rowTop">
-									<td width="150" style=""><h:outputText
-											value="#{msgs.addToProcessLog}:" /></td>
-									<td><h:inputTextarea
-											value="#{ProzesskopieForm.addToWikiField}"
-											styleClass="prozessKopieFeldbreite" /></td>
+									<td width="150" style="">
+										<h:outputText value="#{msgs.addToProcessLog}:" />
+									</td>
+									<td>
+										<h:inputTextarea value="#{ProzesskopieForm.addToWikiField}"
+											styleClass="prozessKopieFeldbreite" />
+									</td>
 								</tr>
 
 							</table>
 							<h:outputText value="#{msgs.requiredField}" />
 
-						</h:panelGrid></td>
+					</td>
 				</tr>
 
 				<tr>
-					<td class="eingabeBoxen_row3" align="left"><h:commandButton
-							value="#{msgs.abbrechen}" immediate="true" action="process_all">
-						</h:commandButton></td>
-					<td class="eingabeBoxen_row3" align="right"><h:commandButton
-							value="#{msgs.weiter}"
+					<td class="eingabeBoxen_row3" align="left">
+						<h:commandButton value="#{msgs.abbrechen}" immediate="true"
+							action="process_all">
+						</h:commandButton>
+					</td>
+					<td class="eingabeBoxen_row3" align="right">
+						<h:commandButton value="#{msgs.weiter}"
 							rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize>0}"
 							action="#{ProzesskopieForm.GoToSeite2}">
-						</h:commandButton> <h:commandButton value="#{msgs.speichern}"
+						</h:commandButton>
+						<h:commandButton value="#{msgs.speichern}"
 							rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize==0}"
 							action="#{ProzesskopieForm.NeuenProzessAnlegen}">
-						</h:commandButton></td>
+						</h:commandButton>
+					</td>
 				</tr>
 			</table>
 
