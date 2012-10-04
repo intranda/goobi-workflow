@@ -708,7 +708,7 @@ public class MassImportForm {
 			@SuppressWarnings("unchecked")
 			List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
 			if (this.plugin != null && list != null) {
-				return "process_import_2";
+				return "process_import_2_mass";
 			}
 		} catch (Exception e) {
 		}
