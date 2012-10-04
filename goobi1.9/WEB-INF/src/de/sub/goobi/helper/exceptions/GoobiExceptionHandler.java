@@ -28,7 +28,10 @@
 
 package de.sub.goobi.helper.exceptions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.FacesException;
@@ -36,7 +39,6 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
@@ -82,7 +84,12 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 				try {
 					requestMap.put("currentView", t.getMessage());
 					ELFlash flash = ELFlash.getFlash(facesContext.getExternalContext(), true);
-					flash.put("exceptioniNFO",t.getCause());  
+					flash.put("exceptionInfo",t.getCause());
+					List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
+//					for (StackTraceElement ste : trace) {
+//						System.out.println(ste.toString());
+//					}
+					flash.put("exceptionStacktrace", trace);
 					navigationHandler.handleNavigation(facesContext, null, "/themes/default/error?faces-redirect=true");
 					facesContext.renderResponse();
 				} finally {
