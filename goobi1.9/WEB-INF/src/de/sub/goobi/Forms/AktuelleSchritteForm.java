@@ -1405,10 +1405,10 @@ public class AktuelleSchritteForm extends BasisForm {
 	}
 
 	public void setContainer(Integer container) {
+		this.container = container;
 		if (container != null && container > 0) {
 			this.processProperty = getContainerProperties().get(0);
 		}
-		this.container = container;
 	}
 
 	public List<ProcessProperty> getContainerProperties() {
