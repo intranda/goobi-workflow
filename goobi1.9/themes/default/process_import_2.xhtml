@@ -34,7 +34,7 @@
 
 				<!-- Formular für die Bearbeitung der Texte -->
 				<tr>
-					<td class="eingabeBoxen_row2" colspan="2"><x:dataTable
+					<td class="eingabeBoxen_row2" colspan="2"><x:dataTable forceId="true"
 							var="property" id="processProperties"
 							value="#{MassImportForm.properties}">
 
@@ -43,19 +43,21 @@
 							</h:column>
 
 							<h:column>
-								<h:panelGroup id="prpvw15_1"
+								<h:panelGroup id="prpvw15_1" 
 									rendered="#{property.type.name == 'text'}">
-									<h:inputText id="inputText"
+									<h:inputText id="inputText" 
 										style="width: 500px;margin-right:15px"
-										value="#{property.value}" required="#{property.required}" />
+										value="#{property.value}" required="#{property.required}" requiredMessage="#{msgs.valueIsRequired}" />
+										<h:message for="inputText" />
 								</h:panelGroup>
 
 								<!-- numbers only -->
 								<h:panelGroup id="prpvw15_1m"
 									rendered="#{property.type.name == 'integer' || property.type.name == 'number'}">
 									<h:inputText id="number" style="width: 500px;margin-right:15px"
-										value="#{property.value}" required="#{property.required}">
-										<f:validateLongRange minimum="0" />
+										value="#{property.value}" required="#{property.required}" requiredMessage="#{msgs.valueIsRequired}">
+										<f:validateLongRange minimum="0"  />
+										<h:message for="number" />
 									</h:inputText>
 								</h:panelGroup>
 
