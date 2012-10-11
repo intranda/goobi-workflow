@@ -1,9 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	template="/themes/default/template/template.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/themes/default/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
 
 
 	<ui:define name="breadcrumb">
@@ -19,21 +15,17 @@
 	<ui:define name="content">
 		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}">
 			<!-- Neu-Schaltknopf -->
-			<h:commandLink id="id5" action="#{RegelsaetzeForm.Neu}"
-				immediate="true"
+			<h:commandLink id="id5" action="#{RegelsaetzeForm.Neu}" immediate="true"
 				rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 				<h:outputText id="id6" value="#{msgs.neuenRegelsatzAnlegen}" />
 			</h:commandLink>
 
 
 			<!-- Datentabelle -->
-			<x:dataTable id="id8" styleClass="standardTable" width="100%"
-				cellspacing="1px" cellpadding="1px"
-				headerClass="standardTable_Header"
+			<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2"
-				columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered"
-				style="margin-top: 10px;" var="item"
-				value="#{RegelsaetzeForm.page.listReload}">
+				columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered" style="margin-top: 10px;"
+				var="item" value="#{RegelsaetzeForm.page.listReload}">
 
 				<h:column id="id9">
 					<f:facet name="header">
@@ -51,27 +43,20 @@
 
 				<x:column id="id15" style="text-align:center">
 					<f:facet name="header">
-						<h:outputText id="id16"
-							value="#{msgs.metadatenSortierungNachRegelsatz}" />
+						<h:outputText id="id16" value="#{msgs.metadatenSortierungNachRegelsatz}" />
 					</f:facet>
-					<h:graphicImage id="id17" value="/newpages/images/check_true.gif"
-						rendered="#{item.orderMetadataByRuleset}" />
-					<h:graphicImage id="id18" value="/newpages/images/check_false.gif"
-						rendered="#{!item.orderMetadataByRuleset}" />
+					<h:graphicImage id="id17" value="images/check_true.gif" rendered="#{item.orderMetadataByRuleset}" />
+					<h:graphicImage id="id18" value="images/check_false.gif" rendered="#{!item.orderMetadataByRuleset}" />
 				</x:column>
 
-				<h:column id="id19"
-					rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+				<h:column id="id19" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 					<f:facet name="header">
 						<h:outputText id="id20" value="#{msgs.auswahl}" />
 					</f:facet>
 					<!-- Bearbeiten-Schaltknopf -->
-					<h:commandLink id="id21" action="ruleset_edit"
-						title="#{msgs.regelsatzBearbeiten}">
-						<h:graphicImage id="id22"
-							value="/newpages/images/buttons/edit.gif" />
-						<x:updateActionListener property="#{RegelsaetzeForm.myRegelsatz}"
-							value="#{item}" />
+					<h:commandLink id="id21" action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
+						<h:graphicImage id="id22" value="images/buttons/edit.gif" />
+						<x:updateActionListener property="#{RegelsaetzeForm.myRegelsatz}" value="#{item}" />
 					</h:commandLink>
 				</h:column>
 
@@ -79,16 +64,18 @@
 
 			<table width="100%" border="0">
 				<tr valign="top">
-					<td align="left"><h:commandLink id="id52"
-							action="#{RegelsaetzeForm.Neu}" immediate="true"
+					<td align="left">
+						<h:commandLink id="id52" action="#{RegelsaetzeForm.Neu}" immediate="true"
 							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (RegelsaetzeForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
 							<h:outputText id="id62" value="#{msgs.neuenRegelsatzAnlegen}" />
-						</h:commandLink></td>
+						</h:commandLink>
+					</td>
 					<td align="center">
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}" value="#{RegelsaetzeForm.page}">
 							<ui:include src="includes/datascroller.xhtml" />
-						</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+						</x:aliasBean>
+						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 					</td>
 				</tr>
 			</table>

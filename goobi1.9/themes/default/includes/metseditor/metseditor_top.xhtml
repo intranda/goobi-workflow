@@ -1,55 +1,33 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
-<h:form>
-<h:panelGrid id="grid1" columns="2" cellpadding="0" cellspacing="0">
-			<h:commandLink value="#{msgs.treelevel} " action="#{NavigationForm.Reload}"
-				styleClass="metadataHeaderLinks">
-				<x:updateActionListener
-					value="#{Metadaten.treeProperties.showtreelevel?false:true}"
-					property="#{Metadaten.treeProperties.showtreelevel}" />
-			</h:commandLink>
-			<h:commandLink value="#{msgs.treeTitle} " action="#{NavigationForm.Reload}"
-				style="padding-left: 5px;" 
-				styleClass="metadataHeaderLinks">
-				<x:updateActionListener
-					value="#{Metadaten.treeProperties.showtitle?false:true}"
-					property="#{Metadaten.treeProperties.showtitle}" />
-			</h:commandLink>
-			<h:commandLink value="#{msgs.treePageNumber} "
-				action="#{NavigationForm.Reload}" 
-				styleClass="metadataHeaderLinks">
-				<x:updateActionListener
-					value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
-					property="#{Metadaten.treeProperties.showfirstpagenumber}" />
-			</h:commandLink>
-			<h:commandLink value="#{msgs.treeExpand} " style="padding-left: 5px;"
-				action="#{Metadaten.TreeExpand}" 
-				styleClass="metadataHeaderLinks">
-				<x:updateActionListener
-					value="#{Metadaten.treeProperties.fullexpanded?false:true}"
-					property="#{Metadaten.treeProperties.fullexpanded}" />
-			</h:commandLink>
-			<h:commandLink value="#{msgs.stickyImage} " action="#{NavigationForm.Reload}"
-				styleClass="metadataHeaderLinks">
-				<x:updateActionListener
-					value="#{Metadaten.treeProperties.imageSticky?false:true}"
-					property="#{Metadaten.treeProperties.imageSticky}" />
-			</h:commandLink>
-			<h:outputText />
-		</h:panelGrid>
+		<h:form>
+			<h:panelGrid id="grid1" columns="2" cellpadding="0" cellspacing="0">
+				<h:commandLink value="#{msgs.treelevel} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks">
+					<x:updateActionListener value="#{Metadaten.treeProperties.showtreelevel?false:true}" property="#{Metadaten.treeProperties.showtreelevel}" />
+				</h:commandLink>
+				<h:commandLink value="#{msgs.treeTitle} " action="#{NavigationForm.Reload}" style="padding-left: 5px;" styleClass="metadataHeaderLinks">
+					<x:updateActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" />
+				</h:commandLink>
+				<h:commandLink value="#{msgs.treePageNumber} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks">
+					<x:updateActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
+						property="#{Metadaten.treeProperties.showfirstpagenumber}" />
+				</h:commandLink>
+				<h:commandLink value="#{msgs.treeExpand} " style="padding-left: 5px;" action="#{Metadaten.TreeExpand}" styleClass="metadataHeaderLinks">
+					<x:updateActionListener value="#{Metadaten.treeProperties.fullexpanded?false:true}" property="#{Metadaten.treeProperties.fullexpanded}" />
+				</h:commandLink>
+				<h:commandLink value="#{msgs.stickyImage} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks">
+					<x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
+				</h:commandLink>
+				<h:outputText />
+			</h:panelGrid>
 		</h:form>
-		
+
 	</composite:implementation>
 
 </ui:composition>

@@ -1,92 +1,78 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
-		<h:panelGroup
-			rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+		<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 
 			<!-- ++++++++++++++++     Import      ++++++++++++++++ -->
 			<h:panelGroup
 				rendered="#{AktuelleSchritteForm.modusBearbeiten=='' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null and AktuelleSchritteForm.mySchritt.typImportFileUpload}">
-				<table cellpadding="3" cellspacing="0" width="100%"
-					class="eingabeBoxen" style="margin-top: 20px">
+				<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
 					<tr>
-						<td class="eingabeBoxen_row1"><h:outputText
-								value="#{msgs.metadatenImportieren}" /></td>
+						<td class="eingabeBoxen_row1">
+							<h:outputText value="#{msgs.metadatenImportieren}" />
+						</td>
 					</tr>
 					<tr>
-						<td class="eingabeBoxen_row2"><h:panelGrid columns="1">
+						<td class="eingabeBoxen_row2">
+							<h:panelGrid columns="1">
 
 								<!-- Import-Upload -->
 								<h:panelGroup>
 									<h:panelGroup rendered="#{Import.importMeldung !=''}">
-										<h:outputText value="#{Import.importMeldung}"
-											style="color: blue;" />
+										<h:outputText value="#{Import.importMeldung}" style="color: blue;" />
 										<br />
 										<br />
 									</h:panelGroup>
 
 									<h:panelGroup rendered="#{Import.importFehler !=''}">
-										<h:outputText value="#{Import.importFehler}"
-											style="color: red;" escape="false" />
+										<h:outputText value="#{Import.importFehler}" style="color: red;" escape="false" />
 										<br />
 										<br />
 									</h:panelGroup>
 
 									<h:form enctype="multipart/form-data" id="formupload">
-										<x:inputFileUpload id="fileupload" accept="image/*"
-											value="#{Import.upDatei}" storage="file"
-											styleClass="fileUploadInput" required="false" />
-										<h:commandButton value="#{msgs.metadatenImportieren}"
-											id="button1" action="#{Import.Start}">
-											<x:updateActionListener property="#{Import.mySchritt}"
-												value="#{AktuelleSchritteForm.mySchritt}" />
+										<x:inputFileUpload id="fileupload" accept="image/*" value="#{Import.upDatei}" storage="file" styleClass="fileUploadInput" required="false" />
+										<h:commandButton value="#{msgs.metadatenImportieren}" id="button1" action="#{Import.Start}">
+											<x:updateActionListener property="#{Import.mySchritt}" value="#{AktuelleSchritteForm.mySchritt}" />
 										</h:commandButton>
 									</h:form>
 								</h:panelGroup>
 
-							</h:panelGrid></td>
+							</h:panelGrid>
+						</td>
 					</tr>
 
 				</table>
 			</h:panelGroup>
 			<!-- ++++++++++++++++     // Import      ++++++++++++++++ -->
 
-			<h:form id="actionform"
-				rendered="#{AktuelleSchritteForm.modusBearbeiten==''}">
+			<h:form id="actionform" rendered="#{AktuelleSchritteForm.modusBearbeiten==''}">
 				<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
-				<table cellpadding="3" cellspacing="0" width="100%"
-					class="eingabeBoxen" style="margin-top: 20px">
+				<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
 					<tr>
-						<td class="eingabeBoxen_row1"><h:outputText
-								value="#{msgs.moeglicheAktionen}" /></td>
+						<td class="eingabeBoxen_row1">
+							<h:outputText value="#{msgs.moeglicheAktionen}" />
+						</td>
 					</tr>
 					<tr>
-						<td class="eingabeBoxen_row2"><h:panelGrid columns="1">
+						<td class="eingabeBoxen_row2">
+							<h:panelGrid columns="1">
 
 								<!-- Sperrung der Metadaten anzeigen -->
-								<h:panelGroup
-									style="color: red;margin-top:5px;margin-bottom:15px;display:block"
+								<h:panelGroup style="color: red;margin-top:5px;margin-bottom:15px;display:block"
 									rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null}">
 									<h:outputText value="#{msgs.gesperrt}" />
 									<br />
-									<h:panelGrid columns="2" style="color: red;margin-left:30px"
-										cellpadding="3">
+									<h:panelGrid columns="2" style="color: red;margin-left:30px" cellpadding="3">
 										<h:outputText value="#{msgs.benutzer}: " />
-										<h:outputText
-											value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.nachVorname}" />
+										<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.nachVorname}" />
 										<h:outputText value="#{msgs.standort}: " />
-										<h:outputText
-											value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.standort}" />
+										<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.standort}" />
 										<h:outputText value="#{msgs.lebenszeichen} " />
 										<h:outputText
 											value="#{AktuelleSchritteForm.mySchritt.prozess.minutenGesperrt} min #{AktuelleSchritteForm.mySchritt.prozess.sekundenGesperrt} sec" />
@@ -96,12 +82,9 @@
 									<!-- Bei Sperrung durch eigenen Benutzer: Sperrung aufheben können -->
 									<h:commandLink id="action1"
 										rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}"
-										action="#{AktuelleSchritteForm.SperrungAufheben}"
-										title="#{msgs.oderSperrungAufheben}">
-										<h:graphicImage value="/newpages/images/buttons/key2a.gif"
-											style="margin-left:10px;margin-right:3px;vertical-align:middle" />
-										<h:outputText value="#{msgs.oderSperrungAufheben}"
-											style="font-weight:bold;font-style:underline" />
+										action="#{AktuelleSchritteForm.SperrungAufheben}" title="#{msgs.oderSperrungAufheben}">
+										<h:graphicImage value="images/buttons/key2a.gif" style="margin-left:10px;margin-right:3px;vertical-align:middle" />
+										<h:outputText value="#{msgs.oderSperrungAufheben}" style="font-weight:bold;font-style:underline" />
 									</h:commandLink>
 
 								</h:panelGroup>
@@ -112,7 +95,7 @@
 							rendered="#{AktuelleSchritteForm.mySchritt.typExportRus && AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
 							action="#{AktuelleSchritteForm.DownloadRusExport}"
 							title="#{msgs.russischeMetadatenExportieren}">
-							<h:graphicImage value="/newpages/images/buttons/rus.gif"
+							<h:graphicImage value="images/buttons/rus.gif"
 								style="margin-right:3px;vertical-align:middle" />
 							<h:outputText value="#{msgs.russischeMetadatenExportieren}" />
 						</h:commandLink>
@@ -120,167 +103,114 @@
 								<!-- Modul-Schaltknopf -->
 								<h:commandLink id="action2"
 									rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}"
-									action="#{AktuelleSchritteForm.executeModule}"
-									title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})">
-									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
+									action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})">
+									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
 								</h:commandLink>
 
 								<!-- Script-Schaltknopf -->
 								<h:commandLink id="action3"
 									rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != '' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.executeScript}"
-									title="#{AktuelleSchritteForm.mySchritt.scriptname1}">
-									<x:updateActionListener
-										property="#{AktuelleSchritteForm.scriptPath}"
-										value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
-									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
+									action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}">
+									<x:updateActionListener property="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
+									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
 								</h:commandLink>
 
 								<h:commandLink id="action4"
 									rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != '' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.executeScript}"
-									title="#{AktuelleSchritteForm.mySchritt.scriptname2}">
-									<x:updateActionListener
-										property="#{AktuelleSchritteForm.scriptPath}"
-										value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
-									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
+									action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}">
+									<x:updateActionListener property="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
+									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
 								</h:commandLink>
 
 								<h:commandLink id="action5"
 									rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != '' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.executeScript}"
-									title="#{AktuelleSchritteForm.mySchritt.scriptname3}">
-									<x:updateActionListener
-										property="#{AktuelleSchritteForm.scriptPath}"
-										value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
-									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
+									action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}">
+									<x:updateActionListener property="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
+									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
 								</h:commandLink>
 
 								<h:commandLink id="action6"
 									rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != '' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.executeScript}"
-									title="#{AktuelleSchritteForm.mySchritt.scriptname4}">
-									<x:updateActionListener
-										property="#{AktuelleSchritteForm.scriptPath}"
-										value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
-									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
+									action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}">
+									<x:updateActionListener property="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
+									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
 								</h:commandLink>
 
 								<h:commandLink id="action7"
 									rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != '' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.executeScript}"
-									title="#{AktuelleSchritteForm.mySchritt.scriptname5}">
-									<x:updateActionListener
-										property="#{AktuelleSchritteForm.scriptPath}"
-										value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
+									action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}">
+									<x:updateActionListener property="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
 
-									<h:graphicImage value="/newpages/images/buttons/admin4b.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
+									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
 								</h:commandLink>
 								<!-- tiffHeaderDownload-Schaltknopf -->
-								<h:commandLink id="action8"
-									rendered="#{0==1 and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.DownloadTiffHeader}"
-									title="#{msgs.dateiMitTiffHeaderSpeichern}">
-									<h:graphicImage value="/newpages/images/buttons/tif.gif"
-										style="margin-right:3px;vertical-align:middle" />
+								<h:commandLink id="action8" rendered="#{0==1 and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
+									action="#{AktuelleSchritteForm.DownloadTiffHeader}" title="#{msgs.dateiMitTiffHeaderSpeichern}">
+									<h:graphicImage value="images/buttons/tif.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.dateiMitTiffHeaderSpeichern}" />
 								</h:commandLink>
 
 								<!-- Import in das DMS-Schaltknopf -->
 
 								<!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
-								<h:outputText
-									style="back-color:blue; color: red; font-weight: bold;"
+								<h:outputText style="back-color:blue; color: red; font-weight: bold;"
 									rendered="#{AktuelleSchritteForm.mySchritt.typExportDMS and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
 									value="#{msgs.timeoutWarningDMS}" />
 
 								<!-- Upload-Schaltknopf -->
 								<h:commandLink id="action9"
 									rendered="#{AktuelleSchritteForm.mySchritt.typExportDMS and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{AktuelleSchritteForm.ExportDMS}"
-									title="#{msgs.importDms}">
-									<h:graphicImage value="/newpages/images/buttons/dms.png"
-										style="margin-right:3px;vertical-align:middle" />
+									action="#{AktuelleSchritteForm.ExportDMS}" title="#{msgs.importDms}">
+									<h:graphicImage value="images/buttons/dms.png" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.importDms}" />
 								</h:commandLink>
 
 								<!-- Metadaten-Schaltknopf -->
 								<h:commandLink id="action10"
 									rendered="#{AktuelleSchritteForm.mySchritt.typMetadaten and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}"
-									action="#{Metadaten.XMLlesen}"
-									title="#{msgs.metadatenBearbeiten}">
-									<h:graphicImage value="/newpages/images/buttons/view1.gif"
-										style="margin-left:7px;margin-right:10px;vertical-align:middle" />
+									action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}">
+									<h:graphicImage value="images/buttons/view1.gif" style="margin-left:7px;margin-right:10px;vertical-align:middle" />
 									<h:outputText value="#{msgs.metadatenBearbeiten}" />
-									<x:updateActionListener
-										value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
+									<x:updateActionListener value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
 										property="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"></x:updateActionListener>
-									<f:param name="ProzesseID"
-										value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+									<f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
 									<f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
 									<f:param name="zurueck" value="task_edit" />
 								</h:commandLink>
 
 								<!-- Bearbeitung abbrechen-Schaltknopf -->
-								<h:commandLink id="action11"
-									action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
-									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
-									onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return">
-									<h:graphicImage value="/newpages/images/buttons/cancel3.gif"
-										style="margin-right:3px;vertical-align:middle" />
+								<h:commandLink id="action11" action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
+									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return">
+									<h:graphicImage value="images/buttons/cancel3.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
 								</h:commandLink>
 
 								<!-- Schritt zurückgeben an vorherige Station für Korrekturzwecke -->
 								<h:commandLink id="correctionbutton">
-									<h:graphicImage
-										value="/newpages/images/buttons/step_back_20px.gif"
-										style="margin-right:3px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.korrekturmeldungAnVorherigeStationSenden}" />
-									<s:effectToggle event="click" forId="correction" duration="0.1" mode="blind"
-										appendJs="return false;" />
+									<h:graphicImage value="images/buttons/step_back_20px.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.korrekturmeldungAnVorherigeStationSenden}" />
+									<s:effectToggle event="click" forId="correction" duration="0.1" mode="blind" appendJs="return false;" />
 
 									<f:ajax render="correctionbutton" />
 								</h:commandLink>
 
 								<x:div id="correction" style="display:none">
-									<h:panelGrid columns="2" style="margin-left:40px;" id="grid3"
-										rowClasses="top"
-										columnClasses="standardTable_Column,standardTable_ColumnRight">
+									<h:panelGrid columns="2" style="margin-left:40px;" id="grid3" rowClasses="top" columnClasses="standardTable_Column,standardTable_ColumnRight">
 										<h:outputText value="#{msgs.zurueckZuArbeitsschritt}" />
-										<h:selectOneMenu style="width:350px"
-											value="#{AktuelleSchritteForm.myProblemID}">
-											<f:selectItems
-												value="#{AktuelleSchritteForm.previousStepsForProblemReporting}"
-												var="step1" itemLabel="#{step1.titelMitBenutzername}"
+										<h:selectOneMenu style="width:350px" value="#{AktuelleSchritteForm.myProblemID}">
+											<f:selectItems value="#{AktuelleSchritteForm.previousStepsForProblemReporting}" var="step1" itemLabel="#{step1.titelMitBenutzername}"
 												itemValue="#{step1.id}" />
 										</h:selectOneMenu>
 										<h:outputText value="#{msgs.bemerkung}" />
-										<h:inputTextarea style="width:350px;height:80px"
-											value="#{AktuelleSchritteForm.problemMessage}" />
+										<h:inputTextarea style="width:350px;height:80px" value="#{AktuelleSchritteForm.problemMessage}" />
 										<h:outputText value="" />
-										<h:commandLink id="action13"
-											action="#{AktuelleSchritteForm.ReportProblem}"
-											title="#{msgs.korrekturmeldungSenden}"
+										<h:commandLink id="action13" action="#{AktuelleSchritteForm.ReportProblem}" title="#{msgs.korrekturmeldungSenden}"
 											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return">
 											<h:outputText value="#{msgs.korrekturmeldungSenden}" />
 										</h:commandLink>
@@ -288,43 +218,30 @@
 								</x:div>
 
 								<!-- Schritt weitergeben an nachfolgende Station für KorrekturBehobenZwecke -->
-								<h:panelGroup
-									rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
+								<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
 
 									<h:commandLink id="solvebutton">
-										<h:graphicImage
-											value="/newpages/images/buttons/step_for_20px.gif"
-											style="margin-right:3px;vertical-align:middle" />
-										<h:outputText
-											value="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}" />
-										<s:effectToggle event="click" duration="0.1" forId="solve" mode="blind"
-											appendJs="return false;" />
+										<h:graphicImage value="images/buttons/step_for_20px.gif" style="margin-right:3px;vertical-align:middle" />
+										<h:outputText value="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}" />
+										<s:effectToggle event="click" duration="0.1" forId="solve" mode="blind" appendJs="return false;" />
 
 										<f:ajax render="solvebutton" />
 									</h:commandLink>
 
 									<x:div id="solve" style="display:none">
-										<h:panelGrid columns="2" style="margin-left:40px;"
-											rowClasses="top" id="grid1"
+										<h:panelGrid columns="2" style="margin-left:40px;" rowClasses="top" id="grid1"
 											columnClasses="standardTable_Column,standardTable_ColumnRight">
 											<h:outputText value="#{msgs.weiterZuArbeitsschritt}" />
-											<h:selectOneMenu style="width:350px" id="select1"
-												value="#{AktuelleSchritteForm.mySolutionID}">
-												<f:selectItems
-													value="#{AktuelleSchritteForm.nextStepsForProblemSolution}"
-													var="step2" itemLabel="#{step2.titelMitBenutzername}"
+											<h:selectOneMenu style="width:350px" id="select1" value="#{AktuelleSchritteForm.mySolutionID}">
+												<f:selectItems value="#{AktuelleSchritteForm.nextStepsForProblemSolution}" var="step2" itemLabel="#{step2.titelMitBenutzername}"
 													itemValue="#{step2.id}" />
 											</h:selectOneMenu>
 											<h:outputText value="#{msgs.bemerkung}" />
-											<h:inputTextarea style="width:350px;height:80px" id="input1"
-												value="#{AktuelleSchritteForm.solutionMessage}" />
+											<h:inputTextarea style="width:350px;height:80px" id="input1" value="#{AktuelleSchritteForm.solutionMessage}" />
 											<h:outputText value="" />
-											<h:commandLink id="action14"
-												action="#{AktuelleSchritteForm.SolveProblem}"
-												title="#{msgs.meldungUeberProblemloesungSenden}"
+											<h:commandLink id="action14" action="#{AktuelleSchritteForm.SolveProblem}" title="#{msgs.meldungUeberProblemloesungSenden}"
 												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
-												<h:outputText
-													value="#{msgs.meldungUeberProblemloesungSenden}" />
+												<h:outputText value="#{msgs.meldungUeberProblemloesungSenden}" />
 											</h:commandLink>
 										</h:panelGrid>
 									</x:div>
@@ -332,16 +249,14 @@
 								</h:panelGroup>
 
 								<!-- Abschliessen-Schaltknopf -->
-								<h:commandLink id="action15"
-									action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
-									title="#{msgs.diesenSchrittAbschliessen}"
+								<h:commandLink id="action15" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}"
 									onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}?')) return">
-									<h:graphicImage value="/newpages/images/buttons/ok.gif"
-										style="margin-right:3px;vertical-align:middle" />
+									<h:graphicImage value="images/buttons/ok.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
 								</h:commandLink>
 
-							</h:panelGrid></td>
+							</h:panelGrid>
+						</td>
 					</tr>
 
 				</table>

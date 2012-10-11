@@ -1,11 +1,6 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
 
 	<composite:interface>
 	</composite:interface>
@@ -16,12 +11,12 @@
 			<tr style="vertical-align: top">
 				<td>
 
-					<table cellpadding="3" cellspacing="0" width="100%"
-						class="main_statistikboxen">
+					<table cellpadding="3" cellspacing="0" width="100%" class="main_statistikboxen">
 
 						<tr>
-							<td class="main_statistikboxen_row1"><h:outputText
-									value="#{msgs.eigenschaften}" /></td>
+							<td class="main_statistikboxen_row1">
+								<h:outputText value="#{msgs.eigenschaften}" />
+							</td>
 						</tr>
 
 
@@ -30,71 +25,75 @@
 
 								<table border="0" width="90%" cellpadding="2">
 									<tr>
-										<td width="150"><h:outputText value="#{msgs.titel}:" />
+										<td width="150">
+											<h:outputText value="#{msgs.titel}:" />
 										</td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.mySchritt.titelLokalisiert}" />
-										</td>
-									</tr>
-
-									<tr>
-										<td width="150"><h:outputText
-												value="#{msgs.prozessTitel}:" /></td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.mySchritt.prozess.titel}" />
-										</td>
-									</tr>
-									<tr>
-										<td width="150"><h:outputText
-												value="#{msgs.reihenfolge}:" /></td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.mySchritt.reihenfolge}" /></td>
-									</tr>
-									<tr>
-										<td width="150"><h:outputText value="#{msgs.prioritaet}:" />
-										</td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.mySchritt.prioritaet}"
-												rendered="#{AktuelleSchritteForm.mySchritt.prioritaet!=10}" />
-											<h:outputText value="#{msgs.korrektur}"
-												rendered="#{AktuelleSchritteForm.mySchritt.prioritaet==10}" />
-										</td>
-									</tr>
-									<tr>
-										<td width="150"><h:outputText value="#{msgs.status}:" />
-										</td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.mySchritt.bearbeitungsstatusEnum.title}" />
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.mySchritt.titelLokalisiert}" />
 										</td>
 									</tr>
 
-									<h:panelGroup
-										rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+									<tr>
+										<td width="150">
+											<h:outputText value="#{msgs.prozessTitel}:" />
+										</td>
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.titel}" />
+										</td>
+									</tr>
+									<tr>
+										<td width="150">
+											<h:outputText value="#{msgs.reihenfolge}:" />
+										</td>
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.mySchritt.reihenfolge}" />
+										</td>
+									</tr>
+									<tr>
+										<td width="150">
+											<h:outputText value="#{msgs.prioritaet}:" />
+										</td>
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.mySchritt.prioritaet}" rendered="#{AktuelleSchritteForm.mySchritt.prioritaet!=10}" />
+											<h:outputText value="#{msgs.korrektur}" rendered="#{AktuelleSchritteForm.mySchritt.prioritaet==10}" />
+										</td>
+									</tr>
+									<tr>
+										<td width="150">
+											<h:outputText value="#{msgs.status}:" />
+										</td>
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsstatusEnum.title}" />
+										</td>
+									</tr>
+
+									<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
 										<tr>
-											<td width="150"><h:outputText
-													value="#{msgs.bearbeitungsbeginn}:" /></td>
-											<td><h:outputText
-													value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginnAsFormattedString}" />
+											<td width="150">
+												<h:outputText value="#{msgs.bearbeitungsbeginn}:" />
+											</td>
+											<td>
+												<h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginnAsFormattedString}" />
 											</td>
 										</tr>
 									</h:panelGroup>
-									<h:panelGroup
-										rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+									<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
 										<tr>
-											<td width="150"><h:outputText
-													value="#{msgs.zuletztBearbeitet}:" /></td>
-											<td><h:outputText
-													value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}" />
+											<td width="150">
+												<h:outputText value="#{msgs.zuletztBearbeitet}:" />
+											</td>
+											<td>
+												<h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}" />
 											</td>
 										</tr>
 									</h:panelGroup>
-									<h:panelGroup
-										rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+									<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
 										<tr>
-											<td width="150"><h:outputText
-													value="#{msgs.aktualisierungstyp}:" /></td>
-											<td><h:outputText
-													value="#{AktuelleSchritteForm.mySchritt.editTypeEnum.title}" />
+											<td width="150">
+												<h:outputText value="#{msgs.aktualisierungstyp}:" />
+											</td>
+											<td>
+												<h:outputText value="#{AktuelleSchritteForm.mySchritt.editTypeEnum.title}" />
 											</td>
 										</tr>
 									</h:panelGroup>
@@ -104,15 +103,15 @@
 					</table>
 
 				</td>
-				<td><h:form id="htmleditorform">
-						<h:inputText id="myTextArea"
-							value="#{AktuelleSchritteForm.wikiField}" style="width: 50%" />
-					</h:form> <h:form id="addToWikiForm">
-						<h:inputText id="addToTextArea"
-							value="#{AktuelleSchritteForm.addToWikiField}" style="width: 60%" />
-						<h:commandButton value="#{msgs.nachrichtHinzufuegen}"
-							action="#{AktuelleSchritteForm.addToWikiField}" />
-					</h:form></td>
+				<td>
+					<h:form id="htmleditorform">
+						<h:inputText id="myTextArea" value="#{AktuelleSchritteForm.wikiField}" style="width: 50%" />
+					</h:form>
+					<h:form id="addToWikiForm">
+						<h:inputText id="addToTextArea" value="#{AktuelleSchritteForm.addToWikiField}" style="width: 60%" />
+						<h:commandButton value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addToWikiField}" />
+					</h:form>
+				</td>
 			</tr>
 		</table>
 

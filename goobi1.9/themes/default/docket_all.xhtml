@@ -1,10 +1,6 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	template="/themes/default/template/template.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
-	
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/themes/default/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+
 	<ui:define name="breadcrumb">
 		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
@@ -18,21 +14,17 @@
 	<ui:define name="content">
 		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}">
 			<!-- Neu-Schaltknopf -->
-			<h:commandLink id="id5" action="#{DocketForm.Neu}"
-				immediate="true"
+			<h:commandLink id="id5" action="#{DocketForm.Neu}" immediate="true"
 				rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 				<h:outputText id="id6" value="#{msgs.createNewDocket}" />
 			</h:commandLink>
 
 
 			<!-- Datentabelle -->
-			<x:dataTable id="id8" styleClass="standardTable" width="100%"
-				cellspacing="1px" cellpadding="1px"
-				headerClass="standardTable_Header"
+			<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2"
-				columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered"
-				style="margin-top: 10px;" var="item"
-				value="#{DocketForm.page.listReload}">
+				columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered" style="margin-top: 10px;"
+				var="item" value="#{DocketForm.page.listReload}">
 
 				<h:column id="id9">
 					<f:facet name="header">
@@ -48,18 +40,14 @@
 					<h:outputText id="id14" value="#{item.file}" />
 				</h:column>
 
-				<h:column id="id19"
-					rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+				<h:column id="id19" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 					<f:facet name="header">
 						<h:outputText id="id20" value="#{msgs.auswahl}" />
 					</f:facet>
 					<!-- Bearbeiten-Schaltknopf -->
-					<h:commandLink id="id21" action="docket_edit"
-						title="#{msgs.editDocket}">
-						<h:graphicImage id="id22"
-							value="/newpages/images/buttons/edit.gif" />
-						<x:updateActionListener property="#{DocketForm.myDocket}"
-							value="#{item}" />
+					<h:commandLink id="id21" action="docket_edit" title="#{msgs.editDocket}">
+						<h:graphicImage id="id22" value="images/buttons/edit.gif" />
+						<x:updateActionListener property="#{DocketForm.myDocket}" value="#{item}" />
 					</h:commandLink>
 				</h:column>
 
@@ -67,16 +55,18 @@
 
 			<table width="100%" border="0">
 				<tr valign="top">
-					<td align="left"><h:commandLink id="id52"
-							action="#{DocketForm.Neu}" immediate="true"
+					<td align="left">
+						<h:commandLink id="id52" action="#{DocketForm.Neu}" immediate="true"
 							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (DocketForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
 							<h:outputText id="id62" value="#{msgs.createNewDocket}" />
-						</h:commandLink></td>
+						</h:commandLink>
+					</td>
 					<td align="center">
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}" value="#{DocketForm.page}">
 							<ui:include src="includes/datascroller.xhtml" />
-						</x:aliasBean> <!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+						</x:aliasBean>
+						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 					</td>
 				</tr>
 			</table>
