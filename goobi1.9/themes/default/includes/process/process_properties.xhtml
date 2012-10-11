@@ -1,11 +1,6 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<composite:interface>
 	</composite:interface>
@@ -16,104 +11,91 @@
 		<!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
 		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-		<h:panelGroup
-			rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
+		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
 
 			<h4 style="margin-top: 15">
 				<h:outputText value="#{msgs.eigenschaften}" />
 			</h4>
 
-			<table cellspacing="1px" cellpadding="1px" width="100%"
-				class="standardTable">
+			<table cellspacing="1px" cellpadding="1px" width="100%" class="standardTable">
 
 				<thead class="standardTable_Header">
-					<th><h:outputText value="#{msgs.titel}" /></th>
-					<th><h:outputText value="#{msgs.wert}" /></th>
-					<th><h:outputText value="#{msgs.auswahl}" /></th>
+					<th>
+						<h:outputText value="#{msgs.titel}" />
+					</th>
+					<th>
+						<h:outputText value="#{msgs.wert}" />
+					</th>
+					<th>
+						<h:outputText value="#{msgs.auswahl}" />
+					</th>
 				</thead>
 
-				<x:dataList var="container"
-					value="#{ProzessverwaltungForm.containerList}"
-					rowCountVar="rowCount" rowIndexVar="rowIndex">
-					
-					
-					<x:dataList var="proc"
-						value="#{ProzessverwaltungForm.containerlessProperties}"
-						rowCountVar="propCount" rowIndexVar="propInd">
+				<x:dataList var="container" value="#{ProzessverwaltungForm.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+
+
+					<x:dataList var="proc" value="#{ProzessverwaltungForm.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd">
 						<h:panelGroup rendered="#{container == 0}">
-						
+
 							<tr class="standardTable_Row1">
-								<td><h:outputText value="#{proc.name}" /></td>
-								<td><h:outputText value="#{proc.value}" /></td>
-								<td class="standardTable_ColumnCentered"><h:commandLink
-										action="process_edit"
-										title="#{msgs.bearbeiten}">
-										<h:graphicImage value="/newpages/images/buttons/edit.gif" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.processProperty}"
-											value="#{proc}" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.container}" value="0" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.modusBearbeiten}"
-											value="eigenschaft" />
+								<td>
+									<h:outputText value="#{proc.name}" />
+								</td>
+								<td>
+									<h:outputText value="#{proc.value}" />
+								</td>
+								<td class="standardTable_ColumnCentered">
+									<h:commandLink action="process_edit" title="#{msgs.bearbeiten}">
+										<h:graphicImage value="images/buttons/edit.gif" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 										<!-- <a4j:support event="onchange" reRender="editBatch" />-->
-									</h:commandLink> 
-									<h:commandLink
-										action="#{ProzessverwaltungForm.duplicateProperty}"
-										title="#{msgs.duplicate}">
-										<h:graphicImage value="/newpages/images/buttons/copy.gif" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.processProperty}"
-											value="#{proc}" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.container}" value="0" />
-									</h:commandLink></td>
+									</h:commandLink>
+									<h:commandLink action="#{ProzessverwaltungForm.duplicateProperty}" title="#{msgs.duplicate}">
+										<h:graphicImage value="images/buttons/copy.gif" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
+									</h:commandLink>
+								</td>
 							</tr>
 						</h:panelGroup>
 					</x:dataList>
 
-<h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">					
+					<h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
 						<tr>
-							<td colspan="3" class="standardTable_Row1"><h:outputText
-									value="&amp;nbsp;" escape="false" /></td>
+							<td colspan="3" class="standardTable_Row1">
+								<h:outputText value="&amp;nbsp;" escape="false" />
+							</td>
 						</tr>
-</h:panelGroup>
-					
-					<x:dataList var="process_item"
-						value="#{ProzessverwaltungForm.containers[container].propertyList}"
-						rowCountVar="propCount" rowIndexVar="propInd">
-					<h:panelGroup rendered="#{container != 0}">
+					</h:panelGroup>
+
+					<x:dataList var="process_item" value="#{ProzessverwaltungForm.containers[container].propertyList}" rowCountVar="propCount" rowIndexVar="propInd">
+						<h:panelGroup rendered="#{container != 0}">
 							<tr class="standardTable_Row1">
-								<td><h:outputText value="#{process_item.name}" /></td>
-								<td><h:outputText value="#{process_item.value}" /></td>
+								<td>
+									<h:outputText value="#{process_item.name}" />
+								</td>
+								<td>
+									<h:outputText value="#{process_item.value}" />
+								</td>
 								<h:panelGroup rendered="#{propInd == 0}">
-									<td class="standardTable_ColumnCentered"
-										rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
-										<!-- edit container --> <h:commandLink
-											action="process_edit"
-											title="#{msgs.bearbeiten}">
-											<h:graphicImage value="/newpages/images/buttons/edit.gif" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.container}"
-												value="#{container}" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.modusBearbeiten}"
-												value="eigenschaft" />
+									<td class="standardTable_ColumnCentered" rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
+										<!-- edit container -->
+										<h:commandLink action="process_edit" title="#{msgs.bearbeiten}">
+											<h:graphicImage value="images/buttons/edit.gif" />
+											<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
+											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 											<!-- 	<a4j:support event="onchange" reRender="editBatch" /> -->
-										</h:commandLink> 
-										<!-- duplicate container --> 
-										<h:commandLink
-											action="#{ProzessverwaltungForm.duplicateContainer}"
-											title="#{msgs.duplicate}">
-											<h:graphicImage value="/newpages/images/buttons/copy.gif" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.container}"
-												value="#{container}" />
+										</h:commandLink>
+										<!-- duplicate container -->
+										<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
+											<h:graphicImage value="images/buttons/copy.gif" />
+											<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 										</h:commandLink>
 									</td>
 								</h:panelGroup>
-								
+
 							</tr>
 						</h:panelGroup>
 					</x:dataList>
@@ -134,14 +116,14 @@
 				<td class="standardTable_ColumnCentered" rowspan="''+#{ProzessverwaltungForm.containers[container]}" rendered="#{cont != container }">
 					
 					<h:commandLink action="ProzessverwaltungBearbeiten" title="#{msgs.bearbeiten}">
-						<h:graphicImage value="/newpages/images/buttons/edit.gif" />
+						<h:graphicImage value="images/buttons/edit.gif" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 						
 					</h:commandLink>
 					
 					<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
-						<h:graphicImage value="/newpages/images/buttons/copy.gif" />
+						<h:graphicImage value="images/buttons/copy.gif" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 					</h:commandLink>
 				</td>
@@ -166,13 +148,13 @@
 				</td>
 				<td class="standardTable_ColumnCentered">
 					<h:commandLink action="ProzessverwaltungBearbeiten" title="#{msgs.bearbeiten}">
-						<h:graphicImage value="/newpages/images/buttons/edit.gif" />
+						<h:graphicImage value="images/buttons/edit.gif" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 					</h:commandLink>
 					<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
-						<h:graphicImage value="/newpages/images/buttons/copy.gif" />
+						<h:graphicImage value="images/buttons/copy.gif" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
 					</h:commandLink>
@@ -192,12 +174,12 @@
 
 				<td class="standardTable_ColumnCentered">
 					<h:commandLink action="ProzessverwaltungBearbeiten" title="#{msgs.bearbeiten}" rendered="#{propInd + 1 == propCount}">
-						<h:graphicImage value="/newpages/images/buttons/edit.gif" />
+						<h:graphicImage value="images/buttons/edit.gif" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 					</h:commandLink>
 					<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}" rendered="#{propInd + 1 == propCount}">
-						<h:graphicImage value="/newpages/images/buttons/copy.gif" />
+						<h:graphicImage value="images/buttons/copy.gif" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 					</h:commandLink>
 				</td>
@@ -214,14 +196,9 @@
 			</table>
 
 			<!-- Neu-Schaltknopf -->
-			<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}"
-				value="#{msgs.eigenschaftHinzufuegen}"
-				title="#{msgs.eigenschaftHinzufuegen}">
-				<x:updateActionListener
-					property="#{ProzessverwaltungForm.container}" value="0" />
-				<x:updateActionListener
-					property="#{ProzessverwaltungForm.modusBearbeiten}"
-					value="eigenschaft" />
+			<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}" value="#{msgs.eigenschaftHinzufuegen}" title="#{msgs.eigenschaftHinzufuegen}">
+				<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
+				<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 			</h:commandLink>
 		</h:panelGroup>
 
@@ -230,102 +207,77 @@
 		<!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
 		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-		<h:panelGroup
-			rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
+		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
 			<h4 style="margin-top: 15">
 				<h:outputText value="#{msgs.eigenschaftBearbeiten}" />
 			</h4>
 			<!-- Box für die Bearbeitung der Details -->
-			<table cellpadding="3" cellspacing="0" width="100%"
-				class="eingabeBoxen">
+			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 
 				<tr>
-					<td class="eingabeBoxen_row1" colspan="2"><h:outputText
-							value="#{msgs.eigenschaft}" /></td>
+					<td class="eingabeBoxen_row1" colspan="2">
+						<h:outputText value="#{msgs.eigenschaft}" />
+					</td>
 				</tr>
 
 				<!-- Formular für die Bearbeitung der Eigenschaft -->
 				<tr>
 					<td class="eingabeBoxen_row2" colspan="2">
 						<table>
-							<x:dataList var="myprocess_item"
-								value="#{ProzessverwaltungForm.containerProperties}">
+							<x:dataList var="myprocess_item" value="#{ProzessverwaltungForm.containerProperties}">
 								<tr>
-									<td><h:outputText 
-											style="width: 500px;margin-right:15px"
-											value="#{myprocess_item.name}: "
-											rendered="#{!myprocess_item.isNew}" /></td>
-									<td><h:panelGroup rendered="#{myprocess_item.isNew}">
-											<h:outputText 
-											style="margin-right:10px"
-											value="#{msgs.titel}: " />
-											<h:inputText id="title" value="#{myprocess_item.name}"
-												required="true" />
-											<x:message for="title" style="color: red"
-												detailFormat="#{msgs.keinTitelAngegeben}" />
-										</h:panelGroup> 
-										<!-- textarea --> 
-										<h:panelGroup 
-											rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'null'))}">
-											
-											<h:outputText 
-											style="margin-left:25px;margin-right:10px"
-											value="#{msgs.wert}: " rendered="#{myprocess_item.isNew}"/>
-											<h:inputText style="width: 500px;margin-right:15px"
-												value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"/>
-										</h:panelGroup> 
-										<!-- numbers only --> 
-										<h:panelGroup 
-											rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
-											<h:inputText 
-												style="width: 500px;margin-right:15px"
-												value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+									<td>
+										<h:outputText style="width: 500px;margin-right:15px" value="#{myprocess_item.name}: " rendered="#{!myprocess_item.isNew}" />
+									</td>
+									<td>
+										<h:panelGroup rendered="#{myprocess_item.isNew}">
+											<h:outputText style="margin-right:10px" value="#{msgs.titel}: " />
+											<h:inputText id="title" value="#{myprocess_item.name}" required="true" />
+											<x:message for="title" style="color: red" detailFormat="#{msgs.keinTitelAngegeben}" />
+										</h:panelGroup>
+										<!-- textarea -->
+										<h:panelGroup rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'null'))}">
+
+											<h:outputText style="margin-left:25px;margin-right:10px" value="#{msgs.wert}: " rendered="#{myprocess_item.isNew}" />
+											<h:inputText style="width: 500px;margin-right:15px" value="#{myprocess_item.value}"
+												readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" />
+										</h:panelGroup>
+										<!-- numbers only -->
+										<h:panelGroup rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
+											<h:inputText style="width: 500px;margin-right:15px" value="#{myprocess_item.value}"
+												readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 												<f:validateLongRange minimum="0" />
 											</h:inputText>
-										</h:panelGroup> 
-										<!--  SelectOneMenu --> 
-										<h:panelGroup 
-											rendered="#{(myprocess_item.type.name == 'list')}">
+										</h:panelGroup>
+										<!--  SelectOneMenu -->
+										<h:panelGroup rendered="#{(myprocess_item.type.name == 'list')}">
 											<h:selectOneMenu value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
-												style="width: 500px;margin-right:15px" >
-												<f:selectItems 
-													value="#{myprocess_item.possibleValues}"
-													var="myprocess_items" itemLabel="#{myprocess_items}"
+												style="width: 500px;margin-right:15px">
+												<f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items" itemLabel="#{myprocess_items}"
 													itemValue="#{myprocess_items}" />
 											</h:selectOneMenu>
-										</h:panelGroup> 
-										<!--  SelectManyMenu --> 
-										<h:panelGroup 
-											rendered="#{(myprocess_item.type.name == 'listmultiselect')}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-											<h:selectManyListbox 
-												style="width: 500px;margin-right:15px"
-												value="#{myprocess_item.valueList}" size="5">
-												<f:selectItems 
-													value="#{myprocess_item.possibleValues}"
-													var="myprocess_items" itemLabel="#{myprocess_items}"
+										</h:panelGroup>
+										<!--  SelectManyMenu -->
+										<h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+											<h:selectManyListbox style="width: 500px;margin-right:15px" value="#{myprocess_item.valueList}" size="5">
+												<f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items" itemLabel="#{myprocess_items}"
 													itemValue="#{myprocess_items}" />
 											</h:selectManyListbox>
-										</h:panelGroup> 
-										<!--  Boolean --> 
-										<h:panelGroup readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
-											rendered="#{(myprocess_item.type.name == 'boolean')}">
-											<h:selectBooleanCheckbox
-												value="#{myprocess_item.booleanValue}">
+										</h:panelGroup>
+										<!--  Boolean -->
+										<h:panelGroup readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" rendered="#{(myprocess_item.type.name == 'boolean')}">
+											<h:selectBooleanCheckbox value="#{myprocess_item.booleanValue}">
 											</h:selectBooleanCheckbox>
 
-										</h:panelGroup> 
-										<!--  Date  --> 
-										<h:panelGroup readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
-											rendered="#{(myprocess_item.type.name == 'date')}">
-											 <x:inputCalendar id="to" style="width:110px"
-												value="#{myprocess_item.dateValue}"
-												renderAsPopup="true" renderPopupButtonAsImage="true"
-												popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}"
-												imageLocation="/newpages/images/calendarImages"
-												popupButtonImageUrl="/newpages/images/calendarImages/calendar.gif"
-											 />
 										</h:panelGroup>
-										</td>
+										<!--  Date  -->
+										<h:panelGroup readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" rendered="#{(myprocess_item.type.name == 'date')}">
+											<x:inputCalendar id="to" style="width:110px" value="#{myprocess_item.dateValue}" renderAsPopup="true" renderPopupButtonAsImage="true"
+												popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}" imageLocation="images/calendarImages"
+												popupButtonImageUrl="images/calendarImages/calendar.gif" />
+										</h:panelGroup>
+									</td>
 								</tr>
 							</x:dataList>
 						</table>
@@ -333,23 +285,20 @@
 				</tr>
 
 				<tr>
-					<td class="eingabeBoxen_row3" align="left"><h:commandButton
-							value="#{msgs.abbrechen}" action="#{NavigationForm.Reload}"
-							immediate="true">
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-						</h:commandButton></td>
-					<td class="eingabeBoxen_row3" align="right"><h:commandButton
-							value="#{msgs.loeschen}"
-							action="#{ProzessverwaltungForm.deleteProperty}"
+					<td class="eingabeBoxen_row3" align="left">
+						<h:commandButton value="#{msgs.abbrechen}" action="#{NavigationForm.Reload}" immediate="true">
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+						</h:commandButton>
+					</td>
+					<td class="eingabeBoxen_row3" align="right">
+						<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.deleteProperty}"
 							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')">
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-						</h:commandButton> <h:commandButton value="#{msgs.uebernehmen}"
-							action="#{ProzessverwaltungForm.saveCurrentProperty}">
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-						</h:commandButton></td>
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+						</h:commandButton>
+						<h:commandButton value="#{msgs.uebernehmen}" action="#{ProzessverwaltungForm.saveCurrentProperty}">
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+						</h:commandButton>
+					</td>
 				</tr>
 
 			</table>

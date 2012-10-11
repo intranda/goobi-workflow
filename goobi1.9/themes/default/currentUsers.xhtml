@@ -1,9 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	template="/themes/default/template/template.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/themes/default/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
 
 	<ui:define name="breadcrumb">
 		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
@@ -23,13 +19,11 @@
 			<h:outputText id="id9" value="#{msgs.aktuelleZeit}:" />
 			<h:outputText id="id10" value="#{SessionForm.aktuelleZeit}" />
 		</h:panelGrid>
-		
+
 		<br />
 
-		<x:dataTable id="benutzerliste" styleClass="standardTable"
-			width="100%" cellspacing="1px" cellpadding="1px"
-			headerClass="standardTable_Header" rowClasses="standardTable_Row1"
-			var="item" value="#{SessionForm.alleSessions}">
+		<x:dataTable id="benutzerliste" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
+			rowClasses="standardTable_Row1" var="item" value="#{SessionForm.alleSessions}">
 
 			<h:column id="id11" rendered="#{LoginForm.maximaleBerechtigung > 0}">
 				<f:facet name="header">
@@ -58,8 +52,7 @@
 				<f:facet name="header">
 					<h:outputText id="id21" value="Browser" />
 				</f:facet>
-				<h:graphicImage value="/newpages/images/browser/#{item.browserIcon}"
-					width="30" height="30" style="float:left;margin-right:4px" />
+				<h:graphicImage value="images/browser/#{item.browserIcon}" width="30" height="30" style="float:left;margin-right:4px" />
 				<h:outputText id="id22" value="#{item.browser}" />
 			</h:column>
 

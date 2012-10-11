@@ -1,261 +1,200 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
-<h:form>
+		<h:form>
 
-		<h:panelGroup
-			rendered="#{not Metadaten.modusStrukturelementVerschieben}">
+			<h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben}">
 
-<h3 style="margin-top: 0px">
-			<h:outputText value="#{msgs.strukturdaten}" />
-		</h3>
-		
-					<!-- ++++++++++++++++     Neues Strukturelement      ++++++++++++++++ -->
-			<table cellpadding="3" cellspacing="0" width="350px"
-				class="eingabeBoxen" style="margin-top: 0px">
-				<tr>
-					<td class="eingabeBoxen_row1"><h:outputText
-							value="#{msgs.neuesStrukturelement}" /></td>
-				</tr>
-				<tr>
-					<td class="eingabeBoxen_row2"><h:panelGrid id="mygrid1"
-							columns="1">
+				<h3 style="margin-top: 0px">
+					<h:outputText value="#{msgs.strukturdaten}" />
+				</h3>
 
-							<!-- onclick="addableTypenAnzeigen(this)" -->
-							<h:selectOneRadio id="auswahlElementWohin" forceId="true"
-								layout="pageDirection" style="font-size:12px"
-								value="#{Metadaten.neuesElementWohin}">
-								<f:selectItem itemValue="1"
-									itemLabel="#{msgs.vorDasAktuelleElement}" />
-								<f:selectItem itemValue="2"
-									itemLabel="#{msgs.hinterDasAktuelleElement}" />
-								<f:selectItem itemValue="3"
-									itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
-								<f:selectItem itemValue="4"
-									itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
-						     	<f:ajax render="@all" event="change"/>
-						    <!-- 
+				<!-- ++++++++++++++++     Neues Strukturelement      ++++++++++++++++ -->
+				<table cellpadding="3" cellspacing="0" width="350px" class="eingabeBoxen" style="margin-top: 0px">
+					<tr>
+						<td class="eingabeBoxen_row1">
+							<h:outputText value="#{msgs.neuesStrukturelement}" />
+						</td>
+					</tr>
+					<tr>
+						<td class="eingabeBoxen_row2">
+							<h:panelGrid id="mygrid1" columns="1">
+
+								<!-- onclick="addableTypenAnzeigen(this)" -->
+								<h:selectOneRadio id="auswahlElementWohin" forceId="true" layout="pageDirection" style="font-size:12px" value="#{Metadaten.neuesElementWohin}">
+									<f:selectItem itemValue="1" itemLabel="#{msgs.vorDasAktuelleElement}" />
+									<f:selectItem itemValue="2" itemLabel="#{msgs.hinterDasAktuelleElement}" />
+									<f:selectItem itemValue="3" itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
+									<f:selectItem itemValue="4" itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
+									<f:ajax render="@all" event="change" />
+									<!-- 
 						     -->
-							</h:selectOneRadio>
+								</h:selectOneRadio>
 
-							<h:panelGroup>
-								<x:selectOneMenu id="auswahlAddable1" forceId="true"
-									style="width:315px;margin-left:8px;margin-bottom:4px"
-									value="#{Metadaten.addDocStructType1}"
-									rendered="#{Metadaten.neuesElementWohin lt 3}">
-									<f:selectItems
-										value="#{Metadaten.addableDocStructTypenAlsNachbar}" />
-								</x:selectOneMenu>
-								<x:selectOneMenu id="auswahlAddable2" forceId="true"
-									style="width:315px;margin-left:8px;margin-bottom:4px"
-									value="#{Metadaten.addDocStructType2}"
-									rendered="#{Metadaten.neuesElementWohin gt 2}">
-									<f:selectItems
-										value="#{Metadaten.addableDocStructTypenAlsKind}" />
-								</x:selectOneMenu>
-							</h:panelGroup>
-						</h:panelGrid> <h:panelGrid columns="3" width="100%"
-							columnClasses="standardTable_Column,standardTable_Column">
-							<h:outputText value="#{msgs.ersteSeite}: " />
-							<h:panelGroup>
-								<x:inputText id="pagestart1" forceId="true"
-									value="#{Metadaten.pagesStart}" />
-							</h:panelGroup>
+								<h:panelGroup>
+									<x:selectOneMenu id="auswahlAddable1" forceId="true" style="width:315px;margin-left:8px;margin-bottom:4px"
+										value="#{Metadaten.addDocStructType1}" rendered="#{Metadaten.neuesElementWohin lt 3}">
+										<f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" />
+									</x:selectOneMenu>
+									<x:selectOneMenu id="auswahlAddable2" forceId="true" style="width:315px;margin-left:8px;margin-bottom:4px"
+										value="#{Metadaten.addDocStructType2}" rendered="#{Metadaten.neuesElementWohin gt 2}">
+										<f:selectItems value="#{Metadaten.addableDocStructTypenAlsKind}" />
+									</x:selectOneMenu>
+								</h:panelGroup>
+							</h:panelGrid>
+							<h:panelGrid columns="3" width="100%" columnClasses="standardTable_Column,standardTable_Column">
+								<h:outputText value="#{msgs.ersteSeite}: " />
+								<h:panelGroup>
+									<x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" />
+								</h:panelGroup>
 
-							<h:commandLink action="#{Metadaten.CurrentStartpage}">
-								<h:graphicImage value="/newpages/images/buttons/left_20px.gif"
-									style="border: 0px;vertical-align:middle;" />
-								<x:updateActionListener value="#{Metadaten.bildNummer}"
-									property="#{Metadaten.pageNumber}" />
-							</h:commandLink>
-
-							<h:outputText value="#{msgs.letzteSeite}: " />
-							<h:panelGroup>
-								<x:inputText id="pageend1" forceId="true"
-									value="#{Metadaten.pagesEnd}" />
-							</h:panelGroup>
-							<h:commandLink action="#{Metadaten.CurrentEndpage}">
-								<h:graphicImage value="/newpages/images/buttons/left_20px.gif"
-									style="border: 0px;vertical-align:middle;" />
-								<x:updateActionListener value="#{Metadaten.bildNummer}"
-									property="#{Metadaten.pageNumber}" />
-							</h:commandLink>
-						</h:panelGrid></td>
-				</tr>
-				<tr>
-					<td class="eingabeBoxen_row3" align="right"><h:commandLink
-							action="#{Metadaten.KnotenAdd}"
-							value="#{msgs.strukturelementHinzufuegen}" /></td>
-				</tr>
-			</table>
-			<!-- ++++++++++++++++     // Neues Strukturelement      ++++++++++++++++ -->
-
-
-			<!-- ++++++++++++++++     Strukturelement verschieben oder loeschen     ++++++++++++++++ -->
-			<table cellpadding="3" cellspacing="0" width="350px"
-				class="eingabeBoxen" style="margin-top: 20px">
-				<tr>
-					<td class="eingabeBoxen_row1"><h:outputText
-							value="#{msgs.ausgewaehltesStrukturelement} ..." /></td>
-				</tr>
-				<tr>
-					<td class="eingabeBoxen_row2"><h:panelGrid id="mygrid2"
-							columns="1">
-
-							<!-- Knoten nach oben -->
-							<h:commandLink action="#{Metadaten.KnotenUp}"
-								title="#{msgs.docstructNachObenSchieben}">
-								<h:graphicImage
-									value="/newpages/images/buttons/sort_up_20px.gif"
-									style="margin-left:4px;margin-right:6px;vertical-align:middle" />
-								<h:outputText value="#{msgs.docstructNachObenSchieben}" />
-							</h:commandLink>
-
-							<!-- Knoten nach unten -->
-							<h:commandLink action="#{Metadaten.KnotenDown}"
-								title="#{msgs.docstructNachUntenSchieben}">
-								<h:graphicImage
-									value="/newpages/images/buttons/sort_down_20px.gif"
-									style="margin-left:4px;margin-right:6px;vertical-align:middle" />
-								<h:outputText value="#{msgs.docstructNachUntenSchieben}" />
-							</h:commandLink>
-
-							<!-- Knoten an andere Stelle schieben -->
-							<h:commandLink action="metseditor"
-								title="#{msgs.docstructAnAndereStelleSchieben}">
-								<h:graphicImage
-									value="/newpages/images/buttons/sort_left_20px.gif"
-									style="margin-left:4px;margin-right:6px;vertical-align:middle" />
-								<h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
-								<x:updateActionListener
-									property="#{Metadaten.modusStrukturelementVerschieben}"
-									value="true" />
-							</h:commandLink>
-
-							<!-- DocstructType aendern -->
-							<h:panelGroup>
-
-								<h:commandLink id="expandbutton1">
-									<h:graphicImage
-										value="/newpages/images/buttons/sort_down_20px.gif"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" />
-									<h:outputText value="#{msgs.docstructTypeAendern}" />
-									<s:effectToggle event="click" duration="0.1"
-										forId="possibleActions1" mode="blind" appendJs="return false;" />
-
-									<f:ajax render="expandbutton1" />
+								<h:commandLink action="#{Metadaten.CurrentStartpage}">
+									<h:graphicImage value="images/buttons/left_20px.gif" style="border: 0px;vertical-align:middle;" />
+									<x:updateActionListener value="#{Metadaten.bildNummer}" property="#{Metadaten.pageNumber}" />
 								</h:commandLink>
 
-								<x:div id="possibleActions1" style="display:none">
-										<h:panelGrid id="mygrid3" columns="1"
-											style="margin-left:40px;" rowClasses="top"
-											columnClasses="standardTable_ColumnRight">
+								<h:outputText value="#{msgs.letzteSeite}: " />
+								<h:panelGroup>
+									<x:inputText id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" />
+								</h:panelGroup>
+								<h:commandLink action="#{Metadaten.CurrentEndpage}">
+									<h:graphicImage value="images/buttons/left_20px.gif" style="border: 0px;vertical-align:middle;" />
+									<x:updateActionListener value="#{Metadaten.bildNummer}" property="#{Metadaten.pageNumber}" />
+								</h:commandLink>
+							</h:panelGrid>
+						</td>
+					</tr>
+					<tr>
+						<td class="eingabeBoxen_row3" align="right">
+							<h:commandLink action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}" />
+						</td>
+					</tr>
+				</table>
+				<!-- ++++++++++++++++     // Neues Strukturelement      ++++++++++++++++ -->
+
+
+				<!-- ++++++++++++++++     Strukturelement verschieben oder loeschen     ++++++++++++++++ -->
+				<table cellpadding="3" cellspacing="0" width="350px" class="eingabeBoxen" style="margin-top: 20px">
+					<tr>
+						<td class="eingabeBoxen_row1">
+							<h:outputText value="#{msgs.ausgewaehltesStrukturelement} ..." />
+						</td>
+					</tr>
+					<tr>
+						<td class="eingabeBoxen_row2">
+							<h:panelGrid id="mygrid2" columns="1">
+
+								<!-- Knoten nach oben -->
+								<h:commandLink action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
+									<h:graphicImage value="images/buttons/sort_up_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+									<h:outputText value="#{msgs.docstructNachObenSchieben}" />
+								</h:commandLink>
+
+								<!-- Knoten nach unten -->
+								<h:commandLink action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
+									<h:graphicImage value="images/buttons/sort_down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+									<h:outputText value="#{msgs.docstructNachUntenSchieben}" />
+								</h:commandLink>
+
+								<!-- Knoten an andere Stelle schieben -->
+								<h:commandLink action="metseditor" title="#{msgs.docstructAnAndereStelleSchieben}">
+									<h:graphicImage value="images/buttons/sort_left_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+									<h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
+									<x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
+								</h:commandLink>
+
+								<!-- DocstructType aendern -->
+								<h:panelGroup>
+
+									<h:commandLink id="expandbutton1">
+										<h:graphicImage value="images/buttons/sort_down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+										<h:outputText value="#{msgs.docstructTypeAendern}" />
+										<s:effectToggle event="click" duration="0.1" forId="possibleActions1" mode="blind" appendJs="return false;" />
+
+										<f:ajax render="expandbutton1" />
+									</h:commandLink>
+
+									<x:div id="possibleActions1" style="display:none">
+										<h:panelGrid id="mygrid3" columns="1" style="margin-left:40px;" rowClasses="top" columnClasses="standardTable_ColumnRight">
 											<!-- Auswahlliste -->
-											<x:selectOneMenu style="width:315px;"
-												value="#{Metadaten.tempWert}">
-												<f:selectItems
-													value="#{Metadaten.addableDocStructTypenAlsNachbar}" />
+											<x:selectOneMenu style="width:315px;" value="#{Metadaten.tempWert}">
+												<f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" />
 											</x:selectOneMenu>
 											<!-- Action -->
-											<h:commandLink
-												action="#{Metadaten.ChangeCurrentDocstructType}"
-												title="#{msgs.uebernehmen}"
+											<h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}"
 												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
 												<h:outputText value="#{msgs.uebernehmen}" />
 											</h:commandLink>
 										</h:panelGrid>
-								</x:div>
-							</h:panelGroup>
+									</x:div>
+								</h:panelGroup>
 
-							<!-- zusï¿½tzliche Strukturelemente als Kinder unter das ausgeaehlte Element -->
-							<h:panelGroup>
-								<h:commandLink id="expandbutton2">
-									<h:graphicImage
-										value="/newpages/images/buttons/sort_down_20px.gif"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" />
-									<h:outputText
-										value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
-									<s:effectToggle event="click" duration="0.1"
-										forId="possibleActions2" mode="blind" appendJs="return false;" />
+								<!-- zusï¿½tzliche Strukturelemente als Kinder unter das ausgeaehlte Element -->
+								<h:panelGroup>
+									<h:commandLink id="expandbutton2">
+										<h:graphicImage value="images/buttons/sort_down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+										<h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
+										<s:effectToggle event="click" duration="0.1" forId="possibleActions2" mode="blind" appendJs="return false;" />
 
-									<f:ajax render="expandbutton2" />
-								</h:commandLink>
+										<f:ajax render="expandbutton2" />
+									</h:commandLink>
 
-								<x:div id="possibleActions2" style="display:none">
-									<h:panelGrid id="mygrid4" columns="2" style="margin-left:40px;"
-										rowClasses="top" columnClasses="standardTable_ColumnRight">
+									<x:div id="possibleActions2" style="display:none">
+										<h:panelGrid id="mygrid4" columns="2" style="margin-left:40px;" rowClasses="top" columnClasses="standardTable_ColumnRight">
 
-										<h:outputText value="#{msgs.katalog}" />
+											<h:outputText value="#{msgs.katalog}" />
 
-										<!-- uses goobi_opac.xml -->
+											<!-- uses goobi_opac.xml -->
 
-										<h:selectOneMenu id="katalogauswahl"
-											value="#{Metadaten.opacKatalog}"
-											style="display:inline; margin-left:7px">
-											<f:selectItems value="#{ProzesskopieForm.allOpacCatalogues}"
-												var="step" itemLabel="#{step}" itemValue="#{step}" />
-										</h:selectOneMenu>
-										<h:outputText value="#{msgs.feld}"
-											style="display:inline; margin-left:7px" />
-										<h:selectOneMenu id="feldauswahl"
-											value="#{Metadaten.opacSuchfeld}"
-											style="display:inline; margin-left:10px">
-											<f:selectItem itemLabel="PPN" itemValue="12" />
-											<f:selectItem itemLabel="Barcode" itemValue="8535" />
-											<f:selectItem itemLabel="Barcode 8200" itemValue="8200" />
-											<f:selectItem itemLabel="ISBN" itemValue="7" />
-											<f:selectItem itemLabel="ISSN" itemValue="8" />
-										</h:selectOneMenu>
+											<h:selectOneMenu id="katalogauswahl" value="#{Metadaten.opacKatalog}" style="display:inline; margin-left:7px">
+												<f:selectItems value="#{ProzesskopieForm.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}" />
+											</h:selectOneMenu>
+											<h:outputText value="#{msgs.feld}" style="display:inline; margin-left:7px" />
+											<h:selectOneMenu id="feldauswahl" value="#{Metadaten.opacSuchfeld}" style="display:inline; margin-left:10px">
+												<f:selectItem itemLabel="PPN" itemValue="12" />
+												<f:selectItem itemLabel="Barcode" itemValue="8535" />
+												<f:selectItem itemLabel="Barcode 8200" itemValue="8200" />
+												<f:selectItem itemLabel="ISBN" itemValue="7" />
+												<f:selectItem itemLabel="ISSN" itemValue="8" />
+											</h:selectOneMenu>
 
 
-										<h:outputText value="#{msgs.suchbegriffe}" />
-										<!-- Auswahlliste -->
-										<h:inputTextarea value="#{Metadaten.additionalOpacPpns}" />
-										<!-- Action 
+											<h:outputText value="#{msgs.suchbegriffe}" />
+											<!-- Auswahlliste -->
+											<h:inputTextarea value="#{Metadaten.additionalOpacPpns}" />
+											<!-- Action 
 								onclick="parent.oben.document.getElementById('treeReload').value='reload'; if (!confirm('#{msgs.wirklichAusfuehren}?')) return"
 								-->
-										<h:outputText value="" />
+											<h:outputText value="" />
 
-										<h:panelGroup>
-											<h:commandLink immediate="false" style="margin-right:10px"
-												action="#{Metadaten.AddMetadaFromOpacPpn}"
-												title="#{msgs.uebernehmen}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
-												<h:outputText value="#{msgs.nurMetadaten}" />
-											</h:commandLink>
+											<h:panelGroup>
+												<h:commandLink immediate="false" style="margin-right:10px" action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}"
+													onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+													<h:outputText value="#{msgs.nurMetadaten}" />
+												</h:commandLink>
 
-											<h:commandLink immediate="false"
-												action="#{Metadaten.AddAdditionalOpacPpns}"
-												title="#{msgs.uebernehmen}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
-												<h:outputText value="#{msgs.alsUnterelemente}" />
-											</h:commandLink>
-										</h:panelGroup>
-									</h:panelGrid>
-								</x:div>
+												<h:commandLink immediate="false" action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}"
+													onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+													<h:outputText value="#{msgs.alsUnterelemente}" />
+												</h:commandLink>
+											</h:panelGroup>
+										</h:panelGrid>
+									</x:div>
 
-							</h:panelGroup>
+								</h:panelGroup>
 
-							<!-- OCR-Button -->
-							<h:outputLink rendered="#{Metadaten.showOcrButton}"
-								target="_blank" value="#{Metadaten.ocrAcdress}"
-								title="#{msgs.ocr}">
-								<h:graphicImage value="/newpages/images/buttons/ocr.png"
-									style="margin-left:4px;margin-right:7px;vertical-align:middle" />
-								<h:outputText value="#{msgs.ocr}" />
-							</h:outputLink>
+								<!-- OCR-Button -->
+								<h:outputLink rendered="#{Metadaten.showOcrButton}" target="_blank" value="#{Metadaten.ocrAcdress}" title="#{msgs.ocr}">
+									<h:graphicImage value="images/buttons/ocr.png" style="margin-left:4px;margin-right:7px;vertical-align:middle" />
+									<h:outputText value="#{msgs.ocr}" />
+								</h:outputLink>
 
-							<!-- Neu-Schaltknopf 
+								<!-- Neu-Schaltknopf 
 					<h:panelGroup rendered="#{Metadaten.showOcrButton}">
 								<jp:popupFrame scrolling="auto" height="380px" width="430px"
 									topStyle="background: #1874CD;" bottomStyleClass="popup_unten"
@@ -264,70 +203,61 @@
 									style="margin-top:2px;display:block; text-decoration:none"
 									actionOpen="#{Metadaten.showOcrPopup}" center="true"
 									title="#{msgs.ocr}" immediate="true">
-									<h:graphicImage value="/newpages/images/buttons/ocr.png"
+									<h:graphicImage value="images/buttons/ocr.png"
 										style="margin-left:4px;margin-right:7px;vertical-align:middle" />
 									<h:outputText style="border-bottom: #a24033 dashed 1px;"
 										value="#{msgs.ocr}" />
 								</jp:popupFrame>
 							</h:panelGroup>-->
 
-							<!-- Knoten loeschen -->
-							<h:commandLink rendered="#{Metadaten.isNotRootElement}"
-								action="#{Metadaten.KnotenDelete}"
-								title="#{msgs.strukturelementLoeschen}">
-								<h:graphicImage
-									value="/newpages/images/buttons/waste1a_20px.gif"
-									style="margin-left:4px;margin-right:7px;vertical-align:middle" />
-								<h:outputText value="#{msgs.strukturelementLoeschen}" />
-							</h:commandLink>
+								<!-- Knoten loeschen -->
+								<h:commandLink rendered="#{Metadaten.isNotRootElement}" action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
+									<h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:4px;margin-right:7px;vertical-align:middle" />
+									<h:outputText value="#{msgs.strukturelementLoeschen}" />
+								</h:commandLink>
 
-						</h:panelGrid></td>
-				</tr>
-			</table>
-			<!-- ++++++++++++++++     // Strukturelement verschieben oder loeschen   ++++++++++++++++ -->
+							</h:panelGrid>
+						</td>
+					</tr>
+				</table>
+				<!-- ++++++++++++++++     // Strukturelement verschieben oder loeschen   ++++++++++++++++ -->
 
 
-			<!-- ########################################
+				<!-- ########################################
 
                                     vorhandene Seiten
 
 			#########################################-->
 
-			<h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
+				<h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
 
-				<!-- ++++++++++++++++ Zuweisung der ersten und letzten Seite     ++++++++++++++++ -->
-				<table cellpadding="3" cellspacing="0" width="350px"
-					class="eingabeBoxen" style="margin-top: 20px">
-					<tr>
-						<td class="eingabeBoxen_row1"><h:outputText
-								value="#{msgs.seitenzuordnung} " /> <h:commandLink>
-								<h:outputText value="(normal)"
-									rendered="#{Metadaten.treeProperties.showpagesasajax==true}" />
-								<h:outputText value="(ajax)"
-									rendered="#{Metadaten.treeProperties.showpagesasajax==false}" />
-								<x:updateActionListener
-									value="#{Metadaten.treeProperties.showpagesasajax?false:true}"
-									property="#{Metadaten.treeProperties.showpagesasajax}" />
-							</h:commandLink></td>
-					</tr>
-					<tr>
-						<td class="eingabeBoxen_row2"><h:panelGrid id="mygrid5"
-								columns="2" width="100%"
-								columnClasses="standardTable_Column,standardTable_ColumnRight">
-
-								<h:commandLink action="#{Metadaten.BildErsteSeiteAnzeigen}">
-									<h:outputText value="#{msgs.ersteSeite}" />
+					<!-- ++++++++++++++++ Zuweisung der ersten und letzten Seite     ++++++++++++++++ -->
+					<table cellpadding="3" cellspacing="0" width="350px" class="eingabeBoxen" style="margin-top: 20px">
+						<tr>
+							<td class="eingabeBoxen_row1">
+								<h:outputText value="#{msgs.seitenzuordnung} " />
+								<h:commandLink>
+									<h:outputText value="(normal)" rendered="#{Metadaten.treeProperties.showpagesasajax==true}" />
+									<h:outputText value="(ajax)" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" />
+									<x:updateActionListener value="#{Metadaten.treeProperties.showpagesasajax?false:true}" property="#{Metadaten.treeProperties.showpagesasajax}" />
 								</h:commandLink>
-								<h:panelGroup
-									rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
-									<x:inputText id="pagestart" forceId="true"
-										value="#{Metadaten.ajaxSeiteStart}" />
-									<!-- 
-  <h:graphicImage value="/newpages/images/calendarImages/drop1.gif"
+							</td>
+						</tr>
+						<tr>
+							<td class="eingabeBoxen_row2">
+								<h:panelGrid id="mygrid5" columns="2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight">
+
+									<h:commandLink action="#{Metadaten.BildErsteSeiteAnzeigen}">
+										<h:outputText value="#{msgs.ersteSeite}" />
+									</h:commandLink>
+									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
+										<x:inputText id="pagestart" forceId="true" value="#{Metadaten.ajaxSeiteStart}" />
+										<!-- 
+  <h:graphicImage value="images/calendarImages/drop1.gif"
 										onclick="document.getElementById('formular2:suggestion').callSuggestion(true);"
 										alt="" />
 		-->
-									<!-- 
+										<!-- 
 									<rich:suggestionbox height="200" width="145" for="pagestart"
 										var="startpage" id="suggestion"
 										suggestionAction="#{Metadaten.autocomplete}">
@@ -336,22 +266,19 @@
 										</h:column>
 									</rich:suggestionbox>
  -->
-								</h:panelGroup>
+									</h:panelGroup>
 
-								<h:selectOneMenu style="width: 200px"
-									rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-									value="#{Metadaten.alleSeitenAuswahl_ersteSeite}">
-									<f:selectItems value="#{Metadaten.alleSeiten}" />
-								</h:selectOneMenu>
+									<h:selectOneMenu style="width: 200px" rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+										value="#{Metadaten.alleSeitenAuswahl_ersteSeite}">
+										<f:selectItems value="#{Metadaten.alleSeiten}" />
+									</h:selectOneMenu>
 
-								<h:commandLink action="#{Metadaten.BildLetzteSeiteAnzeigen}">
-									<h:outputText value="#{msgs.letzteSeite}" />
-								</h:commandLink>
-								<h:panelGroup
-									rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
-									<x:inputText id="pageend" forceId="true"
-										value="#{Metadaten.ajaxSeiteEnde}" />
-									<!-- 
+									<h:commandLink action="#{Metadaten.BildLetzteSeiteAnzeigen}">
+										<h:outputText value="#{msgs.letzteSeite}" />
+									</h:commandLink>
+									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
+										<x:inputText id="pageend" forceId="true" value="#{Metadaten.ajaxSeiteEnde}" />
+										<!-- 
 									<rich:suggestionbox tokens=":" height="200" width="200"
 										for="pageend" var="endpage" id="suggestion2"
 										suggestionAction="#{Metadaten.autocomplete}">
@@ -360,216 +287,174 @@
 										</h:column>
 									</rich:suggestionbox>
  -->
-								</h:panelGroup>
-								<h:selectOneMenu style="width: 200px"
-									rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-									value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
-									<f:selectItems value="#{Metadaten.alleSeiten}" />
-								</h:selectOneMenu>
-							</h:panelGrid></td>
-					</tr>
+									</h:panelGroup>
+									<h:selectOneMenu style="width: 200px" rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+										value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
+										<f:selectItems value="#{Metadaten.alleSeiten}" />
+									</h:selectOneMenu>
+								</h:panelGrid>
+							</td>
+						</tr>
 
-					<tr>
-						<td class="eingabeBoxen_row3"><h:panelGrid id="mygrid6"
-								columns="2" width="100%"
-								columnClasses="standardTable_Column,standardTable_ColumnRight">
-								<h:commandLink
-									action="#{Metadaten.SeitenVonChildrenUebernehmen}">
-									<h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
-								</h:commandLink>
-								<h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}"
-									rendered="#{Metadaten.treeProperties.showpagesasajax==false}">
-									<h:outputText value="#{msgs.seitenZuweisen}" />
-								</h:commandLink>
-								<h:commandLink
-									action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
-									rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
-									<h:outputText value="#{msgs.seitenZuweisen}" />
-								</h:commandLink>
-							</h:panelGrid></td>
+						<tr>
+							<td class="eingabeBoxen_row3">
+								<h:panelGrid id="mygrid6" columns="2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight">
+									<h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}">
+										<h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
+									</h:commandLink>
+									<h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}" rendered="#{Metadaten.treeProperties.showpagesasajax==false}">
+										<h:outputText value="#{msgs.seitenZuweisen}" />
+									</h:commandLink>
+									<h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
+										<h:outputText value="#{msgs.seitenZuweisen}" />
+									</h:commandLink>
+								</h:panelGrid>
+							</td>
 
-					</tr>
-				</table>
-				<!-- ++++++++++++++++     // Zuweisung der ersten und letzten Seite   ++++++++++++++++ -->
+						</tr>
+					</table>
+					<!-- ++++++++++++++++     // Zuweisung der ersten und letzten Seite   ++++++++++++++++ -->
 
-				<h:panelGrid id="mygrid7" columns="3" columnClasses="top,top,top">
-					<!-- alle Seiten -->
-					<h:panelGroup style="margin-left:0px">
-						<h3 style="margin-top: 20px">
-							<h:outputText value="#{msgs.alleSeiten}" />
-						</h3>
+					<h:panelGrid id="mygrid7" columns="3" columnClasses="top,top,top">
+						<!-- alle Seiten -->
+						<h:panelGroup style="margin-left:0px">
+							<h3 style="margin-top: 20px">
+								<h:outputText value="#{msgs.alleSeiten}" />
+							</h3>
 
-						<x:selectManyListbox
-							style="font-size:12px;height:300px;width:150px"
-							value="#{Metadaten.alleSeitenAuswahl}">
-							<f:selectItems value="#{Metadaten.alleSeiten}" />
-						</x:selectManyListbox>
+							<x:selectManyListbox style="font-size:12px;height:300px;width:150px" value="#{Metadaten.alleSeitenAuswahl}">
+								<f:selectItems value="#{Metadaten.alleSeiten}" />
+							</x:selectManyListbox>
 
-					</h:panelGroup>
+						</h:panelGroup>
 
-					<!-- Pfeile zum Verschieben der Seiten -->
-					<h:panelGroup>
-						<!-- nach rechts -->
-						<h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}"
-							style="margin-top:175px;margin-left:10px;margin-right:10px;display:block">
-							<h:graphicImage value="/newpages/images/buttons/order_right.gif" />
-						</h:commandLink>
-						<!-- nach links -->
-						<h:commandLink id="s2" action="#{Metadaten.SeitenWeg}"
-							style="margin-top:7px;margin-left:10px;margin-right:10px;display:block">
-							<h:graphicImage value="/newpages/images/buttons/order_left.gif" />
-						</h:commandLink>
-					</h:panelGroup>
+						<!-- Pfeile zum Verschieben der Seiten -->
+						<h:panelGroup>
+							<!-- nach rechts -->
+							<h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}" style="margin-top:175px;margin-left:10px;margin-right:10px;display:block">
+								<h:graphicImage value="images/buttons/order_right.gif" />
+							</h:commandLink>
+							<!-- nach links -->
+							<h:commandLink id="s2" action="#{Metadaten.SeitenWeg}" style="margin-top:7px;margin-left:10px;margin-right:10px;display:block">
+								<h:graphicImage value="images/buttons/order_left.gif" />
+							</h:commandLink>
+						</h:panelGroup>
 
-					<!-- zugewiesene Seiten -->
-					<h:panelGroup>
-						<h3 style="margin-top: 20px">
-							<h:outputText value="#{msgs.zugehoerigeSeiten}" />
-						</h3>
-						<x:selectManyListbox id="menuZugehoerigeSeiten"
-							style="font-size:12px;height:300px;width:150px"
-							value="#{Metadaten.structSeitenAuswahl}">
-							<f:selectItems value="#{Metadaten.structSeiten}" />
-						</x:selectManyListbox>
-					</h:panelGroup>
-				</h:panelGrid>
+						<!-- zugewiesene Seiten -->
+						<h:panelGroup>
+							<h3 style="margin-top: 20px">
+								<h:outputText value="#{msgs.zugehoerigeSeiten}" />
+							</h3>
+							<x:selectManyListbox id="menuZugehoerigeSeiten" style="font-size:12px;height:300px;width:150px" value="#{Metadaten.structSeitenAuswahl}">
+								<f:selectItems value="#{Metadaten.structSeiten}" />
+							</x:selectManyListbox>
+						</h:panelGroup>
+					</h:panelGrid>
 
+				</h:panelGroup>
+				<h:commandButton id="docStructReload" immediate="true" action="#{NavigationForm.Reload}" style="display:none">
+				</h:commandButton>
 			</h:panelGroup>
-			<h:commandButton id="docStructReload" immediate="true"
-				action="#{NavigationForm.Reload}" style="display:none">
-			</h:commandButton>
-		</h:panelGroup>
 
-		<!-- ########################################
+			<!-- ########################################
 
             Strukturelement verschieben
 
 	#########################################-->
 
-		<h:panelGroup rendered="#{Metadaten.modusStrukturelementVerschieben}">
-			
-			<h3 style="margin-top: 0px">
-			<h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
-		</h3>
-		
-		
-			<table width="580">
-				<tr>
-					<td colspan="2"><h:outputText
-							value="#{msgs.strukturelementVerschiebenErlaeuterung}" /> <br />
-						<br /></td>
-				</tr>
-				<tr>
-					<td><h:dataTable value="#{Metadaten.strukturBaum3Alle}"
-							var="item" cellpadding="0" cellspacing="0" border="0">
-							<h:column>
+			<h:panelGroup rendered="#{Metadaten.modusStrukturelementVerschieben}">
 
-								<!-- Popup -->
-								<x:popup id="z" closePopupOnExitingElement="true"
-									closePopupOnExitingPopup="true" displayAtDistanceX="15"
-									displayAtDistanceY="-40">
+				<h3 style="margin-top: 0px">
+					<h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
+				</h3>
 
-									<h:graphicImage value="/newpages/images/spacer.gif"
-										rendered="#{item.node.hasChildren}"
-										style="border: 0px none;margin-top:1px;margin-left:#{item.niveau * 15 + 5}px;" />
 
-									<f:facet name="popup">
-										<div>
-											<h:panelGrid columns="1"
-												style="background-color:#FFFFEA; font-size:11px; border: 1px solid #CCCCCC; padding: 1px;"
-												rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
-												<h:panelGrid columns="1" style="font-size: 11"
-													cellspacing="0" cellpadding="0" width="110">
+				<table width="580">
+					<tr>
+						<td colspan="2">
+							<h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}" />
+							<br /> <br />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h:dataTable value="#{Metadaten.strukturBaum3Alle}" var="item" cellpadding="0" cellspacing="0" border="0">
+								<h:column>
 
-													<h:outputText value="Maintitle:"
-														rendered="#{item.node.mainTitle != ''}"
-														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.mainTitle}"
-														rendered="#{item.node.mainTitle != ''}" />
+									<!-- Popup -->
+									<x:popup id="z" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="15" displayAtDistanceY="-40">
 
-													<h:outputText value="Startimage:"
-														rendered="#{node.firstImage!= ''}"
-														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.firstImage}"
-														rendered="#{item.node.firstImage != ''}" />
+										<h:graphicImage value="images/spacer.gif" rendered="#{item.node.hasChildren}"
+											style="border: 0px none;margin-top:1px;margin-left:#{item.niveau * 15 + 5}px;" />
 
-													<h:outputText value="ZBL-Seiten:"
-														rendered="#{item.node.zblSeiten != ''}"
-														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.zblSeiten}"
-														rendered="#{item.node.zblSeiten != ''}" />
+										<f:facet name="popup">
+											<div>
+												<h:panelGrid columns="1" style="background-color:#FFFFEA; font-size:11px; border: 1px solid #CCCCCC; padding: 1px;"
+													rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
+													<h:panelGrid columns="1" style="font-size: 11" cellspacing="0" cellpadding="0" width="110">
 
-													<h:outputText value="ZBL-ID:"
-														rendered="#{item.node.zblNummer != ''}"
-														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.zblNummer}"
-														rendered="#{item.node.zblNummer != ''}" />
+														<h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}"
+															style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+														<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
 
-													<h:outputText value="PPN-Digital"
-														rendered="#{item.node.ppnDigital != ''}"
-														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.ppnDigital}"
-														rendered="#{item.node.ppnDigital != ''}" />
+														<h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}"
+															style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+														<h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
+
+														<h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}"
+															style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+														<h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
+
+														<h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}"
+															style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+														<h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
+
+														<h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}"
+															style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+														<h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
+													</h:panelGrid>
 												</h:panelGrid>
-											</h:panelGrid>
-										</div>
-									</f:facet>
+											</div>
+										</f:facet>
 
-									<h:graphicImage value="/newpages/images/document.png"
-										rendered="#{item.node.hasChildren}"
-										style="margin-right:2px;vertical-align:middle" />
-									<h:graphicImage value="/newpages/images/document.png"
-										rendered="#{!item.node.hasChildren}"
-										style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 17}px;" />
+										<h:graphicImage value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" />
+										<h:graphicImage value="images/document.png" rendered="#{!item.node.hasChildren}"
+											style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 17}px;" />
 
-									<h:commandLink styleClass="document"
-										action="#{Metadaten.KnotenVerschieben}"
-										rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
-										<h:outputText value="#{item.node.description}" />
-										<x:updateActionListener
-											property="#{Metadaten.modusStrukturelementVerschieben}"
-											value="false" />
-										<x:updateActionListener
-											property="#{Metadaten.tempStrukturelement}"
-											value="#{item.node.struct}" />
-									</h:commandLink>
+										<h:commandLink styleClass="document" action="#{Metadaten.KnotenVerschieben}"
+											rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+											<h:outputText value="#{item.node.description}" />
+											<x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+											<x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
+										</h:commandLink>
 
-									<h:panelGroup
-										rendered="#{not item.node.einfuegenErlaubt or item.node.selected}">
-										<h:outputText value="#{item.node.description}"
-											style="font-size: 12px;#{item.node.selected?'color:green;':'color:#999999;'}" />
-									</h:panelGroup>
+										<h:panelGroup rendered="#{not item.node.einfuegenErlaubt or item.node.selected}">
+											<h:outputText value="#{item.node.description}" style="font-size: 12px;#{item.node.selected?'color:green;':'color:#999999;'}" />
+										</h:panelGroup>
 
-								</x:popup>
+									</x:popup>
 
-							</h:column>
+								</h:column>
 
-						</h:dataTable></td>
-					<td width="1%" valign="top" align="right" nowrap="">
-						<div style="width:100px;height:30px;padding:10px 5px 5px 0px; border: 2px dashed silver">
-							<h:commandLink target="_self" action="#{NavigationForm.Reload}"
-								style="margin:5px" title="#{msgs.verschiebenAbbrechen}">
-								<h:graphicImage value="/newpages/images/buttons/cancel1.gif"
-									style="border: 0px;vertical-align:middle;" />
-								<h:outputText value="#{msgs.abbrechen}"
-									title="#{msgs.verschiebenAbbrechen}" />
-								<x:updateActionListener
-									property="#{Metadaten.modusStrukturelementVerschieben}"
-									value="false" />
-							</h:commandLink>
+							</h:dataTable>
+						</td>
+						<td width="1%" valign="top" align="right" nowrap="">
+							<div style="width: 100px; height: 30px; padding: 10px 5px 5px 0px; border: 2px dashed silver">
+								<h:commandLink target="_self" action="#{NavigationForm.Reload}" style="margin:5px" title="#{msgs.verschiebenAbbrechen}">
+									<h:graphicImage value="images/buttons/cancel1.gif" style="border: 0px;vertical-align:middle;" />
+									<h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
+									<x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+								</h:commandLink>
 
-							<h:commandButton id="docStructVerschiebenAbbrechen"
-								action="#{NavigationForm.Reload}" style="display:none">
-								<x:updateActionListener
-									property="#{Metadaten.modusStrukturelementVerschieben}"
-									value="false" />
-							</h:commandButton>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</h:panelGroup>
-</h:form>
+								<h:commandButton id="docStructVerschiebenAbbrechen" action="#{NavigationForm.Reload}" style="display:none">
+									<x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+								</h:commandButton>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</h:panelGroup>
+		</h:form>
 
 	</composite:implementation>
 

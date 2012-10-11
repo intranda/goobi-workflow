@@ -18,15 +18,20 @@
 			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 
 				<tr>
-					<td class="eingabeBoxen_row1" align="left"><h:outputText id="idnp1" value="#{msgs.details}" /></td>
-					<td class="eingabeBoxen_row1" align="right"><h:commandLink id="idnp2" action="#{NavigationForm.Reload}">
-							<h:graphicImage id="idnp4" value="/newpages/images/reload.gif" />
-						</h:commandLink></td>
+					<td class="eingabeBoxen_row1" align="left">
+						<h:outputText id="idnp1" value="#{msgs.details}" />
+					</td>
+					<td class="eingabeBoxen_row1" align="right">
+						<h:commandLink id="idnp2" action="#{NavigationForm.Reload}">
+							<h:graphicImage id="idnp4" value="images/reload.gif" />
+						</h:commandLink>
+					</td>
 				</tr>
 
 				<!-- Formular für die Bearbeitung der Texte -->
 				<tr>
-					<td class="eingabeBoxen_row2" colspan="2"><x:dataTable var="property" id="processProperties" value="#{MassImportForm.properties}">
+					<td class="eingabeBoxen_row2" colspan="2">
+						<x:dataTable var="property" id="processProperties" value="#{MassImportForm.properties}">
 
 							<h:column>
 								<h:outputText value="#{property.name}:" />
@@ -71,25 +76,32 @@
 								<h:panelGroup id="prpvw15_5" rendered="#{(property.type.name == 'date')}">
 
 									<x:inputCalendar id="prpvw15_5_1a" value="#{property.dateValue}" style="width:110px" renderAsPopup="true" renderPopupButtonAsImage="true"
-										popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}" styleClass="projekteBearbeiten"
-										imageLocation="/newpages/images/calendarImages" popupButtonImageUrl="/newpages/images/calendarImages/calendar.gif">
+										popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}" styleClass="projekteBearbeiten" imageLocation="images/calendarImages"
+										popupButtonImageUrl="images/calendarImages/calendar.gif">
 									</x:inputCalendar>
 
 								</h:panelGroup>
 							</h:column>
 						</x:dataTable>
 
-						<hr /> <h:panelGroup rendered="#{MassImportForm.plugin.title == 'Multiple Manifestation Millennium Import'}">
+						<hr />
+						<h:panelGroup rendered="#{MassImportForm.plugin.title == 'Multiple Manifestation Millennium Import'}">
 							<ui:include src="plugins/import_multiManifestationMillenium.xhtml" />
-						</h:panelGroup> <h:panelGroup rendered="#{MassImportForm.plugin.title == 'Soton Multivolume Import'}">
+						</h:panelGroup>
+						<h:panelGroup rendered="#{MassImportForm.plugin.title == 'Soton Multivolume Import'}">
 							<ui:include src="plugins/import_soton.xhtml" />
-						</h:panelGroup></td>
+						</h:panelGroup>
+					</td>
 				</tr>
 
 
 				<tr>
-					<td class="eingabeBoxen_row3" align="left"><h:commandButton id="id121" value="#{msgs.abbrechen}" action="process_all" immediate="true" /></td>
-					<td class="eingabeBoxen_row3" align="right"><h:commandButton id="id124" value="#{msgs.speichern}" action="#{MassImportForm.convertData}" /></td>
+					<td class="eingabeBoxen_row3" align="left">
+						<h:commandButton id="id121" value="#{msgs.abbrechen}" action="process_all" immediate="true" />
+					</td>
+					<td class="eingabeBoxen_row3" align="right">
+						<h:commandButton id="id124" value="#{msgs.speichern}" action="#{MassImportForm.convertData}" />
+					</td>
 
 				</tr>
 

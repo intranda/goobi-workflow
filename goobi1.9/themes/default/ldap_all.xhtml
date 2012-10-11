@@ -1,9 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	template="/themes/default/template/template.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/themes/default/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
 
 	<ui:define name="breadcrumb">
 		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
@@ -20,19 +16,15 @@
 	<ui:define name="content">
 
 		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}">
-			<h:commandLink id="id5" action="#{LdapGruppenForm.Neu}"
-				immediate="true"
+			<h:commandLink id="id5" action="#{LdapGruppenForm.Neu}" immediate="true"
 				rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 				<h:outputText id="id6" value="#{msgs.neueLdapgruppeAnlegen}" />
 			</h:commandLink>
 
 			<!-- Datentabelle -->
-			<x:dataTable id="id8" styleClass="standardTable" width="100%"
-				cellspacing="1px" cellpadding="1px"
-				headerClass="standardTable_Header"
-				rowClasses="standardTable_Row1,standardTable_Row2"
-				columnClasses="standardTable_Column" var="item"
-				value="#{LdapGruppenForm.page.listReload}" style="margin-top: 10px;">
+			<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
+				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column" var="item" value="#{LdapGruppenForm.page.listReload}"
+				style="margin-top: 10px;">
 
 				<h:column id="id9">
 					<f:facet name="header">
@@ -55,18 +47,14 @@
 					<h:outputText id="id17" value="#{item.gidNumber}" />
 				</h:column>
 
-				<x:column id="id18" style="text-align:center"
-					rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+				<x:column id="id18" style="text-align:center" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 					<f:facet name="header">
 						<h:outputText id="id19" value="#{msgs.auswahl}" />
 					</f:facet>
 					<!-- Bearbeiten-Schaltknopf -->
-					<h:commandLink id="id20" action="ldap_edit"
-						title="#{msgs.ldapgruppeBearbeiten}">
-						<h:graphicImage id="id21"
-							value="/newpages/images/buttons/edit.gif" />
-						<x:updateActionListener property="#{LdapGruppenForm.myLdapGruppe}"
-							value="#{item}" />
+					<h:commandLink id="id20" action="ldap_edit" title="#{msgs.ldapgruppeBearbeiten}">
+						<h:graphicImage id="id21" value="images/buttons/edit.gif" />
+						<x:updateActionListener property="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
 					</h:commandLink>
 				</x:column>
 			</x:dataTable>
@@ -75,8 +63,8 @@
 			<table width="100%" border="0">
 				<tr valign="top">
 					<td align="left">
-						<!-- Neu-Schaltknopf --> <h:commandLink id="id52"
-							action="#{LdapGruppenForm.Neu}" immediate="true"
+						<!-- Neu-Schaltknopf -->
+						<h:commandLink id="id52" action="#{LdapGruppenForm.Neu}" immediate="true"
 							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (LdapGruppenForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
 							<h:outputText id="id62" value="#{msgs.neueLdapgruppeAnlegen}" />
 						</h:commandLink>
@@ -85,7 +73,8 @@
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}" value="#{LdapGruppenForm.page}">
 							<ui:include src="includes/datascroller.xhtml" />
-						</x:aliasBean> <!-- ===================== // Datascroller fuer die Ergebnisse ====================== -->
+						</x:aliasBean>
+						<!-- ===================== // Datascroller fuer die Ergebnisse ====================== -->
 					</td>
 				</tr>
 			</table>

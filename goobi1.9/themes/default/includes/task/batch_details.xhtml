@@ -1,11 +1,6 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
 
 	<composite:interface>
 	</composite:interface>
@@ -14,32 +9,32 @@
 
 		<table cellpadding="3" cellspacing="0" style="width: 100%">
 			<tr style="vertical-align: top">
-				<td><h:form style="margin-bottom:10px;">
-						<table cellpadding="3" cellspacing="0" width="100%"
-							class="eingabeBoxen">
+				<td>
+					<h:form style="margin-bottom:10px;">
+						<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 							<tr>
-								<td class="eingabeBoxen_row1"><h:outputText
-										value="#{msgs.processesInThisBatch}" /></td>
+								<td class="eingabeBoxen_row1">
+									<h:outputText value="#{msgs.processesInThisBatch}" />
+								</td>
 							</tr>
 							<tr>
-								<td class="eingabeBoxen_row2"><h:outputText
-										value="#{msgs.showDataForProcess}: " /> <h:selectOneMenu
-										value="#{AktuelleSchritteForm.batchHelper.processName}">
-										<f:selectItems var="process"
-											value="#{AktuelleSchritteForm.batchHelper.processNameList}"
-											itemLabel="#{process}" itemValue="#{process}" />
-									</h:selectOneMenu> <h:commandButton action="#{NavigationForm.Reload}"
-										value="#{msgs.reload}" /></td>
+								<td class="eingabeBoxen_row2">
+									<h:outputText value="#{msgs.showDataForProcess}: " />
+									<h:selectOneMenu value="#{AktuelleSchritteForm.batchHelper.processName}">
+										<f:selectItems var="process" value="#{AktuelleSchritteForm.batchHelper.processNameList}" itemLabel="#{process}" itemValue="#{process}" />
+									</h:selectOneMenu>
+									<h:commandButton action="#{NavigationForm.Reload}" value="#{msgs.reload}" />
+								</td>
 							</tr>
 						</table>
 					</h:form>
 
-					<table cellpadding="3" cellspacing="0" width="100%"
-						class="main_statistikboxen" id="details">
+					<table cellpadding="3" cellspacing="0" width="100%" class="main_statistikboxen" id="details">
 
 						<tr>
-							<td class="main_statistikboxen_row1"><h:outputText
-									value="#{msgs.eigenschaften}" /></td>
+							<td class="main_statistikboxen_row1">
+								<h:outputText value="#{msgs.eigenschaften}" />
+							</td>
 						</tr>
 
 						<tr>
@@ -47,71 +42,77 @@
 
 								<table border="0" width="90%" cellpadding="2">
 									<tr>
-										<td width="150"><h:outputText value="#{msgs.titel}:" />
+										<td width="150">
+											<h:outputText value="#{msgs.titel}:" />
 										</td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" />
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" />
 										</td>
 									</tr>
 
 									<tr>
-										<td width="150"><h:outputText
-												value="#{msgs.prozessTitel}:" /></td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.batchHelper.processName}" />
+										<td width="150">
+											<h:outputText value="#{msgs.prozessTitel}:" />
+										</td>
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.batchHelper.processName}" />
 										</td>
 									</tr>
 
 
 
 									<tr>
-										<td width="150"><h:outputText
-												value="#{msgs.reihenfolge}:" /></td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.batchHelper.currentStep.reihenfolge}" />
+										<td width="150">
+											<h:outputText value="#{msgs.reihenfolge}:" />
+										</td>
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.reihenfolge}" />
 										</td>
 									</tr>
 									<tr>
-										<td width="150"><h:outputText value="#{msgs.prioritaet}:" />
+										<td width="150">
+											<h:outputText value="#{msgs.prioritaet}:" />
 										</td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet}"
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet}"
 												rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet!=10}" />
-											<h:outputText value="#{msgs.korrektur}"
-												rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet==10}" />
+											<h:outputText value="#{msgs.korrektur}" rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet==10}" />
 										</td>
 									</tr>
 									<tr>
-										<td width="150"><h:outputText value="#{msgs.status}:" />
+										<td width="150">
+											<h:outputText value="#{msgs.status}:" />
 										</td>
-										<td><h:outputText
-												value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsstatusEnum.title}" />
+										<td>
+											<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsstatusEnum.title}" />
 										</td>
 									</tr>
 
-									<h:panelGroup
-										rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+									<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
 										<tr>
-											<td width="150"><h:outputText
-													value="#{msgs.bearbeitungsbeginn}:" /></td>
-											<td><h:outputText
-													value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbeginnAsFormattedString}" />
+											<td width="150">
+												<h:outputText value="#{msgs.bearbeitungsbeginn}:" />
+											</td>
+											<td>
+												<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbeginnAsFormattedString}" />
 											</td>
 										</tr>
 
 										<tr>
-											<td width="150"><h:outputText
-													value="#{msgs.zuletztBearbeitet}:" /></td>
-											<td><h:outputText
-													value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungszeitpunktAsFormattedString}" />
+											<td width="150">
+												<h:outputText value="#{msgs.zuletztBearbeitet}:" />
+											</td>
+											<td>
+												<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungszeitpunktAsFormattedString}" />
 											</td>
 										</tr>
 
 										<tr>
-											<td width="150"><h:outputText
-													value="#{msgs.aktualisierungstyp}:" /></td>
-											<td><h:outputText
-													value="#{AktuelleSchritteForm.batchHelper.currentStep.editTypeEnum.title}" />
+											<td width="150">
+												<h:outputText value="#{msgs.aktualisierungstyp}:" />
+											</td>
+											<td>
+												<h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.editTypeEnum.title}" />
 											</td>
 										</tr>
 									</h:panelGroup>
@@ -122,27 +123,24 @@
 						</tr>
 
 
-					</table></td>
-				<td><h:form id="htmleditorform">
-						<h:inputText id="myTextArea"
-							value="#{AktuelleSchritteForm.batchHelper.wikiField}"
-							style="width: 50%" />
-					</h:form> <h:form id="addToWikiForm"
-						rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+					</table>
+				</td>
+				<td>
+					<h:form id="htmleditorform">
+						<h:inputText id="myTextArea" value="#{AktuelleSchritteForm.batchHelper.wikiField}" style="width: 50%" />
+					</h:form>
+					<h:form id="addToWikiForm" rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 						<h:panelGrid>
 							<h:panelGroup>
-								<h:inputText id="addToTextArea"
-									value="#{AktuelleSchritteForm.batchHelper.addToWikiField}"
-									style="width: 100%" />
+								<h:inputText id="addToTextArea" value="#{AktuelleSchritteForm.batchHelper.addToWikiField}" style="width: 100%" />
 							</h:panelGroup>
 							<h:panelGroup>
-								<h:commandButton value="#{msgs.nachrichtHinzufuegen}"
-									action="#{AktuelleSchritteForm.batchHelper.addToWikiField}" />
-								<h:commandButton value="#{msgs.nachrichtHinzufuegenForAll}"
-									action="#{AktuelleSchritteForm.batchHelper.addToWikiFieldForAll}" />
+								<h:commandButton value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.batchHelper.addToWikiField}" />
+								<h:commandButton value="#{msgs.nachrichtHinzufuegenForAll}" action="#{AktuelleSchritteForm.batchHelper.addToWikiFieldForAll}" />
 							</h:panelGroup>
 						</h:panelGrid>
-					</h:form></td>
+					</h:form>
+				</td>
 			</tr>
 		</table>
 

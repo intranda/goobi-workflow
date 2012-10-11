@@ -27,34 +27,49 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import de.sub.goobi.Beans.Prozess;
 import de.sub.goobi.Beans.Schritt;
 import de.sub.goobi.Persistence.HibernateUtilOld;
 
-// FIXME remove this class, find a better way to update process status in hibernate
 public class RefreshObject {
+	private static final Logger logger = Logger.getLogger(RefreshObject.class);
 
 	public static void refreshProcess(int processID) {
-		Session session = Helper.getHibernateSession();
-		if (session == null || !session.isOpen() || !session.isConnected()) {
-			HibernateUtilOld.rebuildSessionFactory();
-			session = HibernateUtilOld.getSession();
+		try {
+			Session session = HibernateUtilOld.getSessionFactory().openSession();
+			// Session session = Helper.getHibernateSession();
+			// if (session == null || !session.isOpen() || !session.isConnected()) {
+			// logger.debug("session is closed, creating a new session");
+			// HibernateUtilOld.rebuildSessionFactory();
+			// session = HibernateUtilOld.getSessionFactory().openSession();
+			// }
+			Prozess o = (Prozess) session.get(Prozess.class, processID);
+			session.refresh(o);
+			session.close();
+		} catch (Exception e) {
+			logger.error("cannot refresh process with id " + processID);
 		}
-		Prozess o = (Prozess) session.get(Prozess.class, processID);
-		session.refresh(o);
 
 	}
 
 	public static void refreshStep(int stepID) {
-		Session session = Helper.getHibernateSession();
-		if (session == null || !session.isOpen() || !session.isConnected()) {
-			HibernateUtilOld.rebuildSessionFactory();
-			session = HibernateUtilOld.getSession();
+		try {
+			Session session = HibernateUtilOld.getSessionFactory().openSession();
+			// Session session = Helper.getHibernateSession();
+			// if (session == null || !session.isOpen() || !session.isConnected()) {
+			// logger.debug("session is closed, creating a new session");
+			// HibernateUtilOld.rebuildSessionFactory();
+			// session = HibernateUtilOld.getSession();
+			// }
+			Schritt o = (Schritt) session.get(Schritt.class, stepID);
+			session.refresh(o);
+			session.close();
+		} catch (Exception e) {
+			logger.error("cannot refresh step with id " + stepID);
 		}
-		Schritt o = (Schritt) session.get(Schritt.class, stepID);
-		session.refresh(o);
 
 	}
 

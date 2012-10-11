@@ -1,12 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jstl/core"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:x="http://myfaces.apache.org/tomahawk">
-	
+
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Script-Type" content="type" />
@@ -18,8 +14,7 @@
 	<x:stylesheet media="screen" path="/themes/default/css/default.css" />
 	<x:stylesheet media="print" path="/themes/default/css/print.css" />
 
-	<title><h:outputText
-			value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
+	<title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
 
 </h:head>
 
@@ -28,39 +23,39 @@
 <h:body>
 	<f:view locale="#{SpracheForm.locale}">
 
-		<table class="headTable" cellspacing="0" cellpadding="0"
-			style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
+		<table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
 			<ui:include src="inc_head.xhtml" />
 		</table>
 
-		<table cellspacing="5" cellpadding="0" class="layoutTable"
-			align="center">
+		<table cellspacing="5" cellpadding="0" class="layoutTable" align="center">
 
 			<tr>
 
 				<td valign="top" height="100%" class="layoutNavigation">
 
-					<table width="100%" style="height: 100%" align="center" border="0"
-						cellpadding="3" cellspacing="0">
+					<table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0">
 						<tr>
-							<td valign="top"><ui:insert name="sidebar_top">
+							<td valign="top">
+								<ui:insert name="sidebar_top">
 									<ui:include src="inc_navigation.xhtml" />
-								</ui:insert></td>
+								</ui:insert>
+							</td>
 						</tr>
 						<tr valign="bottom">
-							<td height="5%" valign="bottom"><ui:insert
-									name="sidebar_bottom">
+							<td height="5%" valign="bottom">
+								<ui:insert name="sidebar_bottom">
 									<h:form id="loginform">
-									 <ui:include src="inc_login.xhtml" />
+										<ui:include src="inc_login.xhtml" />
 									</h:form>
-								</ui:insert></td>
+								</ui:insert>
+							</td>
 						</tr>
 					</table>
 
 				</td>
 
-				<td valign="top" class="layoutInhalt" style=";background-color:#F0F0F0"><h:panelGrid id="id2"
-						columns="1" styleClass="layoutInhaltKopf">
+				<td valign="top" class="layoutInhalt" style="background-color: #F0F0F0">
+					<h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
 						<h:panelGroup id="id3">
 							<h:form id="useform">
 								<ui:insert name="breadcrumb" />
@@ -73,13 +68,12 @@
 							<ui:insert name="title" />
 						</h3>
 
-						<x:messages globalOnly="true" errorClass="text_red"
-							infoClass="text_blue" showDetail="true" showSummary="true"
-							tooltip="true" />
+						<x:messages globalOnly="true" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" />
 
 						<ui:insert name="content" />
 
-					</div></td>
+					</div>
+				</td>
 			</tr>
 			<ui:include src="inc_footer.xhtml" />
 		</table>
