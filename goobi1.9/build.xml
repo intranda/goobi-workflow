@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<project name="Goobi" default="dist" xmlns:artifact="urn:maven-artifact-ant">
+<project name="Goobi" default="dist">
 
 	<!-- Distribution specific settings. -->
 	<property name="dist.name" value="goobi" />
-	<property name="dist.revision" value="multiple manifestations"/>
+	<property name="dist.revision" value="multiple manifestations" />
 
 	<!-- Directory settings -->
 	<property name="dir.lib" value="./WEB-INF/lib" />
@@ -12,7 +12,7 @@
 	<property name="dir.config" location="./config" />
 	<property name="dir.tests" location="./test/src" />
 	<property name="dir.src" location="./WEB-INF/src" />
-	<available file=".git" type="dir" property="git.present"/>
+	<available file=".git" type="dir" property="git.present" />
 
 	<path id="classpath">
 		<fileset dir="${dir.lib}" />
@@ -53,7 +53,7 @@
 				</patternset>
 			</fileset>
 		</copy>
-		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false" >
+		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
 			<fileset dir="${private.dir}" />
 		</copy>
 	</target>
@@ -103,48 +103,43 @@
 		<war destfile="${dir.build}/${dist.name}.war" webxml="WEB-INF/web.xml">
 			<classes dir="${dir.build.classes}" />
 			<lib dir="WEB-INF/lib" />
-			<fileset dir="." includes="WEB-INF/*.*, index.jsp" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
-			<fileset dir="." includes="js/**/*.*" />
-		
-			<zipfileset dir="pages" prefix="pages">
+			<fileset dir="." includes="WEB-INF/*.*, index.html" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
+			
+			<zipfileset dir="themes" prefix="themes">
 				<patternset>
-					<include name="**/*.jsp" />
+					<include name="**/*.html" />
+					<include name="**/*.xhtml" />
 					<include name="**/*.png" />
-				</patternset>
-			</zipfileset>
-			<zipfileset dir="newpages" prefix="newpages">
-				<patternset>
-					<include name="**/*.jsp" />
 					<include name="**/*.gif" />
-					<include name="**/*.png" />
 					<include name="**/*.jpg" />
 					<include name="**/*.ico" />
+					<include name="**/*.css" />
+					<include name="**/*.js" />
 				</patternset>
 			</zipfileset>
-			<zipfileset dir="css" prefix="css" />
 		</war>
 	</target>
 
-	<target name="git.revision" description="Store git revision in ${repository.version}" >
-	    <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="" >
-	        <arg value="describe"/>
-	        <arg value="--tags"/>
-	        <arg value="--always"/>
-	        <arg value="HEAD"/>
-	    </exec>
-	    <condition property="repository.version" value="${git.revision}" else="unknown">
-	        <and>
-	            <isset property="git.revision"/>
-	            <length string="${git.revision}" trim="yes" length="0" when="greater"/>
-	        </and>
-	    </condition>
+	<target name="git.revision" description="Store git revision in ${repository.version}">
+		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+			<arg value="describe" />
+			<arg value="--tags" />
+			<arg value="--always" />
+			<arg value="HEAD" />
+		</exec>
+		<condition property="repository.version" value="${git.revision}" else="unknown">
+			<and>
+				<isset property="git.revision" />
+				<length string="${git.revision}" trim="yes" length="0" when="greater" />
+			</and>
+		</condition>
 	</target>
 
 
 	<!-- Build single war file. -->
 	<target name="dist" depends="clean, war, copyConfig" description="Build single war file.">
-		<delete dir="${dir.build.src}"/>
-	
+		<delete dir="${dir.build.src}" />
+
 		<echo>Alles ist gut</echo>
 		<echo>building revision ${dist.name}-${git.revision}</echo>
 	</target>
@@ -155,7 +150,7 @@
 	<!-- rewrite the Version file with informations from the build system, not used yet-->
 	<target name="writeVersion" depends="git.revision" description="writes the build version">
 		<tstamp>
-		<format property="date" pattern="dd−MMMM−yyyy" locale="en" />
+			<format property="date" pattern="dd−MMMM−yyyy" locale="en" />
 		</tstamp>
 		<echo file="${dir.build.src}/org/goobi/production/GoobiVersion.java">
 			package org.goobi.production;
