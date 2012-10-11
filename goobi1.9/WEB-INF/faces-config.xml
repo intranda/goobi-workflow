@@ -8,10 +8,15 @@
 	<application>
 
 		<resource-bundle>
-			<base-name>Messages.messages</base-name>
+			<base-name>org.goobi.production.messages.MyRessourceBundle</base-name>
 			<var>msgs</var>
 		</resource-bundle>
-
+		
+		<resource-bundle>
+			<base-name>Messages.messages</base-name>
+			<var>msgsClassic</var>
+		</resource-bundle>
+		
 		<locale-config>
 			<default-locale>de</default-locale>
 			<supported-locale>de</supported-locale>
