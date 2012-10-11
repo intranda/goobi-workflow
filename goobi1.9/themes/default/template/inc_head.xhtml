@@ -28,16 +28,16 @@
 	<td colspan="2">
 
 		<table width="100%" class="layoutKopf"
-			style="#{HelperForm.applicationHeaderBackground}" cellpadding="0"
+			style="background: url(#{HelperForm.applicationWebsiteUrl}/themes/default/images/template/goobi_meta_verlauf.jpg) repeat-x;" cellpadding="0"
 			cellspacing="0" border="0">
 			<tr valign="top">
 				<td style="padding-left:0px;">
-					<h:graphicImage value="#{HelperForm.applicationLogo}"/>
+					<h:graphicImage value="images/template/goobi_meta_klein.jpg"/>
 				</td>
 				<td valign="middle" align="center">
 
 					<ui:insert name="top_title" >
-					<h:outputText style="#{HelperForm.applicationTitleStyle}"
+					<h:outputText style="font-size:17px; font-family:verdana; color: white;"
 						value="#{HelperForm.applicationTitle}" />
 					</ui:insert>
 
@@ -61,16 +61,16 @@
 										
 						<h:commandLink action="#{SpracheForm.changeLocale('de')}" id="lang1" style="margin-right:4px"
 							title="deutsche Version">
-									<h:graphicImage value="/newpages/images/flag_de_ganzklein.gif" />
+									<h:graphicImage value="images/flag_de_ganzklein.gif" />
 								</h:commandLink>
 						<h:commandLink action="#{SpracheForm.changeLocale('en')}" id="lang2" style="margin-right:4px"
 							title="english version" >
-							<h:graphicImage value="/newpages/images/flag_en_ganzklein.gif" />
+							<h:graphicImage value="images/flag_en_ganzklein.gif" />
 							<f:param name="locale" value="en" />
 						</h:commandLink>			
 						<h:commandLink action="#{SpracheForm.changeLocale('es')}" id="lang4"
 							title="spanish version" style="margin-left:0px;">
-							<h:graphicImage value="/newpages/images/flag_es_ganzklein.gif" />
+							<h:graphicImage value="images/flag_es_ganzklein.gif" />
 							<f:param name="locale" value="es" />
 						</h:commandLink>
 						<br/>

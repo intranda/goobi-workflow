@@ -95,7 +95,7 @@ public enum StepStatus {
 	 * @return file name for small image
 	 */
 	public String getSmallImagePath() {
-		return "/newpages/images/status/" + this.imageSmall;
+		return "images/status/" + this.imageSmall;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public enum StepStatus {
 	 * @return file name for big image
 	 */
 	public String getBigImagePath() {
-		return "/newpages/images/status/" + this.imageBig;
+		return "images/status/" + this.imageBig;
 	}
 
 	/**

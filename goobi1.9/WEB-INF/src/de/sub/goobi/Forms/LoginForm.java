@@ -117,16 +117,16 @@ public class LoginForm {
 				}
 			} else {
 				/* Login nicht vorhanden, also auch keine Passwortprüfung */
-				Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+//				Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
 			}
 		}
 		// checking if saved css stylesheet is available, if not replace it by something available
-		if (this.myBenutzer != null) {
-			String tempCss = this.myBenutzer.getCss();
-			String newCss = new HelperForm().getCssLinkIfExists(tempCss);
-			this.myBenutzer.setCss(newCss);
-			return "";
-		}
+//		if (this.myBenutzer != null) {
+//			String tempCss = this.myBenutzer.getCss();
+//			String newCss = new HelperForm().getCssLinkIfExists(tempCss);
+//			this.myBenutzer.setCss(newCss);
+//			return "";
+//		}
 		return "";
 	}
 
