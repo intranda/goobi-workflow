@@ -85,6 +85,9 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 					requestMap.put("currentView", t.getMessage());
 					ELFlash flash = ELFlash.getFlash(facesContext.getExternalContext(), true);
 					flash.put("exceptionInfo",t.getCause());
+					while (t.getCause() != null) {
+						t = t.getCause();
+					}
 					List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
 //					for (StackTraceElement ste : trace) {
 //						System.out.println(ste.toString());
