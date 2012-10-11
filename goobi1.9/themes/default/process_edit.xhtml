@@ -11,7 +11,10 @@
 	</ui:define>
 
 	<ui:define name="title">
-		<h:outputText id="id6" value="#{msgs.einenNeuenProzessAnlegen}" rendered="#{ProzessverwaltungForm.myProzess.id == null}" />
+		<h:outputText id="id6" value="#{msgs.einenNeuenProzessAnlegen}" rendered="#{ProzessverwaltungForm.myProzess.id == null and !ProzessverwaltungForm.myProzess.istTemplate}" />
+		
+		<h:outputText id="id6a" value="#{msgs.eineNeueProzessvorlageAnlegen}" rendered="#{ProzessverwaltungForm.myProzess.id == null and ProzessverwaltungForm.myProzess.istTemplate}" />
+				
 		<h:outputText id="id7" value="#{msgs.prozessDetails}" rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
 	</ui:define>
 

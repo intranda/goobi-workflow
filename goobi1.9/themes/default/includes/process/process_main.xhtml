@@ -223,7 +223,9 @@
 
 				<tr>
 					<td class="eingabeBoxen_row3" align="left">
-						<h:commandButton value="#{msgs.abbrechen}" immediate="true" action="#{NavigationForm.Reload}">
+						<h:commandButton value="#{msgs.abbrechen}" immediate="true" action="process_all" rendered="#{ProzessverwaltungForm.myProzess.id == null}"/>
+
+						<h:commandButton value="#{msgs.abbrechen}" immediate="true" action="#{NavigationForm.Reload}" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 						</h:commandButton>
 					</td>
