@@ -391,9 +391,21 @@
 
 			<!-- ===================== Datascroller für die Ergebnisse ======================
 		 -->
-			<x:aliasBean alias="#{mypage}" value="#{AktuelleSchritteForm.page}">
-				<ui:include src="includes/datascroller.xhtml" />
-			</x:aliasBean>
+		 
+		 
+		 <table width="100%" border="0">
+				<tr valign="top">
+					
+					<td align="center">
+						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
+						<x:aliasBean alias="#{mypage}" value="#{AktuelleSchritteForm.page}">
+							<ui:include src="includes/datascroller.xhtml" />
+						</x:aliasBean>
+						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
+					</td>
+				</tr>
+			</table>
+			
 			<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
 
 			<!-- Schritte auflisten 

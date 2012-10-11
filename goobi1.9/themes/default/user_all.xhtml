@@ -115,12 +115,7 @@
 
 			<table width="100%" border="0">
 				<tr valign="top">
-					<td align="left">
-						<h:commandLink id="id52" action="#{BenutzerverwaltungForm.Neu}" immediate="true"
-							rendered="#{((LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)) and (BenutzerverwaltungForm.page.totalResults gt LoginForm.myBenutzer.tabellengroesse)}">
-							<h:outputText id="id62" value="#{msgs.neuenBenutzerAnlegen}" />
-						</h:commandLink>
-					</td>
+
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
 						<x:aliasBean alias="#{mypage}" value="#{BenutzerverwaltungForm.page}">
