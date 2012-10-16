@@ -145,18 +145,18 @@ public class HelperSchritteWithoutHibernate {
 		}
 		logger.debug("update process status");
 		updateProcessStatus(processId);
+		logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
+		for (StepObject automaticStep : automatischeSchritte) {
+			logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+			ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
+			myThread.start();
+		}
 		// TODO remove this later
 		try {
 			logger.debug("update hibernate cache");
 			RefreshObject.refreshProcess(processId);
 		} catch (Exception e) {
 			logger.error("Exception during update of hibernate cache", e);
-		}
-		logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
-		for (StepObject automaticStep : automatischeSchritte) {
-			logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
-			ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-			myThread.start();
 		}
 	}
 
