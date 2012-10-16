@@ -446,8 +446,7 @@ public class Prozess implements Serializable, IGoobiEntity {
 	}
 
 	public String getAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-		// TODO FIXME
-		return getOcrDirectory() + this.titel + "_xml" + File.separator;
+		return getOcrDirectory() + this.titel + "_alto" + File.separator;
 	}
 
 	public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
