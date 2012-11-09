@@ -50,6 +50,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -136,7 +137,11 @@ public class BenutzerverwaltungForm extends BasisForm {
 				Disjunction ex = Restrictions.disjunction();
 				ex.add(Restrictions.like("vorname", "%" + this.filter + "%"));
 				ex.add(Restrictions.like("nachname", "%" + this.filter + "%"));
-				// TODO add filter for project and for user group
+				crit.createCriteria("projekte", "proj");
+				ex.add(Restrictions.like("proj.titel", "%" + this.filter + "%"));
+				
+				crit.createCriteria("benutzergruppen", "group");
+				ex.add(Restrictions.like("group.titel", "%" + this.filter + "%"));
 				crit.add(ex);
 			}
 			crit.addOrder(Order.asc("nachname"));
@@ -340,8 +345,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 	public String LdapKonfigurationSchreiben() {
 		Ldap myLdap = new Ldap();
 		try {
-			myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
-			Helper.setMeldung(null, Helper.getTranslation("ldapWritten") + " " + this.myClass.getNachVorname(), "");
+			myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());	
 		} catch (Exception e) {
 			logger.warn("Could not generate ldap entry: " + e.getMessage());
 			Helper.setFehlerMeldung(e.getMessage());

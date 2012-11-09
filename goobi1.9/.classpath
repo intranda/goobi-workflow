@@ -78,6 +78,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-compress-1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jspf.core-1.0.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/tomahawk-sandbox20-1.1.13.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/mysql-connector-java-5.1.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/avalon-framework-4.2.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/barcode4j-fop-ext-complete.jar"/>
