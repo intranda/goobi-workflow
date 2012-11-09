@@ -97,8 +97,8 @@
 						<h:outputText value="#{msgs.modulSchritt}, "
 							rendered="#{ProzessverwaltungForm.mySchritt.typModulName!=null && ProzessverwaltungForm.mySchritt.typModulName!=''}" />
 						<h:outputText value="#{msgs.typAutomatisch}" rendered="#{ProzessverwaltungForm.mySchritt.typAutomatisch" />
-						<h:outputText value="#{msgs.batchStep}" rendered="#{ProzessverwaltungForm.mySchritt.batchStep}"/>
-						
+						<h:outputText value="#{msgs.batchStep}" rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
+
 					</htm:td>
 				</htm:tr>
 
@@ -245,6 +245,13 @@
 				<h:outputText value="#{msgs.batchStep}" />
 				<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.mySchritt.batchStep}" />
 
+			
+				<h:outputText value="#{msgs.stepPlugin}" style="display: none;"/>
+				<h:inputText value="#{ProzessverwaltungForm.mySchritt.stepPlugin}" style="width: 300px;margin-right:15px; display: none;" />
+
+
+				<h:outputText value="#{msgs.validationPlugin}" />
+				<h:inputText value="#{ProzessverwaltungForm.mySchritt.validationPlugin}" style="width: 300px;margin-right:15px"/>
 			</h:panelGrid>
 
 		</htm:td>
