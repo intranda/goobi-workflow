@@ -2,8 +2,10 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="Goobi1.9">
         <wb-resource deploy-path="/" source-path="/web" tag="defaultRootSource"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/WEB-INF/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/private"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src-dubious"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/work"/>
         <property name="context-root" value="Goobi1.9"/>
         <property name="java-output-path" value="/Goobi1.9/WEB-INF/classes"/>
