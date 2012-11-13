@@ -51,6 +51,7 @@ import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -532,8 +533,11 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.myDav.UploadFromHome(this.mySchritt.getProzess());
 		this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		StepObject so = StepManager.getStepById(this.mySchritt.getId());
+		
 		new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so);
 		// new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
+		
+		Hibernate.initialize(mySchritt);
 		return FilterAlleStart();
 	}
 
