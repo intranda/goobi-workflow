@@ -587,9 +587,6 @@ class FilterHelper {
 	protected static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate,
 			Parameters returnParameters, Boolean stepOpenOnly, Boolean userAssignedStepsOnly) {
 
-		if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true)) {
-			session.clear();
-		}
 		// for ordering the lists there are some
 		// criteria, which needs to be added even no
 		// restrictions apply, to avoid multiple analysis

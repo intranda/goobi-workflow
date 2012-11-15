@@ -33,6 +33,7 @@ import org.hibernate.Session;
 import de.sub.goobi.Beans.Prozess;
 import de.sub.goobi.Beans.Schritt;
 import de.sub.goobi.Persistence.HibernateUtilOld;
+import de.sub.goobi.config.ConfigMain;
 
 public class RefreshObject {
 	private static final Logger logger = Logger.getLogger(RefreshObject.class);
@@ -40,10 +41,12 @@ public class RefreshObject {
 	public static void refreshProcess(int processID) {
 		logger.debug("refreshing process with id " + processID);
 		try {
-			Session session = HibernateUtilOld.getSessionFactory()
-					.openSession();
+			Session session = HibernateUtilOld.getSessionFactory().openSession();
 			logger.debug("created a new session");
 			Prozess o = (Prozess) session.get(Prozess.class, processID);
+			if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true)) {
+				session.evict(o);
+			}
 			logger.debug("loaded process");
 			session.refresh(o);
 			logger.debug("refreshed process");
@@ -65,6 +68,9 @@ public class RefreshObject {
 				session = HibernateUtilOld.getSessionFactory().openSession();
 			}
 			Prozess o = (Prozess) session.get(Prozess.class, processID);
+			if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true)) {
+				session.evict(o);
+			}
 			logger.debug("loaded process");
 			session.refresh(o);
 			logger.debug("refreshed process");
@@ -77,8 +83,7 @@ public class RefreshObject {
 
 	public static void refreshStep(int stepID) {
 		try {
-			Session session = HibernateUtilOld.getSessionFactory()
-					.openSession();
+			Session session = HibernateUtilOld.getSessionFactory().openSession();
 			// Session session = Helper.getHibernateSession();
 			// if (session == null || !session.isOpen() ||
 			// !session.isConnected()) {
