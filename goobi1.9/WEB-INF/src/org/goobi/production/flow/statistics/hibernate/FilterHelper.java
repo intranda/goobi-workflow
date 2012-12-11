@@ -58,7 +58,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
  * @author Wulf Riebensahm
  * 
  */
-class FilterHelper {
+public class FilterHelper {
 
 	private static final Logger logger = Logger.getLogger(FilterHelper.class);
 
@@ -584,10 +584,10 @@ class FilterHelper {
 	 * @return String used to pass on error messages about errors in the filter
 	 *         expression
 	 */
-	protected static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate,
-			Parameters returnParameters, Boolean stepOpenOnly, Boolean userAssignedStepsOnly) {
+	public static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate,
+			Parameters returnParameters, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, boolean clearSession) {
 
-		if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true)) {
+		if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true) && clearSession) {
 			session.clear();
 		}
 		// for ordering the lists there are some

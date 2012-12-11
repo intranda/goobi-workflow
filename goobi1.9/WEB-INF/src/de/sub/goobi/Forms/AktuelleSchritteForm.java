@@ -159,7 +159,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			// this.myFilteredDataSource.setFilter(this.filter.substring("lucene".length()));
 			// } else {
 			// HibernateUtil.clearSession();
-			this.myFilteredDataSource = new UserDefinedStepFilter();
+			this.myFilteredDataSource = new UserDefinedStepFilter(true);
 			this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
 			((UserDefinedStepFilter) this.myFilteredDataSource).setFilterModes(this.nurOffeneSchritte, this.nurEigeneSchritte);
 			this.myFilteredDataSource.setFilter(this.filter);
@@ -315,7 +315,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		Integer batchNumber = this.mySchritt.getProzess().getBatchID();
 		if (batchNumber != null) {
 			// only steps with same title
-			UserDefinedStepFilter userdefined = new UserDefinedStepFilter();
+			UserDefinedStepFilter userdefined = new UserDefinedStepFilter(true);
 			userdefined.setFilterModes(true, false);
 			userdefined.setFilter("");
 			Criteria crit = userdefined.getCriteria();
@@ -395,7 +395,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		Integer batchNumber = this.mySchritt.getProzess().getBatchID();
 		if (batchNumber != null) {
 			// only steps with same title
-			UserDefinedStepFilter userdefined = new UserDefinedStepFilter();
+			UserDefinedStepFilter userdefined = new UserDefinedStepFilter(true);
 			userdefined.setFilterModes(false, false);
 			userdefined.setFilter("");
 			Criteria crit = userdefined.getCriteria();

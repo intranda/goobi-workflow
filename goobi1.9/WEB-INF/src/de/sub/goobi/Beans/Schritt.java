@@ -382,6 +382,7 @@ public class Schritt implements Serializable, IGoobiEntity {
 		try {
 			Hibernate.initialize(this.eigenschaften);
 		} catch (HibernateException e) {
+			return 0;
 		}
 		if (this.eigenschaften == null) {
 			return 0;
@@ -856,7 +857,7 @@ public class Schritt implements Serializable, IGoobiEntity {
 		Integer batchNumber = this.prozess.getBatchID();
 		if (batchNumber != null) {
 			// only steps with same title
-			UserDefinedStepFilter userdefined = new UserDefinedStepFilter();
+			UserDefinedStepFilter userdefined = new UserDefinedStepFilter(false);
 			userdefined.setFilterModes(false, false);
 			userdefined.setFilter("");
 			Criteria crit = userdefined.getCriteria();
