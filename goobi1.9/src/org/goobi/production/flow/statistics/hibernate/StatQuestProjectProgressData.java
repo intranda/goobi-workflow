@@ -1,27 +1,31 @@
 package org.goobi.production.flow.statistics.hibernate;
 
 /**
- * This file is part of the Goobi Application - a Workflow tool for the support of 
- * mass digitization.
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *   - http://gdz.sub.uni-goettingen.de 
- *   - http://www.intranda.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
  * 
- * This program is free software; you can redistribute it and/or modify it under the 
- * terms of the GNU General Public License as published by the Free Software Foundation; 
- * either version 2 of the License, or (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with this program; 
- * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
- * Boston, MA 02111-1307 USA
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
  */
 
 import java.io.Serializable;
@@ -99,7 +103,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 	 */
 
 	public Boolean isDataComplete() {
-		// this.resetErrorList();
 		Boolean error = false;
 		if (this.timeFilterFrom == null) {
 			logger.debug("time from is not set");
@@ -122,7 +125,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 			error = true;
 		}
 		return !error;
-		// return !this.getHasErrors();
 	}
 
 	public void setReferenceCurve(Boolean flagIn) {
@@ -170,8 +172,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 	 * generate referenceCurve
 	 */
 	private DataRow referenceCurve(DataRow referenceRow) {
-		DataRow orientationRow = requiredOutput(); // new
-													// DataRow(Helper.getTranslation("ReferenceCurve"));
+		DataRow orientationRow = requiredOutput(); 
 		DataRow dataRow = new DataRow(Helper.getTranslation("ReferenceCurve"));
 		dataRow.setShowPoint(false);
 		// may have to be calculated differently
@@ -181,10 +182,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 		Double remainingOutput = this.requiredDailyOutput * this.timeGrouping.getDayFactor() * count;
 		Double remainingAverageOutput = remainingOutput / count;
 
-		// DateTime from = new DateTime(this.timeFilterFrom);
-		// DateTime today = new DateTime(new Date());
-		//
-		// Days.daysBetween(from, today);
+	
 
 		// the way this is calculated is by subtracting each value from the
 		// total remaining output
@@ -437,11 +435,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 		// now removing headerRow
 		if (headerRow != null) {
 			dtbl.removeDataRow(headerRow);
-			// if a row showing the total count over all intervalls should be
-			// added to the grid
-			// the folloing line can be commented in (adding the header to the
-			// bottom)
-			// dtbl.addDataRow(headerRow);
 		}
 
 		return dtbl;

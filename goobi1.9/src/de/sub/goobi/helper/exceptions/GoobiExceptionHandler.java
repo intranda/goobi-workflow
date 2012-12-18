@@ -28,7 +28,6 @@
 
 package de.sub.goobi.helper.exceptions;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;

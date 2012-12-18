@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -40,10 +40,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.Beans.Benutzer;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Export.download.TiffHeader;
+import de.sub.goobi.beans.Benutzer;
+import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.export.download.TiffHeader;
 
 public class WebDav implements Serializable {
 
@@ -51,18 +51,12 @@ public class WebDav implements Serializable {
 	private static final Logger myLogger = Logger.getLogger(WebDav.class);
 
 	/*
-	 * #####################################################
-	 * ##################################################### ## ## Kopieren bzw.
-	 * symbolische Links für einen Prozess in das Benutzerhome ##
-	 * #####################################################
-	 * ####################################################
+ 	 * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome	
 	 */
 
 	private static String DONEDIRECTORYNAME = "fertig/";
 	public WebDav(){
 		DONEDIRECTORYNAME =ConfigMain.getParameter("doneDirectoryName", "fertig/");
-
-		
 	}
 	
 	
@@ -78,14 +72,12 @@ public class WebDav implements Serializable {
 
 		try {
 			VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
-			// Helper.setTomcatBenutzerrechte(VerzeichnisAlle);
 		} catch (Exception ioe) {
 			myLogger.error("Exception UploadFromHomeAlle()", ioe);
 			Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", ioe.getMessage());
 			return rueckgabe;
 		}
 
-		// myLogger.debug("Upload-Verzeichnis: " + VerzeichnisAlle);
 		File benutzerHome = new File(VerzeichnisAlle);
 
 		FilenameFilter filter = new FilenameFilter() {
@@ -129,27 +121,15 @@ public class WebDav implements Serializable {
 
 		for (Iterator<String> it = inList.iterator(); it.hasNext();) {
 			String myname = it.next();
-			String command = ConfigMain.getParameter("script_deleteSymLink") + " ";
-			command += VerzeichnisAlle + myname;
-			// myLogger.debug(command);
-			try {
-				
-				Helper.callShell(command);
-			} catch (java.io.IOException ioe) {
-				myLogger.error("IOException UploadFromHomeAlle()", ioe);
-				Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
-				return;
-			} catch (InterruptedException e) {
-				myLogger.error("IOException UploadFromHomeAlle()", e);
-				Helper.setFehlerMeldung("Aborted upload from home, error", e.getMessage());
-				return;
-			}
+            FilesystemHelper.deleteSymLink(VerzeichnisAlle + myname);
 		}
 	}
 
 	public void UploadFromHome(Prozess myProzess) {
 		Benutzer aktuellerBenutzer = Helper.getCurrentUser();
-		UploadFromHome(aktuellerBenutzer, myProzess);
+        if (aktuellerBenutzer != null) {
+        	UploadFromHome(aktuellerBenutzer, myProzess);
+        }
 	}
 
 	public void UploadFromHome(Benutzer inBenutzer, Prozess myProzess) {
@@ -181,25 +161,10 @@ public class WebDav implements Serializable {
 		nach = nach.replaceAll(" ", "__");
 		File benutzerHome = new File(nach);
 
-		String command = ConfigMain.getParameter("script_deleteSymLink") + " ";
-		command += benutzerHome;
-		// myLogger.debug(command);
-
-		try {
-			// TODO: Use ProcessBuilder
-			Helper.callShell(command);
-		} catch (java.io.IOException ioe) {
-			myLogger.error("IOException UploadFromHome", ioe);
-			Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
-		} catch (InterruptedException e) {
-			myLogger.error("IOException UploadFromHome", e);
-			Helper.setFehlerMeldung("Aborted upload from home, error", e.getMessage());
-
-		}
+        FilesystemHelper.deleteSymLink(benutzerHome.getAbsolutePath());
 	}
 
 	public void DownloadToHome(Prozess myProzess, int inSchrittID, boolean inNurLesen) {
-		Helper help = new Helper();
 		saveTiffHeader(myProzess);
 		Benutzer aktuellerBenutzer = Helper.getCurrentUser();
 		String von = "";
@@ -216,13 +181,10 @@ public class WebDav implements Serializable {
 			 */
 			if (aktuellerBenutzer.isMitMassendownload()) {
 				File projekt = new File(userHome + myProzess.getProjekt().getTitel());
-				if (!projekt.exists()) {
-					help.createUserDirectory(projekt.getAbsolutePath(), aktuellerBenutzer.getLogin());
-				}
+                FilesystemHelper.createDirectoryForUser(projekt.getAbsolutePath(), aktuellerBenutzer.getLogin());
+                
 				projekt = new File(userHome + DONEDIRECTORYNAME);
-				if (!projekt.exists()) {
-					help.createUserDirectory(projekt.getAbsolutePath(), aktuellerBenutzer.getLogin());
-				}
+                FilesystemHelper.createDirectoryForUser(projekt.getAbsolutePath(), aktuellerBenutzer.getLogin());
 			}
 
 		} catch (Exception ioe) {
@@ -265,12 +227,8 @@ public class WebDav implements Serializable {
 			command += aktuellerBenutzer.getLogin();
 		}
 		try {
-			// Runtime.getRuntime().exec(command);
-
-			Helper.callShell2(command);
-			// Helper.setMeldung("Verzeichnis in Benutzerhome angelegt: ",
-			// processLinkName);
-		} catch (java.io.IOException ioe) {
+            	ShellScript.legacyCallShell2(command);
+            } catch (java.io.IOException ioe) {
 			myLogger.error("IOException DownloadToHome()", ioe);
 			Helper.setFehlerMeldung("Download aborted, IOException", ioe.getMessage());
 		} catch (InterruptedException e) {
@@ -315,22 +273,4 @@ public class WebDav implements Serializable {
 		}
 	}
 
-	// TODO: Remove this Methods - Use FileUtils, as log as it's still there ;-)
-	/*
-	 * public int getAnzahlImages(String inVerzeichnis) { try { return
-	 * getAnzahlImages2(new File(inVerzeichnis)); } catch (Exception e) {
-	 * myLogger.error(e); return 0; } }
-	 * 
-	 * // Process all files and directories under dir private int
-	 * getAnzahlImages2(File inDir) { int anzahl = 0; if (inDir.isDirectory()) {
-	 * // die Images zählen
-	 * 
-	 * FilenameFilter filter = new FilenameFilter() { public boolean accept(File
-	 * dir, String name) { return name.endsWith(".tif"); } }; anzahl =
-	 * inDir.list(filter).length;
-	 * 
-	 * //die Unterverzeichnisse durchlaufen String[] children = inDir.list();
-	 * for (int i = 0; i < children.length; i++) { anzahl +=
-	 * getAnzahlImages2(new File(inDir, children[i])); } } return anzahl; }
-	 */
 }

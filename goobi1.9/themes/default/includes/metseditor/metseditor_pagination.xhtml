@@ -50,24 +50,30 @@
 								</td>
 							</tr>
 							<tr>
+						
 								<td class="eingabeBoxen_row2">
-									<h:selectOneMenu value="#{Metadaten.paginierungArt}" style="width: 250px">
+									<h:selectOneMenu value="#{Metadaten.paginierungArt}"
+										style="width: 270px;margin-top:10px;margin-left:5px" onchange="paginierungWertAnzeigen(this);">
 										<f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
-										<f:selectItem itemValue="4" itemLabel="#{msgs.arabischBracket}" />
+<!-- 										<f:selectItem itemValue="4" itemLabel="#{msgs.arabischBracket}" /> -->
 										<f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
-										<f:selectItem itemValue="5" itemLabel="#{msgs.roemischBracket}" />
+<!-- 										<f:selectItem itemValue="5" itemLabel="#{msgs.roemischBracket}" /> -->
 										<f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
 										<f:selectItem itemValue="6" itemLabel="#{msgs.paginationFreetext}" />
-										<f:ajax render="@all" event="change" />
+<!-- 										<f:ajax render="@all" event="change" /> -->
 									</h:selectOneMenu>
 									<br />
 
-									<x:inputText id="paginierungWert" forceId="true" rendered="#{Metadaten.paginierungArt ne 3}" value="#{Metadaten.paginierungWert}"
-										style="width: 250px;margin-top:15px;margin-bottom:5px" />
+									<x:inputText  id="paginierungWert" forceId="true" value="#{Metadaten.paginierungWert}" style="width: 270px;margin-top:10px;margin-bottom:5px;margin-left:5px" />
 									<br />
+			
+									<div style="margin-top: 5px;margin-bottom:10px">
+										<h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}" />
+										<h:outputLabel for="checkbox-fictitious" value="#{msgs.paginationFictitious}" />
+									</div>
 
-
-
+									<br />
+									
 									<h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=1}" title="#{msgs.seitenzaehlung}">
 										<h:graphicImage value="images/buttons/paginierung_seite_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<x:updateActionListener value="1" property="#{Metadaten.paginierungSeitenProImage}" />

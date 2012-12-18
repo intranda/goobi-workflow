@@ -734,3 +734,28 @@ table.tableCalcStat .left{
 }
 .monthYearRowClass{
 }
+
+/*
+   ------------------------------------------------------------
+   Language switch
+   ------------------------------------------------------------
+*/
+ 
+.languageSwitch span:before {
+    content: "•";
+    padding: 0 4px;
+    font-weight: normal;
+}
+
+.languageSwitch span:first-child:before {
+    content: "";
+    padding: 0;
+}
+
+.languageSwitch a:hover {
+    color: white;
+}
+
+.languageSwitch .currentLanguage {
+    font-weight: bold;
+}

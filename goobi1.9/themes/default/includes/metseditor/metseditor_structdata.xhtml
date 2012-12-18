@@ -47,22 +47,24 @@
 									</x:selectOneMenu>
 								</h:panelGroup>
 							</h:panelGrid>
-							<h:panelGrid columns="3" width="100%" columnClasses="standardTable_Column,standardTable_Column">
+							<h:panelGrid columns="3" width="100%" columnClasses="standardTable_Column,standardTable_Column"  >
 								<h:outputText value="#{msgs.ersteSeite}: " />
-								<h:panelGroup>
+								<h:panelGroup id="pageStartGroup">
 									<x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" />
 								</h:panelGroup>
 
 								<h:commandLink action="#{Metadaten.CurrentStartpage}">
+									<f:ajax render="pageStartGroup" />
 									<h:graphicImage value="images/buttons/left_20px.gif" style="border: 0px;vertical-align:middle;" />
 									<x:updateActionListener value="#{Metadaten.bildNummer}" property="#{Metadaten.pageNumber}" />
 								</h:commandLink>
 
 								<h:outputText value="#{msgs.letzteSeite}: " />
-								<h:panelGroup>
+								<h:panelGroup  id="pageEndGroup">
 									<x:inputText id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" />
 								</h:panelGroup>
 								<h:commandLink action="#{Metadaten.CurrentEndpage}">
+								<f:ajax render="pageEndGroup" />
 									<h:graphicImage value="images/buttons/left_20px.gif" style="border: 0px;vertical-align:middle;" />
 									<x:updateActionListener value="#{Metadaten.bildNummer}" property="#{Metadaten.pageNumber}" />
 								</h:commandLink>

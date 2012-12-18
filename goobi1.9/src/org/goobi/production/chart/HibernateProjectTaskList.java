@@ -1,10 +1,14 @@
 package org.goobi.production.chart;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - http://gdz.sub.uni-goettingen.de - http://www.intranda.com
- * 
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -22,7 +26,6 @@ package org.goobi.production.chart;
  * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
- * 
  */
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +38,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.Beans.Projekt;
-import de.sub.goobi.Beans.Schritt;
+import de.sub.goobi.beans.Projekt;
+import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 
@@ -59,12 +62,9 @@ public class HibernateProjectTaskList implements IProvideProjectTaskList {
 
 		ScrollableResults list = crit.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
 
-//		int count = 0;
 		while (list.next()) {
-//			count++;
 			Schritt step = (Schritt) list.get(0);
 			String shorttitle = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
-			//			shorttitle += " (" + step.getReihenfolge() + ")";
 
 			IProjectTask pt = null;
 			for (IProjectTask task : myTaskList) {
@@ -85,19 +85,12 @@ public class HibernateProjectTaskList implements IProvideProjectTaskList {
 					pt.setStepsCompleted(pt.getStepsCompleted() + 1);
 				}
 			}
-			
+
 			if (countImages) {
 				pt.setStepsMax(pt.getStepsMax() + step.getProzess().getSortHelperImages());
 			} else {
 				pt.setStepsMax(pt.getStepsMax() + 1);
 			}
-			
-			/*if (count % 20 == 0) {
-				//flush a batch of updates and release memory:
-				session.flush();
-				session.clear();
-			}*/
-
 		}
 	}
 

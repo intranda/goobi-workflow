@@ -1,5 +1,31 @@
 package de.sub.goobi.helper;
-
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +33,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Schritt;
-import de.sub.goobi.Forms.LoginForm;
+import de.sub.goobi.forms.LoginForm;
 
 /**
  * This class provides pagination for displaying results from a large result set over a number of pages (i.e. with a given number of results per
@@ -31,30 +53,7 @@ public class Page implements Serializable { // implements Iterator
 	private Criteria criteria;
 	private static final Logger logger = Logger.getLogger(Page.class);
 
-	/**
-	 * Construct a new Page. Page numbers are zero-based, so the first page is page 0.
-	 * 
-	 * @param query
-	 *            the Hibernate Query
-	 * @param page
-	 *            the page number (zero-based)
-	 */
-	// TODO: REmove this unused constructor
-	/*
-	 * public Page(Query query, int page) { this.page = page; LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}"); if
-	 * (login.getMyBenutzer() == null) this.pageSize = 10; else this.pageSize = login.getMyBenutzer().getTabellengroesse().intValue();
-	 * 
-	 * try { scrollableResults = query.scroll(); /* We set the max results to one more than the specfied pageSize to determine if any more results
-	 * exist (i.e. if there is a next page to display). The result set is trimmed down to just the pageSize before being displayed later (in
-	 * getList()).
-	 */
-	/*
-	 * results = query.setFirstResult(page * pageSize).setMaxResults(pageSize + 1).list(); } catch (HibernateException e) { //TODO use a logger.
-	 * System.err.println("Failed to get paginated results: " + e.getMessage()); } }
-	 * 
-	 * 
-	 * 
-	 * /** Construct a new Page with a Criteria. Page numbers are zero-based, so the first page is page 0.
+	/** Construct a new Page with a Criteria. Page numbers are zero-based, so the first page is page 0.
 	 * 
 	 * @param criteria the Hibernate Criteria
 	 * 
@@ -65,8 +64,8 @@ public class Page implements Serializable { // implements Iterator
 	public Page(Criteria criteria, int page) {
 		this.page = page;
 		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
-		if (login.getMyBenutzer() == null) {
-			this.pageSize = 10;
+        if (login == null || login.getMyBenutzer() == null) {
+        	this.pageSize = 10;
 		} else {
 			this.pageSize = login.getMyBenutzer().getTabellengroesse().intValue();
 		}
@@ -80,15 +79,7 @@ public class Page implements Serializable { // implements Iterator
 				logger.debug("Page-Object is working with a memory stressing Criteria. Try to replace by PaginatingCriteria, if performance or memory is going down");
 				this.totalResults = criteria.list().size();
 			}
-			// ScrollableResults scrollableResults = criteria.scroll();
-			// scrollableResults.last();
-			// totalResults = scrollableResults.getRowNumber() + 1;
-
-			/*
-			 * We set the max results to one more than the specfied pageSize to determine if any more results exist (i.e. if there is a next page to
-			 * display). The result set is trimmed down to just the pageSize before being displayed later (in getList()).
-			 */
-			// results = criteria.setFirstResult(page * pageSize).setMaxResults(pageSize + 1).list();
+			
 		} catch (HibernateException e) {
 			// no hits found, error is thrown
 			logger.debug("Failed to get paginated results: " + e);
@@ -99,7 +90,6 @@ public class Page implements Serializable { // implements Iterator
 		/*
 		 * We use the Math.floor() method because page numbers are zero-based (i.e. the first page is page 0).
 		 */
-		// double totalResults = new Integer(getTotalResults()).doubleValue();
 		int rueckgabe = new Double(Math.floor(this.totalResults / this.pageSize)).intValue();
 		if (this.totalResults % this.pageSize == 0) {
 			rueckgabe--;
@@ -124,15 +114,7 @@ public class Page implements Serializable { // implements Iterator
 		return this.criteria.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list();
 	}
 
-	public int getTotalResults() {
-		// try {
-		// getScrollableResults().last();
-		// totalResults = getScrollableResults().getRowNumber();
-		// } catch (HibernateException e) {
-		// System.err.println(
-		// "Failed to get last row number from scollable results: "
-		// + e.getMessage());
-		// }
+	public int getTotalResults() {	
 		return this.totalResults;
 	}
 
@@ -145,17 +127,7 @@ public class Page implements Serializable { // implements Iterator
 		return getTotalResults() < fullPage ? getTotalResults() : fullPage;
 	}
 
-	//
-	//
-	// public int getNextPageNumber() {
-	// return page + 1;
-	// }
-	//
-	//
-	//
-	// public int getPreviousPageNumber() {
-	// return page - 1;
-	// }
+
 
 	// TODO: Use generics
 	@SuppressWarnings("rawtypes")
@@ -170,17 +142,6 @@ public class Page implements Serializable { // implements Iterator
 				this.results = this.criteria.setFirstResult(this.page * this.pageSize).setMaxResults(this.pageSize + 1).list();
 				if (this.results != null && this.results.size() > 0) {
 					List answer = hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
-//					if (answer != null && answer.size()>0) {
-//						Object objectToTest = answer.get(0);
-//						if (objectToTest instanceof Schritt || objectToTest instanceof Prozess) {
-//							Session session = Helper.getHibernateSession();
-//							for (Object o : answer) {
-//								// TODO hier prüfen ob valide ID?
-//								session.refresh(o);
-//							}
-//						} 
-//					}
-
 
 					return answer;
 				} else {
@@ -194,8 +155,7 @@ public class Page implements Serializable { // implements Iterator
 	}
 
 	/*
-	 * ##################################################### ##################################################### ## ## einfache Navigationsaufgaben
-	 * ## ##################################################### ####################################################
+	 * einfache Navigationsaufgaben
 	 */
 
 	public boolean isFirstPage() {
@@ -255,16 +215,5 @@ public class Page implements Serializable { // implements Iterator
 	public int getTxtMoveTo() {
 		return this.page + 1;
 	}
-
-	/*
-	 * 
-	 * public boolean hasNext() { return hasNextPage(); }
-	 * 
-	 * public Object next() { this.page++; return this; }
-	 * 
-	 * public void remove() { throw new UnsupportedOperationException("Not implemented");
-	 * 
-	 * }
-	 */
 
 }

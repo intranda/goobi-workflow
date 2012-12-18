@@ -59,20 +59,35 @@
 				<td valign="top" align="right" style="padding:3px">
 					<h:form style="margin:0px" id="headform">
 										
-						<h:commandLink action="#{SpracheForm.changeLocale('de')}" id="lang1" style="margin-right:4px"
-							title="deutsche Version">
-									<h:graphicImage value="images/flag_de_ganzklein.gif" />
-								</h:commandLink>
-						<h:commandLink action="#{SpracheForm.changeLocale('en')}" id="lang2" style="margin-right:4px"
-							title="english version" >
-							<h:graphicImage value="images/flag_en_ganzklein.gif" />
-							<f:param name="locale" value="en" />
-						</h:commandLink>			
-						<h:commandLink action="#{SpracheForm.changeLocale('es')}" id="lang4"
-							title="spanish version" style="margin-left:0px;">
-							<h:graphicImage value="images/flag_es_ganzklein.gif" />
-							<f:param name="locale" value="es" />
-						</h:commandLink>
+<!-- 						<h:commandLink action="#{SpracheForm.changeLocale('de')}" id="lang1" style="margin-right:4px" -->
+<!-- 							title="deutsche Version"> -->
+<!-- 									<h:graphicImage value="images/flag_de_ganzklein.gif" /> -->
+<!-- 								</h:commandLink> -->
+<!-- 						<h:commandLink action="#{SpracheForm.changeLocale('en')}" id="lang2" style="margin-right:4px" -->
+<!-- 							title="english version" > -->
+<!-- 							<h:graphicImage value="images/flag_en_ganzklein.gif" /> -->
+<!-- 							<f:param name="locale" value="en" /> -->
+<!-- 						</h:commandLink>			 -->
+<!-- 						<h:commandLink action="#{SpracheForm.changeLocale('es')}" id="lang4" -->
+<!-- 							title="spanish version" style="margin-left:0px;"> -->
+<!-- 							<h:graphicImage value="images/flag_es_ganzklein.gif" /> -->
+<!-- 							<f:param name="locale" value="es" /> -->
+<!-- 						</h:commandLink> -->
+
+						<h:panelGroup  styleClass="languageSwitch">
+							<x:dataList var="availableLanguage" value="#{SpracheForm.supportedLocales}">
+								<h:panelGroup class="alterLanguage" rendered="#{not availableLanguage.selected}">
+									<h:commandLink action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
+										<f:param name="locale" value="#{availableLanguage.id}" />
+										<h:outputText value="#{availableLanguage.displayLanguageSelf}" />
+									</h:commandLink>
+								</h:panelGroup>
+								<h:panelGroup class="currentLanguage" rendered="#{availableLanguage.selected}" title="#{availableLanguage.displayLanguageTranslated}">
+									<h:outputText value="#{availableLanguage.displayLanguageSelf}" />
+								</h:panelGroup>
+							</x:dataList>
+						</h:panelGroup>
+
 						<br/>
 
 							<h:commandLink action="#{LoginForm.Ausloggen}" id="logout2"

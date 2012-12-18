@@ -4,11 +4,11 @@ package org.goobi.production.flow.jobs;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -35,23 +35,23 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.Import.GoobiHotfolder;
-import org.goobi.production.Import.ImportObject;
 import org.goobi.production.cli.helper.CopyProcess;
 import org.goobi.production.flow.helper.JobCreation;
+import org.goobi.production.importer.GoobiHotfolder;
+import org.goobi.production.importer.ImportObject;
 
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Persistence.ProzessDAO;
-import de.sub.goobi.Persistence.apache.StepManager;
-import de.sub.goobi.Persistence.apache.StepObject;
+import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObject;
 
 /**
  * 
@@ -62,12 +62,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 @Deprecated
 public class HotfolderJob extends AbstractGoobiJob {
 	private static final Logger logger = Logger.getLogger(HotfolderJob.class);
-
-	// private int templateId = 944;
-
-	// public HotfolderJob(int templateId) {
-	// this.templateId = templateId;
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -251,7 +245,6 @@ public class HotfolderJob extends AbstractGoobiJob {
 			if (form.testTitle()) {
 				if (digitalCollection == null) {
 					List<String> collections = new ArrayList<String>();
-					// collections.add("varia");
 					form.setDigitalCollections(collections);
 				} else {
 					List<String> col = new ArrayList<String>();
@@ -285,18 +278,8 @@ public class HotfolderJob extends AbstractGoobiJob {
 
 						File fulltext = new File(dir.getAbsoluteFile() + File.separator + processTitle.substring(0, processTitle.length() - 4)
 								+ "_txt" + File.separator);
-						// List<String> fulltextDir = new ArrayList<String>();
 						if (fulltext.isDirectory()) {
-							// String[] files = fulltext.list();
-							// for (int i = 0; i < files.length; i++) {
-							// fulltextDir.add(files[i]);
-							// }
-							// for (String file : fulltextDir) {
-							// File txtFile = new File(fulltext, file);
-							// File dest = new File(p.getTxtDirectory() + File.separator + txtFile.getName());
-							// FileUtils.moveFile(txtFile, dest);
-							// }
-							// FileUtils.deleteDirectory(fulltext);
+					
 							FileUtils.moveDirectory(fulltext, new File(p.getTxtDirectory()));
 						}
 

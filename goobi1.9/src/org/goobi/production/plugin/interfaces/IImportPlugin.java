@@ -3,11 +3,11 @@ package org.goobi.production.plugin.interfaces;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,10 +29,10 @@ package org.goobi.production.plugin.interfaces;
 import java.io.File;
 import java.util.List;
 
-import org.goobi.production.Import.DocstructElement;
-import org.goobi.production.Import.ImportObject;
-import org.goobi.production.Import.Record;
 import org.goobi.production.enums.ImportType;
+import org.goobi.production.importer.DocstructElement;
+import org.goobi.production.importer.ImportObject;
+import org.goobi.production.importer.Record;
 import org.goobi.production.properties.ImportProperty;
 
 import de.sub.goobi.helper.exceptions.ImportPluginException;

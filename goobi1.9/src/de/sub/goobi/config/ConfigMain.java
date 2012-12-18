@@ -1,13 +1,14 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -37,6 +38,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
 
+import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 
 public class ConfigMain implements Serializable {
@@ -88,11 +90,8 @@ public class ConfigMain implements Serializable {
 			filename = session.getServletContext().getRealPath("/pages/imagesTemp") + File.separator;
 
 			/* den Ordner neu anlegen, wenn er nicht existiert */
-			Helper help = new Helper();
 			try {
-				if (!new File(filename).exists()) {
-					help.createMetaDirectory(filename);
-				}
+				FilesystemHelper.createDirectory(filename);
 			} catch (Exception ioe) {
 				myLogger.error("IO error: " + ioe);
 				Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
@@ -156,13 +155,8 @@ public class ConfigMain implements Serializable {
 	 * 
 	 * @return Paramter als Long
 	 */
-	public static long getLongParameter(String inParameter, int inDefault) {
-		try {
-			return config.getLong(inParameter, inDefault);
-		} catch (RuntimeException e) {
-			myLogger.error(e);
-			return 0;
-		}
+	public static long getLongParameter(String inParameter, long inDefault) {
+		return config.getLong(inParameter, inDefault);
 	}
 
 	/**

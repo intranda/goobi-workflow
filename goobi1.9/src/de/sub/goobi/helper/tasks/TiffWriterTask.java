@@ -3,11 +3,11 @@ package de.sub.goobi.helper.tasks;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.sub.goobi.Beans.Prozess;
+import de.sub.goobi.beans.Prozess;
 
 public class TiffWriterTask extends LongRunningTask {
 
@@ -110,16 +110,4 @@ public void run() {
       inFiles.addAll(Arrays.asList(tiffiles));
 
    }
-   //Draft
-   /*
-   public static List<File> listAllFiles (File dir, String extension) {
-	   if (!dir.isDirectory()) {
-		   throw new IllegalStateException("Expected a directory, got: " dir.getAbsolutePath());
-	   }
-	   List<File> files = new ArrayList<File>();
-	   
-	   
-	   return files;
-   }
-   */
 }

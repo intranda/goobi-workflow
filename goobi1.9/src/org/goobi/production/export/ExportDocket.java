@@ -3,9 +3,12 @@ package org.goobi.production.export;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - http://gdz.sub.uni-goettingen.de - http://www.intranda.com
- * 
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,7 +27,6 @@ package org.goobi.production.export;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,7 +48,7 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.goobi.production.IProcessDataExport;
 
-import de.sub.goobi.Beans.Prozess;
+import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 
 /**
@@ -108,10 +110,8 @@ public class ExportDocket implements IProcessDataExport {
 		StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
 		StreamSource transformSource = new StreamSource(xsltfile);
 		FopFactory fopFactory = FopFactory.newInstance();
-//		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		// transform xml
-//		Transformer xslfoTransformer = getTransformer(transformSource);
 		try {
 			Transformer xslfoTransformer = TransformerFactory.newInstance().newTransformer(transformSource);
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, outStream);
@@ -138,35 +138,5 @@ public class ExportDocket implements IProcessDataExport {
 		return null;
 	}
 
-//	public static void main(String[] args) throws FOPException, TransformerException, IOException {
-//		FopFactory fopFactory = FopFactory.newInstance();
-//
-//		// Step 2: Set up output stream.
-//		// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
-//		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("/home/robert/fop.pdf")));
-//
-//		try {
-//			// Step 3: Construct fop with desired output format
-//			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-//
-//			// Step 4: Setup JAXP using identity transformer
-//			TransformerFactory factory = TransformerFactory.newInstance();
-//			Transformer transformer = factory.newTransformer(); // identity transformer
-//
-//			// Step 5: Setup input and output for XSLT transformation
-//			// Setup input stream
-//			Source src = new StreamSource(new File("/home/robert/workspace/Goobi1.9/WEB-INF/src/test.out.xml"));
-//
-//			// Resulting SAX events (the generated FO) must be piped through to FOP
-//			Result res = new SAXResult(fop.getDefaultHandler());
-//
-//			// Step 6: Start XSLT transformation and FOP processing
-//			transformer.transform(src, res);
-//
-//		} finally {
-//			// Clean-up
-//			out.close();
-//		}
-//	}
 
 }

@@ -3,11 +3,11 @@ package org.goobi.production.plugin;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -43,10 +43,8 @@ import de.sub.goobi.config.ConfigMain;
 public class PluginLoader {
 	
 	private final static boolean useDevelopmentPath = false;
-//	private final static String developmentPath = "/Users/steffen/Documents/workspace/SampleStepPlugins/bin/";
 	
 	private final static String developmentPath = "/Users/steffen/Documents/workspace/ORKAFileManImportPlugin/bin";
-//	private final static String developmentPath = "/Users/steffen/Documents/workspace/MetsEditor/bin/";
 
 	public static List<IPlugin> getPluginList(PluginType inType) {
 		PluginManagerUtil pmu = initialize(inType);

@@ -1,27 +1,31 @@
 package de.sub.goobi.helper;
 
 /**
- * This file is part of the Goobi Application - a Workflow tool for the support of
- * mass digitization.
- *
- * Visit the websites for more information.
- *   - http://gdz.sub.uni-goettingen.de
- *   - http://www.intranda.com
- *
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
- *
- * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software Foundation;
- * either version 2 of the License, or (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program;
- * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA
- *
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
  */
 
 import java.io.Serializable;
@@ -38,9 +42,9 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.Beans.Projekt;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Schritt;
+import de.sub.goobi.beans.Projekt;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.enums.StepStatus;
 
 public class ProjectHelper {
@@ -68,12 +72,7 @@ public class ProjectHelper {
 
 		Session session = Helper.getHibernateSession();
 
-		/*
-		 * The following block is representing this native query by way of critera and projection
-		 * 
-		 * SELECT count(p.prozesseid) as processCount, sum(p.sortHelperImages) as imageCount FROM prozesse p where p.isttemplate=0 and p.projekteid=2
-		 * ;
-		 */
+	
 
 		Criteria critTotals = session.createCriteria(Prozess.class, "proc");
 		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
@@ -99,14 +98,7 @@ public class ProjectHelper {
 		proList = null;
 		list = null;
 
-		/*
-		 * 
-		 * SELECT count(s.reihenfolge), s.titel, (avg(s.reihenfolge)), sum(p.sorthelperimages) FROM schritte s inner join prozesse p on
-		 * s.prozesseid=p.prozesseid inner join projekte pr on p.projekteid=pr.projekteid where pr.projekteid=18 group by s.titel order by
-		 * avg(s.reihenfolge);
-		 * 
-		 * The following block is representing this native query by way of critera and projection
-		 */
+	
 
 		Criteria critSteps = session.createCriteria(Schritt.class);
 
@@ -122,10 +114,7 @@ public class ProjectHelper {
 		proList.add(Projections.count("id"));
 		proList.add(Projections.avg("reihenfolge"));
 
-		// proList.add(Projections.sum("proc.sortHelperImages")); // is not really needed here but will be in the next step
-
-		// proList.add(Projections.groupProperty(("bearbeitungsstatus")));
-
+	
 		critSteps.setProjection(proList);
 
 		// now we have to discriminate the hits where the max number of hits doesn't reach numberOfProcs
@@ -231,7 +220,6 @@ public class ProjectHelper {
 		}
 	}
 
-	// synchronized public static IGoobiCollection<IGoobiCollection<IProperty>> getWorkFlow (IGoobiObject instance, Boolean notOnlyCommonFlow) {
 	@SuppressWarnings("unchecked")
 	public static List<StepInformation> getWorkFlow(Projekt inProj, Boolean notOnlyCommonFlow) {
 		Long totalNumberOfProc = 0l;
@@ -241,12 +229,7 @@ public class ProjectHelper {
 		}
 		List<StepInformation> workFlow = new ArrayList<StepInformation>();
 		Session session = Helper.getHibernateSession();
-		/*
-		 * The following block is representing this native query by way of critera and projection
-		 * 
-		 * SELECT count(p.prozesseid) as processCount, sum(p.sortHelperImages) as imageCount FROM prozesse p where p.isttemplate=0 and p.projekteid=2
-		 * ;
-		 */
+	
 
 		Criteria critTotals = session.createCriteria(Prozess.class, "proc");
 		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
@@ -269,15 +252,7 @@ public class ProjectHelper {
 		proList = null;
 		list = null;
 
-		/*
-		 * 
-		 * SELECT count(s.reihenfolge), s.titel, (avg(s.reihenfolge)), sum(p.sorthelperimages) FROM schritte s inner join prozesse p on
-		 * s.prozesseid=p.prozesseid inner join projekte pr on p.projekteid=pr.projekteid where pr.projekteid=18 group by s.titel order by
-		 * avg(s.reihenfolge);
-		 * 
-		 * The following block is representing this native query by way of critera and projection
-		 */
-
+	
 		Criteria critSteps = session.createCriteria(Schritt.class);
 
 		critSteps.createCriteria("prozess", "proc");
@@ -292,9 +267,7 @@ public class ProjectHelper {
 		proList.add(Projections.count("id"));
 		proList.add(Projections.avg("reihenfolge"));
 
-		// proList.add(Projections.sum("proc.sortHelperImages")); // is not really needed here but will be in the next step
-
-		// proList.add(Projections.groupProperty(("bearbeitungsstatus")));
+		
 
 		critSteps.setProjection(proList);
 

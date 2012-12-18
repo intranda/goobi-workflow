@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,27 +26,25 @@ package de.sub.goobi.helper;
  * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
- */import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+ */
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import de.sub.goobi.Beans.Benutzer;
-import de.sub.goobi.Beans.Benutzergruppe;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Prozesseigenschaft;
-import de.sub.goobi.Beans.Schritt;
-import de.sub.goobi.Beans.Schritteigenschaft;
-import de.sub.goobi.Beans.Vorlage;
-import de.sub.goobi.Beans.Vorlageeigenschaft;
-import de.sub.goobi.Beans.Werkstueck;
-import de.sub.goobi.Beans.Werkstueckeigenschaft;
+import de.sub.goobi.beans.Benutzer;
+import de.sub.goobi.beans.Benutzergruppe;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Prozesseigenschaft;
+import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.beans.Schritteigenschaft;
+import de.sub.goobi.beans.Vorlage;
+import de.sub.goobi.beans.Vorlageeigenschaft;
+import de.sub.goobi.beans.Werkstueck;
+import de.sub.goobi.beans.Werkstueckeigenschaft;
 
-//TODO: Document this
 public class BeanHelper {
 
 	
@@ -116,7 +114,6 @@ public class BeanHelper {
 			 * --------------------------------*/
 			Schritt stepneu = new Schritt();
 			stepneu.setTypAutomatisch(step.isTypAutomatisch());
-//			stepneu.setAllScripts(step.getAllScripts());
 			stepneu.setScriptname1(step.getScriptname1());
 			stepneu.setScriptname2(step.getScriptname2());
 			stepneu.setScriptname3(step.getScriptname3());
@@ -133,6 +130,7 @@ public class BeanHelper {
 			stepneu.setTypBeimAnnehmenAbschliessen(step.isTypBeimAnnehmenAbschliessen());
 			stepneu.setTypBeimAnnehmenModul(step.isTypBeimAnnehmenModul());
 			stepneu.setTypBeimAnnehmenModulUndAbschliessen(step.isTypBeimAnnehmenModulUndAbschliessen());
+			stepneu.setTypModulName(step.getTypModulName());
 			stepneu.setTypExportDMS(step.isTypExportDMS());
 			stepneu.setTypExportRus(step.isTypExportRus());
 			stepneu.setTypImagesLesen(step.isTypImagesLesen());
@@ -143,7 +141,6 @@ public class BeanHelper {
 			stepneu.setBearbeitungsstatusEnum(step.getBearbeitungsstatusEnum());
 			stepneu.setReihenfolge(step.getReihenfolge());
 			stepneu.setTitel(step.getTitel());
-			//         stepneu.setTyp(step.getTyp());
 			stepneu.setHomeverzeichnisNutzen(step.getHomeverzeichnisNutzen());
 			stepneu.setProzess(prozessKopie);
 			

@@ -1,13 +1,14 @@
 package de.unigoettingen.sub.search.opac;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -116,9 +117,7 @@ public class ConfigOpacCatalogue {
 		 * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
 		 */
 		Document doc = new DOMBuilder().build(myHitlist.getOwnerDocument());
-		// myLogger.debug("executeBeautifier(Node)" + doc.getRootElement().getName()
-		// + doc.getRootElement().getChildren().size());
-
+	
 		/*
 		 * --------------------- Im JDom-Object alle Felder durchlaufen und die notwendigen Ersetzungen vornehmen -------------------
 		 */
@@ -142,7 +141,6 @@ public class ConfigOpacCatalogue {
 		}
 
 		/* Ausgabe des überarbeiteten Opac-Ergebnisses */
-		// debugMyNode(myHitlist, "D:/temp_opac2.xml");
 		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigMain.getParameter("debugFolder")).canWrite()) {
 			debugMyNode(myHitlist, ConfigMain.getParameter("debugFolder") + "/opacBeautifyAfter.xml");
 		}
@@ -154,7 +152,6 @@ public class ConfigOpacCatalogue {
 	 */
 	@SuppressWarnings("unchecked")
 	private void executeBeautifierForElement(Element el) {
-		// myLogger.debug("executeBeautifier(Node) - ----------------- " + el.getName());
 		for (ConfigOpacCatalogueBeautifier beautifier : this.beautifySetList) {
 			Element elementToChange = null;
 			/* eine Kopie der zu prüfenden Elemente anlegen (damit man darin löschen kann */
@@ -163,13 +160,10 @@ public class ConfigOpacCatalogue {
 			/* von jedem Record jedes Field durchlaufen */
 			List<Element> elements = el.getChildren("field");
 			for (Element field : elements) {
-				// Element field = itField.next();
 				String tag = field.getAttributeValue("tag");
 				/* von jedem Field alle Subfelder durchlaufen */
 				List<Element> subelements = field.getChildren("subfield");
 				for (Element subfield : subelements) {
-					// for (Iterator<Element> itSub = field.getChildren("subfield").iterator(); itSub.hasNext();) {
-					// Element subfield = itSub.next();
 					String subtag = subfield.getAttributeValue("code");
 					String value = subfield.getText();
 

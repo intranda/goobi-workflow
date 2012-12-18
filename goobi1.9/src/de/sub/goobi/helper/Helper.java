@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -53,7 +53,6 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -61,16 +60,19 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.goobi.mq.WebServiceResult;
 import org.hibernate.Session;
 import org.jdom.Element;
 
-import de.sub.goobi.Beans.Benutzer;
-import de.sub.goobi.Forms.LoginForm;
-import de.sub.goobi.Forms.SpracheForm;
-import de.sub.goobi.Persistence.HibernateSessionLong;
-import de.sub.goobi.Persistence.HibernateUtilOld;
+import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.forms.LoginForm;
+import de.sub.goobi.forms.SpracheForm;
+import de.sub.goobi.helper.enums.ReportLevel;
+import de.sub.goobi.persistence.HibernateSessionLong;
+import de.sub.goobi.persistence.HibernateUtilOld;
 
 public class Helper implements Serializable, Observer {
 
@@ -95,6 +97,8 @@ public class Helper implements Serializable, Observer {
 	private String myConfigVerzeichnis;
 	private static Map<Locale, ResourceBundle> commonMessages = null;
 	private static Map<Locale, ResourceBundle> localMessages = null;
+
+	public static Map<String, String> activeMQReporting = null;
 
 	/**
 	 * Ermitteln eines bestimmten Paramters des Requests
@@ -190,17 +194,7 @@ public class Helper implements Serializable, Observer {
 		meldung = meldung.replaceAll(">", "&gt;");
 		beschreibung = beschreibung.replaceAll("<", "&lt;");
 		beschreibung = beschreibung.replaceAll(">", "&gt;");
-		/* wenn kein Kontext da ist, dann die Meldungen in Log */
-		if (context == null) {
-			if (nurInfo) {
-				myLogger.info(meldung + " " + beschreibung);
-			} else {
-				// myLogger.error(meldung + " " + beschreibung);
-			}
-			return;
-		}
-		// ResourceBundle bundle = ResourceBundle.getBundle("Messages.messages",
-		// context.getViewRoot().getLocale());
+		
 		String msg = "";
 		String beschr = "";
 		Locale language = Locale.ENGLISH;
@@ -220,10 +214,17 @@ public class Helper implements Serializable, Observer {
 			beschr = beschreibung;
 		}
 
-		if (nurInfo) {
-			context.addMessage(control, new FacesMessage(FacesMessage.SEVERITY_INFO, msg, beschr));
-		} else {
-			context.addMessage(control, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, beschr));
+		String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
+		if (activeMQReporting != null) {
+			new WebServiceResult(activeMQReporting.get("queueName"), activeMQReporting.get("id"), nurInfo ? ReportLevel.INFO : ReportLevel.ERROR,
+					compoundMessage).send();
+		}
+		if (context != null) {
+			context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
+		} else { 
+			// wenn kein Kontext da ist, dann die Meldungen in Log
+			myLogger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
+
 		}
 	}
 
@@ -256,13 +257,6 @@ public class Helper implements Serializable, Observer {
 		}
 	}
 
-	// public static Object getManagedBean(String name) {
-	// FacesContext context = FacesContext.getCurrentInstance();
-	// Object obj =
-	// context.getApplication().getVariableResolver().resolveVariable(context,
-	// name);
-	// return obj;
-	// }
 	public static Object getManagedBeanValue(String expr) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (context == null) {
@@ -301,146 +295,82 @@ public class Helper implements Serializable, Observer {
 		hsl.getNewSession();
 	}
 
-	/**
-	 * simple call of console command without any feedback, error handling or return value
-	 * ================================================================
-	 */
-	public static void callShell(String command) throws IOException, InterruptedException {
-		myLogger.debug("execute Shellcommand callShell: " + command);
-		InputStream is = null;
-		InputStream es = null;
-		OutputStream out = null;
-
-		try {
-			myLogger.debug("execute Shellcommand callShell2: " + command);
-			if (command == null || command.length() == 0) {
-				return;
-			}
-			Process process = Runtime.getRuntime().exec(command);
-			is = process.getInputStream();
-			es = process.getErrorStream();
-			out = process.getOutputStream();
-
-			process.waitFor();
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					is = null;
-				}
-			}
-			if (es != null) {
-				try {
-					es.close();
-				} catch (IOException e) {
-					es = null;
-				}
-
-			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					out = null;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Call scripts from console and give back error messages and return value of the called script
-	 * 
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * 
-	 */
-	public static Integer callShell2(String command) throws IOException, InterruptedException {
-		InputStream is = null;
-		InputStream es = null;
-		OutputStream out = null;
-
-		try {
-			myLogger.debug("execute Shellcommand callShell2: " + command);
-			boolean errorsExist = false;
-			if (command == null || command.length() == 0) {
-				return 1;
-			}
-			Process process = Runtime.getRuntime().exec(command);
-			is = process.getInputStream();
-			es = process.getErrorStream();
-			out = process.getOutputStream();
-			Scanner scanner = new Scanner(is);
-			while (scanner.hasNextLine()) {
-				String myLine = scanner.nextLine();
-				setMeldung(myLine);
-			}
-
-			scanner.close();
-			scanner = new Scanner(es);
-			while (scanner.hasNextLine()) {
-				errorsExist = true;
-				setFehlerMeldung(scanner.nextLine());
-			}
-			scanner.close();
-			int rueckgabe = process.waitFor();
-			if (errorsExist) {
-				return 1;
-			} else {
-				return rueckgabe;
-			}
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					is = null;
-				}
-			}
-			if (es != null) {
-				try {
-					es.close();
-				} catch (IOException e) {
-					es = null;
-				}
-
-			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					out = null;
-				}
-			}
-		}
-	}
-
-	public void createUserDirectory(String inDirPath, String inUser) throws IOException, InterruptedException {
-		/*
-		 * -------------------------------- Create directory with script --------------------------------
-		 */
-		String command = ConfigMain.getParameter("script_createDirUserHome") + " ";
-		command += inUser + " " + inDirPath;
-		callShell(command);
-	}
-
-	public void createMetaDirectory(String inDirPath) throws IOException, InterruptedException {
-		/*
-		 * -------------------------------- Create directory with script --------------------------------
-		 */
-		String command = ConfigMain.getParameter("script_createDirMeta") + " ";
-		command += inDirPath;
-		callShell(command);
-	}
+	// /**
+	// * Call scripts from console and give back error messages and return value of the called script
+	// *
+	// * @throws IOException
+	// * @throws InterruptedException
+	// *
+	// */
+	// public static Integer callShell2(String command) throws IOException, InterruptedException {
+	// InputStream is = null;
+	// InputStream es = null;
+	// OutputStream out = null;
+	//
+	// try {
+	// myLogger.debug("execute Shellcommand callShell2: " + command);
+	// boolean errorsExist = false;
+	// if (command == null || command.length() == 0) {
+	// return 1;
+	// }
+	// Process process = Runtime.getRuntime().exec(command);
+	// is = process.getInputStream();
+	// es = process.getErrorStream();
+	// out = process.getOutputStream();
+	// Scanner scanner = new Scanner(is);
+	// while (scanner.hasNextLine()) {
+	// String myLine = scanner.nextLine();
+	// setMeldung(myLine);
+	// }
+	//
+	// scanner.close();
+	// scanner = new Scanner(es);
+	// while (scanner.hasNextLine()) {
+	// errorsExist = true;
+	// setFehlerMeldung(scanner.nextLine());
+	// }
+	// scanner.close();
+	// int rueckgabe = process.waitFor();
+	// if (errorsExist) {
+	// return 1;
+	// } else {
+	// return rueckgabe;
+	// }
+	// } finally {
+	// if (is != null) {
+	// try {
+	// is.close();
+	// } catch (IOException e) {
+	// is = null;
+	// }
+	// }
+	// if (es != null) {
+	// try {
+	// es.close();
+	// } catch (IOException e) {
+	// es = null;
+	// }
+	//
+	// }
+	// if (out != null) {
+	// try {
+	// out.close();
+	// } catch (IOException e) {
+	// out = null;
+	// }
+	// }
+	// }
+	// }
 
 	private static void loadMsgs() {
 		commonMessages = new HashMap<Locale, ResourceBundle>();
 		localMessages = new HashMap<Locale, ResourceBundle>();
 		if (FacesContext.getCurrentInstance() != null) {
+			@SuppressWarnings("unchecked")
 			Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
 			while (polyglot.hasNext()) {
 				Locale language = polyglot.next();
-				commonMessages.put(language, ResourceBundle.getBundle("Messages.messages", language));
+				commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
 				File file = new File(ConfigMain.getParameter("localMessages", "/opt/digiverso/goobi/messages/"));
 				if (file.exists()) {
 					// Load local message bundle from file system only if file exists;
@@ -465,14 +395,13 @@ public class Helper implements Serializable, Observer {
 			}
 		} else {
 			Locale defaullLocale = new Locale("EN");
-			commonMessages.put(defaullLocale, ResourceBundle.getBundle("Messages.messages", defaullLocale));
+			commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
 		}
 	}
 
 	public static String getTranslation(String dbTitel) {
 		// running instance of ResourceBundle doesn't respond on user language
 		// changes, workaround by instanciating it every time
-		// SprachbundleLaden();
 
 		Locale desiredLanguage = null;
 		try {
@@ -601,7 +530,6 @@ public class Helper implements Serializable, Observer {
 		return true;
 	}
 
-	// WELLCOME
 	/**
 	 * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
 	 */
@@ -648,9 +576,7 @@ public class Helper implements Serializable, Observer {
 		public boolean accept(File dir, String name) {
 			boolean fileOk = false;
 			String prefix = ConfigMain.getParameter("ImagePrefix", "\\d{8}");
-			// String suffix = ConfigMin.getParameter("ImageSuffix",
-			// "\\.[Tt][Ii][Ff][Ff]?");
-			// return name.matches(prefix + suffix);
+
 			if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
 				fileOk = true;
 			} else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
@@ -661,8 +587,6 @@ public class Helper implements Serializable, Observer {
 				fileOk = true;
 			} else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
 				fileOk = true;
-				// } else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
-				// fileOk = true;
 			}
 			return fileOk;
 		}

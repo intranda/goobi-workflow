@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -38,10 +38,10 @@ import org.apache.log4j.Logger;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Prozesseigenschaft;
-import de.sub.goobi.Persistence.ProzessDAO;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.ProzessDAO;
 
 public class BatchProcessHelper {
 
@@ -268,19 +268,10 @@ public class BatchProcessHelper {
 				this.containers.put(pt.getContainer(), plo);
 			}
 		}
-//		for (ProcessProperty pt : this.processPropertyList) {
-//			if (!this.containers.keySet().contains(pt.getContainer())) {
-//				this.containers.put(pt.getContainer(), 1);
-//			} else {
-//				this.containers.put(pt.getContainer(), this.containers.get(pt.getContainer()) + 1);
-//			}
-//		}
 		for (Prozess p : this.processes) {
 			for (Prozesseigenschaft pe : p.getEigenschaftenList()) {
 				if (!this.containers.keySet().contains(pe.getContainer())) {
 					this.containers.put(pe.getContainer(), null);
-//				} else {
-//					this.containers.put(pe.getContainer(), this.containers.get(pe.getContainer()) + 1);
 				}
 			}
 		}
@@ -331,7 +322,6 @@ public class BatchProcessHelper {
 
 	public List<ProcessProperty> getContainerProperties() {
 		List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
-		// int currentContainer = this.processProperty.getContainer();
 
 		if (this.container != null && this.container > 0) {
 			for (ProcessProperty pp : this.processPropertyList) {

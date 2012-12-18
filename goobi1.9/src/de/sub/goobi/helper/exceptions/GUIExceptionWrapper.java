@@ -3,11 +3,11 @@ package de.sub.goobi.helper.exceptions;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -60,36 +60,7 @@ public class GUIExceptionWrapper extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/*
-	 * Example for goobi_config.properties
-	 * 
-	 * #use this to turn this feature on or off (true/false) 
-	 * err_userHandling=true
-	 *
-	 * # page the user will be directed to continue
-	 * err_linkToPage=../Main.jsf
-	 * 
-	 * # use this to turn the email feature on or off, user handling has to be set to true for this to have any effect
-	 * err_emailEnabled=true
-	 * 
-	 * # an indefinate number of email adresses can be entered here as long as the pattern is met
-	 * err_emailAddress1=goobi@intranda.com
-	 * err_emailAddress2=mahnke@sub.uni-goettingen.de
-	 * 
-	 * ######################
-	 * 
-	 * the displayed messages are taken from the Messages Package
-	 * 
-	 * Here the current example for messgaes_en.properties
-	 * 
-	 * err_emailBody=An error ocurred in Goobi. Please add to this message a short description of what you just did in Goobi  when this error occurred.
-	 * err_emailMessage=If this error occurred for the first time you could <a href\="{0}"> send an email to the developers </a> to support the developement of Goobi. Please mind further requests for information within the email.
-	 * err_fallBackMessage=There was an error in the programms execution. <br/> Unfortunately the more user and developer friendly feature of a link provided for the continuation of work  <br/> and the bug reporting in goobi_config.properties via email is disabled or not sufficiently set up. <br/> <br/> Please request your administrator to change the settings in goobi_config.properties for a user friendly display of this error.
-	 * err_linkText=You may ignore the stack trace ignorieren and continue your work with a click <a href\="{0}"> here </a>. <br/>If this doesn't work you may hace to use the naviagation or even restart the application by logging out and back in.
-	 * err_noMailService=The feature to notify the development team by email from here is disabled
-	 * err_subjectLine=Goobi Application Error
-	 * 
-	 */
+	
 
 	private String fallBackErrorMessage = Helper.getTranslation("err_fallBackMessage");
 
@@ -97,9 +68,7 @@ public class GUIExceptionWrapper extends Exception {
 
 	private String additionalMessage = "";
 
-	// see comment above
 	private String err_linkText = "";
-	// err_emailEnabled=true;
 
 	private String err_emailBody = "";
 	private String err_emailMessage = "";

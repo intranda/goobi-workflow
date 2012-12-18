@@ -203,6 +203,16 @@
 					<x:updateActionListener property="#{NavigationForm.aktuell}" value="34" />
 				</h:commandLink>
 
+                <!-- aktive Module -->
+                        <h:commandLink styleClass="mlink" action="modulemanager" rendered="#{NavigationForm.showModuleManager}" 
+                            style="#{NavigationForm.aktuell == '38' ? 'font-weight: bold;':'font-weight:normal ;'}"  id="modules">
+                            <h:panelGroup rendered="#{NavigationForm.aktuell == '38'}">
+                                <f:verbatim>&#8250; </f:verbatim>
+                            </h:panelGroup>
+                            <h:outputText value="#{msgs.modulemanager}" />
+                            <x:updateActionListener property="#{NavigationForm.aktuell}"
+                                value="38" />
+                        </h:commandLink>
 
 				<!-- aktive Tasks -->
 				<h:commandLink styleClass="mlink" action="taskmanager" rendered="#{NavigationForm.showTaskManager}"
@@ -213,6 +223,7 @@
 					<h:outputText value="#{msgs.taskmanager}" />
 					<x:updateActionListener property="#{NavigationForm.aktuell}" value="36" />
 				</h:commandLink>
+
 
 				<!-- Administrationsaufgaben 
 								<h:commandLink styleClass="mlink" action="Administrationsaufgaben" id="admin"

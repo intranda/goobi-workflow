@@ -1,27 +1,31 @@
 package org.goobi.production.flow.statistics.hibernate;
 
 /**
- * This file is part of the Goobi Application - a Workflow tool for the support of 
- * mass digitization.
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *   - http://gdz.sub.uni-goettingen.de 
- *   - http://www.intranda.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
  * 
- * This program is free software; you can redistribute it and/or modify it under the 
- * terms of the GNU General Public License as published by the Free Software Foundation; 
- * either version 2 of the License, or (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with this program; 
- * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, 
- * Boston, MA 02111-1307 USA
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
  */
 
 //import java.lang.ref.WeakReference;
@@ -36,7 +40,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.Beans.Prozess;
+import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
 
@@ -60,7 +64,6 @@ import de.sub.goobi.helper.PaginatingCriteria;
  ****************************************************************************/
 public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 	private static final long serialVersionUID = 4715772407607416975L;
-	// private Criteria myCriteria = null;
 	private WeakReference<Criteria> myCriteria = null;
 	private String myName = null;
 	private String myFilterExpression = null;
@@ -94,23 +97,6 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 	@Override
 	public Criteria getCriteria() {
 
-		// myCriteria is a WeakReference ... both cases needs to be evaluated,
-		// after gc the WeakReference
-		// object is still referenced but not the object referenced by it
-		// if (myCriteria == null ) {
-		// if (this.myIds == null) {
-		// if (this.getFilter() != null) {
-		// myCriteria =
-		// createCriteriaFromFilterString(this.getFilter());
-		// }
-		// } else {
-		// myCriteria =
-		// createCriteriaFromIDList();
-		// }
-		// }
-		//
-		// return myCriteria;
-		//
 		if (myCriteria == null || myCriteria.get() == null) {
 			if (myIds == null) {
 				if (getFilter() != null) {
@@ -197,9 +183,6 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 		PaginatingCriteria crit = new PaginatingCriteria(Prozess.class, session);
 		crit.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 
-		// crit.createCriteria("projekt", "proj");
-		// FilterHelper.limitToUserAccessRights(crit);
-
 		/*
 		 * -------------------------------- combine all parameters together this
 		 * part was exported to FilterHelper so that other Filters could access
@@ -215,14 +198,11 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 		 * by using a range the Criteria produces more than one item per
 		 * process, for each step it involves
 		 **/
-		// if (myParameter.getCriticalQuery()) {
 
 		createIDListFromCriteria(crit);
 		crit = null;
 		crit = createCriteriaFromIDList();
-		// }
-
-		// crit.add(Restrictions.in("id", crit.getIds()));
+	
 
 		return crit;
 	}
@@ -248,7 +228,6 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 	private PaginatingCriteria createCriteriaFromIDList() {
 		Session session = Helper.getHibernateSession();
 		PaginatingCriteria crit = new PaginatingCriteria(Prozess.class, session);
-		// crit = session.createCriteria(Prozess.class);
 		crit.add(Restrictions.in("id", myIds));
 		return crit;
 	}

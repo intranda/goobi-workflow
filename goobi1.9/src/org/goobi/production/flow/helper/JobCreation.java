@@ -4,11 +4,11 @@ package org.goobi.production.flow.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2012, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -34,21 +34,21 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.Import.ImportObject;
 import org.goobi.production.cli.helper.CopyProcess;
+import org.goobi.production.importer.ImportObject;
 
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Persistence.ProzessDAO;
-import de.sub.goobi.Persistence.apache.StepManager;
-import de.sub.goobi.Persistence.apache.StepObject;
+import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObject;
 
 public class JobCreation {
 	private static final Logger logger = Logger.getLogger(JobCreation.class);
@@ -224,7 +224,6 @@ public class JobCreation {
 								for (File file : imagedir.listFiles()) {
 									FileUtils.moveFile(file, new File(p.getImagesDirectory() + imagedir.getName(), file.getName()));
 								}
-								// FileUtils.moveDirectory(imagedir, new File(p.getImagesDirectory(), imagedir.getName()));
 							} else {
 								FileUtils.moveFile(imagedir, new File(p.getImagesDirectory(), imagedir.getName()));
 							}

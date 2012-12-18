@@ -4,11 +4,11 @@ package de.sub.goobi.helper.ldap;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -59,10 +59,11 @@ import javax.naming.ldap.StartTlsResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.Beans.Benutzer;
+import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.encryption.MD4;
+import dubious.sub.goobi.helper.encryption.MD4;
 
 public class Ldap {
 	private static final Logger myLogger = Logger.getLogger(Ldap.class);
@@ -114,8 +115,8 @@ public class Ldap {
 			String homePath = getUserHomeDirectory(inBenutzer);
 			if (!new File(homePath).exists()) {
 				myLogger.debug("HomeVerzeichnis existiert noch nicht");
-				new Helper().createUserDirectory(homePath, inBenutzer.getLogin());
-				myLogger.debug("HomeVerzeichnis angelegt");
+                FilesystemHelper.createDirectoryForUser(homePath, inBenutzer.getLogin());
+                myLogger.debug("HomeVerzeichnis angelegt");
 			} else {
 				myLogger.debug("HomeVerzeichnis existiert schon");
 			}
@@ -138,8 +139,6 @@ public class Ldap {
 		// Start TLS
 		if (ConfigMain.getBooleanParameter("ldap_useTLS", false)) {
 			myLogger.debug("use TLS for auth");
-			// String keystore = "/opt/java/64/jre1.6.0_31/lib/security/cacerts";
-			// System.setProperty("javax.net.ssl.trustStore", keystore);
 			env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 			env.put(Context.PROVIDER_URL, ConfigMain.getParameter("ldap_url"));
@@ -241,8 +240,6 @@ public class Ldap {
 		Hashtable<String, String> env = LdapConnectionSettings();
 		if (ConfigMain.getBooleanParameter("ldap_useTLS", false)) {
 
-			// String keystore = "/opt/java/64/jre1.6.0_31/lib/security/cacerts";
-			// System.setProperty("javax.net.ssl.trustStore", keystore);
 			env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 			env.put(Context.PROVIDER_URL, ConfigMain.getParameter("ldap_url"));
@@ -331,7 +328,6 @@ public class Ldap {
 		try {
 			ctx = new InitialDirContext(env);
 			Attributes matchAttrs = new BasicAttributes(true);
-			// matchAttrs.put(new BasicAttribute("uid", inLogin));
 			NamingEnumeration<SearchResult> answer = ctx.search("ou=users,dc=gdz,dc=sub,dc=uni-goettingen,dc=de", matchAttrs);
 			rueckgabe = answer.hasMoreElements();
 
@@ -454,16 +450,10 @@ public class Ldap {
 			env.put(Context.SECURITY_PRINCIPAL, ConfigMain.getParameter("ldap_adminLogin"));
 			env.put(Context.SECURITY_CREDENTIALS, ConfigMain.getParameter("ldap_adminPassword"));
 
-			// env.put(Context.SECURITY_PRINCIPAL, getUserDN(inBenutzer));
-			// env.put(Context.SECURITY_CREDENTIALS, inOldPassword);
 			try {
 				DirContext ctx = new InitialDirContext(env);
 
-				// /* vorher ausgeben */
-				// Attributes attrs = ctx.getAttributes(ldapUserName);
-				// Attribute la = (Attribute) attrs.get("userPassword");
-				// byte[] passwdhash = (byte[]) la.get(0);
-
+		
 				/*
 				 * -------------------------------- Encryption of password and Base64-Encoding --------------------------------
 				 */
@@ -560,7 +550,6 @@ public class Ldap {
 				// TODO: Let this method really load a keystore if configured
 				// initalize the keystore, if file is available, load the keystore
 				ks.load(null);
-				// ks.load(ksis,password);
 
 				ks.setCertificateEntry("ROOTCERT", cacert);
 				ks.setCertificateEntry("PDC", servercert);

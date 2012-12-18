@@ -3,11 +3,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -44,12 +44,12 @@ import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Schritt;
-import de.sub.goobi.Beans.Vorlage;
-import de.sub.goobi.Beans.Vorlageeigenschaft;
-import de.sub.goobi.Beans.Werkstueck;
-import de.sub.goobi.Beans.Werkstueckeigenschaft;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.beans.Vorlage;
+import de.sub.goobi.beans.Vorlageeigenschaft;
+import de.sub.goobi.beans.Werkstueck;
+import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -66,11 +66,8 @@ public class VariableReplacer {
 	DigitalDocument dd;
 	Prefs prefs;
 	UghHelper uhelp;
-	// Helper help;
 	// $(meta.abc)
 	private final String namespaceMeta = "\\$\\(meta\\.([\\w.-]*)\\)";
-	// $(abc)
-	// private final String namespaceOther = "\\$\\([\\w.-]*\\)";
 
 	private Prozess process;
 	private Schritt step;
@@ -83,7 +80,6 @@ public class VariableReplacer {
 		this.dd = inDigitalDocument;
 		this.prefs = inPrefs;
 		this.uhelp = new UghHelper();
-		// help = new Helper();
 		this.process = p;
 		this.step = s;
 	}
@@ -307,7 +303,6 @@ public class VariableReplacer {
 				if (resultFirst == null) {
 					logger.info("Can not replace firstChild-variable for METS: " + metadata);
 					result = "";
-					// help.setFehlerMeldung("Can not replace firstChild-variable for METS: " + metadata);
 				} else {
 					result = resultFirst;
 				}
@@ -317,7 +312,6 @@ public class VariableReplacer {
 				if (resultTop == null) {
 					result = "";
 					logger.warn("Can not replace topStruct-variable for METS: " + metadata);
-					// help.setFehlerMeldung("Can not replace topStruct-variable for METS: " + metadata);
 				} else {
 					result = resultTop;
 				}
@@ -331,7 +325,6 @@ public class VariableReplacer {
 				} else {
 					result = "";
 					logger.warn("Can not replace variable for METS: " + metadata);
-					// help.setFehlerMeldung("Can not replace variable for METS: " + metadata);
 				}
 				break;
 

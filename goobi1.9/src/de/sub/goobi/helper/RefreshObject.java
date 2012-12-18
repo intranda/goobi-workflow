@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2012, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -30,9 +30,9 @@ package de.sub.goobi.helper;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Schritt;
-import de.sub.goobi.Persistence.HibernateUtilOld;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.persistence.HibernateUtilOld;
 
 public class RefreshObject {
 	private static final Logger logger = Logger.getLogger(RefreshObject.class);
@@ -42,12 +42,6 @@ public class RefreshObject {
 		try {
 			Session session = HibernateUtilOld.getSessionFactory().openSession();
 			logger.debug("created a new session");
-			// Session session = Helper.getHibernateSession();
-			// if (session == null || !session.isOpen() || !session.isConnected()) {
-			// logger.debug("session is closed, creating a new session");
-			// HibernateUtilOld.rebuildSessionFactory();
-			// session = HibernateUtilOld.getSessionFactory().openSession();
-			// }
 			Prozess o = (Prozess) session.get(Prozess.class, processID);
 			logger.debug("loaded process");
 			session.refresh(o);
@@ -63,12 +57,6 @@ public class RefreshObject {
 	public static void refreshStep(int stepID) {
 		try {
 			Session session = HibernateUtilOld.getSessionFactory().openSession();
-			// Session session = Helper.getHibernateSession();
-			// if (session == null || !session.isOpen() || !session.isConnected()) {
-			// logger.debug("session is closed, creating a new session");
-			// HibernateUtilOld.rebuildSessionFactory();
-			// session = HibernateUtilOld.getSession();
-			// }
 			Schritt o = (Schritt) session.get(Schritt.class, stepID);
 			session.refresh(o);
 			session.close();

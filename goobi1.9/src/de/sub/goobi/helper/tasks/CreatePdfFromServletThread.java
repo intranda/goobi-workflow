@@ -3,11 +3,11 @@ package de.sub.goobi.helper.tasks;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -44,11 +44,11 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Metadaten.MetadatenHelper;
-import de.sub.goobi.Metadaten.MetadatenVerifizierung;
+import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.metadaten.MetadatenHelper;
+import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 /*************************************************************************************
  * Creation of PDF-Files as long running task for GoobiContentServerServlet
@@ -207,16 +207,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
 		setStatusProgress(100);
 	}
 
-	/**************************************************************************************
-	 * Setter for tempFolder
-	 * 
-	 * @param tempFolder
-	 *            the tempFolder to set
-	 **************************************************************************************/
-/*	public void setTempFolder(File tempFolder) {
-		this.tempFolder = tempFolder;
-	}
-*/
+
 	/**************************************************************************************
 	 * Setter for targetFolder
 	 * 

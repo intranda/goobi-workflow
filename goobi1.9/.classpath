@@ -3,7 +3,7 @@
 	<classpathentry excluding="Messages/|goobi_config.properties|hibernate.cfg.xml|log4j.properties" kind="src" path="src"/>
 	<classpathentry kind="src" path="private"/>
 	<classpathentry kind="src" path="src-dubious"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="test/src"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/chartcreator-1.2.0-RC1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/clibwrapper_jiio.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
@@ -21,7 +21,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/EasySI-0.9.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/ehcache-1.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/goobi-api.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/help.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/htmLib.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/iText-2.1.5.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jai_codec-1.1.2_01.jar"/>
@@ -81,6 +80,19 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/jspf.core-1.0.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/tomahawk-sandbox20-1.1.13.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/mysql-connector-java-5.1.6.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/geronimo-jms_1.1_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/activemq-core-5.5.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-bundle-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-client-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-core-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-json-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-multipart-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-server-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jersey-servlet-1.12.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jsr311-api-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/avalon-framework-4.2.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/barcode4j-fop-ext-complete.jar"/>

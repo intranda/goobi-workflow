@@ -4,11 +4,11 @@ package org.goobi.production.properties;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2012, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,7 +29,6 @@ package org.goobi.production.properties;
  */
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,8 +39,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.sub.goobi.Beans.Prozesseigenschaft;
-import de.sub.goobi.Beans.Schritt;
+import de.sub.goobi.beans.Prozesseigenschaft;
+import de.sub.goobi.beans.Schritt;
 
 public class ProcessProperty implements IProperty, Serializable {
 
@@ -63,7 +62,6 @@ public class ProcessProperty implements IProperty, Serializable {
 		this.possibleValues = new ArrayList<String>();
 		this.projects = new ArrayList<String>();
 		this.showStepConditions = new ArrayList<ShowStepCondition>();
-		// this.prozesseigenschaft = new Prozesseigenschaft();
 	}
 
 	/*
@@ -324,18 +322,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	@Override
 	public ProcessProperty getClone(int containerNumber) {
 		ProcessProperty p = new ProcessProperty();
-		// if (this.container.intValue()==0){
 		p.setContainer(containerNumber);
-		// }else{
-		// p.setContainer(this.container.intValue()+1);
-		// }
-
-		// TODO: FIXME hier werden eigenschaften hinzugefügt, scheinbar auch leere?
-		// Prozesseigenschaft pe = new Prozesseigenschaft();
-		// pe.setProzess(getProzesseigenschaft().getProzess());
-		// p.setProzesseigenschaft(pe);
-		// getProzesseigenschaft().getProzess().getEigenschaften().add(pe);
-
 		p.setName(this.name);
 		p.setValidation(this.validation);
 		p.setType(this.type);
@@ -355,7 +342,6 @@ public class ProcessProperty implements IProperty, Serializable {
 	 */
 	@Override
 	public void transfer() {
-			// if (this.value != null && this.value.length() > 0) {
 			this.prozesseigenschaft.setWert(this.value);
 			this.prozesseigenschaft.setTitel(this.name);
 			this.prozesseigenschaft.setContainer(this.container);

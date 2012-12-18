@@ -1,42 +1,14 @@
 package de.sub.goobi.helper;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import ugh.dl.DigitalDocument;
-import ugh.dl.Prefs;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-import de.sub.goobi.Beans.Benutzer;
-import de.sub.goobi.Export.dms.AutomaticDmsExportWithoutHibernate;
-import de.sub.goobi.Forms.LoginForm;
-import de.sub.goobi.Persistence.apache.FolderInformation;
-import de.sub.goobi.Persistence.apache.ProcessManager;
-import de.sub.goobi.Persistence.apache.ProcessObject;
-import de.sub.goobi.Persistence.apache.StepManager;
-import de.sub.goobi.Persistence.apache.StepObject;
-import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.helper.enums.HistoryEventType;
-import de.sub.goobi.helper.enums.StepEditType;
-import de.sub.goobi.helper.enums.StepStatus;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - http://digiverso.com - http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -55,9 +27,37 @@ import de.sub.goobi.helper.exceptions.SwapException;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import ugh.dl.DigitalDocument;
+import ugh.dl.Prefs;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
+import de.sub.goobi.beans.Benutzer;
+import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.export.dms.AutomaticDmsExportWithoutHibernate;
+import de.sub.goobi.forms.LoginForm;
+import de.sub.goobi.helper.enums.HistoryEventType;
+import de.sub.goobi.helper.enums.StepEditType;
+import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.apache.FolderInformation;
+import de.sub.goobi.persistence.apache.ProcessManager;
+import de.sub.goobi.persistence.apache.ProcessObject;
+import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObject;
+
 
 public class HelperSchritteWithoutHibernate {
-	// Helper help = new Helper();
 	private static final Logger logger = Logger.getLogger(HelperSchritteWithoutHibernate.class);
 	public final static String DIRECTORY_PREFIX = "orig_";
 
@@ -257,8 +257,8 @@ public class HelperSchritteWithoutHibernate {
 		int rueckgabe = -1;
 		try {
 			logger.info("Calling the shell: " + script);
-			rueckgabe = Helper.callShell2(script);
-			if (automatic) {
+            rueckgabe = ShellScript.legacyCallShell2(script);
+            if (automatic) {
 				if (rueckgabe == 0) {
 					step.setEditType(StepEditType.AUTOMATIC.getValue());
 					step.setBearbeitungsstatus(StepStatus.DONE.getValue());
@@ -330,20 +330,4 @@ public class HelperSchritteWithoutHibernate {
 
 		StepManager.updateStep(step);
 	}
-
-	@SuppressWarnings("deprecation")
-	public static void main(String[] args) throws SQLException {
-		Date d = new Date(System.currentTimeMillis());
-		d.setMonth(5);
-		d.setDate(4);
-		System.out.println(d.getTime());
-
-		// DbHelper helper = DbHelper.getInstance();
-		// List<StepObject> steps = DbHelper.getStepsForProcess(1165);
-		// for (StepObject so : steps) {
-		// logger.error(so.getTitle());
-		// }
-
-	}
-
 }

@@ -3,9 +3,12 @@ package org.goobi.production.export;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - http://gdz.sub.uni-goettingen.de - http://www.intranda.com
- * 
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,7 +27,6 @@ package org.goobi.production.export;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -52,14 +54,14 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformException;
 import org.jdom.transform.XSLTransformer;
 
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Prozesseigenschaft;
-import de.sub.goobi.Beans.Schritt;
-import de.sub.goobi.Beans.Schritteigenschaft;
-import de.sub.goobi.Beans.Vorlage;
-import de.sub.goobi.Beans.Vorlageeigenschaft;
-import de.sub.goobi.Beans.Werkstueck;
-import de.sub.goobi.Beans.Werkstueckeigenschaft;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Prozesseigenschaft;
+import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.beans.Schritteigenschaft;
+import de.sub.goobi.beans.Vorlage;
+import de.sub.goobi.beans.Vorlageeigenschaft;
+import de.sub.goobi.beans.Werkstueck;
+import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -170,35 +172,12 @@ public class ExportXmlLog implements IProcessDataExport {
 		comment.setText(process.getWikifield());
 		processElements.add(comment);
 
-		// Batch b = process.getBatch();
 		if (process.getBatchID() != null) {
 			Element batch = new Element("batch", xmlns);
 			batch.setText(String.valueOf(process.getBatchID()));
 			processElements.add(batch);
 		}
-		// batch.setAttribute("batchIdentifier", String.valueOf(b.getId()));
-		// batch.setAttribute("batchTitle", b.getTitle());
-		//
-		// List<Element> batchProperties = new ArrayList<Element>();
-		//
-		// for (BatchProperty prop : b.getEigenschaftenList()) {
-		// Element property = new Element("property", xmlns);
-		// property.setAttribute("propertyIdentifier", prop.getTitel());
-		// if (prop.getWert() != null) {
-		// property.setAttribute("value", replacer(prop.getWert()));
-		// } else {
-		// property.setAttribute("value", "");
-		// }
-		// Element label = new Element("label", xmlns);
-		// label.setText(prop.getTitel());
-		// property.addContent(label);
-		// batchProperties.add(property);
-		// }
-		// Element properties = new Element("properties", xmlns);
-		// properties.addContent(batchProperties);
-		// batch.addContent(properties);
-		// processElements.add(batch);
-		// }
+	
 
 		ArrayList<Element> processProperties = new ArrayList<Element>();
 		for (Prozesseigenschaft prop : process.getEigenschaftenList()) {
@@ -209,17 +188,11 @@ public class ExportXmlLog implements IProcessDataExport {
 			} else {
 				property.setAttribute("value", "");
 			}
-			// HashMap<Locale, String> labelMap = (HashMap<Locale, String>)
-			// prop.getLabelAsHashMap();
-			// Set<Locale> lang = labelMap.keySet();
-			// for (Locale l : lang) {
+		
 			Element label = new Element("label", xmlns);
-			// label.setAttribute("lang",
-			// l.getLanguage(),Namespace.XML_NAMESPACE);
-			// label.setText(labelMap.get(l));
+			
 			label.setText(prop.getTitel());
 			property.addContent(label);
-			// }
 			processProperties.add(property);
 		}
 		if (processProperties.size() != 0) {
@@ -271,17 +244,11 @@ public class ExportXmlLog implements IProcessDataExport {
 				} else {
 					property.setAttribute("value", "");
 				}
-				// HashMap<Locale, String> labelMap = (HashMap<Locale, String>)
-				// prop.getLabelAsHashMap();
-				// Set<Locale> lang = labelMap.keySet();
-				// for (Locale l : lang) {
+			
 				Element label = new Element("label", xmlns);
-				// label.setAttribute("lang",
-				// l.getLanguage(),Namespace.XML_NAMESPACE);
-				// label.setText(labelMap.get(l));
+				
 				label.setText(prop.getTitel());
 				property.addContent(label);
-				// }
 				stepProperties.add(property);
 			}
 			if (stepProperties.size() != 0) {
@@ -313,17 +280,11 @@ public class ExportXmlLog implements IProcessDataExport {
 				} else {
 					property.setAttribute("value", "");
 				}
-				// HashMap<Locale, String> labelMap = (HashMap<Locale, String>)
-				// prop.getLabelAsHashMap();
-				// Set<Locale> lang = labelMap.keySet();
-				// for (Locale l : lang) {
+				
 				Element label = new Element("label", xmlns);
-				// label.setAttribute("lang",
-				// l.getLanguage(),Namespace.XML_NAMESPACE);
-				// label.setText(labelMap.get(l));
+		
 				label.setText(prop.getTitel());
 				property.addContent(label);
-				// }
 
 				templateProperties.add(property);
 				if (prop.getTitel().equals("Signatur")) {
@@ -366,17 +327,11 @@ public class ExportXmlLog implements IProcessDataExport {
 				} else {
 					property.setAttribute("value", "");
 				}
-				// HashMap<Locale, String> labelMap = (HashMap<Locale, String>)
-				// prop.getLabelAsHashMap();
-				// Set<Locale> lang = labelMap.keySet();
-				// for (Locale l : lang) {
+	
 				Element label = new Element("label", xmlns);
-				// label.setAttribute("lang",
-				// l.getLanguage(),Namespace.XML_NAMESPACE);
-				// label.setText(labelMap.get(l));
+		
 				label.setText(prop.getTitel());
 				property.addContent(label);
-				// }
 				docProperties.add(property);
 			}
 			if (docProperties.size() != 0) {
@@ -548,9 +503,7 @@ public class ExportXmlLog implements IProcessDataExport {
 		outp.setFormat(Format.getPrettyFormat());
 
 		try {
-			// FileOutputStream fos = new FileOutputStream(new
-			// File("/opt/digiverso/goobi/users/testadmin/test.xml"));
-			// outp.output(answer, fos);
+		
 			outp.output(answer, outputStream);
 		} catch (IOException e) {
 

@@ -1,9 +1,13 @@
+package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - http://gdz.sub.uni-goettingen.de - http://www.intranda.com
- * 
- * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
+ * Visit the websites for more information. 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -22,8 +26,6 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.goobi.production.flow.statistics.hibernate;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.Beans.Schritt;
+import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
 
@@ -97,7 +99,6 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 	private Criteria createCriteriaFromIDList() {
 		Session session = Helper.getHibernateSession();
 		Criteria crit = new PaginatingCriteria(Schritt.class, session);
-		// crit = session.createCriteria(Prozess.class);
 		crit.add(Restrictions.in("id", myIds));
 		return crit;
 	}
@@ -112,9 +113,6 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 		 * part was exported to FilterHelper so that other Filters could access
 		 * it --------------------------------
 		 */
-
-		// following was moved to Filter Helper
-		// limitToUserAssignedSteps(crit);
 
 		String message = FilterHelper.criteriaBuilder(session, myFilter, crit, null, null, stepOpenOnly, userAssignedStepsOnly);
 		if (message.length() > 0) {
@@ -246,95 +244,6 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 		throw new UnsupportedOperationException("The class " + this.getClass().getName() + " does not implement stepDoneName() ");
 	}
 
-	/*
-	 * private void limitToUserAssignedSteps(Criteria inCrit) { show only open
-	 * Steps or those in use by current user Session session =
-	 * Helper.getHibernateSession(); identify current user LoginForm login =
-	 * (LoginForm) Helper .getManagedBeanValue("#{LoginForm}"); if
-	 * (login.getMyBenutzer() == null) return; init id-list, preset with item 0
-	 * List<Integer> idList = new ArrayList<Integer>();
-	 * idList.add(Integer.valueOf(0));
-	 * 
-	 * 
-	 * -------------------------------- hits by user groups
-	 * --------------------------------
-	 * 
-	 * Criteria critGroups = session.createCriteria(Schritt.class);
-	 * 
-	 * if (stepOpenOnly) critGroups.add(Restrictions.eq("bearbeitungsstatus",
-	 * Integer .valueOf(1))); else if (userAssignedStepsOnly) {
-	 * critGroups.add(Restrictions.eq("bearbeitungsstatus", Integer
-	 * .valueOf(2))); critGroups.add(Restrictions.eq("bearbeitungsbenutzer.id",
-	 * login .getMyBenutzer().getId())); } else
-	 * critGroups.add(Restrictions.or(Restrictions.eq( "bearbeitungsstatus",
-	 * Integer.valueOf(1)), Restrictions .like("bearbeitungsstatus",
-	 * Integer.valueOf(2))));
-	 * 
-	 * only processes which are not templates Criteria temp =
-	 * critGroups.createCriteria("prozess", "proz");
-	 * critGroups.add(Restrictions.eq("proz.istTemplate", Boolean
-	 * .valueOf(false)));
-	 * 
-	 * only assigned projects temp.createCriteria("projekt",
-	 * "proj").createCriteria("benutzer", "projektbenutzer");
-	 * critGroups.add(Restrictions.eq("projektbenutzer.id", login
-	 * .getMyBenutzer().getId()));
-	 * 
-	 * 
-	 * only steps assigned to the user groups the current user is member of
-	 * 
-	 * critGroups.createCriteria("benutzergruppen", "gruppen")
-	 * .createCriteria("benutzer", "gruppennutzer");
-	 * critGroups.add(Restrictions.eq("gruppennutzer.id", login
-	 * .getMyBenutzer().getId()));
-	 * 
-	 * collecting the hits // TODO: Try to avoid Iterators, use for loops
-	 * instead critGroups.setProjection(Projections.id()); for (Iterator<Object>
-	 * it = critGroups.setFirstResult(0).setMaxResults(
-	 * Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-	 * idList.add((Integer) it.next()); }
-	 * 
-	 * 
-	 * -------------------------------- Users only
-	 * --------------------------------
-	 * 
-	 * Criteria critUser = session.createCriteria(Schritt.class);
-	 * 
-	 * if (stepOpenOnly) critUser.add(Restrictions.eq("bearbeitungsstatus",
-	 * Integer .valueOf(1))); else if (userAssignedStepsOnly) {
-	 * critUser.add(Restrictions.eq("bearbeitungsstatus", Integer .valueOf(2)));
-	 * critUser.add(Restrictions.eq("bearbeitungsbenutzer.id", login
-	 * .getMyBenutzer().getId())); } else
-	 * critUser.add(Restrictions.or(Restrictions.eq( "bearbeitungsstatus",
-	 * Integer.valueOf(1)), Restrictions .like("bearbeitungsstatus",
-	 * Integer.valueOf(2))));
-	 * 
-	 * exclude templates Criteria temp2 = critUser.createCriteria("prozess",
-	 * "proz"); critUser.add(Restrictions.eq("proz.istTemplate", Boolean
-	 * .valueOf(false)));
-	 * 
-	 * check project assignment temp2.createCriteria("projekt",
-	 * "proj").createCriteria("benutzer", "projektbenutzer");
-	 * critUser.add(Restrictions.eq("projektbenutzer.id", login
-	 * .getMyBenutzer().getId()));
-	 * 
-	 * only steps where the user is assigned to
-	 * critUser.createCriteria("benutzer", "nutzer");
-	 * critUser.add(Restrictions.eq("nutzer.id", login.getMyBenutzer()
-	 * .getId()));
-	 * 
-	 * collecting the hits // TODO: Try to avoid Iterators, use for loops
-	 * instead critUser.setProjection(Projections.id()); for (Iterator<Object>
-	 * it = critUser.setFirstResult(0)
-	 * .setMaxResults(Integer.MAX_VALUE).list().iterator(); it .hasNext();) {
-	 * idList.add((Integer) it.next()); }
-	 * 
-	 * 
-	 * -------------------------------- only taking the hits by restricting to
-	 * the ids --------------------------------
-	 * 
-	 * inCrit.add(Restrictions.in("id", idList)); //setting list of class
-	 * variable for availability myIds = (ArrayList<Integer>) idList; }
-	 */
+	
 
 }

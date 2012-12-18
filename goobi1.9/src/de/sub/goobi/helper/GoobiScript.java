@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- * 			- http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 
- * Copyright 2011, intranda GmbH, Göttingen
- * 
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -49,19 +49,12 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.Beans.Benutzer;
-import de.sub.goobi.Beans.Benutzergruppe;
-import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Beans.Regelsatz;
-import de.sub.goobi.Beans.Schritt;
-import de.sub.goobi.Export.dms.ExportDms;
-import de.sub.goobi.Persistence.BenutzerDAO;
-import de.sub.goobi.Persistence.BenutzergruppenDAO;
-import de.sub.goobi.Persistence.ProzessDAO;
-import de.sub.goobi.Persistence.RegelsatzDAO;
-import de.sub.goobi.Persistence.SchrittDAO;
-import de.sub.goobi.Persistence.apache.StepManager;
-import de.sub.goobi.Persistence.apache.StepObject;
+import de.sub.goobi.beans.Benutzer;
+import de.sub.goobi.beans.Benutzergruppe;
+import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Regelsatz;
+import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -71,6 +64,13 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
+import de.sub.goobi.persistence.BenutzerDAO;
+import de.sub.goobi.persistence.BenutzergruppenDAO;
+import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.RegelsatzDAO;
+import de.sub.goobi.persistence.SchrittDAO;
+import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObject;
 
 //TODO: Delete me, this should be part of the Plugins...
 //TODO: Break this up into multiple classes with a common interface
@@ -182,26 +182,6 @@ public class GoobiScript {
 			return;
 		}
 
-		// /* --------------------------------
-		// * Aufruf der richtigen Action-Methode über Reflektion
-		// * --------------------------------*/
-		// try {
-		// String trallala = (String) myParameters.get("action");
-		// Method method = this.getClass().getMethod(trallala, new Class[] {
-		// List.class });
-		// method.invoke(this, new Object[] { inProzesse });
-		// } catch (SecurityException e) {
-		// e.printStackTrace();
-		// } catch (NoSuchMethodException e) {
-		// e.printStackTrace();
-		// } catch (IllegalArgumentException e) {
-		// e.printStackTrace();
-		// } catch (IllegalAccessException e) {
-		// e.printStackTrace();
-		// } catch (InvocationTargetException e) {
-		// e.printStackTrace();
-		// }
-
 		Helper.setMeldung("goobiScriptfield", "", "GoobiScript finished");
 	}
 
@@ -266,16 +246,8 @@ public class GoobiScript {
 			ProcessSwapOutTask task = new ProcessSwapOutTask();
 			task.initialize(p);
 			LongRunningTaskManager.getInstance().addTask(task);
-			// WELLCOME
 			LongRunningTaskManager.getInstance().executeTask(task);
 
-			// try {
-			// ProcessSwapper ps = ProcessSwapper.getInstance();
-			// ps.swapOut(p);
-			// } catch (Exception e) {
-			// Helper.setFehlerMeldung("Fehler bei Auslagerung", e);
-			// break;
-			// }
 		}
 	}
 
@@ -288,15 +260,7 @@ public class GoobiScript {
 			ProcessSwapInTask task = new ProcessSwapInTask();
 			task.initialize(p);
 			LongRunningTaskManager.getInstance().addTask(task);
-			// WELLCOME
 			LongRunningTaskManager.getInstance().executeTask(task);
-			// try {
-			// ProcessSwapper ps = ProcessSwapper.getInstance();
-			// ps.swapIn(p);
-			// } catch (Exception e) {
-			// Helper.setFehlerMeldung("Fehler bei Einlagerung", e);
-			// break;
-			// }
 		}
 	}
 
@@ -993,7 +957,7 @@ public class GoobiScript {
 
 	private void exportDms(List<Prozess> processes, String exportImages, boolean exportFulltext) {
 		ExportDms dms;
-		if (exportImages.equals("false")) {
+		if (exportImages != null && exportImages.equals("false")) {
 			dms = new ExportDms(false);
 			dms.setExportFulltext(exportFulltext);
 		} else {
