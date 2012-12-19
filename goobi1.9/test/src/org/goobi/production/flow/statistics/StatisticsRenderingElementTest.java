@@ -56,7 +56,7 @@ public class StatisticsRenderingElementTest {
 
 	@BeforeClass
 	public static void setUp() {
-		File f = new File("pages/imagesTemp");
+		File f = new File("imagesTemp");
 		tempPath = f.getAbsolutePath() + File.pathSeparator;
 	}
 

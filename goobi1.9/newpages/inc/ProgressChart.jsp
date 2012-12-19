@@ -55,7 +55,7 @@
 
 <h:panelGroup id="pcid16">
 	<x:graphicImage forceId="true" id="vzid36" rendered="#{ProjekteForm.projectProgressImage != ''}"
-		value="#{HelperForm.servletPathWithHostAsUrl}/pages/imagesTemp/#{ProjekteForm.projectProgressImage}" />
+		value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
 
 </h:panelGroup>
 

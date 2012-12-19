@@ -135,7 +135,7 @@
 
 		<h:panelGroup id="uaid33">
 
-			<h:graphicImage style="margin-bottom:15px" url="#{HelperForm.servletPathWithHostAsUrl}/pages/imagesTemp/#{element.imageUrl}" alt="#{element.title}"
+			<h:graphicImage style="margin-bottom:15px" url="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" alt="#{element.title}"
 				title="#{element.title}"
 				rendered="#{element.dataTable.showableInChart && (Form.statisticsManager1.targetResultOutput=='chart' || Form.statisticsManager1.targetResultOutput=='chartAndTable')}" />
 

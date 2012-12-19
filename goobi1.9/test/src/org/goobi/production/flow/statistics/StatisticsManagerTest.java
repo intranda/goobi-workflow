@@ -60,7 +60,7 @@ public class StatisticsManagerTest {
 
 	@BeforeClass
 	public static void setUp() {
-		File f = new File("pages/imagesTemp");
+		File f = new File("imagesTemp");
 		tempPath = f.getAbsolutePath() + File.separator;
 
 		testManager = new StatisticsManager(StatisticsMode.THROUGHPUT, testFilter, locale);

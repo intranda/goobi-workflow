@@ -74,7 +74,7 @@ public class ConfigMain implements Serializable {
 	 * den Pfad für die temporären Images zur Darstellung zurückgeben ================================================================
 	 */
 	public static String getTempImagesPath() {
-		return "/pages/imagesTemp/";
+		return "/imagesTemp/";
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class ConfigMain implements Serializable {
 			filename = imagesPath;
 		} else {
 			HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-			filename = session.getServletContext().getRealPath("/pages/imagesTemp") + File.separator;
+			filename = session.getServletContext().getRealPath("/imagesTemp") + File.separator;
 
 			/* den Ordner neu anlegen, wenn er nicht existiert */
 			try {

@@ -803,7 +803,7 @@
 
 																		<h:graphicImage id="vzid36" alt="volumes"
 																			title="#{ProjekteForm.myProjekt.titel}"
-																			value="#{HelperForm.servletPathWithHostAsUrl}/pages/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
+																			value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
 
 																		<htm:p style="width: 50px;">
 																			<h:outputText id="vzid39" value="#{msgs.seiten}"
@@ -812,7 +812,7 @@
 
 																		<h:graphicImage id="vzid41" alt="images"
 																			title="#{ProjekteForm.myProjekt.titel}"
-																			value="#{HelperForm.servletPathWithHostAsUrl}/pages/imagesTemp/#{ProjekteForm.projectStatImages}" />
+																			value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatImages}" />
 
 																	</htm:div>
 																</x:panelTab>
@@ -878,7 +878,7 @@
 																		<h:panelGroup id="pcid16">
 																			<x:graphicImage forceId="true" id="vzid36"
 																				rendered="#{ProjekteForm.projectProgressImage != ''}"
-																				value="#{HelperForm.servletPathWithHostAsUrl}/pages/imagesTemp/#{ProjekteForm.projectProgressImage}" />
+																				value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
 
 																			<%--  		<h:commandLink action="#{Form.CreateExcel}" title="#{msgs.createExcel}">
 				<h:graphicImage value="/newpages/images/buttons/excel20.png" />
