@@ -401,7 +401,7 @@
 				</h:panelGroup>
 
 
-				<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1}">
+				<h:panelGroup>
 
 
 

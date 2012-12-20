@@ -538,7 +538,8 @@ public class MetadatenVerifizierungWithoutHibernate {
 	public void setAutoSave(boolean autoSave) {
 		this.autoSave = autoSave;
 	}
-
+	
+	
 	public boolean validateIdentifier(DocStruct uppermostStruct) {
 		
 		if (uppermostStruct.getType().isAnchor()) {
@@ -579,11 +580,7 @@ public class MetadatenVerifizierungWithoutHibernate {
 					return false;
 				}
 			}
-
 		}
 		return true;	
 	}
-	
-
-
 }

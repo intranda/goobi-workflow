@@ -77,9 +77,11 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
+
 import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
+import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -426,6 +428,9 @@ public class ProzesskopieForm {
 					if (field.getTitel().equals(eig.getTitel())) {
 						field.setWert(eig.getWert());
 					}
+				if (eig.getTitel().equals("DocType")) {
+					docType = eig.getWert();
+				}
 				}
 			}
 		}
@@ -442,6 +447,13 @@ public class ProzesskopieForm {
 			}
 		}
 
+		if (tempProzess.getEigenschaftenSize() > 0) {
+			for (Prozesseigenschaft pe : tempProzess.getEigenschaften()) {
+				if (pe.getTitel().equals("digitalCollection")) {
+					digitalCollections.add(pe.getWert());
+				}
+			}
+		}
 		try {
 			this.myRdf = tempProzess.readMetadataAsTemplateFile();
 		} catch (Exception e) {
@@ -562,7 +574,6 @@ public class ProzesskopieForm {
 			return this.naviFirstPage;
 		}
 		EigenschaftenHinzufuegen();
-//		this.prozessKopie.setWikifield(this.prozessVorlage.getWikifield());
 
 		for (Schritt step : this.prozessKopie.getSchritteList()) {
 			/*
@@ -907,6 +918,10 @@ public class ProzesskopieForm {
 					bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), field.getWert());
 				}
 			}
+		}
+		
+		for (String col : digitalCollections) {
+			bh.EigenschaftHinzufuegen(prozessKopie, "digitalCollection", col);
 		}
 		/* Doctype */
 		bh.EigenschaftHinzufuegen(werk, "DocType", this.docType);

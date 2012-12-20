@@ -500,8 +500,10 @@ public class BatchStepHelper {
 				se.setSchritt(temp);
 				String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " ("
 						+ ben.getNachVorname() + ")";
-				this.currentStep.getProzess().setWikifield(
-						WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "error", message));
+				this.currentStep.getProzess()
+						.setWikifield(
+								WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "error",
+										message));
 
 				temp.getEigenschaften().add(se);
 				this.stepDAO.save(temp);
@@ -638,7 +640,8 @@ public class BatchStepHelper {
 			}
 			String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " ("
 					+ ben.getNachVorname() + ")";
-			this.currentStep.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "info", message));
+			this.currentStep.getProzess().setWikifield(
+					WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "info", message));
 			/*
 			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 			 */
@@ -704,7 +707,8 @@ public class BatchStepHelper {
 		if (addToWikiField != null && addToWikiField.length() > 0) {
 			Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-			this.currentStep.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
+			this.currentStep.getProzess().setWikifield(
+					WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
 			this.addToWikiField = "";
 			try {
 				this.pdao.save(this.currentStep.getProzess());
@@ -798,9 +802,13 @@ public class BatchStepHelper {
 		for (Schritt s : this.steps) {
 			if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {
 				IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, s.getValidationPlugin());
-				ivp.setStep(s);
-				if (!ivp.validate()) {
-					return "";
+				if (ivp != null) {
+					ivp.setStep(s);
+					if (!ivp.validate()) {
+						return "";
+					}
+				} else {
+					Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
 				}
 			}
 
@@ -830,18 +838,19 @@ public class BatchStepHelper {
 						Helper.setFehlerMeldung("Error on image validation: ", e);
 					}
 				}
-			
+
 				loadProcessProperties(s);
-				
+
 				for (ProcessProperty prop : processPropertyList) {
-					
-					if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue().equals(""))) {
+
+					if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
+							&& (prop.getValue() == null || prop.getValue().equals(""))) {
 						List<String> parameter = new ArrayList<String>();
 						parameter.add(prop.getName());
 						parameter.add(s.getProzess().getTitel());
 						Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
 						return "";
-					} else  if(!prop.isValid()) {
+					} else if (!prop.isValid()) {
 						List<String> parameter = new ArrayList<String>();
 						parameter.add(prop.getName());
 						parameter.add(s.getProzess().getTitel());
@@ -850,13 +859,11 @@ public class BatchStepHelper {
 					}
 				}
 			}
-			
-			
 
 			this.myDav.UploadFromHome(s.getProzess());
 			StepObject so = StepManager.getStepById(s.getId());
 			so.setEditType(StepEditType.MANUAL_MULTI.getValue());
-			new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so);
+			new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 		}
 		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();

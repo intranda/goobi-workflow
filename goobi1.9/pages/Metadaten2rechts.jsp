@@ -301,6 +301,9 @@
 		if (element.value == 1 || element.value == 4) {
 			inputBoxElement.value = '1';
 		}
+		if (element.value == 6) {
+			inputBoxElement.value = '';
+		}
 	}
 
 	function focusForPicture() {

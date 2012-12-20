@@ -726,8 +726,6 @@ public class Metadaten {
 		boolean result = true;
 		try {
 //			if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
-//				return false;
-//			}
 			this.myProzess.writeMetadataFile(this.gdzfile);
 		} catch (Exception e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2065,7 +2063,6 @@ public class Metadaten {
 			int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
 			BildErmitteln(pageNumber);
 		} catch (Exception e) {
-			
 		}
 		return "";
 	}

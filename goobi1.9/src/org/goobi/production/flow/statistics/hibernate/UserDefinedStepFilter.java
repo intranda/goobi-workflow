@@ -61,7 +61,13 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 	private Dispatcher myObservable;
 	private Boolean stepOpenOnly = false;
 	private boolean userAssignedStepsOnly = false;
-
+	private boolean clearSession = false;
+	
+	public UserDefinedStepFilter(boolean clearSession) {
+		this.clearSession = clearSession;
+	}
+	
+	
 	/*
 	 * setting basic filter modes
 	 */
@@ -114,7 +120,11 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 		 * it --------------------------------
 		 */
 
-		String message = FilterHelper.criteriaBuilder(session, myFilter, crit, null, null, stepOpenOnly, userAssignedStepsOnly);
+		// following was moved to Filter Helper
+		// limitToUserAssignedSteps(crit);
+
+		String message = FilterHelper.criteriaBuilder(session, myFilter, crit, null, null, stepOpenOnly, userAssignedStepsOnly, clearSession);
+
 		if (message.length() > 0) {
 			myObservable.setMessage(message);
 		}

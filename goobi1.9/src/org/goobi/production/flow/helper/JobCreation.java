@@ -47,6 +47,7 @@ import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
 
@@ -64,7 +65,7 @@ public class JobCreation {
 		File metsfile = new File(metsfilename);
 		Prozess p = null;
 		if (!testTitle(processTitle)) {
-			logger.error("cannot create process, process title " + processTitle + "is allready in use");
+			logger.error("cannot create process, process title " + processTitle + " is already in use");
 			// removing all data
 			File imagesFolder = new File(basepath);
 			if (imagesFolder.exists() && imagesFolder.isDirectory()) {
@@ -139,12 +140,8 @@ public class JobCreation {
 
 	public static boolean testTitle(String titel) {
 		if (titel != null) {
-			long anzahl = 0;
-			try {
-				anzahl = new ProzessDAO().count("from Prozess where titel='" + titel + "'");
-			} catch (DAOException e) {
-				return false;
-			}
+			int anzahl = 0;
+			anzahl = ProcessManager.getNumberOfProcessesWithTitle(titel);
 			if (anzahl > 0) {
 				Helper.setFehlerMeldung("processTitleAllreadyInUse");
 				return false;

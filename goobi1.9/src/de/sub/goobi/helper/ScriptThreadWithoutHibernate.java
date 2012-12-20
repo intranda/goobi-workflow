@@ -1,4 +1,5 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,6 +30,9 @@ package de.sub.goobi.helper;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IStepPlugin;
 
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
@@ -54,11 +58,15 @@ public class ScriptThreadWithoutHibernate extends Thread {
 		logger.debug("found " + scriptPaths.size() + " scripts");
 		if (scriptPaths.size() > 0) {
 			this.hs.executeAllScriptsForStep(this.step, automatic);
-		}
-		if (this.step.isTypExport()) {
+		} else if (this.step.isTypExport()) {
 			this.hs.executeDmsExport(this.step, automatic);
+		} else if (this.step.getStepPlugin() != null && this.step.getStepPlugin().length() > 0) {
+			IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+			isp.initialize(step, "");
+			if (isp.execute()) {
+				hs.CloseStepObjectAutomatic(step);
+			}
 		}
-
 	}
 
 	public void stopThread() {

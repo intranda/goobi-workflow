@@ -35,7 +35,7 @@ import org.junit.Test;
 
 public class UserProcessesFilterTest {
 
-	UserProcessesFilter test = new UserProcessesFilter();
+	UserProcessesFilter test = new UserProcessesFilter(false);
 
 	@Ignore("Crashing") 
 	@Test

@@ -1,4 +1,5 @@
 package org.goobi.production.plugin.interfaces;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,12 +33,15 @@ import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.StepReturnValue;
 
 import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.persistence.apache.StepObject;
 
 public interface IStepPlugin extends IPlugin {
-	
+
 	public void initialize(Schritt step, String returnPath);
 
-	public void execute();
+	public void initialize(StepObject stepobject, String returnPath);
+
+	public boolean execute();
 
 	public String cancel();
 
@@ -46,7 +50,7 @@ public interface IStepPlugin extends IPlugin {
 	public HashMap<String, StepReturnValue> validate();
 
 	public Schritt getStep();
-	
+
 	public PluginGuiType getPluginGuiType();
-	
+
 }

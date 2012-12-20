@@ -321,7 +321,20 @@ public class ProzessverwaltungForm extends BasisForm {
 	}
 
 	public String ContentLoeschen() {
-		deleteMetadataDirectory();
+		// deleteMetadataDirectory();
+		try {
+			File ocr = new File(this.myProzess.getOcrDirectory());
+			if (ocr.exists()) {
+				Helper.deleteDir(ocr);
+			}
+			File images = new File(this.myProzess.getImagesDirectory());
+			if (images.exists()) {
+				Helper.deleteDir(images);
+			}
+		} catch (Exception e) {
+			Helper.setFehlerMeldung("Can not delete metadata directory", e);
+		}
+
 		Helper.setMeldung("Content deleted");
 		return "";
 	}
@@ -351,8 +364,9 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.myAnzahlList = null;
 
 		try {
-			this.myFilteredDataSource = new UserProcessesFilter();
-			Criteria crit = this.myFilteredDataSource.getCriteria();
+
+			this.myFilteredDataSource = new UserProcessesFilter(true);
+						Criteria crit = this.myFilteredDataSource.getCriteria();
 			if (!this.showClosedProcesses) {
 				crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
 			}
@@ -374,7 +388,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		this.statisticsManager = null;
 		this.myAnzahlList = null;
 		try {
-			this.myFilteredDataSource = new UserTemplatesFilter();
+			this.myFilteredDataSource = new UserTemplatesFilter(true);
 			Criteria crit = this.myFilteredDataSource.getCriteria();
 			if (!this.showArchivedProjects) {
 				crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
@@ -931,7 +945,7 @@ public class ProzessverwaltungForm extends BasisForm {
 				so.setBearbeitungsstatus(so.getBearbeitungsstatus() + 1);
 				so.setEditType(StepEditType.ADMIN.getValue());
 				if (so.getBearbeitungsstatus() == StepStatus.DONE.getValue()) {
-					new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so);
+					new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 				} else {
 					Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 					if (ben != null) {
@@ -1001,7 +1015,7 @@ public class ProzessverwaltungForm extends BasisForm {
 			this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
 			StepObject so = StepManager.getStepById(this.mySchritt.getId());
 			if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-				new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so);
+				new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 			} else {
 				mySchritt.setBearbeitungszeitpunkt(new Date());
 				Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
@@ -1888,7 +1902,7 @@ public class ProzessverwaltungForm extends BasisForm {
 				List<String> param = new ArrayList<String>();
 				param.add(p.getName());
 				String value = Helper.getTranslation("propertyNotValid", param);
-				Helper.setFehlerMeldung(value);	
+				Helper.setFehlerMeldung(value);
 				valid = false;
 			}
 		}
@@ -1932,7 +1946,7 @@ public class ProzessverwaltungForm extends BasisForm {
 				List<String> param = new ArrayList<String>();
 				param.add(processProperty.getName());
 				String value = Helper.getTranslation("propertyNotValid", param);
-				Helper.setFehlerMeldung(value);		
+				Helper.setFehlerMeldung(value);
 				return;
 			}
 			if (this.processProperty.getProzesseigenschaft() == null) {

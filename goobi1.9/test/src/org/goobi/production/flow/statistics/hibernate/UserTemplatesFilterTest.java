@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public class UserTemplatesFilterTest {
 
-	UserTemplatesFilter test = new UserTemplatesFilter();
+	UserTemplatesFilter test = new UserTemplatesFilter(false);
 
 	@Ignore("Crashing") 
 	@Test

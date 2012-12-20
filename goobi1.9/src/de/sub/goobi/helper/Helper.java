@@ -57,6 +57,8 @@ import java.util.ResourceBundle;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
+import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.ValueBinding;
 import javax.servlet.http.HttpServletRequest;
 
@@ -267,7 +269,13 @@ public class Helper implements Serializable, Observer {
 			if (application != null) {
 				ValueBinding vb = application.createValueBinding(expr);
 				if (vb != null) {
-					value = vb.getValue(context);
+					try {
+						value = vb.getValue(context);
+					} catch (PropertyNotFoundException e) {
+						myLogger.error(e);
+					} catch (EvaluationException e) {
+						myLogger.error(e);
+					}
 				}
 			}
 			return value;

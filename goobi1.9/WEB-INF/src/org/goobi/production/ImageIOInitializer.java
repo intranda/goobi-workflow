@@ -1,5 +1,3 @@
-package de.sub.goobi.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,44 +25,35 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.goobi.production.properties.ProcessProperty;
+package org.goobi.production;
 
-public class PropertyListObject implements Serializable {
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
-	private static final long serialVersionUID = 1119130003588038047L;
+/**
+ * Listener to set up static ImageIO library with web application class loader.
+ * <p/>
+ * This listener works as a workaround for problems occurring when bootstrapping web applications
+ * using ImageIO library within Tomcat when using JreMemoryLeakPreventionListener.
+ *
+ * Bug and solution described here:
+ * https://bugs.launchpad.net/goobi-production/+bug/788160
+ *
+ */
+public class ImageIOInitializer implements ServletContextListener {
 
-	private List<ProcessProperty> propertyList = new ArrayList<ProcessProperty>();
-	private int containerNumber = 0;
-
-	
-	public PropertyListObject() {}
-	
-	
-	public PropertyListObject(int container) {
-		this.containerNumber = container;
+	static {
+		// makes sure, plugins get loaded via web application class loader
+		// and are available for later calls from the application
+		ImageIO.scanForPlugins();
 	}
 
-	public void addToList(ProcessProperty pp) {
-		this.propertyList.add(pp);
+	public void contextInitialized(ServletContextEvent sce) {
 	}
 
-	public int getContainerNumber() {
-		return this.containerNumber;
+	public void contextDestroyed(ServletContextEvent sce) {
 	}
 
-	public List<ProcessProperty> getPropertyList() {
-		return this.propertyList;
-	}
-
-	public int getPropertyListSize() {
-		return this.propertyList.size();
-	}
-
-	public String getPropertyListSizeString() {
-		return "" + this.propertyList.size();
-	}
 }

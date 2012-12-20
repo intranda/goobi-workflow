@@ -366,6 +366,7 @@ public class Schritt implements Serializable {
 		try {
 			Hibernate.initialize(this.eigenschaften);
 		} catch (HibernateException e) {
+			return 0;
 		}
 		if (this.eigenschaften == null) {
 			return 0;

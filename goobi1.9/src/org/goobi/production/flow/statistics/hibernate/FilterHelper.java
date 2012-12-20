@@ -44,10 +44,12 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+
 import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
@@ -61,7 +63,7 @@ import de.sub.goobi.persistence.BenutzerDAO;
  * @author Wulf Riebensahm
  * 
  */
-class FilterHelper {
+public class FilterHelper {
 
 	private static final Logger logger = Logger.getLogger(FilterHelper.class);
 
@@ -565,9 +567,12 @@ class FilterHelper {
 	 * @param stepOpenOnly
 	 * @return String used to pass on error messages about errors in the filter expression
 	 */
-	protected static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate,
-			Parameters returnParameters, Boolean stepOpenOnly, Boolean userAssignedStepsOnly) {
+	public static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate,
+			Parameters returnParameters, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, boolean clearSession) {
 
+		if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true) && clearSession) {
+			session.clear();
+		}
 		// for ordering the lists there are some
 		// criteria, which needs to be added even no
 		// restrictions apply, to avoid multiple analysis

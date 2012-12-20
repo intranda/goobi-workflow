@@ -154,7 +154,8 @@ public class AktuelleSchritteForm extends BasisForm {
 	 */
 	public String FilterAlleStart() {
 		try {
-			this.myFilteredDataSource = new UserDefinedStepFilter();
+			this.myFilteredDataSource = new UserDefinedStepFilter(true);
+
 			this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
 			((UserDefinedStepFilter) this.myFilteredDataSource).setFilterModes(this.nurOffeneSchritte, this.nurEigeneSchritte);
 			this.myFilteredDataSource.setFilter(this.filter);
@@ -443,9 +444,13 @@ public class AktuelleSchritteForm extends BasisForm {
 
 		if (mySchritt.getValidationPlugin() != null && mySchritt.getValidationPlugin().length() > 0) {
 			IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, mySchritt.getValidationPlugin());
-			ivp.setStep(mySchritt);
-			if (!ivp.validate()) {
-				return "";
+			if (ivp != null) {
+				ivp.setStep(mySchritt);
+				if (!ivp.validate()) {
+					return "";
+				}
+			} else {
+				Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
 			}
 		}
 
@@ -507,7 +512,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.myDav.UploadFromHome(this.mySchritt.getProzess());
 		this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		StepObject so = StepManager.getStepById(this.mySchritt.getId());
-		new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so);
+		new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 		// new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
 		return FilterAlleStart();
 	}

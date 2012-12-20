@@ -27,6 +27,8 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +36,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
@@ -66,10 +71,14 @@ public class HelperSchritteWithoutHibernate {
 	 */
 
 	public void CloseStepObjectAutomatic(StepObject currentStep) {
-		closeStepObject(currentStep, currentStep.getProcessId());
+		closeStepObject(currentStep, currentStep.getProcessId(), false);
+	}
+	
+	public void CloseStepObjectAutomatic(StepObject currentStep, boolean requestFromGUI) {
+		closeStepObject(currentStep, currentStep.getProcessId(), requestFromGUI);
 	}
 
-	private void closeStepObject(StepObject currentStep, int processId) {
+	private void closeStepObject(StepObject currentStep, int processId, boolean requestFromGUI) {
 		logger.debug("closing step with id " + currentStep.getId() + " and process id " + processId);
 		currentStep.setBearbeitungsstatus(3);
 		Date myDate = new Date();
@@ -170,7 +179,11 @@ public class HelperSchritteWithoutHibernate {
 		// TODO remove this later
 		try {
 			logger.debug("update hibernate cache");
-			RefreshObject.refreshProcess(processId);
+			if (requestFromGUI && ConfigMain.getBooleanParameter("DatabaseShareHibernateSessionWithUser", true)){
+				RefreshObject.refreshProcess_GUI(processId);
+			}else{
+				RefreshObject.refreshProcess(processId);
+			}
 		} catch (Exception e) {
 			logger.error("Exception during update of hibernate cache", e);
 		}
@@ -262,7 +275,19 @@ public class HelperSchritteWithoutHibernate {
 				if (rueckgabe == 0) {
 					step.setEditType(StepEditType.AUTOMATIC.getValue());
 					step.setBearbeitungsstatus(StepStatus.DONE.getValue());
-					CloseStepObjectAutomatic(step);
+					if (step.getValidationPlugin() != null && step.getValidationPlugin().length() >0) {
+						IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, step.getValidationPlugin());
+						ivp.setStepObject(step);
+						if (!ivp.validate()) {
+							step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
+							StepManager.updateStep(step);
+						} else {
+							CloseStepObjectAutomatic(step);							
+						}
+					} else {
+						CloseStepObjectAutomatic(step);
+					}
+					
 				} else {
 					step.setEditType(StepEditType.AUTOMATIC.getValue());
 					step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
