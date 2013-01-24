@@ -61,7 +61,7 @@ public class JobCreation {
 		File metsfile = new File(metsfilename);
 		Prozess p = null;
 		if (!testTitle(processTitle)) {
-			logger.error("cannot create process, process title " + processTitle + "is allready in use");
+			logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
 			// removing all data
 			File imagesFolder = new File(basepath);
 			if (imagesFolder.exists() && imagesFolder.isDirectory()) {
