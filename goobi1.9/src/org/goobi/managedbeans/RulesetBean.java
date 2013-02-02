@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -27,41 +27,37 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.File;
+import java.util.HashMap;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.io.File;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
+import org.goobi.beans.Ruleset;
 
-import de.sub.goobi.beans.Regelsatz;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.RegelsatzDAO;
 import de.sub.goobi.persistence.apache.ProcessManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
-// @ManagedBean(name="RegelsaetzeForm") 
-// @SessionScoped
-public class RegelsaetzeForm extends BasisForm {
-	private static final long serialVersionUID = -445707928042517243L;
-	private Regelsatz myRegelsatz = new Regelsatz();
-	private RegelsatzDAO dao = new RegelsatzDAO();
-	private static final Logger logger = Logger.getLogger(RegelsaetzeForm.class);
+@ManagedBean(name = "RegelsaetzeForm")
+@SessionScoped
+public class RulesetBean extends BasisForm {
+	private static final Logger logger = Logger.getLogger(RulesetBean.class);
+	private Ruleset myRegelsatz = new Ruleset();
 
 	public String Neu() {
-		this.myRegelsatz = new Regelsatz();
+		this.myRegelsatz = new Ruleset();
 		return "ruleset_edit";
 	}
 
 	public String Speichern() {
 		try {
 			if (hasValidRulesetFilePath(myRegelsatz, ConfigMain.getParameter("RegelsaetzeVerzeichnis"))) {
-				dao.save(myRegelsatz);
+				RulesetManager.saveRuleset(myRegelsatz);
 				return "ruleset_all";
 			} else {
 				Helper.setFehlerMeldung("RulesetNotFound");
@@ -69,12 +65,11 @@ public class RegelsaetzeForm extends BasisForm {
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-			logger.error(e);
 			return "";
 		}
 	}
 
-	private boolean hasValidRulesetFilePath(Regelsatz r, String pathToRulesets) {
+	private boolean hasValidRulesetFilePath(Ruleset r, String pathToRulesets) {
 		File rulesetFile = new File(pathToRulesets + r.getDatei());
 		return rulesetFile.exists();
 	}
@@ -85,7 +80,7 @@ public class RegelsaetzeForm extends BasisForm {
 				Helper.setFehlerMeldung("RulesetInUse");
 				return "";
 			} else {
-				dao.remove(myRegelsatz);
+				RulesetManager.deleteRuleset(myRegelsatz);
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
@@ -94,7 +89,7 @@ public class RegelsaetzeForm extends BasisForm {
 		return "ruleset_all";
 	}
 
-	private boolean hasAssignedProcesses(Regelsatz r) {
+	private boolean hasAssignedProcesses(Ruleset r) {
 		Integer number = ProcessManager.getNumberOfProcessesWithRuleset(r.getId());
 		if (number != null && number > 0) {
 			return true;
@@ -103,16 +98,10 @@ public class RegelsaetzeForm extends BasisForm {
 	}
 
 	public String FilterKein() {
-		try {
-			Session session = Helper.getHibernateSession();
-			session.clear();
-			Criteria crit = session.createCriteria(Regelsatz.class);
-			crit.addOrder(Order.asc("titel"));
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
-			return "";
-		}
+		String order = "";
+		HashMap<String, String> filter = new HashMap<String, String>();
+		RulesetManager rm = new RulesetManager();
+		paginator = new DatabasePaginator(order, filter, rm);
 		return "ruleset_all";
 	}
 
@@ -120,17 +109,17 @@ public class RegelsaetzeForm extends BasisForm {
 		FilterKein();
 		return this.zurueck;
 	}
-
+	
 	/*
-	 * Getter und Setter 
+	 * Getter und Setter
 	 */
 
-	public Regelsatz getMyRegelsatz() {
+	public Ruleset getMyRegelsatz() {
 		return this.myRegelsatz;
 	}
 
-	public void setMyRegelsatz(Regelsatz inPreference) {
-		Helper.getHibernateSession().clear();
+	public void setMyRegelsatz(Ruleset inPreference) {
 		this.myRegelsatz = inPreference;
 	}
+
 }

@@ -29,6 +29,7 @@ package de.sub.goobi.forms;
 import java.io.Serializable;
 
 import org.apache.log4j.Logger;
+import org.goobi.managedbeans.DatabasePaginator;
 
 import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.helper.Helper;
@@ -40,6 +41,7 @@ public class BasisForm implements Serializable {
 	.getLogger(BasisForm.class);
 	private static final long serialVersionUID = 2950419497162710096L;
 	protected Page page;
+	protected DatabasePaginator paginator;
 	protected String zurueck = "";
 	protected String filter = "";
 	protected Benutzer user;
@@ -50,6 +52,10 @@ public class BasisForm implements Serializable {
 		return this.page;
 	}
 
+	public DatabasePaginator getPaginator() {
+		return paginator;
+	}
+	
 	public String getZurueck() {
 		return this.zurueck;
 	}
