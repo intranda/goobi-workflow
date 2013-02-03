@@ -73,7 +73,7 @@ public class RulesetManager implements IManager {
 
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
-	public static Ruleset rulesetConvert(ResultSet rs) throws SQLException {
+	public static Ruleset convert(ResultSet rs) throws SQLException {
 		Ruleset r = new Ruleset();
 		r.setId(rs.getInt("MetadatenKonfigurationID"));
 		r.setTitel(rs.getString("Titel"));
@@ -86,7 +86,7 @@ public class RulesetManager implements IManager {
 		@Override
 		public Ruleset handle(ResultSet rs) throws SQLException {
 			if (rs.next()) {
-				return rulesetConvert(rs);
+				return convert(rs);
 			}
 			return null;
 		}
@@ -98,7 +98,7 @@ public class RulesetManager implements IManager {
 			List<Ruleset> answer = new ArrayList<Ruleset>();
 
 			while (rs.next()) {
-				Ruleset o = rulesetConvert(rs);
+				Ruleset o = convert(rs);
 				if (o != null) {
 					answer.add(o);
 				}

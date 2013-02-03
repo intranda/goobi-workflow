@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -27,39 +27,32 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.HashSet;
+import java.util.HashMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
+import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
+import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.BenutzergruppenDAO;
-import de.sub.goobi.persistence.SimpleDAO;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
-//@ManagedBean(name="BenutzergruppenForm") 
-//@SessionScoped
-public class BenutzergruppenForm extends BasisForm {
+@ManagedBean(name="BenutzergruppenForm") 
+@SessionScoped
+public class UsergroupBean extends BasisForm {
 	private static final long serialVersionUID = 8051160917458068675L;
-	private Benutzergruppe myBenutzergruppe = new Benutzergruppe();
-	private BenutzergruppenDAO dao = new BenutzergruppenDAO();
+	private Usergroup myBenutzergruppe = new Usergroup();
 
 	public String Neu() {
-		this.myBenutzergruppe = new Benutzergruppe();
+		this.myBenutzergruppe = new Usergroup();
 		return "usergroup_edit";
 	}
 
 	public String Speichern() {
 		try {
-			this.dao.save(this.myBenutzergruppe);
+			UsergroupManager.saveUsergroup(myBenutzergruppe);
 			return "usergroup_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
@@ -69,19 +62,19 @@ public class BenutzergruppenForm extends BasisForm {
 
 	public String Loeschen() {
 		try {
-			new SimpleDAO().refreshObject(this.myBenutzergruppe);
-			if (this.myBenutzergruppe.getBenutzer().size() > 0) {
-				for (Benutzer b : this.myBenutzergruppe.getBenutzer()) {
-					b.getBenutzergruppen().remove(this.myBenutzergruppe);
-				}
-				this.myBenutzergruppe.setBenutzer(new HashSet<Benutzer>());
-				this.dao.save(this.myBenutzergruppe);
-			}
-			if (this.myBenutzergruppe.getSchritte().size() > 0) {
-				Helper.setFehlerMeldung("userGroupAssignedError");
-				return "";
-			}
-			this.dao.remove(this.myBenutzergruppe);
+//			if (this.myBenutzergruppe.getBenutzer().size() > 0) {
+//				for (Benutzer b : this.myBenutzergruppe.getBenutzer()) {
+//					b.getBenutzergruppen().remove(this.myBenutzergruppe);
+//				}
+//				this.myBenutzergruppe.setBenutzer(new HashSet<Benutzer>());
+////				this.dao.save(this.myBenutzergruppe);
+//			}
+//			if (this.myBenutzergruppe.getSchritte().size() > 0) {
+//				Helper.setFehlerMeldung("userGroupAssignedError");
+//				return "";
+//			}
+			// TODO: alle Schritte und Benutzer mit entfernen
+			UsergroupManager.deleteUsergroup(myBenutzergruppe);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
 			return "";
@@ -90,16 +83,10 @@ public class BenutzergruppenForm extends BasisForm {
 	}
 
 	public String FilterKein() {
-		try {
-			Session session = Helper.getHibernateSession();
-			session.clear();
-			Criteria crit = session.createCriteria(Benutzergruppe.class);
-			crit.addOrder(Order.asc("titel"));
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
-			return "";
-		}
+		String order = "";
+		HashMap<String, String> filter = new HashMap<String, String>();
+		UsergroupManager m = new UsergroupManager();
+		paginator = new DatabasePaginator(order, filter, m);
 		return "usergroup_all";
 	}
 
@@ -112,12 +99,11 @@ public class BenutzergruppenForm extends BasisForm {
  	 * Getter und Setter 
 	 */
 
-	public Benutzergruppe getMyBenutzergruppe() {
+	public Usergroup getMyBenutzergruppe() {
 		return this.myBenutzergruppe;
 	}
 
-	public void setMyBenutzergruppe(Benutzergruppe myBenutzergruppe) {
-		Helper.getHibernateSession().clear();
+	public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
 		this.myBenutzergruppe = myBenutzergruppe;
 	}
 

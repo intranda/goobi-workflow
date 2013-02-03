@@ -73,7 +73,7 @@ public class DocketManager implements IManager {
 
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
-	public static Docket docketConvert(ResultSet rs) throws SQLException {
+	public static Docket convert(ResultSet rs) throws SQLException {
 		Docket r = new Docket();
 		r.setId(rs.getInt("docketID"));
 		r.setName(rs.getString("name"));
@@ -85,7 +85,7 @@ public class DocketManager implements IManager {
 		@Override
 		public Docket handle(ResultSet rs) throws SQLException {
 			if (rs.next()) {
-				return docketConvert(rs);
+				return convert(rs);
 			}
 			return null;
 		}
@@ -97,7 +97,7 @@ public class DocketManager implements IManager {
 			List<Docket> answer = new ArrayList<Docket>();
 
 			while (rs.next()) {
-				Docket o = docketConvert(rs);
+				Docket o = convert(rs);
 				if (o != null) {
 					answer.add(o);
 				}

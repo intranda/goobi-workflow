@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -33,7 +33,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.goobi.beans.DatabaseObject;
+import org.hibernate.Hibernate;
+
+import de.sub.goobi.beans.Benutzer;
+import de.sub.goobi.beans.Schritt;
 
 /**
  * Usergroups owning different access rights, represented by integer values
@@ -45,7 +48,7 @@ import org.goobi.beans.DatabaseObject;
  * 
  * ================================================================
  */
-public class Benutzergruppe implements Serializable, DatabaseObject, Comparable<Benutzergruppe> {
+public class Usergroup implements Serializable, Comparable<Usergroup> {
 	private static final long serialVersionUID = -5924845694417474352L;
 	private Integer id;
 	private String titel;
@@ -54,7 +57,7 @@ public class Benutzergruppe implements Serializable, DatabaseObject, Comparable<
 	private Set<Schritt> schritte;
 	private boolean panelAusgeklappt = false;
 
-	public Benutzergruppe() {
+	public Usergroup() {
 		this.schritte = new HashSet<Schritt>();
 		this.benutzer = new HashSet<Benutzer>();
 	}
@@ -165,13 +168,13 @@ public class Benutzergruppe implements Serializable, DatabaseObject, Comparable<
 	}
 
 	@Override
-	public int compareTo(Benutzergruppe o) {
+	public int compareTo(Usergroup o) {
 		return this.getTitel().compareTo(o.getTitel());
 	}
 
 	
 	@Override
 	public boolean equals(Object obj) {
-		return this.getTitel().equals(((Benutzergruppe)obj).getTitel());
+		return this.getTitel().equals(((Usergroup)obj).getTitel());
 	}
 }

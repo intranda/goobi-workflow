@@ -73,7 +73,7 @@ public class LdapManager implements IManager {
 
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
-	public static Ldap ldapConvert(ResultSet rs) throws SQLException {
+	public static Ldap convert(ResultSet rs) throws SQLException {
 		Ldap r = new Ldap();
 		r.setId(rs.getInt("ldapgruppenID"));
 		r.setTitel(rs.getString("titel"));
@@ -102,7 +102,7 @@ public class LdapManager implements IManager {
 		@Override
 		public Ldap handle(ResultSet rs) throws SQLException {
 			if (rs.next()) {
-				return ldapConvert(rs);
+				return convert(rs);
 			}
 			return null;
 		}
@@ -114,7 +114,7 @@ public class LdapManager implements IManager {
 			List<Ldap> answer = new ArrayList<Ldap>();
 
 			while (rs.next()) {
-				Ldap o = ldapConvert(rs);
+				Ldap o = convert(rs);
 				if (o != null) {
 					answer.add(o);
 				}
