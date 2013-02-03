@@ -31,13 +31,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.goobi.beans.User;
+
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 
 public class Benutzereigenschaft implements Serializable, IGoobiProperty {
 	private static final long serialVersionUID = -2356566712752716107L;
 
-	private Benutzer benutzer;
+	private User benutzer;
 	private Integer id;
 	private String titel;
 	private String wert;
@@ -180,7 +182,7 @@ public class Benutzereigenschaft implements Serializable, IGoobiProperty {
 	 * @return user (owner) of property
 	 */
 
-	public Benutzer getBenutzer() {
+	public User getBenutzer() {
 		return this.benutzer;
 	}
 
@@ -189,7 +191,7 @@ public class Benutzereigenschaft implements Serializable, IGoobiProperty {
 	 * @param benutzer
 	 */
 	
-	public void setBenutzer(Benutzer benutzer) {
+	public void setBenutzer(User benutzer) {
 		this.benutzer = benutzer;
 	}
 

@@ -30,6 +30,7 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Usergroup;
 import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -42,7 +43,6 @@ import de.intranda.commons.chart.renderer.HtmlTableRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
-import de.sub.goobi.beans.Benutzergruppe;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 
@@ -83,7 +83,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
 
 		for (Object obj : crit.list()) {
 			Schritt step = (Schritt) obj;
-			for (Benutzergruppe group : step.getBenutzergruppenList()) {
+			for (Usergroup group : step.getBenutzergruppenList()) {
 				dRow.addValue(group.getTitel(), dRow.getValue(group.getTitel()) + 1);
 			}
 		}

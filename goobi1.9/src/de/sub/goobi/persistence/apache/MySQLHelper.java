@@ -38,7 +38,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
 
 import de.sub.goobi.beans.ProjectFileGroup;
-import de.sub.goobi.beans.Regelsatz;
 
 public class MySQLHelper {
 
@@ -163,19 +162,6 @@ public class MySQLHelper {
 			closeConnection(connection);
 		}
 
-	}
-
-	public static Regelsatz getRulesetForId(int rulesetId) throws SQLException {
-		Connection connection = helper.getConnection();
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM metadatenkonfigurationen WHERE MetadatenKonfigurationID = " + rulesetId);
-		try {
-			logger.debug(sql.toString());
-			Regelsatz ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToRulesetHandler);
-			return ret;
-		} finally {
-			closeConnection(connection);
-		}
 	}
 
 	public static StepObject getStepByStepId(int stepId) throws SQLException {
@@ -326,46 +312,6 @@ public class MySQLHelper {
 			List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToProjectFilegroupListHandler);
 			return answer;
 
-		} finally {
-			closeConnection(connection);
-		}
-	}
-
-	public static List<String> getFilterForUser(int userId) throws SQLException {
-		Connection connection = helper.getConnection();
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = " + userId);
-		try {
-			logger.debug(sql.toString());
-			List<String> answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToFilterListtHandler);
-			return answer;
-		} finally {
-			closeConnection(connection);
-		}
-	}
-
-	public static void addFilterToUser(int userId, String filterstring) throws SQLException {
-		Connection connection = helper.getConnection();
-		Timestamp datetime = new Timestamp(new Date().getTime());
-		try {
-			QueryRunner run = new QueryRunner();
-			String propNames = "Titel, Wert, IstObligatorisch, DatentypenID, Auswahl, creationDate, BenutzerID";
-			String propValues = "'_filter','" + filterstring + "'," + false + ",'" + 5 + "'," + null + ",'" + datetime + "','" + userId + "'";
-			String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES (" + propValues + ")";
-			logger.debug(sql.toString());
-			run.update(connection, sql);
-		} finally {
-			closeConnection(connection);
-		}
-	}
-
-	public static void removeFilterFromUser(int userId, String filterstring) throws SQLException {
-		Connection connection = helper.getConnection();
-		try {
-			QueryRunner run = new QueryRunner();
-			String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND Wert = '" + filterstring + "'";
-			logger.debug(sql.toString());
-			run.update(connection, sql);
 		} finally {
 			closeConnection(connection);
 		}

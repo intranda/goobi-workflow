@@ -27,8 +27,6 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.HashMap;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -83,10 +81,8 @@ public class UsergroupBean extends BasisForm {
 	}
 
 	public String FilterKein() {
-		String order = "";
-		HashMap<String, String> filter = new HashMap<String, String>();
 		UsergroupManager m = new UsergroupManager();
-		paginator = new DatabasePaginator(order, filter, m);
+		paginator = new DatabasePaginator(sortierung, filter, m);
 		return "usergroup_all";
 	}
 

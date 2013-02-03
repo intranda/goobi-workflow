@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.managedbeans.LoginBean;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import de.sub.goobi.forms.LoginForm;
 
 /**
  * This class provides pagination for displaying results from a large result set over a number of pages (i.e. with a given number of results per
@@ -63,7 +63,7 @@ public class Page implements Serializable { // implements Iterator
 	 */
 	public Page(Criteria criteria, int page) {
 		this.page = page;
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login == null || login.getMyBenutzer() == null) {
         	this.pageSize = 10;
 		} else {

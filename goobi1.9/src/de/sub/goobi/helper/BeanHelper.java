@@ -34,8 +34,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
+
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
@@ -168,8 +169,8 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Benutzer übernehmen
 			 * --------------------------------*/
-			HashSet<Benutzer> myBenutzer = new HashSet<Benutzer>();
-			for (Benutzer benneu : step.getBenutzer()) {
+			HashSet<User> myBenutzer = new HashSet<User>();
+			for (User benneu : step.getBenutzer()) {
 				myBenutzer.add(benneu);
 			}
 			stepneu.setBenutzer(myBenutzer);
@@ -177,8 +178,8 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Benutzergruppen übernehmen
 			 * --------------------------------*/
-			HashSet<Benutzergruppe> myBenutzergruppen = new HashSet<Benutzergruppe>();
-			for (Benutzergruppe grupneu : step.getBenutzergruppen()) {
+			HashSet<Usergroup> myBenutzergruppen = new HashSet<Usergroup>();
+			for (Usergroup grupneu : step.getBenutzergruppen()) {
 				myBenutzergruppen.add(grupneu);
 			}
 			stepneu.setBenutzergruppen(myBenutzergruppen);

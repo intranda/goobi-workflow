@@ -40,18 +40,18 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 
+import org.goobi.beans.Docket;
+import org.goobi.beans.Ruleset;
 import org.goobi.production.GoobiVersion;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 
-import de.sub.goobi.beans.Docket;
-import de.sub.goobi.beans.Regelsatz;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.DocketDAO;
-import de.sub.goobi.persistence.RegelsatzDAO;
+import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 @ManagedBean(name="HelperForm") 
 @SessionScoped
@@ -167,9 +167,9 @@ public class HelperForm {
 
 	public List<SelectItem> getRegelsaetze() throws DAOException {
 		List<SelectItem> myPrefs = new ArrayList<SelectItem>();
-		List<Regelsatz> temp = new RegelsatzDAO().search("from Regelsatz ORDER BY titel");
-		for (Iterator<Regelsatz> iter = temp.iterator(); iter.hasNext();) {
-			Regelsatz an = iter.next();
+		List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null);
+		for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
+			Ruleset an = iter.next();
 			myPrefs.add(new SelectItem(an, an.getTitel(), null));
 		}
 		return myPrefs;
@@ -178,7 +178,7 @@ public class HelperForm {
 	public List<SelectItem> getDockets() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
 		try {
-			List<Docket> temp = new DocketDAO().search("from Docket ORDER BY name");
+			List<Docket> temp = DocketManager.getDockets("name", null, null, null);
 			for (Docket d : temp) {
 				answer.add(new SelectItem(d, d.getName(), null));
 			}

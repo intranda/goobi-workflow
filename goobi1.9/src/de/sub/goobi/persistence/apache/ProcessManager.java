@@ -33,8 +33,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Regelsatz;
-
 public class ProcessManager {
 
 	private static final Logger logger = Logger.getLogger(MySQLHelper.class);
@@ -71,15 +69,6 @@ public class ProcessManager {
 		} catch (SQLException e) {
 			logger.error("Cannot not update status for process with id " + processId, e);
 		}
-	}
-
-	public static Regelsatz getRuleset(int rulesetId) {
-		try {
-			return MySQLHelper.getRulesetForId(rulesetId);
-		} catch (SQLException e) {
-			logger.error("Cannot not load ruleset with id " + rulesetId, e);
-		}
-		return null;
 	}
 
 	public static List<Property> getProcessProperties(int processId) {

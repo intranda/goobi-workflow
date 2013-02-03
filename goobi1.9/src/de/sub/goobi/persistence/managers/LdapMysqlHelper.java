@@ -15,10 +15,19 @@ import de.sub.goobi.persistence.apache.MySQLUtils;
 public class LdapMysqlHelper {
 	private static final Logger logger = Logger.getLogger(LdapMysqlHelper.class);
 
-	public static List<Ldap> getLdaps(String order, HashMap<String, String> filter, int start, int count) throws SQLException {
+	public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM ldapgruppen LIMIT " + start + ", " + count);
+		sql.append("SELECT * FROM ldapgruppen");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
+		if (order!=null && !order.isEmpty()){
+			sql.append(" ORDER BY " + order);
+		}
+		if (start != null && count != null){
+			sql.append(" LIMIT " + start + ", " + count);
+		}
 		try {
 			logger.debug(sql.toString());
 			List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapListHandler);
@@ -28,10 +37,13 @@ public class LdapMysqlHelper {
 		}
 	}
 
-	public static int getLdapCount(String order, HashMap<String, String> filter) throws SQLException {
+	public static int getLdapCount(String order, String filter) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(ldapgruppenID) FROM ldapgruppen");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
 		try {
 			logger.debug(sql.toString());
 			return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);

@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
@@ -49,12 +51,10 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsModsImportExport;
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.ProjectFileGroup;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.dms.ExportDms_CorrectRusdml;
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
@@ -91,7 +91,7 @@ public class ExportMets {
 	public boolean startExport(Prozess myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
 			WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
 			TypeNotAllowedForParentException {
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		String benutzerHome = "";
 		if (login != null) {
 			benutzerHome = login.getMyBenutzer().getHomeDir();
@@ -150,7 +150,7 @@ public class ExportMets {
 	 */
 	protected String prepareUserDirectory(String inTargetFolder) {
 		String target = inTargetFolder;
-		Benutzer myBenutzer = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (myBenutzer != null) {
 			try {
 				FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());

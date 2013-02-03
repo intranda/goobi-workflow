@@ -48,6 +48,8 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.hibernate.Criteria;
@@ -78,7 +80,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
@@ -99,10 +100,10 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.importer.ImportOpac;
-import de.sub.goobi.persistence.BenutzerDAO;
 import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
@@ -273,10 +274,10 @@ public class ProzesskopieForm {
 		crit.addOrder(Order.asc("titel"));
 
 		/* Einschränkung auf bestimmte Projekte, wenn kein Admin */
-		LoginForm loginForm = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
-		Benutzer aktuellerNutzer = loginForm.getMyBenutzer();
+		LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+		User aktuellerNutzer = loginForm.getMyBenutzer();
 		try {
-			aktuellerNutzer = new BenutzerDAO().get(loginForm.getMyBenutzer().getId());
+			aktuellerNutzer = UserManager.getUserById(loginForm.getMyBenutzer().getId());
 		} catch (DAOException e) {
 			myLogger.error(e);
 		}
@@ -581,7 +582,7 @@ public class ProzesskopieForm {
 			 */
 			step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
 			step.setEditTypeEnum(StepEditType.AUTOMATIC);
-			LoginForm loginForm = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			if (loginForm != null) {
 				step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
 			}
@@ -1416,7 +1417,7 @@ public class ProzesskopieForm {
 		this.prozessKopie.setWikifield(prozessVorlage.getWikifield());
 		this.addToWikiField = addToWikiField;
 		if (addToWikiField != null && !addToWikiField.equals("")) {
-			Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
 			this.prozessKopie.setWikifield(WikiFieldHelper.getWikiMessage(prozessKopie.getWikifield(), "info", message));
 		}

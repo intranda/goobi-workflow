@@ -39,7 +39,6 @@ import java.util.Map;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import de.sub.goobi.beans.ProjectFileGroup;
-import de.sub.goobi.beans.Regelsatz;
 
 public class MySQLUtils {
 
@@ -69,25 +68,6 @@ public class MySQLUtils {
 				answer = parseStepObject(rs);
 			}
 			return answer;
-		}
-	};
-
-	public static ResultSetHandler<Regelsatz> resultSetToRulesetHandler = new ResultSetHandler<Regelsatz>() {
-		@Override
-		public Regelsatz handle(ResultSet rs) throws SQLException {
-			if (rs.next()) {
-				int id = rs.getInt("MetadatenKonfigurationID");
-				String title = rs.getString("Titel");
-				String file = rs.getString("Datei");
-				boolean order = rs.getBoolean("orderMetadataByRuleset");
-				Regelsatz r = new Regelsatz();
-				r.setId(id);
-				r.setTitel(title);
-				r.setDatei(file);
-				r.setOrderMetadataByRuleset(order);
-				return r;
-			}
-			return null;
 		}
 	};
 

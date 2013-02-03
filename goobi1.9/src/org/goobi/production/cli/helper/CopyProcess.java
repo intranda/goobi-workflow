@@ -45,6 +45,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.importer.ImportObject;
 import org.jdom.Document;
@@ -77,7 +78,6 @@ import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.forms.AdditionalField;
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
@@ -628,7 +628,7 @@ public class CopyProcess extends ProzesskopieForm {
 			 */
 			step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
 			step.setEditTypeEnum(StepEditType.AUTOMATIC);
-			LoginForm loginForm = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			if (loginForm != null) {
 				step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
 			}
@@ -839,7 +839,7 @@ public class CopyProcess extends ProzesskopieForm {
 			 */
 			step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
 			step.setEditTypeEnum(StepEditType.AUTOMATIC);
-			LoginForm loginForm = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			if (loginForm != null) {
 				step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
 			}

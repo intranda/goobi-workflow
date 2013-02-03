@@ -45,7 +45,7 @@ public class RulesetManager implements IManager {
 		}
 	}
 
-	public static List<Ruleset> getRulesets(String order, HashMap<String, String> filter, int start, int count) throws DAOException {
+	public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws DAOException {
 		List<Ruleset> answer = new ArrayList<Ruleset>();
 		try {
 			answer = RulesetMysqlHelper.getRulesets(order, filter, start, count);
@@ -56,11 +56,11 @@ public class RulesetManager implements IManager {
 		return answer;
 	}
 
-	public List<? extends DatabaseObject> getList(String order, HashMap<String, String> filter, int start, int count) throws DAOException {
+	public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
 		return (List<? extends DatabaseObject>) getRulesets(order, filter, start, count);
 	}
 
-	public int getHitSize(String order, HashMap<String, String> filter) throws DAOException {
+	public int getHitSize(String order, String filter) throws DAOException {
 		int num = 0;
 		try {
 			num = RulesetMysqlHelper.getRulesetCount(order, filter);

@@ -58,21 +58,21 @@ import javax.naming.ldap.StartTlsResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import dubious.sub.goobi.helper.encryption.MD4;
 
-public class Ldap {
-	private static final Logger myLogger = Logger.getLogger(Ldap.class);
+public class LdapAuthentication {
+	private static final Logger myLogger = Logger.getLogger(LdapAuthentication.class);
 
-	public Ldap() {
+	public LdapAuthentication() {
 
 	}
 
-	private String getUserDN(Benutzer inBenutzer) {
+	private String getUserDN(User inBenutzer) {
 		String userDN = inBenutzer.getLdapGruppe().getUserDN();
 		userDN = userDN.replaceAll("\\{login\\}", inBenutzer.getLogin());
 		if (inBenutzer.getLdaplogin() != null) {
@@ -93,7 +93,7 @@ public class Ldap {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	public void createNewUser(Benutzer inBenutzer, String inPasswort) throws NamingException, NoSuchAlgorithmException, IOException,
+	public void createNewUser(User inBenutzer, String inPasswort) throws NamingException, NoSuchAlgorithmException, IOException,
 			InterruptedException {
 
 		if (!ConfigMain.getBooleanParameter("ldap_readonly", false)) {
@@ -132,7 +132,7 @@ public class Ldap {
 	 * @param inPasswort
 	 * @return Login correct or not
 	 */
-	public boolean isUserPasswordCorrect(Benutzer inBenutzer, String inPasswort) {
+	public boolean isUserPasswordCorrect(User inBenutzer, String inPasswort) {
 		myLogger.debug("start login session with ldap");
 		Hashtable<String, String> env = LdapConnectionSettings();
 
@@ -233,7 +233,7 @@ public class Ldap {
 	 * @param inBenutzer
 	 * @return path as string
 	 */
-	public String getUserHomeDirectory(Benutzer inBenutzer) {
+	public String getUserHomeDirectory(User inBenutzer) {
 		if (ConfigMain.getBooleanParameter("useLocalDirectory", false)) {
 			return ConfigMain.getParameter("dir_Users") + inBenutzer.getLogin();
 		}
@@ -444,7 +444,7 @@ public class Ldap {
 	 * @return boolean about result of change
 	 * @throws NoSuchAlgorithmException
 	 */
-	public boolean changeUserPassword(Benutzer inBenutzer, String inOldPassword, String inNewPassword) throws NoSuchAlgorithmException {
+	public boolean changeUserPassword(User inBenutzer, String inOldPassword, String inNewPassword) throws NoSuchAlgorithmException {
 		Hashtable<String, String> env = LdapConnectionSettings();
 		if (!ConfigMain.getBooleanParameter("ldap_readonly", false)) {
 			env.put(Context.SECURITY_PRINCIPAL, ConfigMain.getParameter("ldap_adminLogin"));

@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -47,6 +47,9 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Ldap;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -55,32 +58,29 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
-import de.sub.goobi.beans.LdapGruppe;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.ldap.Ldap;
-import de.sub.goobi.persistence.BenutzerDAO;
-import de.sub.goobi.persistence.BenutzergruppenDAO;
-import de.sub.goobi.persistence.LdapGruppenDAO;
+import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.ProjektDAO;
+import de.sub.goobi.persistence.managers.LdapManager;
+import de.sub.goobi.persistence.managers.UserManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name="BenutzerverwaltungForm") 
 @SessionScoped
-public class BenutzerverwaltungForm extends BasisForm {
+public class UserBean extends BasisForm {
 	private static final long serialVersionUID = -3635859455444639614L;
-	private Benutzer myClass = new Benutzer();
-	private BenutzerDAO dao = new BenutzerDAO();
+	private User myClass = new User();
 	private boolean hideInactiveUsers = true;
-	private static final Logger logger = Logger.getLogger(BenutzerverwaltungForm.class);
+	private static final Logger logger = Logger.getLogger(UserBean.class);
 	private String displayMode = "";
 
 	public String Neu() {
-		this.myClass = new Benutzer();
+		this.myClass = new User();
 		this.myClass.setVorname("");
 		this.myClass.setNachname("");
 		this.myClass.setLogin("");
@@ -95,7 +95,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 		try {
 			Session session = Helper.getHibernateSession();
 			session.clear();
-			Criteria crit = session.createCriteria(Benutzer.class);
+			Criteria crit = session.createCriteria(User.class);
 			crit.add(Restrictions.isNull("isVisible"));
 			if (this.hideInactiveUsers) {
 				crit.add(Restrictions.eq("istAktiv", true));
@@ -122,7 +122,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 		try {
 			Session session = Helper.getHibernateSession();
 			session.clear();
-			Criteria crit = session.createCriteria(Benutzer.class);
+			Criteria crit = session.createCriteria(User.class);
 			crit.add(Restrictions.isNull("isVisible"));
 			if (this.hideInactiveUsers) {
 				crit.add(Restrictions.eq("istAktiv", true));
@@ -161,8 +161,9 @@ public class BenutzerverwaltungForm extends BasisForm {
 		Integer blub = this.myClass.getId();
 		try {
 			/* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
-			if (this.dao.count("from Benutzer where login='" + bla + "'AND BenutzerID<>" + blub) == 0) {
-				this.dao.save(this.myClass);
+			int num = new UserManager().getHitSize(null, "login='" + bla + "'AND BenutzerID<>" + blub);
+			if (num == 0) {
+				UserManager.saveUser(this.myClass);
 				return "user_all";
 			} else {
 				Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
@@ -217,21 +218,21 @@ public class BenutzerverwaltungForm extends BasisForm {
 	 */
 	public String Loeschen() {
 		try {
-			dao.remove(myClass);
+			UserManager.deleteUser(myClass);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
 			logger.error(e);
 			return "";
 		}
-		return "BenutzerAlle";
+		return "user_all";
 	}
 
 	public String AusGruppeLoeschen() {
 		int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
 
-		Set<Benutzergruppe> neu = new HashSet<Benutzergruppe>();
-		for (Iterator<Benutzergruppe> iter = this.myClass.getBenutzergruppen().iterator(); iter.hasNext();) {
-			Benutzergruppe element = iter.next();
+		List<Usergroup> neu = new ArrayList<Usergroup>();
+		for (Iterator<Usergroup> iter = this.myClass.getBenutzergruppenList().iterator(); iter.hasNext();) {
+			Usergroup element = iter.next();
 			if (element.getId().intValue() != gruppenID) {
 				neu.add(element);
 			}
@@ -243,13 +244,13 @@ public class BenutzerverwaltungForm extends BasisForm {
 	public String ZuGruppeHinzufuegen() {
 		Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
 		try {
-			Benutzergruppe usergroup = new BenutzergruppenDAO().get(gruppenID);
-			for (Benutzergruppe b : this.myClass.getBenutzergruppen()) {
+			Usergroup usergroup = UsergroupManager.getUsergroupById(gruppenID);
+			for (Usergroup b : this.myClass.getBenutzergruppenList()) {
 				if (b.equals(usergroup)) {
 					return "";
 				}
 			}
-			this.myClass.getBenutzergruppen().add(usergroup);
+			this.myClass.getBenutzergruppenList().add(usergroup);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
@@ -293,18 +294,12 @@ public class BenutzerverwaltungForm extends BasisForm {
 	 * Getter und Setter
 	 */
 
-	public Benutzer getMyClass() {
+	public User getMyClass() {
 		return this.myClass;
 	}
 
-	public void setMyClass(Benutzer inMyClass) {
-		Helper.getHibernateSession().flush();
-		Helper.getHibernateSession().clear();
-		try {
-			this.myClass = new BenutzerDAO().get(inMyClass.getId());
-		} catch (DAOException e) {
-			this.myClass = inMyClass;
-		}
+	public void setMyClass(User inMyClass) {
+		this.myClass = inMyClass;
 	}
 
 	/*
@@ -322,7 +317,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 	public void setLdapGruppeAuswahl(Integer inAuswahl) {
 		if (inAuswahl.intValue() != 0) {
 			try {
-				this.myClass.setLdapGruppe(new LdapGruppenDAO().get(inAuswahl));
+				this.myClass.setLdapGruppe(LdapManager.getLdapById(inAuswahl));
 			} catch (DAOException e) {
 				Helper.setFehlerMeldung("Error on writing to database", "");
 				logger.error(e);
@@ -332,8 +327,8 @@ public class BenutzerverwaltungForm extends BasisForm {
 
 	public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
 		List<SelectItem> myLdapGruppen = new ArrayList<SelectItem>();
-		List<LdapGruppe> temp = new LdapGruppenDAO().search("from LdapGruppe ORDER BY titel");
-		for (LdapGruppe gru : temp) {
+		List<Ldap> temp = LdapManager.getLdaps("titel", null, 0, 0);
+		for (Ldap gru : temp) {
 			myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
 		}
 		return myLdapGruppen;
@@ -345,7 +340,7 @@ public class BenutzerverwaltungForm extends BasisForm {
 	 * @return
 	 */
 	public String LdapKonfigurationSchreiben() {
-		Ldap myLdap = new Ldap();
+		LdapAuthentication myLdap = new LdapAuthentication();
 		try {
 			myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
 		} catch (Exception e) {

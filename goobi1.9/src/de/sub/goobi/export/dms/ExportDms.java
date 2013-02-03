@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -42,7 +43,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsModsImportExport;
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
@@ -400,7 +400,7 @@ public class ExportDms extends ExportMets {
 				 * wenn kein Agora-Import, dann den Ordner mit
 				 * Benutzerberechtigung neu anlegen
 				 */
-				Benutzer myBenutzer = (Benutzer) Helper
+				User myBenutzer = (User) Helper
 						.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				try {
                     	FilesystemHelper.createDirectoryForUser(zielTif.getAbsolutePath(), myBenutzer.getLogin());

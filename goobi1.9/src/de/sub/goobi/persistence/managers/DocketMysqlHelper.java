@@ -15,10 +15,19 @@ import de.sub.goobi.persistence.apache.MySQLUtils;
 public class DocketMysqlHelper {
 	private static final Logger logger = Logger.getLogger(DocketMysqlHelper.class);
 
-	public static List<Docket> getDockets(String order, HashMap<String, String> filter, int start, int count) throws SQLException {
+	public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM dockets LIMIT " + start + ", " + count);
+		sql.append("SELECT * FROM dockets");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
+		if (order!=null && !order.isEmpty()){
+			sql.append(" ORDER BY " + order);
+		}
+		if (start != null && count != null){
+			sql.append(" LIMIT " + start + ", " + count);
+		}
 		try {
 			logger.debug(sql.toString());
 			List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
@@ -28,10 +37,13 @@ public class DocketMysqlHelper {
 		}
 	}
 
-	public static int getDocketCount(String order, HashMap<String, String> filter) throws SQLException {
+	public static int getDocketCount(String order, String filter) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(docketID) FROM dockets");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
 		try {
 			logger.debug(sql.toString());
 			return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);

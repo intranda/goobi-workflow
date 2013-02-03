@@ -57,9 +57,9 @@ import javax.naming.directory.SearchResult;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Ldap;
+import org.goobi.beans.User;
 
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.LdapGruppe;
 import de.sub.goobi.config.ConfigMain;
 import dubious.sub.goobi.helper.encryption.MD4;
 
@@ -88,12 +88,12 @@ public class LdapUser implements DirContext {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	public void configure(Benutzer inUser, String inPassword, String inUidNumber) throws NamingException, NoSuchAlgorithmException, IOException,
+	public void configure(User inUser, String inPassword, String inUidNumber) throws NamingException, NoSuchAlgorithmException, IOException,
 			InterruptedException {
 		if (!ConfigMain.getBooleanParameter("ldap_readonly", false)) {
 
 			this.type = inUser.getLogin();
-			LdapGruppe lp = inUser.getLdapGruppe();
+			Ldap lp = inUser.getLdapGruppe();
 			if (lp.getObjectClasses() == null) {
 				throw new NamingException("no objectclass defined");
 			}
@@ -166,7 +166,7 @@ public class LdapUser implements DirContext {
 	 * @param inUser
 	 * @return String with replaced variables
 	 */
-	private String ReplaceVariables(String inString, Benutzer inUser, String inUidNumber) {
+	private String ReplaceVariables(String inString, User inUser, String inUidNumber) {
 		if (inString == null) {
 			return "";
 		}

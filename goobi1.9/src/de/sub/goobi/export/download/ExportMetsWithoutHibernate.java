@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
@@ -48,9 +50,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsModsImportExport;
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.ProjectFileGroup;
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacerWithoutHibernate;
@@ -64,6 +64,7 @@ import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
 import de.sub.goobi.persistence.apache.ProjectManager;
 import de.sub.goobi.persistence.apache.ProjectObject;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 public class ExportMetsWithoutHibernate {
 	protected Helper help = new Helper();
@@ -93,7 +94,7 @@ public class ExportMetsWithoutHibernate {
 	public boolean startExport(ProcessObject process) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
 			WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
 			TypeNotAllowedForParentException {
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		String benutzerHome = "";
 		if (login != null) {
 			benutzerHome = login.getMyBenutzer().getHomeDir();
@@ -126,13 +127,11 @@ public class ExportMetsWithoutHibernate {
 		/*
 		 * -------------------------------- Read Document --------------------------------
 		 */
-		this.myPrefs = ProcessManager.getRuleset(process.getRulesetId()).getPreferences();
-
+		this.myPrefs = RulesetManager.getRulesetById(process.getRulesetId()).getPreferences();
 		this.project = ProjectManager.getProjectById(process.getProjekteID());
 		String atsPpnBand = process.getTitle();
 		this.fi = new FolderInformation(process.getId(), process.getTitle());
 		Fileformat gdzfile = process.readMetadataFile(this.fi.getMetadataFilePath(), this.myPrefs);
-
 		String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
 
 		String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
@@ -148,7 +147,7 @@ public class ExportMetsWithoutHibernate {
 	 */
 	protected String prepareUserDirectory(String inTargetFolder) {
 		String target = inTargetFolder;
-		Benutzer myBenutzer = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		try {
             	FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
             } catch (Exception e) {
@@ -177,7 +176,7 @@ public class ExportMetsWithoutHibernate {
 			throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
 			TypeNotAllowedForParentException {
 		this.fi = new FolderInformation(process.getId(), process.getTitle());
-		this.myPrefs = ProcessManager.getRuleset(process.getRulesetId()).getPreferences();
+		this.myPrefs = RulesetManager.getRulesetById(process.getRulesetId()).getPreferences();
 		this.project = ProjectManager.getProjectById(process.getProjekteID());
 		MetsModsImportExport mm = new MetsModsImportExport(this.myPrefs);
 		mm.setWriteLocal(writeLocalFilegroup);

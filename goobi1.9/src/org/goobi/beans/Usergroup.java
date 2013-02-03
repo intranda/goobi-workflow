@@ -33,9 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Hibernate;
-
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Schritt;
 
 /**
@@ -48,18 +45,18 @@ import de.sub.goobi.beans.Schritt;
  * 
  * ================================================================
  */
-public class Usergroup implements Serializable, Comparable<Usergroup> {
+public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseObject {
 	private static final long serialVersionUID = -5924845694417474352L;
 	private Integer id;
 	private String titel;
 	private Integer berechtigung;
-	private Set<Benutzer> benutzer;
+	private Set<User> benutzer;
 	private Set<Schritt> schritte;
 	private boolean panelAusgeklappt = false;
 
 	public Usergroup() {
 		this.schritte = new HashSet<Schritt>();
-		this.benutzer = new HashSet<Benutzer>();
+		this.benutzer = new HashSet<User>();
 	}
 
 	/*
@@ -112,15 +109,15 @@ public class Usergroup implements Serializable, Comparable<Usergroup> {
 		this.titel = titel;
 	}
 
-	public Set<Benutzer> getBenutzer() {
+	public Set<User> getBenutzer() {
 		return this.benutzer;
 	}
 
-	public void setBenutzer(Set<Benutzer> benutzer) {
+	public void setBenutzer(Set<User> benutzer) {
 		this.benutzer = benutzer;
 	}
 
-	public List<Benutzer> getBenutzerList() {
+	public List<User> getBenutzerList() {
 //		try {
 //			Hibernate.initialize(getBenutzer());
 //		} catch (org.hibernate.HibernateException e) {
@@ -128,9 +125,9 @@ public class Usergroup implements Serializable, Comparable<Usergroup> {
 //		}
 
 		if (this.benutzer == null) {
-			return new ArrayList<Benutzer>();
+			return new ArrayList<User>();
 		} else {
-			return new ArrayList<Benutzer>(this.benutzer);
+			return new ArrayList<User>(this.benutzer);
 		}
 	}
 

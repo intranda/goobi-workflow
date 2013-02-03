@@ -173,7 +173,7 @@ public class ProcessObject {
 		this.projekteID = projekteID;
 	}
 
-	public int getRulesetId() {
+	public Integer getRulesetId() {
 		return this.rulesetId;
 	}
 

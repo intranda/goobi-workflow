@@ -39,6 +39,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Ruleset;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
@@ -49,10 +52,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
 import de.sub.goobi.beans.Prozess;
-import de.sub.goobi.beans.Regelsatz;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -64,13 +64,13 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
-import de.sub.goobi.persistence.BenutzerDAO;
-import de.sub.goobi.persistence.BenutzergruppenDAO;
 import de.sub.goobi.persistence.ProzessDAO;
-import de.sub.goobi.persistence.RegelsatzDAO;
 import de.sub.goobi.persistence.SchrittDAO;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.UserManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
 //TODO: Delete me, this should be part of the Plugins...
 //TODO: Break this up into multiple classes with a common interface
@@ -320,14 +320,13 @@ public class GoobiScript {
 		}
 
 		try {
-			RegelsatzDAO rdao = new RegelsatzDAO();
 			ProzessDAO pdao = new ProzessDAO();
-			List<Regelsatz> rulesets = rdao.search("from Regelsatz where titel='" + this.myParameters.get("ruleset") + "'");
+			List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + this.myParameters.get("ruleset") + "'", null, null);
 			if (rulesets == null || rulesets.size() == 0) {
 				Helper.setFehlerMeldung("goobiScriptfield", "Could not found ruleset: ", "ruleset");
 				return;
 			}
-			Regelsatz regelsatz = rulesets.get(0);
+			Ruleset regelsatz = rulesets.get(0);
 
 			for (Prozess p : inProzesse) {
 				p.setRegelsatz(regelsatz);
@@ -778,9 +777,9 @@ public class GoobiScript {
 			return;
 		}
 		/* prüfen, ob ein solcher Benutzer existiert */
-		Benutzer myUser = null;
+		User myUser = null;
 		try {
-			List<Benutzer> treffer = new BenutzerDAO().search("from Benutzer where login='" + this.myParameters.get("username") + "'");
+			List<User> treffer = UserManager.getUsers(null, "login='" + this.myParameters.get("username") + "'", null, null) ;
 			if (treffer != null && treffer.size() > 0) {
 				myUser = treffer.get(0);
 			} else {
@@ -801,9 +800,9 @@ public class GoobiScript {
 			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
 				Schritt s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-					Set<Benutzer> myBenutzer = s.getBenutzer();
+					Set<User> myBenutzer = s.getBenutzer();
 					if (myBenutzer == null) {
-						myBenutzer = new HashSet<Benutzer>();
+						myBenutzer = new HashSet<User>();
 						s.setBenutzer(myBenutzer);
 					}
 					if (!myBenutzer.contains(myUser)) {
@@ -839,10 +838,9 @@ public class GoobiScript {
 			return;
 		}
 		/* prüfen, ob ein solcher Benutzer existiert */
-		Benutzergruppe myGroup = null;
+		Usergroup myGroup = null;
 		try {
-			List<Benutzergruppe> treffer = new BenutzergruppenDAO()
-					.search("from Benutzergruppe where titel='" + this.myParameters.get("group") + "'");
+			List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + this.myParameters.get("group") + "'", null, null);
 			if (treffer != null && treffer.size() > 0) {
 				myGroup = treffer.get(0);
 			} else {
@@ -862,9 +860,9 @@ public class GoobiScript {
 			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
 				Schritt s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-					Set<Benutzergruppe> myBenutzergruppe = s.getBenutzergruppen();
+					Set<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
 					if (myBenutzergruppe == null) {
-						myBenutzergruppe = new HashSet<Benutzergruppe>();
+						myBenutzergruppe = new HashSet<Usergroup>();
 						s.setBenutzergruppen(myBenutzergruppe);
 					}
 					if (!myBenutzergruppe.contains(myGroup)) {

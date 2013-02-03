@@ -45,7 +45,7 @@ public class LdapManager implements IManager {
 		}
 	}
 
-	public static List<Ldap> getLdaps(String order, HashMap<String, String> filter, int start, int count) throws DAOException {
+	public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws DAOException {
 		List<Ldap> answer = new ArrayList<Ldap>();
 		try {
 			answer = LdapMysqlHelper.getLdaps(order, filter, start, count);
@@ -56,11 +56,11 @@ public class LdapManager implements IManager {
 		return answer;
 	}
 
-	public List<? extends DatabaseObject> getList(String order, HashMap<String, String> filter, int start, int count) throws DAOException {
+	public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
 		return (List<? extends DatabaseObject>) getLdaps(order, filter, start, count);
 	}
 
-	public int getHitSize(String order, HashMap<String, String> filter) throws DAOException {
+	public int getHitSize(String order, String filter) throws DAOException {
 		int num = 0;
 		try {
 			num = LdapMysqlHelper.getLdapCount(order, filter);

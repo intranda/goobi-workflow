@@ -45,6 +45,8 @@ import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Ruleset;
+import org.goobi.beans.Usergroup;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -52,12 +54,10 @@ import org.hibernate.criterion.Restrictions;
 
 import com.thoughtworks.xstream.XStream;
 
-import de.sub.goobi.beans.Benutzergruppe;
 import de.sub.goobi.beans.HistoryEvent;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Regelsatz;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
@@ -70,10 +70,10 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.BenutzergruppenDAO;
 import de.sub.goobi.persistence.HibernateUtilOld;
 import de.sub.goobi.persistence.ProjektDAO;
-import de.sub.goobi.persistence.RegelsatzDAO;
+import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
 /**
  * 
@@ -135,7 +135,7 @@ public class ProductionDataImport {
 		template.setIstTemplate(true);
 
 		// gdz Regelsatz
-		Regelsatz ruleset = new RegelsatzDAO().get(Integer.valueOf(17));
+		Ruleset ruleset = RulesetManager.getRulesetById(Integer.valueOf(17));
 
 		template.setRegelsatz(ruleset);
 
@@ -211,7 +211,7 @@ public class ProductionDataImport {
 		logger.debug("Zu " + oldProj + " existierenden Prozessen wurden Properties hinzugefügt");
 	}
 
-	private void generateNewPropertiesForNewProzess(Session session, Regelsatz ruleset, Projekt project, ProductionData pd)
+	private void generateNewPropertiesForNewProzess(Session session, Ruleset ruleset, Projekt project, ProductionData pd)
 			throws HibernateException, SQLException {
 
 		// generate new Process
@@ -838,8 +838,8 @@ public class ProductionDataImport {
 	private Set<Schritt> getSteps(Prozess prozess) {
 		Set<Schritt> stepList = new HashSet<Schritt>();
 		try {
-			Benutzergruppe adm = new BenutzergruppenDAO().get(6);
-			Benutzergruppe importGoe = new BenutzergruppenDAO().get(15);
+			Usergroup adm = UsergroupManager.getUsergroupById(6);
+			Usergroup importGoe = UsergroupManager.getUsergroupById(15);
 			Schritt biblio = new Schritt();
 			biblio.setReihenfolge(0);
 			biblio.setTitel("Bibliographische Aufnahme");

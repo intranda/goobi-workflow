@@ -35,6 +35,8 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.flow.statistics.hibernate.FilterString;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -42,7 +44,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
@@ -80,7 +81,7 @@ public class SearchForm {
 	private String status = "";
 	private String stepname = "";
 
-	private List<Benutzer> user = new ArrayList<Benutzer>();
+	private List<User> user = new ArrayList<User>();
 	private String stepdonetitle = "";
 	private String stepdoneuser = "";
 
@@ -100,7 +101,7 @@ public class SearchForm {
 		for (StepStatus s : StepStatus.values()) {
 			this.stepstatus.add(s);
 		}
-		int restriction = ((LoginForm) Helper.getManagedBeanValue("#{LoginForm}")).getMaximaleBerechtigung();
+		int restriction = ((LoginBean) Helper.getManagedBeanValue("#{LoginForm}")).getMaximaleBerechtigung();
 		Session session = Helper.getHibernateSession();
 
 		// projects
@@ -159,7 +160,7 @@ public class SearchForm {
 			this.stepTitles.add((String) it.next());
 		}
 
-		crit = session.createCriteria(Benutzer.class);
+		crit = session.createCriteria(User.class);
 		crit.add(Restrictions.isNull("isVisible"));
 		crit.add(Restrictions.eq("istAktiv", true));
 		crit.addOrder(Order.asc("nachname"));
@@ -343,11 +344,11 @@ public class SearchForm {
 		this.stepname = stepname;
 	}
 
-	public List<Benutzer> getUser() {
+	public List<User> getUser() {
 		return this.user;
 	}
 
-	public void setUser(List<Benutzer> user) {
+	public void setUser(List<User> user) {
 		this.user = user;
 	}
 

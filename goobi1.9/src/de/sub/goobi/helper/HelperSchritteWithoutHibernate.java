@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -46,10 +48,8 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.AutomaticDmsExportWithoutHibernate;
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -60,6 +60,7 @@ import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 
 public class HelperSchritteWithoutHibernate {
@@ -85,9 +86,9 @@ public class HelperSchritteWithoutHibernate {
 		logger.debug("set new date for edit time");
 		currentStep.setBearbeitungszeitpunkt(myDate);
 		try {
-			LoginForm lf = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			if (lf != null) {
-				Benutzer ben = lf.getMyBenutzer();
+				User ben = lf.getMyBenutzer();
 				if (ben != null) {
 					logger.debug("set new user");
 					currentStep.setBearbeitungsbenutzer(ben.getId());
@@ -253,10 +254,12 @@ public class HelperSchritteWithoutHibernate {
 		ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
 
 		FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
-		Prefs prefs = ProcessManager.getRuleset(po.getRulesetId()).getPreferences();
-
+		Prefs prefs = null;
 		try {
+			prefs = RulesetManager.getRulesetById(po.getRulesetId()).getPreferences();
 			dd = po.readMetadataFile(fi.getMetadataFilePath(), prefs).getDigitalDocument();
+		} catch (DAOException e1) {
+			logger.error(e1);
 		} catch (PreferencesException e2) {
 			logger.error(e2);
 		} catch (ReadException e2) {

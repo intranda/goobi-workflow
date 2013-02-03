@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.goobi.beans.User;
 import org.goobi.production.flow.statistics.StepInformation;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -44,7 +45,7 @@ public class Projekt implements Serializable, Comparable<Projekt> {
 	private static final long serialVersionUID = -8543713331407761617L;
 	private Integer id;
 	private String titel;
-	private Set<Benutzer> benutzer;
+	private Set<User> benutzer;
 	private Set<Prozess> prozesse;
 	private Set<ProjectFileGroup> filegroups;
 
@@ -81,7 +82,7 @@ public class Projekt implements Serializable, Comparable<Projekt> {
 
 	public Projekt() {
 		this.prozesse = new HashSet<Prozess>();
-		this.benutzer = new HashSet<Benutzer>();
+		this.benutzer = new HashSet<User>();
 		this.useDmsImport = false;
 		this.dmsImportTimeOut = 0;
 		this.dmsImportImagesPath = "";
@@ -107,11 +108,11 @@ public class Projekt implements Serializable, Comparable<Projekt> {
 		this.id = id;
 	}
 
-	public Set<Benutzer> getBenutzer() {
+	public Set<User> getBenutzer() {
 		return this.benutzer;
 	}
 
-	public void setBenutzer(Set<Benutzer> benutzer) {
+	public void setBenutzer(Set<User> benutzer) {
 		this.benutzer = benutzer;
 	}
 

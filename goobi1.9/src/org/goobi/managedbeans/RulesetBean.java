@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.File;
-import java.util.HashMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -46,6 +45,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 @ManagedBean(name = "RegelsaetzeForm")
 @SessionScoped
 public class RulesetBean extends BasisForm {
+	private static final long serialVersionUID = -8994941188718721705L;
 	private static final Logger logger = Logger.getLogger(RulesetBean.class);
 	private Ruleset myRegelsatz = new Ruleset();
 
@@ -98,10 +98,8 @@ public class RulesetBean extends BasisForm {
 	}
 
 	public String FilterKein() {
-		String order = "";
-		HashMap<String, String> filter = new HashMap<String, String>();
 		RulesetManager rm = new RulesetManager();
-		paginator = new DatabasePaginator(order, filter, rm);
+		paginator = new DatabasePaginator(sortierung, filter, rm);
 		return "ruleset_all";
 	}
 

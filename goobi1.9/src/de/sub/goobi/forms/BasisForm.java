@@ -29,9 +29,10 @@ package de.sub.goobi.forms;
 import java.io.Serializable;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 import org.goobi.managedbeans.DatabasePaginator;
+import org.goobi.managedbeans.LoginBean;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 
@@ -43,10 +44,10 @@ public class BasisForm implements Serializable {
 	protected Page page;
 	protected DatabasePaginator paginator;
 	protected String zurueck = "";
-	protected String filter = "";
-	protected Benutzer user;
+	protected String filter = null;
+	protected User user;
 
-	protected String sortierung = "prozessAsc";
+	protected String sortierung = null;
 
 	public Page getPage() {
 		return this.page;
@@ -64,9 +65,9 @@ public class BasisForm implements Serializable {
 		this.zurueck = zurueck;
 	}
 	
-	public Benutzer getUser() {
+	public User getUser() {
 		if(this.user==null) {
-			LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			this.user = login.getMyBenutzer();
 		}
 		return this.user;

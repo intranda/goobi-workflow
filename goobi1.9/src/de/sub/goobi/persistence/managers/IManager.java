@@ -8,6 +8,6 @@ import org.goobi.beans.DatabaseObject;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public interface IManager {
-	public int getHitSize(String order, HashMap<String, String> filter) throws DAOException;
-	public List<? extends DatabaseObject> getList(String order, HashMap<String, String> filter, int start, int count) throws DAOException;
+	public int getHitSize(String order, String filter) throws DAOException;
+	public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException;
 }

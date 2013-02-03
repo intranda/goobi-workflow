@@ -44,6 +44,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Docket;
+import org.goobi.beans.Ruleset;
+import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.production.export.ExportDocket;
 import org.hibernate.Hibernate;
@@ -68,7 +71,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
-import de.sub.goobi.persistence.BenutzerDAO;
 import de.sub.goobi.persistence.ProzessDAO;
 
 public class Prozess implements Serializable {
@@ -91,7 +93,7 @@ public class Prozess implements Serializable {
 	private Integer sortHelperArticles;
 	private Integer sortHelperMetadata;
 	private Integer sortHelperDocstructs;
-	private Regelsatz regelsatz;
+	private Ruleset regelsatz;
 	// private Batch batch;
 	private Integer batchID;
 	private Boolean swappedOut = false;
@@ -224,16 +226,17 @@ public class Prozess implements Serializable {
 	 * Metadaten-Sperrungen zurückgeben
 	 */
 
-	public Benutzer getBenutzerGesperrt() {
-		Benutzer rueckgabe = null;
-		if (MetadatenSperrung.isLocked(this.id.intValue())) {
-			String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
-			try {
-				rueckgabe = new BenutzerDAO().get(new Integer(benutzerID));
-			} catch (Exception e) {
-				Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
-			}
-		}
+	public User getBenutzerGesperrt() {
+		// TODO: noch anpassen
+		User rueckgabe = null;
+//		if (MetadatenSperrung.isLocked(this.id.intValue())) {
+//			String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
+//			try {
+//				rueckgabe = new BenutzerDAO().get(new Integer(benutzerID));
+//			} catch (Exception e) {
+//				Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
+//			}
+//		}
 		return rueckgabe;
 	}
 
@@ -501,11 +504,11 @@ public class Prozess implements Serializable {
 		this.batchID = batch;
 	}
 
-	public Regelsatz getRegelsatz() {
+	public Ruleset getRegelsatz() {
 		return this.regelsatz;
 	}
 
-	public void setRegelsatz(Regelsatz regelsatz) {
+	public void setRegelsatz(Ruleset regelsatz) {
 		this.regelsatz = regelsatz;
 	}
 
@@ -1075,7 +1078,7 @@ public class Prozess implements Serializable {
 	/**
 	 * get user of task in edit mode with rights to write to image folder ================================================================
 	 */
-	public Benutzer getImageFolderInUseUser() {
+	public User getImageFolderInUseUser() {
 		for (Schritt s : getSchritteList()) {
 			if (s.getBearbeitungsstatusEnum() == StepStatus.INWORK && s.isTypImagesSchreiben()) {
 				return s.getBearbeitungsbenutzer();

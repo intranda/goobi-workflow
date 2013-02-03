@@ -17,12 +17,20 @@ public class RulesetMysqlHelper {
 			.getLogger(RulesetMysqlHelper.class);
 
 	public static List<Ruleset> getRulesets(String order,
-			HashMap<String, String> filter, int start, int count)
+			String filter, Integer start, Integer count)
 			throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM metadatenkonfigurationen LIMIT " + start
-				+ ", " + count);
+		sql.append("SELECT * FROM metadatenkonfigurationen");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
+		if (order!=null && !order.isEmpty()){
+			sql.append(" ORDER BY " + order);
+		}
+		if (start != null && count != null){
+			sql.append(" LIMIT " + start + ", " + count);
+		}
 		try {
 			logger.debug(sql.toString());
 			List<Ruleset> ret = new QueryRunner().query(connection,
@@ -35,10 +43,13 @@ public class RulesetMysqlHelper {
 	}
 
 	public static int getRulesetCount(String order,
-			HashMap<String, String> filter) throws SQLException {
+			String filter) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(MetadatenKonfigurationID) FROM metadatenkonfigurationen");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
 		try {
 			logger.debug(sql.toString());
 			return new QueryRunner().query(connection, sql.toString(),

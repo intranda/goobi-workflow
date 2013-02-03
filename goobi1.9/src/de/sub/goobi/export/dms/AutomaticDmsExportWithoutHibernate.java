@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -42,7 +43,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsModsImportExport;
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.download.ExportMetsWithoutHibernate;
@@ -55,10 +55,10 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenVerifizierungWithoutHibernate;
 import de.sub.goobi.persistence.apache.FolderInformation;
-import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
 import de.sub.goobi.persistence.apache.ProjectManager;
 import de.sub.goobi.persistence.apache.ProjectObject;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 public class AutomaticDmsExportWithoutHibernate extends ExportMetsWithoutHibernate {
 	private static final Logger myLogger = Logger.getLogger(AutomaticDmsExportWithoutHibernate.class);
@@ -101,8 +101,7 @@ public class AutomaticDmsExportWithoutHibernate extends ExportMetsWithoutHiberna
 	
 	@Override
 	public boolean startExport(ProcessObject process) throws DAOException, IOException, PreferencesException, WriteException, SwapException, TypeNotAllowedForParentException, InterruptedException {
-		this.myPrefs = ProcessManager.getRuleset(process.getRulesetId()).getPreferences();
-	
+		this.myPrefs = RulesetManager.getRulesetById(process.getRulesetId()).getPreferences();
 		this.project =ProjectManager.getProjectById(process.getProjekteID());
 		
 		
@@ -402,7 +401,7 @@ public class AutomaticDmsExportWithoutHibernate extends ExportMetsWithoutHiberna
 				 * wenn kein Agora-Import, dann den Ordner mit
 				 * Benutzerberechtigung neu anlegen
 				 */
-				Benutzer myBenutzer = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+				User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				try {
                     FilesystemHelper.createDirectoryForUser(zielTif.getAbsolutePath(), myBenutzer.getLogin());				} catch (Exception e) {
 					Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");

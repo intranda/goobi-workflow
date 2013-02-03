@@ -42,6 +42,8 @@ import javax.faces.bean.ViewScoped;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Ruleset;
+import org.goobi.beans.Usergroup;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.jobs.JobManager;
 import org.hibernate.Criteria;
@@ -56,10 +58,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
 import de.sub.goobi.beans.Prozess;
-import de.sub.goobi.beans.Regelsatz;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.BeanHelper;
@@ -71,12 +70,10 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.BenutzerDAO;
-import de.sub.goobi.persistence.BenutzergruppenDAO;
 import de.sub.goobi.persistence.ProzessDAO;
-import de.sub.goobi.persistence.RegelsatzDAO;
 import de.sub.goobi.persistence.SchrittDAO;
-import dubious.sub.goobi.helper.encryption.DesEncrypter;
+import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.MD5;
 
 @ManagedBean(name="AdministrationForm") 
@@ -181,8 +178,8 @@ public class AdministrationForm implements Serializable {
 
 	//TODO: Remove this
 	public void SiciKorr() throws DAOException {
-		Benutzergruppe gruppe = new BenutzergruppenDAO().get(Integer.valueOf(15));
-		Set<Benutzergruppe> neueGruppen = new HashSet<Benutzergruppe>();
+		Usergroup gruppe = UsergroupManager.getUsergroupById(15);
+		Set<Usergroup> neueGruppen = new HashSet<Usergroup>();
 		neueGruppen.add(gruppe);
 
 		SchrittDAO dao = new SchrittDAO();
@@ -196,7 +193,7 @@ public class AdministrationForm implements Serializable {
 	}
 
 	public void StandardRegelsatzSetzen() throws DAOException {
-		Regelsatz mk = new RegelsatzDAO().get(Integer.valueOf(1));
+		Ruleset mk = RulesetManager.getRulesetById(Integer.valueOf(1));
 
 		ProzessDAO dao = new ProzessDAO();
 		List<Prozess> auftraege = dao.search("from Prozess");
@@ -209,24 +206,6 @@ public class AdministrationForm implements Serializable {
 		}
 		Helper.setMeldung(null, "", "Standard-ruleset successful set");
 	}
-
-
-	public void PasswoerterVerschluesseln() {
-		try {
-			DesEncrypter encrypter = new DesEncrypter();
-			BenutzerDAO dao = new BenutzerDAO();
-			List<Benutzer> myBenutzer = dao.search("from Benutzer");
-			for (Benutzer ben : myBenutzer) {
-				String passencrypted = encrypter.encrypt(ben.getPasswort());
-				ben.setPasswort(passencrypted);
-				dao.save(ben);
-			}
-			Helper.setMeldung(null, "", "passwords successful ciphered");
-		} catch (Exception e) {
-			Helper.setFehlerMeldung("could not cipher passwords: ", e.getMessage());
-		}
-	}
-
 	
 	public void ProzesseDatumSetzen() throws DAOException {
 		ProzessDAO dao = new ProzessDAO();

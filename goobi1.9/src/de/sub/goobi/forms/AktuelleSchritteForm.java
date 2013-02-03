@@ -44,6 +44,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -62,7 +64,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.HistoryEvent;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
@@ -137,7 +138,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		/*
 		 * --------------------- Vorgangsdatum generell anzeigen? -------------------
 		 */
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		if (login != null && login.getMyBenutzer() != null) {
 			this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isConfVorgangsdatumAnzeigen());
 		} else {
@@ -251,7 +252,7 @@ public class AktuelleSchritteForm extends BasisForm {
 					this.mySchritt.setBearbeitungsstatusEnum(StepStatus.INWORK);
 					this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 					mySchritt.setBearbeitungszeitpunkt(new Date());
-					Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+					User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 					if (ben != null) {
 						mySchritt.setBearbeitungsbenutzer(ben);
 					}
@@ -336,7 +337,7 @@ public class AktuelleSchritteForm extends BasisForm {
 				s.setBearbeitungsstatusEnum(StepStatus.INWORK);
 				s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
 				s.setBearbeitungszeitpunkt(new Date());
-				Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+				User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				if (ben != null) {
 					s.setBearbeitungsbenutzer(ben);
 				}
@@ -425,7 +426,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		}
 		this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -558,7 +559,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.mySchritt.setBearbeitungsstatusEnum(StepStatus.LOCKED);
 		this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -646,7 +647,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.mySchritt.setBearbeitungsende(now);
 		this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -710,7 +711,7 @@ public class AktuelleSchritteForm extends BasisForm {
 
 	public String UploadFromHome() {
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -726,7 +727,7 @@ public class AktuelleSchritteForm extends BasisForm {
 
 		}
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -779,7 +780,7 @@ public class AktuelleSchritteForm extends BasisForm {
 				step.setBearbeitungsstatusEnum(StepStatus.INWORK);
 				step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
 				mySchritt.setBearbeitungszeitpunkt(new Date());
-				Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+				User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				if (ben != null) {
 					mySchritt.setBearbeitungsbenutzer(ben);
 				}
@@ -807,7 +808,7 @@ public class AktuelleSchritteForm extends BasisForm {
 				step.setBearbeitungsstatusEnum(StepStatus.INWORK);
 				step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
 				mySchritt.setBearbeitungszeitpunkt(new Date());
-				Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+				User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				if (ben != null) {
 					mySchritt.setBearbeitungsbenutzer(ben);
 				}
@@ -867,7 +868,7 @@ public class AktuelleSchritteForm extends BasisForm {
 	public void calcHomeImages() {
 		this.gesamtAnzahlImages = 0;
 		this.pageAnzahlImages = 0;
-		Benutzer aktuellerBenutzer = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User aktuellerBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (aktuellerBenutzer != null && aktuellerBenutzer.isMitMassendownload()) {
 			for (Iterator<Schritt> iter = this.page.getCompleteList().iterator(); iter.hasNext();) {
 				Schritt step = iter.next();
@@ -986,7 +987,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			/*
 			 * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
 			 */
-			if (this.page == null && (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}") != null) {
+			if (this.page == null && (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}") != null) {
 				FilterAlleStart();
 			}
 			Integer inParam = Integer.valueOf(param);
@@ -1087,7 +1088,7 @@ public class AktuelleSchritteForm extends BasisForm {
 
 	public void addToWikiField() {
 		if (addToWikiField != null && addToWikiField.length() > 0) {
-			Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
 			this.mySchritt.getProzess().setWikifield(
 					WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "user", message));

@@ -32,10 +32,10 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Docket;
 
-import de.sub.goobi.beans.Docket;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.DocketDAO;
+import de.sub.goobi.persistence.managers.DocketManager;
 
 
 public class DocketConverter implements Converter {
@@ -49,7 +49,7 @@ public Object getAsObject(FacesContext context, UIComponent component, String va
          return null;
       } else {
          try {
-				return new DocketDAO().get(new Integer(value));
+				return DocketManager.getDocketById(new Integer(value));
 			} catch (NumberFormatException e) {
 				logger.error(e);
 				return "0";

@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -38,22 +38,24 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
+
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.ldap.Ldap;
+import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
-import de.sub.goobi.persistence.BenutzerDAO;
+import de.sub.goobi.persistence.managers.UserManager;
 
 @ManagedBean(name="LoginForm") 
 @SessionScoped
-public class LoginForm {
+public class LoginBean {
 	private String login;
 	private String passwort;
-	private Benutzer myBenutzer;
-	private Benutzer tempBenutzer;
+	private User myBenutzer;
+	private User tempBenutzer;
 	private boolean schonEingeloggt = false;
 	private String passwortAendernAlt;
 	private String passwortAendernNeu1;
@@ -82,16 +84,16 @@ public class LoginForm {
 			Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
 		} else {
 			/* prüfen, ob schon ein Benutzer mit dem Login existiert */
-			List<Benutzer> treffer;
+			List<User> treffer;
 			try {
-				treffer = new BenutzerDAO().search("from Benutzer where login=?", this.login);
+				treffer = UserManager.getUsers(null, "login='" + this.login + "'", null, null);
 			} catch (DAOException e) {
 				Helper.setFehlerMeldung("could not read database", e.getMessage());
 				return "";
 			}
 			if (treffer != null && treffer.size() > 0) {
 				/* Login vorhanden, nun passwort prüfen */
-				Benutzer b = treffer.get(0);
+				User b = treffer.get(0);
 				/* wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier) wurde, jetzt Meldung anzeigen */
 				if (!b.isIstAktiv()) {
 					Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
@@ -156,7 +158,7 @@ public class LoginForm {
 		this.myBenutzer = null;
 		Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
 		try {
-			this.myBenutzer = new BenutzerDAO().get(LoginID);
+			this.myBenutzer = UserManager.getUserById(LoginID);
 			/* in der Session den Login speichern */
 			SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
 			temp.sessionBenutzerAktualisieren((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false), this.myBenutzer);
@@ -189,11 +191,11 @@ public class LoginForm {
 			} else {
 				try {
 					/* wenn alles korrekt, dann jetzt speichern */
-					Ldap myLdap = new Ldap();
+					LdapAuthentication myLdap = new LdapAuthentication();
 					myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
-					Benutzer temp = new BenutzerDAO().get(this.myBenutzer.getId());
+					User temp = UserManager.getUserById(this.myBenutzer.getId());
 					temp.setPasswortCrypt(this.passwortAendernNeu1);
-					new BenutzerDAO().save(temp);
+					UserManager.saveUser(temp);
 					this.myBenutzer = temp;
 
 					Helper.setMeldung("passwortGeaendert");
@@ -211,11 +213,11 @@ public class LoginForm {
 	 */
 	public String BenutzerkonfigurationSpeichern() {
 		try {
-			Benutzer temp = new BenutzerDAO().get(this.myBenutzer.getId());
+			User temp = UserManager.getUserById(this.myBenutzer.getId());
 			temp.setTabellengroesse(this.myBenutzer.getTabellengroesse());
 			temp.setMetadatenSprache(this.myBenutzer.getMetadatenSprache());
 			temp.setConfVorgangsdatumAnzeigen(this.myBenutzer.isConfVorgangsdatumAnzeigen());
-			new BenutzerDAO().save(temp);
+			UserManager.saveUser(temp);
 			this.myBenutzer = temp;
 			Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
 		} catch (DAOException e) {
@@ -272,19 +274,19 @@ public class LoginForm {
 		this.passwort = passwort;
 	}
 
-	public Benutzer getMyBenutzer() {
+	public User getMyBenutzer() {
 		return this.myBenutzer;
 	}
 
-	public void setMyBenutzer(Benutzer myClass) {
+	public void setMyBenutzer(User myClass) {
 		this.myBenutzer = myClass;
 	}
 
 	public int getMaximaleBerechtigung() {
 		int rueckgabe = 0;
 		if (this.myBenutzer != null) {
-			for (Iterator<Benutzergruppe> iter = this.myBenutzer.getBenutzergruppen().iterator(); iter.hasNext();) {
-				Benutzergruppe element = iter.next();
+			for (Iterator<Usergroup> iter = this.myBenutzer.getBenutzergruppenList().iterator(); iter.hasNext();) {
+				Usergroup element = iter.next();
 				if (element.getBerechtigung().intValue() < rueckgabe || rueckgabe == 0) {
 					rueckgabe = element.getBerechtigung().intValue();
 				}

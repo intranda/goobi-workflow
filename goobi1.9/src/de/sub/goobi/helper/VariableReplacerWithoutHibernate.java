@@ -36,23 +36,24 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Ruleset;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
-import de.sub.goobi.beans.Regelsatz;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.apache.FolderInformation;
 import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
 import de.sub.goobi.persistence.apache.Property;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 public class VariableReplacerWithoutHibernate {
-
 	private enum MetadataLevel {
 		ALL, FIRSTCHILD, TOPSTRUCT;
 	}
@@ -116,7 +117,12 @@ public class VariableReplacerWithoutHibernate {
 			String ocrPlaintextPath = fi.getTxtDirectory().replace("\\", "/");
 			String sourcePath = fi.getSourceDirectory().replace("\\", "/");
 			String importPath = fi.getImportDirectory().replace("\\", "/");	
-			Regelsatz ruleset = ProcessManager.getRuleset(this.process.getRulesetId());
+			Ruleset ruleset = new Ruleset();
+			try {
+				ruleset = RulesetManager.getRulesetById(this.process.getRulesetId());
+			} catch (DAOException e) {
+				logger.error("Error during variable replacement for ruleset", e);
+			}
 			String myprefs = ConfigMain.getParameter("RegelsaetzeVerzeichnis") + ruleset.getDatei();
 
 			/* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */

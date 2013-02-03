@@ -38,6 +38,7 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 import org.apache.log4j.Logger;
+import org.goobi.managedbeans.LoginBean;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -47,13 +48,13 @@ import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.BenutzerDAO;
 import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.SchrittDAO;
+import de.sub.goobi.persistence.managers.UserManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name="StatistikForm") 
+@ManagedBean(name = "StatistikForm")
 @ApplicationScoped
-
 public class StatistikForm {
 	private static final Logger myLogger = Logger.getLogger(StatistikForm.class);
 	Calendar cal = new GregorianCalendar();
@@ -77,12 +78,12 @@ public class StatistikForm {
 	 *             if the current session can't be retrieved or an exception is thrown while performing the rollback.
 	 */
 
-	public Long getAnzahlBenutzer() {
+	public int getAnzahlBenutzer() {
 		try {
-			return new BenutzerDAO().count("from Benutzer where isVisible is null");
+			return new UserManager().getHitSize(null, "isVisible is null");
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
-			return null;
+			return 0;
 		}
 	}
 
@@ -90,12 +91,12 @@ public class StatistikForm {
 	 * @return Anzahl der Benutzer
 	 * @throws DAOException
 	 */
-	public Long getAnzahlBenutzergruppen() {
+	public int getAnzahlBenutzergruppen() {
 		try {
-			return new BenutzerDAO().count("from Benutzergruppe");
+			return new UsergroupManager().getHitSize(null, null);
 		} catch (DAOException e) {
-			Helper.setMeldung(null, "fehlerBeimEinlesen", e.getMessage());
-			return null;
+			Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
+			return 0;
 		}
 	}
 
@@ -168,7 +169,7 @@ public class StatistikForm {
 	@SuppressWarnings("unchecked")
 	private int getAnzahlAktuelleSchritte(boolean inOffen, boolean inBearbeitet) {
 		/* aktuellen Benutzer ermitteln */
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		if (login.getMyBenutzer() == null) {
 			return 0;
 		}

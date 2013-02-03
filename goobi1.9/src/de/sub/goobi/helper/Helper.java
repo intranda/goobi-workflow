@@ -64,13 +64,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.mq.WebServiceResult;
 import org.hibernate.Session;
 import org.jdom.Element;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.enums.ReportLevel;
 import de.sub.goobi.persistence.HibernateSessionLong;
@@ -478,8 +478,8 @@ public class Helper implements Serializable, Observer {
 		return fullpath.substring(0, fullpath.indexOf(servletpath));
 	}
 
-	public static Benutzer getCurrentUser() {
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+	public static User getCurrentUser() {
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		return login.getMyBenutzer();
 	}
 

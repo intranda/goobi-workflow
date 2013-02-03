@@ -34,6 +34,8 @@ import java.util.List;
 
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.flow.IlikeExpression;
 import org.goobi.production.flow.statistics.hibernate.UserDefinedFilter.Parameters;
 import org.hibernate.Criteria;
@@ -44,18 +46,13 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
 import de.sub.goobi.helper.enums.StepStatus;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.BenutzerDAO;
 
 /**
  * class provides methods used by implementations of IEvaluableFilter
@@ -74,17 +71,12 @@ public class FilterHelper {
 	 */
 	protected static void limitToUserAccessRights(Conjunction con) {
 		/* restriction to specific projects if not with admin rights */
-		LoginForm loginForm = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
-		Benutzer aktuellerNutzer = null;
-		try {
-			if (loginForm != null && loginForm.getMyBenutzer() != null) {
-				aktuellerNutzer = new BenutzerDAO().get(loginForm.getMyBenutzer().getId());
-			}
-		} catch (DAOException e) {
-			logger.warn("DAOException", e);
-		} catch (Exception e) {
-			logger.trace("Exception", e);
+		LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+		User aktuellerNutzer = null;
+		if (loginForm != null && loginForm.getMyBenutzer() != null) {
+			aktuellerNutzer = Helper.getCurrentUser();
 		}
+
 		if (aktuellerNutzer != null) {
 			if (loginForm.getMaximaleBerechtigung() > 1) {
 				Disjunction dis = Restrictions.disjunction();
@@ -101,7 +93,7 @@ public class FilterHelper {
 
 		Session session = Helper.getHibernateSession();
 		/* identify current user */
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		if (login == null || login.getMyBenutzer() == null) {
 			return;
 		}
@@ -143,7 +135,6 @@ public class FilterHelper {
 		for (Object o : critGroups.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list()) {
 			idList.add((Integer) o);
 		}
-	
 
 		/*
 		 * -------------------------------- Users only --------------------------------
@@ -178,7 +169,6 @@ public class FilterHelper {
 		for (Object o : critUser.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list()) {
 			idList.add((Integer) o);
 		}
-	
 
 		/*
 		 * -------------------------------- only taking the hits by restricting to the ids --------------------------------
@@ -567,8 +557,8 @@ public class FilterHelper {
 	 * @param stepOpenOnly
 	 * @return String used to pass on error messages about errors in the filter expression
 	 */
-	public static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate,
-			Parameters returnParameters, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, boolean clearSession) {
+	public static String criteriaBuilder(Session session, String inFilter, PaginatingCriteria crit, Boolean isTemplate, Parameters returnParameters,
+			Boolean stepOpenOnly, Boolean userAssignedStepsOnly, boolean clearSession) {
 
 		if (ConfigMain.getBooleanParameter("DatabaseAutomaticRefreshList", true) && clearSession) {
 			session.clear();
@@ -647,7 +637,7 @@ public class FilterHelper {
 				conjProcesses.add(Restrictions.eq("istTemplate", Boolean.valueOf(true)));
 			}
 		}
-		
+
 		// this is needed for evaluating a filter string
 		while (tokenizer.hasNext()) {
 			String tok = tokenizer.nextToken().trim();

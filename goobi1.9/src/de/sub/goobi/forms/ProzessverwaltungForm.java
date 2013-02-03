@@ -57,6 +57,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.SearchResultGeneration;
@@ -85,8 +88,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import de.sub.goobi.beans.Benutzer;
-import de.sub.goobi.beans.Benutzergruppe;
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
@@ -133,12 +134,12 @@ public class ProzessverwaltungForm extends BasisForm {
 	private HashMap<String, Integer> myAnzahlSummary;
 	private Prozesseigenschaft myProzessEigenschaft;
 	private Schritteigenschaft mySchrittEigenschaft;
-	private Benutzer myBenutzer;
+	private User myBenutzer;
 	private Vorlage myVorlage;
 	private Vorlageeigenschaft myVorlageEigenschaft;
 	private Werkstueck myWerkstueck;
 	private Werkstueckeigenschaft myWerkstueckEigenschaft;
-	private Benutzergruppe myBenutzergruppe;
+	private Usergroup myBenutzergruppe;
 	private ProzessDAO dao = new ProzessDAO();
 	private String modusAnzeige = "aktuell";
 	private String modusBearbeiten = "";
@@ -171,7 +172,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		/*
 		 * Vorgangsdatum generell anzeigen?
 		 */
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		if (login.getMyBenutzer() != null) {
 			this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isConfVorgangsdatumAnzeigen());
 		} else {
@@ -628,7 +629,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	public void SchrittUebernehmen() {
 		this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -647,15 +648,15 @@ public class ProzessverwaltungForm extends BasisForm {
 	private void deleteSymlinksFromUserHomes() {
 		WebDav myDav = new WebDav();
 		/* alle Benutzer */
-		for (Benutzer b : this.mySchritt.getBenutzerList()) {
+		for (User b : this.mySchritt.getBenutzerList()) {
 			try {
 				myDav.UploadFromHome(b, this.mySchritt.getProzess());
 			} catch (RuntimeException e) {
 			}
 		}
 		/* alle Benutzergruppen mit ihren Benutzern */
-		for (Benutzergruppe bg : this.mySchritt.getBenutzergruppenList()) {
-			for (Benutzer b : bg.getBenutzerList()) {
+		for (Usergroup bg : this.mySchritt.getBenutzergruppenList()) {
+			for (User b : bg.getBenutzerList()) {
 				try {
 					myDav.UploadFromHome(b, this.mySchritt.getProzess());
 				} catch (RuntimeException e) {
@@ -947,7 +948,7 @@ public class ProzessverwaltungForm extends BasisForm {
 				if (so.getBearbeitungsstatus() == StepStatus.DONE.getValue()) {
 					new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 				} else {
-					Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+					User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 					if (ben != null) {
 						so.setBearbeitungsbenutzer(ben.getId());
 						StepManager.updateStep(so);
@@ -975,7 +976,7 @@ public class ProzessverwaltungForm extends BasisForm {
 			if (proz.getSchritteList().get(0) != step && step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
 				step.setEditTypeEnum(StepEditType.ADMIN);
 				mySchritt.setBearbeitungszeitpunkt(new Date());
-				Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+				User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				if (ben != null) {
 					mySchritt.setBearbeitungsbenutzer(ben);
 				}
@@ -1018,7 +1019,7 @@ public class ProzessverwaltungForm extends BasisForm {
 				new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 			} else {
 				mySchritt.setBearbeitungszeitpunkt(new Date());
-				Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+				User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 				if (ben != null) {
 					mySchritt.setBearbeitungsbenutzer(ben);
 				}
@@ -1031,7 +1032,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	public String SchrittStatusDown() {
 		this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
 		mySchritt.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			mySchritt.setBearbeitungsbenutzer(ben);
 		}
@@ -1192,19 +1193,19 @@ public class ProzessverwaltungForm extends BasisForm {
 		return "";
 	}
 
-	public Benutzer getMyBenutzer() {
+	public User getMyBenutzer() {
 		return this.myBenutzer;
 	}
 
-	public void setMyBenutzer(Benutzer myBenutzer) {
+	public void setMyBenutzer(User myBenutzer) {
 		this.myBenutzer = myBenutzer;
 	}
 
-	public Benutzergruppe getMyBenutzergruppe() {
+	public Usergroup getMyBenutzergruppe() {
 		return this.myBenutzergruppe;
 	}
 
-	public void setMyBenutzergruppe(Benutzergruppe myBenutzergruppe) {
+	public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
 		this.myBenutzergruppe = myBenutzergruppe;
 	}
 
@@ -1594,7 +1595,7 @@ public class ProzessverwaltungForm extends BasisForm {
 	public void CreateXML() {
 		ExportXmlLog xmlExport = new ExportXmlLog();
 		try {
-			LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			String ziel = login.getMyBenutzer().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
 			xmlExport.startExport(this.myProzess, ziel);
 		} catch (IOException e) {
@@ -1848,7 +1849,7 @@ public class ProzessverwaltungForm extends BasisForm {
 
 	public void addToWikiField() {
 		if (addToWikiField != null && addToWikiField.length() > 0) {
-			Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
 			this.myProzess.setWikifield(WikiFieldHelper.getWikiMessage(this.myProzess, this.myProzess.getWikifield(), "user", message));
 			this.addToWikiField = "";

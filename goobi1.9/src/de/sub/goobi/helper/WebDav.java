@@ -39,8 +39,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.download.TiffHeader;
@@ -67,7 +67,7 @@ public class WebDav implements Serializable {
 
 	public List<String> UploadFromHomeAlle(String inVerzeichnis) {
 		List<String> rueckgabe = new ArrayList<String>();
-		Benutzer aktuellerBenutzer = Helper.getCurrentUser();
+		User aktuellerBenutzer = Helper.getCurrentUser();
 		String VerzeichnisAlle;
 
 		try {
@@ -110,7 +110,7 @@ public class WebDav implements Serializable {
 	// TODO: Use generic types
 	public void removeFromHomeAlle(List<String> inList, String inVerzeichnis) {
 		String VerzeichnisAlle;
-		Benutzer aktuellerBenutzer = Helper.getCurrentUser();
+		User aktuellerBenutzer = Helper.getCurrentUser();
 		try {
 			VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 		} catch (Exception ioe) {
@@ -126,13 +126,13 @@ public class WebDav implements Serializable {
 	}
 
 	public void UploadFromHome(Prozess myProzess) {
-		Benutzer aktuellerBenutzer = Helper.getCurrentUser();
+		User aktuellerBenutzer = Helper.getCurrentUser();
         if (aktuellerBenutzer != null) {
         	UploadFromHome(aktuellerBenutzer, myProzess);
         }
 	}
 
-	public void UploadFromHome(Benutzer inBenutzer, Prozess myProzess) {
+	public void UploadFromHome(User inBenutzer, Prozess myProzess) {
 		String nach = "";
 
 		try {
@@ -166,7 +166,7 @@ public class WebDav implements Serializable {
 
 	public void DownloadToHome(Prozess myProzess, int inSchrittID, boolean inNurLesen) {
 		saveTiffHeader(myProzess);
-		Benutzer aktuellerBenutzer = Helper.getCurrentUser();
+		User aktuellerBenutzer = Helper.getCurrentUser();
 		String von = "";
 		String userHome = "";
 
@@ -257,7 +257,7 @@ public class WebDav implements Serializable {
 
 	public int getAnzahlBaende(String inVerzeichnis) {
 		try {
-			Benutzer aktuellerBenutzer = Helper.getCurrentUser();
+			User aktuellerBenutzer = Helper.getCurrentUser();
 			String VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 			File benutzerHome = new File(VerzeichnisAlle);
 			FilenameFilter filter = new FilenameFilter() {

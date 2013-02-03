@@ -40,7 +40,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import de.sub.goobi.beans.Benutzer;
+import org.goobi.beans.User;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
@@ -164,7 +164,7 @@ public class SessionForm {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void sessionBenutzerAktualisieren(HttpSession insession, Benutzer inBenutzer) {
+	public void sessionBenutzerAktualisieren(HttpSession insession, User inBenutzer) {
 		// logger.debug("sessionBenutzerAktualisieren-start");
 		for (Iterator iter = this.alleSessions.iterator(); iter.hasNext();) {
 			HashMap map = (HashMap) iter.next();
@@ -185,7 +185,7 @@ public class SessionForm {
 
 	/* prüfen, ob der Benutzer in einer anderen Session aktiv ist */
 	@SuppressWarnings("rawtypes")
-	public boolean BenutzerInAndererSessionAktiv(HttpSession insession, Benutzer inBenutzer) {
+	public boolean BenutzerInAndererSessionAktiv(HttpSession insession, User inBenutzer) {
 		boolean rueckgabe = false;
 		for (Iterator iter = this.alleSessions.iterator(); iter.hasNext();) {
 			HashMap map = (HashMap) iter.next();
@@ -200,7 +200,7 @@ public class SessionForm {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void alteSessionsDesSelbenBenutzersAufraeumen(HttpSession inSession, Benutzer inBenutzer) {
+	public void alteSessionsDesSelbenBenutzersAufraeumen(HttpSession inSession, User inBenutzer) {
 		List alleSessionKopie = new ArrayList(this.alleSessions);
 		for (Iterator iter = alleSessionKopie.iterator(); iter.hasNext();) {
 			HashMap map = (HashMap) iter.next();

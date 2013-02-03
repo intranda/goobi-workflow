@@ -30,10 +30,10 @@ package de.sub.goobi.statistik;
 import java.util.Iterator;
 import java.util.List;
 
+import org.goobi.beans.Usergroup;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import de.sub.goobi.beans.Benutzergruppe;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Schritt;
 
@@ -46,8 +46,8 @@ public class StatistikBenutzergruppen {
 			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
 			if (step != null) {
 				/* von dem Schritt alle verantwortlichen Benutzergruppen ermitteln und im Diagramm erfassen */
-				for (Iterator<Benutzergruppe> iter2 = step.getBenutzergruppenList().iterator(); iter2.hasNext();) {
-					Benutzergruppe group = iter2.next();
+				for (Iterator<Usergroup> iter2 = step.getBenutzergruppenList().iterator(); iter2.hasNext();) {
+					Usergroup group = iter2.next();
 					if (dataset.getIndex(group.getTitel()) != -1) {
 						dataset
 								.setValue(group.getTitel(), dataset.getValue(group.getTitel()).intValue() + 1);

@@ -27,25 +27,15 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.HashMap;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Ldap;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 
-import de.sub.goobi.beans.LdapGruppe;
 import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.LdapGruppenDAO;
 import de.sub.goobi.persistence.managers.LdapManager;
-import de.sub.goobi.persistence.managers.RulesetManager;
 
 @ManagedBean(name="LdapGruppenForm") 
 @SessionScoped
@@ -79,10 +69,8 @@ public class LdapBean extends BasisForm {
 	}
 
 	public String FilterKein() {
-		String order = "";
-		HashMap<String, String> filter = new HashMap<String, String>();
 		LdapManager rm = new LdapManager();
-		paginator = new DatabasePaginator(order, filter, rm);
+		paginator = new DatabasePaginator(sortierung, filter, rm);
 		return "ldap_all";
 	}
 

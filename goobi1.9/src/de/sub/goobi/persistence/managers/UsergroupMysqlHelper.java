@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.persistence.apache.MySQLHelper;
@@ -15,10 +16,19 @@ import de.sub.goobi.persistence.apache.MySQLUtils;
 public class UsergroupMysqlHelper {
 	private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
 
-	public static List<Usergroup> getUsergroups(String order, HashMap<String, String> filter, int start, int count) throws SQLException {
+	public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM benutzergruppen LIMIT " + start + ", " + count);
+		sql.append("SELECT * FROM benutzergruppen");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
+		if (order!=null && !order.isEmpty()){
+			sql.append(" ORDER BY " + order);
+		}
+		if (start != null && count != null){
+			sql.append(" LIMIT " + start + ", " + count);
+		}
 		try {
 			logger.debug(sql.toString());
 			List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
@@ -28,10 +38,17 @@ public class UsergroupMysqlHelper {
 		}
 	}
 
-	public static int getUsergroupCount(String order, HashMap<String, String> filter) throws SQLException {
+	public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
+		return getUsergroups(null,"BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() +")",0,0);
+	}
+	
+	public static int getUsergroupCount(String order, String filter) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(BenutzergruppenID) FROM benutzergruppen");
+		if (filter!=null && !filter.isEmpty()){
+			sql.append(" WHERE " + filter);
+		}
 		try {
 			logger.debug(sql.toString());
 			return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);

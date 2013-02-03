@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -58,7 +60,7 @@ public class Schritt implements Serializable {
 	private Date bearbeitungsbeginn;
 	private Date bearbeitungsende;
 	private Integer editType;
-	private Benutzer bearbeitungsbenutzer;
+	private User bearbeitungsbenutzer;
 	private short homeverzeichnisNutzen;
 
 	private boolean typMetadaten = false;
@@ -88,8 +90,8 @@ public class Schritt implements Serializable {
 
 	private Prozess prozess;
 	private Set<Schritteigenschaft> eigenschaften;
-	private Set<Benutzer> benutzer;
-	private Set<Benutzergruppe> benutzergruppen;
+	private Set<User> benutzer;
+	private Set<Usergroup> benutzergruppen;
 	private boolean panelAusgeklappt = false;
 	private boolean selected = false;
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
@@ -100,8 +102,8 @@ public class Schritt implements Serializable {
 	public Schritt() {
 		this.titel = "";
 		this.eigenschaften = new HashSet<Schritteigenschaft>();
-		this.benutzer = new HashSet<Benutzer>();
-		this.benutzergruppen = new HashSet<Benutzergruppe>();
+		this.benutzer = new HashSet<User>();
+		this.benutzergruppen = new HashSet<Usergroup>();
 		this.prioritaet = Integer.valueOf(0);
 		this.reihenfolge = Integer.valueOf(0);
 		setBearbeitungsstatusEnum(StepStatus.LOCKED);
@@ -255,11 +257,11 @@ public class Schritt implements Serializable {
 		return 1;
 	}
 
-	public Benutzer getBearbeitungsbenutzer() {
+	public User getBearbeitungsbenutzer() {
 		return this.bearbeitungsbenutzer;
 	}
 
-	public void setBearbeitungsbenutzer(Benutzer bearbeitungsbenutzer) {
+	public void setBearbeitungsbenutzer(User bearbeitungsbenutzer) {
 		this.bearbeitungsbenutzer = bearbeitungsbenutzer;
 	}
 
@@ -342,19 +344,19 @@ public class Schritt implements Serializable {
 		this.eigenschaften = eigenschaften;
 	}
 
-	public Set<Benutzer> getBenutzer() {
+	public Set<User> getBenutzer() {
 		return this.benutzer;
 	}
 
-	public void setBenutzer(Set<Benutzer> benutzer) {
+	public void setBenutzer(Set<User> benutzer) {
 		this.benutzer = benutzer;
 	}
 
-	public Set<Benutzergruppe> getBenutzergruppen() {
+	public Set<Usergroup> getBenutzergruppen() {
 		return this.benutzergruppen;
 	}
 
-	public void setBenutzergruppen(Set<Benutzergruppe> benutzergruppen) {
+	public void setBenutzergruppen(Set<Usergroup> benutzergruppen) {
 		this.benutzergruppen = benutzergruppen;
 	}
 
@@ -398,15 +400,15 @@ public class Schritt implements Serializable {
 		}
 	}
 
-	public List<Benutzer> getBenutzerList() {
+	public List<User> getBenutzerList() {
 		try {
 			Hibernate.initialize(this.benutzer);
 		} catch (HibernateException e) {
 		}
 		if (this.benutzer == null) {
-			return new ArrayList<Benutzer>();
+			return new ArrayList<User>();
 		}
-		return new ArrayList<Benutzer>(this.benutzer);
+		return new ArrayList<User>(this.benutzer);
 	}
 
 	public int getBenutzergruppenSize() {
@@ -421,15 +423,15 @@ public class Schritt implements Serializable {
 		}
 	}
 
-	public List<Benutzergruppe> getBenutzergruppenList() {
+	public List<Usergroup> getBenutzergruppenList() {
 		try {
 			Hibernate.initialize(this.benutzergruppen);
 		} catch (HibernateException e) {
 		}
 		if (this.benutzergruppen == null) {
-			return new ArrayList<Benutzergruppe>();
+			return new ArrayList<Usergroup>();
 		}
-		return new ArrayList<Benutzergruppe>(this.benutzergruppen);
+		return new ArrayList<Usergroup>(this.benutzergruppen);
 	}
 
 	public void setBearbeitungsstatusUp() {

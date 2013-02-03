@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -45,7 +46,7 @@ public class UsergroupManager implements IManager {
 		}
 	}
 
-	public static List<Usergroup> getUsergroups(String order, HashMap<String, String> filter, int start, int count) throws DAOException {
+	public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws DAOException {
 		List<Usergroup> answer = new ArrayList<Usergroup>();
 		try {
 			answer = UsergroupMysqlHelper.getUsergroups(order, filter, start, count);
@@ -56,11 +57,22 @@ public class UsergroupManager implements IManager {
 		return answer;
 	}
 
-	public List<? extends DatabaseObject> getList(String order, HashMap<String, String> filter, int start, int count) throws DAOException {
+	public static List<Usergroup> getUsergroupsForUser(User user) throws DAOException{
+		List<Usergroup> answer = new ArrayList<Usergroup>();
+		try {
+			answer = UsergroupMysqlHelper.getUsergroupsForUser(user);
+		} catch (SQLException e) {
+			logger.error("error while getting Usergroups", e);
+			throw new DAOException(e);
+		}
+		return answer;
+	}
+	
+	public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
 		return (List<? extends DatabaseObject>) getUsergroups(order, filter, start, count);
 	}
 
-	public int getHitSize(String order, HashMap<String, String> filter) throws DAOException {
+	public int getHitSize(String order, String filter) throws DAOException {
 		int num = 0;
 		try {
 			num = UsergroupMysqlHelper.getUsergroupCount(order, filter);
@@ -105,5 +117,7 @@ public class UsergroupManager implements IManager {
 			return answer;
 		}
 	};
+
+
 
 }

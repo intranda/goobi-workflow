@@ -100,10 +100,8 @@ public class DocketBean extends BasisForm {
 	}
 
 	public String FilterKein() {
-		String order = "";
-		HashMap<String, String> filter = new HashMap<String, String>();
 		DocketManager m = new DocketManager();
-		paginator = new DatabasePaginator(order, filter, m);
+		paginator = new DatabasePaginator(sortierung, filter, m);
 		return "docket_all";
 	}
 

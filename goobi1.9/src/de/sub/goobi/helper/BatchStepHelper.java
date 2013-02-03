@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.User;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -51,7 +52,6 @@ import org.goobi.production.properties.PropertyParser;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Benutzer;
 import de.sub.goobi.beans.HistoryEvent;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
@@ -474,7 +474,7 @@ public class BatchStepHelper {
 		this.currentStep.setBearbeitungsstatusEnum(StepStatus.LOCKED);
 		this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		currentStep.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			currentStep.setBearbeitungsbenutzer(ben);
 		}
@@ -595,7 +595,7 @@ public class BatchStepHelper {
 		this.currentStep.setBearbeitungsende(now);
 		this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 		currentStep.setBearbeitungszeitpunkt(new Date());
-		Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (ben != null) {
 			currentStep.setBearbeitungsbenutzer(ben);
 		}
@@ -705,7 +705,7 @@ public class BatchStepHelper {
 
 	public void addToWikiField() {
 		if (addToWikiField != null && addToWikiField.length() > 0) {
-			Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
 			this.currentStep.getProzess().setWikifield(
 					WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
@@ -720,7 +720,7 @@ public class BatchStepHelper {
 
 	public void addToWikiFieldForAll() {
 		if (addToWikiField != null && addToWikiField.length() > 0) {
-			Benutzer user = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
 			for (Schritt s : this.steps) {
 				s.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(s.getProzess(), s.getProzess().getWikifield(), "user", message));
@@ -783,7 +783,7 @@ public class BatchStepHelper {
 			}
 			s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
 			currentStep.setBearbeitungszeitpunkt(new Date());
-			Benutzer ben = (Benutzer) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+			User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			if (ben != null) {
 				currentStep.setBearbeitungsbenutzer(ben);
 			}

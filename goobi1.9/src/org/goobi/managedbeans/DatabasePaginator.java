@@ -33,26 +33,25 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 
-import de.sub.goobi.forms.LoginForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
 
 public class DatabasePaginator implements Serializable { 
-		private static final long serialVersionUID = 1571881092118205104L;
+	private static final long serialVersionUID = 1571881092118205104L;
 	private static final Logger logger = Logger.getLogger(DatabasePaginator.class);
 	private List<? extends DatabaseObject> results;
 	private int pageSize = 0;
 	private int page = 0;
 	private int totalResults = 0;
 	private String order = "";
-	private HashMap<String, String> filter = new HashMap<String, String>();
+	private String filter = new String();
 	private IManager manager;
 	
-	public DatabasePaginator(String order, HashMap<String, String> filter,
+	public DatabasePaginator(String order, String filter,
 			IManager manager) {
 		this.page = 0;
-		LoginForm login = (LoginForm) Helper.getManagedBeanValue("#{LoginForm}");
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login == null || login.getMyBenutzer() == null) {
         	this.pageSize = 10;
 		} else {
