@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -27,31 +27,28 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.File;
+import java.util.HashMap;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.io.File;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
+import org.goobi.beans.Docket;
 
-import de.sub.goobi.beans.Docket;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.DocketDAO;
 import de.sub.goobi.persistence.apache.ProcessManager;
+import de.sub.goobi.persistence.managers.DocketManager;
 
-//@ManagedBean(name="DocketForm") 
-//@SessionScoped
-public class DocketForm extends BasisForm {
-	private static final long serialVersionUID = -445707928042517243L;
+@ManagedBean(name="DocketForm") 
+@SessionScoped
+public class DocketBean extends BasisForm {
+	private static final long serialVersionUID = 3006854499230483171L;
+	private static final Logger logger = Logger.getLogger(DocketBean.class);
 	private Docket myDocket = new Docket();
-	private DocketDAO dao = new DocketDAO();
-	private static final Logger logger = Logger.getLogger(DocketForm.class);
 
 	public String Neu() {
 		this.myDocket = new Docket();
@@ -61,7 +58,7 @@ public class DocketForm extends BasisForm {
 	public String Speichern() {
 		try {
 			if (hasValidRulesetFilePath(myDocket, ConfigMain.getParameter("xsltFolder"))) {
-				this.dao.save(myDocket);
+				DocketManager.saveDocket(myDocket);
 				return "docket_all";
 			} else {
 				Helper.setFehlerMeldung("DocketNotFound");
@@ -85,7 +82,7 @@ public class DocketForm extends BasisForm {
 				Helper.setFehlerMeldung("DocketInUse");
 				return "";
 			} else {
-				this.dao.remove(this.myDocket);
+				DocketManager.deleteDocket(myDocket);
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
@@ -103,18 +100,10 @@ public class DocketForm extends BasisForm {
 	}
 
 	public String FilterKein() {
-		try {
-			// HibernateUtil.clearSession();
-			Session session = Helper.getHibernateSession();
-			// session.flush();
-			session.clear();
-			Criteria crit = session.createCriteria(Docket.class);
-			crit.addOrder(Order.asc("name"));
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
-			return "";
-		}
+		String order = "";
+		HashMap<String, String> filter = new HashMap<String, String>();
+		DocketManager m = new DocketManager();
+		paginator = new DatabasePaginator(order, filter, m);
 		return "docket_all";
 	}
 

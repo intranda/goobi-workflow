@@ -24,7 +24,7 @@
 			<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2"
 				columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered" style="margin-top: 10px;"
-				var="item" value="#{DocketForm.page.listReload}">
+				var="item" value="#{DocketForm.paginator.listReload}">
 
 				<h:column id="id9">
 					<f:facet name="header">
@@ -57,7 +57,7 @@
 				<tr valign="top">
 					<td align="center">
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
-						<x:aliasBean alias="#{mypage}" value="#{DocketForm.page}">
+						<x:aliasBean alias="#{mypage}" value="#{DocketForm.paginator}">
 							<ui:include src="includes/datascroller.xhtml" />
 						</x:aliasBean>
 						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
