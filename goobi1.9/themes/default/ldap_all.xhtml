@@ -23,7 +23,7 @@
 
 			<!-- Datentabelle -->
 			<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
-				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column" var="item" value="#{LdapGruppenForm.page.listReload}"
+				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column" var="item" value="#{LdapGruppenForm.paginator.listReload}"
 				style="margin-top: 10px;">
 
 				<h:column id="id9">
@@ -64,7 +64,7 @@
 				<tr valign="top">
 					<td align="center">
 						<!-- ===================== Datascroller fuer die Ergebnisse ====================== -->
-						<x:aliasBean alias="#{mypage}" value="#{LdapGruppenForm.page}">
+						<x:aliasBean alias="#{mypage}" value="#{LdapGruppenForm.paginator}">
 							<ui:include src="includes/datascroller.xhtml" />
 						</x:aliasBean>
 						<!-- ===================== // Datascroller fuer die Ergebnisse ====================== -->

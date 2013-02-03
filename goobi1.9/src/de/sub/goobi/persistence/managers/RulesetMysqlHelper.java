@@ -27,7 +27,7 @@ public class RulesetMysqlHelper {
 			logger.debug(sql.toString());
 			List<Ruleset> ret = new QueryRunner().query(connection,
 					sql.toString(),
-					RulesetManager.resultSetToRulesetObjectListHandler);
+					RulesetManager.resultSetToRulesetListHandler);
 			return ret;
 		} finally {
 			MySQLHelper.closeConnection(connection);
@@ -56,7 +56,7 @@ public class RulesetMysqlHelper {
 		try {
 			logger.debug(sql.toString());
 			Ruleset ret = new QueryRunner().query(connection, sql.toString(),
-					RulesetManager.resultSetToRulesetObjectHandler);
+					RulesetManager.resultSetToRulesetHandler);
 			return ret;
 		} finally {
 			MySQLHelper.closeConnection(connection);
@@ -73,8 +73,11 @@ public class RulesetMysqlHelper {
 				String propNames = "Titel, Datei, orderMetadataByRuleset";
 				String propValues = "'" + ro.getTitel() + "','" + ro.getDatei()
 						+ "'," + ro.isOrderMetadataByRuleset() + "";
-				sql.append("INSERT INTO metadatenkonfigurationen (" + propNames
-						+ ") VALUES (" + propValues + ")");
+				sql.append("INSERT INTO metadatenkonfigurationen (");
+				sql.append(propNames);
+				sql.append(") VALUES (");
+				sql.append(propValues);
+				sql.append(")");
 			} else {
 				sql.append("UPDATE metadatenkonfigurationen SET ");
 				sql.append("Titel = '" + ro.getTitel() + "', ");

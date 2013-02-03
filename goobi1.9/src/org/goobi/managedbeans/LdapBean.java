@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -27,35 +27,40 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.util.HashMap;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.goobi.beans.Ldap;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
 import de.sub.goobi.beans.LdapGruppe;
+import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.LdapGruppenDAO;
+import de.sub.goobi.persistence.managers.LdapManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
-//@ManagedBean(name="LdapGruppenForm") 
-//@SessionScoped
-public class LdapGruppenForm extends BasisForm {
+@ManagedBean(name="LdapGruppenForm") 
+@SessionScoped
+public class LdapBean extends BasisForm {
 	private static final long serialVersionUID = -5644561256582235244L;
-	private LdapGruppe myLdapGruppe = new LdapGruppe();
-	private LdapGruppenDAO dao = new LdapGruppenDAO();
-
+	private Ldap myLdapGruppe = new Ldap();
+	
 	public String Neu() {
-		this.myLdapGruppe = new LdapGruppe();
+		this.myLdapGruppe = new Ldap();
 		return "ldap_edit";
 	}
 
 	public String Speichern() {
 		try {
-			this.dao.save(this.myLdapGruppe);
+			LdapManager.saveLdap(myLdapGruppe);
 			return "ldap_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Could not save", e.getMessage());
@@ -65,7 +70,7 @@ public class LdapGruppenForm extends BasisForm {
 
 	public String Loeschen() {
 		try {
-			this.dao.remove(this.myLdapGruppe);
+			LdapManager.deleteLdap(myLdapGruppe);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Could not delete from database", e.getMessage());
 			return "";
@@ -74,16 +79,10 @@ public class LdapGruppenForm extends BasisForm {
 	}
 
 	public String FilterKein() {
-		try {
-			Session session = Helper.getHibernateSession();
-				session.clear();
-			Criteria crit = session.createCriteria(LdapGruppe.class);
-			crit.addOrder(Order.asc("titel"));
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("Error on reading database", he.getMessage());
-			return "";
-		}
+		String order = "";
+		HashMap<String, String> filter = new HashMap<String, String>();
+		LdapManager rm = new LdapManager();
+		paginator = new DatabasePaginator(order, filter, rm);
 		return "ldap_all";
 	}
 
@@ -96,11 +95,11 @@ public class LdapGruppenForm extends BasisForm {
 	 * Getter und Setter     
 	 */
 
-	public LdapGruppe getMyLdapGruppe() {
+	public Ldap getMyLdapGruppe() {
 		return this.myLdapGruppe;
 	}
 
-	public void setMyLdapGruppe(LdapGruppe myLdapGruppe) {
+	public void setMyLdapGruppe(Ldap myLdapGruppe) {
 		this.myLdapGruppe = myLdapGruppe;
 	}
 

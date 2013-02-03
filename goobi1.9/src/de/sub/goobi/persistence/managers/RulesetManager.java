@@ -74,19 +74,15 @@ public class RulesetManager implements IManager {
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
 	public static Ruleset rulesetConvert(ResultSet rs) throws SQLException {
-		int id = rs.getInt("MetadatenKonfigurationID");
-		String title = rs.getString("Titel");
-		String file = rs.getString("Datei");
-		boolean order = rs.getBoolean("orderMetadataByRuleset");
 		Ruleset r = new Ruleset();
-		r.setId(id);
-		r.setTitel(title);
-		r.setDatei(file);
-		r.setOrderMetadataByRuleset(order);
+		r.setId(rs.getInt("MetadatenKonfigurationID"));
+		r.setTitel(rs.getString("Titel"));
+		r.setDatei(rs.getString("Datei"));
+		r.setOrderMetadataByRuleset(rs.getBoolean("orderMetadataByRuleset"));
 		return r;
 	}
 
-	public static ResultSetHandler<Ruleset> resultSetToRulesetObjectHandler = new ResultSetHandler<Ruleset>() {
+	public static ResultSetHandler<Ruleset> resultSetToRulesetHandler = new ResultSetHandler<Ruleset>() {
 		@Override
 		public Ruleset handle(ResultSet rs) throws SQLException {
 			if (rs.next()) {
@@ -96,7 +92,7 @@ public class RulesetManager implements IManager {
 		}
 	};
 
-	public static ResultSetHandler<List<Ruleset>> resultSetToRulesetObjectListHandler = new ResultSetHandler<List<Ruleset>>() {
+	public static ResultSetHandler<List<Ruleset>> resultSetToRulesetListHandler = new ResultSetHandler<List<Ruleset>>() {
 		@Override
 		public List<Ruleset> handle(ResultSet rs) throws SQLException {
 			List<Ruleset> answer = new ArrayList<Ruleset>();
