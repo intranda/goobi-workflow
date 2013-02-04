@@ -13,61 +13,53 @@ import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
 public class RulesetMysqlHelper {
-	private static final Logger logger = Logger
-			.getLogger(RulesetMysqlHelper.class);
+	private static final Logger logger = Logger.getLogger(RulesetMysqlHelper.class);
 
-	public static List<Ruleset> getRulesets(String order,
-			String filter, Integer start, Integer count)
-			throws SQLException {
+	public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * FROM metadatenkonfigurationen");
-		if (filter!=null && !filter.isEmpty()){
+		if (filter != null && !filter.isEmpty()) {
 			sql.append(" WHERE " + filter);
 		}
-		if (order!=null && !order.isEmpty()){
+		if (order != null && !order.isEmpty()) {
 			sql.append(" ORDER BY " + order);
 		}
-		if (start != null && count != null){
+		if (start != null && count != null) {
 			sql.append(" LIMIT " + start + ", " + count);
 		}
 		try {
 			logger.debug(sql.toString());
-			List<Ruleset> ret = new QueryRunner().query(connection,
-					sql.toString(),
-					RulesetManager.resultSetToRulesetListHandler);
+			List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
 			return ret;
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
 	}
 
-	public static int getRulesetCount(String order,
-			String filter) throws SQLException {
+	public static int getRulesetCount(String order, String filter) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(MetadatenKonfigurationID) FROM metadatenkonfigurationen");
-		if (filter!=null && !filter.isEmpty()){
+		if (filter != null && !filter.isEmpty()) {
 			sql.append(" WHERE " + filter);
 		}
 		try {
 			logger.debug(sql.toString());
-			return new QueryRunner().query(connection, sql.toString(),
-					MySQLUtils.resultSetToIntegerHandler);
+			return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
 	}
 
-	public static Ruleset getRulesetById(int id) throws SQLException {
+	public static Ruleset getRulesetForId(int rulesetId) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM metadatenkonfigurationen WHERE MetadatenKonfigurationID = "
-				+ id);
+		sql.append("SELECT * FROM metadatenkonfigurationen WHERE MetadatenKonfigurationID = ? ");
 		try {
-			logger.debug(sql.toString());
-			Ruleset ret = new QueryRunner().query(connection, sql.toString(),
-					RulesetManager.resultSetToRulesetHandler);
+			Object[] params = { rulesetId };
+			logger.debug(sql.toString() + ", " + rulesetId);
+			Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, params);
 			return ret;
 		} finally {
 			MySQLHelper.closeConnection(connection);
@@ -82,8 +74,7 @@ public class RulesetMysqlHelper {
 
 			if (ro.getId() == null) {
 				String propNames = "Titel, Datei, orderMetadataByRuleset";
-				String propValues = "'" + ro.getTitel() + "','" + ro.getDatei()
-						+ "'," + ro.isOrderMetadataByRuleset() + "";
+				String propValues = "'" + ro.getTitel() + "','" + ro.getDatei() + "'," + ro.isOrderMetadataByRuleset() + "";
 				sql.append("INSERT INTO metadatenkonfigurationen (");
 				sql.append(propNames);
 				sql.append(") VALUES (");
@@ -93,10 +84,8 @@ public class RulesetMysqlHelper {
 				sql.append("UPDATE metadatenkonfigurationen SET ");
 				sql.append("Titel = '" + ro.getTitel() + "', ");
 				sql.append("Datei = '" + ro.getDatei() + "', ");
-				sql.append("orderMetadataByRuleset = "
-						+ ro.isOrderMetadataByRuleset() + " ");
-				sql.append(" WHERE MetadatenKonfigurationID = " + ro.getId()
-						+ ";");
+				sql.append("orderMetadataByRuleset = " + ro.isOrderMetadataByRuleset() + " ");
+				sql.append(" WHERE MetadatenKonfigurationID = " + ro.getId() + ";");
 			}
 			logger.debug(sql.toString());
 			run.update(connection, sql.toString());
@@ -110,8 +99,7 @@ public class RulesetMysqlHelper {
 			Connection connection = MySQLHelper.getInstance().getConnection();
 			try {
 				QueryRunner run = new QueryRunner();
-				String sql = "DELETE FROM metadatenkonfigurationen WHERE MetadatenKonfigurationID = "
-						+ ro.getId() + ";";
+				String sql = "DELETE FROM metadatenkonfigurationen WHERE MetadatenKonfigurationID = " + ro.getId() + ";";
 				logger.debug(sql);
 				run.update(connection, sql);
 			} finally {

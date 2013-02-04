@@ -19,7 +19,7 @@ public class RulesetManager implements IManager {
 	public static Ruleset getRulesetById(int id) throws DAOException {
 		Ruleset o = null;
 		try {
-			o = RulesetMysqlHelper.getRulesetById(id);
+			o = RulesetMysqlHelper.getRulesetForId(id);
 		} catch (SQLException e) {
 			logger.error("error while getting ruleset with id " + id, e);
 			throw new DAOException(e);

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -157,29 +156,32 @@ public class UserMysqlHelper {
 		}
 	}
 	
+	
+	
 	public static List<String> getFilterForUser(int userId) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = " + userId);
+		sql.append("SELECT * FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ?");
 		try {
-			logger.debug(sql.toString());
-			List<String> answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToFilterListtHandler);
+			Object[] param = { userId };
+			logger.debug(sql.toString() + ", " + param);
+			List<String> answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToFilterListtHandler, param);
 			return answer;
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
-	}
-
+	}	
+	
 	public static void addFilterToUser(int userId, String filterstring) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		Timestamp datetime = new Timestamp(new Date().getTime());
 		try {
 			QueryRunner run = new QueryRunner();
 			String propNames = "Titel, Wert, IstObligatorisch, DatentypenID, Auswahl, creationDate, BenutzerID";
-			String propValues = "'_filter','" + filterstring + "'," + false + ",'" + 5 + "'," + null + ",'" + datetime + "','" + userId + "'";
-			String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES (" + propValues + ")";
-			logger.debug(sql.toString());
-			run.update(connection, sql);
+			Object[] param = { "_filter", filterstring, false, 5, null, datetime, userId };
+			String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES ( ?, ?,? ,? ,? ,?,? )";
+			logger.debug(sql.toString() + ", " + param);
+			run.update(connection, sql, param);
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
@@ -189,9 +191,10 @@ public class UserMysqlHelper {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		try {
 			QueryRunner run = new QueryRunner();
-			String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND Wert = '" + filterstring + "'";
-			logger.debug(sql.toString());
-			run.update(connection, sql);
+			Object[] param = { userId, filterstring };
+			String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ? AND Wert = ?";
+			logger.debug(sql.toString() + ", " + param);
+			run.update(connection, sql, param);
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
