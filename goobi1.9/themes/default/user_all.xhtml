@@ -23,7 +23,7 @@
 			<!-- +++++++++++++++++  Anzeigefilter ++++++++++++++++++++++++ -->
 			<h:panelGrid id="id8" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight" rowClasses="standardTable_Row" columns="2"
 				style="margin-top: 10px;">
-				<h:outputText style="vertical-align: conter;" value="#{msgs.treffer}: #{BenutzerverwaltungForm.page.totalResults}" />
+				<h:outputText style="vertical-align: conter;" value="#{msgs.treffer}: #{BenutzerverwaltungForm.paginator.totalResults}" />
 				<h:panelGroup id="id9">
 					<h:outputText id="id10" value="#{msgs.nurAktiveNutzerZeigen}:" />
 					<x:selectBooleanCheckbox id="check1" forceId="true" value="#{BenutzerverwaltungForm.hideInactiveUsers}"
@@ -46,7 +46,7 @@
 			<x:dataTable id="id14" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2"
 				columnClasses="standardTable_Column,standardTable_Column,standardTable_Column,standardTable_Column, standardTable_ColumnCentered" var="item"
-				value="#{BenutzerverwaltungForm.page.listReload}">
+				value="#{BenutzerverwaltungForm.paginator.listReload}">
 
 				<h:column id="id15">
 					<f:facet name="header">
@@ -118,7 +118,7 @@
 
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
-						<x:aliasBean alias="#{mypage}" value="#{BenutzerverwaltungForm.page}">
+						<x:aliasBean alias="#{mypage}" value="#{BenutzerverwaltungForm.paginator}">
 							<ui:include src="includes/datascroller.xhtml" />
 						</x:aliasBean>
 						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->

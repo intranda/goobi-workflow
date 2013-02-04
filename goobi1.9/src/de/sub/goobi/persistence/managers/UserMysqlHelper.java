@@ -73,6 +73,11 @@ public class UserMysqlHelper {
 			QueryRunner run = new QueryRunner();
 			StringBuilder sql = new StringBuilder();
 
+			String visible = null;
+			if (ro.getIsVisible()!=null){
+				visible = "'" + ro.getIsVisible() + "'";
+			}
+			
 			if (ro.getId() == null) {
 
 				String propNames = "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, confVorgangsdatumAnzeigen, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin";
@@ -90,7 +95,7 @@ public class UserMysqlHelper {
 				propValues.append(ro.getTabellengroesse() + ",");
 				propValues.append(ro.getSessiontimeout() + ",");
 				propValues.append(ro.getLdapGruppe().getId() + ",");
-				propValues.append("'" + ro.getIsVisible() + "',");
+				propValues.append(visible + ",");
 				propValues.append("'" + ro.getLdaplogin() + "'");
 
 				sql.append("INSERT INTO benutzer (");
@@ -113,7 +118,7 @@ public class UserMysqlHelper {
 				sql.append("Tabellengroesse = " + ro.getTabellengroesse() + ",");
 				sql.append("sessiontimeout = " + ro.getSessiontimeout() + ",");
 				sql.append("ldapgruppenID = " + ro.getLdapGruppe().getId() + ",");
-				sql.append("isVisible = '" + ro.getIsVisible() + "',");
+				sql.append("isVisible = " + visible + ",");
 				sql.append("ldaplogin = '" + ro.getLdaplogin() + "'");
 				sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 			}
@@ -124,6 +129,20 @@ public class UserMysqlHelper {
 		}
 	}
 
+	public static void hideUser(User ro) throws SQLException {
+		if (ro.getId() != null) {
+			Connection connection = MySQLHelper.getInstance().getConnection();
+			try {
+				QueryRunner run = new QueryRunner();
+				String sql = "UPDATE benutzer SET isVisible = 'deleted' WHERE BenutzerID = " + ro.getId() + ";";
+				logger.debug(sql);
+				run.update(connection, sql);
+			} finally {
+				MySQLHelper.closeConnection(connection);
+			}
+		}
+	}
+	
 	public static void deleteUser(User ro) throws SQLException {
 		if (ro.getId() != null) {
 			Connection connection = MySQLHelper.getInstance().getConnection();

@@ -65,7 +65,7 @@ public class User implements Serializable, DatabaseObject {
 	private Integer sessiontimeout = 7200;
 	private boolean confVorgangsdatumAnzeigen = false;
 	private String metadatenSprache;
-	private List<Usergroup> benutzergruppen;
+	private List<Usergroup> benutzergruppen = null;
 	private Set<Schritt> schritte;
 	private Set<Schritt> bearbeitungsschritte;
 	private Set<Projekt> projekte;

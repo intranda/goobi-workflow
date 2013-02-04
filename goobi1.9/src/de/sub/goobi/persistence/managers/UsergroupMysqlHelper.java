@@ -39,7 +39,7 @@ public class UsergroupMysqlHelper {
 	}
 
 	public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
-		return getUsergroups(null,"BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() +")",0,0);
+		return getUsergroups(null,"BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() +")",null,null);
 	}
 	
 	public static int getUsergroupCount(String order, String filter) throws SQLException {

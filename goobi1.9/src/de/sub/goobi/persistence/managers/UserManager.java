@@ -44,6 +44,15 @@ public class UserManager implements IManager {
 			throw new DAOException(e);
 		}
 	}
+	
+	public static void hideUser(User o) throws DAOException {
+		try {
+			UserMysqlHelper.hideUser(o);
+		} catch (SQLException e) {
+			logger.error("error while deleting User with id " + o.getId(), e);
+			throw new DAOException(e);
+		}
+	}
 
 	public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws DAOException {
 		List<User> answer = new ArrayList<User>();

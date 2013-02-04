@@ -50,19 +50,11 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-
 
 import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.ProjektDAO;
@@ -70,7 +62,7 @@ import de.sub.goobi.persistence.managers.LdapManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name="BenutzerverwaltungForm") 
+@ManagedBean(name = "BenutzerverwaltungForm")
 @SessionScoped
 public class UserBean extends BasisForm {
 	private static final long serialVersionUID = -3635859455444639614L;
@@ -89,24 +81,20 @@ public class UserBean extends BasisForm {
 		return "user_edit";
 	}
 
+	private String getBasicFilter() {
+		String hide = "isVisible is null";
+		if (this.hideInactiveUsers) {
+			hide += " AND istAktiv=true";
+		}
+		return hide;
+	}
+
 	public String FilterKein() {
 		displayMode = "";
 		this.filter = null;
-		try {
-			Session session = Helper.getHibernateSession();
-			session.clear();
-			Criteria crit = session.createCriteria(User.class);
-			crit.add(Restrictions.isNull("isVisible"));
-			if (this.hideInactiveUsers) {
-				crit.add(Restrictions.eq("istAktiv", true));
-			}
-			crit.addOrder(Order.asc("nachname"));
-			crit.addOrder(Order.asc("vorname"));
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
-			return "";
-		}
+		this.sortierung = "nachname, vorname";
+		UserManager m = new UserManager();
+		paginator = new DatabasePaginator(sortierung, getBasicFilter(), m);
 		return "user_all";
 	}
 
@@ -119,39 +107,17 @@ public class UserBean extends BasisForm {
 	 * Anzeige der gefilterten Nutzer
 	 */
 	public String FilterAlleStart() {
-		try {
-			Session session = Helper.getHibernateSession();
-			session.clear();
-			Criteria crit = session.createCriteria(User.class);
-			crit.add(Restrictions.isNull("isVisible"));
-			if (this.hideInactiveUsers) {
-				crit.add(Restrictions.eq("istAktiv", true));
-			}
-
-			if (this.filter != null || this.filter.length() != 0) {
-				Disjunction ex = Restrictions.disjunction();
-				ex.add(Restrictions.like("vorname", "%" + this.filter + "%"));
-				ex.add(Restrictions.like("nachname", "%" + this.filter + "%"));
-//				crit.createCriteria("projekte", "proj");
-//				ex.add(Restrictions.like("proj.titel", "%" + this.filter + "%"));
-				
-//				crit.createCriteria("benutzergruppen", "group");
-//				ex.add(Restrictions.like("group.titel", "%" + this.filter + "%"));
-				crit.add(ex);
-			}
-			crit.addOrder(Order.asc("nachname"));
-			crit.addOrder(Order.asc("vorname"));
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("Error, could not read", he.getMessage());
-			return "";
+		this.sortierung = "nachname, vorname";
+		UserManager m = new UserManager();
+		String myfilter = getBasicFilter();
+		if (this.filter != null || this.filter.length() != 0) {
+			myfilter += " AND (vorname like '%" + this.filter + "%' OR nachname like '%" + this.filter + "%')";
 		}
+		paginator = new DatabasePaginator(sortierung, myfilter, m);
 		return "user_all";
 	}
 
 	public String Speichern() {
-		Session session = Helper.getHibernateSession();
-		session.evict(this.myClass);
 		String bla = this.myClass.getLogin();
 
 		if (!LoginValide(bla)) {
@@ -218,9 +184,9 @@ public class UserBean extends BasisForm {
 	 */
 	public String Loeschen() {
 		try {
-			UserManager.deleteUser(myClass);
+			UserManager.hideUser(myClass);
 		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
+			Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
 			logger.error(e);
 			return "";
 		}
@@ -255,7 +221,7 @@ public class UserBean extends BasisForm {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
 		}
-		displayMode="";
+		displayMode = "";
 		return "";
 	}
 
@@ -286,7 +252,7 @@ public class UserBean extends BasisForm {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
 		}
-		displayMode="";
+		displayMode = "";
 		return "";
 	}
 
@@ -327,7 +293,7 @@ public class UserBean extends BasisForm {
 
 	public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
 		List<SelectItem> myLdapGruppen = new ArrayList<SelectItem>();
-		List<Ldap> temp = LdapManager.getLdaps("titel", null, 0, 0);
+		List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
 		for (Ldap gru : temp) {
 			myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
 		}
@@ -357,11 +323,11 @@ public class UserBean extends BasisForm {
 	public void setHideInactiveUsers(boolean hideInactiveUsers) {
 		this.hideInactiveUsers = hideInactiveUsers;
 	}
-	
+
 	public String getDisplayMode() {
 		return displayMode;
 	}
-	
+
 	public void setDisplayMode(String displayMode) {
 		this.displayMode = displayMode;
 	}
