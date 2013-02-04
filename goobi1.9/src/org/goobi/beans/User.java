@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.goobi.managedbeans.UserBean;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
@@ -52,6 +54,7 @@ import dubious.sub.goobi.helper.encryption.DesEncrypter;
 
 public class User implements Serializable, DatabaseObject {
 	private static final long serialVersionUID = -7482853955996650586L;
+	private static final Logger logger = Logger.getLogger(User.class);
 	private Integer id;
 	private String vorname;
 	private String nachname;
@@ -212,12 +215,12 @@ public class User implements Serializable, DatabaseObject {
 			try {
 				benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
 			} catch (DAOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("error getting usergroups", e);
 			}
 //			List<Usergroup> answer = new ArrayList<Usergroup>(this.benutzergruppen);
 //			Collections.sort(answer);
 		}
+		logger.debug("gruppen: " + benutzergruppen);
 		return benutzergruppen;
 	}
 

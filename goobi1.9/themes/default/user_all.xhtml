@@ -66,6 +66,10 @@
 					<f:facet name="header">
 						<h:outputText id="id22" value="#{msgs.benutzergruppen}" />
 					</f:facet>
+					<!-- 
+					 <h:outputText value="#{item.benutzergruppenList}"/>
+					 -->
+					
 					<x:dataList id="id23" var="intern" styleClass="#{not item.istAktiv?'text_light':''}" rendered="#{item.benutzergruppenSize != 0}"
 						value="#{item.benutzergruppenList}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
 						<h:outputText id="id24" value="#{intern.titel}" />
