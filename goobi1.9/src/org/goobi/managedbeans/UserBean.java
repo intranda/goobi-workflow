@@ -45,10 +45,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
@@ -218,8 +218,8 @@ public class UserBean extends BasisForm {
 
 	public String AusProjektLoeschen() {
 		int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-		List<Projekt> neu = new ArrayList<Projekt>();
-		for (Projekt p: this.myClass.getProjekte()) {
+		List<Project> neu = new ArrayList<Project>();
+		for (Project p: this.myClass.getProjekte()) {
 			if (p.getId().intValue() != projektID) {
 				neu.add(p);
 			}
@@ -231,8 +231,8 @@ public class UserBean extends BasisForm {
 	public String ZuProjektHinzufuegen() {
 		Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
 		try {
-			Projekt project = new ProjektDAO().get(projektID);
-			for (Projekt p : this.myClass.getProjekte()) {
+			Project project = new ProjektDAO().get(projektID);
+			for (Project p : this.myClass.getProjekte()) {
 				if (p.equals(project)) {
 					return "";
 				}

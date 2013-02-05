@@ -57,6 +57,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
@@ -88,7 +89,6 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
@@ -1231,8 +1231,8 @@ public class ProzessverwaltungForm extends BasisForm {
 
 	public List<SelectItem> getProjektAuswahlListe() throws DAOException {
 		List<SelectItem> myProjekte = new ArrayList<SelectItem>();
-		List<Projekt> temp = new ProjektDAO().search("from Projekt ORDER BY titel");
-		for (Projekt proj : temp) {
+		List<Project> temp = new ProjektDAO().search("from Projekt ORDER BY titel");
+		for (Project proj : temp) {
 			myProjekte.add(new SelectItem(proj.getId(), proj.getTitel(), null));
 		}
 		return myProjekte;

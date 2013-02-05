@@ -38,7 +38,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
 import de.sub.goobi.beans.Benutzereigenschaft;
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -67,7 +66,7 @@ public class User implements Serializable, DatabaseObject {
 	private List<Usergroup> benutzergruppen;
 	private List<Schritt> schritte;
 	private List<Schritt> bearbeitungsschritte;
-	private List<Projekt> projekte;
+	private List<Project> projekte;
 	private List<Benutzereigenschaft> eigenschaften;
 	private boolean mitMassendownload = false;
 	private Ldap ldapGruppe;
@@ -79,7 +78,6 @@ public class User implements Serializable, DatabaseObject {
 		} catch (DAOException e) {
 			logger.error("error during lazy loading of User", e);
 		}
-		logger.debug("gruppen: " + this.benutzergruppen);
 	}
 	
 	public Integer getId() {
@@ -242,13 +240,13 @@ public class User implements Serializable, DatabaseObject {
 		}
 	}
 
-	public void setProjekte(List<Projekt> projekte) {
+	public void setProjekte(List<Project> projekte) {
 		this.projekte = projekte;
 	}
 	
-	public List<Projekt> getProjekte() {
+	public List<Project> getProjekte() {
 		if (this.projekte == null) {
-			return new ArrayList<Projekt>();
+			return new ArrayList<Project>();
 		} 
 		return this.projekte;
 	}

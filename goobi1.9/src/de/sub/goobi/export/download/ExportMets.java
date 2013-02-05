@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
@@ -244,7 +243,7 @@ public class ExportMets {
 		// Replace all pathes with the given VariableReplacer, also the file
 		// group pathes!
 		VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
-		Set<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
+		List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
 
 		if (myFilegroups != null && myFilegroups.size() > 0) {
 			for (ProjectFileGroup pfg : myFilegroups) {

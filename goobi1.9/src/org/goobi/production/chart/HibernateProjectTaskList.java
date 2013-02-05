@@ -30,6 +30,7 @@ package org.goobi.production.chart;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Project;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.ScrollMode;
@@ -38,7 +39,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -46,13 +46,13 @@ import de.sub.goobi.helper.enums.StepStatus;
 public class HibernateProjectTaskList implements IProvideProjectTaskList {
 
 	@Override
-	public List<IProjectTask> calculateProjectTasks(Projekt inProject, Boolean countImages, Integer inMax) {
+	public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax) {
 		List<IProjectTask> myTaskList = new ArrayList<IProjectTask>();
 		calculate(inProject, myTaskList, countImages, inMax);
 		return myTaskList;
 	}
 
-	private synchronized void calculate(Projekt inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
+	private synchronized void calculate(Project inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
 		Session session = Helper.getHibernateSession();
 		Criteria crit = session.createCriteria(Schritt.class);
 		crit.addOrder(Order.asc("reihenfolge"));

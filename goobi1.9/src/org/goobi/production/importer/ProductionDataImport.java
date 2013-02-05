@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Usergroup;
 import org.hibernate.Criteria;
@@ -55,7 +56,6 @@ import org.hibernate.criterion.Restrictions;
 import com.thoughtworks.xstream.XStream;
 
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
@@ -89,8 +89,8 @@ public class ProductionDataImport {
 	private final static String conflictFilename = "propertiesWithoutProcess.xml";
 	private String filename;
 	private ArrayList<ImportConflicts> conflicts = new ArrayList<ImportConflicts>();
-	private List<Projekt> projectList = new ArrayList<Projekt>();
-	private Projekt altdaten = null;
+	private List<Project> projectList = new ArrayList<Project>();
+	private Project altdaten = null;
 	private Session session;
 
 	private ProductionDataImport() {
@@ -211,7 +211,7 @@ public class ProductionDataImport {
 		logger.debug("Zu " + oldProj + " existierenden Prozessen wurden Properties hinzugefügt");
 	}
 
-	private void generateNewPropertiesForNewProzess(Session session, Ruleset ruleset, Projekt project, ProductionData pd)
+	private void generateNewPropertiesForNewProzess(Session session, Ruleset ruleset, Project project, ProductionData pd)
 			throws HibernateException, SQLException {
 
 		// generate new Process
@@ -898,16 +898,16 @@ public class ProductionDataImport {
 		return stepList;
 	}
 
-	private Projekt generateProject() {
-		Projekt project = new Projekt();
+	private Project generateProject() {
+		Project project = new Project();
 		project.setTitel("Altdaten");
 		project.setFileFormatDmsExport("Mets");
 		project.setFileFormatInternal("Mets");
 		return project;
 	}
 
-	private Projekt getProjekt(ProductionData pd) {
-		for (Projekt p : projectList) {
+	private Project getProjekt(ProductionData pd) {
+		for (Project p : projectList) {
 			if (p.getTitel().equals(pd.getWERKPROJEKT())) {
 				return p;
 			}

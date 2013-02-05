@@ -62,7 +62,6 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 		} catch (DAOException e) {
 			logger.error("error during lazy loading of Usergroup", e);
 		}
-		logger.debug("user: " + this.benutzer);
 	}
 	
 	public Integer getId() {

@@ -28,7 +28,8 @@ package de.sub.goobi.persistence;
  */
 import java.util.List;
 
-import de.sub.goobi.beans.Projekt;
+import org.goobi.beans.Project;
+
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class ProjektDAO extends BaseDAO {
@@ -38,20 +39,20 @@ public class ProjektDAO extends BaseDAO {
 	 */
 	private static final long serialVersionUID = -9050627256118458325L;
 
-	public Projekt save(Projekt t) throws DAOException {
+	public Project save(Project t) throws DAOException {
 		storeObj(t);
-		return (Projekt) retrieveObj(Projekt.class, t.getId());
+		return (Project) retrieveObj(Project.class, t.getId());
 	}
 
-	public Projekt get(Integer id) throws DAOException {
-		Projekt rueckgabe = (Projekt) retrieveObj(Projekt.class, id);
+	public Project get(Integer id) throws DAOException {
+		Project rueckgabe = (Project) retrieveObj(Project.class, id);
 		if (rueckgabe == null) {
 			throw new DAOException("Object can not be found in database");
 		}
 		return rueckgabe;
 	}
 
-	public void remove(Projekt t) throws DAOException {
+	public void remove(Project t) throws DAOException {
 		if (t.getId() != null) {
 			removeObj(t);
 		}
@@ -59,12 +60,12 @@ public class ProjektDAO extends BaseDAO {
 
 	public void remove(Integer id) throws DAOException {
 		if (id != null) {
-			removeObj(Projekt.class, id);
+			removeObj(Project.class, id);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Projekt> search(String query) throws DAOException {
+	public List<Project> search(String query) throws DAOException {
 		return retrieveObjs(query);
 	}
 

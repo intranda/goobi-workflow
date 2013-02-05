@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
@@ -81,7 +82,7 @@ public class Prozess implements Serializable {
 	private String ausgabename;
 	private Boolean istTemplate;
 	private Boolean inAuswahllisteAnzeigen;
-	private Projekt projekt;
+	private Project projekt;
 	private Date erstellungsdatum;
 	private Set<Schritt> schritte;
 	private Set<HistoryEvent> history;
@@ -488,11 +489,11 @@ public class Prozess implements Serializable {
 	 * Helper
 	 */
 
-	public Projekt getProjekt() {
+	public Project getProjekt() {
 		return this.projekt;
 	}
 
-	public void setProjekt(Projekt projekt) {
+	public void setProjekt(Project projekt) {
 		this.projekt = projekt;
 	}
 

@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.goobi.beans.Project;
 import org.goobi.production.flow.statistics.StepInformation;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -42,7 +43,6 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -66,7 +66,7 @@ public class ProjectHelper {
 	 */
 
 	@SuppressWarnings("unchecked")
-	synchronized public static List<StepInformation> getProjectWorkFlowOverview(Projekt project) {
+	synchronized public static List<StepInformation> getProjectWorkFlowOverview(Project project) {
 		Long totalNumberOfProc = 0l;
 		Long totalNumberOfImages = 0l;
 
@@ -221,7 +221,7 @@ public class ProjectHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<StepInformation> getWorkFlow(Projekt inProj, Boolean notOnlyCommonFlow) {
+	public static List<StepInformation> getWorkFlow(Project inProj, Boolean notOnlyCommonFlow) {
 		Long totalNumberOfProc = 0l;
 		// false as default
 		if (notOnlyCommonFlow == null) {

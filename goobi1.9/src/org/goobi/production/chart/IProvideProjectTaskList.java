@@ -29,7 +29,7 @@ package org.goobi.production.chart;
  */
 import java.util.List;
 
-import de.sub.goobi.beans.Projekt;
+import org.goobi.beans.Project;
 
 
 
@@ -51,5 +51,5 @@ public interface IProvideProjectTaskList {
 	 * @return
 	 */
 	
-	public List<IProjectTask> calculateProjectTasks(Projekt inProject, Boolean countImages, Integer inMax);
+	public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax);
 }

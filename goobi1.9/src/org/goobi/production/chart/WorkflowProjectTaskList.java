@@ -31,9 +31,8 @@ package org.goobi.production.chart;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Project;
 import org.goobi.production.flow.statistics.StepInformation;
-
-import de.sub.goobi.beans.Projekt;
 
 
 
@@ -47,13 +46,13 @@ import de.sub.goobi.beans.Projekt;
 
 public class WorkflowProjectTaskList implements IProvideProjectTaskList {
 
-	public List<IProjectTask> calculateProjectTasks(Projekt inProject, Boolean countImages, Integer inMax) {
+	public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax) {
 		List<IProjectTask> myTaskList = new ArrayList<IProjectTask>();
 		calculate(inProject, myTaskList, countImages, inMax);
 		return myTaskList;
 	}
 
-	private static synchronized void calculate(Projekt inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
+	private static synchronized void calculate(Project inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
 
 		List<StepInformation> workFlow = inProject.getWorkFlow();
 		Integer usedMax = 0;

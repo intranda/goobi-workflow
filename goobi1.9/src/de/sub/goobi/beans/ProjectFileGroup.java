@@ -28,6 +28,8 @@ package de.sub.goobi.beans;
  */
 import java.io.Serializable;
 
+import org.goobi.beans.Project;
+
 
 public class ProjectFileGroup implements Serializable {
 	private static final long serialVersionUID = -5506252462891480484L;
@@ -38,7 +40,7 @@ public class ProjectFileGroup implements Serializable {
 	private String suffix; // optional
 	private String folder;
 
-	private Projekt project;
+	private Project project;
 
 	/*#####################################################
 	 #####################################################
@@ -64,11 +66,11 @@ public class ProjectFileGroup implements Serializable {
 		this.name = name;
 	}
 
-	public Projekt getProject() {
+	public Project getProject() {
 		return this.project;
 	}
 
-	public void setProject(Projekt project) {
+	public void setProject(Project project) {
 		this.project = project;
 	}
 

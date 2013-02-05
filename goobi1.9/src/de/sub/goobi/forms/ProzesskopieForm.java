@@ -48,6 +48,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
@@ -79,8 +80,6 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
-
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
@@ -288,7 +287,7 @@ public class ProzesskopieForm {
 			if (loginForm.getMaximaleBerechtigung() > 1) {
 				Hibernate.initialize(aktuellerNutzer);
 				Disjunction dis = Restrictions.disjunction();
-				for (Projekt proj : aktuellerNutzer.getProjekte()) {
+				for (Project proj : aktuellerNutzer.getProjekte()) {
 					dis.add(Restrictions.eq("projekt", proj));
 				}
 				crit.add(dis);

@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.flow.IlikeExpression;
@@ -46,7 +47,6 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozess;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
@@ -80,7 +80,7 @@ public class FilterHelper {
 		if (aktuellerNutzer != null) {
 			if (loginForm.getMaximaleBerechtigung() > 1) {
 				Disjunction dis = Restrictions.disjunction();
-				for (Projekt proj : aktuellerNutzer.getProjekte()) {
+				for (Project proj : aktuellerNutzer.getProjekte()) {
 					dis.add(Restrictions.eq("projekt", proj));
 				}
 				con.add(dis);

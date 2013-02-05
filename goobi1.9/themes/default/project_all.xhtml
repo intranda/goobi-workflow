@@ -24,7 +24,7 @@
 			<!-- Datentabelle -->
 			<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-				value="#{ProjekteForm.page.list}" style="margin-top: 10px;">
+				value="#{ProjekteForm.paginator.list}" style="margin-top: 10px;">
 
 				<h:column id="id9">
 					<f:facet name="header">
@@ -92,7 +92,7 @@
 				<tr valign="top">
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
-						<x:aliasBean alias="#{mypage}" value="#{ProjekteForm.page}">
+						<x:aliasBean alias="#{mypage}" value="#{ProjekteForm.paginator}">
 							<ui:include src="includes/datascroller.xhtml" />
 						</x:aliasBean>
 						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->

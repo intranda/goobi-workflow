@@ -35,6 +35,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.flow.statistics.hibernate.FilterString;
@@ -44,7 +45,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Projekt;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -105,15 +105,15 @@ public class SearchForm {
 		Session session = Helper.getHibernateSession();
 
 		// projects
-		Criteria crit = session.createCriteria(Projekt.class);
+		Criteria crit = session.createCriteria(Project.class);
 		crit.addOrder(Order.asc("titel"));
 		if (restriction > 2) {
 			crit.add(Restrictions.not(Restrictions.eq("projectIsArchived", true)));
 		}
 		this.projects.add(Helper.getTranslation("notSelected"));
 		
-		List<Projekt> projektList = crit.list();
-		for (Projekt p : projektList) {
+		List<Project> projektList = crit.list();
+		for (Project p : projektList) {
 			this.projects.add(p.getTitel());
 		}
 
