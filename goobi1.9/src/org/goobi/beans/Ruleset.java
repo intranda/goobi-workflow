@@ -45,14 +45,10 @@ public class Ruleset implements Serializable, DatabaseObject {
 	private Boolean orderMetadataByRuleset = false;
 	private static final Logger logger = Logger.getLogger(Ruleset.class);
 
-	/*#####################################################
-	 #####################################################
-	 ##																															 
-	 ##				Getter und Setter									
-	 ##                                                   															    
-	 #####################################################
-	 ####################################################*/
-
+	public void lazyLoad(){
+		// nothing to load lazy here
+	}
+	
 	public String getDatei() {
 		return this.datei;
 	}

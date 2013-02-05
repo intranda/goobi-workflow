@@ -28,12 +28,10 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.File;
-import java.util.HashMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Docket;
 
 import de.sub.goobi.config.ConfigMain;
@@ -47,7 +45,6 @@ import de.sub.goobi.persistence.managers.DocketManager;
 @SessionScoped
 public class DocketBean extends BasisForm {
 	private static final long serialVersionUID = 3006854499230483171L;
-	private static final Logger logger = Logger.getLogger(DocketBean.class);
 	private Docket myDocket = new Docket();
 
 	public String Neu() {
@@ -66,7 +63,6 @@ public class DocketBean extends BasisForm {
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-			logger.error(e);
 			return "";
 		}
 	}
@@ -109,11 +105,6 @@ public class DocketBean extends BasisForm {
 		FilterKein();
 		return this.zurueck;
 	}
-
-	/*
-	 * ##################################################### ##################################################### ## ## Getter und Setter ##
-	 * ##################################################### ####################################################
-	 */
 
 	public Docket getMyDocket() {
 		return this.myDocket;

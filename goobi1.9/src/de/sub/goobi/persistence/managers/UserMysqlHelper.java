@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -156,8 +157,6 @@ public class UserMysqlHelper {
 		}
 	}
 	
-	
-	
 	public static List<String> getFilterForUser(int userId) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();
 		StringBuilder sql = new StringBuilder();
@@ -198,5 +197,9 @@ public class UserMysqlHelper {
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
+	}
+
+	public static List<User> getUsersForUsergroup(Usergroup usergroup) throws SQLException {
+		return getUsers("Nachname,Vorname","BenutzerID IN (SELECT BenutzerID FROM benutzergruppenmitgliedschaft WHERE BenutzerGruppenID=" + usergroup.getId() +")",null,null);
 	}
 }

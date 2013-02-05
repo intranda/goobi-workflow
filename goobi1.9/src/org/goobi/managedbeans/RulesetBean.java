@@ -32,7 +32,6 @@ import java.io.File;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigMain;
@@ -46,7 +45,6 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 @SessionScoped
 public class RulesetBean extends BasisForm {
 	private static final long serialVersionUID = -8994941188718721705L;
-	private static final Logger logger = Logger.getLogger(RulesetBean.class);
 	private Ruleset myRegelsatz = new Ruleset();
 
 	public String Neu() {
@@ -107,10 +105,6 @@ public class RulesetBean extends BasisForm {
 		FilterKein();
 		return this.zurueck;
 	}
-	
-	/*
-	 * Getter und Setter
-	 */
 
 	public Ruleset getMyRegelsatz() {
 		return this.myRegelsatz;

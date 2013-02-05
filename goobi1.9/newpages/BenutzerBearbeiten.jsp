@@ -190,7 +190,7 @@
 													</h:panelGroup>
 
 													<x:dataTable id="id45" width="300" columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered" var="item"
-														value="#{BenutzerverwaltungForm.myClass.benutzergruppenList}">
+														value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 														<h:column id="id46">
 															<h:outputText id="id47" value="#{item.titel}" />
 														</h:column>
@@ -214,7 +214,7 @@
 													</h:panelGroup>
 
 													<x:dataTable id="id52" width="300" columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered" var="item"
-														value="#{BenutzerverwaltungForm.myClass.projekteList}">
+														value="#{BenutzerverwaltungForm.myClass.projekte}">
 														<h:column id="id53">
 															<h:outputText id="id54" value="#{item.titel}" />
 														</h:column>

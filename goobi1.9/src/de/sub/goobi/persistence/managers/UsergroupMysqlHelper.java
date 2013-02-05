@@ -2,7 +2,6 @@ package de.sub.goobi.persistence.managers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -39,7 +38,7 @@ public class UsergroupMysqlHelper {
 	}
 
 	public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
-		return getUsergroups(null,"BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() +")",null,null);
+		return getUsergroups("titel","BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() +")",null,null);
 	}
 	
 	public static int getUsergroupCount(String order, String filter) throws SQLException {

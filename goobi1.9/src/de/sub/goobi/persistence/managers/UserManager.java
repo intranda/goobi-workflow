@@ -3,13 +3,13 @@ package de.sub.goobi.persistence.managers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -65,6 +65,17 @@ public class UserManager implements IManager {
 		return answer;
 	}
 
+	public static List<User> getUsersForUsergroup(Usergroup usergroup) throws DAOException {
+		List<User> answer = new ArrayList<User>();
+		try {
+			answer = UserMysqlHelper.getUsersForUsergroup(usergroup);
+		} catch (SQLException e) {
+			logger.error("error while getting Users", e);
+			throw new DAOException(e);
+		}
+		return answer;
+	}
+	
 	public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
 		return (List<? extends DatabaseObject>) getUsers(order, filter, start, count);
 	}

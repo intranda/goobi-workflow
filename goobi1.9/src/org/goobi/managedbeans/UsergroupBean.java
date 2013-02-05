@@ -91,10 +91,6 @@ public class UsergroupBean extends BasisForm {
 		return this.zurueck;
 	}
 
-	/*
- 	 * Getter und Setter 
-	 */
-
 	public Usergroup getMyBenutzergruppe() {
 		return this.myBenutzergruppe;
 	}

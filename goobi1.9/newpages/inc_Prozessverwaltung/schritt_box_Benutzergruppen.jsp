@@ -45,7 +45,7 @@
 	headerClass="standardTable_Header" rowClasses="standardTable_Row1"
 	columnClasses="standardTable_Column,standardTable_ColumnCentered"
 	var="item"
-	value="#{ProzessverwaltungForm.mySchritt.benutzergruppenList}">
+	value="#{ProzessverwaltungForm.mySchritt.benutzergruppen}">
 
 	<h:column>
 		<f:facet name="header">

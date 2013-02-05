@@ -53,7 +53,7 @@
 
 <%-- Datentabelle --%>
 <x:dataTable id="auflistung" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
-	rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2" var="item" value="#{AktuelleSchritteForm.page.listReload}">
+	rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2" var="item" value="#{AktuelleSchritteForm.page.list}">
 
 	<%-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ --%>
 	<x:column style="text-align:center" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}">

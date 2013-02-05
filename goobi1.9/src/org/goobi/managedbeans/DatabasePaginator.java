@@ -1,4 +1,5 @@
 package org.goobi.managedbeans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,7 +28,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -37,7 +37,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
 
-public class DatabasePaginator implements Serializable { 
+public class DatabasePaginator implements Serializable {
 	private static final long serialVersionUID = 1571881092118205104L;
 	private static final Logger logger = Logger.getLogger(DatabasePaginator.class);
 	private List<? extends DatabaseObject> results;
@@ -47,13 +47,12 @@ public class DatabasePaginator implements Serializable {
 	private String order = "";
 	private String filter = new String();
 	private IManager manager;
-	
-	public DatabasePaginator(String order, String filter,
-			IManager manager) {
+
+	public DatabasePaginator(String order, String filter, IManager manager) {
 		this.page = 0;
 		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login == null || login.getMyBenutzer() == null) {
-        	this.pageSize = 10;
+		if (login == null || login.getMyBenutzer() == null) {
+			this.pageSize = 10;
 		} else {
 			this.pageSize = login.getMyBenutzer().getTabellengroesse().intValue();
 		}
@@ -62,6 +61,7 @@ public class DatabasePaginator implements Serializable {
 		this.manager = manager;
 		try {
 			totalResults = manager.getHitSize(order, filter);
+			load();
 		} catch (DAOException e) {
 			logger.error("Failed to count results", e);
 		}
@@ -75,11 +75,11 @@ public class DatabasePaginator implements Serializable {
 		return ret;
 	}
 
-	public List<? extends DatabaseObject> getList() {
-		return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
-	}
+	// public List<? extends DatabaseObject> getList() {
+	// return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
+	// }
 
-	public int getTotalResults() {	
+	public int getTotalResults() {
 		return this.totalResults;
 	}
 
@@ -92,13 +92,33 @@ public class DatabasePaginator implements Serializable {
 		return getTotalResults() < fullPage ? getTotalResults() : fullPage;
 	}
 
-	public List<? extends DatabaseObject> getListReload() {
+	// public List<? extends DatabaseObject> getListReload() {
+	// try {
+	// results = manager.getList(order, filter, this.page * this.pageSize , pageSize);
+	// for (DatabaseObject d : results) {
+	// d.lazyLoad();
+	// }
+	//
+	// } catch (DAOException e) {
+	// logger.error("Failed to load paginated results", e);
+	// }
+	// return results;
+	// }
+
+	public List<? extends DatabaseObject> getList() {
+		return results;
+	}
+
+	private void load() {
 		try {
-			results = manager.getList(order, filter, this.page * this.pageSize , pageSize);
+			results = manager.getList(order, filter, this.page * this.pageSize, pageSize);
+			for (DatabaseObject d : results) {
+				d.lazyLoad();
+			}
+
 		} catch (DAOException e) {
 			logger.error("Failed to load paginated results", e);
 		}
-		return results;
 	}
 
 	/*
@@ -130,13 +150,17 @@ public class DatabasePaginator implements Serializable {
 	}
 
 	public String cmdMoveFirst() {
-		this.page = 0;
+		if (this.page != 0) {
+			this.page = 0;
+			load();
+		}
 		return "";
 	}
 
 	public String cmdMovePrevious() {
 		if (!isFirstPage()) {
 			this.page--;
+			load();
 		}
 		return "";
 	}
@@ -144,18 +168,23 @@ public class DatabasePaginator implements Serializable {
 	public String cmdMoveNext() {
 		if (!isLastPage()) {
 			this.page++;
+			load();
 		}
 		return "";
 	}
 
 	public String cmdMoveLast() {
-		this.page = getLastPageNumber();
+		if (this.page != getLastPageNumber()){
+			this.page = getLastPageNumber();
+			load();
+		}
 		return "";
 	}
 
 	public void setTxtMoveTo(int neueSeite) {
-		if (neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
+		if ((this.page != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
 			this.page = neueSeite - 1;
+			load();
 		}
 	}
 

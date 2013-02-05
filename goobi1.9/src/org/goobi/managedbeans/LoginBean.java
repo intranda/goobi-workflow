@@ -30,7 +30,6 @@ package org.goobi.managedbeans;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -99,6 +98,7 @@ public class LoginBean {
 					Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
 					return "";
 				}
+				
 				/* wenn passwort auch richtig ist, den benutzer übernehmen */
 				if (b.istPasswortKorrekt(this.passwort)) {
 					/* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
@@ -108,6 +108,7 @@ public class LoginBean {
 						/* in der Session den Login speichern */
 						temp.sessionBenutzerAktualisieren(mySession, b);
 						this.myBenutzer = b;
+						this.myBenutzer.lazyLoad();
 					} else {
 						this.schonEingeloggt = true;
 						this.tempBenutzer = b;
@@ -169,20 +170,10 @@ public class LoginBean {
 		return "index";
 	}
 
-	/*
-	 * änderung des Passworts
-	 */
-
-	/**
-	 * Bearbeitungsvorgang abbrechen
-	 */
 	public String PasswortAendernAbbrechen() {
 		return "index";
 	}
 
-	/**
-	 * neues Passwort übernehmen
-	 */
 	public String PasswortAendernSpeichern() {
 		/* ist das aktuelle Passwort korrekt angegeben ? */
 			/* ist das neue Passwort beide Male gleich angegeben? */
@@ -208,9 +199,6 @@ public class LoginBean {
 		return "";
 	}
 
-	/**
-	 * Benutzerkonfiguration speichern
-	 */
 	public String BenutzerkonfigurationSpeichern() {
 		try {
 			User temp = UserManager.getUserById(this.myBenutzer.getId());
@@ -251,10 +239,6 @@ public class LoginBean {
 		}
 	}
 
-	/*
-	 * Getter und Setter
-	 */
-
 	public String getLogin() {
 		return this.login;
 	}
@@ -285,10 +269,9 @@ public class LoginBean {
 	public int getMaximaleBerechtigung() {
 		int rueckgabe = 0;
 		if (this.myBenutzer != null) {
-			for (Iterator<Usergroup> iter = this.myBenutzer.getBenutzergruppenList().iterator(); iter.hasNext();) {
-				Usergroup element = iter.next();
-				if (element.getBerechtigung().intValue() < rueckgabe || rueckgabe == 0) {
-					rueckgabe = element.getBerechtigung().intValue();
+			for (Usergroup u :this.myBenutzer.getBenutzergruppen()) {
+				if (u.getBerechtigung().intValue() < rueckgabe || rueckgabe == 0) {
+					rueckgabe = u.getBerechtigung().intValue();
 				}
 			}
 		}
@@ -322,5 +305,4 @@ public class LoginBean {
 	public boolean isSchonEingeloggt() {
 		return this.schonEingeloggt;
 	}
-
 }

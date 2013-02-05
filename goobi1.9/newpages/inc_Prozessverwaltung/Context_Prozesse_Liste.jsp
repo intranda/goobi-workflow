@@ -260,7 +260,7 @@
 	<rich:dataTable id="auflistung" styleClass="standardTable" width="100%"
 		cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 		rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2"
-		value="#{ProzessverwaltungForm.page.listReload}" var="item">
+		value="#{ProzessverwaltungForm.page.list}" var="item">
 		<%-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ --%>
 		<rich:column
 			rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' && ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">

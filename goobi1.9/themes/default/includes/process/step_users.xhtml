@@ -17,7 +17,7 @@
 
 		<x:dataTable id="benutzer" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 			rowClasses="standardTable_Row1" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-			value="#{ProzessverwaltungForm.mySchritt.benutzerList}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+			value="#{ProzessverwaltungForm.mySchritt.benutzer}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
 
 			<h:column>
 				<f:facet name="header">
@@ -47,7 +47,7 @@
 
 			<x:dataTable styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-				value="#{BenutzerverwaltungForm.page.listReload}">
+				value="#{BenutzerverwaltungForm.page.list}">
 
 				<h:column>
 					<f:facet name="header">

@@ -33,10 +33,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,9 +100,6 @@ public class UserBean extends BasisForm {
 		return this.zurueck;
 	}
 
-	/**
-	 * Anzeige der gefilterten Nutzer
-	 */
 	public String FilterAlleStart() {
 		this.sortierung = "nachname, vorname";
 		UserManager m = new UserManager();
@@ -137,7 +131,6 @@ public class UserBean extends BasisForm {
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
-			logger.error(e);
 			return "";
 		}
 	}
@@ -177,7 +170,6 @@ public class UserBean extends BasisForm {
 
 	/**
 	 * The function Loeschen() deletes a user account.
-	 * 
 	 * Please note that deleting a user in goobi.production will not delete the user from a connected LDAP service.
 	 * 
 	 * @return a string indicating the screen showing up after the command has been performed.
@@ -187,7 +179,6 @@ public class UserBean extends BasisForm {
 			UserManager.hideUser(myClass);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
-			logger.error(e);
 			return "";
 		}
 		return "user_all";
@@ -195,12 +186,10 @@ public class UserBean extends BasisForm {
 
 	public String AusGruppeLoeschen() {
 		int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
-
 		List<Usergroup> neu = new ArrayList<Usergroup>();
-		for (Iterator<Usergroup> iter = this.myClass.getBenutzergruppenList().iterator(); iter.hasNext();) {
-			Usergroup element = iter.next();
-			if (element.getId().intValue() != gruppenID) {
-				neu.add(element);
+		for (Usergroup u : this.myClass.getBenutzergruppen()) {
+			if (u.getId().intValue() != gruppenID) {
+				neu.add(u);
 			}
 		}
 		this.myClass.setBenutzergruppen(neu);
@@ -211,12 +200,12 @@ public class UserBean extends BasisForm {
 		Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
 		try {
 			Usergroup usergroup = UsergroupManager.getUsergroupById(gruppenID);
-			for (Usergroup b : this.myClass.getBenutzergruppenList()) {
+			for (Usergroup b : this.myClass.getBenutzergruppen()) {
 				if (b.equals(usergroup)) {
 					return "";
 				}
 			}
-			this.myClass.getBenutzergruppenList().add(usergroup);
+			this.myClass.getBenutzergruppen().add(usergroup);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
@@ -227,11 +216,10 @@ public class UserBean extends BasisForm {
 
 	public String AusProjektLoeschen() {
 		int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-		Set<Projekt> neu = new HashSet<Projekt>();
-		for (Iterator<Projekt> iter = this.myClass.getProjekte().iterator(); iter.hasNext();) {
-			Projekt element = iter.next();
-			if (element.getId().intValue() != projektID) {
-				neu.add(element);
+		List<Projekt> neu = new ArrayList<Projekt>();
+		for (Projekt p: this.myClass.getProjekte()) {
+			if (p.getId().intValue() != projektID) {
+				neu.add(p);
 			}
 		}
 		this.myClass.setProjekte(neu);
@@ -256,10 +244,6 @@ public class UserBean extends BasisForm {
 		return "";
 	}
 
-	/*
-	 * Getter und Setter
-	 */
-
 	public User getMyClass() {
 		return this.myClass;
 	}
@@ -267,10 +251,6 @@ public class UserBean extends BasisForm {
 	public void setMyClass(User inMyClass) {
 		this.myClass = inMyClass;
 	}
-
-	/*
-	 * Ldap-Konfiguration
-	 */
 
 	public Integer getLdapGruppeAuswahl() {
 		if (this.myClass.getLdapGruppe() != null) {
@@ -285,8 +265,7 @@ public class UserBean extends BasisForm {
 			try {
 				this.myClass.setLdapGruppe(LdapManager.getLdapById(inAuswahl));
 			} catch (DAOException e) {
-				Helper.setFehlerMeldung("Error on writing to database", "");
-				logger.error(e);
+				Helper.setFehlerMeldung("Error on writing to database",e);
 			}
 		}
 	}
@@ -300,18 +279,13 @@ public class UserBean extends BasisForm {
 		return myLdapGruppen;
 	}
 
-	/**
-	 * Ldap-Konfiguration für den Benutzer schreiben
-	 * 
-	 * @return
-	 */
 	public String LdapKonfigurationSchreiben() {
 		LdapAuthentication myLdap = new LdapAuthentication();
 		try {
 			myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
 		} catch (Exception e) {
 			logger.warn("Could not generate ldap entry: " + e.getMessage());
-			Helper.setFehlerMeldung(e.getMessage());
+			Helper.setFehlerMeldung("Error on writing to database", e);
 		}
 		return "";
 	}

@@ -91,7 +91,7 @@
 										headerClass="standardTable_Header"
 										rowClasses="standardTable_Row1,standardTable_Row2"
 										columnClasses="standardTable_Column,standardTable_ColumnCentered"
-										var="item" value="#{BenutzergruppenForm.page.listReload}" style="margin-top: 10px;">
+										var="item" value="#{BenutzergruppenForm.page.list}" style="margin-top: 10px;">
 
 										<h:column id="id8">
 											<f:facet name="header">
@@ -105,7 +105,7 @@
 												rowClasses="standardTable_Row1"
 												rendered="#{item.panelAusgeklappt}"
 												columnClasses="standardTable_ColumnSchmal,standardTable_Column,standardTable_ColumnCentered"
-												var="step" value="#{item.benutzerList}">
+												var="step" value="#{item.benutzer}">
 												<h:column id="id12">
 													<f:facet name="header">
 														<h:outputText id="id13" value="#{msgs.benutzer}" />

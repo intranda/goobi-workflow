@@ -653,7 +653,7 @@ public class ProzessverwaltungForm extends BasisForm {
 		}
 		/* alle Benutzergruppen mit ihren Benutzern */
 		for (Usergroup bg : this.mySchritt.getBenutzergruppenList()) {
-			for (User b : bg.getBenutzerList()) {
+			for (User b : bg.getBenutzer()) {
 				try {
 					myDav.UploadFromHome(b, this.mySchritt.getProzess());
 				} catch (RuntimeException e) {

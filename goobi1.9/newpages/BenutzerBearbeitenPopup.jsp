@@ -79,7 +79,7 @@
 						headerClass="standardTable_Header"
 						rowClasses="standardTable_Row1,standardTable_Row2"
 						columnClasses="standardTable_Column,standardTable_ColumnCentered"
-						var="item" value="#{BenutzergruppenForm.page.listReload}">
+						var="item" value="#{BenutzergruppenForm.page.list}">
 
 						<h:column id="id9">
 							<f:facet name="header">

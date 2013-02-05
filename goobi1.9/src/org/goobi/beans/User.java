@@ -31,13 +31,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.goobi.managedbeans.UserBean;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
@@ -68,32 +64,24 @@ public class User implements Serializable, DatabaseObject {
 	private Integer sessiontimeout = 7200;
 	private boolean confVorgangsdatumAnzeigen = false;
 	private String metadatenSprache;
-	private List<Usergroup> benutzergruppen = null;
-	private Set<Schritt> schritte;
-	private Set<Schritt> bearbeitungsschritte;
-	private Set<Projekt> projekte;
-	private Set<Benutzereigenschaft> eigenschaften;
+	private List<Usergroup> benutzergruppen;
+	private List<Schritt> schritte;
+	private List<Schritt> bearbeitungsschritte;
+	private List<Projekt> projekte;
+	private List<Benutzereigenschaft> eigenschaften;
 	private boolean mitMassendownload = false;
 	private Ldap ldapGruppe;
 	private String css;
 
-	// private String lastFilter = null;
-
-	public User() {
-		this.benutzergruppen =null;
-		this.projekte = new HashSet<Projekt>();
-		this.schritte = new HashSet<Schritt>();
-		this.eigenschaften = new HashSet<Benutzereigenschaft>();
+	public void lazyLoad(){
+		try {
+			this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
+		} catch (DAOException e) {
+			logger.error("error during lazy loading of User", e);
+		}
+		logger.debug("gruppen: " + this.benutzergruppen);
 	}
-
-	/*
-	 * =======================================================
-	 * 
-	 * Getter und Setter
-	 * 
-	 * ========================================================
-	 */
-
+	
 	public Integer getId() {
 		return this.id;
 	}
@@ -210,38 +198,19 @@ public class User implements Serializable, DatabaseObject {
 		this.benutzergruppen = benutzergruppen;
 	}
 	
-	public List<Usergroup> getBenutzergruppenList() {
-		if (this.benutzergruppen == null) {
-			try {
-				benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
-			} catch (DAOException e) {
-				logger.error("error getting usergroups", e);
-			}
-//			List<Usergroup> answer = new ArrayList<Usergroup>(this.benutzergruppen);
-//			Collections.sort(answer);
-		}
-		logger.debug("gruppen: " + benutzergruppen);
+	public List<Usergroup> getBenutzergruppen() {
 		return benutzergruppen;
 	}
 
-	/*---------------------------------------------------------------------------------------------------------
-	 Datum: 24.06.2005, 23:34:10
-	 Zweck: Set für Schritte
-	 ---------------------------------------------------------------------------------------------------------*/
-
-	public Set<Schritt> getSchritte() {
+	public List<Schritt> getSchritte() {
 		return this.schritte;
 	}
 
-	public void setSchritte(Set<Schritt> schritte) {
+	public void setSchritte(List<Schritt> schritte) {
 		this.schritte = schritte;
 	}
 
 	public int getSchritteSize() {
-//		try {
-////			Hibernate.initialize(this.schritte);
-//		} catch (HibernateException e) {
-//		}
 		if (this.schritte == null) {
 			return 0;
 		} else {
@@ -249,35 +218,15 @@ public class User implements Serializable, DatabaseObject {
 		}
 	}
 
-	public List<Schritt> getSchritteList() {
-//		try {
-//			Hibernate.initialize(this.schritte);
-//		} catch (HibernateException e) {
-//		}
-		if (this.schritte == null) {
-			return new ArrayList<Schritt>();
-		} else {
-			return new ArrayList<Schritt>(this.schritte);
-		}
-	}
-
-	/*---------------------------------------------------------------------------------------------------------
-	 Datum: 24.06.2005, 23:34:10
-	 Zweck: Set für BearbeitungsSchritte
-	 ---------------------------------------------------------------------------------------------------------*/
-	public Set<Schritt> getBearbeitungsschritte() {
+	public List<Schritt> getBearbeitungsschritte() {
 		return this.bearbeitungsschritte;
 	}
 
-	public void setBearbeitungsschritte(Set<Schritt> bearbeitungsschritte) {
+	public void setBearbeitungsschritte(List<Schritt> bearbeitungsschritte) {
 		this.bearbeitungsschritte = bearbeitungsschritte;
 	}
 
 	public int getBearbeitungsschritteSize() {
-//		try {
-//			Hibernate.initialize(this.bearbeitungsschritte);
-//		} catch (HibernateException e) {
-//		}
 		if (this.bearbeitungsschritte == null) {
 			return 0;
 		} else {
@@ -285,35 +234,7 @@ public class User implements Serializable, DatabaseObject {
 		}
 	}
 
-	public List<Schritt> getBearbeitungsschritteList() {
-//		try {
-//			Hibernate.initialize(this.bearbeitungsschritte);
-//		} catch (HibernateException e) {
-//		}
-		if (this.bearbeitungsschritte == null) {
-			this.bearbeitungsschritte = new HashSet<Schritt>();
-		}
-		return new ArrayList<Schritt>(this.bearbeitungsschritte);
-	}
-
-	/*---------------------------------------------------------------------------------------------------------
-	 Datum: 24.02.2006, 23:34:10
-	 Zweck: Set für Projekte
-	 ---------------------------------------------------------------------------------------------------------*/
-
-	public Set<Projekt> getProjekte() {
-		return this.projekte;
-	}
-
-	public void setProjekte(Set<Projekt> projekte) {
-		this.projekte = projekte;
-	}
-
 	public int getProjekteSize() {
-//		try {
-//			Hibernate.initialize(this.projekte);
-//		} catch (HibernateException e) {
-//		}
 		if (this.projekte == null) {
 			return 0;
 		} else {
@@ -321,19 +242,15 @@ public class User implements Serializable, DatabaseObject {
 		}
 	}
 
-	public List<Projekt> getProjekteList() {
-//		try {
-//			Hibernate.initialize(this.projekte);
-//		} catch (HibernateException e) {
-//		}
+	public void setProjekte(List<Projekt> projekte) {
+		this.projekte = projekte;
+	}
+	
+	public List<Projekt> getProjekte() {
 		if (this.projekte == null) {
 			return new ArrayList<Projekt>();
-		} else {
-			List<Projekt> answer = new ArrayList<Projekt>(this.projekte);
-			Collections.sort(answer);
-			return answer;
-
-		}
+		} 
+		return this.projekte;
 	}
 
 	public boolean isConfVorgangsdatumAnzeigen() {
@@ -360,13 +277,8 @@ public class User implements Serializable, DatabaseObject {
 		this.ldaplogin = ldaplogin;
 	}
 
-	/*
-	 * ## Helper ##
-	 */
-
 	public boolean istPasswortKorrekt(String inPasswort) {
 		if (inPasswort == null || inPasswort.length() == 0) {
-
 			return false;
 		} else {
 
@@ -450,32 +362,14 @@ public class User implements Serializable, DatabaseObject {
 	public void setCss(String css) {
 		this.css = css;
 	}
-
-	/*
-	 * added 05.05.2010 used for user filter
-	 */
-
-	/**
-	 * @return set of all properties
-	 */
-	public Set<Benutzereigenschaft> getEigenschaften() {
+	
+	public List<Benutzereigenschaft> getEigenschaften() {
 		return this.eigenschaften;
 	}
 
-	/**
-	 * 
-	 * @param eigenschaften
-	 *            set of all properties
-	 */
-
-	public void setEigenschaften(Set<Benutzereigenschaft> eigenschaften) {
+	public void setEigenschaften(List<Benutzereigenschaft> eigenschaften) {
 		this.eigenschaften = eigenschaften;
 	}
-
-	/**
-	 * 
-	 * @return size of properties
-	 */
 
 	public int getEigenschaftenSize() {
 		try {
@@ -486,22 +380,6 @@ public class User implements Serializable, DatabaseObject {
 			return 0;
 		} else {
 			return this.eigenschaften.size();
-		}
-	}
-
-	/**
-	 * 
-	 * @return List of all properties
-	 */
-	public List<Benutzereigenschaft> getEigenschaftenList() {
-		try {
-			Hibernate.initialize(this.eigenschaften);
-		} catch (HibernateException e) {
-		}
-		if (this.eigenschaften == null) {
-			return new ArrayList<Benutzereigenschaft>();
-		} else {
-			return new ArrayList<Benutzereigenschaft>(this.eigenschaften);
 		}
 	}
 
@@ -552,7 +430,7 @@ public class User implements Serializable, DatabaseObject {
 		this.nachname = null;
 		this.standort = null;
 		this.benutzergruppen =null;
-		this.projekte = new HashSet<Projekt>();
+		this.projekte = null;
 		return this;
 	}
 }

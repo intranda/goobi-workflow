@@ -91,7 +91,7 @@
 										headerClass="standardTable_Header"
 										rowClasses="standardTable_Row1,standardTable_Row2"
 										columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered,standardTable_ColumnCentered" style="margin-top: 10px;"
-										var="item" value="#{DocketForm.page.listReload}">
+										var="item" value="#{DocketForm.page.list}">
 
 										<h:column id="id9">
 											<f:facet name="header">

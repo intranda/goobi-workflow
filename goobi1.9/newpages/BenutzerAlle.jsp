@@ -128,7 +128,7 @@
 										headerClass="standardTable_Header"
 										rowClasses="standardTable_Row1,standardTable_Row2"
 										columnClasses="standardTable_Column,standardTable_Column,standardTable_Column,standardTable_Column, standardTable_ColumnCentered"
-										var="item" value="#{BenutzerverwaltungForm.page.listReload}">
+										var="item" value="#{BenutzerverwaltungForm.page.list}">
 
 										<h:column id="id15">
 											<f:facet name="header">
@@ -154,7 +154,7 @@
 											<x:dataList id="id23" var="intern"
 												styleClass="#{not item.istAktiv?'text_light':''}"
 												rendered="#{item.benutzergruppenSize != 0}"
-												value="#{item.benutzergruppenList}" layout="ordered list"
+												value="#{item.benutzergruppen}" layout="ordered list"
 												rowCountVar="rowCount" rowIndexVar="rowIndex">
 												<h:outputText id="id24" value="#{intern.titel}" />
 												<h:outputText id="id25" value=","
@@ -169,7 +169,7 @@
 											<x:dataList id="id28" var="intern"
 												styleClass="#{not item.istAktiv?'text_light':''}"
 												rendered="#{item.projekteSize != 0}"
-												value="#{item.projekteList}" layout="ordered list"
+												value="#{item.projekte}" layout="ordered list"
 												rowCountVar="rowCount" rowIndexVar="rowIndex">
 												<h:outputText id="id29" value="#{intern.titel}" />
 												<h:outputText id="id30" value=","

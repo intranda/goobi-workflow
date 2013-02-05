@@ -79,10 +79,6 @@ public class LdapBean extends BasisForm {
 		return this.zurueck;
 	}
 
-	/*
-	 * Getter und Setter     
-	 */
-
 	public Ldap getMyLdapGruppe() {
 		return this.myLdapGruppe;
 	}

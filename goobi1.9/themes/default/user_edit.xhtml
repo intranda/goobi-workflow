@@ -133,7 +133,7 @@
 
 									<x:dataTable styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 										rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-										value="#{BenutzergruppenForm.page.listReload}">
+										value="#{BenutzergruppenForm.page.list}">
 
 										<h:column id="id9">
 											<f:facet name="header">
@@ -177,7 +177,7 @@
 								</h:panelGroup>
 
 								<x:dataTable id="id45" width="300" columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered" var="item"
-									rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup'}" value="#{BenutzerverwaltungForm.myClass.benutzergruppenList}">
+									rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup'}" value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 									<h:column id="id46">
 										<h:outputText id="id47" value="#{item.titel}" />
 									</h:column>
@@ -207,7 +207,7 @@
 											<td>
 												<x:dataTable id="id8" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 													rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-													value="#{ProjekteForm.page.listReload}">
+													value="#{ProjekteForm.page.list}">
 
 													<h:column id="id9">
 														<f:facet name="header">
@@ -254,7 +254,7 @@
 
 								<x:dataTable id="id52" width="300" rendered="#{BenutzerverwaltungForm.displayMode ne 'project'}"
 									columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered" var="item"
-									value="#{BenutzerverwaltungForm.myClass.projekteList}">
+									value="#{BenutzerverwaltungForm.myClass.projekte}">
 									<h:column id="id53">
 										<h:outputText id="id54" value="#{item.titel}" />
 									</h:column>

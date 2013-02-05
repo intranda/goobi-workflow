@@ -288,7 +288,7 @@ public class ProzesskopieForm {
 			if (loginForm.getMaximaleBerechtigung() > 1) {
 				Hibernate.initialize(aktuellerNutzer);
 				Disjunction dis = Restrictions.disjunction();
-				for (Projekt proj : aktuellerNutzer.getProjekteList()) {
+				for (Projekt proj : aktuellerNutzer.getProjekte()) {
 					dis.add(Restrictions.eq("projekt", proj));
 				}
 				crit.add(dis);

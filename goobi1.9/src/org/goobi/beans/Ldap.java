@@ -53,12 +53,9 @@ public class Ldap implements Serializable,DatabaseObject {
 	private String sambaLogonHours;
 	private String sambaKickoffTime;
 
-	public Ldap() {
+	public void lazyLoad(){
+		// nothing to load lazy here
 	}
-
-	/*
-	 * ===================================================== Getter und Setter ====================================================
-	 */
 
 	public Integer getId() {
 		return this.id;

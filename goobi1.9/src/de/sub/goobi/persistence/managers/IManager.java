@@ -1,6 +1,5 @@
 package de.sub.goobi.persistence.managers;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.goobi.beans.DatabaseObject;

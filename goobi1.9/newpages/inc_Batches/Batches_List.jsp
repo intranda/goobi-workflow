@@ -60,7 +60,7 @@
 <x:dataTable id="auflistung" styleClass="standardTable" width="100%"
 	cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 	rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2"
-	var="item" value="#{BatchForm.page.listReload}">
+	var="item" value="#{BatchForm.page.list}">
 
 	<%-- batch id --%>
 	<x:column style="text-align:center">

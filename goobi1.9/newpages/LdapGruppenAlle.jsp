@@ -90,7 +90,7 @@
 										headerClass="standardTable_Header"
 										rowClasses="standardTable_Row1,standardTable_Row2"
 										columnClasses="standardTable_Column" var="item"
-										value="#{LdapGruppenForm.page.listReload}" style="margin-top: 10px;">
+										value="#{LdapGruppenForm.page.list}" style="margin-top: 10px;">
 
 										<h:column id="id9">
 											<f:facet name="header">

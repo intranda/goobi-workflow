@@ -46,7 +46,7 @@
 			<x:dataTable id="id14" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2"
 				columnClasses="standardTable_Column,standardTable_Column,standardTable_Column,standardTable_Column, standardTable_ColumnCentered" var="item"
-				value="#{BenutzerverwaltungForm.paginator.listReload}">
+				value="#{BenutzerverwaltungForm.paginator.list}">
 
 				<h:column id="id15">
 					<f:facet name="header">
@@ -67,11 +67,11 @@
 						<h:outputText id="id22" value="#{msgs.benutzergruppen}" />
 					</f:facet>
 					<!-- 
-					 <h:outputText value="#{item.benutzergruppenList}"/>
+					 <h:outputText value="#{item.benutzergruppen}"/>
 					 -->
 					
 					<x:dataList id="id23" var="intern" styleClass="#{not item.istAktiv?'text_light':''}" rendered="#{item.benutzergruppenSize != 0}"
-						value="#{item.benutzergruppenList}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
+						value="#{item.benutzergruppen}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
 						<h:outputText id="id24" value="#{intern.titel}" />
 						<h:outputText id="id25" value="," rendered="#{rowIndex + 1 lt rowCount}" />
 					</x:dataList>
@@ -82,7 +82,7 @@
 						<h:outputText id="id27" value="#{msgs.projekte}" />
 					</f:facet>
 					<x:dataList id="id28" var="intern" styleClass="#{not item.istAktiv?'text_light':''}" rendered="#{item.projekteSize != 0}"
-						value="#{item.projekteList}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
+						value="#{item.projekte}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
 						<h:outputText id="id29" value="#{intern.titel}" />
 						<h:outputText id="id30" value="," rendered="#{rowIndex + 1 lt rowCount}" />
 					</x:dataList>

@@ -77,7 +77,7 @@
 
 <%-- Datentabelle --%>
 <x:dataTable id="auflistung" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
-	rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2" var="item" value="#{ProzessverwaltungForm.page.listReload}">
+	rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2" var="item" value="#{ProzessverwaltungForm.page.list}">
 
 	<%-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ --%>
 	<x:column style="text-align:center"

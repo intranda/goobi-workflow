@@ -17,7 +17,7 @@
 
 		<x:dataTable id="benutzergruppen" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 			rowClasses="standardTable_Row1" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-			value="#{ProzessverwaltungForm.mySchritt.benutzergruppenList}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
+			value="#{ProzessverwaltungForm.mySchritt.benutzergruppen}" rendered="#{ProzessverwaltungForm.userDisplayMode eq ''}">
 
 			<h:column>
 				<f:facet name="header">
@@ -49,7 +49,7 @@
 
 			<x:dataTable styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-				value="#{BenutzergruppenForm.page.listReload}">
+				value="#{BenutzergruppenForm.page.list}">
 
 				<h:column id="id9">
 					<f:facet name="header">

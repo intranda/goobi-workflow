@@ -34,6 +34,10 @@ public class Docket implements Serializable, DatabaseObject {
 	private String name;
 	private String file;
 	
+	public void lazyLoad(){
+		// nothing to load lazy here
+	}
+	
 	public Integer getId() {
 		return id;
 	}

@@ -28,12 +28,13 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import de.sub.goobi.beans.Schritt;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.UserManager;
 
 /**
  * Usergroups owning different access rights, represented by integer values
@@ -47,22 +48,23 @@ import de.sub.goobi.beans.Schritt;
  */
 public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseObject {
 	private static final long serialVersionUID = -5924845694417474352L;
+	private static final Logger logger = Logger.getLogger(Usergroup.class);
 	private Integer id;
 	private String titel;
 	private Integer berechtigung;
-	private Set<User> benutzer;
-	private Set<Schritt> schritte;
+	private List<User> benutzer;
+	private List<Schritt> schritte;
 	private boolean panelAusgeklappt = false;
 
-	public Usergroup() {
-		this.schritte = new HashSet<Schritt>();
-		this.benutzer = new HashSet<User>();
+	public void lazyLoad(){
+		try {
+			this.benutzer = UserManager.getUsersForUsergroup(this);
+		} catch (DAOException e) {
+			logger.error("error during lazy loading of Usergroup", e);
+		}
+		logger.debug("user: " + this.benutzer);
 	}
-
-	/*
-	 * Getter und Setter
-	 */
-
+	
 	public Integer getId() {
 		return this.id;
 	}
@@ -109,51 +111,20 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 		this.titel = titel;
 	}
 
-	public Set<User> getBenutzer() {
+	public List<User> getBenutzer() {
 		return this.benutzer;
 	}
 
-	public void setBenutzer(Set<User> benutzer) {
+	public void setBenutzer(List<User> benutzer) {
 		this.benutzer = benutzer;
 	}
 
-	public List<User> getBenutzerList() {
-//		try {
-//			Hibernate.initialize(getBenutzer());
-//		} catch (org.hibernate.HibernateException e) {
-//
-//		}
-
-		if (this.benutzer == null) {
-			return new ArrayList<User>();
-		} else {
-			return new ArrayList<User>(this.benutzer);
-		}
-	}
-
-	public Set<Schritt> getSchritte() {
+	public List<Schritt> getSchritte() {
 		return this.schritte;
 	}
 
-	public void setSchritte(Set<Schritt> schritte) {
+	public void setSchritte(List<Schritt> schritte) {
 		this.schritte = schritte;
-	}
-
-	public int getSchritteSize() {
-//		Hibernate.initialize(getSchritte());
-		if (this.schritte == null) {
-			return 0;
-		} else {
-			return this.schritte.size();
-		}
-	}
-
-	public List<Schritt> getSchritteList() {
-//		Hibernate.initialize(getSchritte());
-		if (this.schritte == null) {
-			this.schritte = new HashSet<Schritt>();
-		}
-		return new ArrayList<Schritt>(this.schritte);
 	}
 
 	public boolean isPanelAusgeklappt() {

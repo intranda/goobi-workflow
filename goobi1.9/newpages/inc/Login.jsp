@@ -55,7 +55,7 @@
 
 						<x:dataList var="intern" style="font-weight: normal"
 							rendered="#{LoginForm.myBenutzer.benutzergruppenSize != 0}"
-							value="#{LoginForm.myBenutzer.benutzergruppenList}"
+							value="#{LoginForm.myBenutzer.benutzergruppen}"
 							layout="ordered list" rowCountVar="rowCount"
 							rowIndexVar="rowIndex">
 							<h:outputText value="#{intern.titel}" />

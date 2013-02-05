@@ -43,7 +43,7 @@
 	cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 	rowClasses="standardTable_Row1"
 	columnClasses="standardTable_Column,standardTable_ColumnCentered"
-	var="item" value="#{ProzessverwaltungForm.mySchritt.benutzerList}">
+	var="item" value="#{ProzessverwaltungForm.mySchritt.benutzer}">
 
 	<h:column>
 		<f:facet name="header">

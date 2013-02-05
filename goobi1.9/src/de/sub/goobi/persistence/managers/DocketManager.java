@@ -3,7 +3,6 @@ package de.sub.goobi.persistence.managers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
