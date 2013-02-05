@@ -56,6 +56,7 @@ public class RulesetBean extends BasisForm {
 		try {
 			if (hasValidRulesetFilePath(myRegelsatz, ConfigMain.getParameter("RegelsaetzeVerzeichnis"))) {
 				RulesetManager.saveRuleset(myRegelsatz);
+				paginator.load();
 				return "ruleset_all";
 			} else {
 				Helper.setFehlerMeldung("RulesetNotFound");
@@ -79,6 +80,7 @@ public class RulesetBean extends BasisForm {
 				return "";
 			} else {
 				RulesetManager.deleteRuleset(myRegelsatz);
+				paginator.load();
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());

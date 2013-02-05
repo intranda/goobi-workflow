@@ -124,6 +124,7 @@ public class UserBean extends BasisForm {
 			int num = new UserManager().getHitSize(null, "login='" + bla + "'AND BenutzerID<>" + blub);
 			if (num == 0) {
 				UserManager.saveUser(this.myClass);
+				paginator.load();
 				return "user_all";
 			} else {
 				Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
@@ -177,6 +178,7 @@ public class UserBean extends BasisForm {
 	public String Loeschen() {
 		try {
 			UserManager.hideUser(myClass);
+			paginator.load();
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
 			return "";

@@ -51,6 +51,7 @@ public class UsergroupBean extends BasisForm {
 	public String Speichern() {
 		try {
 			UsergroupManager.saveUsergroup(myBenutzergruppe);
+			paginator.load();
 			return "usergroup_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
@@ -73,6 +74,7 @@ public class UsergroupBean extends BasisForm {
 //			}
 			// TODO: alle Schritte und Benutzer mit entfernen
 			UsergroupManager.deleteUsergroup(myBenutzergruppe);
+			paginator.load();
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
 			return "";

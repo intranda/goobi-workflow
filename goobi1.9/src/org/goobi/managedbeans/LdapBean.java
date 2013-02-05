@@ -51,6 +51,7 @@ public class LdapBean extends BasisForm {
 	public String Speichern() {
 		try {
 			LdapManager.saveLdap(myLdapGruppe);
+			paginator.load();
 			return "ldap_all";
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Could not save", e.getMessage());
@@ -61,6 +62,7 @@ public class LdapBean extends BasisForm {
 	public String Loeschen() {
 		try {
 			LdapManager.deleteLdap(myLdapGruppe);
+			paginator.load();
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Could not delete from database", e.getMessage());
 			return "";

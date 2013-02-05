@@ -56,6 +56,7 @@ public class DocketBean extends BasisForm {
 		try {
 			if (hasValidRulesetFilePath(myDocket, ConfigMain.getParameter("xsltFolder"))) {
 				DocketManager.saveDocket(myDocket);
+				paginator.load();
 				return "docket_all";
 			} else {
 				Helper.setFehlerMeldung("DocketNotFound");
@@ -79,6 +80,7 @@ public class DocketBean extends BasisForm {
 				return "";
 			} else {
 				DocketManager.deleteDocket(myDocket);
+				paginator.load();
 			}
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());

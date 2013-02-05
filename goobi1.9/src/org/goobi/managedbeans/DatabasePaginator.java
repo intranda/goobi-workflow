@@ -109,7 +109,7 @@ public class DatabasePaginator implements Serializable {
 		return results;
 	}
 
-	private void load() {
+	public void load() {
 		try {
 			results = manager.getList(order, filter, this.page * this.pageSize, pageSize);
 			for (DatabaseObject d : results) {
