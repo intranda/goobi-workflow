@@ -1,3 +1,5 @@
 /private
 /.project
 /dist
+/reports
+/.pmd
