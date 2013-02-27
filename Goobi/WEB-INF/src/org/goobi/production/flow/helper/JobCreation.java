@@ -41,7 +41,6 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 import de.sub.goobi.Beans.Prozess;
-import de.sub.goobi.Persistence.ProzessDAO;
 import de.sub.goobi.Persistence.apache.ProcessManager;
 import de.sub.goobi.Persistence.apache.StepManager;
 import de.sub.goobi.Persistence.apache.StepObject;
@@ -254,7 +253,15 @@ public class JobCreation {
 						}
 					}
 				}
+				deleteDirectory(importFolder);
+				
+				try {
+				    FileUtils.forceDelete(metsfile);
+				} catch (Exception e) {
+				    
+				}
 			}
+			
 		}
 	}
 
