@@ -176,9 +176,6 @@ public class AdditionalField {
     }
 
     public boolean getShowDependingOnDoctype() {
-        System.out.println("isdoctype: " + isdoctype);
-        System.out.println("isnotdoctype: " + isnotdoctype);
-        System.out.println("type: " + pkf.getDocType());
         /* wenn nix angegeben wurde, dann anzeigen */
         if (this.isdoctype.equals("") && this.isnotdoctype.equals("")) {
             return true;
