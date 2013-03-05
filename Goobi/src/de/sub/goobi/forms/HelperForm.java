@@ -314,4 +314,9 @@ public class HelperForm {
     public boolean isLdapIsWritable() {
         return ConfigMain.getBooleanParameter("ldap_use", true) && !ConfigMain.getBooleanParameter("ldap_readonly", false);
     }
+
+    public boolean isPasswordIsChangable() {
+        return !ConfigMain.getBooleanParameter("ldap_readonly", false);
+    }
+
 }

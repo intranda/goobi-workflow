@@ -254,7 +254,7 @@
 				</h:commandLink>
 
 				<!-- Passwort aendern -->
-				<h:commandLink styleClass="mlink" action="user_password" id="changePW"
+				<h:commandLink styleClass="mlink" action="user_password" id="changePW" rendered="#{HelperForm.passwordIsChangable}"
 					style="#{NavigationForm.aktuell == '41' ? 'font-weight: bold;':'font-weight:normal ;'}">
 					<h:panelGroup rendered="#{NavigationForm.aktuell == '41'}">
 						<f:verbatim>&#8250; </f:verbatim>
