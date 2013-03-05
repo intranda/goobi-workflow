@@ -94,12 +94,11 @@
 								<x:message id="id31" for="ldapGruppe" style="color: red" detailFormat="#{msgs.keineLdapgruppeAngegeben}" />
 								<!-- ldap configuration schreiben -->
 								<h:commandLink id="id32" title="#{msgs.ldapKonfigurationSchreiben}" action="#{BenutzerverwaltungForm.LdapKonfigurationSchreiben}"
-									rendered="#{BenutzerverwaltungForm.myClass.id != null}">
+									rendered="#{BenutzerverwaltungForm.myClass.id != null and HelperForm.ldapIsWritable}">
 									<h:graphicImage id="id33" value="images/buttons/key3.gif" />
 									<x:updateActionListener property="#{BenutzerverwaltungForm.myClass}" value="#{BenutzerverwaltungForm.myClass}" />
 								</h:commandLink>
 							</h:panelGroup>
-
 							<!-- MetadatenSprache -->
 							<h:outputLabel id="id34" for="metadatenSprache" value="#{msgs.spracheFuerMetadaten}" />
 							<h:panelGroup id="id35">
