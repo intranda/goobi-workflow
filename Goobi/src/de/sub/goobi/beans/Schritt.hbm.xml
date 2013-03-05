@@ -77,7 +77,7 @@
 		<property name="stepPlugin" column="stepPlugin" type="string"/>
 		<property name="validationPlugin" column="validationPlugin" type="string"/>
 		
-		<many-to-one name="bearbeitungsbenutzer" class="de.sub.goobi.beans.Benutzer" column="BearbeitungsBenutzerID"/>
+<!-- 		<many-to-one name="bearbeitungsbenutzer" class="de.sub.goobi.beans.Benutzer" column="BearbeitungsBenutzerID"/> -->
 		<many-to-one name="prozess" class="de.sub.goobi.beans.Prozess" column="ProzesseID"/>
 		
 		<set name="eigenschaften" cascade="all,delete-orphan" inverse="true" order-by="schritteeigenschaftenID">
@@ -85,15 +85,15 @@
 			<one-to-many class="de.sub.goobi.beans.Schritteigenschaft"/>
 		</set>
 		
-		<set name="benutzer" table="schritteberechtigtebenutzer">
-		    <key column="schritteID"/>
-		    <many-to-many column="BenutzerID" class="de.sub.goobi.beans.Benutzer"/>
-		</set>
+<!-- 		<set name="benutzer" table="schritteberechtigtebenutzer"> -->
+<!-- 		    <key column="schritteID"/> -->
+<!-- 		    <many-to-many column="BenutzerID" class="de.sub.goobi.beans.Benutzer"/> -->
+<!-- 		</set> -->
 		
-		<set name="benutzergruppen" table="schritteberechtigtegruppen">
-		    <key column="schritteID"/>
-		    <many-to-many column="BenutzerGruppenID" class="de.sub.goobi.beans.Benutzergruppe"/>
-		</set>
+<!-- 		<set name="benutzergruppen" table="schritteberechtigtegruppen"> -->
+<!-- 		    <key column="schritteID"/> -->
+<!-- 		    <many-to-many column="BenutzerGruppenID" class="de.sub.goobi.beans.Benutzergruppe"/> -->
+<!-- 		</set> -->
 
 			</class>
 
