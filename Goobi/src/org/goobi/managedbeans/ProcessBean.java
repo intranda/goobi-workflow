@@ -57,7 +57,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.goobi.beans.Docket;
 import org.goobi.beans.Project;
+import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
@@ -68,17 +70,11 @@ import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.IEvaluableFilter;
-import org.goobi.production.flow.statistics.hibernate.UserDefinedFilter;
-import org.goobi.production.flow.statistics.hibernate.UserProcessesFilter;
-import org.goobi.production.flow.statistics.hibernate.UserTemplatesFilter;
+
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.jdom.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 
@@ -108,17 +104,18 @@ import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritteWithoutHibernate;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.ProjektDAO;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 @ManagedBean(name = "ProzessverwaltungForm")
 @SessionScoped
@@ -1228,7 +1225,9 @@ public class ProcessBean extends BasisForm {
     public void setProjektAuswahl(Integer inProjektAuswahl) {
         if (inProjektAuswahl.intValue() != 0) {
             try {
-                this.myProzess.setProjekt(new ProjektDAO().get(inProjektAuswahl));
+                Project p = ProjectManager.getProjectById(inProjektAuswahl);
+                this.myProzess.setProjekt(p);
+                this.myProzess.setProjectId(inProjektAuswahl);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
                 logger.error(e);
@@ -1238,13 +1237,79 @@ public class ProcessBean extends BasisForm {
 
     public List<SelectItem> getProjektAuswahlListe() throws DAOException {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
-        List<Project> temp = new ProjektDAO().search("from Projekt ORDER BY titel");
+        List<Project> temp = ProjectManager.getAllProjects();
         for (Project proj : temp) {
             myProjekte.add(new SelectItem(proj.getId(), proj.getTitel(), null));
         }
         return myProjekte;
     }
+    
+    
 
+    public Integer getRulesetSelection() {
+        if (this.myProzess.getRegelsatz() != null) {
+            return this.myProzess.getRegelsatz().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    } 
+    
+    public void setRulesetSelection(Integer selected) {
+        if (selected.intValue() != 0) {
+            try {
+              Ruleset ruleset = RulesetManager.getRulesetById(selected);
+              myProzess.setRegelsatz(ruleset);
+              myProzess.setMetadatenKonfigurationID(selected);
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
+                logger.error(e);
+            }
+        }
+    }
+
+    public List<SelectItem> getRulesetSelectionList()  {
+        List<SelectItem> rulesets = new ArrayList<SelectItem>();
+        List<Ruleset> temp = RulesetManager.getAllRulesets();
+        for (Ruleset ruleset : temp) {
+            rulesets.add(new SelectItem(ruleset.getId(), ruleset.getTitel(), null));
+        }
+        return rulesets;
+    }
+
+    
+    
+    
+    public Integer getDocketSelection() {
+        if (this.myProzess.getDocket() != null) {
+            return this.myProzess.getDocket().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    } 
+    
+    public void setDocketSelection(Integer selected) {
+        if (selected.intValue() != 0) {
+            try {
+              Docket ruleset = DocketManager.getDocketById(selected);
+              myProzess.setDocket(ruleset);
+              myProzess.setDocketId(selected);
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("Docket kann nicht zugewiesen werden", "");
+                logger.error(e);
+            }
+        }
+    }
+
+    public List<SelectItem> getDocketSelectionList()  {
+        List<SelectItem> myProjekte = new ArrayList<SelectItem>();
+        List<Docket> temp = DocketManager.getAllDockets();
+        for (Docket docket : temp) {
+            myProjekte.add(new SelectItem(docket.getId(), docket.getName(), null));
+        }
+        return myProjekte;
+    }
+    
+    
     /*
      * Anzahlen der Artikel und Images
      */

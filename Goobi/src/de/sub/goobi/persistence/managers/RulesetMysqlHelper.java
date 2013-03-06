@@ -35,6 +35,20 @@ public class RulesetMysqlHelper {
 			MySQLHelper.closeConnection(connection);
 		}
 	}
+	
+	
+	   public static List<Ruleset> getAllRulesets() throws SQLException {
+	        Connection connection = MySQLHelper.getInstance().getConnection();
+	        StringBuilder sql = new StringBuilder();
+	        sql.append("SELECT * FROM metadatenkonfigurationen");
+	        try {
+	            logger.debug(sql.toString());
+	            List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
+	            return ret;
+	        } finally {
+	            MySQLHelper.closeConnection(connection);
+	        }
+	    }
 
 	public static int getRulesetCount(String order, String filter) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();

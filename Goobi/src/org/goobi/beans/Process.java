@@ -75,10 +75,11 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
-    private static final Logger myLogger = Logger.getLogger(Process.class);
+    private static final Logger logger = Logger.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
     private Integer id;
     private String titel;
@@ -98,7 +99,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Integer sortHelperMetadata;
     private Integer sortHelperDocstructs;
     private Ruleset regelsatz;
-    // private Batch batch;
     private Integer batchID;
     private Boolean swappedOut = false;
     private Boolean panelAusgeklappt = false;
@@ -107,6 +107,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     // temporär
     private Integer projectId;
+    private Integer MetadatenKonfigurationID;
+    private Integer docketId;
+    
 
     private final MetadatenSperrung msp = new MetadatenSperrung();
     Helper help = new Helper();
@@ -499,6 +502,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public Project getProjekt() {
+       if (projekt == null) {
+           try {
+            projekt = ProjectManager.getProjectById(projectId);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+       }
         return this.projekt;
     }
 
@@ -834,7 +844,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Hibernate.initialize(getRegelsatz());
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
-        myLogger.debug("current meta.xml file type for id " + getId() + ": " + type);
+        logger.debug("current meta.xml file type for id " + getId() + ": " + type);
         Fileformat ff = null;
         if (type.equals("metsmods")) {
             ff = new MetsModsImportExport(this.regelsatz.getPreferences());
@@ -908,7 +918,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             format = ConfigMain.getParameter("formatOfMetaBackups");
         }
         if (format != null) {
-            myLogger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
+            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
         }
         if (numberOfBackups != 0) {
             BackupFileRotation bfr = new BackupFileRotation();
@@ -917,7 +927,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             bfr.setProcessDataDirectory(getProcessDataDirectory());
             bfr.performBackup();
         } else {
-            myLogger.warn("No backup configured for meta data files.");
+            logger.warn("No backup configured for meta data files.");
         }
     }
 
@@ -1024,7 +1034,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (new File(getTemplateFilePath()).exists()) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
-            myLogger.debug("current template.xml file type: " + type);
+            logger.debug("current template.xml file type: " + type);
             if (type.equals("mets")) {
                 ff = new MetsMods(this.regelsatz.getPreferences());
             } else if (type.equals("xstream")) {
@@ -1113,7 +1123,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String downloadDocket() {
 
-        myLogger.debug("generate docket for process " + this.id);
+        logger.debug("generate docket for process " + this.id);
         String rootpath = ConfigMain.getParameter("xsltFolder");
         File xsltfile = new File(rootpath, "docket.xsl");
         if (docket != null) {
@@ -1139,7 +1149,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 ern.startExport(this, out, xsltfile.getAbsolutePath());
                 out.flush();
             } catch (IOException e) {
-                myLogger.error("IOException while exporting run note", e);
+                logger.error("IOException while exporting run note", e);
             }
 
             facesContext.responseComplete();
@@ -1221,4 +1231,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
+    public Integer getMetadatenKonfigurationID() {
+        return MetadatenKonfigurationID;
+    }
+
+    public void setMetadatenKonfigurationID(Integer metadatenKonfigurationID) {
+        MetadatenKonfigurationID = metadatenKonfigurationID;
+    }
+
+    public Integer getDocketId() {
+        return docketId;
+    }
+    
+    public void setDocketId(Integer docketId) {
+        this.docketId = docketId;
+    }
 }

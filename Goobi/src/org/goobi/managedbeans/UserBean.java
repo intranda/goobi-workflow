@@ -54,8 +54,8 @@ import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
-import de.sub.goobi.persistence.ProjektDAO;
 import de.sub.goobi.persistence.managers.LdapManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
@@ -231,7 +231,7 @@ public class UserBean extends BasisForm {
 	public String ZuProjektHinzufuegen() {
 		Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
 		try {
-			Project project = new ProjektDAO().get(projektID);
+			Project project = ProjectManager.getProjectById(projektID);
 			for (Project p : this.myClass.getProjekte()) {
 				if (p.equals(project)) {
 					return "";

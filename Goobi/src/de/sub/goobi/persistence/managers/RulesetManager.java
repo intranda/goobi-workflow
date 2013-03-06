@@ -55,6 +55,16 @@ public class RulesetManager implements IManager {
 		return answer;
 	}
 
+	   public static List<Ruleset> getAllRulesets()  {
+	        List<Ruleset> answer = new ArrayList<Ruleset>();
+	        try {
+	            answer = RulesetMysqlHelper.getAllRulesets();
+	        } catch (SQLException e) {
+	            logger.error("error while getting rulesets", e);
+	        }
+	        return answer;
+	    }
+	
 	public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
 		return (List<? extends DatabaseObject>) getRulesets(order, filter, start, count);
 	}

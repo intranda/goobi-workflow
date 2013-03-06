@@ -188,22 +188,22 @@ public class ProcessMysqlHelper {
     private static void updateProcess(Process o) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE prozesse SET ");
-        sql.append("Titel = ?");
-        sql.append("ausgabename = ?");
-        sql.append("IstTemplate = ?");
-        sql.append("swappedOut = ?");
-        sql.append("inAuswahllisteAnzeigen = ?");
-        sql.append("sortHelperStatus = ?");
-        sql.append("sortHelperImages = ?");
-        sql.append("sortHelperArticles = ?");
-        sql.append("erstellungsdatum = ?");
-        sql.append("ProjekteID = ?");
-        sql.append("MetadatenKonfigurationID = ?");
-        sql.append("sortHelperDocstructs = ?");
-        sql.append("sortHelperMetadata = ?");
-        sql.append("wikifield = ?");
-        sql.append("batchID = ?");
-        sql.append("docketID = ?");
+        sql.append(" Titel = ?,");
+        sql.append(" ausgabename = ?,");
+        sql.append(" IstTemplate = ?,");
+        sql.append(" swappedOut = ?,");
+        sql.append(" inAuswahllisteAnzeigen = ?,");
+        sql.append(" sortHelperStatus = ?,");
+        sql.append(" sortHelperImages = ?,");
+        sql.append(" sortHelperArticles = ?,");
+        sql.append(" erstellungsdatum = ?,");
+        sql.append(" ProjekteID = ?,");
+        sql.append(" MetadatenKonfigurationID = ?,");
+        sql.append(" sortHelperDocstructs = ?,");
+        sql.append(" sortHelperMetadata = ?,");
+        sql.append(" wikifield = ?,");
+        sql.append(" batchID = ?,");
+        sql.append(" docketID = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
 
         Object[] param = generateParameter(o, false);

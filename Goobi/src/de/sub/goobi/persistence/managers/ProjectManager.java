@@ -70,6 +70,16 @@ public class ProjectManager implements IManager {
 		return num;
 	}
 
+	public static List<Project> getAllProjects() {
+	    List<Project> projectList = new ArrayList<Project>();
+	    try {
+            projectList = ProjectMysqlHelper.getAllProjects();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+	    return projectList;
+	}
+	
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
 	public static Project convert(ResultSet rs) throws SQLException {

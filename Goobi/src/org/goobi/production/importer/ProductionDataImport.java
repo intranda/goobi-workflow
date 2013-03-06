@@ -71,7 +71,7 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.HibernateUtilOld;
-import de.sub.goobi.persistence.ProjektDAO;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
@@ -97,8 +97,8 @@ public class ProductionDataImport {
 		session = HibernateUtilOld.getSessionFactory().openSession();
 		altdaten = generateProject();
 		try {
-			new ProjektDAO().save(altdaten);
-			projectList = new ProjektDAO().search("from Projekt");
+			ProjectManager.saveProject(altdaten);
+			projectList = ProjectManager.getAllProjects();
 		} catch (DAOException e) {
 			System.exit(1);
 		}

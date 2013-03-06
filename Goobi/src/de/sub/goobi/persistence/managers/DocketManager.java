@@ -9,6 +9,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -105,4 +106,13 @@ public class DocketManager implements IManager {
 		}
 	};
 
+    public static List<Docket> getAllDockets() {
+        List<Docket> answer = new ArrayList<Docket>();
+        try {
+            answer = DocketMysqlHelper.getAllDockets();
+        } catch (SQLException e) {
+            logger.error("error while getting Dockets", e);
+        }
+        return answer;
+    }
 }

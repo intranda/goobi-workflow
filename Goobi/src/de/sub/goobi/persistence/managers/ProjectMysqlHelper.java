@@ -63,6 +63,19 @@ public class ProjectMysqlHelper {
 			MySQLHelper.closeConnection(connection);
 		}
 	}
+	
+	public static List<Project> getAllProjects() throws SQLException  {
+	    Connection connection = MySQLHelper.getInstance().getConnection();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM projekte");
+        try {
+            logger.debug(sql.toString());
+            List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
+            return ret;
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+	}
 
 	public static void saveProject(Project ro) throws SQLException {
 		Connection connection = MySQLHelper.getInstance().getConnection();

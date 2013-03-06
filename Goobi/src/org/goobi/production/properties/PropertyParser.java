@@ -36,9 +36,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Project;
+
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.ProjectManager;
 
 public class PropertyParser {
 	private static final Logger logger = Logger.getLogger(PropertyParser.class);
@@ -167,8 +171,8 @@ public class PropertyParser {
 		return properties;
 	}
 
-	public static ArrayList<ProcessProperty> getPropertiesForProcess(Process process) {
-		Hibernate.initialize(process.getProjekt());
+	public static List<ProcessProperty> getPropertiesForProcess(Process process) {
+//		Hibernate.initialize(process.getProjekt());
 		String projectTitle = process.getProjekt().getTitel();
 		ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
 		if (process.isIstTemplate()) {
