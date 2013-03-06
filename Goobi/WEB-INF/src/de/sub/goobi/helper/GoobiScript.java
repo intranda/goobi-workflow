@@ -210,11 +210,23 @@ public class GoobiScript {
 		ProzessDAO dao = new ProzessDAO();
 		for (Prozess p : inProzesse) {
 			String title = p.getTitel();
-			deleteMetadataDirectory(p);
 			if (contentOnly) {
-				Helper.setMeldung("Content deleted for " + title);
+			    try {
+		            File ocr = new File(p.getOcrDirectory());
+		            if (ocr.exists()) {
+		                Helper.deleteDir(ocr);
+		            }
+		            File images = new File(p.getImagesDirectory());
+		            if (images.exists()) {
+		                Helper.deleteDir(images);
+		            }
+		            Helper.setMeldung("Content deleted for " + title);
+			    } catch (Exception e) {
+		            Helper.setFehlerMeldung("Can not delete content for " +p.getTitel(), e);
+		        }
 			}
 			if (!contentOnly) {
+			    deleteMetadataDirectory(p);
 				try {
 					dao.remove(p);
 					Helper.setMeldung("Process " + title + " deleted.");
