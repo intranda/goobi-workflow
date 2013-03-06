@@ -45,7 +45,7 @@ import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 
 /**

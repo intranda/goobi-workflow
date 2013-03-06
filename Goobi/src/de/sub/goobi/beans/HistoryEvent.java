@@ -29,6 +29,7 @@ package de.sub.goobi.beans;
  */
 import java.io.Serializable;
 import java.util.Date;
+import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
 
@@ -45,7 +46,7 @@ public class HistoryEvent implements Serializable {
 	private Double numericValue;
 	private String stringValue;
 	private Integer type;
-	private Prozess process;
+	private Process process;
 
 	/**
 	 * This constructor is only public for hibernate usage. If you want to
@@ -74,7 +75,7 @@ public class HistoryEvent implements Serializable {
 	 *            process of HistoryEvent
 	 */
 
-	public HistoryEvent(Date date, Number inNumericValue, String inStringValue, HistoryEventType inHistoryEventType, Prozess process) {
+	public HistoryEvent(Date date, Number inNumericValue, String inStringValue, HistoryEventType inHistoryEventType, Process process) {
 		super();
 		this.date = date;
 		numericValue = inNumericValue.doubleValue();
@@ -126,7 +127,7 @@ public class HistoryEvent implements Serializable {
 	 * 
 	 * @return the process
 	 */
-	public Prozess getProcess() {
+	public Process getProcess() {
 		return process;
 	}
 
@@ -136,7 +137,7 @@ public class HistoryEvent implements Serializable {
 	 * @param process
 	 *            the process to set
 	 */
-	public void setProcess(Prozess process) {
+	public void setProcess(Process process) {
 		this.process = process;
 	}
 

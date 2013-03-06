@@ -48,8 +48,8 @@ import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.SchrittDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
@@ -106,7 +106,7 @@ public class StatistikForm {
 	 */
 	public Long getAnzahlProzesse() {
 		try {
-			return new ProzessDAO().count("from Prozess");
+			return (long) new ProcessManager().getHitSize(null, null);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
 			return null;

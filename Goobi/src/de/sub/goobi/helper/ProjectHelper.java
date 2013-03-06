@@ -43,7 +43,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.enums.StepStatus;
 
@@ -74,7 +74,7 @@ public class ProjectHelper {
 
 	
 
-		Criteria critTotals = session.createCriteria(Prozess.class, "proc");
+		Criteria critTotals = session.createCriteria(Process.class, "proc");
 		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
 		critTotals.add(Restrictions.eq("proc.projekt", project));
 
@@ -231,7 +231,7 @@ public class ProjectHelper {
 		Session session = Helper.getHibernateSession();
 	
 
-		Criteria critTotals = session.createCriteria(Prozess.class, "proc");
+		Criteria critTotals = session.createCriteria(Process.class, "proc");
 		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
 		critTotals.add(Restrictions.eq("proc.projekt", inProj));
 

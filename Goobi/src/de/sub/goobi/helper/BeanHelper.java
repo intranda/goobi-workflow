@@ -37,7 +37,7 @@ import java.util.TreeSet;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -50,14 +50,14 @@ public class BeanHelper {
 
 	
 
-	public void EigenschaftHinzufuegen(Prozess inProzess, String inTitel, String inWert) {
+	public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
 		Prozesseigenschaft eig = new Prozesseigenschaft();
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
 		eig.setProzess(inProzess);
-		Set<Prozesseigenschaft> eigenschaften = inProzess.getEigenschaften();
+		List<Prozesseigenschaft> eigenschaften = inProzess.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Prozesseigenschaft>();
+			eigenschaften = new ArrayList<Prozesseigenschaft>();
 		}
 		eigenschaften.add(eig);
 	}
@@ -106,8 +106,8 @@ public class BeanHelper {
 
 	
 
-	public void SchritteKopieren(Prozess prozessVorlage, Prozess prozessKopie) {
-		HashSet<Schritt> mySchritte = new HashSet<Schritt>();
+	public void SchritteKopieren(Process prozessVorlage, Process prozessKopie) {
+		List<Schritt> mySchritte = new ArrayList<Schritt>();
 		for (Schritt step : prozessVorlage.getSchritteList()) {
 
 			/* --------------------------------
@@ -190,8 +190,8 @@ public class BeanHelper {
 		prozessKopie.setSchritte(mySchritte);
 	}
 
-	public void WerkstueckeKopieren(Prozess prozessVorlage, Prozess prozessKopie) {
-		HashSet<Werkstueck> myWerkstuecke = new HashSet<Werkstueck>();
+	public void WerkstueckeKopieren(Process prozessVorlage, Process prozessKopie) {
+		List<Werkstueck> myWerkstuecke = new ArrayList<Werkstueck>();
 		for (Werkstueck werk : prozessVorlage.getWerkstuecke()) {
 			/* --------------------------------
 			 * Details des Werkstücks
@@ -221,8 +221,9 @@ public class BeanHelper {
 		prozessKopie.setWerkstuecke(myWerkstuecke);
 	}
 
-	public void EigenschaftenKopieren(Prozess prozessVorlage, Prozess prozessKopie) {
-		TreeSet<Prozesseigenschaft> myEigenschaften = new TreeSet<Prozesseigenschaft>();
+	public void EigenschaftenKopieren(Process prozessVorlage, Process prozessKopie) {
+		// TODO Reihenfolge!
+	    List<Prozesseigenschaft> myEigenschaften = new ArrayList<Prozesseigenschaft>();
 		for (Iterator<Prozesseigenschaft> iterator = prozessVorlage.getEigenschaftenList().iterator(); iterator.hasNext();) {
 			Prozesseigenschaft eig = iterator.next();
 			Prozesseigenschaft eigneu = new Prozesseigenschaft();
@@ -237,8 +238,8 @@ public class BeanHelper {
 		prozessKopie.setEigenschaften(myEigenschaften);
 	}
 
-	public void ScanvorlagenKopieren(Prozess prozessVorlage, Prozess prozessKopie) {
-		HashSet<Vorlage> myVorlagen = new HashSet<Vorlage>();
+	public void ScanvorlagenKopieren(Process prozessVorlage, Process prozessKopie) {
+		List<Vorlage> myVorlagen = new ArrayList<Vorlage>();
 		for (Vorlage vor : prozessVorlage.getVorlagen()) {
 			/* --------------------------------
 			 * Details der Vorlage
@@ -269,7 +270,7 @@ public class BeanHelper {
 		prozessKopie.setVorlagen(myVorlagen);
 	}
 
-	public String WerkstueckEigenschaftErmitteln(Prozess myProzess, String inEigenschaft) {
+	public String WerkstueckEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
 		String Eigenschaft = "";
 		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
 			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
@@ -281,7 +282,7 @@ public class BeanHelper {
 		return Eigenschaft;
 	}
 
-	public String ScanvorlagenEigenschaftErmitteln(Prozess myProzess, String inEigenschaft) {
+	public String ScanvorlagenEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
 		String Eigenschaft = "";
 		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
 			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
@@ -293,7 +294,7 @@ public class BeanHelper {
 		return Eigenschaft;
 	}
 
-	public void WerkstueckEigenschaftAendern(Prozess myProzess, String inEigenschaft, String inWert) {
+	public void WerkstueckEigenschaftAendern(Process myProzess, String inEigenschaft, String inWert) {
 		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
 			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft)) {
@@ -303,7 +304,7 @@ public class BeanHelper {
 		}
 	}
 
-	public void ScanvorlagenEigenschaftAendern(Prozess myProzess, String inEigenschaft, String inWert) {
+	public void ScanvorlagenEigenschaftAendern(Process myProzess, String inEigenschaft, String inWert) {
 		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
 			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft)) {
@@ -313,7 +314,7 @@ public class BeanHelper {
 		}
 	}
 
-	public void WerkstueckEigenschaftLoeschen(Prozess myProzess, String inEigenschaft, String inWert) {
+	public void WerkstueckEigenschaftLoeschen(Process myProzess, String inEigenschaft, String inWert) {
 		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
 			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft) && eigenschaft.getWert().equals(inWert)) {
@@ -323,7 +324,7 @@ public class BeanHelper {
 		}
 	}
 
-	public void ScanvorlagenEigenschaftLoeschen(Prozess myProzess, String inEigenschaft, String inWert) {
+	public void ScanvorlagenEigenschaftLoeschen(Process myProzess, String inEigenschaft, String inWert) {
 		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
 			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft) && eigenschaft.getWert().equals(inWert)) {
@@ -333,7 +334,7 @@ public class BeanHelper {
 		}
 	}
 
-	public void WerkstueckEigenschaftDoppelteLoeschen(Prozess myProzess) {
+	public void WerkstueckEigenschaftDoppelteLoeschen(Process myProzess) {
 		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
 			List<String> einzelstuecke = new ArrayList<String>();
 			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
@@ -347,7 +348,7 @@ public class BeanHelper {
 		}
 	}
 
-	public void ScanvorlageEigenschaftDoppelteLoeschen(Prozess myProzess) {
+	public void ScanvorlageEigenschaftDoppelteLoeschen(Process myProzess) {
 		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
 			List<String> einzelstuecke = new ArrayList<String>();
 			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {

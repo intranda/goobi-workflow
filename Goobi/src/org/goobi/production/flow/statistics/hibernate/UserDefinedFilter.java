@@ -40,7 +40,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
 
@@ -180,7 +180,7 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 	private Criteria createCriteriaFromFilterString(String inFilter) {
 		Session session = Helper.getHibernateSession();
 
-		PaginatingCriteria crit = new PaginatingCriteria(Prozess.class, session);
+		PaginatingCriteria crit = new PaginatingCriteria(Process.class, session);
 		crit.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 
 		/*
@@ -216,7 +216,7 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 	private void createIDListFromCriteria(Criteria crit) {
 		myIds = new ArrayList<Integer>();
 		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-			Prozess p = (Prozess) it.next();
+		    Process p = (Process) it.next();
 			myIds.add(p.getId());
 			myCriteria = null;
 		}
@@ -227,7 +227,7 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 	 ****************************************************************************/
 	private PaginatingCriteria createCriteriaFromIDList() {
 		Session session = Helper.getHibernateSession();
-		PaginatingCriteria crit = new PaginatingCriteria(Prozess.class, session);
+		PaginatingCriteria crit = new PaginatingCriteria(Process.class, session);
 		crit.add(Restrictions.in("id", myIds));
 		return crit;
 	}

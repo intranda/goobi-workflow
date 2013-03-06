@@ -31,7 +31,7 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 
 public class WikiFieldHelper {
 
@@ -47,7 +47,7 @@ public class WikiFieldHelper {
 
 	private static final String BREAK = "<br/>";
 
-	public static String getWikiMessage(Prozess p, String currentWikifieldcontent, String type, String value) {
+	public static String getWikiMessage(Process p, String currentWikifieldcontent, String type, String value) {
 		String message = "";
 		if (currentWikifieldcontent != null && currentWikifieldcontent.length() > 0) {
 			message += currentWikifieldcontent;

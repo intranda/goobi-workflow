@@ -72,7 +72,7 @@ import org.joda.time.Years;
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
 import de.sub.goobi.beans.ProjectFileGroup;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
@@ -353,7 +353,7 @@ public class ProjectBean extends BasisForm {
 
 	@SuppressWarnings("rawtypes")
 	public void GenerateValuesForStatistics() {
-		Criteria crit = Helper.getHibernateSession().createCriteria(Prozess.class).add(Restrictions.eq("projekt", this.myProjekt));
+		Criteria crit = Helper.getHibernateSession().createCriteria(Process.class).add(Restrictions.eq("projekt", this.myProjekt));
 		ProjectionList pl = Projections.projectionList();
 		pl.add(Projections.sum("sortHelperImages"));
 		pl.add(Projections.count("sortHelperImages"));

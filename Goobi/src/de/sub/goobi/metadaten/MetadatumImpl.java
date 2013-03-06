@@ -41,7 +41,7 @@ import org.goobi.api.display.enums.BindState;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 
 /**
@@ -55,7 +55,7 @@ public class MetadatumImpl implements Metadatum {
 	private Metadata md;
 	private int identifier;
 	private Prefs myPrefs;
-	private Prozess myProcess;
+	private Process myProcess;
 	private HashMap<String, DisplayCase> myValues = new HashMap<String, DisplayCase>();
 	private List<SelectItem> items;
 	private List<String> selectedItems;
@@ -63,7 +63,7 @@ public class MetadatumImpl implements Metadatum {
 	/**
 	 * Allgemeiner Konstruktor ()
 	 */
-	public MetadatumImpl(Metadata m, int inID, Prefs inPrefs, Prozess inProcess) {
+	public MetadatumImpl(Metadata m, int inID, Prefs inPrefs, Process inProcess) {
 		this.md = m;
 		this.identifier = inID;
 		this.myPrefs = inPrefs;

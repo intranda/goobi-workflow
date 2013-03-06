@@ -1,5 +1,7 @@
 package de.sub.goobi.persistence;
 
+import java.util.List;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -46,4 +48,9 @@ public class SimpleDAO extends BaseDAO {
 		Object o = t;
 		refresh(o);
 	}
+	
+	
+	 public List search(String query) throws DAOException {
+  return retrieveObjs(query);
+}
 }

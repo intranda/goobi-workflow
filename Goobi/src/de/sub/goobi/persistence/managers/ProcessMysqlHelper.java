@@ -32,7 +32,7 @@ public class ProcessMysqlHelper {
         }
     }
 
-    public static void saveProcess(Process o) {
+    public static void saveProcess(Process o) throws DAOException {
         try {
 
             if (o.getId() == null) {
@@ -42,8 +42,14 @@ public class ProcessMysqlHelper {
                 // process exists already in database
                 updateProcess(o);
             }
+            // TODO Schritte speichern
+            // TODO Eigenschaften speichern
+            // TODO Werkstuecke speichern
+            // TODO Vorlagen speichern
+            
         } catch (SQLException e) {
-            logger.error("Error while saving process " + o.getTitel(), e);
+//            logger.error("Error while saving process " + o.getTitel(), e);
+            throw new DAOException(e);
         }
     }
 
@@ -89,6 +95,20 @@ public class ProcessMysqlHelper {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
+        try {
+            logger.debug(sql.toString());
+            List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
+            return ret;
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+    
+    
+    public static List<Process> getAllProcesses() throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM prozesse");
         try {
             logger.debug(sql.toString());
             List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
@@ -158,7 +178,7 @@ public class ProcessMysqlHelper {
 
         Timestamp datetime = new Timestamp(d.getTime());
         Object[] param =
-                { o.getTitel(), o.getAusgabename(), o.getIstTemplate(), o.getSwappedOut(), o.getInAuswahllisteAnzeigen(), o.getSortHelperStatus(),
+                { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(),
                         o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                         o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getWikifield(), o.getBatchID(), o.getDocket().getId() };
 
@@ -203,7 +223,7 @@ public class ProcessMysqlHelper {
         p.setTitel(rs.getString("Titel"));
         p.setAusgabename(rs.getString("ausgabename"));
         p.setIstTemplate(rs.getBoolean("IstTemplate"));
-        p.setSwappedOut(rs.getBoolean("swappedOut"));
+        p.setSwappedOutHibernate(rs.getBoolean("swappedOut"));
         p.setInAuswahllisteAnzeigen(rs.getBoolean("inAuswahllisteAnzeigen"));
         p.setSortHelperStatus(rs.getString("sortHelperStatus"));
         p.setSortHelperImages(rs.getInt("sortHelperImages"));
@@ -219,5 +239,7 @@ public class ProcessMysqlHelper {
 
         return p;
     }
+
+ 
 
 }

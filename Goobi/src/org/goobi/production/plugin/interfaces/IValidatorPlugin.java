@@ -26,13 +26,13 @@ package org.goobi.production.plugin.interfaces;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.persistence.apache.StepObject;
 
 public interface IValidatorPlugin extends IPlugin {
 	
-	public void initialize(Prozess inProcess);
+	public void initialize(Process inProcess);
 
 	public boolean validate();
 	

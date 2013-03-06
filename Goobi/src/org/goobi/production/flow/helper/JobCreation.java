@@ -40,13 +40,12 @@ import org.goobi.production.importer.ImportObject;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
@@ -55,7 +54,7 @@ public class JobCreation {
 	private static final Logger logger = Logger.getLogger(JobCreation.class);
 
 	@SuppressWarnings("static-access")
-	public static Prozess generateProcess(ImportObject io, Prozess vorlage) {
+	public static Process generateProcess(ImportObject io, Process vorlage) {
 		String processTitle = io.getProcessTitle();
 		logger.trace("processtitle is " + processTitle);
 		String metsfilename = io.getMetsFilename();
@@ -63,7 +62,7 @@ public class JobCreation {
 		String basepath = metsfilename.substring(0, metsfilename.length() - 4);
 		logger.trace("basepath is " + basepath);
 		File metsfile = new File(metsfilename);
-		Prozess p = null;
+		Process p = null;
 		if (!testTitle(processTitle)) {
 			logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
 			// removing all data
@@ -153,7 +152,7 @@ public class JobCreation {
 	}
 
 	@SuppressWarnings("static-access")
-	public static void moveFiles(File metsfile, String basepath, Prozess p) throws SwapException, DAOException, IOException, InterruptedException {
+	public static void moveFiles(File metsfile, String basepath, Process p) throws SwapException, DAOException, IOException, InterruptedException {
 		if (ConfigMain.getBooleanParameter("importUseOldConfiguration", false)) {
 			File imagesFolder = new File(basepath);
 			if (!imagesFolder.exists()) {

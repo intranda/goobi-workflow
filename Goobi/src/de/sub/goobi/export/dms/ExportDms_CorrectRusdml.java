@@ -44,7 +44,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
@@ -52,12 +52,12 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 public class ExportDms_CorrectRusdml {
 	private Prefs myPrefs;
 	private List<DocStruct> docStructsOhneSeiten;
-	private Prozess myProzess;
+	private Process myProzess;
 	private DigitalDocument mydocument;
 	BeanHelper bhelp = new BeanHelper();
 	private static final Logger logger = Logger.getLogger(ExportDms_CorrectRusdml.class);
 
-	public ExportDms_CorrectRusdml(Prozess inProzess, Prefs inPrefs, Fileformat inGdzfile) throws PreferencesException {
+	public ExportDms_CorrectRusdml(Process inProzess, Prefs inPrefs, Fileformat inGdzfile) throws PreferencesException {
 		myPrefs = inPrefs;
 		mydocument = inGdzfile.getDigitalDocument();
 		myProzess = inProzess;
@@ -301,7 +301,7 @@ public class ExportDms_CorrectRusdml {
 	 * @throws DocStructHasNoTypeException
 	 * @throws MetadataTypeNotAllowedException
 	 */
-	private void RusdmlAddMissingMetadata(DocStruct inTopStruct, Prozess myProzess) throws ExportFileException, UghHelperException {
+	private void RusdmlAddMissingMetadata(DocStruct inTopStruct, Process myProzess) throws ExportFileException, UghHelperException {
 		/*
 		 * -------------------------------- bei fehlender digitaler PPN:
 		 * Fehlermeldung und raus --------------------------------
@@ -320,7 +320,7 @@ public class ExportDms_CorrectRusdml {
 	 * @param myProzess
 	 * @param PPN
 	 */
-	private void RusdmlAddMissingMetadata(DocStruct inTopStruct, Prozess myProzess, String PPN) {
+	private void RusdmlAddMissingMetadata(DocStruct inTopStruct, Process myProzess, String PPN) {
 		/*
 		 * -------------------------------- Eigenschaften aus dem Werkstück
 		 * holen --------------------------------

@@ -34,13 +34,13 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 
 public class DigitalCollections {
 
 	@SuppressWarnings("unchecked")
 	public static List<String> possibleDigitalCollectionsForProcess(
-			Prozess process) throws JDOMException, IOException {
+			Process process) throws JDOMException, IOException {
 		
 		List<String> result = new ArrayList<String>();
 		String filename = ConfigMain.getParameter("KonfigurationVerzeichnis") + "digitalCollections.xml";

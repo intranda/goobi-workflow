@@ -43,15 +43,15 @@ import org.goobi.production.importer.ImportObject;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 /**
  * 
@@ -103,9 +103,8 @@ public class HotfolderJob extends AbstractGoobiJob {
 							if (size == getSize(list)) {
 								hotfolder.lock();
 								logger.trace("9");
-								ProzessDAO dao = new ProzessDAO();
-								Prozess template = dao.get(hotfolder.getTemplate());
-								dao.refresh(template);
+								Process template = ProcessManager.getProcessById(hotfolder.getTemplate());
+//								dao.refresh(template);
 								logger.trace("10");
 								List<String> metsfiles = hotfolder.getFileNamesByFilter(GoobiHotfolder.filter);
 								logger.trace("11");
@@ -151,9 +150,9 @@ public class HotfolderJob extends AbstractGoobiJob {
 				} catch (InterruptedException e) {
 					logger.error(e);
 					logger.trace("20");
-				} catch (DAOException e) {
-					logger.error(e);
-					logger.trace("21");
+//				} catch (DAOException e) {
+//					logger.error(e);
+//					logger.trace("21");
 				} catch (Exception e) {
 					logger.error(e);
 				}
@@ -177,7 +176,7 @@ public class HotfolderJob extends AbstractGoobiJob {
 		return size;
 	}
 
-	public static int generateProcess(String processTitle, Prozess vorlage, File dir, String digitalCollection, String updateStrategy) {
+	public static int generateProcess(String processTitle, Process vorlage, File dir, String digitalCollection, String updateStrategy) {
 		// wenn keine anchor Datei, dann Vorgang anlegen
 		if (!processTitle.contains("anchor") && processTitle.endsWith("xml")) {
 			if (!updateStrategy.equals("ignore")) {
@@ -254,7 +253,7 @@ public class HotfolderJob extends AbstractGoobiJob {
 				form.OpacAuswerten();
 
 				try {
-					Prozess p = form.NeuenProzessAnlegen2();
+				    Process p = form.NeuenProzessAnlegen2();
 					if (p.getId() != null) {
 
 						// copy image files to new directory
@@ -344,11 +343,11 @@ public class HotfolderJob extends AbstractGoobiJob {
 	public static boolean testTitle(String titel) {
 		if (titel != null) {
 			long anzahl = 0;
-			try {
-				anzahl = new ProzessDAO().count("from Prozess where titel='" + titel + "'");
-			} catch (DAOException e) {
-				return false;
-			}
+//			try {
+				anzahl = ProcessManager.countProcessTitle(titel);
+//			} catch (DAOException e) {
+//				return false;
+//			}
 			if (anzahl > 0) {
 				Helper.setFehlerMeldung("processTitleAllreadyInUse");
 				return false;
@@ -360,7 +359,7 @@ public class HotfolderJob extends AbstractGoobiJob {
 	}
 
 	@SuppressWarnings("static-access")
-	public static Prozess generateProcess(ImportObject io, Prozess vorlage) {
+	public static Process generateProcess(ImportObject io, Process vorlage) {
 		String processTitle = io.getProcessTitle();
 		logger.trace("processtitle is " + processTitle);
 		String metsfilename = io.getMetsFilename();
@@ -368,7 +367,7 @@ public class HotfolderJob extends AbstractGoobiJob {
 		String basepath = metsfilename.substring(0, metsfilename.length() - 4);
 		logger.trace("basepath is " + basepath);
 		File metsfile = new File(metsfilename);
-		Prozess p = null;
+		Process p = null;
 		if (!testTitle(processTitle)) {
 			logger.trace("wrong title");
 			// removing all data

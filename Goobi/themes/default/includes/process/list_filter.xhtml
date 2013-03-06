@@ -27,7 +27,7 @@
 			</h:panelGroup>
 		</h:panelGrid>
 		<h:panelGrid id="aslsid2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight" rowClasses="standardTable_Row" columns="2">
-			<h:outputText id="aslsid3" value="#{msgs.treffer}: #{Form.page.totalResults}" rendered="#{showHits}" />
+			<h:outputText id="aslsid3" value="#{msgs.treffer}: #{Form.paginator.totalResults}" rendered="#{showHits}" />
 			<h:outputText id="aslsid3_alt" value="" rendered="#{!showHits}" />
 
 			<h:panelGroup id="aslsid4">

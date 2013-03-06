@@ -27,6 +27,7 @@ package de.sub.goobi.converter;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -34,9 +35,8 @@ import javax.faces.convert.ConverterException;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Prozess;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.ProzessDAO;
+import org.goobi.beans.Process;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 
 public class ProcessConverter implements Converter {
@@ -50,11 +50,8 @@ public Object getAsObject(FacesContext context, UIComponent component, String va
          return null;
       } else {
          try {
-				return new ProzessDAO().get(new Integer(value));
+				return ProcessManager.getProcessById(new Integer(value));
 			} catch (NumberFormatException e) {
-				logger.error(e);
-				return "0";
-			} catch (DAOException e) {
 				logger.error(e);
 				return "0";
 			}
@@ -66,8 +63,8 @@ public String getAsString(FacesContext context, UIComponent component, Object va
          throws ConverterException {
       if (value == null) {
          return null;
-      } else if (value instanceof Prozess) {
-         return String.valueOf(((Prozess) value).getId().intValue());
+      } else if (value instanceof Process) {
+         return String.valueOf(((Process) value).getId().intValue());
       } else if (value instanceof String) {
          return (String) value;
       } else {

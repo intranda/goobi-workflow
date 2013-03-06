@@ -51,7 +51,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsModsImportExport;
 import de.sub.goobi.beans.ProjectFileGroup;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.dms.ExportDms_CorrectRusdml;
@@ -88,7 +88,7 @@ public class ExportMets {
 	 * @throws DocStructHasNoTypeException
 	 * @throws TypeNotAllowedForParentException
 	 */
-	public boolean startExport(Prozess myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
+	public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
 			WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
 			TypeNotAllowedForParentException {
 		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
@@ -117,7 +117,7 @@ public class ExportMets {
 	 * @throws ReadException
 	 * @throws TypeNotAllowedForParentException
 	 */
-	public boolean startExport(Prozess myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
+	public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
 			WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
 			SwapException, DAOException, TypeNotAllowedForParentException {
 
@@ -173,7 +173,7 @@ public class ExportMets {
 	 * @throws TypeNotAllowedForParentException
 	 */
 
-	protected boolean writeMetsFile(Prozess myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup)
+	protected boolean writeMetsFile(Process myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup)
 			throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
 			TypeNotAllowedForParentException {
 

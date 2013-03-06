@@ -30,7 +30,7 @@ package de.sub.goobi.helper;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.persistence.HibernateUtilOld;
 
@@ -57,7 +57,7 @@ public class RefreshObject {
 			}
 
 			logger.debug("created a new session");
-			Prozess o = (Prozess) session.get(Prozess.class, Integer.valueOf(processID));
+			Process o = (Process) session.get(Process.class, Integer.valueOf(processID));
 			logger.debug("loaded process");
 			session.refresh(o);
 			logger.debug("refreshed process");
@@ -77,7 +77,7 @@ public class RefreshObject {
 				HibernateUtilOld.rebuildSessionFactory();
 				session = HibernateUtilOld.getSessionFactory().openSession();
 			}
-			Prozess o = (Prozess) session.get(Prozess.class, processID);
+			Process o = (Process) session.get(Process.class, processID);
 			logger.debug("loaded process");
 			session.refresh(o);
 			logger.debug("refreshed process");

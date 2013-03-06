@@ -32,7 +32,7 @@ import java.util.List;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 
 public class StatistikStatus {
@@ -40,7 +40,7 @@ public class StatistikStatus {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Dataset getDiagramm(List inProzesse) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		for (Prozess proz : (List<Prozess>) inProzesse) {
+		for (Process proz : (List<Process>) inProzesse) {
 			Schritt step = proz.getAktuellerSchritt();
 			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
 			if (step != null) {

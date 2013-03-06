@@ -34,14 +34,14 @@ import org.goobi.beans.Usergroup;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 
 public class StatistikBenutzergruppen {
 
-	public static Dataset getDiagramm(List<Prozess> inProzesse) {
+	public static Dataset getDiagramm(List<Process> inProzesse) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		for (Prozess proz : inProzesse) {
+		for (Process proz : inProzesse) {
 			Schritt step = proz.getAktuellerSchritt();
 			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
 			if (step != null) {

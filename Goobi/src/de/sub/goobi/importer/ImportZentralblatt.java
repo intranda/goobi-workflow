@@ -50,7 +50,7 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.WrongImportFileException;
 
@@ -81,7 +81,7 @@ public class ImportZentralblatt {
 	 * @throws MetadataTypeNotAllowedException
 	 * @throws WriteException
 	 */
-	protected void Parsen(BufferedReader reader, Prozess inProzess) throws IOException, WrongImportFileException, TypeNotAllowedForParentException,
+	protected void Parsen(BufferedReader reader, Process inProzess) throws IOException, WrongImportFileException, TypeNotAllowedForParentException,
 			TypeNotAllowedAsChildException, MetadataTypeNotAllowedException, WriteException {
 		myLogger.debug("ParsenZentralblatt() - Start");
 		this.myPrefs = inProzess.getRegelsatz().getPreferences();

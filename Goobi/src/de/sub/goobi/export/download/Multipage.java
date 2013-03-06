@@ -48,7 +48,7 @@ import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import com.sun.media.jai.codec.TIFFEncodeParam;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -64,7 +64,7 @@ public class Multipage {
 	private static final Logger myLogger = Logger.getLogger(Multipage.class);
 	Helper help = new Helper();
 
-	private void create(Prozess inProzess) throws IOException, InterruptedException, SwapException, DAOException {
+	private void create(Process inProzess) throws IOException, InterruptedException, SwapException, DAOException {
 		/* alle tifs durchlaufen */
 		String pfad = inProzess.getImagesDirectory();
 		File dir = new File(pfad);
@@ -102,7 +102,7 @@ public class Multipage {
 		myLogger.debug("fertig");
 	}
 
-	public void ExportStart(Prozess inProzess) throws IOException, InterruptedException, SwapException, DAOException {
+	public void ExportStart(Process inProzess) throws IOException, InterruptedException, SwapException, DAOException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		if (!facesContext.getResponseComplete()) {
 			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();

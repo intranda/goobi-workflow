@@ -35,16 +35,16 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class ProcessSwapInTask extends LongRunningTask {
 
 	@Override
-	public void initialize(Prozess inProzess) {
+	public void initialize(org.goobi.beans.Process inProzess) {
 		super.initialize(inProzess);
 		setTitle("Einlagerung: " + inProzess.getTitel());
 	}
@@ -57,7 +57,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 	public void run() {
 		setStatusProgress(5);
 		String swapPath = null;
-		ProzessDAO dao = new ProzessDAO();
+//		ProzessDAO dao = new ProzessDAO();
 		String processDirectory = "";
 
 		if (ConfigMain.getBooleanParameter("useSwapping")) {
@@ -186,9 +186,9 @@ public class ProcessSwapInTask extends LongRunningTask {
 		Helper.deleteDir(fileOut);
 		try {
 			setStatusMessage("saving process");
-			Prozess myProzess = dao.get(getProzess().getId());
+			Process myProzess = ProcessManager.getProcessById(getProzess().getId());
 			myProzess.setSwappedOutGui(false);
-			dao.save(myProzess);
+			ProcessManager.saveProcess(myProzess);
 		} catch (DAOException e) {
 			setStatusMessage("DAOException while saving process: " + e.getMessage());
 			logger.warn("DAOException:", e);

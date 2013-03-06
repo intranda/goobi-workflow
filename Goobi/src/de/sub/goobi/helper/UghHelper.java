@@ -46,7 +46,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
@@ -61,7 +61,7 @@ public class UghHelper {
 	 * @return MetadataType
 	 * @throws UghHelperException
 	 */
-	public MetadataType getMetadataType(Prozess inProzess, String inName) throws UghHelperException {
+	public MetadataType getMetadataType(Process inProzess, String inName) throws UghHelperException {
 		Prefs myPrefs = inProzess.getRegelsatz().getPreferences();
 		return getMetadataType(myPrefs, inName);
 	}
@@ -146,7 +146,7 @@ public class UghHelper {
 	 * @return Metadata
 	 * @throws UghHelperException
 	 */
-	public Metadata getMetadata(DocStruct inStruct, Prozess inProzess, String inMetadataType) throws UghHelperException {
+	public Metadata getMetadata(DocStruct inStruct, Process inProzess, String inMetadataType) throws UghHelperException {
 		MetadataType mdt = getMetadataType(inProzess, inMetadataType);
 		List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
 		if (all.size() > 0) {

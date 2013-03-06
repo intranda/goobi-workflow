@@ -55,7 +55,7 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
@@ -425,7 +425,7 @@ public class MetadatenHelper implements Comparator<Object> {
 	 * ================================================================
 	 */
 	@SuppressWarnings("deprecation")
-	public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, boolean inIsPerson, Prozess inProzess) {
+	public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, boolean inIsPerson, Process inProzess) {
 		List<MetadataType> displayMetadataTypes = inStruct.getDisplayMetadataTypes();
 		/* sofern Default-Metadaten vorhanden sind, diese ggf. ergänzen */
 		if (displayMetadataTypes != null) {

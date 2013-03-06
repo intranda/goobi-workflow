@@ -78,7 +78,8 @@
 		<property name="validationPlugin" column="validationPlugin" type="string"/>
 		
 <!-- 		<many-to-one name="bearbeitungsbenutzer" class="de.sub.goobi.beans.Benutzer" column="BearbeitungsBenutzerID"/> -->
-		<many-to-one name="prozess" class="de.sub.goobi.beans.Prozess" column="ProzesseID"/>
+
+<!-- 		<many-to-one name="prozess" class="de.sub.goobi.beans.Prozess" column="ProzesseID"/> -->
 		
 		<set name="eigenschaften" cascade="all,delete-orphan" inverse="true" order-by="schritteeigenschaftenID">
 			<key column="schritteID"/>

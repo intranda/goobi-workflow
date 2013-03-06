@@ -73,7 +73,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
 			if (throwable instanceof Throwable) {
 				Throwable t = (Throwable) throwable;
-
+t.printStackTrace();
 				FacesContext facesContext = FacesContext.getCurrentInstance();
 
 				@SuppressWarnings("unchecked")

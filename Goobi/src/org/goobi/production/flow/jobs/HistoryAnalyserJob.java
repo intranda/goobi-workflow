@@ -40,7 +40,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
@@ -99,7 +99,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 *****************************************************************************/
-	public static Boolean updateHistory(Prozess inProcess) throws IOException, InterruptedException, SwapException, DAOException {
+	public static Boolean updateHistory(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
 		boolean updated = false;
 		/* storage */
 		if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference, getCurrentStorageSize(inProcess))) {
@@ -138,7 +138,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * @return true, if changes are made and have to be saved to database
 	 ***************************************************************************/
 	@SuppressWarnings("incomplete-switch")
-	private static Boolean updateHistoryForSteps(Prozess inProcess) {
+	private static Boolean updateHistoryForSteps(Process inProcess) {
 		Boolean isDirty = false;
 		HistoryEvent he = null;
 
@@ -327,7 +327,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * @param inProcess
 	 * @return History event if event needs to be added, null if event(same kind, same time, same process ) already exists
 	 */
-	private static HistoryEvent addHistoryEvent(Date timeStamp, Integer stepOrder, String stepName, HistoryEventType type, Prozess inProcess) {
+	private static HistoryEvent addHistoryEvent(Date timeStamp, Integer stepOrder, String stepName, HistoryEventType type, Process inProcess) {
 		HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
 		if (!getHistoryContainsEventAlready(he, inProcess)) {
@@ -347,7 +347,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 *            given {@link Prozess}
 	 * @return true, if {@link HistoryEvent} already exists
 	 ***************************************************************************/
-	private static Boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Prozess inProcess) {
+	private static Boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Process inProcess) {
 		for (HistoryEvent historyItem : inProcess.getHistoryList()) {
 			if (inEvent != historyItem) { // this is required, in case items
 				// from the same list are compared
@@ -364,7 +364,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * 
 	 * @return stored value as Long
 	 ***************************************************************************/
-	private static Long getStoredValue(Prozess inProcess, HistoryEventType inType) {
+	private static Long getStoredValue(Process inProcess, HistoryEventType inType) {
 		long storedValue = 0;
 		for (HistoryEvent historyItem : inProcess.getHistoryList()) {
 			if (historyItem.getHistoryType() == inType) {
@@ -379,7 +379,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * 
 	 * @return true if value is different and history got updated, else false
 	 ***************************************************************************/
-	private static Boolean updateHistoryEvent(Prozess inProcess, HistoryEventType inType, Long inCurrentValue) {
+	private static Boolean updateHistoryEvent(Process inProcess, HistoryEventType inType, Long inCurrentValue) {
 		long storedValue = getStoredValue(inProcess, inType);
 		long diff = inCurrentValue - storedValue;
 
@@ -401,7 +401,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 ***************************************************************************/
-	private static long getCurrentStorageSize(Prozess inProcess) throws IOException, InterruptedException, SwapException, DAOException {
+	private static long getCurrentStorageSize(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
 		String dirAsString = inProcess.getProcessDataDirectory();
 		File directory = new File(dirAsString);
 		if (!directory.isDirectory()) {
@@ -419,11 +419,11 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 			Session session = Helper.getHibernateSession();
 			Query query = session.createQuery("from Prozess order by id desc");
 			@SuppressWarnings("unchecked")
-			Iterator<Prozess> it = query.iterate();
+			Iterator<Process> it = query.iterate();
 			int i = 0;
 			while (it.hasNext()) {
 				i++;
-				Prozess proc = it.next();
+				Process proc = it.next();
 				logger.debug("updating history entries for " + proc.getTitel());
 				try {
 					if (!proc.isSwappedOutGui()) {
@@ -460,7 +460,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * 
 	 * @param stepOrder
 	 */
-	private static Date getTimestampFromPreviousStep(Prozess inProcess, Schritt inStep) {
+	private static Date getTimestampFromPreviousStep(Process inProcess, Schritt inStep) {
 		Date eventTimestamp = null;
 		List<Schritt> tempList = inProcess.getSchritteList();
 
@@ -509,7 +509,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * @param inProcess
 	 * @return
 	 */
-	private static Boolean getHistoryEventDuplicated(Prozess inProcess) {
+	private static Boolean getHistoryEventDuplicated(Process inProcess) {
 		Boolean duplicateEventRemoved = false;
 		for (HistoryEvent he : inProcess.getHistoryList()) {
 			if (getHistoryContainsEventAlready(he, inProcess)) {
@@ -520,7 +520,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 		return duplicateEventRemoved;
 	}
 
-	public static Boolean updateHistoryForProcess(Prozess inProc) {
+	public static Boolean updateHistoryForProzess(Process inProc) {
 		Boolean updated = false;
 		try {
 			updated = updateHistory(inProc);

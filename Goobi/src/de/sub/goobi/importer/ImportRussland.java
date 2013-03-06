@@ -47,7 +47,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.WrongImportFileException;
@@ -63,7 +63,7 @@ import de.sub.goobi.helper.exceptions.WrongImportFileException;
 public class ImportRussland {
    private static final Logger myLogger = Logger.getLogger(ImportRussland.class);
    private DocStruct logicalTopstruct;
-   private Prozess prozess;
+   private Process prozess;
    
    
 
@@ -90,7 +90,7 @@ public class ImportRussland {
     * @throws SwapException 
     * @throws WriteException 
     */
-   protected void Parsen(BufferedReader reader, Prozess inProzess) throws IOException,
+   protected void Parsen(BufferedReader reader, Process inProzess) throws IOException,
          WrongImportFileException, TypeNotAllowedForParentException, TypeNotAllowedAsChildException,
          MetadataTypeNotAllowedException, ReadException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
 

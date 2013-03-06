@@ -31,6 +31,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.goobi.beans.Process;
+
+import org.goobi.managedbeans.ProcessBean;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -38,7 +41,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 public class Prozesseigenschaft implements Serializable, IGoobiProperty, Comparable<Prozesseigenschaft> {
 	private static final long serialVersionUID = -2356566712752716107L;
 
-	private Prozess prozess;
+	private Process prozess;
 	private Integer id;
 	private String titel;
 	private String wert;
@@ -177,11 +180,11 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
 		this.valueList = valueList;
 	}
 
-	public Prozess getProzess() {
+	public Process getProzess() {
 		return this.prozess;
 	}
 
-	public void setProzess(Prozess prozess) {
+	public void setProzess(Process prozess) {
 		this.prozess = prozess;
 	}
 

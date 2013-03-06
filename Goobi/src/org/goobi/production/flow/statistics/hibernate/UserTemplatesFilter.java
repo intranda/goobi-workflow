@@ -34,7 +34,7 @@ import java.util.Observable;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
 
@@ -63,7 +63,7 @@ public class UserTemplatesFilter implements IEvaluableFilter, Cloneable {
 	public Criteria getCriteria() {
 
 		Session session = Helper.getHibernateSession();
-		PaginatingCriteria crit = new PaginatingCriteria(Prozess.class, session);
+		PaginatingCriteria crit = new PaginatingCriteria(Process.class, session);
 		FilterHelper.criteriaBuilder(session, null, crit, true, null, null, null, clearSession);
 
 		return crit;

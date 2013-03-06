@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Process;
@@ -25,7 +27,7 @@ public class ProcessManager implements IManager {
 
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) {
-        return getProcesses(order, filter, start, count);
+        return (List<? extends DatabaseObject>) getProcesses(order, filter, start, count);
     }
 
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {
@@ -49,7 +51,7 @@ public class ProcessManager implements IManager {
         return p;
     }
 
-    public static void saveProcess(Process o) {
+    public static void saveProcess(Process o) throws DAOException {
         ProcessMysqlHelper.saveProcess(o);
 
     }
@@ -62,4 +64,29 @@ public class ProcessManager implements IManager {
         }
     }
 
+    public static List<Process> getAllProcesses() {
+        List<Process> answer = new ArrayList<Process>();
+        try {
+            answer = ProcessMysqlHelper.getAllProcesses();
+        } catch (SQLException e) {
+            logger.error("error while getting process list", e);
+        }
+        return answer;
+    }
+
+    
+    public static void saveProcessList(List<Process> deleteList) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    
+    public static int countProcessTitle(String title) {
+        try {
+            return ProcessMysqlHelper.getProcessCount(null, " title = '" + StringEscapeUtils.escapeSql(title) + "'");
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
 }

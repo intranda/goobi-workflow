@@ -65,7 +65,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -87,17 +87,17 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.SchrittDAO;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 @ManagedBean(name="AktuelleSchritteForm") 
 @SessionScoped
 public class AktuelleSchritteForm extends BasisForm {
 	private static final long serialVersionUID = 5841566727939692509L;
 	private static final Logger myLogger = Logger.getLogger(AktuelleSchritteForm.class);
-	private Prozess myProzess = new Prozess();
+	private Process myProzess = new Process();
 	private Schritt mySchritt = new Schritt();
 	private Integer myProblemID;
 	private Integer mySolutionID;
@@ -119,7 +119,6 @@ public class AktuelleSchritteForm extends BasisForm {
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private String addToWikiField = "";
 	private static String DONEDIRECTORYNAME = "fertig/";
-	private ProzessDAO pdao;
 	private Boolean flagWait = false;
 	private BatchStepHelper batchHelper;
 	private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
@@ -134,7 +133,6 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.anzeigeAnpassen.put("processId", false);
 		this.anzeigeAnpassen.put("modules", false);
 		this.anzeigeAnpassen.put("batchId", false);
-		this.pdao = new ProzessDAO();
 		/*
 		 * --------------------- Vorgangsdatum generell anzeigen? -------------------
 		 */
@@ -269,7 +267,7 @@ public class AktuelleSchritteForm extends BasisForm {
 						/*
 						 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 						 */
-						this.pdao.save(this.mySchritt.getProzess());
+						ProcessManager.saveProcess(this.mySchritt.getProzess());
 					} catch (DAOException e) {
 						Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
 						myLogger.error("step couldn't get saved", e);
@@ -367,7 +365,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			}
 
 			try {
-				this.pdao.save(s.getProzess());
+			    ProcessManager.saveProcess(s.getProzess());
 
 			} catch (DAOException e) {
 				Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
@@ -435,7 +433,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			/*
 			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 			 */
-			this.pdao.save(this.mySchritt.getProzess());
+		    ProcessManager.saveProcess(this.mySchritt.getProzess());
 		} catch (DAOException e) {
 		}
 		// calcHomeImages();
@@ -614,7 +612,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			/*
 			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 			 */
-			this.pdao.save(this.mySchritt.getProzess());
+			ProcessManager.saveProcess(this.mySchritt.getProzess());
 		} catch (DAOException e) {
 		}
 
@@ -696,7 +694,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			this.mySchritt.getProzess().setWikifield(
 					WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "info", message));
 
-			this.pdao.save(this.mySchritt.getProzess());
+			ProcessManager.saveProcess(this.mySchritt.getProzess());
 		} catch (DAOException e) {
 		}
 
@@ -785,9 +783,9 @@ public class AktuelleSchritteForm extends BasisForm {
 					mySchritt.setBearbeitungsbenutzer(ben);
 				}
 				step.setBearbeitungsbeginn(new Date());
-				Prozess proz = step.getProzess();
+				Process proz = step.getProzess();
 				try {
-					this.pdao.save(proz);
+				    ProcessManager.saveProcess(proz);
 				} catch (DAOException e) {
 					Helper.setMeldung("fehlerNichtSpeicherbar" + proz.getTitel());
 				}
@@ -813,9 +811,9 @@ public class AktuelleSchritteForm extends BasisForm {
 					mySchritt.setBearbeitungsbenutzer(ben);
 				}
 				step.setBearbeitungsbeginn(new Date());
-				Prozess proz = step.getProzess();
+				Process proz = step.getProzess();
 				try {
-					this.pdao.save(proz);
+				    ProcessManager.saveProcess(proz);
 				} catch (DAOException e) {
 					Helper.setMeldung("fehlerNichtSpeicherbar" + proz.getTitel());
 				}
@@ -889,11 +887,11 @@ public class AktuelleSchritteForm extends BasisForm {
 	 *  Getter und Setter
 	 */
 
-	public Prozess getMyProzess() {
+	public Process getMyProzess() {
 		return this.myProzess;
 	}
 
-	public void setMyProzess(Prozess myProzess) {
+	public void setMyProzess(Process myProzess) {
 		this.myProzess = myProzess;
 	}
 
@@ -1094,7 +1092,7 @@ public class AktuelleSchritteForm extends BasisForm {
 					WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "user", message));
 			this.addToWikiField = "";
 			try {
-				this.pdao.save(this.mySchritt.getProzess());
+			    ProcessManager.saveProcess(this.mySchritt.getProzess());
 			} catch (DAOException e) {
 				myLogger.error(e);
 			}
@@ -1157,7 +1155,7 @@ public class AktuelleSchritteForm extends BasisForm {
 					this.mySchritt.getProzess().getEigenschaften().add(p.getProzesseigenschaft());
 				}
 			}
-			Prozess p = this.mySchritt.getProzess();
+			Process p = this.mySchritt.getProzess();
 			List<Prozesseigenschaft> props = p.getEigenschaftenList();
 			for (Prozesseigenschaft pe : props) {
 				if (pe.getTitel() == null) {
@@ -1166,7 +1164,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			}
 
 			try {
-				this.pdao.save(p);
+			    ProcessManager.saveProcess(p);
 				Helper.setMeldung("propertiesSaved");
 			} catch (DAOException e) {
 				myLogger.error(e);
@@ -1206,7 +1204,7 @@ public class AktuelleSchritteForm extends BasisForm {
 				this.processProperty.getProzesseigenschaft().setProzess(this.mySchritt.getProzess());
 			}
 			try {
-				this.pdao.save(this.mySchritt.getProzess());
+			    ProcessManager.saveProcess(this.mySchritt.getProzess());
 				Helper.setMeldung("propertySaved");
 			} catch (DAOException e) {
 				myLogger.error(e);
@@ -1251,7 +1249,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			}
 		}
 		try {
-			this.pdao.save(this.mySchritt.getProzess());
+		    ProcessManager.saveProcess(this.mySchritt.getProzess());
 		} catch (DAOException e) {
 			myLogger.error(e);
 			Helper.setFehlerMeldung("propertiesNotDeleted");
@@ -1351,7 +1349,7 @@ public class AktuelleSchritteForm extends BasisForm {
 
 		}
 		try {
-			this.pdao.save(this.mySchritt.getProzess());
+		    ProcessManager.saveProcess(this.mySchritt.getProzess());
 			Helper.setMeldung("propertySaved");
 		} catch (DAOException e) {
 			myLogger.error(e);

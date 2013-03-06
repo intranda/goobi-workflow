@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.StepInformation;
 
 import de.sub.goobi.beans.ProjectFileGroup;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.enums.MetadataFormat;
 
@@ -45,7 +45,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 	private Integer id;
 	private String titel;
 	private List<User> benutzer;
-	private List<Prozess> prozesse;
+	private List<Process> prozesse;
 	private List<ProjectFileGroup> filegroups;
 
 	private boolean useDmsImport = false;
@@ -116,11 +116,11 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 		this.benutzer = benutzer;
 	}
 
-	public List<Prozess> getProzesse() {
+	public List<Process> getProzesse() {
 		return this.prozesse;
 	}
 
-	public void setProzesse(List<Prozess> prozesse) {
+	public void setProzesse(List<Process> prozesse) {
 		this.prozesse = prozesse;
 	}
 

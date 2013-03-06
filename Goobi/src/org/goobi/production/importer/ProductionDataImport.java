@@ -56,7 +56,7 @@ import org.hibernate.criterion.Restrictions;
 import com.thoughtworks.xstream.XStream;
 
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -129,7 +129,7 @@ public class ProductionDataImport {
 		logger.debug("Got " + dataList.size() + " items");
 
 
-		Prozess template = new Prozess();
+		Process template = new Process();
 		template.setProjekt(altdaten);
 		template.setTitel("Altdatenvorlage");
 		template.setIstTemplate(true);
@@ -140,7 +140,7 @@ public class ProductionDataImport {
 		template.setRegelsatz(ruleset);
 
 		session.save(template);
-		Set<Schritt> step = getSteps(template);
+		List<Schritt> step = getSteps(template);
 		template.setSchritte(step);
 		for (Schritt s : step) {
 			session.save(s);
@@ -176,7 +176,7 @@ public class ProductionDataImport {
 						Werkstueckeigenschaft we = weList.get(0);
 						Werkstueck w = we.getWerkstueck();
 						if (w != null) {
-							Prozess p = w.getProzess();
+						    Process p = w.getProzess();
 							if (p != null) {
 								logger.debug("Add new Properties for Process : " + p.getTitel());
 								addNewPropertiesForExistingProcesses(session, p.getId(), pd);
@@ -216,7 +216,7 @@ public class ProductionDataImport {
 
 		// generate new Process
 
-		Prozess prozess = new Prozess();
+	    Process prozess = new Process();
 
 		prozess.setProjekt(getProjekt(pd));
 		String title = pd.getWERKATS() + "_" + pd.getWERKPPNDIGITAL();
@@ -251,11 +251,11 @@ public class ProductionDataImport {
 		v.setProzess(prozess);
 
 		if (prozess.getWerkstuecke() == null) {
-			HashSet<Werkstueck> werkstueckeSet = new HashSet<Werkstueck>();
+			List<Werkstueck> werkstueckeSet = new ArrayList<Werkstueck>();
 			prozess.setWerkstuecke(werkstueckeSet);
 		}
 		if (prozess.getVorlagen() == null) {
-			HashSet<Vorlage> vorlagenSet = new HashSet<Vorlage>();
+			List<Vorlage> vorlagenSet = new ArrayList<Vorlage>();
 			prozess.setVorlagen(vorlagenSet);
 		}
 		prozess.getWerkstuecke().add(werk);
@@ -265,7 +265,7 @@ public class ProductionDataImport {
 		session.save(we);
 		session.save(v);
 		session.save(prozess);
-		Set<Schritt> step = getSteps(prozess);
+		List<Schritt> step = getSteps(prozess);
 		prozess.setSchritte(step);
 		for (Schritt s : step) {
 			session.save(s);
@@ -325,7 +325,7 @@ public class ProductionDataImport {
 		}
 	}
 
-	private void generateProzessProperty(Session session, Prozess s, String name, String value, PropertyType type, Integer position, boolean required) {
+	private void generateProzessProperty(Session session, Process s, String name, String value, PropertyType type, Integer position, boolean required) {
 		if (value != null) {
 			Prozesseigenschaft property = new Prozesseigenschaft();
 			property.setCreationDate(new Date());
@@ -340,7 +340,7 @@ public class ProductionDataImport {
 		}
 	}
 
-	private void getNewPropertiesForNewProcesses(Session session, Prozess prozess, ProductionData pd) throws HibernateException, SQLException,
+	private void getNewPropertiesForNewProcesses(Session session, Process prozess, ProductionData pd) throws HibernateException, SQLException,
 			ConfigurationException {
 
 
@@ -520,10 +520,10 @@ public class ProductionDataImport {
 
 		
 		// Prozess holen
-		Prozess p = null;
-		Criteria crit = session.createCriteria(Prozess.class).add(Restrictions.eq("id", pId));
+	    Process p = null;
+		Criteria crit = session.createCriteria(Process.class).add(Restrictions.eq("id", pId));
 		if (crit.list().size() > 0) {
-			p = (Prozess) crit.list().get(0);
+			p = (Process) crit.list().get(0);
 		}
 		if (p == null)
 			return;
@@ -835,8 +835,8 @@ public class ProductionDataImport {
 		session.clear();
 	}
 
-	private Set<Schritt> getSteps(Prozess prozess) {
-		Set<Schritt> stepList = new HashSet<Schritt>();
+	private List<Schritt> getSteps(Process prozess) {
+		List<Schritt> stepList = new ArrayList<Schritt>();
 		try {
 			Usergroup adm = UsergroupManager.getUsergroupById(6);
 			Usergroup importGoe = UsergroupManager.getUsergroupById(15);

@@ -54,7 +54,7 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformException;
 import org.jdom.transform.XSLTransformer;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -89,11 +89,11 @@ public class ExportXmlLog implements IProcessDataExport {
 	 * @throws ExportFileException
 	 */
 
-	public void startExport(Prozess p, String destination) throws FileNotFoundException, IOException {
+	public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
 		startExport(p, new FileOutputStream(destination), null);
 	}
 
-	public void startExport(Prozess p, File dest) throws FileNotFoundException, IOException {
+	public void startExport(Process p, File dest) throws FileNotFoundException, IOException {
 		startExport(p, new FileOutputStream(dest), null);
 	}
 
@@ -108,7 +108,7 @@ public class ExportXmlLog implements IProcessDataExport {
 	 * @throws ExportFileException
 	 */
 	@Override
-	public void startExport(Prozess process, OutputStream os, String xslt) throws IOException {
+	public void startExport(Process process, OutputStream os, String xslt) throws IOException {
 		try {
 			Document doc = createDocument(process, true);
 
@@ -131,7 +131,7 @@ public class ExportXmlLog implements IProcessDataExport {
 	 * @return a new xml document
 	 * @throws ConfigurationException
 	 */
-	public Document createDocument(Prozess process, boolean addNamespace) {
+	public Document createDocument(Process process, boolean addNamespace) {
 
 		Element processElm = new Element("process");
 		Document doc = new Document(processElm);
@@ -455,11 +455,11 @@ public class ExportXmlLog implements IProcessDataExport {
 
 	}
 
-	public void startTransformation(OutputStream out, Prozess p, String filename) throws ConfigurationException, XSLTransformException, IOException {
+	public void startTransformation(OutputStream out, Process p, String filename) throws ConfigurationException, XSLTransformException, IOException {
 		startTransformation(p, out, filename);
 	}
 
-	public void startTransformation(Prozess p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
+	public void startTransformation(Process p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
 		Document doc = createDocument(p, true);
 		XmlTransformation(out, doc, filename);
 	}
@@ -481,7 +481,7 @@ public class ExportXmlLog implements IProcessDataExport {
 	 * @param xslt
 	 */
 
-	public void startExport(List<Prozess> processList, OutputStream outputStream, String xslt) {
+	public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
 		Document answer = new Document();
 		Element root = new Element("processes");
 		answer.setRootElement(root);
@@ -492,7 +492,7 @@ public class ExportXmlLog implements IProcessDataExport {
 		root.setNamespace(xmlns);
 		Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
 		root.setAttribute(attSchema);
-		for (Prozess p : processList) {
+		for (Process p : processList) {
 			Document doc = createDocument(p, false);
 			Element processRoot = doc.getRootElement();
 			processRoot.detach();

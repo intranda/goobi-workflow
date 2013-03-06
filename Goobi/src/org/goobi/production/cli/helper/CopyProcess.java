@@ -68,7 +68,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Vorlage;
@@ -87,7 +87,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
@@ -100,8 +100,8 @@ public class CopyProcess extends ProzesskopieForm {
 	private String opacSuchfeld = "12";
 	private String opacSuchbegriff;
 	private String opacKatalog;
-	private Prozess prozessVorlage = new Prozess();
-	private Prozess prozessKopie = new Prozess();
+	private Process prozessVorlage = new Process();
+	private Process prozessKopie = new Process();
 	private ConfigOpac co;
 	/* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
 	private boolean useOpac;
@@ -148,7 +148,7 @@ public class CopyProcess extends ProzesskopieForm {
 			myLogger.error(e);
 		}
 		;
-		this.prozessKopie = new Prozess();
+		this.prozessKopie = new Process();
 		this.prozessKopie.setTitel("");
 		this.prozessKopie.setIstTemplate(false);
 		this.prozessKopie.setInAuswahllisteAnzeigen(false);
@@ -198,7 +198,7 @@ public class CopyProcess extends ProzesskopieForm {
 			myLogger.error(e);
 		}
 		;
-		this.prozessKopie = new Prozess();
+		this.prozessKopie = new Process();
 		this.prozessKopie.setTitel("");
 		this.prozessKopie.setIstTemplate(false);
 		this.prozessKopie.setInAuswahllisteAnzeigen(false);
@@ -439,7 +439,7 @@ public class CopyProcess extends ProzesskopieForm {
 	@Override
 	public String TemplateAuswahlAuswerten() throws DAOException {
 		/* den ausgewählten Prozess laden */
-		Prozess tempProzess = new ProzessDAO().get(this.auswahl);
+	    Process tempProzess = ProcessManager.getProcessById(this.auswahl);
 		if (tempProzess.getWerkstueckeSize() > 0) {
 			/* erstes Werkstück durchlaufen */
 			Werkstueck werk = tempProzess.getWerkstueckeList().get(0);
@@ -517,12 +517,12 @@ public class CopyProcess extends ProzesskopieForm {
 		/* prüfen, ob der Prozesstitel schon verwendet wurde */
 		if (this.prozessKopie.getTitel() != null) {
 			long anzahl = 0;
-			try {
-				anzahl = new ProzessDAO().count("from Prozess where titel='" + this.prozessKopie.getTitel() + "'");
-			} catch (DAOException e) {
-				Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
-				valide = false;
-			}
+//			try {
+				anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
+//			} catch (DAOException e) {
+//				Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
+//				valide = false;
+//			}
 			if (anzahl > 0) {
 				valide = false;
 				Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten: ") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -590,12 +590,12 @@ public class CopyProcess extends ProzesskopieForm {
 			/* prüfen, ob der Prozesstitel schon verwendet wurde */
 			if (this.prozessKopie.getTitel() != null) {
 				long anzahl = 0;
-				try {
-					anzahl = new ProzessDAO().count("from Prozess where titel='" + this.prozessKopie.getTitel() + "'");
-				} catch (DAOException e) {
-					Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
-					valide = false;
-				}
+//				try {
+					anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
+//				} catch (DAOException e) {
+//					Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
+//					valide = false;
+//				}
 				if (anzahl > 0) {
 					valide = false;
 					Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -613,7 +613,7 @@ public class CopyProcess extends ProzesskopieForm {
 	 * @throws WriteException
 	 */
 
-	public Prozess NeuenProzessAnlegen2() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
+	public Process NeuenProzessAnlegen2() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
 			WriteException {
 		Helper.getHibernateSession().evict(this.prozessKopie);
 
@@ -649,9 +649,9 @@ public class CopyProcess extends ProzesskopieForm {
 		}
 
 		try {
-			ProzessDAO dao = new ProzessDAO();
-			dao.save(this.prozessKopie);
-			dao.refresh(this.prozessKopie);
+			
+			ProcessManager.saveProcess(this.prozessKopie);
+//			dao.refresh(this.prozessKopie);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			myLogger.error("error on save: ", e);
@@ -805,11 +805,11 @@ public class CopyProcess extends ProzesskopieForm {
 		}
 
 		// Adding process to history
-		if (!HistoryAnalyserJob.updateHistoryForProcess(this.prozessKopie)) {
+		if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
 			Helper.setFehlerMeldung("historyNotUpdated");
 		} else {
 			try {
-				new ProzessDAO().save(this.prozessKopie);
+			    ProcessManager.saveProcess(this.prozessKopie);
 			} catch (DAOException e) {
 				e.printStackTrace();
 				myLogger.error("error on save: ", e);
@@ -825,7 +825,7 @@ public class CopyProcess extends ProzesskopieForm {
 
 	}
 
-	public Prozess createProcess(ImportObject io) throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
+	public Process createProcess(ImportObject io) throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
 			DAOException, WriteException {
 		Helper.getHibernateSession().evict(this.prozessKopie);
 
@@ -863,9 +863,9 @@ public class CopyProcess extends ProzesskopieForm {
 			this.prozessKopie.setBatchID(io.getBatchId());
 		}
 		try {
-			ProzessDAO dao = new ProzessDAO();
-			dao.save(this.prozessKopie);
-			dao.refresh(this.prozessKopie);
+//			ProzessDAO dao = new ProzessDAO();
+		    ProcessManager.saveProcess(this.prozessKopie);
+//			dao.refresh(this.prozessKopie);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			myLogger.error("error on save: ", e);
@@ -891,11 +891,11 @@ public class CopyProcess extends ProzesskopieForm {
 		// }
 
 		// Adding process to history
-		if (!HistoryAnalyserJob.updateHistoryForProcess(this.prozessKopie)) {
+		if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
 			Helper.setFehlerMeldung("historyNotUpdated");
 		} else {
 			try {
-				new ProzessDAO().save(this.prozessKopie);
+			    ProcessManager.saveProcess(this.prozessKopie);
 			} catch (DAOException e) {
 				e.printStackTrace();
 				myLogger.error("error on save: ", e);
@@ -983,7 +983,7 @@ public class CopyProcess extends ProzesskopieForm {
 		} else {
 			vor = new Vorlage();
 			vor.setProzess(this.prozessKopie);
-			Set<Vorlage> vorlagen = new HashSet<Vorlage>();
+			List<Vorlage> vorlagen = new ArrayList<Vorlage>();
 			vorlagen.add(vor);
 			this.prozessKopie.setVorlagen(vorlagen);
 		}
@@ -997,7 +997,7 @@ public class CopyProcess extends ProzesskopieForm {
 		} else {
 			werk = new Werkstueck();
 			werk.setProzess(this.prozessKopie);
-			Set<Werkstueck> werkstuecke = new HashSet<Werkstueck>();
+			List<Werkstueck> werkstuecke = new ArrayList<Werkstueck>();
 			werkstuecke.add(werk);
 			this.prozessKopie.setWerkstuecke(werkstuecke);
 		}
@@ -1073,12 +1073,12 @@ public class CopyProcess extends ProzesskopieForm {
 	}
 
 	@Override
-	public Prozess getProzessVorlage() {
+	public Process getProzessVorlage() {
 		return this.prozessVorlage;
 	}
 
 	@Override
-	public void setProzessVorlage(Prozess prozessVorlage) {
+	public void setProzessVorlage(Process prozessVorlage) {
 		this.prozessVorlage = prozessVorlage;
 	}
 
@@ -1273,12 +1273,12 @@ public class CopyProcess extends ProzesskopieForm {
 	}
 
 	@Override
-	public Prozess getProzessKopie() {
+	public Process getProzessKopie() {
 		return this.prozessKopie;
 	}
 
 	@Override
-	public void setProzessKopie(Prozess prozessKopie) {
+	public void setProzessKopie(Process prozessKopie) {
 		this.prozessKopie = prozessKopie;
 	}
 
@@ -1522,7 +1522,7 @@ public class CopyProcess extends ProzesskopieForm {
 		eigenschaften.add(eig);
 	}
 
-	private void addProperty(Prozess inProcess, Prozesseigenschaft property) {
+	private void addProperty(Process inProcess, Prozesseigenschaft property) {
 		if (property.getContainer() == 0) {
 			for (Prozesseigenschaft pe : inProcess.getEigenschaftenList()) {
 				if (pe.getTitel().equals(property.getTitel()) && pe.getContainer() > 0) {
@@ -1538,9 +1538,9 @@ public class CopyProcess extends ProzesskopieForm {
 		eig.setContainer(property.getContainer());
 		eig.setType(property.getType());
 		eig.setProzess(inProcess);
-		Set<Prozesseigenschaft> eigenschaften = inProcess.getEigenschaften();
+		List<Prozesseigenschaft> eigenschaften = inProcess.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Prozesseigenschaft>();
+			eigenschaften = new ArrayList<Prozesseigenschaft>();
 		}
 		eigenschaften.add(eig);
 	}

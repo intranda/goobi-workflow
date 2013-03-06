@@ -38,6 +38,7 @@ import javax.faces.model.SelectItem;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.managedbeans.ProcessBean;
 import org.goobi.production.flow.statistics.hibernate.FilterString;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -399,7 +400,7 @@ public class SearchForm {
 		if (!this.stepdonetitle.isEmpty() && !this.stepdoneuser.isEmpty() && !this.stepdonetitle.equals(Helper.getTranslation("notSelected"))) {
 			search += "\"" + FilterString.STEPDONEUSER + this.stepdoneuser + "\" \"" + FilterString.STEPDONETITLE + this.stepdonetitle + "\" ";
 		}
-		ProzessverwaltungForm form = (ProzessverwaltungForm) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+		ProcessBean form = (ProcessBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("ProzessverwaltungForm");
 		if (form != null) {
 			form.filter = search;

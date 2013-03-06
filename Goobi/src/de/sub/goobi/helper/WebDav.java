@@ -41,7 +41,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.download.TiffHeader;
 
@@ -125,14 +125,14 @@ public class WebDav implements Serializable {
 		}
 	}
 
-	public void UploadFromHome(Prozess myProzess) {
+	public void UploadFromHome(Process myProzess) {
 		User aktuellerBenutzer = Helper.getCurrentUser();
         if (aktuellerBenutzer != null) {
         	UploadFromHome(aktuellerBenutzer, myProzess);
         }
 	}
 
-	public void UploadFromHome(User inBenutzer, Prozess myProzess) {
+	public void UploadFromHome(User inBenutzer, Process myProzess) {
 		String nach = "";
 
 		try {
@@ -164,7 +164,7 @@ public class WebDav implements Serializable {
         FilesystemHelper.deleteSymLink(benutzerHome.getAbsolutePath());
 	}
 
-	public void DownloadToHome(Prozess myProzess, int inSchrittID, boolean inNurLesen) {
+	public void DownloadToHome(Process myProzess, int inSchrittID, boolean inNurLesen) {
 		saveTiffHeader(myProzess);
 		User aktuellerBenutzer = Helper.getCurrentUser();
 		String von = "";
@@ -238,7 +238,7 @@ public class WebDav implements Serializable {
 		}
 	}
 
-	private void saveTiffHeader(Prozess inProzess) {
+	private void saveTiffHeader(Process inProzess) {
 		try {
 			/* prüfen, ob Tiff-Header schon existiert */
 			if (new File(inProzess.getImagesDirectory() + "tiffwriter.conf").exists()) {

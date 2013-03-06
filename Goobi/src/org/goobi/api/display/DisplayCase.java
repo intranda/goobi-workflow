@@ -33,14 +33,14 @@ import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDispayRules;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 
 
 public class DisplayCase {
 	private DisplayType displayType = null;
 	private ArrayList<Item> itemList = new ArrayList<Item>();
 	private ConfigDispayRules configDisplay;
-	private Prozess myProcess;
+	private Process myProcess;
 	private String metaName;
 	private BindState myBindState;
 	
@@ -51,7 +51,7 @@ public class DisplayCase {
 	 * @param metaType
 	 */
 	
-	public DisplayCase(Prozess inProcess, String metaType ){
+	public DisplayCase(Process inProcess, String metaType ){
 		metaName = metaType;
 		myProcess = inProcess;
 		myBindState = Modes.getBindState();
@@ -81,7 +81,7 @@ public class DisplayCase {
 	 * @param metaType
 	 */
 	
-	public DisplayCase(Prozess inProcess, String bind, String metaType ){
+	public DisplayCase(Process inProcess, String bind, String metaType ){
 		metaName = metaType;
 		myProcess = inProcess;
 		myBindState = Modes.getBindState();

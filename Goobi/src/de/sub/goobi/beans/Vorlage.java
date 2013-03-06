@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.goobi.beans.Process;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
@@ -40,7 +41,7 @@ public class Vorlage implements Serializable {
 	private static final long serialVersionUID = 1736135433162833277L;
 	private Integer id;
 	private String herkunft;
-	private Prozess prozess;
+	private Process prozess;
 	private Set<Vorlageeigenschaft> eigenschaften;
 
 	private boolean panelAusgeklappt = true;
@@ -62,11 +63,11 @@ public class Vorlage implements Serializable {
 		this.id = id;
 	}
 
-	public Prozess getProzess() {
+	public Process getProzess() {
 		return this.prozess;
 	}
 
-	public void setProzess(Prozess prozess) {
+	public void setProzess(Process prozess) {
 		this.prozess = prozess;
 	}
 

@@ -38,25 +38,24 @@ import org.apache.log4j.Logger;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class BatchProcessHelper {
 
-	private List<Prozess> processes;
-	private ProzessDAO pdao = new ProzessDAO();
+	private List<Process> processes;
 	private static final Logger logger = Logger.getLogger(BatchProcessHelper.class);
-	private Prozess currentProcess;
+	private Process currentProcess;
 	private List<ProcessProperty> processPropertyList;
 	private ProcessProperty processProperty;
 	private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
 	private Integer container;
 
-	public BatchProcessHelper(List<Prozess> processes) {
+	public BatchProcessHelper(List<Process> processes) {
 		this.processes = processes;
-		for (Prozess p : processes) {
+		for (Process p : processes) {
 
 			this.processNameList.add(p.getTitel());
 		}
@@ -65,19 +64,19 @@ public class BatchProcessHelper {
 		loadProcessProperties(this.currentProcess);
 	}
 
-	public Prozess getCurrentProcess() {
+	public Process getCurrentProcess() {
 		return this.currentProcess;
 	}
 
-	public void setCurrentProcess(Prozess currentProcess) {
+	public void setCurrentProcess(Process currentProcess) {
 		this.currentProcess = currentProcess;
 	}
 
-	public List<Prozess> getProcesses() {
+	public List<Process> getProcesses() {
 		return this.processes;
 	}
 
-	public void setProcesses(List<Prozess> processes) {
+	public void setProcesses(List<Process> processes) {
 		this.processes = processes;
 	}
 
@@ -123,7 +122,7 @@ public class BatchProcessHelper {
 
 	public void setProcessName(String processName) {
 		this.processName = processName;
-		for (Prozess s : this.processes) {
+		for (Process s : this.processes) {
 			if (s.getTitel().equals(processName)) {
 				this.currentProcess = s;
 				loadProcessProperties(this.currentProcess);
@@ -151,7 +150,7 @@ public class BatchProcessHelper {
 			}
 			this.processProperty.transfer();
 
-			Prozess p = this.currentProcess;
+			Process p = this.currentProcess;
 			List<Prozesseigenschaft> props = p.getEigenschaftenList();
 			for (Prozesseigenschaft pe : props) {
 				if (pe.getTitel() == null) {
@@ -162,7 +161,7 @@ public class BatchProcessHelper {
 				this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
 			}
 			try {
-				this.pdao.save(this.currentProcess);
+				ProcessManager.saveProcess(this.currentProcess);
 				Helper.setMeldung("propertySaved");
 			} catch (DAOException e) {
 				logger.error(e);
@@ -196,8 +195,8 @@ public class BatchProcessHelper {
 			pe.setWert(this.processProperty.getValue());
 			pe.setContainer(this.processProperty.getContainer());
 
-			for (Prozess s : this.processes) {
-				Prozess process = s;
+			for (Process s : this.processes) {
+			    Process process = s;
 				if (!s.equals(this.currentProcess)) {
 
 					if (pe.getTitel() != null) {
@@ -236,7 +235,7 @@ public class BatchProcessHelper {
 				}
 
 				try {
-					this.pdao.save(process);
+				    ProcessManager.saveProcess(process);
 				} catch (DAOException e) {
 					error = true;
 					logger.error(e);
@@ -252,8 +251,8 @@ public class BatchProcessHelper {
 		}
 	}
 
-	private void loadProcessProperties(Prozess process) {
-		this.pdao.refresh(this.currentProcess);
+	private void loadProcessProperties(Process process) {
+//		this.pdao.refresh(this.currentProcess);
 		this.containers = new TreeMap<Integer, PropertyListObject>();
 		this.processPropertyList = PropertyParser.getPropertiesForProcess(this.currentProcess);
 		
@@ -268,7 +267,7 @@ public class BatchProcessHelper {
 				this.containers.put(pt.getContainer(), plo);
 			}
 		}
-		for (Prozess p : this.processes) {
+		for (Process p : this.processes) {
 			for (Prozesseigenschaft pe : p.getEigenschaftenList()) {
 				if (!this.containers.keySet().contains(pe.getContainer())) {
 					this.containers.put(pe.getContainer(), null);

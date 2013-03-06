@@ -49,6 +49,8 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.HibernateUtilOld;
 
+import org.goobi.beans.Process;
+
 public class Schritt implements Serializable {
 	private static final long serialVersionUID = 6831844584239811846L;
 	private Integer id;
@@ -61,6 +63,9 @@ public class Schritt implements Serializable {
 	private Date bearbeitungsende;
 	private Integer editType;
 	private User bearbeitungsbenutzer;
+	// temporär
+	private Integer userId;
+	
 	private short homeverzeichnisNutzen;
 
 	private boolean typMetadaten = false;
@@ -88,7 +93,11 @@ public class Schritt implements Serializable {
 	private boolean typBeimAbschliessenVerifizieren = false;
 	private Boolean batchStep = false;
 
-	private Prozess prozess;
+	private Process prozess;
+	// temporär
+	private Integer processId;
+	
+	
 	private Set<Schritteigenschaft> eigenschaften;
 	private Set<User> benutzer;
 	private Set<Usergroup> benutzergruppen;
@@ -293,11 +302,11 @@ public class Schritt implements Serializable {
 		this.prioritaet = 10;
 	}
 
-	public Prozess getProzess() {
+	public Process getProzess() {
 		return this.prozess;
 	}
 
-	public void setProzess(Prozess prozess) {
+	public void setProzess(Process prozess) {
 		this.prozess = prozess;
 	}
 
@@ -846,5 +855,21 @@ public class Schritt implements Serializable {
 	public void setValidationPlugin(String validationPlugin) {
 		this.validationPlugin = validationPlugin;
 	}
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(Integer processId) {
+        this.processId = processId;
+    }
 
 }

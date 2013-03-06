@@ -43,7 +43,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsModsImportExport;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.download.ExportMets;
@@ -55,7 +55,6 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.ProzessDAO;
 
 public class AutomaticDmsExport extends ExportMets {
 	private static final Logger myLogger = Logger.getLogger(AutomaticDmsExport.class);
@@ -94,10 +93,10 @@ public class AutomaticDmsExport extends ExportMets {
 	 * @throws TypeNotAllowedForParentException
 	 */
 	@Override
-	public boolean startExport(Prozess myProzess) throws IOException, InterruptedException, WriteException, PreferencesException,
+	public boolean startExport(Process myProzess) throws IOException, InterruptedException, WriteException, PreferencesException,
 			DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException,
 			TypeNotAllowedForParentException {
-		new ProzessDAO().refresh(myProzess);
+//		new ProzessDAO().refresh(myProzess);
 		this.myPrefs = myProzess.getRegelsatz().getPreferences();
 		this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
 		String atsPpnBand = myProzess.getTitel();
@@ -285,7 +284,7 @@ public class AutomaticDmsExport extends ExportMets {
 		}
 	}
 
-	public void fulltextDownload(Prozess myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
+	public void fulltextDownload(Process myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
 			InterruptedException, SwapException, DAOException {
 
 		// Helper help = new Helper();
@@ -364,7 +363,7 @@ public class AutomaticDmsExport extends ExportMets {
 		// }
 	}
 
-	public void imageDownload(Prozess myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
+	public void imageDownload(Process myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
 			InterruptedException, SwapException, DAOException {
 		/*
 		 * -------------------------------- erstmal alle Filter --------------------------------

@@ -37,18 +37,19 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.sub.goobi.beans.Prozess;
-import de.sub.goobi.persistence.ProzessDAO;
+import org.goobi.beans.Process;
+//import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 @Ignore("Crashing") 
 public class ProcessSwapOutTaskTest {
-   static Prozess proz = null;
+   static Process proz = null;
    
    @BeforeClass
    public static void setUpBeforeClass() throws Exception {
-      proz = new ProzessDAO().get(119);
+      proz = ProcessManager.getProcessById(119);
    }
 
    @AfterClass

@@ -74,7 +74,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
@@ -88,7 +88,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.importer.ImportOpac;
-import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -112,7 +112,7 @@ public class Metadaten {
 	private MetadatumImpl curMetadatum;
 	private MetaPerson curPerson;
 	private DigitalDocument mydocument;
-	private Prozess myProzess;
+	private Process myProzess;
 	private Prefs myPrefs;
 	// private String myProzesseID;
 	private String myBenutzerID;
@@ -566,13 +566,13 @@ public class Metadaten {
 		Modes.setBindState(BindState.edit);
 		try {
 			Integer id = new Integer(Helper.getRequestParameter("ProzesseID"));
-			this.myProzess = new ProzessDAO().get(id);
+			this.myProzess = ProcessManager.getProcessById(id);
 		} catch (NumberFormatException e1) {
 			Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
 			return Helper.getRequestParameter("zurueck");
-		} catch (DAOException e1) {
-			Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
-			return Helper.getRequestParameter("zurueck");
+//		} catch (DAOException e1) {
+//			Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
+//			return Helper.getRequestParameter("zurueck");
 		}
 		this.myBenutzerID = Helper.getRequestParameter("BenutzerID");
 		this.alleSeitenAuswahl_ersteSeite = "";
@@ -704,7 +704,7 @@ public class Metadaten {
 		this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
 		try {
 			this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory(true))));
-			new ProzessDAO().save(this.myProzess);
+			ProcessManager.saveProcess(this.myProzess);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
 			myLogger.error(e);
@@ -2342,7 +2342,7 @@ public class Metadaten {
 		this.structSeitenAuswahl = structSeitenAuswahl;
 	}
 
-	public Prozess getMyProzess() {
+	public Process getMyProzess() {
 		return this.myProzess;
 	}
 

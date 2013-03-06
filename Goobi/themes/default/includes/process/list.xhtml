@@ -35,7 +35,7 @@
 		<!-- Datentabelle -->
 		<x:dataTable id="auflistung" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 			rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2" var="item"
-			value="#{ProzessverwaltungForm.page.list}">
+			value="#{ProzessverwaltungForm.paginator.list}">
 
 			<!-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ -->
 			<x:column style="text-align:center"
@@ -228,19 +228,19 @@
 			<x:column style="text-align:center">
 				<f:facet name="header">
 					<x:div>
-						<!-- Header -->
+<!-- 						Header -->
 						<h:outputText value="#{msgs.projekt}" />
-						<!-- Sortierung Asc -->
+<!-- 						Sortierung Asc -->
 						<h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" id="sort10" rendered="#{ProzessverwaltungForm.sortierung=='projektAsc'}">
 							<h:graphicImage value="images/sorting/asc.gif" style="vertical-align:middle;margin-left:5px" />
 							<x:updateActionListener property="#{ProzessverwaltungForm.sortierung}" value="projektDesc" />
 						</h:commandLink>
-						<!-- Sortierung Desc -->
+<!-- 						Sortierung Desc -->
 						<h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" id="sort11" rendered="#{ProzessverwaltungForm.sortierung=='projektDesc'}">
 							<h:graphicImage value="images/sorting/desc.gif" style="vertical-align:middle;margin-left:5px" />
 							<x:updateActionListener property="#{ProzessverwaltungForm.sortierung}" value="projektAsc" />
 						</h:commandLink>
-						<!-- Sortierung none -->
+<!-- 						Sortierung none -->
 						<h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" id="sort12"
 							rendered="#{ProzessverwaltungForm.sortierung!='projektDesc' and ProzessverwaltungForm.sortierung!='projektAsc'}">
 							<h:graphicImage value="images/sorting/none.gif" style="vertical-align:middle;margin-left:5px" />
@@ -447,7 +447,7 @@
 				<td align="center">
 					<!-- ===================== Datascroller für die Ergebnisse ======================
 		 -->
-					<x:aliasBean alias="#{mypage}" value="#{ProzessverwaltungForm.page}">
+					<x:aliasBean alias="#{mypage}" value="#{ProzessverwaltungForm.paginator}">
 						<ui:include src="../datascroller.xhtml" />
 					</x:aliasBean>
 					<!-- ===================== // Datascroller für die Ergebnisse ====================== -->

@@ -39,7 +39,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.Helper;
 
@@ -72,7 +72,7 @@ public class SearchResultGeneration {
 		Order order = Order.asc("titel");
 		crit.addOrder(order);
 		@SuppressWarnings("unchecked")
-		List<Prozess> pl = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list();
+		List<Process> pl = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list();
 
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("Search results");
@@ -122,7 +122,7 @@ public class SearchResultGeneration {
 		headercell8.setCellValue(Helper.getTranslation("b-number"));
 
 		int rowcounter = 2;
-		for (Prozess p : pl) {
+		for (Process p : pl) {
 			HSSFRow row = sheet.createRow(rowcounter);
 			HSSFCell cell0 = row.createCell(0);
 			cell0.setCellValue(p.getTitel());

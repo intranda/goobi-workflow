@@ -31,12 +31,12 @@ import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.tasks.LongRunningTask;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 
 public class LongRunningTasksForm {
-	private Prozess prozess;
+	private Process prozess;
 	private LongRunningTask task;
 	private static final Logger logger = Logger.getLogger(LongRunningTask.class);
 
@@ -46,7 +46,7 @@ public class LongRunningTasksForm {
 
 
 	public void addNewMasterTask() {
-		Prozess p = new Prozess();
+	    Process p = new Process();
 		p.setTitel("hallo Titel " + System.currentTimeMillis());
 		this.task = new LongRunningTask();
 		this.task.initialize(p);
@@ -98,11 +98,11 @@ public class LongRunningTasksForm {
 		LongRunningTaskManager.getInstance().removeTask(this.task);
 	}
 
-	public Prozess getProzess() {
+	public Process getProzess() {
 		return this.prozess;
 	}
 
-	public void setProzess(Prozess prozess) {
+	public void setProzess(Process prozess) {
 		this.prozess = prozess;
 	}
 

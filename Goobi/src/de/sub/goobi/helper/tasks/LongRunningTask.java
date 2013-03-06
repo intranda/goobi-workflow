@@ -28,7 +28,7 @@ package de.sub.goobi.helper.tasks;
  */
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 
 public class LongRunningTask extends Thread {
@@ -38,10 +38,10 @@ public class LongRunningTask extends Thread {
 	private String statusMessage = "";
 	private String longMessage = "";
 	private String title = "MasterTask";
-	private Prozess prozess;
+	private Process prozess;
 	private boolean isSingleThread = true;
 
-	public void initialize(Prozess inProzess) {
+	public void initialize(Process inProzess) {
 		this.prozess = inProzess;
 	}
 
@@ -89,7 +89,7 @@ public class LongRunningTask extends Thread {
 	 * Prozess-Getter
 	 * ================================================================
 	 */
-	public Prozess getProzess() {
+	public Process getProzess() {
 		return this.prozess;
 	}
 
@@ -149,7 +149,7 @@ public class LongRunningTask extends Thread {
 	 * Setter für Prozess nur für vererbte Klassen
 	 * ================================================================
 	 */
-	protected void setProzess(Prozess prozess) {
+	protected void setProzess(Process prozess) {
 		this.prozess = prozess;
 	}
 

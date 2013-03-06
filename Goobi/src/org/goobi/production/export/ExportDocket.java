@@ -48,7 +48,7 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.goobi.production.IProcessDataExport;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 
 /**
@@ -69,7 +69,7 @@ public class ExportDocket implements IProcessDataExport {
 	 * @throws ExportFileException
 	 */
 	@Override
-	public void startExport(Prozess process, OutputStream os, String xsltfile) throws IOException {
+	public void startExport(Process process, OutputStream os, String xsltfile) throws IOException {
 
 		ExportXmlLog exl = new ExportXmlLog();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -98,7 +98,7 @@ public class ExportDocket implements IProcessDataExport {
 		os.write(pdfBytes);
 	}
 
-	public void startExport(List<Prozess> processList, OutputStream os, String xsltfile) throws IOException {
+	public void startExport(List<Process> processList, OutputStream os, String xsltfile) throws IOException {
 
 		ExportXmlLog exl = new ExportXmlLog();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

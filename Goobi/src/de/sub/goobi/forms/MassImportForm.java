@@ -67,7 +67,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import ugh.dl.Prefs;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
@@ -77,8 +77,8 @@ import de.sub.goobi.helper.Helper;
 @SessionScoped
 public class MassImportForm {
 	private static final Logger logger = Logger.getLogger(MassImportForm.class);
-	private Prozess template;
-	private List<Prozess> processes;
+	private Process template;
+	private List<Process> processes;
 	private List<String> digitalCollections;
 	private List<String> possibleDigitalCollections;
 	// private List<String> recordList = new ArrayList<String>();
@@ -101,7 +101,7 @@ public class MassImportForm {
 
 	private UploadedFile uploadedFile = null;
 
-	private List<Prozess> processList;
+	private List<Process> processList;
 
 	public MassImportForm() {
 
@@ -224,7 +224,7 @@ public class MassImportForm {
 	}
 
 	public String convertData() {
-		this.processList = new ArrayList<Prozess>();
+		this.processList = new ArrayList<Process>();
 		if (StringUtils.isEmpty(currentPlugin)) {
 			Helper.setFehlerMeldung("missingPlugin");
 			return "";
@@ -299,7 +299,7 @@ public class MassImportForm {
 					io.setBatchId(batchId);
 				}
 				if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
-					Prozess p = JobCreation.generateProcess(io, this.template);
+				    Process p = JobCreation.generateProcess(io, this.template);
 					// int returnValue =
 					// HotfolderJob.generateProcess(io.getProcessTitle(),
 					// this.template, new File(tempfolder), null, "error", b);
@@ -502,14 +502,14 @@ public class MassImportForm {
 	 * @param process
 	 *            the process to set
 	 */
-	public void setProcess(List<Prozess> processes) {
+	public void setProcess(List<Process> processes) {
 		this.processes = processes;
 	}
 
 	/**
 	 * @return the process
 	 */
-	public List<Prozess> getProcess() {
+	public List<Process> getProcess() {
 		return this.processes;
 	}
 
@@ -517,7 +517,7 @@ public class MassImportForm {
 	 * @param template
 	 *            the template to set
 	 */
-	public void setTemplate(Prozess template) {
+	public void setTemplate(Process template) {
 		// this.ic = new ImportConfiguration(template);
 		this.template = template;
 
@@ -526,7 +526,7 @@ public class MassImportForm {
 	/**
 	 * @return the template
 	 */
-	public Prozess getTemplate() {
+	public Process getTemplate() {
 		return this.template;
 	}
 
@@ -564,7 +564,7 @@ public class MassImportForm {
 		this.possibleDigitalCollections = possibleDigitalCollections;
 	}
 
-	public void setProcesses(List<Prozess> processes) {
+	public void setProcesses(List<Process> processes) {
 		this.processes = processes;
 	}
 
@@ -739,11 +739,11 @@ public class MassImportForm {
 		return new ArrayList<ImportProperty>();
 	}
 
-	public List<Prozess> getProcessList() {
+	public List<Process> getProcessList() {
 		return this.processList;
 	}
 
-	public void setProcessList(List<Prozess> processList) {
+	public void setProcessList(List<Process> processList) {
 		this.processList = processList;
 	}
 

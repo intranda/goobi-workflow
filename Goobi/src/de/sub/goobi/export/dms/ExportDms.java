@@ -43,7 +43,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsModsImportExport;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.download.ExportMets;
@@ -93,7 +93,7 @@ public class ExportDms extends ExportMets {
 	 * @throws TypeNotAllowedForParentException
 	 */
 	@Override
-	public boolean startExport(Prozess myProzess, String inZielVerzeichnis)
+	public boolean startExport(Process myProzess, String inZielVerzeichnis)
 			throws IOException, InterruptedException, WriteException,
 			PreferencesException, DocStructHasNoTypeException,
 			MetadataTypeNotAllowedException, ExportFileException,
@@ -332,7 +332,7 @@ public class ExportDms extends ExportMets {
 		}
 	}
 
-	public void fulltextDownload(Prozess myProzess, File benutzerHome,
+	public void fulltextDownload(Process myProzess, File benutzerHome,
 			String atsPpnBand, final String ordnerEndung) throws IOException,
 			InterruptedException, SwapException, DAOException {
 		
@@ -372,7 +372,7 @@ public class ExportDms extends ExportMets {
 		}
 	}
 
-	public void imageDownload(Prozess myProzess, File benutzerHome,
+	public void imageDownload(Process myProzess, File benutzerHome,
 			String atsPpnBand, final String ordnerEndung) throws IOException,
 			InterruptedException, SwapException, DAOException {
 

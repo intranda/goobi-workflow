@@ -34,9 +34,9 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Person;
 import ugh.exceptions.PreferencesException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class XmlArtikelZaehlen {
 	private static final Logger logger = Logger.getLogger(XmlArtikelZaehlen.class);
@@ -50,7 +50,7 @@ public class XmlArtikelZaehlen {
 	 * Anzahl der Strukturelemente ermitteln
 	 * @param myProzess
 	 */
-	public int getNumberOfUghElements(Prozess myProzess, CountType inType) {
+	public int getNumberOfUghElements(Process myProzess, CountType inType) {
 		int rueckgabe = 0;
 
 		/* --------------------------------
@@ -83,7 +83,7 @@ public class XmlArtikelZaehlen {
 		 * --------------------------------*/
 		myProzess.setSortHelperArticles(Integer.valueOf(rueckgabe));
 		try {
-			new ProzessDAO().save(myProzess);
+		    ProcessManager.saveProcess(myProzess);
 		} catch (DAOException e) {
 			logger.error(e);
 		}

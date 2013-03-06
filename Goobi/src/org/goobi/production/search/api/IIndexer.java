@@ -26,7 +26,7 @@ package org.goobi.production.search.api;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 
 
 /**
@@ -40,18 +40,18 @@ public interface IIndexer {
 	 * adds am Object to index
 	 * @param p the process to add
 	 */
-	public void addObject(Prozess process);
+	public void addObject(Process process);
 	
 	/**
 	 * removes an Object from index
 	 * @param p the process to remove
 	 */
-	public void removeObject(Prozess process);
+	public void removeObject(Process process);
 	
 	/**
 	 * updates an Object in index
 	 * @param p the process to update
 	 */
-	public void updateObject(Prozess process);
+	public void updateObject(Process process);
 
 }

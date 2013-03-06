@@ -49,11 +49,12 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.modul.ExtendedDataImpl;
 import de.sub.goobi.modul.ExtendedProzessImpl;
-import de.sub.goobi.persistence.ProzessDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
+//import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -74,7 +75,7 @@ public class ModuleServerForm {
 	private static HashMap<String, String> myRunningShortSessions = new HashMap<String, String>();
 	private ModuleDesc myModule;
 	Helper help = new Helper();
-	static ProzessDAO pdao = new ProzessDAO();
+//	static ProzessDAO pdao = new ProzessDAO();
 	Timer messageTimer;
 	private static final Logger logger = Logger.getLogger(ModuleServerForm.class);
 
@@ -387,10 +388,10 @@ public class ModuleServerForm {
 	/**
 	 * get Prozess von shortSessionID ================================================================
 	 */
-	public static Prozess getProcessFromShortSession(String sessionId) throws GoobiException {
+	public static Process getProcessFromShortSession(String sessionId) throws GoobiException {
 		String prozessidStr = getProcessIDFromShortSession(sessionId);
 		try {
-			Prozess tempProz = pdao.get(Integer.parseInt(prozessidStr));
+		    Process tempProz = ProcessManager.getProcessById(Integer.parseInt(prozessidStr));
 			Helper.getHibernateSession().flush();
 			Helper.getHibernateSession().clear();
 			if (tempProz != null && tempProz.getId() != null)
@@ -400,9 +401,9 @@ public class ModuleServerForm {
 		} catch (NumberFormatException e) {
 			new Helper();
 			throw new GoobiException(5, "******** wrapped NumberFormatException ********: " + e.getMessage() + "\n" + Helper.getStacktraceAsString(e));
-		} catch (DAOException e) {
-			new Helper();
-			throw new GoobiException(1400, "******** wrapped DAOException ********: " + e.getMessage() + "\n" + Helper.getStacktraceAsString(e));
+//		} catch (DAOException e) {
+//			new Helper();
+//			throw new GoobiException(1400, "******** wrapped DAOException ********: " + e.getMessage() + "\n" + Helper.getStacktraceAsString(e));
 		}
 	}
 

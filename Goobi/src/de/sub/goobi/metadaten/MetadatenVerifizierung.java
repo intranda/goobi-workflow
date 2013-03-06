@@ -45,7 +45,7 @@ import ugh.dl.Reference;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
@@ -55,10 +55,10 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 public class MetadatenVerifizierung {
 	UghHelper ughhelp = new UghHelper();
 	List<DocStruct> docStructsOhneSeiten;
-	Prozess myProzess;
+	Process myProzess;
 	boolean autoSave = false;
 
-	public boolean validate(Prozess inProzess) {
+	public boolean validate(Process inProzess) {
 		Prefs myPrefs = inProzess.getRegelsatz().getPreferences();
 		/*
 		 * -------------------------------- Fileformat einlesen --------------------------------
@@ -73,7 +73,7 @@ public class MetadatenVerifizierung {
 		return validate(gdzfile, myPrefs, inProzess);
 	}
 
-	public boolean validate(Fileformat gdzfile, Prefs inPrefs, Prozess inProzess) {
+	public boolean validate(Fileformat gdzfile, Prefs inPrefs, Process inProzess) {
 		String metadataLanguage = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
 		this.myProzess = inProzess;
 		boolean ergebnis = true;

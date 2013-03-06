@@ -33,7 +33,7 @@ import java.io.FileReader;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 
@@ -50,7 +50,7 @@ public class DmsImportThread extends Thread {
 
 	public boolean stop = false;
 
-	public DmsImportThread(Prozess inProzess, String inAts) {
+	public DmsImportThread(Process inProzess, String inAts) {
 		setDaemon(true);
 		/* aus Kompatibilitätsgründen auch noch die Fehlermeldungen an alter Stelle, ansonsten lieber in neuem FehlerOrdner */
 		if (inProzess.getProjekt().getDmsImportErrorPath() == null || inProzess.getProjekt().getDmsImportErrorPath().length() == 0) {

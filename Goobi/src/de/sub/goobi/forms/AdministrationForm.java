@@ -58,7 +58,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.BeanHelper;
@@ -70,516 +70,500 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.SchrittDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.MD5;
 
-@ManagedBean(name="AdministrationForm") 
+@ManagedBean(name = "AdministrationForm")
 @ViewScoped
 public class AdministrationForm implements Serializable {
-	private static final long serialVersionUID = 5648439270064158243L;
-	private static final Logger myLogger = Logger.getLogger(AdministrationForm.class);
-	private String passwort;
-	private boolean istPasswortRichtig = false;
-	private boolean rusFullExport = false;
+    private static final long serialVersionUID = 5648439270064158243L;
+    private static final Logger myLogger = Logger.getLogger(AdministrationForm.class);
+    private String passwort;
+    private boolean istPasswortRichtig = false;
+    private boolean rusFullExport = false;
 
+    public final static String DIRECTORY_SUFFIX = "_tif";
 
-	public final static String DIRECTORY_SUFFIX = "_tif";
+    /* =============================================================== */
 
-	/* =============================================================== */
+    /**
+     * Passwort eingeben
+     */
+    public String Weiter() {
+        this.passwort = new MD5(this.passwort).getMD5();
+        String adminMd5 = ConfigMain.getParameter("superadminpassword");
+        this.istPasswortRichtig = (this.passwort.equals(adminMd5));
+        if (!this.istPasswortRichtig) {
+            Helper.setFehlerMeldung("wrong passworwd", "");
+        }
+        return "";
+    }
 
-	/**
-	 * Passwort eingeben
-	 */
-	public String Weiter() {
-		this.passwort = new MD5(this.passwort).getMD5();
-		String adminMd5 = ConfigMain.getParameter("superadminpassword");
-		this.istPasswortRichtig = (this.passwort.equals(adminMd5));
-		if (!this.istPasswortRichtig) {
-			Helper.setFehlerMeldung("wrong passworwd", "");
-		}
-		return "";
-	}
+    /* =============================================================== */
 
-	/* =============================================================== */
+    public String getPasswort() {
+        return this.passwort;
+    }
 
-	public String getPasswort() {
-		return this.passwort;
-	}
+    public void setPasswort(String passwort) {
+        this.passwort = passwort;
+    }
 
-	public void setPasswort(String passwort) {
-		this.passwort = passwort;
-	}
+    /**
+     * restart quartz timer for scheduled storage calculation, so it notices chanced start time configuration from configuration
+     */
+    public void restartStorageCalculationScheduler() {
+        try {
+            JobManager.restartTimedJobs();
+            Helper.setMeldung("StorageHistoryManager scheduler restarted");
+        } catch (SchedulerException e) {
+            Helper.setFehlerMeldung("Error while restarting StorageHistoryManager scheduler", e);
+        }
+    }
 
-	/**
-	 * restart quartz timer for scheduled storage calculation, so it notices
-	 * chanced start time configuration from configuration
-	 */
-	public void restartStorageCalculationScheduler() {
-		try {
-			JobManager.restartTimedJobs();
-			Helper.setMeldung("StorageHistoryManager scheduler restarted");
-		} catch (SchedulerException e) {
-			Helper.setFehlerMeldung("Error while restarting StorageHistoryManager scheduler", e);
-		}
-	}
+    /**
+     * run storage calculation for all processes now
+     */
+    public void startStorageCalculationForAllProcessesNow() {
+        HistoryAnalyserJob job = new HistoryAnalyserJob();
+        if (job.getIsRunning() == false) {
+            job.execute();
+            Helper.setMeldung("scheduler calculation executed");
+        } else {
+            Helper.setMeldung("Job is already running, try again in a few minutes");
+        }
+    }
 
-	/**
-	 * run storage calculation for all processes now
-	 */
-	public void startStorageCalculationForAllProcessesNow() {
-		HistoryAnalyserJob job = new HistoryAnalyserJob();
-		if (job.getIsRunning() == false) {
-			job.execute();
-			Helper.setMeldung("scheduler calculation executed");
-		} else {
-			Helper.setMeldung("Job is already running, try again in a few minutes");
-		}
-	}
+    public boolean isIstPasswortRichtig() {
+        return this.istPasswortRichtig;
+    }
 
-	public boolean isIstPasswortRichtig() {
-		return this.istPasswortRichtig;
-	}
-	
-	public void createIndex () {
-	}
+    public void createIndex() {
+    }
 
+    public void ProzesseDurchlaufen() throws DAOException {
+        List<Process> auftraege = ProcessManager.getAllProcesses();
+        //		List<Process> auftraege = dao.search("from Prozess");
+        for (Process auf : auftraege) {
+            ProcessManager.saveProcess(auf);
+        }
+        Helper.setMeldung(null, "", "Elements successful counted");
+    }
 
-	public void ProzesseDurchlaufen() throws DAOException {
-		ProzessDAO dao = new ProzessDAO();
-		List<Prozess> auftraege = dao.search("from Prozess");
-		for (Prozess auf : auftraege) {
-			dao.save(auf);
-		}
-		Helper.setMeldung(null, "", "Elements successful counted");
-	}
+    public void AnzahlenErmitteln() throws DAOException, IOException, InterruptedException, SwapException {
+        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+        List<Process> auftraege = ProcessManager.getAllProcesses();
+        for (Process auf : auftraege) {
 
-	public void AnzahlenErmitteln() throws DAOException, IOException, InterruptedException, SwapException {
-		XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
-		ProzessDAO dao = new ProzessDAO();
-		List<Prozess> auftraege = dao.search("from Prozess");
-		for (Prozess auf : auftraege) {
+            try {
+                auf.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(auf, CountType.DOCSTRUCT));
+                auf.setSortHelperMetadata(zaehlen.getNumberOfUghElements(auf, CountType.METADATA));
+                auf.setSortHelperImages(FileUtils.getNumberOfFiles(new File(auf.getImagesOrigDirectory(true))));
+                ProcessManager.saveProcess(auf);
+            } catch (RuntimeException e) {
+                myLogger.error("Fehler bei Band: " + auf.getTitel(), e);
+            }
 
-			try {
-				auf.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(auf, CountType.DOCSTRUCT));
-				auf.setSortHelperMetadata(zaehlen.getNumberOfUghElements(auf, CountType.METADATA));
-				auf.setSortHelperImages(FileUtils.getNumberOfFiles(new File(auf.getImagesOrigDirectory(true))));
-				dao.save(auf);
-			} catch (RuntimeException e) {
-				myLogger.error("Fehler bei Band: " + auf.getTitel(), e);
-			}
+            ProcessManager.saveProcess(auf);
+        }
+        Helper.setMeldung(null, "", "Elements successful counted");
+    }
 
-			dao.save(auf);
-		}
-		Helper.setMeldung(null, "", "Elements successful counted");
-	}
+    //TODO: Remove this
+    public void SiciKorr() throws DAOException {
+        Usergroup gruppe = UsergroupManager.getUsergroupById(15);
+        Set<Usergroup> neueGruppen = new HashSet<Usergroup>();
+        neueGruppen.add(gruppe);
 
-	//TODO: Remove this
-	public void SiciKorr() throws DAOException {
-		Usergroup gruppe = UsergroupManager.getUsergroupById(15);
-		Set<Usergroup> neueGruppen = new HashSet<Usergroup>();
-		neueGruppen.add(gruppe);
+        SchrittDAO dao = new SchrittDAO();
+        //TODO: Try to avoid SQL
+        List<Schritt> schritte = dao.search("from Schritt where titel='Automatische Generierung der SICI'");
+        for (Schritt auf : schritte) {
+            auf.setBenutzergruppen(neueGruppen);
+            dao.save(auf);
+        }
+        Helper.setMeldung(null, "", "Sici erfolgreich korrigiert");
+    }
 
-		SchrittDAO dao = new SchrittDAO();
-		//TODO: Try to avoid SQL
-		List<Schritt> schritte = dao.search("from Schritt where titel='Automatische Generierung der SICI'");
-		for (Schritt auf : schritte) {
-			auf.setBenutzergruppen(neueGruppen);
-			dao.save(auf);
-		}
-		Helper.setMeldung(null, "", "Sici erfolgreich korrigiert");
-	}
+    public void StandardRegelsatzSetzen() throws DAOException {
+        Ruleset mk = RulesetManager.getRulesetById(Integer.valueOf(1));
 
-	public void StandardRegelsatzSetzen() throws DAOException {
-		Ruleset mk = RulesetManager.getRulesetById(Integer.valueOf(1));
+        List<Process> auftraege = ProcessManager.getAllProcesses();
 
-		ProzessDAO dao = new ProzessDAO();
-		List<Prozess> auftraege = dao.search("from Prozess");
-		int i = 0;
-		for (Prozess auf : auftraege) {
-			
-			auf.setRegelsatz(mk);
-			dao.save(auf);
-			myLogger.debug(auf.getId() + " - " + i++ + "von" + auftraege.size());
-		}
-		Helper.setMeldung(null, "", "Standard-ruleset successful set");
-	}
-	
-	public void ProzesseDatumSetzen() throws DAOException {
-		ProzessDAO dao = new ProzessDAO();
-		List<Prozess> auftraege = dao.search("from Prozess");
-		for (Prozess auf : auftraege) {
-			
+        int i = 0;
+        for (Process auf : auftraege) {
 
-			for (Schritt s  : auf.getSchritteList()) {
-			
-				if (s.getBearbeitungsbeginn() != null) {
-					auf.setErstellungsdatum(s.getBearbeitungsbeginn());
-					break;
-				}
-			}
-			dao.save(auf);
-		}
-		Helper.setMeldung(null, "", "created date");
-	}
+            auf.setRegelsatz(mk);
+            ProcessManager.saveProcess(auf);
+            myLogger.debug(auf.getId() + " - " + i++ + "von" + auftraege.size());
+        }
+        Helper.setMeldung(null, "", "Standard-ruleset successful set");
+    }
 
-	
+    public void ProzesseDatumSetzen() throws DAOException {
+        List<Process> auftraege = ProcessManager.getAllProcesses();
+        for (Process auf : auftraege) {
 
-	@SuppressWarnings("unchecked")
-	public void ImagepfadKorrigieren() throws DAOException {
-		UghHelper ughhelp = new UghHelper();
-		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Prozess.class);
+            for (Schritt s : auf.getSchritteList()) {
 
-	
-		List<Prozess> auftraege = crit.list();
+                if (s.getBearbeitungsbeginn() != null) {
+                    auf.setErstellungsdatum(s.getBearbeitungsbeginn());
+                    break;
+                }
+            }
+            ProcessManager.saveProcess(auf);
+        }
+        Helper.setMeldung(null, "", "created date");
+    }
 
-		/* alle Prozesse durchlaufen */
-		for (Prozess p : auftraege) {
-			
+    @SuppressWarnings("unchecked")
+    public void ImagepfadKorrigieren() throws DAOException {
+        UghHelper ughhelp = new UghHelper();
+        Session session = Helper.getHibernateSession();
+        Criteria crit = session.createCriteria(Process.class);
 
-			if (p.getBenutzerGesperrt() != null) {
-				Helper.setFehlerMeldung("metadata locked: ", p.getTitel());
-			} else {
-				myLogger.debug("Prozess: " + p.getTitel());
-				Prefs myPrefs = p.getRegelsatz().getPreferences();
-				Fileformat gdzfile;
-				try {
-					gdzfile = p.readMetadataFile();
+        List<Process> auftraege = crit.list();
 
-					MetadataType mdt = ughhelp.getMetadataType(myPrefs, "pathimagefiles");
-					List<? extends Metadata> alleMetadaten = gdzfile.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-					if (alleMetadaten != null && alleMetadaten.size() > 0) {
-						Metadata md = alleMetadaten.get(0);
-						myLogger.debug(md.getValue());
+        /* alle Prozesse durchlaufen */
+        for (Process p : auftraege) {
 
-					
-						if (SystemUtils.IS_OS_WINDOWS) {
-							md.setValue("file:/" + p.getImagesDirectory() + p.getTitel().trim() + DIRECTORY_SUFFIX);
-						} else {
-							md.setValue("file://" + p.getImagesDirectory() + p.getTitel().trim() + DIRECTORY_SUFFIX);
-						}
-						p.writeMetadataFile(gdzfile);
-						Helper.setMeldung(null, "", "Image path set: " + p.getTitel() + ": ./" + p.getTitel() + DIRECTORY_SUFFIX);
-					} else {
-						Helper.setMeldung(null, "", "No Image path available: " + p.getTitel());
-					}
-				} catch (ReadException e) {
-					Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("ReadException: " + p.getTitel(), e);
-				} catch (IOException e) {
-					Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("IOException: " + p.getTitel(), e);
-				} catch (InterruptedException e) {
-					Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("InterruptedException: " + p.getTitel(), e);
-				} catch (PreferencesException e) {
-					Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("PreferencesException: " + p.getTitel(), e);
-				} catch (UghHelperException e) {
-					Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("UghHelperException: " + p.getTitel(), e);
-				} catch (Exception e) {
-					Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("Exception: " + p.getTitel(), e);
-				}
-			}
-		}
-		Helper.setMeldung(null, "", "------------------------------------------------------------------");
-		Helper.setMeldung(null, "", "Image paths set");
-	}
+            if (p.getBenutzerGesperrt() != null) {
+                Helper.setFehlerMeldung("metadata locked: ", p.getTitel());
+            } else {
+                myLogger.debug("Prozess: " + p.getTitel());
+                Prefs myPrefs = p.getRegelsatz().getPreferences();
+                Fileformat gdzfile;
+                try {
+                    gdzfile = p.readMetadataFile();
 
-	
-	@SuppressWarnings("unchecked")
-	public void PPNsKorrigieren() throws DAOException {
-		UghHelper ughhelp = new UghHelper();
+                    MetadataType mdt = ughhelp.getMetadataType(myPrefs, "pathimagefiles");
+                    List<? extends Metadata> alleMetadaten = gdzfile.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
+                    if (alleMetadaten != null && alleMetadaten.size() > 0) {
+                        Metadata md = alleMetadaten.get(0);
+                        myLogger.debug(md.getValue());
 
-		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Prozess.class);
-		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-		crit.createCriteria("projekt", "proj");
-		crit.add(Restrictions.like("proj.titel", "DigiZeitschriften"));
-		
-		List<Prozess> auftraege = crit.list();
+                        if (SystemUtils.IS_OS_WINDOWS) {
+                            md.setValue("file:/" + p.getImagesDirectory() + p.getTitel().trim() + DIRECTORY_SUFFIX);
+                        } else {
+                            md.setValue("file://" + p.getImagesDirectory() + p.getTitel().trim() + DIRECTORY_SUFFIX);
+                        }
+                        p.writeMetadataFile(gdzfile);
+                        Helper.setMeldung(null, "", "Image path set: " + p.getTitel() + ": ./" + p.getTitel() + DIRECTORY_SUFFIX);
+                    } else {
+                        Helper.setMeldung(null, "", "No Image path available: " + p.getTitel());
+                    }
+                } catch (ReadException e) {
+                    Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("ReadException: " + p.getTitel(), e);
+                } catch (IOException e) {
+                    Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("IOException: " + p.getTitel(), e);
+                } catch (InterruptedException e) {
+                    Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("InterruptedException: " + p.getTitel(), e);
+                } catch (PreferencesException e) {
+                    Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("PreferencesException: " + p.getTitel(), e);
+                } catch (UghHelperException e) {
+                    Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("UghHelperException: " + p.getTitel(), e);
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("Exception: " + p.getTitel(), e);
+                }
+            }
+        }
+        Helper.setMeldung(null, "", "------------------------------------------------------------------");
+        Helper.setMeldung(null, "", "Image paths set");
+    }
 
-		/* alle Prozesse durchlaufen */
-		for (Prozess p : auftraege) {
-		
-			if (p.getBenutzerGesperrt() != null) {
-				Helper.setFehlerMeldung("metadata locked: ", p.getTitel());
-			} else {
-				String myBandnr = p.getTitel();
-				StringTokenizer tokenizer = new StringTokenizer(p.getTitel(), "_");
-				while (tokenizer.hasMoreTokens()) {
-					myBandnr = "_" + tokenizer.nextToken();
-				}
-				Prefs myPrefs = p.getRegelsatz().getPreferences();
-				try {
-					Fileformat gdzfile = p.readMetadataFile();
-					DocStruct dsTop = gdzfile.getDigitalDocument().getLogicalDocStruct();
-					DocStruct dsFirst = null;
-					if (dsTop.getAllChildren() != null && dsTop.getAllChildren().size() > 0) {
-						dsFirst = dsTop.getAllChildren().get(0);
-					}
+    @SuppressWarnings("unchecked")
+    public void PPNsKorrigieren() throws DAOException {
+        UghHelper ughhelp = new UghHelper();
 
-					MetadataType mdtPpnDigital = ughhelp.getMetadataType(myPrefs, "CatalogIDDigital");
-					MetadataType mdtPpnAnalog = ughhelp.getMetadataType(myPrefs, "CatalogIDSource");
-					List<? extends Metadata> alleMetadaten;
+        Session session = Helper.getHibernateSession();
+        Criteria crit = session.createCriteria(Process.class);
+        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        crit.createCriteria("projekt", "proj");
+        crit.add(Restrictions.like("proj.titel", "DigiZeitschriften"));
 
-					/* digitale PPN korrigieren */
-					if (dsFirst != null) {
-						alleMetadaten = dsFirst.getAllMetadataByType(mdtPpnDigital);
-						if (alleMetadaten != null && alleMetadaten.size() > 0) {
-							Metadata md = alleMetadaten.get(0);
-							myLogger.debug(md.getValue());
-							if (!md.getValue().endsWith(myBandnr)) {
-								md.setValue(md.getValue() + myBandnr);
-								Helper.setMeldung(null, "PPN digital adjusted: ", p.getTitel());
-							}
-						}
+        List<Process> auftraege = crit.list();
 
-						/* analoge PPN korrigieren */
-						alleMetadaten = dsFirst.getAllMetadataByType(mdtPpnAnalog);
-						if (alleMetadaten != null && alleMetadaten.size() > 0) {
-							Metadata md1 = alleMetadaten.get(0);
-							myLogger.debug(md1.getValue());
-							if (!md1.getValue().endsWith(myBandnr)) {
-								md1.setValue(md1.getValue() + myBandnr);
-								Helper.setMeldung(null, "PPN analog adjusted: ", p.getTitel());
-							}
-						}
-					}
+        /* alle Prozesse durchlaufen */
+        for (Process p : auftraege) {
 
-					/* Collections korrigieren */
-					List<String> myKollektionenTitel = new ArrayList<String>();
-					MetadataType coltype = ughhelp.getMetadataType(myPrefs, "singleDigCollection");
-					ArrayList<Metadata> myCollections;
-					if (dsTop.getAllMetadataByType(coltype) != null && dsTop.getAllMetadataByType(coltype).size() != 0) {
-						myCollections = new ArrayList<Metadata>(dsTop.getAllMetadataByType(coltype));
-						if (myCollections != null && myCollections.size() > 0) {
-							for (Metadata md : myCollections) {
-							
-								if (myKollektionenTitel.contains(md.getValue())) {
-									dsTop.removeMetadata(md);
-								} else {
-									myKollektionenTitel.add(md.getValue());
-								}
-							}
-						}
-					}
-					if (dsFirst != null && dsFirst.getAllMetadataByType(coltype) != null) {
-						myKollektionenTitel = new ArrayList<String>();
-						myCollections = new ArrayList<Metadata>(dsFirst.getAllMetadataByType(coltype));
-						if (myCollections != null && myCollections.size() > 0) {
-							for (Metadata md : myCollections) {
-//								Metadata md = (Metadata) it.next();
-								if (myKollektionenTitel.contains(md.getValue())) {
-									dsFirst.removeMetadata(md);
-								} else {
-									myKollektionenTitel.add(md.getValue());
-								}
-							}
-						}
-					}
+            if (p.getBenutzerGesperrt() != null) {
+                Helper.setFehlerMeldung("metadata locked: ", p.getTitel());
+            } else {
+                String myBandnr = p.getTitel();
+                StringTokenizer tokenizer = new StringTokenizer(p.getTitel(), "_");
+                while (tokenizer.hasMoreTokens()) {
+                    myBandnr = "_" + tokenizer.nextToken();
+                }
+                Prefs myPrefs = p.getRegelsatz().getPreferences();
+                try {
+                    Fileformat gdzfile = p.readMetadataFile();
+                    DocStruct dsTop = gdzfile.getDigitalDocument().getLogicalDocStruct();
+                    DocStruct dsFirst = null;
+                    if (dsTop.getAllChildren() != null && dsTop.getAllChildren().size() > 0) {
+                        dsFirst = dsTop.getAllChildren().get(0);
+                    }
 
-					p.writeMetadataFile(gdzfile);
+                    MetadataType mdtPpnDigital = ughhelp.getMetadataType(myPrefs, "CatalogIDDigital");
+                    MetadataType mdtPpnAnalog = ughhelp.getMetadataType(myPrefs, "CatalogIDSource");
+                    List<? extends Metadata> alleMetadaten;
 
-				} catch (ReadException e) {
-					Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("ReadException: " + p.getTitel(), e);
-				} catch (IOException e) {
-					Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("IOException: " + p.getTitel(), e);
-				} catch (InterruptedException e) {
-					Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("InterruptedException: " + p.getTitel(), e);
-				} catch (PreferencesException e) {
-					Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("PreferencesException: " + p.getTitel(), e);
-				} catch (UghHelperException e) {
-					Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("UghHelperException: " + p.getTitel(), e);
-				} catch (Exception e) {
-					Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("Exception: " + p.getTitel(), e);
-				}
-			}
-		}
-		Helper.setMeldung(null, "", "------------------------------------------------------------------");
-		Helper.setMeldung(null, "", "PPNs adjusted");
-	}
+                    /* digitale PPN korrigieren */
+                    if (dsFirst != null) {
+                        alleMetadaten = dsFirst.getAllMetadataByType(mdtPpnDigital);
+                        if (alleMetadaten != null && alleMetadaten.size() > 0) {
+                            Metadata md = alleMetadaten.get(0);
+                            myLogger.debug(md.getValue());
+                            if (!md.getValue().endsWith(myBandnr)) {
+                                md.setValue(md.getValue() + myBandnr);
+                                Helper.setMeldung(null, "PPN digital adjusted: ", p.getTitel());
+                            }
+                        }
 
+                        /* analoge PPN korrigieren */
+                        alleMetadaten = dsFirst.getAllMetadataByType(mdtPpnAnalog);
+                        if (alleMetadaten != null && alleMetadaten.size() > 0) {
+                            Metadata md1 = alleMetadaten.get(0);
+                            myLogger.debug(md1.getValue());
+                            if (!md1.getValue().endsWith(myBandnr)) {
+                                md1.setValue(md1.getValue() + myBandnr);
+                                Helper.setMeldung(null, "PPN analog adjusted: ", p.getTitel());
+                            }
+                        }
+                    }
 
+                    /* Collections korrigieren */
+                    List<String> myKollektionenTitel = new ArrayList<String>();
+                    MetadataType coltype = ughhelp.getMetadataType(myPrefs, "singleDigCollection");
+                    ArrayList<Metadata> myCollections;
+                    if (dsTop.getAllMetadataByType(coltype) != null && dsTop.getAllMetadataByType(coltype).size() != 0) {
+                        myCollections = new ArrayList<Metadata>(dsTop.getAllMetadataByType(coltype));
+                        if (myCollections != null && myCollections.size() > 0) {
+                            for (Metadata md : myCollections) {
 
-	//TODO: Remove this
-	@SuppressWarnings("unchecked")
-	public static void PPNsFuerStatistischesJahrbuchKorrigieren2() {
-		UghHelper ughhelp = new UghHelper();
-		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Prozess.class);
-		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-		crit.add(Restrictions.like("titel", "statjafud%"));
-		/* alle Prozesse durchlaufen */
-		List<Prozess> pl = crit.list();
-		for (Prozess p : pl) {
-		
-			if (p.getBenutzerGesperrt() != null) {
-				Helper.setFehlerMeldung("metadata locked: " + p.getTitel());
-			} else {
-				Prefs myPrefs = p.getRegelsatz().getPreferences();
-				try {
-					Fileformat gdzfile = p.readMetadataFile();
-					DocStruct dsTop = gdzfile.getDigitalDocument().getLogicalDocStruct();
-					MetadataType mdtPpnDigital = ughhelp.getMetadataType(myPrefs, "CatalogIDSource");
+                                if (myKollektionenTitel.contains(md.getValue())) {
+                                    dsTop.removeMetadata(md);
+                                } else {
+                                    myKollektionenTitel.add(md.getValue());
+                                }
+                            }
+                        }
+                    }
+                    if (dsFirst != null && dsFirst.getAllMetadataByType(coltype) != null) {
+                        myKollektionenTitel = new ArrayList<String>();
+                        myCollections = new ArrayList<Metadata>(dsFirst.getAllMetadataByType(coltype));
+                        if (myCollections != null && myCollections.size() > 0) {
+                            for (Metadata md : myCollections) {
+                                //								Metadata md = (Metadata) it.next();
+                                if (myKollektionenTitel.contains(md.getValue())) {
+                                    dsFirst.removeMetadata(md);
+                                } else {
+                                    myKollektionenTitel.add(md.getValue());
+                                }
+                            }
+                        }
+                    }
 
-					/* analoge PPN korrigieren */
-					if (dsTop != null) {
-						List<? extends Metadata> alleMetadaten = dsTop.getAllMetadataByType(mdtPpnDigital);
-						if (alleMetadaten != null && alleMetadaten.size() > 0) {
-							for (Iterator<? extends Metadata> it = alleMetadaten.iterator(); it.hasNext();) {
-								Metadata md = it.next();
-								if (!md.getValue().startsWith("PPN")) {
-									md.setValue("PPN" + md.getValue());
-									p.writeMetadataFile(gdzfile);
-								}
-							}
-						}
-					}
-				} catch (ReadException e) {
-					Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("ReadException: " + p.getTitel(), e);
-				} catch (IOException e) {
-					Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("IOException: " + p.getTitel(), e);
-				} catch (InterruptedException e) {
-					Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("InterruptedException: " + p.getTitel(), e);
-				} catch (PreferencesException e) {
-					Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("PreferencesException: " + p.getTitel(), e);
-				} catch (UghHelperException e) {
-					Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("UghHelperException: " + p.getTitel(), e);
-				} catch (Exception e) {
-					Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("Exception: " + p.getTitel(), e);
-				}
-			}
-		}
-		Helper.setMeldung("------------------------------------------------------------------");
-		Helper.setMeldung("PPNs adjusted");
-	}
+                    p.writeMetadataFile(gdzfile);
 
-	@SuppressWarnings("unchecked")
-	public void PPNsFuerStatistischesJahrbuchKorrigieren() throws DAOException {
-		UghHelper ughhelp = new UghHelper();
-		BeanHelper bhelp = new BeanHelper();
-		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Prozess.class);
-		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-		crit.createCriteria("projekt", "proj");
-		crit.add(Restrictions.like("proj.titel", "UB-MannheimDigizeit"));
+                } catch (ReadException e) {
+                    Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("ReadException: " + p.getTitel(), e);
+                } catch (IOException e) {
+                    Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("IOException: " + p.getTitel(), e);
+                } catch (InterruptedException e) {
+                    Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("InterruptedException: " + p.getTitel(), e);
+                } catch (PreferencesException e) {
+                    Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("PreferencesException: " + p.getTitel(), e);
+                } catch (UghHelperException e) {
+                    Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("UghHelperException: " + p.getTitel(), e);
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("Exception: " + p.getTitel(), e);
+                }
+            }
+        }
+        Helper.setMeldung(null, "", "------------------------------------------------------------------");
+        Helper.setMeldung(null, "", "PPNs adjusted");
+    }
 
-		/* alle Prozesse durchlaufen */
-		for (Iterator<Prozess> iter = crit.list().iterator(); iter.hasNext();) {
-			Prozess p = iter.next();
-			if (p.getBenutzerGesperrt() != null) {
-				Helper.setFehlerMeldung("metadata locked: ", p.getTitel());
-			} else {
-				String ppn = bhelp.WerkstueckEigenschaftErmitteln(p, "PPN digital").replace("PPN ", "").replace("PPN", "");
-				String jahr = bhelp.ScanvorlagenEigenschaftErmitteln(p, "Bandnummer");
-				String ppnAufBandebene = "PPN" + ppn + "_" + jahr;
+    //TODO: Remove this
+    @SuppressWarnings("unchecked")
+    public static void PPNsFuerStatistischesJahrbuchKorrigieren2() {
+        UghHelper ughhelp = new UghHelper();
+        Session session = Helper.getHibernateSession();
+        Criteria crit = session.createCriteria(Process.class);
+        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        crit.add(Restrictions.like("titel", "statjafud%"));
+        /* alle Prozesse durchlaufen */
+        List<Process> pl = crit.list();
+        for (Process p : pl) {
 
-				Prefs myPrefs = p.getRegelsatz().getPreferences();
-				try {
-					Fileformat gdzfile = p.readMetadataFile();
-					DocStruct dsTop = gdzfile.getDigitalDocument().getLogicalDocStruct();
-					DocStruct dsFirst = null;
-					if (dsTop.getAllChildren() != null && dsTop.getAllChildren().size() > 0) {
-						dsFirst = dsTop.getAllChildren().get(0);
-					}
+            if (p.getBenutzerGesperrt() != null) {
+                Helper.setFehlerMeldung("metadata locked: " + p.getTitel());
+            } else {
+                Prefs myPrefs = p.getRegelsatz().getPreferences();
+                try {
+                    Fileformat gdzfile = p.readMetadataFile();
+                    DocStruct dsTop = gdzfile.getDigitalDocument().getLogicalDocStruct();
+                    MetadataType mdtPpnDigital = ughhelp.getMetadataType(myPrefs, "CatalogIDSource");
 
-					MetadataType mdtPpnDigital = ughhelp.getMetadataType(myPrefs, "CatalogIDDigital");
+                    /* analoge PPN korrigieren */
+                    if (dsTop != null) {
+                        List<? extends Metadata> alleMetadaten = dsTop.getAllMetadataByType(mdtPpnDigital);
+                        if (alleMetadaten != null && alleMetadaten.size() > 0) {
+                            for (Iterator<? extends Metadata> it = alleMetadaten.iterator(); it.hasNext();) {
+                                Metadata md = it.next();
+                                if (!md.getValue().startsWith("PPN")) {
+                                    md.setValue("PPN" + md.getValue());
+                                    p.writeMetadataFile(gdzfile);
+                                }
+                            }
+                        }
+                    }
+                } catch (ReadException e) {
+                    Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("ReadException: " + p.getTitel(), e);
+                } catch (IOException e) {
+                    Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("IOException: " + p.getTitel(), e);
+                } catch (InterruptedException e) {
+                    Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("InterruptedException: " + p.getTitel(), e);
+                } catch (PreferencesException e) {
+                    Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("PreferencesException: " + p.getTitel(), e);
+                } catch (UghHelperException e) {
+                    Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("UghHelperException: " + p.getTitel(), e);
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("Exception: " + p.getTitel(), e);
+                }
+            }
+        }
+        Helper.setMeldung("------------------------------------------------------------------");
+        Helper.setMeldung("PPNs adjusted");
+    }
 
-					/* digitale PPN korrigieren */
-					if (dsFirst != null) {
-						List<? extends Metadata> alleMetadaten = dsFirst.getAllMetadataByType(mdtPpnDigital);
-						if (alleMetadaten == null || alleMetadaten.size() == 0) {
-							Metadata md = new Metadata(mdtPpnDigital);
-							md.setValue(ppnAufBandebene);
-							dsFirst.addMetadata(md);
-						}
-					}
+    @SuppressWarnings("unchecked")
+    public void PPNsFuerStatistischesJahrbuchKorrigieren() throws DAOException {
+        UghHelper ughhelp = new UghHelper();
+        BeanHelper bhelp = new BeanHelper();
+        Session session = Helper.getHibernateSession();
+        Criteria crit = session.createCriteria(Process.class);
+        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        crit.createCriteria("projekt", "proj");
+        crit.add(Restrictions.like("proj.titel", "UB-MannheimDigizeit"));
 
-					/* Collections korrigieren */
-					List<String> myKollektionenTitel = new ArrayList<String>();
-					MetadataType coltype = ughhelp.getMetadataType(myPrefs, "singleDigCollection");
-					ArrayList<Metadata> myCollections;
-					if (dsTop.getAllMetadataByType(coltype) != null) {
-						myCollections = new ArrayList<Metadata>(dsTop.getAllMetadataByType(coltype));
-						if (myCollections != null && myCollections.size() > 0) {
-							for (Iterator<Metadata> it = myCollections.iterator(); it.hasNext();) {
-								Metadata md = it.next();
-								if (myKollektionenTitel.contains(md.getValue())) {
-									dsTop.removeMetadata(md);
-								} else {
-									myKollektionenTitel.add(md.getValue());
-								}
-							}
-						}
-					}
-					if (dsFirst != null && dsFirst.getAllMetadataByType(coltype).size() > 0) {
-						myKollektionenTitel = new ArrayList<String>();
-						myCollections = new ArrayList<Metadata>(dsFirst.getAllMetadataByType(coltype));
-						if (myCollections != null && myCollections.size() > 0) {
-							for (Iterator<Metadata> it = myCollections.iterator(); it.hasNext();) {
-								Metadata md = it.next();
-								if (myKollektionenTitel.contains(md.getValue())) {
-									dsFirst.removeMetadata(md);
-								} else {
-									myKollektionenTitel.add(md.getValue());
-								}
-							}
-						}
-					}
+        /* alle Prozesse durchlaufen */
+        for (Iterator<Process> iter = crit.list().iterator(); iter.hasNext();) {
+            Process p = iter.next();
+            if (p.getBenutzerGesperrt() != null) {
+                Helper.setFehlerMeldung("metadata locked: ", p.getTitel());
+            } else {
+                String ppn = bhelp.WerkstueckEigenschaftErmitteln(p, "PPN digital").replace("PPN ", "").replace("PPN", "");
+                String jahr = bhelp.ScanvorlagenEigenschaftErmitteln(p, "Bandnummer");
+                String ppnAufBandebene = "PPN" + ppn + "_" + jahr;
 
-					p.writeMetadataFile(gdzfile);
+                Prefs myPrefs = p.getRegelsatz().getPreferences();
+                try {
+                    Fileformat gdzfile = p.readMetadataFile();
+                    DocStruct dsTop = gdzfile.getDigitalDocument().getLogicalDocStruct();
+                    DocStruct dsFirst = null;
+                    if (dsTop.getAllChildren() != null && dsTop.getAllChildren().size() > 0) {
+                        dsFirst = dsTop.getAllChildren().get(0);
+                    }
 
-				} catch (ReadException e) {
-					Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("ReadException: " + p.getTitel(), e);
-				} catch (IOException e) {
-					Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("IOException: " + p.getTitel(), e);
-				} catch (InterruptedException e) {
-					Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("InterruptedException: " + p.getTitel(), e);
-				} catch (PreferencesException e) {
-					Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("PreferencesException: " + p.getTitel() + " - " + e.getMessage());
-				} catch (UghHelperException e) {
-					Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("UghHelperException: " + p.getTitel(), e);
-				} catch (Exception e) {
-					Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
-					myLogger.error("Exception: " + p.getTitel(), e);
-				}
-			}
-		}
-		Helper.setMeldung(null, "", "------------------------------------------------------------------");
-		Helper.setMeldung(null, "", "PPNs adjusted");
-	}
+                    MetadataType mdtPpnDigital = ughhelp.getMetadataType(myPrefs, "CatalogIDDigital");
 
-	
+                    /* digitale PPN korrigieren */
+                    if (dsFirst != null) {
+                        List<? extends Metadata> alleMetadaten = dsFirst.getAllMetadataByType(mdtPpnDigital);
+                        if (alleMetadaten == null || alleMetadaten.size() == 0) {
+                            Metadata md = new Metadata(mdtPpnDigital);
+                            md.setValue(ppnAufBandebene);
+                            dsFirst.addMetadata(md);
+                        }
+                    }
 
-	public boolean isRusFullExport() {
-		return this.rusFullExport;
-	}
+                    /* Collections korrigieren */
+                    List<String> myKollektionenTitel = new ArrayList<String>();
+                    MetadataType coltype = ughhelp.getMetadataType(myPrefs, "singleDigCollection");
+                    ArrayList<Metadata> myCollections;
+                    if (dsTop.getAllMetadataByType(coltype) != null) {
+                        myCollections = new ArrayList<Metadata>(dsTop.getAllMetadataByType(coltype));
+                        if (myCollections != null && myCollections.size() > 0) {
+                            for (Iterator<Metadata> it = myCollections.iterator(); it.hasNext();) {
+                                Metadata md = it.next();
+                                if (myKollektionenTitel.contains(md.getValue())) {
+                                    dsTop.removeMetadata(md);
+                                } else {
+                                    myKollektionenTitel.add(md.getValue());
+                                }
+                            }
+                        }
+                    }
+                    if (dsFirst != null && dsFirst.getAllMetadataByType(coltype).size() > 0) {
+                        myKollektionenTitel = new ArrayList<String>();
+                        myCollections = new ArrayList<Metadata>(dsFirst.getAllMetadataByType(coltype));
+                        if (myCollections != null && myCollections.size() > 0) {
+                            for (Iterator<Metadata> it = myCollections.iterator(); it.hasNext();) {
+                                Metadata md = it.next();
+                                if (myKollektionenTitel.contains(md.getValue())) {
+                                    dsFirst.removeMetadata(md);
+                                } else {
+                                    myKollektionenTitel.add(md.getValue());
+                                }
+                            }
+                        }
+                    }
 
-	public void setRusFullExport(boolean rusFullExport) {
-		this.rusFullExport = rusFullExport;
-	}
+                    p.writeMetadataFile(gdzfile);
+
+                } catch (ReadException e) {
+                    Helper.setFehlerMeldung("", "ReadException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("ReadException: " + p.getTitel(), e);
+                } catch (IOException e) {
+                    Helper.setFehlerMeldung("", "IOException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("IOException: " + p.getTitel(), e);
+                } catch (InterruptedException e) {
+                    Helper.setFehlerMeldung("", "InterruptedException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("InterruptedException: " + p.getTitel(), e);
+                } catch (PreferencesException e) {
+                    Helper.setFehlerMeldung("", "PreferencesException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("PreferencesException: " + p.getTitel() + " - " + e.getMessage());
+                } catch (UghHelperException e) {
+                    Helper.setFehlerMeldung("", "UghHelperException: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("UghHelperException: " + p.getTitel(), e);
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("", "Exception: " + p.getTitel() + " - " + e.getMessage());
+                    myLogger.error("Exception: " + p.getTitel(), e);
+                }
+            }
+        }
+        Helper.setMeldung(null, "", "------------------------------------------------------------------");
+        Helper.setMeldung(null, "", "PPNs adjusted");
+    }
+
+    public boolean isRusFullExport() {
+        return this.rusFullExport;
+    }
+
+    public void setRusFullExport(boolean rusFullExport) {
+        this.rusFullExport = rusFullExport;
+    }
 
 }

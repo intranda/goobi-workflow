@@ -30,10 +30,10 @@ package org.goobi.production;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 
 public interface IProcessDataExport {
 	
-	abstract void startExport(Prozess process, OutputStream os, String xsltfile) throws IOException;
+	abstract void startExport(Process process, OutputStream os, String xsltfile) throws IOException;
 	
 }

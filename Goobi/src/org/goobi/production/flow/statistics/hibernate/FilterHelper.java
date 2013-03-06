@@ -47,7 +47,7 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
@@ -573,7 +573,7 @@ public class FilterHelper {
 		@SuppressWarnings("unused")
 		Boolean flagSetCritProjects = false;
 		String filterPrefix = "";
-		if (crit.getClassName().equals(Prozess.class.getName())) {
+		if (crit.getClassName().equals(Process.class.getName())) {
 			flagProcesses = true;
 			filterPrefix = "steps.";
 		}
@@ -899,7 +899,7 @@ public class FilterHelper {
 
 		if (conjStepProperties != null) {
 			if (!flagSteps) {
-				Criteria stepCrit = session.createCriteria(Prozess.class);
+				Criteria stepCrit = session.createCriteria(Process.class);
 				stepCrit.createCriteria("schritte", "steps");
 				stepCrit.createAlias("steps.eigenschaften", "schritteig");
 				stepCrit.add(conjStepProperties);
@@ -907,8 +907,8 @@ public class FilterHelper {
 				List<Integer> myIds = new ArrayList<Integer>();
 
 				for (@SuppressWarnings("unchecked")
-				Iterator<Prozess> it = stepCrit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-					Prozess p = it.next();
+				Iterator<Process> it = stepCrit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
+				    Process p = it.next();
 					myIds.add(p.getId());
 				}
 				crit.add(Restrictions.in("id", myIds));

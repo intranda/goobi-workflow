@@ -35,7 +35,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
@@ -167,7 +167,7 @@ public class PropertyParser {
 		return properties;
 	}
 
-	public static ArrayList<ProcessProperty> getPropertiesForProcess(Prozess process) {
+	public static ArrayList<ProcessProperty> getPropertiesForProcess(Process process) {
 		Hibernate.initialize(process.getProjekt());
 		String projectTitle = process.getProjekt().getTitel();
 		ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();

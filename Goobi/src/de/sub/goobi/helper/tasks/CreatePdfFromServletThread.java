@@ -44,7 +44,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.MetadatenHelper;
@@ -65,7 +65,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
 	private URL metsURL;
 
 	@Override
-	public void initialize(Prozess inProzess) {
+	public void initialize(Process inProzess) {
 		super.initialize(inProzess);
 		setTitle("Create PDF: " + inProzess.getTitel());
 	}

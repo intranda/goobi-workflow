@@ -34,17 +34,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
 import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.forms.ModuleServerForm;
-import de.sub.goobi.persistence.ProzessDAO;
+//import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.SimpleDAO;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.goobi.module.api.dataprovider.process.data.DataImpl;
 import de.unigoettingen.goobi.module.api.exception.GoobiException;
 import de.unigoettingen.goobi.module.api.types.GoobiProcessProperty;
@@ -83,7 +85,7 @@ public class ExtendedDataImpl extends DataImpl {
     * ================================================================*/
    public int add(String sessionId, String type, int count, HashMap pp) throws GoobiException {
       super.add(sessionId, type, count, pp);
-      Prozess p = ModuleServerForm.getProcessFromShortSession(sessionId);
+      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
       GoobiProcessProperty gpp = new GoobiProcessProperty(pp);
       if (gpp.getName().startsWith("#"))
          throw new GoobiException(5, "Parameter not allowed");
@@ -93,7 +95,7 @@ public class ExtendedDataImpl extends DataImpl {
       * --------------------------------*/
       if (type.equals("") || type.equals(isProcess)) {
          if (p.getEigenschaften() == null)
-            p.setEigenschaften(new HashSet<Prozesseigenschaft>());
+            p.setEigenschaften(new ArrayList<Prozesseigenschaft>());
          Prozesseigenschaft pe = new Prozesseigenschaft();
          pe.setProzess(p);
          pe.setTitel(gpp.getName());
@@ -136,7 +138,7 @@ public class ExtendedDataImpl extends DataImpl {
       }
 
       try {
-         new ProzessDAO().save(p);
+          ProcessManager.saveProcess(p);
       } catch (DAOException e) {
          throw new GoobiException(1400, "******** wrapped DAOException ********: " + e.getMessage() + "\n" + Helper.getStacktraceAsString(e));
       }
@@ -152,7 +154,7 @@ public class ExtendedDataImpl extends DataImpl {
    public HashMap<String, String> getData(String sessionId, String type, int count) throws GoobiException {
       super.getData(sessionId, type, count);
 
-      Prozess p = ModuleServerForm.getProcessFromShortSession(sessionId);
+      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
       HashMap<String, String> rueckgabe = new HashMap<String, String>();
       /* --------------------------------
        * feste Prozesseigenschaften
@@ -200,7 +202,7 @@ public class ExtendedDataImpl extends DataImpl {
          throws GoobiException {
       super.getProperties(sessionId, type, count);
       ArrayList<GoobiProcessProperty> gpps = new ArrayList<GoobiProcessProperty>();
-      Prozess p = ModuleServerForm.getProcessFromShortSession(sessionId);
+      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
       /* --------------------------------
        * Prozesseigenschaften
        * --------------------------------*/
@@ -258,7 +260,7 @@ public class ExtendedDataImpl extends DataImpl {
     * ================================================================*/
    public int set(String sessionId, String type, int count, HashMap pp) throws GoobiException {
       super.set(sessionId, type, count, pp);
-      Prozess p = ModuleServerForm.getProcessFromShortSession(sessionId);
+      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
       GoobiProcessProperty gpp = new GoobiProcessProperty(pp);
       if (gpp.getName().startsWith("#"))
          throw new GoobiException(5, "Parameter not allowed");
@@ -290,7 +292,7 @@ public class ExtendedDataImpl extends DataImpl {
 
       try {
     	 //TODO: Use generics
-         List hits = new ProzessDAO().search(myquery);
+         List hits = new SimpleDAO().search(myquery);
          if (hits.size() > 0) {
             if (type.equals("") || type.equals(isProcess)) {
                Prozesseigenschaft pe = (Prozesseigenschaft) hits.get(0);
@@ -304,7 +306,7 @@ public class ExtendedDataImpl extends DataImpl {
                Vorlageeigenschaft ve = (Vorlageeigenschaft) hits.get(0);
                ve.setWert(gpp.getValue());
             }
-            new ProzessDAO().save(p);
+            ProcessManager.saveProcess(p);
          } else {
             throw new GoobiException(1500, "Property " + gpp.getName() + " with id " + gpp.getId()
                   + " does not exist");

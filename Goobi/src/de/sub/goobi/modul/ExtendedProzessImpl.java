@@ -31,7 +31,7 @@ package de.sub.goobi.modul;
 import java.io.IOException;
 import java.util.HashMap;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.forms.ModuleServerForm;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
@@ -136,7 +136,7 @@ public class ExtendedProzessImpl extends ProcessImpl {
    public HashMap<String, String> getParams(String sessionId) throws GoobiException {
       super.getParams(sessionId);
       HashMap<String, String> myMap = new HashMap<String, String>();
-      Prozess p = ModuleServerForm.getProcessFromShortSession(sessionId);
+      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
       myMap.put("ruleset", ConfigMain.getParameter("RegelsaetzeVerzeichnis") + p.getRegelsatz().getDatei());
       try {
 		myMap.put("tifdirectory", p.getImagesTifDirectory(false));

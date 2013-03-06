@@ -33,13 +33,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.goobi.beans.Process;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
 public class Werkstueck implements Serializable {
 	private static final long serialVersionUID = 123266825187246791L;
 	private Integer id;
-	private Prozess prozess;
+	private Process prozess;
 	private Set<Werkstueckeigenschaft> eigenschaften;
 	private boolean panelAusgeklappt = true;
 
@@ -60,11 +61,11 @@ public class Werkstueck implements Serializable {
 		this.id = id;
 	}
 
-	public Prozess getProzess() {
+	public Process getProzess() {
 		return this.prozess;
 	}
 
-	public void setProzess(Prozess prozess) {
+	public void setProzess(Process prozess) {
 		this.prozess = prozess;
 	}
 

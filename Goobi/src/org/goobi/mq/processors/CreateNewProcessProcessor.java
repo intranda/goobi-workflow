@@ -41,7 +41,7 @@ import org.goobi.mq.MapMessageObjectReader;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.AdditionalField;
 import de.sub.goobi.forms.ProzesskopieForm;
@@ -169,8 +169,8 @@ public class CreateNewProcessProcessor extends ActiveMQProcessor {
 	protected ProzesskopieForm newProcessFromTemplate(String templateTitle) throws IllegalArgumentException {
 		ProzesskopieForm result = new ProzesskopieForm();
 
-		List<Prozess> allTemplates = allTemplatesFromDatabase();
-		Prozess selectedTemplate = selectTemplateByTitle(allTemplates, templateTitle);
+		List<Process> allTemplates = allTemplatesFromDatabase();
+		Process selectedTemplate = selectTemplateByTitle(allTemplates, templateTitle);
 		result.setProzessVorlage(selectedTemplate);
 		result.Prepare();
 		return result;
@@ -181,12 +181,12 @@ public class CreateNewProcessProcessor extends ActiveMQProcessor {
 	 * 
 	 * @return a List<Prozess> holding all templates
 	 */
-	protected List<Prozess> allTemplatesFromDatabase() {
+	protected List<Process> allTemplatesFromDatabase() {
 		Session hibernateSession = Helper.getHibernateSession();
-		Criteria request = hibernateSession.createCriteria(Prozess.class);
+		Criteria request = hibernateSession.createCriteria(Process.class);
 
 		@SuppressWarnings("unchecked")
-		List<Prozess> result = (List<Prozess>) request.list();
+		List<Process> result = (List<Process>) request.list();
 
 		return result;
 	}
@@ -204,10 +204,10 @@ public class CreateNewProcessProcessor extends ActiveMQProcessor {
 	 *             is thrown, if there is no template matching the given
 	 *             templateTitle
 	 */
-	protected Prozess selectTemplateByTitle(List<Prozess> allTemplates, String templateTitle) throws IllegalArgumentException {
+	protected Process selectTemplateByTitle(List<Process> allTemplates, String templateTitle) throws IllegalArgumentException {
 
-		Prozess result = null;
-		for (Prozess aTemplate : allTemplates) {
+	    Process result = null;
+		for (Process aTemplate : allTemplates) {
 			if (aTemplate.getTitel().equals(templateTitle)) {
 				result = aTemplate;
 				break;

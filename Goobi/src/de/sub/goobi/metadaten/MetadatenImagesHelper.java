@@ -59,7 +59,7 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -100,7 +100,7 @@ public class MetadatenImagesHelper {
 	 * @throws DAOException
 	 * @throws SwapException
 	 */
-	public void createPagination(Prozess inProzess, String directory)
+	public void createPagination(Process inProzess, String directory)
 			throws TypeNotAllowedForParentException, IOException,
 			InterruptedException, SwapException, DAOException {
 		DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
@@ -417,7 +417,7 @@ public class MetadatenImagesHelper {
 	 * @throws InvalidImagesException
 	 */
 
-	public ArrayList<String> getImageFiles(Prozess myProzess)
+	public ArrayList<String> getImageFiles(Process myProzess)
 			throws InvalidImagesException {
 		File dir;
 		try {
@@ -443,7 +443,7 @@ public class MetadatenImagesHelper {
 		}
 	}
 
-	public List<String> getDataFiles(Prozess myProzess)
+	public List<String> getDataFiles(Process myProzess)
 			throws InvalidImagesException {
 		File dir;
 		try {
@@ -479,7 +479,7 @@ public class MetadatenImagesHelper {
 	 * @throws InvalidImagesException
 	 */
 
-	public ArrayList<String> getImageFiles(Prozess myProzess, String directory)
+	public ArrayList<String> getImageFiles(Process myProzess, String directory)
 			throws InvalidImagesException {
 		File dir;
 		try {

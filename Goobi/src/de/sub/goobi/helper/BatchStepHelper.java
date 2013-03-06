@@ -53,7 +53,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -67,15 +67,14 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.persistence.SchrittDAO;
 import de.sub.goobi.persistence.apache.StepManager;
 import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class BatchStepHelper {
 
 	private List<Schritt> steps;
-	private ProzessDAO pdao = new ProzessDAO();
 	private SchrittDAO stepDAO = new SchrittDAO();
 	private static final Logger logger = Logger.getLogger(BatchStepHelper.class);
 	private Schritt currentStep;
@@ -182,7 +181,7 @@ public class BatchStepHelper {
 			}
 			this.processProperty.transfer();
 
-			Prozess p = this.currentStep.getProzess();
+			Process p = this.currentStep.getProzess();
 			List<Prozesseigenschaft> props = p.getEigenschaftenList();
 			for (Prozesseigenschaft pe : props) {
 				if (pe.getTitel() == null) {
@@ -193,7 +192,7 @@ public class BatchStepHelper {
 				this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
 			}
 			try {
-				this.pdao.save(this.currentStep.getProzess());
+			    ProcessManager.saveProcess(this.currentStep.getProzess());
 				Helper.setMeldung("Property saved");
 			} catch (DAOException e) {
 				logger.error(e);
@@ -225,7 +224,7 @@ public class BatchStepHelper {
 			pe.setContainer(this.processProperty.getContainer());
 
 			for (Schritt s : this.steps) {
-				Prozess process = s.getProzess();
+			    Process process = s.getProzess();
 				if (!s.equals(this.currentStep)) {
 
 					if (pe.getTitel() != null) {
@@ -264,7 +263,7 @@ public class BatchStepHelper {
 				}
 
 				try {
-					this.pdao.save(process);
+				    ProcessManager.saveProcess(process);
 				} catch (DAOException e) {
 					error = true;
 					logger.error(e);
@@ -280,7 +279,7 @@ public class BatchStepHelper {
 	private void loadProcessProperties(Schritt s) {
 		this.containers = new TreeMap<Integer, PropertyListObject>();
 		this.processPropertyList = PropertyParser.getPropertiesForStep(s);
-		List<Prozess> pList = new ArrayList<Prozess>();
+		List<Process> pList = new ArrayList<Process>();
 		for (Schritt step : this.steps) {
 			pList.add(step.getProzess());
 		}
@@ -296,7 +295,7 @@ public class BatchStepHelper {
 			}
 		}
 
-		for (Prozess p : pList) {
+		for (Process p : pList) {
 			for (Prozesseigenschaft pe : p.getEigenschaftenList()) {
 				if (!this.containers.keySet().contains(pe.getContainer())) {
 					this.containers.put(pe.getContainer(), null);
@@ -394,7 +393,7 @@ public class BatchStepHelper {
 	}
 
 	private void saveStep() {
-		Prozess p = this.currentStep.getProzess();
+	    Process p = this.currentStep.getProzess();
 		List<Prozesseigenschaft> props = p.getEigenschaftenList();
 		for (Prozesseigenschaft pe : props) {
 			if (pe.getTitel() == null) {
@@ -402,7 +401,7 @@ public class BatchStepHelper {
 			}
 		}
 		try {
-			this.pdao.save(this.currentStep.getProzess());
+		ProcessManager.saveProcess(this.currentStep.getProzess());
 		} catch (DAOException e) {
 			logger.error(e);
 		}
@@ -711,7 +710,7 @@ public class BatchStepHelper {
 					WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
 			this.addToWikiField = "";
 			try {
-				this.pdao.save(this.currentStep.getProzess());
+			    ProcessManager.saveProcess(this.currentStep.getProzess());
 			} catch (DAOException e) {
 				logger.error(e);
 			}
@@ -725,7 +724,7 @@ public class BatchStepHelper {
 			for (Schritt s : this.steps) {
 				s.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(s.getProzess(), s.getProzess().getWikifield(), "user", message));
 				try {
-					this.pdao.save(s.getProzess());
+				    ProcessManager.saveProcess(s.getProzess());
 				} catch (DAOException e) {
 					logger.error(e);
 				}
@@ -789,7 +788,7 @@ public class BatchStepHelper {
 			}
 
 			try {
-				this.pdao.save(s.getProzess());
+			    ProcessManager.saveProcess(s.getProzess());
 			} catch (DAOException e) {
 			}
 		}

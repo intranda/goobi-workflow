@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.sub.goobi.beans.Prozess;
+import org.goobi.beans.Process;
 
 public class TiffWriterTask extends LongRunningTask {
 
    @Override
-   public void initialize(Prozess inProzess) {
+   public void initialize(Process inProzess) {
       super.initialize(inProzess);
       setTitle("Tiffwriter: " + inProzess.getTitel());
    }
