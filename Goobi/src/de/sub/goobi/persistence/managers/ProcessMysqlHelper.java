@@ -17,7 +17,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class ProcessMysqlHelper {
+class ProcessMysqlHelper {
     private static final Logger logger = Logger.getLogger(ProcessMysqlHelper.class);
 
     public static Process getProcessById(int id) throws SQLException {
@@ -46,9 +46,9 @@ public class ProcessMysqlHelper {
             // TODO Eigenschaften speichern
             // TODO Werkstuecke speichern
             // TODO Vorlagen speichern
-            
+
         } catch (SQLException e) {
-//            logger.error("Error while saving process " + o.getTitel(), e);
+            //            logger.error("Error while saving process " + o.getTitel(), e);
             throw new DAOException(e);
         }
     }
@@ -103,8 +103,7 @@ public class ProcessMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
-    
-    
+
     public static List<Process> getAllProcesses() throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
@@ -151,7 +150,7 @@ public class ProcessMysqlHelper {
     };
 
     private static void insertProcess(Process o) throws SQLException {
-        String sql = "INSERT INTO processe " + generateInsertQuery();
+        String sql = "INSERT INTO processe " + generateInsertQuery() + generateValueQuery();
         Object[] param = generateParameter(o, true);
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -165,7 +164,11 @@ public class ProcessMysqlHelper {
     private static String generateInsertQuery() {
         return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                 + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                + "sortHelperMetadata, wikifield, batchID, docketID)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "sortHelperMetadata, wikifield, batchID, docketID)" + "VALUES ";
+    }
+
+    private static String generateValueQuery() {
+        return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     }
 
     private static Object[] generateParameter(Process o, boolean createNewTimestamp) {
@@ -178,9 +181,10 @@ public class ProcessMysqlHelper {
 
         Timestamp datetime = new Timestamp(d.getTime());
         Object[] param =
-                { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(),
-                        o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
-                        o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getWikifield(), o.getBatchID(), o.getDocket().getId() };
+                { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
+                        o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
+                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getWikifield(), o.getBatchID(),
+                        o.getDocket().getId() };
 
         return param;
     }
@@ -240,6 +244,33 @@ public class ProcessMysqlHelper {
         return p;
     }
 
- 
+    public static void insertBatchProcessList(List<Process> processList) throws SQLException {
 
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO processe " + generateInsertQuery());
+        List<Object[]> paramArray = new ArrayList<Object[]>();
+        for (Process o : processList) {
+            sql.append(" " + generateValueQuery() + ",");
+            Object[] param = generateParameter(o, false);
+            paramArray.add(param);
+        }
+        String values = sql.toString();
+
+        values = values.substring(0, values.length() - 1);
+
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            run.update(connection, values, paramArray);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void updateBatchList(List<Process> processList) throws SQLException {
+        // TODO
+        //        1.) insert bulk into a temp table
+        //        2.) update process table via join
+        //        3.) drop temp table
+    }
 }

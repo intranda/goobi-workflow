@@ -320,7 +320,7 @@ public class BatchForm extends BasisForm {
 //						}
 					}
 //					try {
-					ProcessManager.saveProcessList(deleteList);
+					ProcessManager.updateBatchList(deleteList);
 //						session.flush();
 //						session.connection().commit();
 //					} catch (DAOException e) {
@@ -357,7 +357,7 @@ public class BatchForm extends BasisForm {
 //						logger.error(e);
 //					}
 				}
-				ProcessManager.saveProcessList(this.selectedProcesses);
+				ProcessManager.updateBatchList(this.selectedProcesses);
 //				try {
 //					session.flush();
 //					session.connection().commit();
@@ -389,7 +389,7 @@ public class BatchForm extends BasisForm {
 //			}
 		}
 //		try {
-		    ProcessManager.saveProcessList(this.selectedProcesses);
+		    ProcessManager.updateBatchList(this.selectedProcesses);
 //			session.flush();
 //			session.connection().commit();
 //		} catch (DAOException e) {
@@ -422,7 +422,7 @@ public class BatchForm extends BasisForm {
 //				}
 			}
 //			try {
-			    ProcessManager.saveProcessList(this.selectedProcesses);
+			    ProcessManager.updateBatchList(this.selectedProcesses);
 //				session.flush();
 //				session.connection().commit();
 //			} catch (HibernateException e) {

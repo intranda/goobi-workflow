@@ -75,9 +75,21 @@ public class ProcessManager implements IManager {
     }
 
     
-    public static void saveProcessList(List<Process> deleteList) {
-        // TODO Auto-generated method stub
-        
+    public static void updateBatchList(List<Process> processList) {
+        try {
+            ProcessMysqlHelper.updateBatchList(processList);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+    
+    
+    public static void insertBatchProcessList(List<Process> processList) {
+        try {
+            ProcessMysqlHelper.insertBatchProcessList(processList);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
     
     
