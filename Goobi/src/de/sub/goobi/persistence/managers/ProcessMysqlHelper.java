@@ -55,7 +55,7 @@ class ProcessMysqlHelper {
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
-            String sql = "DELETE FROM processe WHERE ProzesseID = ?";
+            String sql = "DELETE FROM prozesse WHERE ProzesseID = ?";
             Object[] param = { o.getId() };
             Connection connection = MySQLHelper.getInstance().getConnection();
             try {
@@ -150,8 +150,8 @@ class ProcessMysqlHelper {
     };
 
     private static void insertProcess(Process o) throws SQLException {
-        String sql = "INSERT INTO processe " + generateInsertQuery() + generateValueQuery();
-        Object[] param = generateParameter(o, true);
+        String sql = "INSERT INTO prozesse " + generateInsertQuery(false) + generateValueQuery(false);
+        Object[] param = generateParameter(o, false, false);
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
@@ -161,17 +161,22 @@ class ProcessMysqlHelper {
         }
     }
 
-    private static String generateInsertQuery() {
+    private static String generateInsertQuery(boolean includeProcessId) {
+        // TODO include ProzesseID
         return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                 + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                + "sortHelperMetadata, wikifield, batchID, docketID)" + "VALUES ";
+                + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
     }
 
-    private static String generateValueQuery() {
-        return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static String generateValueQuery(boolean includeProcessId) {
+        if (!includeProcessId) {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
     }
 
-    private static Object[] generateParameter(Process o, boolean createNewTimestamp) {
+    private static Object[] generateParameter(Process o, boolean createNewTimestamp, boolean includeProcessID) {
         Date d = null;
         if (createNewTimestamp) {
             d = new Date();
@@ -183,8 +188,8 @@ class ProcessMysqlHelper {
         Object[] param =
                 { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                         o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
-                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getWikifield(), o.getBatchID(),
-                        o.getDocket().getId() };
+                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),  o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
+                        o.getDocket() == null ? null : o.getDocket().getId() };
 
         return param;
     }
@@ -210,7 +215,7 @@ class ProcessMysqlHelper {
         sql.append(" docketID = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
 
-        Object[] param = generateParameter(o, false);
+        Object[] param = generateParameter(o, false, false);
 
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -247,11 +252,11 @@ class ProcessMysqlHelper {
     public static void insertBatchProcessList(List<Process> processList) throws SQLException {
 
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO processe " + generateInsertQuery());
+        sql.append("INSERT INTO prozesse " + generateInsertQuery(false));
         List<Object[]> paramArray = new ArrayList<Object[]>();
         for (Process o : processList) {
-            sql.append(" " + generateValueQuery() + ",");
-            Object[] param = generateParameter(o, false);
+            sql.append(" " + generateValueQuery(false) + ",");
+            Object[] param = generateParameter(o, false, false);
             paramArray.add(param);
         }
         String values = sql.toString();
@@ -268,9 +273,64 @@ class ProcessMysqlHelper {
     }
 
     public static void updateBatchList(List<Process> processList) throws SQLException {
-        // TODO
-        //        1.) insert bulk into a temp table
-        //        2.) update process table via join
-        //        3.) drop temp table
+
+        String tablename = "a" + String.valueOf(new Date().getTime());
+        String tempTable = "CREATE TEMPORARY TABLE IF NOT EXISTS " + tablename + " LIKE prozesse;";
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO " + tablename + " " + generateInsertQuery(true));
+        List<Object[]> paramList = new ArrayList<Object[]>();
+        for (Process o : processList) {
+            sql.append(" " + generateValueQuery(true) + ",");
+            Object[] param = generateParameter(o, true, true);
+            paramList.add(param);
+        }
+        Object[][] paramArray = new Object[paramList.size()][];
+        paramList.toArray(paramArray);
+
+        String insertQuery = sql.toString();
+        insertQuery = insertQuery.substring(0, insertQuery.length() - 1);
+
+        StringBuilder joinQuery = new StringBuilder();
+        joinQuery.append("UPDATE prozesse SET prozesse.Titel = " + tablename + ".Titel, prozesse.ausgabename = " + tablename + ".ausgabename,"
+                + "prozesse.IstTemplate = " + tablename + ".IstTemplate, " + "prozesse.swappedOut = " + tablename + ".swappedOut, "
+                + "prozesse.inAuswahllisteAnzeigen = " + tablename + ".inAuswahllisteAnzeigen, " + "prozesse.sortHelperStatus = " + tablename
+                + ".sortHelperStatus, " + "prozesse.sortHelperImages = " + tablename + ".sortHelperImages, " + "prozesse.sortHelperArticles = "
+                + tablename + ".sortHelperArticles, " + "prozesse.erstellungsdatum = " + tablename + ".erstellungsdatum, " + "prozesse.ProjekteID = "
+                + tablename + ".ProjekteID, " + "prozesse.MetadatenKonfigurationID = " + tablename + ".MetadatenKonfigurationID, "
+                + "prozesse.sortHelperDocstructs = " + tablename + ".sortHelperDocstructs, " + "prozesse.sortHelperMetadata = " + tablename
+                + ".sortHelperMetadata, " + "prozesse.wikifield = " + tablename + ".wikifield, " + "prozesse.batchID = " + tablename + ".batchID, "
+                + "prozesse.docketID = " + tablename + ".docketID " + " WHERE prozesse.ProzesseID = " + tablename + ".ProzesseID;");
+
+        String deleteTempTable = "DROP TEMPORARY TABLE " + tablename + ";";
+
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            // create temporary table
+            run.update(connection, tempTable);
+            // insert bulk into a temp table
+            run.batch(connection, insertQuery, paramArray);
+            // update process table using join
+            run.update(connection, joinQuery.toString());
+            // delete temporary table
+            run.update(connection, deleteTempTable);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void main(String[] args) throws SQLException {
+        // born digital
+        Process p1 = ProcessMysqlHelper.getProcessById(28);
+        // MOH
+        Process p2 = ProcessMysqlHelper.getProcessById(31);
+
+        List<Process> pl = new ArrayList<Process>();
+        pl.add(p1);
+        pl.add(p2);
+        ProcessMysqlHelper.updateBatchList(pl);
+        //        updateBatchList
+
     }
 }

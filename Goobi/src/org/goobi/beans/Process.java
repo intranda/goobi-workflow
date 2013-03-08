@@ -75,6 +75,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
+import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -1204,6 +1205,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Docket getDocket() {
+        if (docket == null && docketId != null) {
+            try {
+                docket = DocketManager.getDocketById(docketId);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
+        }
         return docket;
     }
 
