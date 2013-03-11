@@ -106,7 +106,7 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
-@ManagedBean(name="ProcesskopieForm") 
+@ManagedBean(name="ProzesskopieForm") 
 @SessionScoped
 public class ProzesskopieForm {
 	private static final Logger myLogger = Logger.getLogger(ProzesskopieForm.class);
