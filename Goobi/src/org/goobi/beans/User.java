@@ -197,6 +197,13 @@ public class User implements Serializable, DatabaseObject {
 	}
 	
 	public List<Usergroup> getBenutzergruppen() {
+	    if (benutzergruppen == null || benutzergruppen.size() == 0 ) {
+            try {
+                this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
+	    }
 		return benutzergruppen;
 	}
 

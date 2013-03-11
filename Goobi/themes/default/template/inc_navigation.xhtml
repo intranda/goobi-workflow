@@ -67,7 +67,7 @@
 
 			<!-- ################            Workflow              ######################-->
 
-			<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung > 0}">
+			<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
 				<h:outputText styleClass="th_menu" value="- #{msgs.workflow} -" />
 
 				<!-- aktuelle Schritte -->
@@ -240,7 +240,7 @@
 
 			<!-- ################            Benutzereinstellungen              ######################-->
 
-			<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung > 0}">
+			<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
 				<h:outputText styleClass="th_menu" value="- #{msgs.benutzerdaten} -" />
 
 				<!-- Benutzerkonfiguration -->
