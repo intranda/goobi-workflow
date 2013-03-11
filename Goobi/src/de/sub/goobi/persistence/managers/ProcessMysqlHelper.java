@@ -12,6 +12,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.production.flow.helper.Filter;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
@@ -68,26 +70,33 @@ class ProcessMysqlHelper {
     }
 
     public static int getProcessCount(String order, String filter) throws SQLException {
+        Filter whereClause = FilterHelper.createFilterString(filter);
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" WHERE " + whereClause.getClause());
         }
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+            if (filter != null && !filter.isEmpty()) {
+                return new QueryRunner()
+                        .query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, whereClause.getParameter().toArray());
+            } else {
+                return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+            }
         } finally {
             MySQLHelper.closeConnection(connection);
         }
     }
 
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
+        Filter whereClause = FilterHelper.createFilterString(filter);
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM prozesse");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" WHERE " + whereClause.getClause());
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
@@ -97,7 +106,12 @@ class ProcessMysqlHelper {
         }
         try {
             logger.debug(sql.toString());
-            List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
+            List<Process> ret = null;
+            if (filter != null && !filter.isEmpty()) {
+                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler, whereClause.getParameter().toArray());
+            } else {
+                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
+            }
             return ret;
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -188,8 +202,8 @@ class ProcessMysqlHelper {
         Object[] param =
                 { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                         o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
-                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),  o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
-                        o.getDocket() == null ? null : o.getDocket().getId() };
+                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
+                        o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
 
         return param;
     }

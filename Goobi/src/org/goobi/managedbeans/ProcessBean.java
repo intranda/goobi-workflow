@@ -69,6 +69,7 @@ import org.goobi.production.flow.helper.SearchResultGeneration;
 import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.flow.statistics.hibernate.IEvaluableFilter;
 
 import org.goobi.production.properties.IProperty;
@@ -356,6 +357,7 @@ public class ProcessBean extends BasisForm {
      */
 
     public String FilterAktuelleProzesse() {
+        System.out.println("FilterAktuelleProzesse, filter: " + filter);
         this.statisticsManager = null;
         this.myAnzahlList = null;
         ProcessManager m = new ProcessManager();
@@ -383,6 +385,7 @@ public class ProcessBean extends BasisForm {
     }
 
     public String FilterVorlagen() {
+        System.out.println("FilterVorlagen, filter: " + filter);
         this.statisticsManager = null;
         this.myAnzahlList = null;
 //        try {
@@ -397,6 +400,9 @@ public class ProcessBean extends BasisForm {
 //            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterVorlagen", he);
 //            return "";
 //        }
+        
+       
+        
         ProcessManager m = new ProcessManager();
         paginator = new DatabasePaginator(sortierung, filter, m);
         this.modusAnzeige = "vorlagen";
@@ -419,6 +425,7 @@ public class ProcessBean extends BasisForm {
      * Anzeige der Sammelbände filtern
      */
     public String FilterAlleStart() {
+        System.out.println("FilterAlleStart, filter: " + filter);
         this.statisticsManager = null;
         this.myAnzahlList = null;
         /*

@@ -1,18 +1,21 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public class ProcessManager implements IManager {
+public class ProcessManager implements IManager, Serializable {
+ 
+    private static final long serialVersionUID = 3898081063234221110L;
+    
     private static final Logger logger = Logger.getLogger(ProcessManager.class);
 
     @Override
@@ -30,7 +33,7 @@ public class ProcessManager implements IManager {
         return (List<? extends DatabaseObject>) getProcesses(order, filter, start, count);
     }
 
-    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {
+    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {        
         List<Process> answer = new ArrayList<Process>();
         try {
             answer = ProcessMysqlHelper.getProcesses(order, filter, start, count);
