@@ -188,7 +188,8 @@ public class UserDefinedFilter implements IEvaluableFilter, Cloneable {
 		 * part was exported to FilterHelper so that other Filters could access
 		 * it * --------------------------------
 		 */
-		String message = FilterHelper.criteriaBuilder(session, inFilter, crit, null, myParameter, null, null, true);
+		String message = FilterHelper.criteriaBuilder(inFilter,  null, myParameter,  null, true, true, false);
+	
 		if (message.length() > 0) {
 			myObservable.setMessage(message);
 		}

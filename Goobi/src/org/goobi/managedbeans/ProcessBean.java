@@ -357,11 +357,12 @@ public class ProcessBean extends BasisForm {
      */
 
     public String FilterAktuelleProzesse() {
-        System.out.println("FilterAktuelleProzesse, filter: " + filter);
         this.statisticsManager = null;
         this.myAnzahlList = null;
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortierung, filter, m);
+        String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+        System.out.println(sql);
+        paginator = new DatabasePaginator(sortierung, sql, m);
 
 //        try {
 //
@@ -385,7 +386,6 @@ public class ProcessBean extends BasisForm {
     }
 
     public String FilterVorlagen() {
-        System.out.println("FilterVorlagen, filter: " + filter);
         this.statisticsManager = null;
         this.myAnzahlList = null;
 //        try {
@@ -404,7 +404,9 @@ public class ProcessBean extends BasisForm {
        
         
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortierung, filter, m);
+        String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
+        System.out.println(sql);
+        paginator = new DatabasePaginator(sortierung, sql , m);
         this.modusAnzeige = "vorlagen";
         return "process_all";
     }
@@ -425,9 +427,22 @@ public class ProcessBean extends BasisForm {
      * Anzeige der Sammelbände filtern
      */
     public String FilterAlleStart() {
-        System.out.println("FilterAlleStart, filter: " + filter);
         this.statisticsManager = null;
         this.myAnzahlList = null;
+        
+        String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
+        if (this.modusAnzeige.equals("vorlagen")) {
+            sql = sql + " AND prozesse.istTemplate = true ";
+        } else {
+            sql = sql + " AND prozesse.istTemplate = false ";
+        }
+        if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+            sql = sql + " AND prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!this.showArchivedProjects) {
+            sql = sql + " AND prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        }
+        
         /*
          * Filter für die Auflistung anwenden
          */
@@ -482,7 +497,8 @@ public class ProcessBean extends BasisForm {
 //            logger.error(e);
 //        }
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortierung, filter, m);
+        System.out.println(sql);
+        paginator = new DatabasePaginator(sortierung, sql, m);
         
         return "process_all";
     }

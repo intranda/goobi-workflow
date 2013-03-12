@@ -70,18 +70,18 @@ class ProcessMysqlHelper {
     }
 
     public static int getProcessCount(String order, String filter) throws SQLException {
-        Filter whereClause = FilterHelper.createFilterString(filter);
+    
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + whereClause.getClause());
+            sql.append(" WHERE " + filter);
         }
         try {
             logger.debug(sql.toString());
             if (filter != null && !filter.isEmpty()) {
                 return new QueryRunner()
-                        .query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, whereClause.getParameter().toArray());
+                        .query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
             } else {
                 return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
             }
@@ -91,12 +91,11 @@ class ProcessMysqlHelper {
     }
 
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
-        Filter whereClause = FilterHelper.createFilterString(filter);
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM prozesse");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + whereClause.getClause());
+            sql.append(" WHERE " + filter);
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
@@ -108,7 +107,7 @@ class ProcessMysqlHelper {
             logger.debug(sql.toString());
             List<Process> ret = null;
             if (filter != null && !filter.isEmpty()) {
-                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler, whereClause.getParameter().toArray());
+                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
             } else {
                 ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
             }

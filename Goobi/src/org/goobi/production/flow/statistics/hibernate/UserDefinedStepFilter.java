@@ -123,7 +123,7 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 		// following was moved to Filter Helper
 		// limitToUserAssignedSteps(crit);
 
-		String message = FilterHelper.criteriaBuilder(session, myFilter, crit, null, null, stepOpenOnly, userAssignedStepsOnly, clearSession);
+        String message = FilterHelper.criteriaBuilder(myFilter,  null, null,  stepOpenOnly, userAssignedStepsOnly, false, true);
 
 		if (message.length() > 0) {
 			myObservable.setMessage(message);
