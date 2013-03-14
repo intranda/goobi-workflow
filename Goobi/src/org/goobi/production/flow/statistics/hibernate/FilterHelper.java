@@ -189,12 +189,12 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepRange(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters) + " AND schritte.Reihenfolge < + "
-                    + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue();
+            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters) + " AND schritte.Reihenfolge < + "
+                    + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
-            return " schritteID not in (select schritteId from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
+            return " ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
                     + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue() + ")";
+                    + inStatus.getValue().intValue() + "))";
         }
     }
 
@@ -219,9 +219,9 @@ public class FilterHelper {
 
     protected static String filterAutomaticSteps(String tok, boolean flagSteps) {
         if (tok.substring(tok.indexOf(":") + 1).equalsIgnoreCase("true")) {
-            return " schritte.typAutomatisch = true ";
+            return " ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = true )";
         } else {
-            return " schritte.typAutomatisch = false ";
+            return " ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = false )";
         }
     }
 
@@ -233,11 +233,11 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepMin(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue();
+            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
         } else {
-            return " schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            return " ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
+                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
         }
     }
 
@@ -249,11 +249,11 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepMax(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue();
+            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
         } else {
-            return " schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            return " ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
+                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
         }
     }
 
@@ -265,11 +265,11 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepExact(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue();
+            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
         } else {
-            return " schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue();
+            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
         }
     }
 
@@ -284,8 +284,8 @@ public class FilterHelper {
          */
 
         String login = tok.substring(tok.indexOf(":") + 1);
-        return "schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = " + StringEscapeUtils.escapeSql(login)
-                + ")";
+        return " ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = " + StringEscapeUtils.escapeSql(login)
+                + "))";
     }
 
     /**
@@ -296,10 +296,10 @@ public class FilterHelper {
     protected static String filterProject(String tok, boolean negate) {
         /* filter according to linked project */
         if (!negate) {
-            return "prozesse.ProjekteID = (select ProjekteID from projekte where titel like '%"
+            return "prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%"
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
         } else {
-            return "prozesse.ProjekteID = (select ProjekteID from projekte where titel not like '%"
+            return "prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%"
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
         }
     }
@@ -315,7 +315,7 @@ public class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 return " prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
-                        + StringEscapeUtils.escapeSql(ts[1]) + "%' AND vorlageneigenschaften.Titel '%" + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                        + StringEscapeUtils.escapeSql(ts[1]) + "%' AND vorlageneigenschaften.Titel LIKE '%" + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
 
             } else {
                 return " prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
@@ -325,7 +325,7 @@ public class FilterHelper {
         } else {
             if (ts.length > 1) {
                 return " prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
-                        + StringEscapeUtils.escapeSql(ts[1]) + "%' AND vorlageneigenschaften.Titel '%" + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                        + StringEscapeUtils.escapeSql(ts[1]) + "%' AND vorlageneigenschaften.Titel LIKE '%" + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
 
             } else {
                 return " prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
@@ -366,7 +366,7 @@ public class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '%"
-                        + StringEscapeUtils.escapeSql(ts[1]) + "%' AND prozesseeigenschaften.Wert like '%" + StringEscapeUtils.escapeSql(ts[0])
+                        + StringEscapeUtils.escapeSql(ts[0]) + "%' AND prozesseeigenschaften.Wert like '%" + StringEscapeUtils.escapeSql(ts[1])
                         + "%' )";
 
             } else {
@@ -376,7 +376,7 @@ public class FilterHelper {
         } else {
             if (ts.length > 1) {
                 return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '%"
-                        + StringEscapeUtils.escapeSql(ts[1]) + "%' AND prozesseeigenschaften.Wert like '%" + StringEscapeUtils.escapeSql(ts[0])
+                        + StringEscapeUtils.escapeSql(ts[0]) + "%' AND prozesseeigenschaften.Wert like '%" + StringEscapeUtils.escapeSql(ts[1])
                         + "%' )";
             } else {
                 return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '%"
@@ -411,7 +411,7 @@ public class FilterHelper {
             for (int id : listIds) {
                 answer += id + ", ";
             }
-            answer = answer.substring(0, answer.length() - 1);
+            answer = answer.substring(0, answer.length() - 2);
             answer += ")";
         }
         return answer;
@@ -430,7 +430,7 @@ public class FilterHelper {
             if (ts.length > 1) {
                 return " prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' AND werkstueckeeigenschaften.Titel '%"
+                        + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
                         + "%'))";
             } else {
@@ -442,7 +442,7 @@ public class FilterHelper {
             if (ts.length > 1) {
                 return " prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' AND werkstueckeeigenschaften.Titel '%"
+                        + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
                         + "%'))";
 
@@ -668,110 +668,6 @@ public class FilterHelper {
             }
         }
 
-        //        if (conjProcesses != null || flagSteps) {
-        //            if (!flagProcesses) {
-        //
-        //                critProcess = crit.createCriteria("prozess", "proc");
-        //
-        //                if (conjProcesses != null) {
-        //                    critProcess.add(conjProcesses);
-        //                }
-        //            } else {
-        //                if (conjProcesses != null) {
-        //                    inCrit.add(conjProcesses);
-        //                }
-        //            }
-        //        }
-        //
-        //        if (flagSteps) {
-        //
-        //            critProject = critProcess.createCriteria("projekt", "proj");
-        //
-        //            if (conjProjects != null) {
-        //                inCrit.add(conjProjects);
-        //            }
-        //        } else {
-        //            inCrit.createCriteria("projekt", "proj");
-        //            if (conjProjects != null) {
-        //                inCrit.add(conjProjects);
-        //            }
-        //        }
-        //
-        //        if (conjSteps != null) {
-        //            if (!flagSteps) {
-        //                crit.createCriteria("schritte", "steps");
-        //                crit.add(conjSteps);
-        //            } else {
-        //                inCrit.add(conjSteps);
-        //            }
-        //        }
-        //
-        //        if (conjTemplates != null) {
-        //            if (flagSteps) {
-        //                critProcess.createCriteria("vorlagen", "vorl");
-        //                critProcess.createAlias("vorl.eigenschaften", "vorleig");
-        //                critProcess.add(conjTemplates);
-        //            } else {
-        //                crit.createCriteria("vorlagen", "vorl");
-        //                crit.createAlias("vorl.eigenschaften", "vorleig");
-        //                inCrit.add(conjTemplates);
-        //            }
-        //        }
-        //
-        //        if (conjProcessProperties != null) {
-        //            if (flagSteps) {
-        //                critProcess.createAlias("proc.eigenschaften", "prozesseig");
-        //                critProcess.add(conjProcessProperties);
-        //            } else {
-        //
-        //                inCrit.createAlias("eigenschaften", "prozesseig");
-        //                inCrit.add(conjProcessProperties);
-        //            }
-        //        }
-        //
-        //        if (conjStepProperties != null) {
-        //            if (!flagSteps) {
-        //                Criteria stepCrit = session.createCriteria(Process.class);
-        //                stepCrit.createCriteria("schritte", "steps");
-        //                stepCrit.createAlias("steps.eigenschaften", "schritteig");
-        //                stepCrit.add(conjStepProperties);
-        //                stepCrit.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-        //                List<Integer> myIds = new ArrayList<Integer>();
-        //
-        //                for (@SuppressWarnings("unchecked")
-        //                Iterator<Process> it = stepCrit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-        //                    Process p = it.next();
-        //                    myIds.add(p.getId());
-        //                }
-        //                crit.add(Restrictions.in("id", myIds));
-        //            } else {
-        //                critProcess.createAlias("steps.eigenschaften", "schritteig");
-        //                inCrit.add(conjStepProperties);
-        //            }
-        //        }
-        //
-        //        if (conjWorkPiece != null) {
-        //            if (flagSteps) {
-        //                critProcess.createCriteria("werkstuecke", "werk");
-        //                critProcess.createAlias("werk.eigenschaften", "werkeig");
-        //                critProcess.add(conjWorkPiece);
-        //            } else {
-        //                inCrit.createCriteria("werkstuecke", "werk");
-        //                inCrit.createAlias("werk.eigenschaften", "werkeig");
-        //                inCrit.add(conjWorkPiece);
-        //            }
-        //        }
-        //        if (conjUsers != null) {
-        //            if (flagSteps) {
-        //                critProcess.createCriteria("bearbeitungsbenutzer", "user");
-        //                critProcess.add(conjUsers);
-        //            } else {
-        //                inCrit.createAlias("steps.bearbeitungsbenutzer", "user");
-        //                inCrit.add(conjUsers);
-        //            }
-        //        }
-        //        return message;
-
         return filter.toString();
     }
 
@@ -793,15 +689,16 @@ public class FilterHelper {
             stepTitle = filterPart.substring(filterPart.indexOf(":") + 1);
             if (stepTitle.startsWith("-")) {
                 stepTitle = stepTitle.substring(1);
-                return " schritte.Titel not like '%" + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 ";
+               
+                return " ProzesseID in (select ProzesseID from schritte where schritte.Titel not like '%" + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 )";
 
             } else {
 
-                return " schritte.Titel like '%" + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 ";
+                return " ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 )";
 
             }
         }
-        return " schritte.Reihenfolge = " + stepReihenfolge + " AND schritte.Bearbeitungsstatus >= 1 ";
+        return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge + " AND schritte.Bearbeitungsstatus >= 1 )";
     }
 
     /************************************************************************************

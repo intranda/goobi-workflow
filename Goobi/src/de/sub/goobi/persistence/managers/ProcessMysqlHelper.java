@@ -12,8 +12,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
-import org.goobi.production.flow.helper.Filter;
-import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;

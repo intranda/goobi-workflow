@@ -304,12 +304,12 @@ public class ProcessBean extends BasisForm {
 
     public String Loeschen() {
         deleteMetadataDirectory();
-//        try {
-            ProcessManager.deleteProcess(this.myProzess);
-//        } catch (DAOException e) {
-//            Helper.setFehlerMeldung("could not delete ", e);
-//            return "";
-//        }
+        //        try {
+        ProcessManager.deleteProcess(this.myProzess);
+        //        } catch (DAOException e) {
+        //            Helper.setFehlerMeldung("could not delete ", e);
+        //            return "";
+        //        }
         if (this.modusAnzeige == "vorlagen") {
             return FilterVorlagen();
         } else {
@@ -362,51 +362,49 @@ public class ProcessBean extends BasisForm {
         ProcessManager m = new ProcessManager();
         String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
         System.out.println(sql);
-        paginator = new DatabasePaginator(sortierung, sql, m);
+        paginator = new DatabasePaginator(sortList(), sql, m);
 
-//        try {
-//
-//            this.myFilteredDataSource = new UserProcessesFilter(true);
-//            Criteria crit = this.myFilteredDataSource.getCriteria();
-//            if (!this.showClosedProcesses) {
-//                crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
-//            }
-//            if (!this.showArchivedProjects) {
-//                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
-//            }
-//            sortList(crit, false);
-//            this.page = new Page(crit, 0);
-//
-//        } catch (HibernateException he) {
-//            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterAktuelleProzesse", he);
-//            return "";
-//        }
-//        this.modusAnzeige = "aktuell";
+        //        try {
+        //
+        //            this.myFilteredDataSource = new UserProcessesFilter(true);
+        //            Criteria crit = this.myFilteredDataSource.getCriteria();
+        //            if (!this.showClosedProcesses) {
+        //                crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
+        //            }
+        //            if (!this.showArchivedProjects) {
+        //                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
+        //            }
+        //            sortList(crit, false);
+        //            this.page = new Page(crit, 0);
+        //
+        //        } catch (HibernateException he) {
+        //            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterAktuelleProzesse", he);
+        //            return "";
+        //        }
+        //        this.modusAnzeige = "aktuell";
         return "process_all";
     }
 
     public String FilterVorlagen() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
-//        try {
-//            this.myFilteredDataSource = new UserTemplatesFilter(true);
-//            Criteria crit = this.myFilteredDataSource.getCriteria();
-//            if (!this.showArchivedProjects) {
-//                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
-//            }
-////            sortList(crit, false);
-//            this.page = new Page(crit, 0);
-//        } catch (HibernateException he) {
-//            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterVorlagen", he);
-//            return "";
-//        }
-        
-       
-        
+        //        try {
+        //            this.myFilteredDataSource = new UserTemplatesFilter(true);
+        //            Criteria crit = this.myFilteredDataSource.getCriteria();
+        //            if (!this.showArchivedProjects) {
+        //                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
+        //            }
+        ////            sortList(crit, false);
+        //            this.page = new Page(crit, 0);
+        //        } catch (HibernateException he) {
+        //            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterVorlagen", he);
+        //            return "";
+        //        }
+
         ProcessManager m = new ProcessManager();
         String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
         System.out.println(sql);
-        paginator = new DatabasePaginator(sortierung, sql , m);
+        paginator = new DatabasePaginator(sortList(), sql, m);
         this.modusAnzeige = "vorlagen";
         return "process_all";
     }
@@ -429,125 +427,126 @@ public class ProcessBean extends BasisForm {
     public String FilterAlleStart() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
-        
+
         String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
         if (this.modusAnzeige.equals("vorlagen")) {
-            sql = sql + " AND prozesse.istTemplate = true ";
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = true ";
         } else {
-            sql = sql + " AND prozesse.istTemplate = false ";
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = false ";
         }
         if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
-            sql = sql + " AND prozesse.sortHelperStatus <> '100000000' ";
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
         }
         if (!this.showArchivedProjects) {
-            sql = sql + " AND prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
-        
+
         /*
          * Filter für die Auflistung anwenden
          */
-//        try {
-//
-//            // ... Criteria will persist, because it gets passed on to the
-//            // PageObject
-//            // but in order to use the extended functions of the
-//            // UserDefinedFilter
-//            // for statistics, we will have to hold a reference to the instance
-//            // of
-//            // UserDefinedFilter
-//
-//            this.myFilteredDataSource = new UserDefinedFilter(this.filter);
-//
-//            // set observable to replace helper.setMessage
-//            this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
-//
-//            // // calling the criteria as the result of the filter
-//            Criteria crit = this.myFilteredDataSource.getCriteria();
-//
-//            // first manipulation of the created criteria
-//
-//            /* nur die Vorlagen oder alles */
-//            if (this.modusAnzeige.equals("vorlagen")) {
-//                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(true)));
-//            } else {
-//                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-//            }
-//            /* alle Suchparameter miteinander kombinieren */
-//            if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
-//                crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
-//            }
-//
-//            if (!this.showArchivedProjects) {
-//                crit.createCriteria("projekt", "proj");
-//                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
-////                sortList(crit, false);
-//            } else {
-//                /* noch sortieren */
-////                sortList(crit, true);
-//            }
-//
-//            this.page = new Page(crit, 0);
-//        } catch (HibernateException he) {
-//            Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
-//            return "";
-//        } catch (NumberFormatException ne) {
-//            Helper.setFehlerMeldung("Falsche Suchparameter angegeben", ne.getMessage());
-//            return "";
-//        } catch (UnsupportedOperationException e) {
-//            logger.error(e);
-//        }
+        //        try {
+        //
+        //            // ... Criteria will persist, because it gets passed on to the
+        //            // PageObject
+        //            // but in order to use the extended functions of the
+        //            // UserDefinedFilter
+        //            // for statistics, we will have to hold a reference to the instance
+        //            // of
+        //            // UserDefinedFilter
+        //
+        //            this.myFilteredDataSource = new UserDefinedFilter(this.filter);
+        //
+        //            // set observable to replace helper.setMessage
+        //            this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
+        //
+        //            // // calling the criteria as the result of the filter
+        //            Criteria crit = this.myFilteredDataSource.getCriteria();
+        //
+        //            // first manipulation of the created criteria
+        //
+        //            /* nur die Vorlagen oder alles */
+        //            if (this.modusAnzeige.equals("vorlagen")) {
+        //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(true)));
+        //            } else {
+        //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        //            }
+        //            /* alle Suchparameter miteinander kombinieren */
+        //            if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+        //                crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
+        //            }
+        //
+        //            if (!this.showArchivedProjects) {
+        //                crit.createCriteria("projekt", "proj");
+        //                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
+        ////                sortList(crit, false);
+        //            } else {
+        //                /* noch sortieren */
+        ////                sortList(crit, true);
+        //            }
+        //
+        //            this.page = new Page(crit, 0);
+        //        } catch (HibernateException he) {
+        //            Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
+        //            return "";
+        //        } catch (NumberFormatException ne) {
+        //            Helper.setFehlerMeldung("Falsche Suchparameter angegeben", ne.getMessage());
+        //            return "";
+        //        } catch (UnsupportedOperationException e) {
+        //            logger.error(e);
+        //        }
         ProcessManager m = new ProcessManager();
         System.out.println(sql);
-        paginator = new DatabasePaginator(sortierung, sql, m);
-        
+        paginator = new DatabasePaginator(sortList(), sql, m);
+
         return "process_all";
     }
 
-//    private void sortList(Criteria inCrit, boolean addCriteria) {
-//        Order order = Order.asc("titel");
-//        if (this.sortierung.equals("titelAsc")) {
-//            order = Order.asc("titel");
-//        }
-//        if (this.sortierung.equals("titelDesc")) {
-//            order = Order.desc("titel");
-//        }
-//        if (this.sortierung.equals("batchAsc")) {
-//            order = Order.asc("batchID");
-//        }
-//        if (this.sortierung.equals("batchDesc")) {
-//            order = Order.desc("batchID");
-//        }
-//
-//        if (this.sortierung.equals("projektAsc")) {
-//            if (addCriteria) {
-//                inCrit.createCriteria("projekt", "proj");
-//            }
-//            order = Order.asc("proj.titel");
-//        }
-//
-//        if (this.sortierung.equals("projektDesc")) {
-//            if (addCriteria) {
-//                inCrit.createCriteria("projekt", "proj");
-//            }
-//            order = Order.desc("proj.titel");
-//        }
-//
-//        if (this.sortierung.equals("vorgangsdatumAsc")) {
-//            order = Order.asc("erstellungsdatum");
-//        }
-//        if (this.sortierung.equals("vorgangsdatumDesc")) {
-//            order = Order.desc("erstellungsdatum");
-//        }
-//
-//        if (this.sortierung.equals("fortschrittAsc")) {
-//            order = Order.asc("sortHelperStatus");
-//        }
-//        if (this.sortierung.equals("fortschrittDesc")) {
-//            order = Order.desc("sortHelperStatus");
-//        }
-//
-//        inCrit.addOrder(order);
-//    }
+    private String sortList() {
+        String answer = "titel";
+        if (this.sortierung.equals("titelAsc")) {
+            answer = "titel";
+        } else if (this.sortierung.equals("titelDesc")) {
+            answer = "titel desc";
+        } else if (this.sortierung.equals("batchAsc")) {
+            answer = "batchID";
+        } else if (this.sortierung.equals("batchDesc")) {
+            answer = "batchID desc";
+        }
+
+        else if (this.sortierung.equals("projektAsc")) {
+            // TODO auf titel matchen
+            answer = "projectID";
+        }
+
+        else if (this.sortierung.equals("projektDesc")) {
+            // TODO auf titel matchen
+            answer = "projectID desc";
+        } else if (this.sortierung.equals("vorgangsdatumAsc")) {
+            answer = "erstellungsdatum";
+        } else if (this.sortierung.equals("vorgangsdatumDesc")) {
+            answer = "erstellungsdatum";
+        }
+
+        else if (this.sortierung.equals("fortschrittAsc")) {
+            answer = "sortHelperStatus";
+        } else if (this.sortierung.equals("fortschrittDesc")) {
+            answer = "sortHelperStatus";
+        }
+
+        return answer;
+    }
 
     /*
      * Eigenschaften
@@ -1266,8 +1265,6 @@ public class ProcessBean extends BasisForm {
         }
         return myProjekte;
     }
-    
-    
 
     public Integer getRulesetSelection() {
         if (this.myProzess.getRegelsatz() != null) {
@@ -1275,14 +1272,14 @@ public class ProcessBean extends BasisForm {
         } else {
             return Integer.valueOf(0);
         }
-    } 
-    
+    }
+
     public void setRulesetSelection(Integer selected) {
         if (selected.intValue() != 0) {
             try {
-              Ruleset ruleset = RulesetManager.getRulesetById(selected);
-              myProzess.setRegelsatz(ruleset);
-              myProzess.setMetadatenKonfigurationID(selected);
+                Ruleset ruleset = RulesetManager.getRulesetById(selected);
+                myProzess.setRegelsatz(ruleset);
+                myProzess.setMetadatenKonfigurationID(selected);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
                 logger.error(e);
@@ -1290,7 +1287,7 @@ public class ProcessBean extends BasisForm {
         }
     }
 
-    public List<SelectItem> getRulesetSelectionList()  {
+    public List<SelectItem> getRulesetSelectionList() {
         List<SelectItem> rulesets = new ArrayList<SelectItem>();
         List<Ruleset> temp = RulesetManager.getAllRulesets();
         for (Ruleset ruleset : temp) {
@@ -1299,23 +1296,20 @@ public class ProcessBean extends BasisForm {
         return rulesets;
     }
 
-    
-    
-    
     public Integer getDocketSelection() {
         if (this.myProzess.getDocket() != null) {
             return this.myProzess.getDocket().getId();
         } else {
             return Integer.valueOf(0);
         }
-    } 
-    
+    }
+
     public void setDocketSelection(Integer selected) {
         if (selected.intValue() != 0) {
             try {
-              Docket ruleset = DocketManager.getDocketById(selected);
-              myProzess.setDocket(ruleset);
-              myProzess.setDocketId(selected);
+                Docket ruleset = DocketManager.getDocketById(selected);
+                myProzess.setDocket(ruleset);
+                myProzess.setDocketId(selected);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Docket kann nicht zugewiesen werden", "");
                 logger.error(e);
@@ -1323,7 +1317,7 @@ public class ProcessBean extends BasisForm {
         }
     }
 
-    public List<SelectItem> getDocketSelectionList()  {
+    public List<SelectItem> getDocketSelectionList() {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
         List<Docket> temp = DocketManager.getAllDockets();
         for (Docket docket : temp) {
@@ -1331,8 +1325,7 @@ public class ProcessBean extends BasisForm {
         }
         return myProjekte;
     }
-    
-    
+
     /*
      * Anzahlen der Artikel und Images
      */
@@ -1729,8 +1722,8 @@ public class ProcessBean extends BasisForm {
         try {
             int myid = new Integer(id);
             this.myProzess = ProcessManager.getProcessById(myid);
-//        } catch (DAOException e) {
-//            logger.error(e);
+            //        } catch (DAOException e) {
+            //            logger.error(e);
         } catch (NumberFormatException e) {
             logger.warn(e);
         }
