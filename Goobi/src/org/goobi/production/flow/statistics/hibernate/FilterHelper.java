@@ -284,7 +284,7 @@ public class FilterHelper {
          */
 
         String login = tok.substring(tok.indexOf(":") + 1);
-        return " ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = " + StringEscapeUtils.escapeSql(login)
+        return " ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login LIKE '%" + StringEscapeUtils.escapeSql(login) + "%'" 
                 + "))";
     }
 
