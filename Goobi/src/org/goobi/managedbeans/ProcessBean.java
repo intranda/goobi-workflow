@@ -493,12 +493,12 @@ public class ProcessBean extends BasisForm {
 
         else if (this.sortierung.equals("projektAsc")) {
             // TODO auf titel matchen
-            answer = "projectID";
+            answer = "projektID";
         }
 
         else if (this.sortierung.equals("projektDesc")) {
             // TODO auf titel matchen
-            answer = "projectID desc";
+            answer = "projektID desc";
         } else if (this.sortierung.equals("vorgangsdatumAsc")) {
             answer = "erstellungsdatum";
         } else if (this.sortierung.equals("vorgangsdatumDesc")) {
