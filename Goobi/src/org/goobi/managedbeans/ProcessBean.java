@@ -361,33 +361,40 @@ public class ProcessBean extends BasisForm {
         this.myAnzahlList = null;
         ProcessManager m = new ProcessManager();
         String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
-        System.out.println(sql);
+        if (this.modusAnzeige.equals("vorlagen")) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = true ";
+        } else {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = false ";
+        }
+        if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!this.showArchivedProjects) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        }
+        
         paginator = new DatabasePaginator(sortList(), sql, m);
 
-        //        try {
-        //
-        //            this.myFilteredDataSource = new UserProcessesFilter(true);
-        //            Criteria crit = this.myFilteredDataSource.getCriteria();
-        //            if (!this.showClosedProcesses) {
-        //                crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
-        //            }
-        //            if (!this.showArchivedProjects) {
-        //                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
-        //            }
-        //            sortList(crit, false);
-        //            this.page = new Page(crit, 0);
-        //
-        //        } catch (HibernateException he) {
-        //            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterAktuelleProzesse", he);
-        //            return "";
-        //        }
-        //        this.modusAnzeige = "aktuell";
+        this.modusAnzeige = "aktuell";
         return "process_all";
     }
 
     public String FilterVorlagen() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
+        
         //        try {
         //            this.myFilteredDataSource = new UserTemplatesFilter(true);
         //            Criteria crit = this.myFilteredDataSource.getCriteria();
@@ -401,8 +408,21 @@ public class ProcessBean extends BasisForm {
         //            return "";
         //        }
 
-        ProcessManager m = new ProcessManager();
         String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
+
+        if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!this.showArchivedProjects) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        }
+        ProcessManager m = new ProcessManager();
         System.out.println(sql);
         paginator = new DatabasePaginator(sortList(), sql, m);
         this.modusAnzeige = "vorlagen";
@@ -453,61 +473,7 @@ public class ProcessBean extends BasisForm {
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
 
-        /*
-         * Filter für die Auflistung anwenden
-         */
-        //        try {
-        //
-        //            // ... Criteria will persist, because it gets passed on to the
-        //            // PageObject
-        //            // but in order to use the extended functions of the
-        //            // UserDefinedFilter
-        //            // for statistics, we will have to hold a reference to the instance
-        //            // of
-        //            // UserDefinedFilter
-        //
-        //            this.myFilteredDataSource = new UserDefinedFilter(this.filter);
-        //
-        //            // set observable to replace helper.setMessage
-        //            this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
-        //
-        //            // // calling the criteria as the result of the filter
-        //            Criteria crit = this.myFilteredDataSource.getCriteria();
-        //
-        //            // first manipulation of the created criteria
-        //
-        //            /* nur die Vorlagen oder alles */
-        //            if (this.modusAnzeige.equals("vorlagen")) {
-        //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(true)));
-        //            } else {
-        //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        //            }
-        //            /* alle Suchparameter miteinander kombinieren */
-        //            if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
-        //                crit.add(Restrictions.not(Restrictions.eq("sortHelperStatus", "100000000")));
-        //            }
-        //
-        //            if (!this.showArchivedProjects) {
-        //                crit.createCriteria("projekt", "proj");
-        //                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
-        ////                sortList(crit, false);
-        //            } else {
-        //                /* noch sortieren */
-        ////                sortList(crit, true);
-        //            }
-        //
-        //            this.page = new Page(crit, 0);
-        //        } catch (HibernateException he) {
-        //            Helper.setFehlerMeldung("fehlerBeimEinlesen", he.getMessage());
-        //            return "";
-        //        } catch (NumberFormatException ne) {
-        //            Helper.setFehlerMeldung("Falsche Suchparameter angegeben", ne.getMessage());
-        //            return "";
-        //        } catch (UnsupportedOperationException e) {
-        //            logger.error(e);
-        //        }
         ProcessManager m = new ProcessManager();
-        System.out.println(sql);
         paginator = new DatabasePaginator(sortList(), sql, m);
 
         return "process_all";
