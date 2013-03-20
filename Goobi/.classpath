@@ -69,7 +69,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/lucene-core-3.0.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/lucene-analyzers-3.0.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/ics_0.0.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/intrandaChart_1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/poi-3.6-20091214.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/poi-contrib-3.6-20091214.jar"/>
@@ -106,5 +105,6 @@
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/ics-1.1.5.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>
