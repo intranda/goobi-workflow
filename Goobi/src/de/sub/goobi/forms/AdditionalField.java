@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang.StringUtils;
+
 public class AdditionalField {
 	private String titel;
 	private String wert = "";
@@ -180,12 +182,12 @@ public class AdditionalField {
 		}
 
 		/* wenn pflicht angegeben wurde */
-		if (!this.isdoctype.equals("") && !this.isdoctype.contains(this.pkf.getDocType())) {
+		if (!this.isdoctype.equals("") && !StringUtils.containsIgnoreCase(isdoctype, this.pkf.getDocType())) {
 			return false;
 		}
 
 		/* wenn nur "darf nicht" angegeben wurde */
-		if (!this.isnotdoctype.equals("") && this.isnotdoctype.contains(this.pkf.getDocType())) {
+		if (!this.isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isnotdoctype, this.pkf.getDocType())) {
 			return false;
 		}
 

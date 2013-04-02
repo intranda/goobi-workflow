@@ -1220,23 +1220,23 @@ public class ProzesskopieForm {
 				titeldefinition = titel;
 				break;
 			}
+		      
+            /* wenn beides angegeben wurde */
+            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+                titeldefinition = titel;
+                break;
+            }
 
-			/* wenn beides angegeben wurde */
-			if (!isdoctype.equals("") && !isnotdoctype.equals("") && isdoctype.contains(this.docType) && !isnotdoctype.contains(this.docType)) {
-				titeldefinition = titel;
-				break;
-			}
-
-			/* wenn nur pflicht angegeben wurde */
-			if (isnotdoctype.equals("") && isdoctype.contains(this.docType)) {
-				titeldefinition = titel;
-				break;
-			}
-			/* wenn nur "darf nicht" angegeben wurde */
-			if (isdoctype.equals("") && !isnotdoctype.contains(this.docType)) {
-				titeldefinition = titel;
-				break;
-			}
+            /* wenn nur pflicht angegeben wurde */
+            if (isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
+                titeldefinition = titel;
+                break;
+            }
+            /* wenn nur "darf nicht" angegeben wurde */
+            if (isdoctype.equals("") && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+                titeldefinition = titel;
+                break;
+            }
 		}
 
 		StringTokenizer tokenizer = new StringTokenizer(titeldefinition, "+");

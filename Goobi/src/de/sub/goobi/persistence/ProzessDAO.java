@@ -3,8 +3,8 @@
 // * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
 // * 
 // * Visit the websites for more information. 
-// * 			- http://digiverso.com 
-// * 			- http://www.intranda.com
+// *            - http://digiverso.com 
+// *            - http://www.intranda.com
 // * 
 // * Copyright 2011, intranda GmbH, Göttingen
 // * 
@@ -35,58 +35,58 @@
 //public class ProzessDAO extends BaseDAO {
 //
 //
-//	private static final long serialVersionUID = 3538712266212954394L;
+//  private static final long serialVersionUID = 3538712266212954394L;
 //
-//	public Process save(Process t) throws DAOException {
-//		t.setSortHelperStatus(t.getFortschritt());
-//		storeObj(t);
-//		return (Process) retrieveObj(Process.class, t.getId());
-//	}
+//  public Process save(Process t) throws DAOException {
+//      t.setSortHelperStatus(t.getFortschritt());
+//      storeObj(t);
+//      return (Process) retrieveObj(Process.class, t.getId());
+//  }
 //
-//	public void saveList(List<Process> list) throws DAOException {
-//		List<Object> l = new ArrayList<Object>();
-//		l.addAll(list);
-//		storeList(l);
-//	}
-//	
-//	public Process get(Integer id) throws DAOException {
-//		Process rueckgabe = (Process) retrieveObj(Process.class, id);
-//		if (rueckgabe == null) {
-//			throw new DAOException("Object can not be found in database");
-//		}
-//		return rueckgabe;
-//	}
+//  public void saveList(List<Process> list) throws DAOException {
+//      List<Object> l = new ArrayList<Object>();
+//      l.addAll(list);
+//      storeList(l);
+//  }
+//  
+//  public Process get(Integer id) throws DAOException {
+//      Process rueckgabe = (Process) retrieveObj(Process.class, id);
+//      if (rueckgabe == null) {
+//          throw new DAOException("Object can not be found in database");
+//      }
+//      return rueckgabe;
+//  }
 //
-//	public void remove(Process t) throws DAOException {
-//		if (t.getId() != null) {
-//			removeObj(t);
-//		}
-//	}
+//  public void remove(Process t) throws DAOException {
+//      if (t.getId() != null) {
+//          removeObj(t);
+//      }
+//  }
 //
-//	public void remove(Integer id) throws DAOException {
-//		removeObj(Process.class, id);
-//	}
+//  public void remove(Integer id) throws DAOException {
+//      removeObj(Process.class, id);
+//  }
 //
-//	@SuppressWarnings("unchecked")
-//	public List<Process> search(String query) throws DAOException {
-//		return retrieveObjs(query);
-//	}
+//  @SuppressWarnings("unchecked")
+//  public List<Process> search(String query) throws DAOException {
+//      return retrieveObjs(query);
+//  }
 //
-//	public Long count(String query) throws DAOException {
-//		return retrieveAnzahl(query);
-//	}
-//	
-//	public void refresh(Process t) {
-//		Object o = t;
-//		refresh(o);
-//	}
-//	public void update(Process t) {
-//		Object o = t;
-//		updateObj(o);
-//	}
-//	
-//	public Process load(int id) throws DAOException {
-//		return (Process) loadObj(Process.class, id);
-//	}
-//	
+//  public Long count(String query) throws DAOException {
+//      return retrieveAnzahl(query);
+//  }
+//  
+//  public void refresh(Process t) {
+//      Object o = t;
+//      refresh(o);
+//  }
+//  public void update(Process t) {
+//      Object o = t;
+//      updateObj(o);
+//  }
+//  
+//  public Process load(int id) throws DAOException {
+//      return (Process) loadObj(Process.class, id);
+//  }
+//  
 //}

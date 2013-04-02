@@ -133,7 +133,8 @@ public class Metadaten {
 	private MetadatumImpl alleSeitenNeu[];
 	private ArrayList<MetadatumImpl> tempMetadatumList = new ArrayList<MetadatumImpl>();
 	private MetadatumImpl selectedMetadatum;
-
+    private String currentRepresentativePage = "";
+	
 	private String paginierungWert;
 	private int paginierungAbSeiteOderMarkierung;
 	private String paginierungArt;
@@ -622,7 +623,7 @@ public class Metadaten {
 	 * @throws SwapException
 	 * @throws WriteException
 	 */
-	@SuppressWarnings("deprecation")
+
 	public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
 			WriteException {
 		this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
@@ -669,6 +670,20 @@ public class Metadaten {
 
 			}
 		}
+		
+        if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_representative")) {
+                    try {
+                    Integer value = new Integer(md.getValue());
+                    currentRepresentativePage = String.valueOf(value-1);
+                    } catch (Exception e) {
+                        
+                    }
+                }
+            }
+        }
+		
 		createDefaultValues(this.logicalTopstruct);
 		MetadatenalsBeanSpeichern(this.logicalTopstruct);
 		MetadatenalsTree3Einlesen1();
@@ -719,6 +734,32 @@ public class Metadaten {
 		 * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
 		 */
 		this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
+		
+        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+            boolean match = false;
+            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                    if (md.getType().getName().equals("_representative")) {
+                        Integer value = new Integer(currentRepresentativePage);
+                        md.setValue(String.valueOf(value +1));
+                        match = true;
+                    }
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+                try {
+                    Metadata md = new Metadata(mdt);
+                    Integer value = new Integer(currentRepresentativePage);
+                    md.setValue(String.valueOf(value +1));
+                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+                } catch (MetadataTypeNotAllowedException e) {
+
+                }
+
+            }
+        }
     }
 	
 
@@ -2646,5 +2687,13 @@ public class Metadaten {
 	public void setFictitious(boolean fictitious) {
 		this.fictitious = fictitious;
 	}
+
+    public String getCurrentRepresentativePage() {
+        return currentRepresentativePage;
+    }
+
+    public void setCurrentRepresentativePage(String currentRepresentativePage) {
+        this.currentRepresentativePage = currentRepresentativePage;
+    }
 
 }
