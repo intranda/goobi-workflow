@@ -29,15 +29,15 @@ package org.goobi.production.plugin.interfaces;
  */
 import java.util.HashMap;
 
+import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.StepReturnValue;
 
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.persistence.apache.StepObject;
 
 public interface IStepPlugin extends IPlugin {
 
-	public void initialize(Schritt step, String returnPath);
+	public void initialize(Step step, String returnPath);
 
 	public void initialize(StepObject stepobject, String returnPath);
 
@@ -49,7 +49,7 @@ public interface IStepPlugin extends IPlugin {
 
 	public HashMap<String, StepReturnValue> validate();
 
-	public Schritt getStep();
+	public Step getStep();
 
 	public PluginGuiType getPluginGuiType();
 

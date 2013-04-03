@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.helper.enums.StepStatus;
 
 public class BatchDisplayItem implements Comparable<BatchDisplayItem>{
@@ -41,7 +42,7 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem>{
 	private HashMap<String, String> scripts = new HashMap<String, String>();
 	private boolean exportDMS = false;
 
-	public BatchDisplayItem(Schritt s) {
+	public BatchDisplayItem(Step s) {
 		this.stepTitle = s.getTitel();
 		this.stepOrder = s.getReihenfolge();
 		this.stepStatus = s.getBearbeitungsstatusEnum();

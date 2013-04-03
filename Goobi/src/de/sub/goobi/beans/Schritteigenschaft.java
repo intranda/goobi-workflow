@@ -32,13 +32,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.goobi.beans.Step;
+
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 
 public class Schritteigenschaft implements Serializable, IGoobiProperty {
 	private static final long serialVersionUID = -443521810121056341L;
-	private Schritt schritt;
+	private Step schritt;
 	private Integer id;
 	private String titel;
 	private String wert;
@@ -178,11 +180,11 @@ public class Schritteigenschaft implements Serializable, IGoobiProperty {
 	}
 
 
-	public Schritt getSchritt() {
+	public Step getSchritt() {
 		return this.schritt;
 	}
 
-	public void setSchritt(Schritt schritt) {
+	public void setSchritt(Step schritt) {
 		this.schritt = schritt;
 	}
 

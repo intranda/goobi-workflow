@@ -38,18 +38,18 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Step;
 import org.goobi.managedbeans.LoginBean;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.SchrittDAO;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
@@ -119,7 +119,8 @@ public class StatistikForm {
 	 */
 	public Long getAnzahlSchritte() {
 		try {
-			return new SchrittDAO().count("from Schritt");
+		    
+			return (long) StepManager.countSteps("titel", "");
 		} catch (DAOException e) {
 			myLogger.error("Hibernate error", e);
 			Helper.setFehlerMeldung("fehlerBeimEinlesen", e);
@@ -176,7 +177,7 @@ public class StatistikForm {
 
 		try {
 			Session session = Helper.getHibernateSession();
-			Criteria crit = session.createCriteria(Schritt.class);
+			Criteria crit = session.createCriteria(Step.class);
 
 			/* Liste der IDs */
 			List<Integer> trefferListe = new ArrayList<Integer>();
@@ -184,7 +185,7 @@ public class StatistikForm {
 			/*
 			 * -------------------------------- die Treffer der Benutzergruppen --------------------------------
 			 */
-			Criteria critGruppen = session.createCriteria(Schritt.class);
+			Criteria critGruppen = session.createCriteria(Step.class);
 			if (!inOffen && !inBearbeitet) {
 				critGruppen.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)),
 						Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
@@ -205,15 +206,15 @@ public class StatistikForm {
 			critGruppen.add(Restrictions.eq("gruppennutzer.id", login.getMyBenutzer().getId()));
 
 			/* die Treffer sammeln */
-			for (Iterator<Schritt> iter = critGruppen.list().iterator(); iter.hasNext();) {
-				Schritt step = iter.next();
+			for (Iterator<Step> iter = critGruppen.list().iterator(); iter.hasNext();) {
+				Step step = iter.next();
 				trefferListe.add(step.getId());
 			}
 
 			/*
 			 * -------------------------------- Treffer der Benutzer --------------------------------
 			 */
-			Criteria critBenutzer = session.createCriteria(Schritt.class);
+			Criteria critBenutzer = session.createCriteria(Step.class);
 			if (!inOffen && !inBearbeitet) {
 				critBenutzer.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)),
 						Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
@@ -234,8 +235,8 @@ public class StatistikForm {
 			critBenutzer.add(Restrictions.eq("nutzer.id", login.getMyBenutzer().getId()));
 
 			/* die Treffer sammeln */
-			for (Iterator<Schritt> iter = critBenutzer.list().iterator(); iter.hasNext();) {
-				Schritt step = iter.next();
+			for (Iterator<Step> iter = critBenutzer.list().iterator(); iter.hasNext();) {
+				Step step = iter.next();
 				trefferListe.add(step.getId());
 			}
 

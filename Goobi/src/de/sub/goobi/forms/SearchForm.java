@@ -36,6 +36,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.managedbeans.ProcessBean;
@@ -47,7 +48,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueckeigenschaft;
@@ -153,7 +153,7 @@ public class SearchForm {
 			this.stepPropertyTitles.add((String) it.next());
 		}
 
-		crit = session.createCriteria(Schritt.class);
+		crit = session.createCriteria(Step.class);
 		crit.addOrder(Order.asc("titel"));
 		crit.setProjection(Projections.distinct(Projections.property("titel")));
 		this.stepTitles.add(Helper.getTranslation("notSelected"));

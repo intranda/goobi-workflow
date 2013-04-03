@@ -44,7 +44,7 @@ import org.jfree.data.general.Dataset;
 
 import de.sub.goobi.config.ConfigMain;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
 
 public class StatistikLaufzeitSchritte {
 
@@ -52,7 +52,7 @@ public class StatistikLaufzeitSchritte {
 	public static Dataset getDiagramm(List inProzesse) {
 		DefaultCategoryDataset categoryDataSet = new DefaultCategoryDataset();
 		for (Process proz : (List<Process>) inProzesse) {
-			for (Schritt step : proz.getSchritteList()) {
+			for (Step step : proz.getSchritteList()) {
 				/* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
 				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
 					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());

@@ -62,7 +62,6 @@ import ugh.fileformats.mets.MetsModsImportExport;
 import ugh.fileformats.mets.XStream;
 import de.sub.goobi.beans.HistoryEvent;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Werkstueck;
 import de.sub.goobi.config.ConfigMain;
@@ -89,7 +88,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean inAuswahllisteAnzeigen;
     private Project projekt;
     private Date erstellungsdatum;
-    private List<Schritt> schritte;
+    private List<Step> schritte;
     private List<HistoryEvent> history;
     private List<Werkstueck> werkstuecke;
     private List<Vorlage> vorlagen;
@@ -127,7 +126,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.istTemplate = false;
         this.inAuswahllisteAnzeigen = false;
         this.eigenschaften = new ArrayList<Prozesseigenschaft>();
-        this.schritte = new ArrayList<Schritt>();
+        this.schritte = new ArrayList<Step>();
         this.erstellungsdatum = new Date();
 
     }
@@ -171,14 +170,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.titel = inTitel.trim();
     }
 
-    public List<Schritt> getSchritte() {
+    public List<Step> getSchritte() {
         if (this.schritte == null || schritte.isEmpty()) {
             schritte = StepManager.getStepsForProcess(id);
         }
         return this.schritte;
     }
 
-    public void setSchritte(List<Schritt> schritte) {
+    public void setSchritte(List<Step> schritte) {
         this.schritte = schritte;
     }
 
@@ -539,7 +538,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
-    public List<Schritt> getSchritteList() {
+    public List<Step> getSchritteList() {
 
         return getSchritte();
     }
@@ -698,8 +697,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.panelAusgeklappt = panelAusgeklappt;
     }
 
-    public Schritt getAktuellerSchritt() {
-        for (Schritt step : getSchritteList()) {
+    public Step getAktuellerSchritt() {
+        for (Step step : getSchritteList()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK) {
                 return step;
             }
@@ -735,7 +734,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int offen = 0;
         int inBearbeitung = 0;
         int abgeschlossen = 0;
-        for (Schritt step : getSchritte()) {
+        for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
@@ -764,7 +763,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int offen = 0;
         int inBearbeitung = 0;
         int abgeschlossen = 0;
-        for (Schritt step : getSchritte()) {
+        for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
@@ -783,7 +782,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int offen = 0;
         int inBearbeitung = 0;
         int abgeschlossen = 0;
-        for (Schritt step : getSchritte()) {
+        for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
@@ -803,7 +802,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int inBearbeitung = 0;
         int abgeschlossen = 0;
 
-        for (Schritt step : getSchritte()) {
+        for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
@@ -1058,7 +1057,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (getSchritteList().size() == 0) {
             return true;
         }
-        for (Schritt s : getSchritteList()) {
+        for (Step s : getSchritteList()) {
             if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
                 return true;
             }
@@ -1071,7 +1070,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * ================================================================
      */
     public boolean isImageFolderInUse() {
-        for (Schritt s : getSchritteList()) {
+        for (Step s : getSchritteList()) {
             if (s.getBearbeitungsstatusEnum() == StepStatus.INWORK && s.isTypImagesSchreiben()) {
                 return true;
             }
@@ -1083,7 +1082,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * get user of task in edit mode with rights to write to image folder ================================================================
      */
     public User getImageFolderInUseUser() {
-        for (Schritt s : getSchritteList()) {
+        for (Step s : getSchritteList()) {
             if (s.getBearbeitungsstatusEnum() == StepStatus.INWORK && s.isTypImagesSchreiben()) {
                 return s.getBearbeitungsbenutzer();
             }
@@ -1158,9 +1157,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return "";
     }
 
-    public Schritt getFirstOpenStep() {
+    public Step getFirstOpenStep() {
 
-        for (Schritt s : getSchritteList()) {
+        for (Step s : getSchritteList()) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
                 return s;
             }

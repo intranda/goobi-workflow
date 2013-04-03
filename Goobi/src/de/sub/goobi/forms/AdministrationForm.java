@@ -43,6 +43,7 @@ import javax.faces.bean.ViewScoped;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.jobs.JobManager;
@@ -59,7 +60,6 @@ import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FileUtils;
@@ -70,9 +70,9 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.SchrittDAO;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.MD5;
 
@@ -178,12 +178,11 @@ public class AdministrationForm implements Serializable {
         Set<Usergroup> neueGruppen = new HashSet<Usergroup>();
         neueGruppen.add(gruppe);
 
-        SchrittDAO dao = new SchrittDAO();
         //TODO: Try to avoid SQL
-        List<Schritt> schritte = dao.search("from Schritt where titel='Automatische Generierung der SICI'");
-        for (Schritt auf : schritte) {
+        List<Step> schritte = StepManager.getSteps("titel", "titel='Automatische Generierung der SICI'", 0, Integer.MAX_VALUE);
+        for (Step auf : schritte) {
             auf.setBenutzergruppen(neueGruppen);
-            dao.save(auf);
+            StepManager.saveStep(auf);
         }
         Helper.setMeldung(null, "", "Sici erfolgreich korrigiert");
     }
@@ -207,7 +206,7 @@ public class AdministrationForm implements Serializable {
         List<Process> auftraege = ProcessManager.getAllProcesses();
         for (Process auf : auftraege) {
 
-            for (Schritt s : auf.getSchritteList()) {
+            for (Step s : auf.getSchritteList()) {
 
                 if (s.getBearbeitungsbeginn() != null) {
                     auf.setErstellungsdatum(s.getBearbeitungsbeginn());

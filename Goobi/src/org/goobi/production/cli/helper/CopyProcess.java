@@ -69,8 +69,9 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import org.goobi.beans.Process;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
@@ -172,7 +173,7 @@ public class CopyProcess extends ProzesskopieForm {
 	@Override
 	public String Prepare() {
 		if (this.prozessVorlage.getContainsUnreachableSteps()) {
-			for (Schritt s : this.prozessVorlage.getSchritteList()) {
+			for (Step s : this.prozessVorlage.getSchritteList()) {
 				if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
 					Helper.setFehlerMeldung("Kein Benutzer festgelegt für: ", s.getTitel());
 				}
@@ -622,7 +623,7 @@ public class CopyProcess extends ProzesskopieForm {
 		EigenschaftenHinzufuegen(null);
 
 	
-		for (Schritt step : this.prozessKopie.getSchritteList()) {
+		for (Step step : this.prozessKopie.getSchritteList()) {
 			/*
 			 * -------------------------------- always save date and user for each step --------------------------------
 			 */
@@ -833,7 +834,7 @@ public class CopyProcess extends ProzesskopieForm {
 		EigenschaftenHinzufuegen(io);
 
 	
-		for (Schritt step : this.prozessKopie.getSchritteList()) {
+		for (Step step : this.prozessKopie.getSchritteList()) {
 			/*
 			 * -------------------------------- always save date and user for each step --------------------------------
 			 */

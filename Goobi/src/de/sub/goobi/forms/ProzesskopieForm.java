@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
@@ -82,7 +83,6 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
@@ -99,7 +99,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.importer.ImportOpac;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
@@ -147,7 +147,7 @@ public class ProzesskopieForm {
 			if (this.prozessVorlage.getSchritteList().size() == 0) {
 				Helper.setFehlerMeldung("noStepsInWorkflow");
 			}
-			for (Schritt s : this.prozessVorlage.getSchritteList()) {
+			for (Step s : this.prozessVorlage.getSchritteList()) {
 				if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
 					List<String> param = new ArrayList<String>();
 					param.add(s.getTitel());
@@ -575,7 +575,7 @@ public class ProzesskopieForm {
 		}
 		EigenschaftenHinzufuegen();
 
-		for (Schritt step : this.prozessKopie.getSchritteList()) {
+		for (Step step : this.prozessKopie.getSchritteList()) {
 			/*
 			 * -------------------------------- always save date and user for each step --------------------------------
 			 */
@@ -755,7 +755,7 @@ public class ProzesskopieForm {
 		/* damit die Sortierung stimmt nochmal einlesen */
 		Helper.getHibernateSession().refresh(this.prozessKopie);
 
-		List<StepObject> steps = StepManager.getStepsForProcess(prozessKopie.getId());
+		List<StepObject> steps = StepObjectManager.getStepsForProcess(prozessKopie.getId());
 		for (StepObject s : steps) {
 			if (s.getBearbeitungsstatus() == 1 && s.isTypAutomatisch() ) {
 				ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);

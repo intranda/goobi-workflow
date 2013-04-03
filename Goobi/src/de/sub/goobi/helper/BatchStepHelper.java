@@ -40,7 +40,9 @@ import java.util.TreeMap;
 import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
+import org.goobi.managedbeans.StepBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -55,11 +57,9 @@ import org.hibernate.criterion.Restrictions;
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
-import de.sub.goobi.forms.AktuelleSchritteForm;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -67,17 +67,16 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.SchrittDAO;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 
 public class BatchStepHelper {
 
-	private List<Schritt> steps;
-	private SchrittDAO stepDAO = new SchrittDAO();
+	private List<Step> steps;
 	private static final Logger logger = Logger.getLogger(BatchStepHelper.class);
-	private Schritt currentStep;
+	private Step currentStep;
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private List<ProcessProperty> processPropertyList;
 	private ProcessProperty processProperty;
@@ -93,9 +92,9 @@ public class BatchStepHelper {
 	private WebDav myDav = new WebDav();
 	private List<String> processNameList = new ArrayList<String>();
 
-	public BatchStepHelper(List<Schritt> steps) {
+	public BatchStepHelper(List<Step> steps) {
 		this.steps = steps;
-		for (Schritt s : steps) {
+		for (Step s : steps) {
 
 			this.processNameList.add(s.getProzess().getTitel());
 		}
@@ -106,19 +105,19 @@ public class BatchStepHelper {
 		}
 	}
 
-	public List<Schritt> getSteps() {
+	public List<Step> getSteps() {
 		return this.steps;
 	}
 
-	public void setSteps(List<Schritt> steps) {
+	public void setSteps(List<Step> steps) {
 		this.steps = steps;
 	}
 
-	public Schritt getCurrentStep() {
+	public Step getCurrentStep() {
 		return this.currentStep;
 	}
 
-	public void setCurrentStep(Schritt currentStep) {
+	public void setCurrentStep(Step currentStep) {
 		this.currentStep = currentStep;
 	}
 
@@ -156,7 +155,7 @@ public class BatchStepHelper {
 
 	public void setProcessName(String processName) {
 		this.processName = processName;
-		for (Schritt s : this.steps) {
+		for (Step s : this.steps) {
 			if (s.getProzess().getTitel().equals(processName)) {
 				this.currentStep = s;
 				loadProcessProperties(this.currentStep);
@@ -223,7 +222,7 @@ public class BatchStepHelper {
 			pe.setWert(this.processProperty.getValue());
 			pe.setContainer(this.processProperty.getContainer());
 
-			for (Schritt s : this.steps) {
+			for (Step s : this.steps) {
 			    Process process = s.getProzess();
 				if (!s.equals(this.currentStep)) {
 
@@ -276,11 +275,11 @@ public class BatchStepHelper {
 		}
 	}
 
-	private void loadProcessProperties(Schritt s) {
+	private void loadProcessProperties(Step s) {
 		this.containers = new TreeMap<Integer, PropertyListObject>();
 		this.processPropertyList = PropertyParser.getPropertiesForStep(s);
 		List<Process> pList = new ArrayList<Process>();
-		for (Schritt step : this.steps) {
+		for (Step step : this.steps) {
 			pList.add(step.getProzess());
 		}
 		for (ProcessProperty pt : this.processPropertyList) {
@@ -451,12 +450,12 @@ public class BatchStepHelper {
 		this.problemMessage = "";
 		this.myProblemStep = "";
 		saveStep();
-		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();
 	}
 
 	public String ReportProblemForAll() {
-		for (Schritt s : this.steps) {
+		for (Step s : this.steps) {
 			this.currentStep = s;
 			this.myDav.UploadFromHome(this.currentStep.getProzess());
 			reportProblem();
@@ -464,7 +463,7 @@ public class BatchStepHelper {
 		}
 		this.problemMessage = "";
 		this.myProblemStep = "";
-		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();
 	}
 
@@ -480,8 +479,8 @@ public class BatchStepHelper {
 		this.currentStep.setBearbeitungsbeginn(null);
 
 		try {
-			Schritt temp = null;
-			for (Schritt s : this.currentStep.getProzess().getSchritteList()) {
+			Step temp = null;
+			for (Step s : this.currentStep.getProzess().getSchritteList()) {
 				if (s.getTitel().equals(this.myProblemStep)) {
 					temp = s;
 				}
@@ -505,7 +504,7 @@ public class BatchStepHelper {
 										message));
 
 				temp.getEigenschaften().add(se);
-				this.stepDAO.save(temp);
+				StepManager.saveStep(temp);
 				this.currentStep
 						.getProzess()
 						.getHistory()
@@ -515,12 +514,12 @@ public class BatchStepHelper {
 				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 				 */
 				@SuppressWarnings("unchecked")
-				List<Schritt> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Schritt.class)
+				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
 						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
 						.add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
 						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
-				for (Iterator<Schritt> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-					Schritt step = iter.next();
+				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+					Step step = iter.next();
 					step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
 					step.setCorrectionStep();
 					step.setBearbeitungsende(null);
@@ -543,10 +542,10 @@ public class BatchStepHelper {
 	@SuppressWarnings("unchecked")
 	public List<SelectItem> getPreviousStepsForProblemReporting() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
-		List<Schritt> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Schritt.class)
+		List<Step> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
 				.add(Restrictions.lt("reihenfolge", this.currentStep.getReihenfolge())).addOrder(Order.desc("reihenfolge")).createCriteria("prozess")
 				.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
-		for (Schritt s : alleVorherigenSchritte) {
+		for (Step s : alleVorherigenSchritte) {
 			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
 		}
 		return answer;
@@ -555,10 +554,10 @@ public class BatchStepHelper {
 	@SuppressWarnings("unchecked")
 	public List<SelectItem> getNextStepsForProblemSolution() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
-		List<Schritt> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Schritt.class)
+		List<Step> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
 				.add(Restrictions.gt("reihenfolge", this.currentStep.getReihenfolge())).add(Restrictions.eq("prioritaet", 10))
 				.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
-		for (Schritt s : alleNachfolgendenSchritte) {
+		for (Step s : alleNachfolgendenSchritte) {
 			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
 		}
 		return answer;
@@ -570,12 +569,12 @@ public class BatchStepHelper {
 		this.solutionMessage = "";
 		this.mySolutionStep = "";
 
-		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();
 	}
 
 	public String SolveProblemForAll() {
-		for (Schritt s : this.steps) {
+		for (Step s : this.steps) {
 			this.currentStep = s;
 			solveProblem();
 			saveStep();
@@ -583,7 +582,7 @@ public class BatchStepHelper {
 		this.solutionMessage = "";
 		this.mySolutionStep = "";
 
-		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();
 	}
 
@@ -600,8 +599,8 @@ public class BatchStepHelper {
 		}
 
 		try {
-			Schritt temp = null;
-			for (Schritt s : this.currentStep.getProzess().getSchritteList()) {
+			Step temp = null;
+			for (Step s : this.currentStep.getProzess().getSchritteList()) {
 				if (s.getTitel().equals(this.mySolutionStep)) {
 					temp = s;
 				}
@@ -611,12 +610,12 @@ public class BatchStepHelper {
 				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 				 */
 				@SuppressWarnings("unchecked")
-				List<Schritt> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Schritt.class)
+				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
 						.add(Restrictions.ge("reihenfolge", this.currentStep.getReihenfolge()))
 						.add(Restrictions.le("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
 						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
-				for (Iterator<Schritt> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-					Schritt step = iter.next();
+				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+					Step step = iter.next();
 					step.setBearbeitungsstatusEnum(StepStatus.DONE);
 					step.setBearbeitungsende(now);
 					step.setPrioritaet(Integer.valueOf(0));
@@ -634,7 +633,7 @@ public class BatchStepHelper {
 					seg.setType(PropertyType.messageImportant);
 					seg.setCreationDate(new Date());
 					step.getEigenschaften().add(seg);
-					this.stepDAO.save(step);
+					StepManager.saveStep(step);
 				}
 			}
 			String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " ("
@@ -721,7 +720,7 @@ public class BatchStepHelper {
 		if (addToWikiField != null && addToWikiField.length() > 0) {
 			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-			for (Schritt s : this.steps) {
+			for (Step s : this.steps) {
 				s.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(s.getProzess(), s.getProzess().getWikifield(), "user", message));
 				try {
 				    ProcessManager.saveProcess(s.getProzess());
@@ -746,10 +745,10 @@ public class BatchStepHelper {
 	}
 
 	public void executeScript() {
-		for (Schritt step : this.steps) {
+		for (Step step : this.steps) {
 
 			if (step.getAllScripts().containsKey(this.script)) {
-				StepObject so = StepManager.getStepById(step.getId());
+				StepObject so = StepObjectManager.getStepById(step.getId());
 				String scriptPath = step.getAllScripts().get(this.script);
 
 				new HelperSchritteWithoutHibernate().executeScriptForStepObject(so, scriptPath, false);
@@ -760,7 +759,7 @@ public class BatchStepHelper {
 	}
 
 	public void ExportDMS() {
-		for (Schritt step : this.steps) {
+		for (Step step : this.steps) {
 			ExportDms export = new ExportDms();
 			try {
 				export.startExport(step.getProzess());
@@ -773,7 +772,7 @@ public class BatchStepHelper {
 
 	public String BatchDurchBenutzerZurueckgeben() {
 
-		for (Schritt s : this.steps) {
+		for (Step s : this.steps) {
 
 			this.myDav.UploadFromHome(s.getProzess());
 			s.setBearbeitungsstatusEnum(StepStatus.OPEN);
@@ -792,7 +791,7 @@ public class BatchStepHelper {
 			} catch (DAOException e) {
 			}
 		}
-		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();
 	}
 
@@ -803,7 +802,7 @@ public class BatchStepHelper {
 		// saveCurrentPropertyForAll();
 		// }
 		HelperSchritteWithoutHibernate helper = new HelperSchritteWithoutHibernate();
-		for (Schritt s : this.steps) {
+		for (Step s : this.steps) {
 			boolean error = false;
 			if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {
 				IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, s.getValidationPlugin());
@@ -866,12 +865,12 @@ public class BatchStepHelper {
 			}
 			if (!error) {
 				this.myDav.UploadFromHome(s.getProzess());
-				StepObject so = StepManager.getStepById(s.getId());
+				StepObject so = StepObjectManager.getStepById(s.getId());
 				so.setEditType(StepEditType.MANUAL_MULTI.getValue());
 				helper.CloseStepObjectAutomatic(so, true);
 			}
 		}
-		AktuelleSchritteForm asf = (AktuelleSchritteForm) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
 		return asf.FilterAlleStart();
 	}
 

@@ -55,8 +55,9 @@ import org.jdom.transform.XSLTransformException;
 import org.jdom.transform.XSLTransformer;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -204,7 +205,7 @@ public class ExportXmlLog implements IProcessDataExport {
 		// step information
 		Element steps = new Element("steps", xmlns);
 		ArrayList<Element> stepElements = new ArrayList<Element>();
-		for (Schritt s : process.getSchritteList()) {
+		for (Step s : process.getSchritteList()) {
 			Element stepElement = new Element("step", xmlns);
 			stepElement.setAttribute("stepID", String.valueOf(s.getId()));
 

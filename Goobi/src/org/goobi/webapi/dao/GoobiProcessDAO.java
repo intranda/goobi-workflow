@@ -28,7 +28,8 @@
 package org.goobi.webapi.dao;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.helper.Helper;
 import org.apache.log4j.Logger;
 import org.goobi.webapi.beans.GoobiProcess;
@@ -129,7 +130,7 @@ public class GoobiProcessDAO {
         try {
 
             Criteria criteria = session
-                    .createCriteria(Schritt.class)
+                    .createCriteria(Step.class)
                     .createAlias("prozess", "p")
                     .createAlias("prozess.werkstuecke", "w")
                     .createAlias("prozess.werkstuecke.eigenschaften", "we")

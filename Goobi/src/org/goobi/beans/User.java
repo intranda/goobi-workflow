@@ -38,7 +38,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
 import de.sub.goobi.beans.Benutzereigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -64,8 +63,8 @@ public class User implements Serializable, DatabaseObject {
 	private boolean confVorgangsdatumAnzeigen = false;
 	private String metadatenSprache;
 	private List<Usergroup> benutzergruppen;
-	private List<Schritt> schritte;
-	private List<Schritt> bearbeitungsschritte;
+	private List<Step> schritte;
+	private List<Step> bearbeitungsschritte;
 	private List<Project> projekte;
 	private List<Benutzereigenschaft> eigenschaften;
 	private boolean mitMassendownload = false;
@@ -207,11 +206,11 @@ public class User implements Serializable, DatabaseObject {
 		return benutzergruppen;
 	}
 
-	public List<Schritt> getSchritte() {
+	public List<Step> getSchritte() {
 		return this.schritte;
 	}
 
-	public void setSchritte(List<Schritt> schritte) {
+	public void setSchritte(List<Step> schritte) {
 		this.schritte = schritte;
 	}
 
@@ -223,11 +222,11 @@ public class User implements Serializable, DatabaseObject {
 		}
 	}
 
-	public List<Schritt> getBearbeitungsschritte() {
+	public List<Step> getBearbeitungsschritte() {
 		return this.bearbeitungsschritte;
 	}
 
-	public void setBearbeitungsschritte(List<Schritt> bearbeitungsschritte) {
+	public void setBearbeitungsschritte(List<Step> bearbeitungsschritte) {
 		this.bearbeitungsschritte = bearbeitungsschritte;
 	}
 

@@ -36,7 +36,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-public class StepManager {
+public class StepObjectManager {
 
 	private static final Logger logger = Logger.getLogger(MySQLHelper.class);
 

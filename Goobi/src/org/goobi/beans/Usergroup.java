@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.UserManager;
 
@@ -53,7 +52,7 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 	private String titel;
 	private Integer berechtigung;
 	private List<User> benutzer;
-	private List<Schritt> schritte;
+	private List<Step> schritte;
 	private boolean panelAusgeklappt = false;
 
 	public void lazyLoad(){
@@ -118,11 +117,11 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 		this.benutzer = benutzer;
 	}
 
-	public List<Schritt> getSchritte() {
+	public List<Step> getSchritte() {
 		return this.schritte;
 	}
 
-	public void setSchritte(List<Schritt> schritte) {
+	public void setSchritte(List<Step> schritte) {
 		this.schritte = schritte;
 	}
 

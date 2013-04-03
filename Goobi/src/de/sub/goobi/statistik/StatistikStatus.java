@@ -33,7 +33,7 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
 
 public class StatistikStatus {
 
@@ -41,7 +41,7 @@ public class StatistikStatus {
 	public static Dataset getDiagramm(List inProzesse) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		for (Process proz : (List<Process>) inProzesse) {
-			Schritt step = proz.getAktuellerSchritt();
+			Step step = proz.getAktuellerSchritt();
 			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
 			if (step != null) {
 				/* prüfen, ob der Schritt schon erfasst wurde, wenn ja hochzählen */

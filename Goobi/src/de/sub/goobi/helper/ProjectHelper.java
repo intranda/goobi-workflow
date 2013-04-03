@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.goobi.production.flow.statistics.StepInformation;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -44,7 +45,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.enums.StepStatus;
 
 public class ProjectHelper {
@@ -100,7 +100,7 @@ public class ProjectHelper {
 
 	
 
-		Criteria critSteps = session.createCriteria(Schritt.class);
+		Criteria critSteps = session.createCriteria(Step.class);
 
 		critSteps.createCriteria("prozess", "proc");
 		critSteps.addOrder(Order.asc("reihenfolge"));
@@ -146,7 +146,7 @@ public class ProjectHelper {
 			}
 		}
 
-		Criteria critStepDone = session.createCriteria(Schritt.class, "step");
+		Criteria critStepDone = session.createCriteria(Step.class, "step");
 
 		critStepDone.createCriteria("prozess", "proc");
 
@@ -253,7 +253,7 @@ public class ProjectHelper {
 		list = null;
 
 	
-		Criteria critSteps = session.createCriteria(Schritt.class);
+		Criteria critSteps = session.createCriteria(Step.class);
 
 		critSteps.createCriteria("prozess", "proc");
 		critSteps.addOrder(Order.asc("reihenfolge"));

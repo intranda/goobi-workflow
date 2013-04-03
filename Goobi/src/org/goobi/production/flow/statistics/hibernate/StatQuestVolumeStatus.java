@@ -30,6 +30,7 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Step;
 import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -42,7 +43,6 @@ import de.intranda.commons.chart.renderer.HtmlTableRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 
 /*****************************************************************************
@@ -67,7 +67,7 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
 		}
 
-		Criteria crit = Helper.getHibernateSession().createCriteria(Schritt.class);
+		Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
 		crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
 
 		if (originalFilter instanceof UserDefinedFilter) {
@@ -81,7 +81,7 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 		DataRow dRow = new DataRow(Helper.getTranslation("count"));
 
 		for (Object obj : crit.list()) {
-			Schritt step = (Schritt) obj;
+			Step step = (Step) obj;
 			String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
 			dRow.addValue(kurztitel, dRow.getValue(kurztitel) + 1);
 		}

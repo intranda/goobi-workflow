@@ -60,6 +60,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
@@ -88,7 +89,6 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -111,7 +111,7 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -124,7 +124,7 @@ public class ProcessBean extends BasisForm {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = Logger.getLogger(ProcessBean.class);
     private Process myProzess = new Process();
-    private Schritt mySchritt = new Schritt();
+    private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
     private IEvaluableFilter myFilteredDataSource;
     private List<ProcessCounterObject> myAnzahlList;
@@ -337,7 +337,7 @@ public class ProcessBean extends BasisForm {
     }
 
     private void deleteMetadataDirectory() {
-        for (Schritt step : this.myProzess.getSchritteList()) {
+        for (Step step : this.myProzess.getSchritteList()) {
             this.mySchritt = step;
             deleteSymlinksFromUserHomes();
         }
@@ -609,7 +609,7 @@ public class ProcessBean extends BasisForm {
      */
 
     public String SchrittNeu() {
-        this.mySchritt = new Schritt();
+        this.mySchritt = new Step();
         this.modusBearbeiten = "schritt";
         return "process_edit_step";
     }
@@ -927,7 +927,7 @@ public class ProcessBean extends BasisForm {
     }
 
     private void stepStatusUp(int processId) throws DAOException {
-        List<StepObject> stepList = StepManager.getStepsForProcess(processId);
+        List<StepObject> stepList = StepObjectManager.getStepsForProcess(processId);
 
         for (StepObject so : stepList) {
             if (so.getBearbeitungsstatus() != StepStatus.DONE.getValue()) {
@@ -939,7 +939,7 @@ public class ProcessBean extends BasisForm {
                     User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                     if (ben != null) {
                         so.setBearbeitungsbenutzer(ben.getId());
-                        StepManager.updateStep(so);
+                        StepObjectManager.updateStep(so);
                     }
                 }
                 break;
@@ -947,20 +947,20 @@ public class ProcessBean extends BasisForm {
         }
     }
 
-    private void debug(String message, List<Schritt> bla) {
-        for (Schritt s : bla) {
+    private void debug(String message, List<Step> bla) {
+        for (Step s : bla) {
             logger.warn(message + " " + s.getTitel() + "   " + s.getReihenfolge());
         }
     }
 
     private void stepStatusDown(Process proz) throws DAOException {
-        List<Schritt> tempList = new ArrayList<Schritt>(proz.getSchritteList());
+        List<Step> tempList = new ArrayList<Step>(proz.getSchritteList());
         debug("templist: ", tempList);
 
         Collections.reverse(tempList);
         debug("reverse: ", tempList);
 
-        for (Schritt step : tempList) {
+        for (Step step : tempList) {
             if (proz.getSchritteList().get(0) != step && step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
                 step.setEditTypeEnum(StepEditType.ADMIN);
                 mySchritt.setBearbeitungszeitpunkt(new Date());
@@ -1002,7 +1002,7 @@ public class ProcessBean extends BasisForm {
         if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-            StepObject so = StepManager.getStepById(this.mySchritt.getId());
+            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
             } else {
@@ -1074,15 +1074,15 @@ public class ProcessBean extends BasisForm {
         this.myProzessEigenschaft = myProzessEigenschaft;
     }
 
-    public Schritt getMySchritt() {
+    public Step getMySchritt() {
         return this.mySchritt;
     }
 
-    public void setMySchritt(Schritt mySchritt) {
+    public void setMySchritt(Step mySchritt) {
         this.mySchritt = mySchritt;
     }
 
-    public void setMySchrittReload(Schritt mySchritt) {
+    public void setMySchrittReload(Step mySchritt) {
         this.mySchritt = mySchritt;
     }
 

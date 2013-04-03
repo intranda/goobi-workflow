@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -42,7 +43,6 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 
@@ -69,7 +69,7 @@ public class HibernateProjectionProjectTaskList implements IProvideProjectTaskLi
 	private synchronized void calculate(Project inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
 
 		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Schritt.class);
+		Criteria crit = session.createCriteria(Step.class);
 
 		crit.createCriteria("prozess", "proc");
 		

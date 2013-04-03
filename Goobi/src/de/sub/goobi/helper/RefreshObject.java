@@ -31,7 +31,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.persistence.HibernateUtilOld;
 
 public class RefreshObject {
@@ -92,7 +93,7 @@ public class RefreshObject {
 		try {
 
 			Session session = HibernateUtilOld.getSessionFactory().openSession();
-			Schritt o = (Schritt) session.get(Schritt.class, stepID);
+			Step o = (Step) session.get(Step.class, stepID);
 			session.refresh(o);
 			session.close();
 		} catch (Exception e) {

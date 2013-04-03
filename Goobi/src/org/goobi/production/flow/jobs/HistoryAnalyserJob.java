@@ -41,14 +41,15 @@ import org.hibernate.Session;
 
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.unigoettingen.sub.commons.util.file.FileUtils;
 
 /**
@@ -131,7 +132,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	}
 
 	/****************************************************************************
-	 * update history for each {@link Schritt} of given {@link Prozess}
+	 * update history for each {@link Step} of given {@link Prozess}
 	 * 
 	 * @param inProcess
 	 *            given {@link Prozess}
@@ -156,7 +157,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 		 * </pre>
 		 */
 
-		for (Schritt step : inProcess.getSchritteList()) {
+		for (Step step : inProcess.getSchritteList()) {
 
 			switch (step.getBearbeitungsstatusEnum()) {
 
@@ -385,7 +386,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
 		// if storedValue is different to current value - update history
 		if (diff != 0) {
-			StepManager.addHistory(new Date(), diff, null, inType.getValue(), inProcess.getId());
+			StepObjectManager.addHistory(new Date(), diff, null, inType.getValue(), inProcess.getId());
 			return true;
 		} else {
 			return false;
@@ -460,17 +461,17 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	 * 
 	 * @param stepOrder
 	 */
-	private static Date getTimestampFromPreviousStep(Process inProcess, Schritt inStep) {
+	private static Date getTimestampFromPreviousStep(Process inProcess, Step inStep) {
 		Date eventTimestamp = null;
-		List<Schritt> tempList = inProcess.getSchritteList();
+		List<Step> tempList = inProcess.getSchritteList();
 
-		for (Schritt s : tempList) {
+		for (Step s : tempList) {
 			// making sure that we only look for timestamps in the step below
 			// this one
 			int index = tempList.indexOf(s);
 
 			if (s == inStep && index != 0) {
-				Schritt prevStep = tempList.get(index - 1);
+				Step prevStep = tempList.get(index - 1);
 
 				if (prevStep.getBearbeitungsende() != null) {
 					return prevStep.getBearbeitungsende();

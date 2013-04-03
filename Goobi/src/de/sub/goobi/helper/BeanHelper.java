@@ -34,12 +34,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -64,7 +64,7 @@ public class BeanHelper {
 
 	
 
-	public void EigenschaftHinzufuegen(Schritt inSchritt, String inTitel, String inWert) {
+	public void EigenschaftHinzufuegen(Step inSchritt, String inTitel, String inWert) {
 		Schritteigenschaft eig = new Schritteigenschaft();
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
@@ -107,13 +107,13 @@ public class BeanHelper {
 	
 
 	public void SchritteKopieren(Process prozessVorlage, Process prozessKopie) {
-		List<Schritt> mySchritte = new ArrayList<Schritt>();
-		for (Schritt step : prozessVorlage.getSchritteList()) {
+		List<Step> mySchritte = new ArrayList<Step>();
+		for (Step step : prozessVorlage.getSchritteList()) {
 
 			/* --------------------------------
 			 * Details des Schritts
 			 * --------------------------------*/
-			Schritt stepneu = new Schritt();
+			Step stepneu = new Step();
 			stepneu.setTypAutomatisch(step.isTypAutomatisch());
 			stepneu.setScriptname1(step.getScriptname1());
 			stepneu.setScriptname2(step.getScriptname2());

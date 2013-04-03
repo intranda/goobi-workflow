@@ -45,7 +45,8 @@ import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
@@ -70,13 +71,13 @@ public class VariableReplacer {
 	private final String namespaceMeta = "\\$\\(meta\\.([\\w.-]*)\\)";
 
 	private Process process;
-	private Schritt step;
+	private Step step;
 
 	@SuppressWarnings("unused")
 	private VariableReplacer() {
 	}
 
-	public VariableReplacer(DigitalDocument inDigitalDocument, Prefs inPrefs, Process p, Schritt s) {
+	public VariableReplacer(DigitalDocument inDigitalDocument, Prefs inPrefs, Process p, Step s) {
 		this.dd = inDigitalDocument;
 		this.prefs = inPrefs;
 		this.uhelp = new UghHelper();

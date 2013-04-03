@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.ScrollMode;
@@ -39,7 +40,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 
@@ -54,7 +54,7 @@ public class HibernateProjectTaskList implements IProvideProjectTaskList {
 
 	private synchronized void calculate(Project inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
 		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Schritt.class);
+		Criteria crit = session.createCriteria(Step.class);
 		crit.addOrder(Order.asc("reihenfolge"));
 		crit.createCriteria("prozess", "proz");
 		crit.add(Restrictions.eq("proz.istTemplate", Boolean.FALSE));
@@ -63,7 +63,7 @@ public class HibernateProjectTaskList implements IProvideProjectTaskList {
 		ScrollableResults list = crit.setCacheMode(CacheMode.IGNORE).scroll(ScrollMode.FORWARD_ONLY);
 
 		while (list.next()) {
-			Schritt step = (Schritt) list.get(0);
+			Step step = (Step) list.get(0);
 			String shorttitle = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
 
 			IProjectTask pt = null;

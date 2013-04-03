@@ -50,7 +50,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.modul.ExtendedDataImpl;
 import de.sub.goobi.modul.ExtendedProzessImpl;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -209,7 +210,7 @@ public class ModuleServerForm {
 	/**
 	 * Eine Shortsession für einen Schritt starten ================================================================
 	 */
-	public String startShortSession(Schritt inSchritt) throws GoobiException, XmlRpcException {
+	public String startShortSession(Step inSchritt) throws GoobiException, XmlRpcException {
 		myModule = null;
 		if (inSchritt.getTypModulName() == null || inSchritt.getTypModulName().length() == 0) {
 			Helper.setFehlerMeldung("this step has no mudule");

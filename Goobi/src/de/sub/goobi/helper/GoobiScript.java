@@ -41,6 +41,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -54,7 +55,6 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -65,11 +65,11 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
-import de.sub.goobi.persistence.SchrittDAO;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
@@ -220,9 +220,9 @@ public class GoobiScript {
 	private void runScript(List<Process> inProzesse, String stepname, String scriptname) {
 		HelperSchritteWithoutHibernate hs = new HelperSchritteWithoutHibernate();
 		for (Process p : inProzesse) {
-			for (Schritt step : p.getSchritteList()) {
+			for (Step step : p.getSchritteList()) {
 				if (step.getTitel().equalsIgnoreCase(stepname)) {
-					StepObject so = StepManager.getStepById(step.getId());
+					StepObject so = StepObjectManager.getStepById(step.getId());
 					if (scriptname != null) {
 						if (step.getAllScripts().containsKey(scriptname)) {
 							String path = step.getAllScripts().get(scriptname);
@@ -375,15 +375,14 @@ public class GoobiScript {
 		/*
 		 * -------------------------------- Durchführung der Action --------------------------------
 		 */
-		SchrittDAO sdao = new SchrittDAO();
 		for (Process proz : inProzesse) {
 			/*
 			 * -------------------------------- Swapsteps --------------------------------
 			 */
-			Schritt s1 = null;
-			Schritt s2 = null;
-			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-				Schritt s = iterator.next();
+			Step s1 = null;
+			Step s2 = null;
+			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
+				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("swap1title")) && s.getReihenfolge().intValue() == reihenfolge1) {
 					s1 = s;
 				}
@@ -398,8 +397,8 @@ public class GoobiScript {
 				s1.setReihenfolge(Integer.valueOf(reihenfolge2));
 				s2.setReihenfolge(Integer.valueOf(reihenfolge1));
 				try {
-					sdao.save(s1);
-					sdao.save(s2);
+				    StepManager.saveStep(s1);
+				    StepManager.saveStep(s2);
 				} catch (DAOException e) {
 					Helper.setFehlerMeldung("goobiScriptfield", "Error on save while swapping steps in process: ",
 							proz.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel());
@@ -431,8 +430,8 @@ public class GoobiScript {
 //		ProzessDAO sdao = new ProzessDAO();
 		for (Process proz : inProzesse) {
 			if (proz.getSchritte() != null) {
-				for (Iterator<Schritt> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
-					Schritt s = iterator.next();
+				for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
+					Step s = iterator.next();
 					if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 						proz.getSchritte().remove(s);
 						try {
@@ -476,12 +475,12 @@ public class GoobiScript {
 		 */
 //		ProzessDAO sdao = new ProzessDAO();
 		for (Process proz : inProzesse) {
-			Schritt s = new Schritt();
+			Step s = new Step();
 			s.setTitel(this.myParameters.get("steptitle"));
 			s.setReihenfolge(Integer.parseInt(this.myParameters.get("number")));
 			s.setProzess(proz);
 			if (proz.getSchritte() == null) {
-				proz.setSchritte(new ArrayList<Schritt>());
+				proz.setSchritte(new ArrayList<Step>());
 			}
 			proz.getSchritte().add(s);
 			try {
@@ -523,8 +522,8 @@ public class GoobiScript {
 //		ProzessDAO sdao = new ProzessDAO();
 		for (Process proz : inProzesse) {
 			if (proz.getSchritte() != null) {
-				for (Iterator<Schritt> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
-					Schritt s = iterator.next();
+				for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
+					Step s = iterator.next();
 					if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 						s.setTypAutomatischScriptpfad(this.myParameters.get("script"));
 						s.setScriptname1(this.myParameters.get("label"));
@@ -567,8 +566,8 @@ public class GoobiScript {
 //		ProzessDAO sdao = new ProzessDAO();
 		for (Process proz : inProzesse) {
 			if (proz.getSchritte() != null) {
-				for (Iterator<Schritt> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
-					Schritt s = iterator.next();
+				for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
+					Step s = iterator.next();
 					if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 						s.setTypModulName(this.myParameters.get("module"));
 						try {
@@ -629,8 +628,8 @@ public class GoobiScript {
 //		ProzessDAO sdao = new ProzessDAO();
 		for (Process proz : inProzesse) {
 			if (proz.getSchritte() != null) {
-				for (Iterator<Schritt> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
-					Schritt s = iterator.next();
+				for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
+					Step s = iterator.next();
 					if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 
 						if (property.equals("metadata")) {
@@ -696,14 +695,14 @@ public class GoobiScript {
 		/*
 		 * -------------------------------- Durchführung der Action --------------------------------
 		 */
-		SchrittDAO sdao = new SchrittDAO();
+
 		for (Process proz : inProzesse) {
-			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-				Schritt s = iterator.next();
+			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
+				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 					s.setBearbeitungsstatusAsString(this.myParameters.get("status"));
 					try {
-						sdao.save(s);
+					    StepManager.saveStep(s);
 					} catch (DAOException e) {
 						Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
 						logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -741,14 +740,14 @@ public class GoobiScript {
 		/*
 		 * -------------------------------- Durchführung der Action --------------------------------
 		 */
-		SchrittDAO sdao = new SchrittDAO();
+
 		for (Process proz : inProzesse) {
-			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-				Schritt s = iterator.next();
+			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
+				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 					s.setReihenfolge(Integer.parseInt(this.myParameters.get("number")));
 					try {
-						sdao.save(s);
+					    StepManager.saveStep(s);
 					} catch (DAOException e) {
 						Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
 						logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -795,10 +794,10 @@ public class GoobiScript {
 		/*
 		 * -------------------------------- Durchführung der Action --------------------------------
 		 */
-		SchrittDAO sdao = new SchrittDAO();
+
 		for (Process proz : inProzesse) {
-			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-				Schritt s = iterator.next();
+			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
+				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 					Set<User> myBenutzer = s.getBenutzer();
 					if (myBenutzer == null) {
@@ -808,7 +807,7 @@ public class GoobiScript {
 					if (!myBenutzer.contains(myUser)) {
 						myBenutzer.add(myUser);
 						try {
-							sdao.save(s);
+						    StepManager.saveStep(s);
 						} catch (DAOException e) {
 							Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + proz.getTitel(), e);
 							logger.error("goobiScriptfield" + "Error while saving - " + proz.getTitel(), e);
@@ -855,10 +854,10 @@ public class GoobiScript {
 		/*
 		 * -------------------------------- Durchführung der Action --------------------------------
 		 */
-		SchrittDAO sdao = new SchrittDAO();
+
 		for (Process proz : inProzesse) {
-			for (Iterator<Schritt> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-				Schritt s = iterator.next();
+			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
+				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
 					Set<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
 					if (myBenutzergruppe == null) {
@@ -868,7 +867,7 @@ public class GoobiScript {
 					if (!myBenutzergruppe.contains(myGroup)) {
 						myBenutzergruppe.add(myGroup);
 						try {
-							sdao.save(s);
+						    StepManager.saveStep(s);
 						} catch (DAOException e) {
 							Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + proz.getTitel(), e);
 							return;

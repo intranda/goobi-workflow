@@ -37,9 +37,9 @@ import org.hibernate.Hibernate;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -55,7 +55,7 @@ public class PropertyParser {
 
 	
 
-	public static ArrayList<ProcessProperty> getPropertiesForStep(Schritt mySchritt) {
+	public static ArrayList<ProcessProperty> getPropertiesForStep(Step mySchritt) {
 		Hibernate.initialize(mySchritt.getProzess());
 		Hibernate.initialize(mySchritt.getProzess().getProjekt());
 		String stepTitle = mySchritt.getTitel();

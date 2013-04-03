@@ -30,19 +30,19 @@ package de.sub.goobi.statistik;
 import java.util.Iterator;
 import java.util.List;
 
+import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
 
 public class StatistikBenutzergruppen {
 
 	public static Dataset getDiagramm(List<Process> inProzesse) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		for (Process proz : inProzesse) {
-			Schritt step = proz.getAktuellerSchritt();
+			Step step = proz.getAktuellerSchritt();
 			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
 			if (step != null) {
 				/* von dem Schritt alle verantwortlichen Benutzergruppen ermitteln und im Diagramm erfassen */

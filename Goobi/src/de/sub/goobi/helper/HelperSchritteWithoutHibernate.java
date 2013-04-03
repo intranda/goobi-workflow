@@ -58,7 +58,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.apache.FolderInformation;
 import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.RulesetManager;
 
@@ -100,17 +100,17 @@ public class HelperSchritteWithoutHibernate {
 		logger.debug("set new end date");
 		currentStep.setBearbeitungsende(myDate);
 		logger.debug("saving step");
-		StepManager.updateStep(currentStep);
+		StepObjectManager.updateStep(currentStep);
 		List<StepObject> automatischeSchritte = new ArrayList<StepObject>();
 		List<StepObject> stepsToFinish = new ArrayList<StepObject>();
 
 		logger.debug("create history events for step");
 
-		StepManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitle(),
+		StepObjectManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitle(),
 				HistoryEventType.stepDone.getValue(), processId);
 		/* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
 
-		List<StepObject> steps = StepManager.getStepsForProcess(processId);
+		List<StepObject> steps = StepObjectManager.getStepsForProcess(processId);
 		List<StepObject> allehoeherenSchritte = new ArrayList<StepObject>();
 		int offeneSchritteGleicherReihenfolge = 0;
 		for (StepObject so : steps) {
@@ -139,7 +139,7 @@ public class HelperSchritteWithoutHibernate {
 					myStep.setBearbeitungszeitpunkt(myDate);
 					myStep.setEditType(4);
 					logger.debug("create history events for next step");
-					StepManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitle(),
+					StepObjectManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitle(),
 							HistoryEventType.stepOpen.getValue(), processId);
 					/* wenn es ein automatischer Schritt mit Script ist */
 					logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
@@ -150,7 +150,7 @@ public class HelperSchritteWithoutHibernate {
 						stepsToFinish.add(myStep);
 					}
 					logger.debug("");
-					StepManager.updateStep(myStep);
+					StepObjectManager.updateStep(myStep);
 					matched = true;
 
 				} else {
@@ -197,7 +197,7 @@ public class HelperSchritteWithoutHibernate {
 		int offen = 0;
 		int inBearbeitung = 0;
 		int abgeschlossen = 0;
-		List<StepObject> stepsForProcess = StepManager.getStepsForProcess(processId);
+		List<StepObject> stepsForProcess = StepObjectManager.getStepsForProcess(processId);
 		for (StepObject step : stepsForProcess) {
 			if (step.getBearbeitungsstatus() == 3) {
 				abgeschlossen++;
@@ -226,7 +226,7 @@ public class HelperSchritteWithoutHibernate {
 	}
 
 	public void executeAllScriptsForStep(StepObject step, boolean automatic) {
-		List<String> scriptpaths = StepManager.loadScripts(step.getId());
+		List<String> scriptpaths = StepObjectManager.loadScripts(step.getId());
 		int count = 1;
 		int size = scriptpaths.size();
 		int returnParameter = 0;
@@ -285,7 +285,7 @@ public class HelperSchritteWithoutHibernate {
 						ivp.setStepObject(step);
 						if (!ivp.validate()) {
 							step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
-							StepManager.updateStep(step);
+							StepObjectManager.updateStep(step);
 						} else {
 							CloseStepObjectAutomatic(step);							
 						}
@@ -296,7 +296,7 @@ public class HelperSchritteWithoutHibernate {
 				} else {
 					step.setEditType(StepEditType.AUTOMATIC.getValue());
 					step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
-					StepManager.updateStep(step);
+					StepObjectManager.updateStep(step);
 				}
 			}
 		} catch (IOException e) {
@@ -358,6 +358,6 @@ public class HelperSchritteWithoutHibernate {
 		step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
 		step.setEditType(StepEditType.AUTOMATIC.getValue());
 
-		StepManager.updateStep(step);
+		StepObjectManager.updateStep(step);
 	}
 }

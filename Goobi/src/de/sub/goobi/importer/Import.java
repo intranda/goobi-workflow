@@ -32,6 +32,7 @@ import java.io.StringReader;
 
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
+import org.goobi.beans.Step;
 
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -39,7 +40,6 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.WrongImportFileException;
@@ -54,7 +54,7 @@ public class Import {
 	private static final Logger myLogger = Logger.getLogger(Import.class);
 	private String importFehler = "";
 	private String importMeldung = "";
-	private Schritt mySchritt;
+	private Step mySchritt;
 	private UploadedFile upDatei;
 
 	/**
@@ -141,11 +141,11 @@ public class Import {
 		this.upDatei = inUpDatei;
 	}
 
-	public Schritt getMySchritt() {
+	public Step getMySchritt() {
 		return this.mySchritt;
 	}
 
-	public void setMySchritt(Schritt mySchritt) {
+	public void setMySchritt(Step mySchritt) {
 		this.mySchritt = mySchritt;
 	}
 

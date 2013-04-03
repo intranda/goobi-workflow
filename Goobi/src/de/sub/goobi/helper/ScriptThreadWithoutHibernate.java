@@ -34,7 +34,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 
 public class ScriptThreadWithoutHibernate extends Thread {
@@ -54,7 +54,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
 
 		boolean automatic = this.step.isTypAutomatisch();
 		logger.debug("step is automatic: " + automatic);
-		List<String> scriptPaths = StepManager.loadScripts(this.step.getId());
+		List<String> scriptPaths = StepObjectManager.loadScripts(this.step.getId());
 		logger.debug("found " + scriptPaths.size() + " scripts");
 		if (scriptPaths.size() > 0) {
 			this.hs.executeAllScriptsForStep(this.step, automatic);

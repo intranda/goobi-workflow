@@ -47,7 +47,7 @@ import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.apache.ProcessManager;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 
 public class JobCreation {
@@ -101,7 +101,7 @@ public class JobCreation {
 				p = cp.createProcess(io);
 				if (p != null && p.getId() != null) {
 					moveFiles(metsfile, basepath, p);
-					List<StepObject> steps = StepManager.getStepsForProcess(p.getId());
+					List<StepObject> steps = StepObjectManager.getStepsForProcess(p.getId());
 					for (StepObject s : steps) {
 						if (s.getBearbeitungsstatus() == 1 && s.isTypAutomatisch()) {
 							ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);

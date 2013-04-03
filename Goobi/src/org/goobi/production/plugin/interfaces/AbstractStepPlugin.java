@@ -31,10 +31,10 @@ import java.util.HashMap;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.StepReturnValue;
 
-import de.sub.goobi.beans.Schritt;
 
 @PluginImplementation
 public abstract class AbstractStepPlugin implements IStepPlugin {
@@ -45,11 +45,11 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
 	protected String version = "1.0";
 	protected String description = "Abstract description for abstract step";
 
-	protected Schritt myStep;
+	protected Step myStep;
 	protected String returnPath;
 
 	@Override
-	public void initialize(Schritt inStep, String inReturnPath) {
+	public void initialize(Step inStep, String inReturnPath) {
 		this.myStep = inStep;
 		this.returnPath = inReturnPath;
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
 	}
 
 	@Override
-	public Schritt getStep() {
+	public Step getStep() {
 		return this.myStep;
 	}
 

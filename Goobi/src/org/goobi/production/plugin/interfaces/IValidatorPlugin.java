@@ -27,7 +27,8 @@ package org.goobi.production.plugin.interfaces;
  * exception statement from your version.
  */
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.persistence.apache.StepObject;
 
 public interface IValidatorPlugin extends IPlugin {
@@ -36,9 +37,9 @@ public interface IValidatorPlugin extends IPlugin {
 
 	public boolean validate();
 	
-	public Schritt getStep();
+	public Step getStep();
 	
-	public void setStep(Schritt step);
+	public void setStep(Step step);
 	
 	public StepObject getStepObject();
 	

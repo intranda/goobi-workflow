@@ -105,9 +105,9 @@ class ProcessMysqlHelper {
             logger.debug(sql.toString());
             List<Process> ret = null;
             if (filter != null && !filter.isEmpty()) {
-                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
+                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             } else {
-                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
+                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             }
             return ret;
         } finally {
@@ -121,14 +121,14 @@ class ProcessMysqlHelper {
         sql.append("SELECT * FROM prozesse");
         try {
             logger.debug(sql.toString());
-            List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProjectListHandler);
+            List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             return ret;
         } finally {
             MySQLHelper.closeConnection(connection);
         }
     }
 
-    public static ResultSetHandler<List<Process>> resultSetToProjectListHandler = new ResultSetHandler<List<Process>>() {
+    public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
         public List<Process> handle(ResultSet rs) throws SQLException {
             List<Process> answer = new ArrayList<Process>();
 
@@ -173,10 +173,15 @@ class ProcessMysqlHelper {
     }
 
     private static String generateInsertQuery(boolean includeProcessId) {
-        // TODO include ProzesseID
+        if (!includeProcessId) {
         return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                 + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
                 + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
+        } else {
+            return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
+                    + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
+                    + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
+        }
     }
 
     private static String generateValueQuery(boolean includeProcessId) {
@@ -196,6 +201,7 @@ class ProcessMysqlHelper {
         }
 
         Timestamp datetime = new Timestamp(d.getTime());
+        if (!includeProcessID) {
         Object[] param =
                 { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                         o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
@@ -203,6 +209,15 @@ class ProcessMysqlHelper {
                         o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
 
         return param;
+        } else {
+            Object[] param =
+                { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
+                        o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
+                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
+                        o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
+
+        return param;
+        }
     }
 
     private static void updateProcess(Process o) throws SQLException {

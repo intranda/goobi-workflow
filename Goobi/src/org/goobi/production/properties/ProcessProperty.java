@@ -39,8 +39,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.goobi.beans.Step;
+
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 
 public class ProcessProperty implements IProperty, Serializable {
 
@@ -288,7 +289,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	 * @see org.goobi.production.properties.IProperty#save(de.sub.goobi.Beans.Schritt)
 	 */
 
-	public void save(Schritt step) {
+	public void save(Step step) {
 		if (this.prozesseigenschaft != null) {
 
 		}

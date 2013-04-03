@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -36,22 +36,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.goobi.beans.User;
-import org.goobi.beans.Usergroup;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.HibernateUtilOld;
 
-import org.goobi.beans.Process;
 
-public class Schritt implements Serializable {
+public class Step implements Serializable {
 	private static final long serialVersionUID = 6831844584239811846L;
 	private Integer id;
 	private String titel;
@@ -108,7 +106,7 @@ public class Schritt implements Serializable {
 	private String stepPlugin;
 	private String validationPlugin;
 
-	public Schritt() {
+	public Step() {
 		this.titel = "";
 		this.eigenschaften = new HashSet<Schritteigenschaft>();
 		this.benutzer = new HashSet<User>();
@@ -805,7 +803,7 @@ public class Schritt implements Serializable {
 		if (batchNumber != null) {
 			// only steps with same title
 			Session session = Helper.getHibernateSession();
-			Criteria crit = session.createCriteria(Schritt.class);
+			Criteria crit = session.createCriteria(Step.class);
 			crit.add(Restrictions.eq("titel", this.titel));
 			// only steps with same batchid
 			crit.createCriteria("prozess", "proc");
@@ -823,13 +821,13 @@ public class Schritt implements Serializable {
 	 * 
 	 * @return Employee The current object representing a row.
 	 */
-	public Schritt getCurrent() {
+	public Step getCurrent() {
 		boolean hasOpen = HibernateUtilOld.hasOpenSession();
 		Session sess = Helper.getHibernateSession();
 
-		Schritt current = (Schritt) sess.get(Schritt.class, this.getId());
+		Step current = (Step) sess.get(Step.class, this.getId());
 		if (current == null) {
-			current = (Schritt) sess.load(Schritt.class, this.getId());
+			current = (Step) sess.load(Step.class, this.getId());
 		}
 		if (!hasOpen) {
 			current.eigenschaften.size();

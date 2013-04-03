@@ -29,12 +29,12 @@
 package org.goobi.mq.processors;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.goobi.managedbeans.StepBean;
 import org.goobi.mq.ActiveMQProcessor;
 import org.goobi.mq.MapMessageObjectReader;
 
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.AktuelleSchritteForm;
-import de.sub.goobi.persistence.SchrittDAO;
+import de.sub.goobi.persistence.managers.StepManager;
 
 /**
  * This is a web service interface to close steps. You have to provide the step
@@ -67,9 +67,9 @@ public class FinaliseStepProcessor extends ActiveMQProcessor {
 	 * @see org.goobi.mq.ActiveMQProcessor#process(org.goobi.mq.MapMessageObjectReader)
 	 */
 	protected void process(MapMessageObjectReader ticket) throws Exception {
-		AktuelleSchritteForm dialog = new AktuelleSchritteForm();
+		StepBean dialog = new StepBean();
 		Integer stepID = ticket.getMandatoryInteger("id");
-		dialog.setMySchritt(new SchrittDAO().get(stepID));
+		dialog.setMySchritt(StepManager.getStepById(stepID));
 		if (ticket.hasField("message"))
 			addMessageToWikiField(dialog, ticket.getString("message"));
 		dialog.SchrittDurchBenutzerAbschliessen();
@@ -86,7 +86,7 @@ public class FinaliseStepProcessor extends ActiveMQProcessor {
 	 * @param message
 	 *            the message to append
 	 */
-	protected void addMessageToWikiField(AktuelleSchritteForm form, String message) {
+	protected void addMessageToWikiField(StepBean form, String message) {
 		StringBuilder composer = new StringBuilder();
 		String wikiField = form.getWikiField();
 		if (wikiField != null && wikiField.length() > 0) {

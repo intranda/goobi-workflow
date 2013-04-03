@@ -68,7 +68,8 @@ import org.jdom.input.SAXBuilder;
 
 import ugh.dl.Prefs;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritt;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 
@@ -118,7 +119,7 @@ public class MassImportForm {
 			if (this.template.getSchritteList().size() == 0) {
 				Helper.setFehlerMeldung("noStepsInWorkflow");
 			}
-			for (Schritt s : this.template.getSchritteList()) {
+			for (Step s : this.template.getSchritteList()) {
 				if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
 					List<String> param = new ArrayList<String>();
 					param.add(s.getTitel());

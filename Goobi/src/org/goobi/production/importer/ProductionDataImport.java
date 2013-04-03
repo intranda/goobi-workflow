@@ -47,6 +47,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -58,7 +59,6 @@ import com.thoughtworks.xstream.XStream;
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -140,9 +140,9 @@ public class ProductionDataImport {
 		template.setRegelsatz(ruleset);
 
 		session.save(template);
-		List<Schritt> step = getSteps(template);
+		List<Step> step = getSteps(template);
 		template.setSchritte(step);
-		for (Schritt s : step) {
+		for (Step s : step) {
 			session.save(s);
 		}
 		session.save(template);
@@ -265,9 +265,9 @@ public class ProductionDataImport {
 		session.save(we);
 		session.save(v);
 		session.save(prozess);
-		List<Schritt> step = getSteps(prozess);
+		List<Step> step = getSteps(prozess);
 		prozess.setSchritte(step);
-		for (Schritt s : step) {
+		for (Step s : step) {
 			session.save(s);
 		}
 
@@ -280,7 +280,7 @@ public class ProductionDataImport {
 
 	}
 
-	private void generateStepProperty(Session session, Schritt s, String name, String value, PropertyType type, Integer position, boolean required) {
+	private void generateStepProperty(Session session, Step s, String name, String value, PropertyType type, Integer position, boolean required) {
 		if (value != null) {
 			Schritteigenschaft property = new Schritteigenschaft();
 			property.setCreationDate(new Date());
@@ -412,7 +412,7 @@ public class ProductionDataImport {
 			generateVorlageProperty(session, v, "Signatur", pd.getWERKSIGNATUR(), PropertyType.String, 0, false);
 
 		}
-		for (Schritt s : prozess.getSchritte()) {
+		for (Step s : prozess.getSchritte()) {
 			if (s.getTitel().contains("Bibliographisch") || (s.getTitel().contains("bibliographische "))) {
 				s.setBearbeitungsende(pd.getDATUMAUFNAHMEWERK());
 				s.setEditTypeEnum(StepEditType.ADMIN);
@@ -696,9 +696,9 @@ public class ProductionDataImport {
 
 		}
 
-		List<Schritt> stepList = p.getSchritteList();
+		List<Step> stepList = p.getSchritteList();
 
-		for (Schritt s : stepList) {
+		for (Step s : stepList) {
 
 			/********************************************
 			 * step 'scannen' *
@@ -798,7 +798,7 @@ public class ProductionDataImport {
 
 		// History Events
 
-		for (Schritt s : stepList) {
+		for (Step s : stepList) {
 			if (s.getTitel().equals("Bibliographische Aufnahme")) {
 				p.getHistory().add(new HistoryEvent(pd.getDATUMAUFNAHMEWERK(), s.getReihenfolge(), s.getTitel(), HistoryEventType.stepDone, p));
 			} else if (s.getTitel().equals("scannen")) {
@@ -835,51 +835,51 @@ public class ProductionDataImport {
 		session.clear();
 	}
 
-	private List<Schritt> getSteps(Process prozess) {
-		List<Schritt> stepList = new ArrayList<Schritt>();
+	private List<Step> getSteps(Process prozess) {
+		List<Step> stepList = new ArrayList<Step>();
 		try {
 			Usergroup adm = UsergroupManager.getUsergroupById(6);
 			Usergroup importGoe = UsergroupManager.getUsergroupById(15);
-			Schritt biblio = new Schritt();
+			Step biblio = new Step();
 			biblio.setReihenfolge(0);
 			biblio.setTitel("Bibliographische Aufnahme");
 			biblio.setProzess(prozess);
 			biblio.setBearbeitungsstatusEnum(StepStatus.DONE);
 			biblio.getBenutzergruppen().add(adm);
-			Schritt scanning = new Schritt();
+			Step scanning = new Step();
 			scanning.setReihenfolge(1);
 			scanning.setTitel("scannen");
 			scanning.setProzess(prozess);
 			scanning.setBearbeitungsstatusEnum(StepStatus.OPEN);
 			scanning.getBenutzergruppen().add(adm);
-			Schritt qk = new Schritt();
+			Step qk = new Step();
 			qk.setReihenfolge(2);
 			qk.setTitel("Qualitaetskontrolle");
 			qk.setProzess(prozess);
 			qk.getBenutzergruppen().add(adm);
-			Schritt image = new Schritt();
+			Step image = new Step();
 			image.setReihenfolge(3);
 			image.setTitel("Imagenachbearbeitung");
 			image.setProzess(prozess);
 			image.getBenutzergruppen().add(adm);
-			Schritt export = new Schritt();
+			Step export = new Step();
 			export.setReihenfolge(4);
 			export.setTitel("Archivierung");
 			export.setProzess(prozess);
 			export.getBenutzergruppen().add(adm);
-			Schritt cd = new Schritt();
+			Step cd = new Step();
 			cd.setReihenfolge(5);
 			cd.setTitel("Import von CD");
 			cd.setProzess(prozess);
 			cd.getBenutzergruppen().add(adm);
 
-			Schritt importDms = new Schritt();
+			Step importDms = new Step();
 			importDms.setReihenfolge(6);
 			importDms.setTitel("Import DMS");
 			importDms.setProzess(prozess);
 			importDms.getBenutzergruppen().add(importGoe);
 
-			Schritt longtimearchive = new Schritt();
+			Step longtimearchive = new Step();
 			longtimearchive.setReihenfolge(7);
 			longtimearchive.setTitel("Langzeitarchivierung");
 			longtimearchive.setProzess(prozess);

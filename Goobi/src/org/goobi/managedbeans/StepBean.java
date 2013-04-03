@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -44,8 +44,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -67,11 +67,11 @@ import org.hibernate.criterion.Restrictions;
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import de.sub.goobi.beans.Prozesseigenschaft;
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
+import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.BatchStepHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
@@ -87,18 +87,18 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.SchrittDAO;
-import de.sub.goobi.persistence.apache.StepManager;
+import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 
 @ManagedBean(name="AktuelleSchritteForm") 
 @SessionScoped
-public class AktuelleSchritteForm extends BasisForm {
+public class StepBean extends BasisForm {
 	private static final long serialVersionUID = 5841566727939692509L;
-	private static final Logger myLogger = Logger.getLogger(AktuelleSchritteForm.class);
+	private static final Logger myLogger = Logger.getLogger(StepBean.class);
 	private Process myProzess = new Process();
-	private Schritt mySchritt = new Schritt();
+	private Step mySchritt = new Step();
 	private Integer myProblemID;
 	private Integer mySolutionID;
 	private String problemMessage;
@@ -126,7 +126,7 @@ public class AktuelleSchritteForm extends BasisForm {
 	private List<ProcessProperty> processPropertyList;
 	private ProcessProperty processProperty;
 
-	public AktuelleSchritteForm() {
+	public StepBean() {
 		this.anzeigeAnpassen = new HashMap<String, Boolean>();
 		this.anzeigeAnpassen.put("lockings", false);
 		this.anzeigeAnpassen.put("selectionBoxes", false);
@@ -301,14 +301,14 @@ public class AktuelleSchritteForm extends BasisForm {
 	@SuppressWarnings("unchecked")
 	public String TakeOverBatch() {
 		// find all steps with same batch id and step status
-		List<Schritt> currentStepsOfBatch = new ArrayList<Schritt>();
+		List<Step> currentStepsOfBatch = new ArrayList<Step>();
 
 		String steptitle = this.mySchritt.getTitel();
 		Integer batchNumber = this.mySchritt.getProzess().getBatchID();
 		if (batchNumber != null) {
 			// only steps with same title
 			Session session = Helper.getHibernateSession();
-			Criteria crit = session.createCriteria(Schritt.class);
+			Criteria crit = session.createCriteria(Step.class);
 			crit.add(Restrictions.eq("titel", steptitle));
 			// only steps with same batchid
 			crit.createCriteria("prozess", "proc");
@@ -329,7 +329,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			return SchrittDurchBenutzerUebernehmen();
 		}
 
-		for (Schritt s : currentStepsOfBatch) {
+		for (Step s : currentStepsOfBatch) {
 
 			if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
 				s.setBearbeitungsstatusEnum(StepStatus.INWORK);
@@ -380,7 +380,7 @@ public class AktuelleSchritteForm extends BasisForm {
 	@SuppressWarnings("unchecked")
 	public String BatchesEdit() {
 		// find all steps with same batch id and step status
-		List<Schritt> currentStepsOfBatch = new ArrayList<Schritt>();
+		List<Step> currentStepsOfBatch = new ArrayList<Step>();
 
 		String steptitle = this.mySchritt.getTitel();
 		Integer batchNumber = this.mySchritt.getProzess().getBatchID();
@@ -388,7 +388,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			// only steps with same title
 		
 			Session session = Helper.getHibernateSession();
-			Criteria crit = session.createCriteria(Schritt.class);
+			Criteria crit = session.createCriteria(Step.class);
 			crit.add(Restrictions.eq("titel", steptitle));
 			// only steps with same batchid
 			crit.createCriteria("prozess", "proc");
@@ -511,7 +511,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		 */
 		this.myDav.UploadFromHome(this.mySchritt.getProzess());
 		this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
-		StepObject so = StepManager.getStepById(this.mySchritt.getId());
+		StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
 		new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
 		// new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
 		return FilterAlleStart();
@@ -537,8 +537,8 @@ public class AktuelleSchritteForm extends BasisForm {
 	 */
 
 	@SuppressWarnings("unchecked")
-	public List<Schritt> getPreviousStepsForProblemReporting() {
-		List<Schritt> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Schritt.class)
+	public List<Step> getPreviousStepsForProblemReporting() {
+		List<Step> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
 				.add(Restrictions.lt("reihenfolge", this.mySchritt.getReihenfolge())).addOrder(Order.desc("reihenfolge")).createCriteria("prozess")
 				.add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
 		return alleVorherigenSchritte;
@@ -564,8 +564,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.mySchritt.setBearbeitungsbeginn(null);
 
 		try {
-			SchrittDAO dao = new SchrittDAO();
-			Schritt temp = dao.get(this.myProblemID);
+			Step temp = StepManager.getStepById(myProblemID);
 			temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
 			// if (temp.getPrioritaet().intValue() == 0)
 			temp.setCorrectionStep();
@@ -582,7 +581,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			this.mySchritt.getProzess().setWikifield(
 					WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "error", message));
 			temp.getEigenschaften().add(se);
-			dao.save(temp);
+			StepManager.saveStep(temp);
 			this.mySchritt
 					.getProzess()
 					.getHistory()
@@ -590,11 +589,11 @@ public class AktuelleSchritteForm extends BasisForm {
 			/*
 			 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 			 */
-			List<Schritt> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Schritt.class)
+			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
 					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
 					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
-			for (Iterator<Schritt> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-				Schritt step = iter.next();
+			for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+				Step step = iter.next();
 				step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
 				// if (step.getPrioritaet().intValue() == 0)
 				step.setCorrectionStep();
@@ -606,7 +605,7 @@ public class AktuelleSchritteForm extends BasisForm {
 				seg.setType(PropertyType.messageImportant);
 				seg.setCreationDate(new Date());
 				step.getEigenschaften().add(seg);
-				dao.save(step);
+				StepManager.saveStep(step);
 			}
 
 			/*
@@ -626,8 +625,8 @@ public class AktuelleSchritteForm extends BasisForm {
 	 */
 
 	@SuppressWarnings("unchecked")
-	public List<Schritt> getNextStepsForProblemSolution() {
-		List<Schritt> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Schritt.class)
+	public List<Step> getNextStepsForProblemSolution() {
+		List<Step> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
 				.add(Restrictions.gt("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.eq("prioritaet", 10))
 				.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
 		return alleNachfolgendenSchritte;
@@ -651,16 +650,16 @@ public class AktuelleSchritteForm extends BasisForm {
 		}
 
 		try {
-			SchrittDAO dao = new SchrittDAO();
-			Schritt temp = dao.get(this.mySolutionID);
+
+			Step temp = StepManager.getStepById(this.mySolutionID);
 			/*
 			 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 			 */
-			List<Schritt> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Schritt.class)
+			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
 					.add(Restrictions.ge("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.le("reihenfolge", temp.getReihenfolge()))
 					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
-			for (Iterator<Schritt> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-				Schritt step = iter.next();
+			for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+				Step step = iter.next();
 				step.setBearbeitungsstatusEnum(StepStatus.DONE);
 				step.setBearbeitungsende(now);
 				step.setPrioritaet(Integer.valueOf(0));
@@ -683,7 +682,7 @@ public class AktuelleSchritteForm extends BasisForm {
 				seg.setType(PropertyType.messageImportant);
 				seg.setCreationDate(new Date());
 				step.getEigenschaften().add(seg);
-				dao.save(step);
+				StepManager.saveStep(step);
 			}
 
 			/*
@@ -749,8 +748,8 @@ public class AktuelleSchritteForm extends BasisForm {
 			String element = iter.next();
 			String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
 
-			for (Iterator<Schritt> iterator = this.page.getCompleteList().iterator(); iterator.hasNext();) {
-				Schritt step = iterator.next();
+			for (Iterator<Step> iterator = this.page.getCompleteList().iterator(); iterator.hasNext();) {
+				Step step = iterator.next();
 				/*
 				 * nur wenn der Schritt bereits im Bearbeitungsmodus ist, abschliessen
 				 */
@@ -772,8 +771,8 @@ public class AktuelleSchritteForm extends BasisForm {
 	@SuppressWarnings("unchecked")
 	public String DownloadToHomePage() {
 
-		for (Iterator<Schritt> iter = this.page.getListReload().iterator(); iter.hasNext();) {
-			Schritt step = iter.next();
+		for (Iterator<Step> iter = this.page.getListReload().iterator(); iter.hasNext();) {
+			Step step = iter.next();
 			if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
 				step.setBearbeitungsstatusEnum(StepStatus.INWORK);
 				step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
@@ -800,8 +799,8 @@ public class AktuelleSchritteForm extends BasisForm {
 	@SuppressWarnings("unchecked")
 	public String DownloadToHomeHits() {
 
-		for (Iterator<Schritt> iter = this.page.getCompleteList().iterator(); iter.hasNext();) {
-			Schritt step = iter.next();
+		for (Iterator<Step> iter = this.page.getCompleteList().iterator(); iter.hasNext();) {
+			Step step = iter.next();
 			if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
 				step.setBearbeitungsstatusEnum(StepStatus.INWORK);
 				step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
@@ -835,7 +834,7 @@ public class AktuelleSchritteForm extends BasisForm {
 	}
 
 	public void executeScript() {
-		StepObject so = StepManager.getStepById(this.mySchritt.getId());
+		StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
 		new HelperSchritteWithoutHibernate().executeScriptForStepObject(so, this.scriptPath, false);
 
 	}
@@ -868,8 +867,8 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.pageAnzahlImages = 0;
 		User aktuellerBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 		if (aktuellerBenutzer != null && aktuellerBenutzer.isMitMassendownload()) {
-			for (Iterator<Schritt> iter = this.page.getCompleteList().iterator(); iter.hasNext();) {
-				Schritt step = iter.next();
+			for (Iterator<Step> iter = this.page.getCompleteList().iterator(); iter.hasNext();) {
+				Step step = iter.next();
 				try {
 					if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
 						// gesamtAnzahlImages +=
@@ -895,7 +894,7 @@ public class AktuelleSchritteForm extends BasisForm {
 		this.myProzess = myProzess;
 	}
 
-	public Schritt getMySchritt() {
+	public Step getMySchritt() {
 		try {
 			schrittPerParameterLaden();
 		} catch (NumberFormatException e) {
@@ -906,18 +905,18 @@ public class AktuelleSchritteForm extends BasisForm {
 		return this.mySchritt;
 	}
 
-	public void setMySchritt(Schritt mySchritt) {
+	public void setMySchritt(Step mySchritt) {
 		this.modusBearbeiten = "";
 		this.mySchritt = mySchritt;
 		loadProcessProperties();
 	}
 
-	public void setStep(Schritt step) {
+	public void setStep(Step step) {
 		this.mySchritt = step;
 		loadProcessProperties();
 	}
 
-	public Schritt getStep() {
+	public Step getStep() {
 		return this.mySchritt;
 	}
 
@@ -990,7 +989,7 @@ public class AktuelleSchritteForm extends BasisForm {
 			}
 			Integer inParam = Integer.valueOf(param);
 			if (this.mySchritt == null || this.mySchritt.getId() == null || !this.mySchritt.getId().equals(inParam)) {
-				this.mySchritt = new SchrittDAO().get(inParam);
+				this.mySchritt = StepManager.getStepById(inParam);
 			}
 		}
 	}
@@ -1001,16 +1000,16 @@ public class AktuelleSchritteForm extends BasisForm {
 
 	@SuppressWarnings("unchecked")
 	public void SelectionAll() {
-		for (Iterator<Schritt> iter = this.page.getList().iterator(); iter.hasNext();) {
-			Schritt s = iter.next();
+		for (Iterator<Step> iter = this.page.getList().iterator(); iter.hasNext();) {
+			Step s = iter.next();
 			s.setSelected(true);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void SelectionNone() {
-		for (Iterator<Schritt> iter = this.page.getList().iterator(); iter.hasNext();) {
-			Schritt s = iter.next();
+		for (Iterator<Step> iter = this.page.getList().iterator(); iter.hasNext();) {
+			Step s = iter.next();
 			s.setSelected(false);
 		}
 	}

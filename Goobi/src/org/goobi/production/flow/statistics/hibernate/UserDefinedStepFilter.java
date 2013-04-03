@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import org.goobi.beans.Step;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.Schritt;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.PaginatingCriteria;
 
@@ -104,7 +104,7 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 
 	private Criteria createCriteriaFromIDList() {
 		Session session = Helper.getHibernateSession();
-		Criteria crit = new PaginatingCriteria(Schritt.class, session);
+		Criteria crit = new PaginatingCriteria(Step.class, session);
 		crit.add(Restrictions.in("id", myIds));
 		return crit;
 	}
@@ -112,7 +112,7 @@ public class UserDefinedStepFilter implements IEvaluableFilter, Cloneable {
 	private Criteria createCriteriaFromFilterString(String filter) {
 		Session session = Helper.getHibernateSession();
 
-		PaginatingCriteria crit = new PaginatingCriteria(Schritt.class, session);
+		PaginatingCriteria crit = new PaginatingCriteria(Step.class, session);
 
 		/*
 		 * -------------------------------- combine all parameters together this
