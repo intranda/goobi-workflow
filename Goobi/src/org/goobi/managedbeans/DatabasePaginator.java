@@ -28,6 +28,7 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -38,158 +39,167 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
 
 public class DatabasePaginator implements Serializable {
-	private static final long serialVersionUID = 1571881092118205104L;
-	private static final Logger logger = Logger.getLogger(DatabasePaginator.class);
-	private List<? extends DatabaseObject> results;
-	private int pageSize = 0;
-	private int page = 0;
-	private int totalResults = 0;
-	private String order = "";
-	private String filter = new String();
-	private IManager manager;
+    private static final long serialVersionUID = 1571881092118205104L;
+    private static final Logger logger = Logger.getLogger(DatabasePaginator.class);
+    private List<? extends DatabaseObject> results;
+    private int pageSize = 0;
+    private int page = 0;
+    private int totalResults = 0;
+    private String order = "";
+    private String filter = new String();
+    private IManager manager;
 
-	public DatabasePaginator(String order, String filter, IManager manager) {
-		this.page = 0;
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		if (login == null || login.getMyBenutzer() == null) {
-			this.pageSize = 10;
-		} else {
-			this.pageSize = login.getMyBenutzer().getTabellengroesse().intValue();
-		}
-		this.order = order;
-		this.filter = filter;
-		this.manager = manager;
-		try {
-			totalResults = manager.getHitSize(order, filter);
-			load();
-		} catch (DAOException e) {
-			logger.error("Failed to count results", e);
-		}
-	}
+    public DatabasePaginator(String order, String filter, IManager manager) {
+        this.page = 0;
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (login == null || login.getMyBenutzer() == null) {
+            this.pageSize = 10;
+        } else {
+            this.pageSize = login.getMyBenutzer().getTabellengroesse().intValue();
+        }
+        this.order = order;
+        this.filter = filter;
+        this.manager = manager;
+        try {
+            totalResults = manager.getHitSize(order, filter);
+            load();
+        } catch (DAOException e) {
+            logger.error("Failed to count results", e);
+        }
+    }
 
-	public int getLastPageNumber() {
-		int ret = new Double(Math.floor(this.totalResults / this.pageSize)).intValue();
-		if (this.totalResults % this.pageSize == 0) {
-			ret--;
-		}
-		return ret;
-	}
+    public int getLastPageNumber() {
+        int ret = new Double(Math.floor(this.totalResults / this.pageSize)).intValue();
+        if (this.totalResults % this.pageSize == 0) {
+            ret--;
+        }
+        return ret;
+    }
 
-	// public List<? extends DatabaseObject> getList() {
-	// return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
-	// }
+    // public List<? extends DatabaseObject> getList() {
+    // return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
+    // }
 
-	public int getTotalResults() {
-		return this.totalResults;
-	}
+    public int getTotalResults() {
+        return this.totalResults;
+    }
 
-	public int getFirstResultNumber() {
-		return this.page * this.pageSize + 1;
-	}
+    public int getFirstResultNumber() {
+        return this.page * this.pageSize + 1;
+    }
 
-	public int getLastResultNumber() {
-		int fullPage = getFirstResultNumber() + this.pageSize - 1;
-		return getTotalResults() < fullPage ? getTotalResults() : fullPage;
-	}
+    public int getLastResultNumber() {
+        int fullPage = getFirstResultNumber() + this.pageSize - 1;
+        return getTotalResults() < fullPage ? getTotalResults() : fullPage;
+    }
 
-	// public List<? extends DatabaseObject> getListReload() {
-	// try {
-	// results = manager.getList(order, filter, this.page * this.pageSize , pageSize);
-	// for (DatabaseObject d : results) {
-	// d.lazyLoad();
-	// }
-	//
-	// } catch (DAOException e) {
-	// logger.error("Failed to load paginated results", e);
-	// }
-	// return results;
-	// }
+    // public List<? extends DatabaseObject> getListReload() {
+    // try {
+    // results = manager.getList(order, filter, this.page * this.pageSize , pageSize);
+    // for (DatabaseObject d : results) {
+    // d.lazyLoad();
+    // }
+    //
+    // } catch (DAOException e) {
+    // logger.error("Failed to load paginated results", e);
+    // }
+    // return results;
+    // }
 
-	public List<? extends DatabaseObject> getList() {
-		return results;
-	}
+    public List<? extends DatabaseObject> getList() {
+        return results;
+    }
 
-	public void load() {
-		try {
-			results = manager.getList(order, filter, this.page * this.pageSize, pageSize);
-			for (DatabaseObject d : results) {
-				d.lazyLoad();
-			}
+    public void load() {
+        try {
+            results = manager.getList(order, filter, this.page * this.pageSize, pageSize);
+            for (DatabaseObject d : results) {
+                d.lazyLoad();
+            }
 
-		} catch (DAOException e) {
-			logger.error("Failed to load paginated results", e);
-		}
-	}
+        } catch (DAOException e) {
+            logger.error("Failed to load paginated results", e);
+        }
+    }
 
-	/*
-	 * einfache Navigationsaufgaben
-	 */
+    /*
+     * einfache Navigationsaufgaben
+     */
 
-	public boolean isFirstPage() {
-		return this.page == 0;
-	}
+    public boolean isFirstPage() {
+        return this.page == 0;
+    }
 
-	public boolean isLastPage() {
-		return this.page >= getLastPageNumber();
-	}
+    public boolean isLastPage() {
+        return this.page >= getLastPageNumber();
+    }
 
-	public boolean hasNextPage() {
-		return this.results.size() > this.pageSize;
-	}
+    public boolean hasNextPage() {
+        return this.results.size() > this.pageSize;
+    }
 
-	public boolean hasPreviousPage() {
-		return this.page > 0;
-	}
+    public boolean hasPreviousPage() {
+        return this.page > 0;
+    }
 
-	public Long getPageNumberCurrent() {
-		return Long.valueOf(this.page + 1);
-	}
+    public Long getPageNumberCurrent() {
+        return Long.valueOf(this.page + 1);
+    }
 
-	public Long getPageNumberLast() {
-		return Long.valueOf(getLastPageNumber() + 1);
-	}
+    public Long getPageNumberLast() {
+        return Long.valueOf(getLastPageNumber() + 1);
+    }
 
-	public String cmdMoveFirst() {
-		if (this.page != 0) {
-			this.page = 0;
-			load();
-		}
-		return "";
-	}
+    public String cmdMoveFirst() {
+        if (this.page != 0) {
+            this.page = 0;
+            load();
+        }
+        return "";
+    }
 
-	public String cmdMovePrevious() {
-		if (!isFirstPage()) {
-			this.page--;
-			load();
-		}
-		return "";
-	}
+    public String cmdMovePrevious() {
+        if (!isFirstPage()) {
+            this.page--;
+            load();
+        }
+        return "";
+    }
 
-	public String cmdMoveNext() {
-		if (!isLastPage()) {
-			this.page++;
-			load();
-		}
-		return "";
-	}
+    public String cmdMoveNext() {
+        if (!isLastPage()) {
+            this.page++;
+            load();
+        }
+        return "";
+    }
 
-	public String cmdMoveLast() {
-		if (this.page != getLastPageNumber()){
-			this.page = getLastPageNumber();
-			load();
-		}
-		return "";
-	}
+    public String cmdMoveLast() {
+        if (this.page != getLastPageNumber()) {
+            this.page = getLastPageNumber();
+            load();
+        }
+        return "";
+    }
 
-	public void setTxtMoveTo(int neueSeite) {
-		if ((this.page != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
-			this.page = neueSeite - 1;
-			load();
-		}
-	}
+    public void setTxtMoveTo(int neueSeite) {
+        if ((this.page != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
+            this.page = neueSeite - 1;
+            load();
+        }
+    }
 
-	public int getTxtMoveTo() {
-		return this.page + 1;
-	}
+    public int getTxtMoveTo() {
+        return this.page + 1;
+    }
+
+    public List<? extends DatabaseObject> getCompleteList() {
+        try {
+            return manager.getList(order, filter, 0, Integer.MAX_VALUE);
+        } catch (DAOException e) {
+            logger.error("Failed to load paginated results", e);
+        }
+        return new ArrayList<DatabaseObject>();
+    }
 
 }

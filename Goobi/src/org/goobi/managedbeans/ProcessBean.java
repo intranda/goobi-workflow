@@ -431,8 +431,8 @@ public class ProcessBean extends BasisForm {
 
     public String NeuenVorgangAnlegen() {
         FilterVorlagen();
-        if (this.page.getTotalResults() == 1) {
-            Process einziger = (Process) this.page.getListReload().get(0);
+        if (this.paginator.getTotalResults() == 1) {
+            Process einziger = (Process) this.paginator.getList().get(0);
             ProzesskopieForm pkf = (ProzesskopieForm) Helper.getManagedBeanValue("#{ProzesskopieForm}");
             pkf.setProzessVorlage(einziger);
             return pkf.Prepare();
@@ -766,7 +766,7 @@ public class ProcessBean extends BasisForm {
     public void ExportDMSPage() {
         ExportDms export = new ExportDms();
         Boolean flagError = false;
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             try {
                 export.startExport(proz);
             } catch (Exception e) {
@@ -795,7 +795,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void ExportDMSSelection() {
         ExportDms export = new ExportDms();
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
                 try {
                     export.startExport(proz);
@@ -811,7 +811,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void ExportDMSHits() {
         ExportDms export = new ExportDms();
-        for (Process proz : (List<Process>) this.page.getCompleteList()) {
+        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             try {
                 export.startExport(proz);
             } catch (Exception e) {
@@ -856,7 +856,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void DownloadToHomePage() {
         WebDav myDav = new WebDav();
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             /*
              * zunächst prüfen, ob dieser Band gerade von einem anderen Nutzer in Bearbeitung ist und in dessen Homeverzeichnis abgelegt wurde,
              * ansonsten Download
@@ -875,7 +875,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void DownloadToHomeSelection() {
         WebDav myDav = new WebDav();
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
                 if (!proz.isImageFolderInUse()) {
                     myDav.DownloadToHome(proz, 0, false);
@@ -892,7 +892,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void DownloadToHomeHits() {
         WebDav myDav = new WebDav();
-        for (Process proz : (List<Process>) this.page.getCompleteList()) {
+        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             if (!proz.isImageFolderInUse()) {
                 myDav.DownloadToHome(proz, 0, false);
             } else {
@@ -906,14 +906,14 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenPage() throws DAOException {
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             stepStatusUp(proz.getId());
         }
     }
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenSelection() throws DAOException {
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
                 stepStatusUp(proz.getId());
             }
@@ -922,7 +922,7 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenHits() throws DAOException {
-        for (Process proz : (List<Process>) this.page.getCompleteList()) {
+        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             stepStatusUp(proz.getId());
         }
     }
@@ -978,14 +978,14 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusRuntersetzenPage() throws DAOException {
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             stepStatusDown(proz);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusRuntersetzenSelection() throws DAOException {
-        for (Process proz : (List<Process>) this.page.getListReload()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
                 stepStatusDown(proz);
             }
@@ -994,7 +994,7 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusRuntersetzenHits() throws DAOException {
-        for (Process proz : (List<Process>) this.page.getCompleteList()) {
+        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             stepStatusDown(proz);
         }
     }
@@ -1041,14 +1041,14 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void SelectionAll() {
-        for (Process proz : (List<Process>) this.page.getList()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             proz.setSelected(true);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void SelectionNone() {
-        for (Process proz : (List<Process>) this.page.getList()) {
+        for (Process proz : (List<Process>) this.paginator.getList()) {
             proz.setSelected(false);
         }
     }
@@ -1298,13 +1298,13 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void CalcMetadataAndImagesPage() throws IOException, InterruptedException, SwapException, DAOException {
-        CalcMetadataAndImages(this.page.getListReload());
+        CalcMetadataAndImages((List<Process>) this.paginator.getList());
     }
 
     @SuppressWarnings("unchecked")
     public void CalcMetadataAndImagesSelection() throws IOException, InterruptedException, SwapException, DAOException {
         ArrayList<Process> auswahl = new ArrayList<Process>();
-        for (Process p : (List<Process>) this.page.getListReload()) {
+        for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
                 auswahl.add(p);
             }
@@ -1314,7 +1314,7 @@ public class ProcessBean extends BasisForm {
 
     @SuppressWarnings("unchecked")
     public void CalcMetadataAndImagesHits() throws IOException, InterruptedException, SwapException, DAOException {
-        CalcMetadataAndImages(this.page.getCompleteList());
+        CalcMetadataAndImages((List<Process>) this.paginator.getCompleteList());
     }
 
     private void CalcMetadataAndImages(List<Process> inListe) throws IOException, InterruptedException, SwapException, DAOException {
@@ -1401,7 +1401,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void GoobiScriptHits() {
         GoobiScript gs = new GoobiScript();
-        gs.execute(this.page.getCompleteList(), this.goobiScript);
+        gs.execute((List<Process>) this.paginator.getCompleteList(), this.goobiScript);
     }
 
     /**
@@ -1410,7 +1410,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void GoobiScriptPage() {
         GoobiScript gs = new GoobiScript();
-        gs.execute(this.page.getListReload(), this.goobiScript);
+        gs.execute((List<Process>) this.paginator.getList(), this.goobiScript);
     }
 
     /**
@@ -1419,7 +1419,7 @@ public class ProcessBean extends BasisForm {
     @SuppressWarnings("unchecked")
     public void GoobiScriptSelection() {
         ArrayList<Process> auswahl = new ArrayList<Process>();
-        for (Process p : (List<Process>) this.page.getListReload()) {
+        for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
                 auswahl.add(p);
             }
@@ -1493,12 +1493,12 @@ public class ProcessBean extends BasisForm {
     }
 
     public String getMyDatasetHoehe() {
-        int bla = this.page.getCompleteList().size() * 20;
+        int bla = this.paginator.getTotalResults() * 20;
         return String.valueOf(bla);
     }
 
     public int getMyDatasetHoeheInt() {
-        int bla = this.page.getCompleteList().size() * 20;
+        int bla = this.paginator.getTotalResults() * 20;
         return bla;
     }
 

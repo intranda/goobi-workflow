@@ -8,8 +8,9 @@
 	<composite:implementation>
 
 		<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
-		<h:panelGroup
-			rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2)}">
+		<h:panelGroup>
+<!-- 			rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2)}"> -->
+
 			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
 				<tr>
 					<td class="eingabeBoxen_row1">
@@ -21,7 +22,7 @@
 						<h:panelGrid columns="1">
 
 							<!-- Upload-Schaltknopf -->
-							<h:commandLink rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.page.totalResults > 0 }" id="action1"
+							<h:commandLink rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }" id="action1"
 								action="#{ProzessverwaltungForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
 								onclick="if (!confirm('#{msgs.upload}?')) return">
 								<h:graphicImage value="images/buttons/load_up_set_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -29,7 +30,7 @@
 							</h:commandLink>
 
 							<h:panelGroup
-								rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+								rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton1">
 									<h:graphicImage value="images/buttons/load_down_set_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -68,7 +69,7 @@
 							</h:panelGroup>
 
 							<h:panelGroup
-								rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+								rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton2">
 									<h:graphicImage value="images/buttons/dms.png" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -109,7 +110,7 @@
 							</h:panelGroup>
 
 							<!-- Bearbeitungsstatus hochsetzen-->
-							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.page.totalResults > 0 }">
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton3">
 									<h:graphicImage value="images/buttons/step_for_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -145,7 +146,7 @@
 
 							</h:panelGroup>
 
-							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton4">
 									<h:graphicImage value="images/buttons/step_back_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -183,7 +184,7 @@
 							</h:panelGroup>
 
 							<h:panelGroup
-								rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.page.totalResults > 0 }">
+								rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton5">
 									<h:graphicImage value="images/buttons/admin4b.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -193,10 +194,11 @@
 									<f:ajax render="expandbutton5" />
 								</h:commandLink>
 
+								<h:messages for="goobiScriptfield" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" />
+								
 								<x:div id="possibleActions5" style="display:none">
 									<h:panelGrid columns="1" style="margin-left:40px">
 
-										<h:message for="goobiScriptfield" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" />
 
 										<table>
 											<tr>
@@ -274,14 +276,14 @@
 
 							</h:panelGroup>
 
-							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								<h:graphicImage value="images/buttons/excel20.png" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
 								<h:commandLink action="#{ProzessverwaltungForm.generateResult}" title="#{msgs.createExcel}">
 									<h:outputText value="#{msgs.createExcel}" />
 								</h:commandLink>
 							</h:panelGroup>
 
-							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								<h:graphicImage value="images/buttons/pdf.png" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
 								<h:commandLink action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}">
 									<h:outputText value="#{msgs.createPdf}" />
@@ -289,7 +291,7 @@
 							</h:panelGroup>
 
 
-							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton6">
 									<h:graphicImage value="images/buttons/statistik1_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -322,7 +324,7 @@
 
 							</h:panelGroup>
 
-							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.page.totalResults > 0 }">
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 								<h:commandLink id="expandbutton7">
 									<h:graphicImage value="images/buttons/statistik4_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
