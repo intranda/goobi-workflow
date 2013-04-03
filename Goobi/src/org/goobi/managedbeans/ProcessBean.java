@@ -423,7 +423,6 @@ public class ProcessBean extends BasisForm {
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
         ProcessManager m = new ProcessManager();
-        System.out.println(sql);
         paginator = new DatabasePaginator(sortList(), sql, m);
         this.modusAnzeige = "vorlagen";
         return "process_all";
