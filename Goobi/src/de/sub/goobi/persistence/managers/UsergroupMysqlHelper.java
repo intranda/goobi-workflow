@@ -111,4 +111,18 @@ public class UsergroupMysqlHelper {
 			}
 		}
 	}
+
+    public static List<Usergroup> getUserGroupsForStep(Integer stepId) throws SQLException {
+        String sql =
+                "select * from benutzergruppen where BenutzergruppenID in (select BenutzergruppenID from schritteberechtigtegruppen where  schritteberechtigtegruppen.schritteID = ? )";
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            Object[] param = { stepId };
+            logger.debug(sql.toString() + ", " + param);
+            return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
 }

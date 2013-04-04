@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -69,9 +68,9 @@ public class BeanHelper {
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
 		eig.setSchritt(inSchritt);
-		Set<Schritteigenschaft> eigenschaften = inSchritt.getEigenschaften();
+		List<Schritteigenschaft> eigenschaften = inSchritt.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Schritteigenschaft>();
+			eigenschaften = new ArrayList<Schritteigenschaft>();
 		}
 		eigenschaften.add(eig);
 	}
@@ -154,7 +153,7 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Eigenschaften des Schritts
 			 * --------------------------------*/
-			HashSet<Schritteigenschaft> myEigenschaften = new HashSet<Schritteigenschaft>();
+			List<Schritteigenschaft> myEigenschaften = new ArrayList<Schritteigenschaft>();
 			for (Schritteigenschaft eig : step.getEigenschaftenList()) {
 				Schritteigenschaft eigneu = new Schritteigenschaft();
 				eigneu.setIstObligatorisch(eig.isIstObligatorisch());
@@ -169,7 +168,7 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Benutzer übernehmen
 			 * --------------------------------*/
-			HashSet<User> myBenutzer = new HashSet<User>();
+			List<User> myBenutzer = new ArrayList<User>();
 			for (User benneu : step.getBenutzer()) {
 				myBenutzer.add(benneu);
 			}
@@ -178,7 +177,7 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Benutzergruppen übernehmen
 			 * --------------------------------*/
-			HashSet<Usergroup> myBenutzergruppen = new HashSet<Usergroup>();
+			List<Usergroup> myBenutzergruppen = new ArrayList<Usergroup>();
 			for (Usergroup grupneu : step.getBenutzergruppen()) {
 				myBenutzergruppen.add(grupneu);
 			}

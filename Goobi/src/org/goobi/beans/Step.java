@@ -32,9 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -46,8 +46,11 @@ import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.HibernateUtilOld;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.UserManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
 
 public class Step implements Serializable, DatabaseObject, Comparable<Step>{
@@ -97,9 +100,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	private Integer processId;
 	
 	
-	private Set<Schritteigenschaft> eigenschaften;
-	private Set<User> benutzer;
-	private Set<Usergroup> benutzergruppen;
+	private List<Schritteigenschaft> eigenschaften;
+	private List<User> benutzer;
+	private List<Usergroup> benutzergruppen;
 	private boolean panelAusgeklappt = false;
 	private boolean selected = false;
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
@@ -109,9 +112,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 
 	public Step() {
 		this.titel = "";
-		this.eigenschaften = new HashSet<Schritteigenschaft>();
-		this.benutzer = new HashSet<User>();
-		this.benutzergruppen = new HashSet<Usergroup>();
+		this.eigenschaften = new ArrayList<Schritteigenschaft>();
+		this.benutzer = new ArrayList<User>();
+		this.benutzergruppen = new ArrayList<Usergroup>();
 		this.prioritaet = Integer.valueOf(0);
 		this.reihenfolge = Integer.valueOf(0);
 		setBearbeitungsstatusEnum(StepStatus.LOCKED);
@@ -341,30 +344,30 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 		this.panelAusgeklappt = panelAusgeklappt;
 	}
 
-	public Set<Schritteigenschaft> getEigenschaften() {
+	public List<Schritteigenschaft> getEigenschaften() {
 		if (this.eigenschaften == null) {
-			this.eigenschaften = new HashSet<Schritteigenschaft>();
+			this.eigenschaften = new ArrayList<Schritteigenschaft>();
 		}
 		return this.eigenschaften;
 	}
 
-	public void setEigenschaften(Set<Schritteigenschaft> eigenschaften) {
+	public void setEigenschaften(List<Schritteigenschaft> eigenschaften) {
 		this.eigenschaften = eigenschaften;
 	}
 
-	public Set<User> getBenutzer() {
+	public List<User> getBenutzer() {
 		return this.benutzer;
 	}
 
-	public void setBenutzer(Set<User> benutzer) {
+	public void setBenutzer(List<User> benutzer) {
 		this.benutzer = benutzer;
 	}
 
-	public Set<Usergroup> getBenutzergruppen() {
+	public List<Usergroup> getBenutzergruppen() {
 		return this.benutzergruppen;
 	}
 
-	public void setBenutzergruppen(Set<Usergroup> benutzergruppen) {
+	public void setBenutzergruppen(List<Usergroup> benutzergruppen) {
 		this.benutzergruppen = benutzergruppen;
 	}
 
@@ -879,9 +882,26 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 
     @Override
     public void lazyLoad() {
-        prozess = ProcessManager.getProcessById(processId);
+        if (processId != null) {
+            prozess = ProcessManager.getProcessById(processId);
+        } 
+        if (userId != null) {
+            try {
+                bearbeitungsbenutzer = UserManager.getUserById(userId);
+            } catch (DAOException e) {
+              
+            }
+        }      
+        // Eigenschaften
         
-        // TODO Auto-generated method stub
+        // Nutzer
+        if (benutzer == null) {
+            benutzer = UserManager.getUserForStep(id);
+        }
+        // Nutzergruppen
+        if (benutzergruppen == null) {
+            benutzergruppen = UsergroupManager.getUserGroupsForStep(id);
+        }
         
     }
 

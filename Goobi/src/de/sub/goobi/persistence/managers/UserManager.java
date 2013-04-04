@@ -125,6 +125,17 @@ public class UserManager implements IManager {
 		return answer;
 	}
 	
+	public static List<User> getUserForStep(int stepId) {
+	    List<User> userList = new ArrayList<User>();
+	    try {
+	        userList = UserMysqlHelper.getUserForStep(stepId);
+        } catch (SQLException e) {
+            logger.error("Cannot not load user for step with id " + stepId, e);
+        }
+	    return userList;
+	}
+	
+	
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
 	public static User convert(ResultSet rs) throws SQLException {

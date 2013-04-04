@@ -34,10 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
@@ -275,11 +273,9 @@ public class ProzesskopieForm {
 		/* Einschränkung auf bestimmte Projekte, wenn kein Admin */
 		LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		User aktuellerNutzer = loginForm.getMyBenutzer();
-		try {
+		
 			aktuellerNutzer = UserManager.getUserById(loginForm.getMyBenutzer().getId());
-		} catch (DAOException e) {
-			myLogger.error(e);
-		}
+		
 		if (aktuellerNutzer != null) {
 			/*
 			 * wenn die maximale Berechtigung nicht Admin ist, dann nur bestimmte

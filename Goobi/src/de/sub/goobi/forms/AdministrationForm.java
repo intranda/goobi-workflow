@@ -31,10 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
@@ -175,7 +173,7 @@ public class AdministrationForm implements Serializable {
     //TODO: Remove this
     public void SiciKorr() throws DAOException {
         Usergroup gruppe = UsergroupManager.getUsergroupById(15);
-        Set<Usergroup> neueGruppen = new HashSet<Usergroup>();
+        List<Usergroup> neueGruppen = new ArrayList<Usergroup>();
         neueGruppen.add(gruppe);
 
         //TODO: Try to avoid SQL

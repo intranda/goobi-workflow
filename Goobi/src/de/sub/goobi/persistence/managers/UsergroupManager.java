@@ -117,6 +117,16 @@ public class UsergroupManager implements IManager {
 		}
 	};
 
+    public static List<Usergroup> getUserGroupsForStep(Integer stepId) {
+        List<Usergroup> userGroupList = new ArrayList<Usergroup>();
+        try {
+            userGroupList = UsergroupMysqlHelper.getUserGroupsForStep(stepId);
+        } catch (SQLException e) {
+            logger.error("Cannot not load user for step with id " + stepId, e);
+        }
+        return userGroupList;
+    }
+
 
 
 }

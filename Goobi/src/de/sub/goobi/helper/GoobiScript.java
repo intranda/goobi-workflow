@@ -799,9 +799,9 @@ public class GoobiScript {
 			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
 				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-					Set<User> myBenutzer = s.getBenutzer();
+					List<User> myBenutzer = s.getBenutzer();
 					if (myBenutzer == null) {
-						myBenutzer = new HashSet<User>();
+						myBenutzer = new ArrayList<User>();
 						s.setBenutzer(myBenutzer);
 					}
 					if (!myBenutzer.contains(myUser)) {
@@ -859,9 +859,9 @@ public class GoobiScript {
 			for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
 				Step s = iterator.next();
 				if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-					Set<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
+					List<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
 					if (myBenutzergruppe == null) {
-						myBenutzergruppe = new HashSet<Usergroup>();
+						myBenutzergruppe = new ArrayList<Usergroup>();
 						s.setBenutzergruppen(myBenutzergruppe);
 					}
 					if (!myBenutzergruppe.contains(myGroup)) {
