@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,10 @@ import org.goobi.beans.Step;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public class StepManager implements IManager {
+public class StepManager implements IManager, Serializable {
+    
+  
+    private static final long serialVersionUID = -8285339735960375871L;
     private static final Logger logger = Logger.getLogger(StepManager.class);
 
     @Override
@@ -24,7 +28,7 @@ public class StepManager implements IManager {
 
     }
 
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
         return (List<? extends DatabaseObject>) getSteps(order, filter, start, count);

@@ -49,8 +49,7 @@ import org.goobi.beans.User;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-import org.goobi.production.flow.statistics.hibernate.IEvaluableFilter;
-import org.goobi.production.flow.statistics.hibernate.UserDefinedStepFilter;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -59,7 +58,6 @@ import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -76,7 +74,6 @@ import de.sub.goobi.helper.BatchStepHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritteWithoutHibernate;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -114,7 +111,6 @@ public class StepBean extends BasisForm {
 	private boolean showAutomaticTasks = false;
 	private boolean hideCorrectionTasks = false;
 	private HashMap<String, Boolean> anzeigeAnpassen;
-	private IEvaluableFilter myFilteredDataSource;
 	private String scriptPath;
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private String addToWikiField = "";
@@ -153,78 +149,97 @@ public class StepBean extends BasisForm {
 	 * Anzeige der Schritte
 	 */
 	public String FilterAlleStart() {
-		try {
-			this.myFilteredDataSource = new UserDefinedStepFilter(true);
-
-			this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
-			((UserDefinedStepFilter) this.myFilteredDataSource).setFilterModes(this.nurOffeneSchritte, this.nurEigeneSchritte);
-			this.myFilteredDataSource.setFilter(this.filter);
-
-			Criteria crit = this.myFilteredDataSource.getCriteria();
-			if (!this.showAutomaticTasks) {
-				crit.add(Restrictions.eq("typAutomatisch", false));
-			}
-			if (hideCorrectionTasks) {
-				crit.add(Restrictions.not(Restrictions.eq("prioritaet", 10)));
-			}
-
-			sortList(crit);
-			this.page = new Page(crit, 0);
-		} catch (HibernateException he) {
-			Helper.setFehlerMeldung("error on reading database", he.getMessage());
-			return "";
-		}
+	    
+	    StepManager m = new StepManager();
+	    String sql = FilterHelper.criteriaBuilder(filter, false, null, nurOffeneSchritte, nurEigeneSchritte, false, true);
+	    // TODO automatic tasks
+	    // TODO hide correction tasks
+	    
+	    paginator = new DatabasePaginator(sortList(), sql, m);
+	    
+//		try {
+//			this.myFilteredDataSource = new UserDefinedStepFilter(true);
+//
+//			this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
+//			((UserDefinedStepFilter) this.myFilteredDataSource).setFilterModes(this.nurOffeneSchritte, this.nurEigeneSchritte);
+//			this.myFilteredDataSource.setFilter(this.filter);
+//
+//			Criteria crit = this.myFilteredDataSource.getCriteria();
+//			if (!this.showAutomaticTasks) {
+//				crit.add(Restrictions.eq("typAutomatisch", false));
+//			}
+//			if (hideCorrectionTasks) {
+//				crit.add(Restrictions.not(Restrictions.eq("prioritaet", 10)));
+//			}
+//
+//			sortList(crit);
+//			this.page = new Page(crit, 0);
+//		} catch (HibernateException he) {
+//			Helper.setFehlerMeldung("error on reading database", he.getMessage());
+//			return "";
+//		}
 		return "task_all";
 	}
 
-	private void sortList(Criteria inCrit) {
-		inCrit.addOrder(Order.desc("prioritaet"));
+	private String sortList() {
+	    if (sortierung == null) {
+	        return "prioritaet";
+	    }
+	    
+	    String answer = "prioritaet";
+	    
+	    if (this.sortierung.equals("schrittAsc")) {
+	        answer = "titel";
+	    } else if (this.sortierung.equals("schrittDesc")) {
+	        answer = "titel desc"; 
+	    }
+	    
+	    // TODO nach Projekt/Prozess sortieren 
+//		Order order = Order.asc("proc.titel");
+//		if (this.sortierung.equals("schrittAsc")) {
+//			order = Order.asc("titel");
+//		}
+//		if (this.sortierung.equals("schrittDesc")) {
+//			order = Order.desc("titel");
+//		}
+//		if (this.sortierung.equals("prozessAsc")) {
+//			order = Order.asc("proc.titel");
+//		}
+//		if (this.sortierung.equals("prozessDesc")) {
+//			order = Order.desc("proc.titel");
+//		}
+//		if (this.sortierung.equals("batchAsc")) {
+//			order = Order.asc("proc.batchID");
+//		}
+//		if (this.sortierung.equals("batchDesc")) {
+//			order = Order.desc("proc.batchID");
+//		}
+//		if (this.sortierung.equals("prozessdateAsc")) {
+//			order = Order.asc("proc.erstellungsdatum");
+//		}
+//		if (this.sortierung.equals("prozessdateDesc")) {
+//			order = Order.desc("proc.erstellungsdatum");
+//		}
+//		if (this.sortierung.equals("projektAsc")) {
+//			order = Order.asc("proj.titel");
+//		}
+//		if (this.sortierung.equals("projektDesc")) {
+//			order = Order.desc("proj.titel");
+//		}
+	    else if (this.sortierung.equals("modulesAsc")) {
+			 answer = "typModulName";
+		}
+	    else if (this.sortierung.equals("modulesDesc")) {
+			 answer = "typModulName desc";
+		}
+	    else if (this.sortierung.equals("statusAsc")) {
+			answer = "bearbeitungsstatus";
+		}
+	    else if (this.sortierung.equals("statusDesc")) {
+            answer = "bearbeitungsstatus desc";
+		}
 
-		Order order = Order.asc("proc.titel");
-		if (this.sortierung.equals("schrittAsc")) {
-			order = Order.asc("titel");
-		}
-		if (this.sortierung.equals("schrittDesc")) {
-			order = Order.desc("titel");
-		}
-		if (this.sortierung.equals("prozessAsc")) {
-			order = Order.asc("proc.titel");
-		}
-		if (this.sortierung.equals("prozessDesc")) {
-			order = Order.desc("proc.titel");
-		}
-		if (this.sortierung.equals("batchAsc")) {
-			order = Order.asc("proc.batchID");
-		}
-		if (this.sortierung.equals("batchDesc")) {
-			order = Order.desc("proc.batchID");
-		}
-		if (this.sortierung.equals("prozessdateAsc")) {
-			order = Order.asc("proc.erstellungsdatum");
-		}
-		if (this.sortierung.equals("prozessdateDesc")) {
-			order = Order.desc("proc.erstellungsdatum");
-		}
-		if (this.sortierung.equals("projektAsc")) {
-			order = Order.asc("proj.titel");
-		}
-		if (this.sortierung.equals("projektDesc")) {
-			order = Order.desc("proj.titel");
-		}
-		if (this.sortierung.equals("modulesAsc")) {
-			order = Order.asc("typModulName");
-		}
-		if (this.sortierung.equals("modulesDesc")) {
-			order = Order.desc("typModulName");
-		}
-		if (this.sortierung.equals("statusAsc")) {
-			order = Order.asc("bearbeitungsstatus");
-		}
-		if (this.sortierung.equals("statusDesc")) {
-			order = Order.desc("bearbeitungsstatus");
-		}
-
-		inCrit.addOrder(order);
+		return answer;
 	}
 
 	/*
@@ -238,7 +253,7 @@ public class StepBean extends BasisForm {
 				this.flagWait = true;
 
 				// Helper.getHibernateSession().clear();
-				Helper.getHibernateSession().refresh(this.mySchritt);
+//				Helper.getHibernateSession().refresh(this.mySchritt);
 
 				if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.OPEN) {
 					Helper.setFehlerMeldung("stepInWorkError");

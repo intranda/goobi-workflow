@@ -12,6 +12,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
@@ -38,11 +39,20 @@ class ProcessMysqlHelper {
             if (o.getId() == null) {
                 // new process
                 insertProcess(o);
+                // TODO prozesseID in Schritten setzen?
+                //                List<Step> stepList = o.getSchritte();
+                //                StepMysqlHelper.insertBatchStepList(stepList);
+
             } else {
                 // process exists already in database
                 updateProcess(o);
+                //                List<Step> stepList = o.getSchritte();
+                //                StepMysqlHelper.updateBatchList(stepList);
             }
-            // TODO Schritte speichern
+            List<Step> stepList = o.getSchritte();
+            for (Step s : stepList) {
+                StepMysqlHelper.saveStep(s);
+            }
             // TODO Eigenschaften speichern
             // TODO Werkstuecke speichern
             // TODO Vorlagen speichern
@@ -68,7 +78,7 @@ class ProcessMysqlHelper {
     }
 
     public static int getProcessCount(String order, String filter) throws SQLException {
-    
+
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse");
@@ -78,8 +88,7 @@ class ProcessMysqlHelper {
         try {
             logger.debug(sql.toString());
             if (filter != null && !filter.isEmpty()) {
-                return new QueryRunner()
-                        .query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
             } else {
                 return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
             }
@@ -174,9 +183,9 @@ class ProcessMysqlHelper {
 
     private static String generateInsertQuery(boolean includeProcessId) {
         if (!includeProcessId) {
-        return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
-                + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
+            return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
+                    + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
+                    + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
         } else {
             return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
@@ -202,21 +211,23 @@ class ProcessMysqlHelper {
 
         Timestamp datetime = new Timestamp(d.getTime());
         if (!includeProcessID) {
-        Object[] param =
-                { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
-                        o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
-                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
-                        o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
+            Object[] param =
+                    { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
+                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
+                            o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
+                            o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
+                            o.getDocket() == null ? null : o.getDocket().getId() };
 
-        return param;
+            return param;
         } else {
             Object[] param =
-                { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
-                        o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
-                        o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
-                        o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
+                    { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
+                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
+                            o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
+                            o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
+                            o.getDocket() == null ? null : o.getDocket().getId() };
 
-        return param;
+            return param;
         }
     }
 

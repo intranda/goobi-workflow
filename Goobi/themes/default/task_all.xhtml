@@ -35,7 +35,7 @@
 
 			<x:dataTable id="auflistung" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2,standardTable_Row1,standardTable_Row2" var="item"
-				value="#{AktuelleSchritteForm.page.list}">
+				value="#{AktuelleSchritteForm.paginator.list}">
 
 				<!-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ 
 			-->
@@ -398,7 +398,7 @@
 					
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
-						<x:aliasBean alias="#{mypage}" value="#{AktuelleSchritteForm.page}">
+						<x:aliasBean alias="#{mypage}" value="#{AktuelleSchritteForm.paginator}">
 							<ui:include src="includes/datascroller.xhtml" />
 						</x:aliasBean>
 						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->

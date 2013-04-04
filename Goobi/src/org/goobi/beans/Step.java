@@ -47,9 +47,10 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.HibernateUtilOld;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 
-public class Step implements Serializable {
+public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	private static final long serialVersionUID = 6831844584239811846L;
 	private Integer id;
 	private String titel;
@@ -868,6 +869,20 @@ public class Step implements Serializable {
 
     public void setProcessId(Integer processId) {
         this.processId = processId;
+    }
+
+    @Override
+    public int compareTo(Step arg0) {
+        
+        return id.compareTo(arg0.getId());
+    }
+
+    @Override
+    public void lazyLoad() {
+        prozess = ProcessManager.getProcessById(processId);
+        
+        // TODO Auto-generated method stub
+        
     }
 
 }

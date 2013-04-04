@@ -47,7 +47,7 @@ public class BasisForm implements Serializable {
 	protected String filter = null;
 	protected User user;
 
-	protected String sortierung = null;
+	protected String sortierung = "";
 
 	public Page getPage() {
 		return this.page;
