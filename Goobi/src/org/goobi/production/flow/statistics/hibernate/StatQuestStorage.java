@@ -38,15 +38,13 @@ import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
 
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 /*****************************************************************************
  * Implementation of {@link IStatisticalQuestion}. 
@@ -74,44 +72,45 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 */
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource) {
+	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
 
 		List<DataTable> allTables = new ArrayList<DataTable>();
 
-		IEvaluableFilter originalFilter;
-
-		if (dataSource instanceof IEvaluableFilter) {
-			originalFilter = (IEvaluableFilter) dataSource;
-		} else {
-			throw new UnsupportedOperationException(
-					"This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-		}
+//		IEvaluableFilter originalFilter;
+//
+//		if (dataSource instanceof IEvaluableFilter) {
+//			originalFilter = (IEvaluableFilter) dataSource;
+//		} else {
+//			throw new UnsupportedOperationException(
+//					"This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
+//		}
 
 		//gathering IDs from the filter passed by dataSource
 		List<Integer> IDlist = null;
-		try {
-			IDlist = originalFilter.getIDList();
-		} catch (UnsupportedOperationException e) {
-		}
-		if (IDlist == null || IDlist.size() == 0) {
-			return null;
-		}
+//		try {
+			IDlist = ProcessManager.getIDList(filter);
+//		} catch (UnsupportedOperationException e) {
+//		}
+//		if (IDlist == null || IDlist.size() == 0) {
+//			return null;
+//		}
 
 		// adding time restrictions
 		String natSQL = new SQLStorage(this.timeFilterFrom, this.timeFilterTo,
 				this.timeGrouping, IDlist).getSQL();
 
-		Session session = Helper.getHibernateSession();
-
-		SQLQuery query = session.createSQLQuery(natSQL);
-
-		//needs to be there otherwise an exception is thrown
-		query.addScalar("storage", StandardBasicTypes.DOUBLE);
-		query.addScalar("intervall", StandardBasicTypes.STRING);
-
-		@SuppressWarnings("rawtypes")
-		List list = query.list();
-
+//		Session session = Helper.getHibernateSession();
+//
+//		SQLQuery query = session.createSQLQuery(natSQL);
+//
+//		//needs to be there otherwise an exception is thrown
+//		query.addScalar("storage", StandardBasicTypes.DOUBLE);
+//		query.addScalar("intervall", StandardBasicTypes.STRING);
+//
+//		@SuppressWarnings("rawtypes")
+//		List list = query.list();
+//
+		List list = ProcessManager.runSQL(natSQL);
 		DataTable dtbl = new DataTable(StatisticsMode.getByClassName(
 				this.getClass()).getTitle() + " "
 				+ Helper.getTranslation("_inGB"));

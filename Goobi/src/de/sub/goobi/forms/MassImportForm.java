@@ -60,7 +60,6 @@ import org.goobi.production.plugin.ImportPluginLoader;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.properties.ImportProperty;
-import org.hibernate.Session;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -72,6 +71,7 @@ import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 // TODO FIXME alle Meldungen durch  messages-Meldungen ersetzen
 @ManagedBean(name="MassImportForm") 
@@ -286,11 +286,11 @@ public class MassImportForm {
 			}
 
 			if (answer.size() > 1) {
-				Session session = Helper.getHibernateSession();
+//				Session session = Helper.getHibernateSession();
 
 				batchId = 1;
 				try {
-					batchId += (Integer) session.createQuery("select max(batchID) from Prozess").uniqueResult();
+					batchId += ProcessManager.getMaxBatchNumber();
 				} catch (Exception e1) {
 				}
 

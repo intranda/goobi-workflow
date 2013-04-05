@@ -45,9 +45,6 @@ import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.jobs.JobManager;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.quartz.SchedulerException;
 
 import ugh.dl.DocStruct;
@@ -219,10 +216,9 @@ public class AdministrationForm implements Serializable {
     @SuppressWarnings("unchecked")
     public void ImagepfadKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
-        Session session = Helper.getHibernateSession();
-        Criteria crit = session.createCriteria(Process.class);
+    
 
-        List<Process> auftraege = crit.list();
+        List<Process> auftraege = ProcessManager.getAllProcesses();
 
         /* alle Prozesse durchlaufen */
         for (Process p : auftraege) {
@@ -281,13 +277,8 @@ public class AdministrationForm implements Serializable {
     public void PPNsKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
 
-        Session session = Helper.getHibernateSession();
-        Criteria crit = session.createCriteria(Process.class);
-        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        crit.createCriteria("projekt", "proj");
-        crit.add(Restrictions.like("proj.titel", "DigiZeitschriften"));
-
-        List<Process> auftraege = crit.list();
+        List<Process> auftraege = ProcessManager.getProcesses(null, "projekteId = (select ProjekteId from projekte where titel = 'DigiZeitschriften')", 0, Integer.MAX_VALUE);
+        
 
         /* alle Prozesse durchlaufen */
         for (Process p : auftraege) {
@@ -400,12 +391,14 @@ public class AdministrationForm implements Serializable {
     @SuppressWarnings("unchecked")
     public static void PPNsFuerStatistischesJahrbuchKorrigieren2() {
         UghHelper ughhelp = new UghHelper();
-        Session session = Helper.getHibernateSession();
-        Criteria crit = session.createCriteria(Process.class);
-        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        crit.add(Restrictions.like("titel", "statjafud%"));
-        /* alle Prozesse durchlaufen */
-        List<Process> pl = crit.list();
+        List<Process> pl = ProcessManager.getProcesses(null, " titel like 'statjafud%'", 0, Integer.MAX_VALUE);
+        
+//        Session session = Helper.getHibernateSession();
+//        Criteria crit = session.createCriteria(Process.class);
+//        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+//        crit.add(Restrictions.like("titel", "statjafud%"));
+//        /* alle Prozesse durchlaufen */
+//        List<Process> pl = crit.list();
         for (Process p : pl) {
 
             if (p.getBenutzerGesperrt() != null) {
@@ -459,14 +452,17 @@ public class AdministrationForm implements Serializable {
     public void PPNsFuerStatistischesJahrbuchKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
         BeanHelper bhelp = new BeanHelper();
-        Session session = Helper.getHibernateSession();
-        Criteria crit = session.createCriteria(Process.class);
-        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        crit.createCriteria("projekt", "proj");
-        crit.add(Restrictions.like("proj.titel", "UB-MannheimDigizeit"));
+        List<Process> auftraege = ProcessManager.getProcesses(null, "projekteId = (select ProjekteId from projekte where titel = 'UB-MannheimDigizeit')", 0, Integer.MAX_VALUE);
+
+        
+//        Session session = Helper.getHibernateSession();
+//        Criteria crit = session.createCriteria(Process.class);
+//        crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+//        crit.createCriteria("projekt", "proj");
+//        crit.add(Restrictions.like("proj.titel", "UB-MannheimDigizeit"));
 
         /* alle Prozesse durchlaufen */
-        for (Iterator<Process> iter = crit.list().iterator(); iter.hasNext();) {
+        for (Iterator<Process> iter = auftraege.iterator(); iter.hasNext();) {
             Process p = iter.next();
             if (p.getBenutzerGesperrt() != null) {
                 Helper.setFehlerMeldung("metadata locked: ", p.getTitel());

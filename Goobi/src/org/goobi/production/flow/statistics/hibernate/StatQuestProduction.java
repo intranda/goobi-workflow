@@ -37,9 +37,6 @@ import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
 
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
@@ -47,6 +44,7 @@ import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 /**
  * This class is an implementation of {@link IStatisticalQuestionLimitedTimeframe} and retrieves statistical Data about the productivity of the
@@ -76,7 +74,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 ****************************************************************************/
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource) {
+	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
 
 		// contains an intger representing "reihenfolge" in schritte, as defined for this request
 		// if not defined it will trigger a fall back on a different way of retrieving the statistical data
@@ -107,7 +105,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 		// we have to build a query from scratch by reading the ID's
 		List<Integer> IDlist = null;
 		try {
-			IDlist = originalFilter.getIDList();
+			IDlist = ProcessManager.getIDList(filter);
 		} catch (UnsupportedOperationException e) {
 		}
 		if (IDlist == null || IDlist.size() == 0) {
@@ -120,17 +118,19 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 		} else {
 			natSQL = new ImprovedSQLProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);
 		}
-		Session session = Helper.getHibernateSession();
-
-		SQLQuery query = session.createSQLQuery(natSQL);
-
-		// needs to be there otherwise an exception is thrown
-		query.addScalar("volumes", StandardBasicTypes.INTEGER);
-		query.addScalar("pages", StandardBasicTypes.INTEGER);
-		query.addScalar("intervall", StandardBasicTypes.STRING);
-
-		@SuppressWarnings("rawtypes")
-		List list = query.list();
+//		Session session = Helper.getHibernateSession();
+//
+//		SQLQuery query = session.createSQLQuery(natSQL);
+//
+//		// needs to be there otherwise an exception is thrown
+//		query.addScalar("volumes", StandardBasicTypes.INTEGER);
+//		query.addScalar("pages", StandardBasicTypes.INTEGER);
+//		query.addScalar("intervall", StandardBasicTypes.STRING);
+//
+//		@SuppressWarnings("rawtypes")
+//		List list = query.list();
+		
+		List list = ProcessManager.runSQL(natSQL);
 
 		StringBuilder title = new StringBuilder(StatisticsMode.PRODUCTION.getTitle());
 		 title.append(" (");

@@ -616,7 +616,6 @@ public class CopyProcess extends ProzesskopieForm {
 
 	public Process NeuenProzessAnlegen2() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
 			WriteException {
-		Helper.getHibernateSession().evict(this.prozessKopie);
 
 		this.prozessKopie.setId(null);
 		
@@ -821,14 +820,13 @@ public class CopyProcess extends ProzesskopieForm {
 		this.prozessKopie.readMetadataFile();
 
 		/* damit die Sortierung stimmt nochmal einlesen */
-		Helper.getHibernateSession().refresh(this.prozessKopie);
+// TODO Process neu laden?
 		return this.prozessKopie;
 
 	}
 
 	public Process createProcess(ImportObject io) throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
 			DAOException, WriteException {
-		Helper.getHibernateSession().evict(this.prozessKopie);
 
 		this.prozessKopie.setId(null);
 		EigenschaftenHinzufuegen(io);
@@ -907,7 +905,6 @@ public class CopyProcess extends ProzesskopieForm {
 		this.prozessKopie.readMetadataFile();
 
 		/* damit die Sortierung stimmt nochmal einlesen */
-		Helper.getHibernateSession().refresh(this.prozessKopie);
 		return this.prozessKopie;
 
 	}

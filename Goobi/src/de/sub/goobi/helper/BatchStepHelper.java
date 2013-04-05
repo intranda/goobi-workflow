@@ -51,8 +51,6 @@ import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
@@ -513,11 +511,16 @@ public class BatchStepHelper {
 				/*
 				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 				 */
-				@SuppressWarnings("unchecked")
-				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
-						.add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
-						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
+				
+	             List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+
+		
+				
+				
+//				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
+//						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
+//						.add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
+//						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
 				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
 					Step step = iter.next();
 					step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
@@ -535,28 +538,25 @@ public class BatchStepHelper {
 			/*
 			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 			 */
+			ProcessManager.saveProcessInformation(currentStep.getProzess());
 		} catch (DAOException e) {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<SelectItem> getPreviousStepsForProblemReporting() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
-		List<Step> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
-				.add(Restrictions.lt("reihenfolge", this.currentStep.getReihenfolge())).addOrder(Order.desc("reihenfolge")).createCriteria("prozess")
-				.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
+	      List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge() , 0, Integer.MAX_VALUE);
+
 		for (Step s : alleVorherigenSchritte) {
 			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
 		}
 		return answer;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<SelectItem> getNextStepsForProblemSolution() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
-		List<Step> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
-				.add(Restrictions.gt("reihenfolge", this.currentStep.getReihenfolge())).add(Restrictions.eq("prioritaet", 10))
-				.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
+        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+
 		for (Step s : alleNachfolgendenSchritte) {
 			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
 		}
@@ -609,11 +609,8 @@ public class BatchStepHelper {
 				/*
 				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 				 */
-				@SuppressWarnings("unchecked")
-				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-						.add(Restrictions.ge("reihenfolge", this.currentStep.getReihenfolge()))
-						.add(Restrictions.le("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
-						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
+	            List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+
 				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
 					Step step = iter.next();
 					step.setBearbeitungsstatusEnum(StepStatus.DONE);
@@ -643,6 +640,7 @@ public class BatchStepHelper {
 			/*
 			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 			 */
+			ProcessManager.saveProcessInformation(currentStep.getProzess());
 		} catch (DAOException e) {
 		}
 	}

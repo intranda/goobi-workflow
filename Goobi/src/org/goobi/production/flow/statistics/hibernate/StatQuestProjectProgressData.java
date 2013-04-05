@@ -40,9 +40,6 @@ import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe
 import org.goobi.production.flow.statistics.StepInformation;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
 import org.joda.time.DateTime;
 
 import de.intranda.commons.chart.renderer.ChartRenderer;
@@ -51,6 +48,7 @@ import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 /*****************************************************************************
  * Imlpementation of {@link IStatisticalQuestion}. This is used for the
@@ -204,15 +202,15 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 		return dataRow;
 	}
 
-	public void setDataSource(IDataSource inSource) {
-		// gathering IDs from the filter passed by dataSource
-		try {
-			this.myIDlist = ((IEvaluableFilter) inSource).getIDList();
-		} catch (UnsupportedOperationException e) {
-			logger.warn(e);
-		}
-		this.isDirty = true;
-	}
+//	public void setDataSource(IDataSource inSource) {
+//		// gathering IDs from the filter passed by dataSource
+//		try {
+//			this.myIDlist = ((IEvaluableFilter) inSource).getIDList();
+//		} catch (UnsupportedOperationException e) {
+//			logger.warn(e);
+//		}
+//		this.isDirty = true;
+//	}
 
 	/**
 	 * 
@@ -353,7 +351,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 	 * @return DataTable
 	 */
 	private DataTable buildDataTableFromSQL(String natSQL) {
-		Session session = Helper.getHibernateSession();
+//		Session session = Helper.getHibernateSession();
 
 		if (this.commonWorkFlow == null) {
 			return null;
@@ -367,16 +365,17 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 			headerRow.addValue(stepName, Double.parseDouble("0"));
 		}
 
-		SQLQuery query = session.createSQLQuery(natSQL);
-
-		// needs to be there otherwise an exception is thrown
-		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-		query.addScalar("stepName", StandardBasicTypes.STRING);
-		query.addScalar("intervall", StandardBasicTypes.STRING);
-
-		@SuppressWarnings("rawtypes")
-		List list = query.list();
-
+//		SQLQuery query = session.createSQLQuery(natSQL);
+//
+//		// needs to be there otherwise an exception is thrown
+//		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
+//		query.addScalar("stepName", StandardBasicTypes.STRING);
+//		query.addScalar("intervall", StandardBasicTypes.STRING);
+//
+//		@SuppressWarnings("rawtypes")
+//		List list = query.list();
+//
+		List list = ProcessManager.runSQL(natSQL);
 		DataTable dtbl = new DataTable("");
 
 		// if headerRow is set then add it to the DataTable to set columns
@@ -539,7 +538,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 	}
 
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource) {
+	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
 		return null;
 	}
 

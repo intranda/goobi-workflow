@@ -41,11 +41,7 @@ import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.managedbeans.ProcessBean;
 import org.goobi.production.flow.statistics.hibernate.FilterString;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+
 
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritteigenschaft;
@@ -53,6 +49,10 @@ import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.UserManager;
 
 @ManagedBean(name="SearchForm") 
 @RequestScoped
@@ -103,70 +103,84 @@ public class SearchForm {
 			this.stepstatus.add(s);
 		}
 		int restriction = ((LoginBean) Helper.getManagedBeanValue("#{LoginForm}")).getMaximaleBerechtigung();
-		Session session = Helper.getHibernateSession();
+//		Session session = Helper.getHibernateSession();
 
 		// projects
-		Criteria crit = session.createCriteria(Project.class);
-		crit.addOrder(Order.asc("titel"));
+		String projectFilter = ""; 
+//		Criteria crit = session.createCriteria(Project.class);
+//		crit.addOrder(Order.asc("titel"));
 		if (restriction > 2) {
-			crit.add(Restrictions.not(Restrictions.eq("projectIsArchived", true)));
+		    projectFilter = " projectIsArchived = false ";
+//			crit.add(Restrictions.not(Restrictions.eq("projectIsArchived", true)));
 		}
 		this.projects.add(Helper.getTranslation("notSelected"));
 		
-		List<Project> projektList = crit.list();
-		for (Project p : projektList) {
-			this.projects.add(p.getTitel());
-		}
+        try {
+            List<Project> projektList = ProjectManager.getProjects("titel", projectFilter, 0, Integer.MAX_VALUE);
+            for (Project p : projektList) {
+                this.projects.add(p.getTitel());
+            }
+        } catch (DAOException e1) {
+        }
 
-		crit = session.createCriteria(Werkstueckeigenschaft.class);
-		crit.addOrder(Order.asc("titel"));
-		crit.setProjection(Projections.distinct(Projections.property("titel")));
-		this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));
-		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-			this.masterpiecePropertyTitles.add((String) it.next());
-		}
+		// TODO
+//		crit = session.createCriteria(Werkstueckeigenschaft.class);
+//		crit.addOrder(Order.asc("titel"));
+//		crit.setProjection(Projections.distinct(Projections.property("titel")));
+//		this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));
+//		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
+//			this.masterpiecePropertyTitles.add((String) it.next());
+//		}
 
-		crit = session.createCriteria(Vorlageeigenschaft.class);
-		crit.addOrder(Order.asc("titel"));
-		crit.setProjection(Projections.distinct(Projections.property("titel")));
-		this.templatePropertyTitles.add(Helper.getTranslation("notSelected"));
-		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-			this.templatePropertyTitles.add((String) it.next());
-		}
+		// TODO
+//		crit = session.createCriteria(Vorlageeigenschaft.class);
+//		crit.addOrder(Order.asc("titel"));
+//		crit.setProjection(Projections.distinct(Projections.property("titel")));
+//		this.templatePropertyTitles.add(Helper.getTranslation("notSelected"));
+//		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
+//			this.templatePropertyTitles.add((String) it.next());
+//		}
 
-		crit = session.createCriteria(Prozesseigenschaft.class);
-		crit.addOrder(Order.asc("titel"));
-		crit.setProjection(Projections.distinct(Projections.property("titel")));
-		this.processPropertyTitles.add(Helper.getTranslation("notSelected"));
-		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-			String itstr = (String) it.next();
-			if (itstr!=null){
-				this.processPropertyTitles.add(itstr);
-			}
-		}
+		// TODO
+//		crit = session.createCriteria(Prozesseigenschaft.class);
+//		crit.addOrder(Order.asc("titel"));
+//		crit.setProjection(Projections.distinct(Projections.property("titel")));
+//		this.processPropertyTitles.add(Helper.getTranslation("notSelected"));
+//		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
+//			String itstr = (String) it.next();
+//			if (itstr!=null){
+//				this.processPropertyTitles.add(itstr);
+//			}
+//		}
 
-		crit = session.createCriteria(Schritteigenschaft.class);
-		crit.addOrder(Order.asc("titel"));
-		crit.setProjection(Projections.distinct(Projections.property("titel")));
-		this.stepPropertyTitles.add(Helper.getTranslation("notSelected"));
-		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-			this.stepPropertyTitles.add((String) it.next());
-		}
+		// TODO
+//		crit = session.createCriteria(Schritteigenschaft.class);
+//		crit.addOrder(Order.asc("titel"));
+//		crit.setProjection(Projections.distinct(Projections.property("titel")));
+//		this.stepPropertyTitles.add(Helper.getTranslation("notSelected"));
+//		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
+//			this.stepPropertyTitles.add((String) it.next());
+//		}
 
-		crit = session.createCriteria(Step.class);
-		crit.addOrder(Order.asc("titel"));
-		crit.setProjection(Projections.distinct(Projections.property("titel")));
-		this.stepTitles.add(Helper.getTranslation("notSelected"));
-		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-			this.stepTitles.add((String) it.next());
-		}
+		stepTitles = StepManager.getDistinctStepTitles();
+//		crit = session.createCriteria(Step.class);
+//		crit.addOrder(Order.asc("titel"));
+//		crit.setProjection(Projections.distinct(Projections.property("titel")));
+//		this.stepTitles.add(Helper.getTranslation("notSelected"));
+//		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
+//			this.stepTitles.add((String) it.next());
+//		}
 
-		crit = session.createCriteria(User.class);
-		crit.add(Restrictions.isNull("isVisible"));
-		crit.add(Restrictions.eq("istAktiv", true));
-		crit.addOrder(Order.asc("nachname"));
-		crit.addOrder(Order.asc("vorname"));
-		this.user.addAll(crit.list());
+		try {
+            user = UserManager.getUsers("nachname", " isVisible = null AND istAktiv = true ", 0, Integer.MAX_VALUE);
+        } catch (DAOException e) {
+        }
+//		crit = session.createCriteria(User.class);
+//		crit.add(Restrictions.isNull("isVisible"));
+//		crit.add(Restrictions.eq("istAktiv", true));
+//		crit.addOrder(Order.asc("nachname"));
+//		crit.addOrder(Order.asc("vorname"));
+//		this.user.addAll(crit.list());
 	}
 
 	public List<String> getProjects() {

@@ -41,9 +41,6 @@ import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
 
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
@@ -51,6 +48,8 @@ import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 
 /*****************************************************************************
  * Imlpementation of {@link IStatisticalQuestion}. Statistical Request with
@@ -110,27 +109,27 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 	 * (org.goobi.production.flow.statistics.IDataSource)
 	 */
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource) {
+	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
 
 		List<DataTable> allTables = new ArrayList<DataTable>();
 
-		IEvaluableFilter originalFilter;
-
-		if (dataSource instanceof IEvaluableFilter) {
-			originalFilter = (IEvaluableFilter) dataSource;
-		} else {
-			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-		}
+//		IEvaluableFilter originalFilter;
+//
+//		if (dataSource instanceof IEvaluableFilter) {
+//			originalFilter = (IEvaluableFilter) dataSource;
+//		} else {
+//			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
+//		}
 
 		// gathering IDs from the filter passed by dataSource
-		try {
-			this.myIDlist = originalFilter.getIDList();
-		} catch (UnsupportedOperationException e) {
-		}
-
-		if (myIDlist == null || myIDlist.size() == 0) {
-			return null;
-		}
+//		try {
+			this.myIDlist = ProcessManager.getIDList(filter);
+//		} catch (UnsupportedOperationException e) {
+//		}
+//
+//		if (myIDlist == null || myIDlist.size() == 0) {
+//			return null;
+//		}
 		/*
 		 * ======================================================================
 		 * ==============
@@ -353,105 +352,105 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
 	// TODO Remove redundant code
 	private DataTable buildDataTableFromSQL(String natSQL, String headerFromSQL) {
-		Session session = Helper.getHibernateSession();
-
-		// creating header row from headerSQL (gets all columns in one row
-		DataRow headerRow = null;
-		if (headerFromSQL != null) {
-			headerRow = new DataRow(null);
-			SQLQuery headerQuery = session.createSQLQuery(headerFromSQL);
-
-			// needs to be there otherwise an exception is thrown
-			headerQuery.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
-			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
-			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
-
-			@SuppressWarnings("rawtypes")
-			List headerList = headerQuery.list();
-			for (Object obj : headerList) {
-				Object[] objArr = (Object[]) obj;
-				try {
-					headerRow.setName(new Converter(objArr[3]).getString() + "");
-					headerRow.addValue(new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString()
-							+ ")", (new Converter(objArr[0]).getDouble()));
-
-				} catch (Exception e) {
-					headerRow.addValue(e.getMessage(), new Double(0));
-				}
-			}
-
-		}
-
-		SQLQuery query = session.createSQLQuery(natSQL);
-
-		// needs to be there otherwise an exception is thrown
-		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-		query.addScalar("stepName", StandardBasicTypes.STRING);
-		query.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
-		query.addScalar("intervall", StandardBasicTypes.STRING);
-
-		@SuppressWarnings("rawtypes")
-		List list = query.list();
-
+//		Session session = Helper.getHibernateSession();
+//
+//		// creating header row from headerSQL (gets all columns in one row
+//		DataRow headerRow = null;
+//		if (headerFromSQL != null) {
+//			headerRow = new DataRow(null);
+//			SQLQuery headerQuery = session.createSQLQuery(headerFromSQL);
+//
+//			// needs to be there otherwise an exception is thrown
+//			headerQuery.addScalar("stepCount", StandardBasicTypes.DOUBLE);
+//			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
+//			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
+//			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
+//
+//			@SuppressWarnings("rawtypes")
+//			List headerList = headerQuery.list();
+//			for (Object obj : headerList) {
+//				Object[] objArr = (Object[]) obj;
+//				try {
+//					headerRow.setName(new Converter(objArr[3]).getString() + "");
+//					headerRow.addValue(new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString()
+//							+ ")", (new Converter(objArr[0]).getDouble()));
+//
+//				} catch (Exception e) {
+//					headerRow.addValue(e.getMessage(), new Double(0));
+//				}
+//			}
+//
+//		}
+//
+//		SQLQuery query = session.createSQLQuery(natSQL);
+//
+//		// needs to be there otherwise an exception is thrown
+//		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
+//		query.addScalar("stepName", StandardBasicTypes.STRING);
+//		query.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
+//		query.addScalar("intervall", StandardBasicTypes.STRING);
+//
+//		@SuppressWarnings("rawtypes")
+//		List list = query.list();
+//
 		DataTable dtbl = new DataTable("");
-
-		// if headerRow is set then add it to the DataTable to set columns
-		// needs to be removed later
-		if (headerRow != null) {
-			dtbl.addDataRow(headerRow);
-		}
-
-		DataRow dataRow = null;
-
-		// each data row comes out as an Array of Objects
-		// the only way to extract the data is by knowing
-		// in which order they come out
-
-		// checks if intervall has changed which then triggers the start for a
-		// new row
-		// intervall here is the timeGroup Expression (e.g. "2006/05" or
-		// "2006-10-05")
-		String observeIntervall = "";
-
-		for (Object obj : list) {
-			Object[] objArr = (Object[]) obj;
-			try {
-				// objArr[3]
-				if (!observeIntervall.equals(new Converter(objArr[3]).getString())) {
-					observeIntervall = new Converter(objArr[3]).getString();
-
-					// row cannot be added before it is filled because the add
-					// process triggers
-					// a testing for header alignement -- this is where we add
-					// it after iterating it first
-					if (dataRow != null) {
-						dtbl.addDataRow(dataRow);
-					}
-
-					dataRow = new DataRow(null);
-					// setting row name with localized time group and the
-					// date/time extraction based on the group
-					dataRow.setName(new Converter(objArr[3]).getString() + "");
-				}
-				dataRow.addValue(
-						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
-						(new Converter(objArr[0]).getDouble()));
-
-			} catch (Exception e) {
-				dataRow.addValue(e.getMessage(), new Double(0));
-			}
-		}
-		// to add the last row
-		if (dataRow != null) {
-			dtbl.addDataRow(dataRow);
-		}
-
-		// now removing headerRow
-		if (headerRow != null) {
-			dtbl.removeDataRow(headerRow);
-		
-		}
+//
+//		// if headerRow is set then add it to the DataTable to set columns
+//		// needs to be removed later
+//		if (headerRow != null) {
+//			dtbl.addDataRow(headerRow);
+//		}
+//
+//		DataRow dataRow = null;
+//
+//		// each data row comes out as an Array of Objects
+//		// the only way to extract the data is by knowing
+//		// in which order they come out
+//
+//		// checks if intervall has changed which then triggers the start for a
+//		// new row
+//		// intervall here is the timeGroup Expression (e.g. "2006/05" or
+//		// "2006-10-05")
+//		String observeIntervall = "";
+//
+//		for (Object obj : list) {
+//			Object[] objArr = (Object[]) obj;
+//			try {
+//				// objArr[3]
+//				if (!observeIntervall.equals(new Converter(objArr[3]).getString())) {
+//					observeIntervall = new Converter(objArr[3]).getString();
+//
+//					// row cannot be added before it is filled because the add
+//					// process triggers
+//					// a testing for header alignement -- this is where we add
+//					// it after iterating it first
+//					if (dataRow != null) {
+//						dtbl.addDataRow(dataRow);
+//					}
+//
+//					dataRow = new DataRow(null);
+//					// setting row name with localized time group and the
+//					// date/time extraction based on the group
+//					dataRow.setName(new Converter(objArr[3]).getString() + "");
+//				}
+//				dataRow.addValue(
+//						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
+//						(new Converter(objArr[0]).getDouble()));
+//
+//			} catch (Exception e) {
+//				dataRow.addValue(e.getMessage(), new Double(0));
+//			}
+//		}
+//		// to add the last row
+//		if (dataRow != null) {
+//			dtbl.addDataRow(dataRow);
+//		}
+//
+//		// now removing headerRow
+//		if (headerRow != null) {
+//			dtbl.removeDataRow(headerRow);
+//		
+//		}
 
 		return dtbl;
 	}
@@ -464,23 +463,23 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 	private Integer getMaxStepCount(HistoryEventType requestedType) {
 
 		// adding time restrictions
-		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
-				.SQLMaxStepOrder(requestedType);
-
-		Session session = Helper.getHibernateSession();
-		SQLQuery query = session.createSQLQuery(natSQL);
-
-		// needs to be there otherwise an exception is thrown
-		query.addScalar("maxStep", StandardBasicTypes.DOUBLE);
-
-		@SuppressWarnings("rawtypes")
-		List list = query.list();
-
-		if (list != null && list.size() > 0 && list.get(0) != null) {
-			return new Converter(list.get(0)).getInteger();
-		} else {
+//		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
+//				.SQLMaxStepOrder(requestedType);
+//
+//		Session session = Helper.getHibernateSession();
+//		SQLQuery query = session.createSQLQuery(natSQL);
+//
+//		// needs to be there otherwise an exception is thrown
+//		query.addScalar("maxStep", StandardBasicTypes.DOUBLE);
+//
+//		@SuppressWarnings("rawtypes")
+//		List list = query.list();
+//
+//		if (list != null && list.size() > 0 && list.get(0) != null) {
+//			return new Converter(list.get(0)).getInteger();
+//		} else {
 			return 0;
-		}
+//		}
 
 	}
 
@@ -491,23 +490,23 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 	 */
 	private Integer getMinStepCount(HistoryEventType requestedType) {
 		// adding time restrictions
-		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
-				.SQLMinStepOrder(requestedType);
-
-		Session session = Helper.getHibernateSession();
-		SQLQuery query = session.createSQLQuery(natSQL);
-
-		// needs to be there otherwise an exception is thrown
-		query.addScalar("minStep", StandardBasicTypes.DOUBLE);
-
-		@SuppressWarnings("rawtypes")
-		List list = query.list();
-
-		if (list != null && list.size() > 0 && list.get(0) != null) {
-			return new Converter(list.get(0)).getInteger();
-		} else {
+//		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
+//				.SQLMinStepOrder(requestedType);
+//
+//		Session session = Helper.getHibernateSession();
+//		SQLQuery query = session.createSQLQuery(natSQL);
+//
+//		// needs to be there otherwise an exception is thrown
+//		query.addScalar("minStep", StandardBasicTypes.DOUBLE);
+//
+//		@SuppressWarnings("rawtypes")
+//		List list = query.list();
+//
+//		if (list != null && list.size() > 0 && list.get(0) != null) {
+//			return new Converter(list.get(0)).getInteger();
+//		} else {
 			return 0;
-		}
+//		}
 
 	}
 

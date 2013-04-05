@@ -36,9 +36,6 @@ import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 
 import de.intranda.commons.chart.renderer.HtmlTableRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
@@ -58,7 +55,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
 	 * (non-Javadoc)
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 */
-	public List<DataTable> getDataTables(IDataSource dataSource) {
+	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
 
 		IEvaluableFilter originalFilter;
 
@@ -68,42 +65,42 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
 			throw new UnsupportedOperationException(
 					"This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
 		}
+        List<DataTable> allTables = new ArrayList<DataTable>();
 
-		ProjectionList proj = Projections.projectionList();
-		proj.add(Projections.count("id"));
-		proj.add(Projections.groupProperty("proj.titel"));
-
-		Criteria crit;
-
-		if (originalFilter instanceof UserDefinedFilter) {
-			crit = new UserDefinedFilter(originalFilter.getIDList())
-					.getCriteria();
-			crit.createCriteria("projekt", "proj");
-		} else {
-			crit = originalFilter.clone().getCriteria();
-		}
-
-		// use a clone on the filter and apply the projection on the clone
-		crit.setProjection(proj);
-
-		StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(
-				this.getClass()).getTitle());
-
-		DataTable dtbl = new DataTable(title.toString());
-		dtbl.setShowableInPieChart(true);
-		DataRow dRow = new DataRow(Helper.getTranslation("count"));
-
-		for (Object obj : crit.list()) {
-			Object[] objArr = (Object[]) obj;
-			dRow.addValue(new Converter(objArr[1]).getString(), new Converter(
-					new Converter(objArr[0]).getInteger()).getDouble());
-		}
-		dtbl.addDataRow(dRow);
-
-		List<DataTable> allTables = new ArrayList<DataTable>();
-
-		dtbl.setUnitLabel(Helper.getTranslation("project"));
-		allTables.add(dtbl);
+//		ProjectionList proj = Projections.projectionList();
+//		proj.add(Projections.count("id"));
+//		proj.add(Projections.groupProperty("proj.titel"));
+//
+//		Criteria crit;
+//
+////		if (originalFilter instanceof UserDefinedFilter) {
+////			crit = new UserDefinedFilter(originalFilter.getIDList())
+////					.getCriteria();
+////			crit.createCriteria("projekt", "proj");
+////		} else {
+//			crit = originalFilter.clone().getCriteria();
+////		}
+//
+//		// use a clone on the filter and apply the projection on the clone
+//		crit.setProjection(proj);
+//
+//		StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(
+//				this.getClass()).getTitle());
+//
+//		DataTable dtbl = new DataTable(title.toString());
+//		dtbl.setShowableInPieChart(true);
+//		DataRow dRow = new DataRow(Helper.getTranslation("count"));
+//
+//		for (Object obj : crit.list()) {
+//			Object[] objArr = (Object[]) obj;
+//			dRow.addValue(new Converter(objArr[1]).getString(), new Converter(
+//					new Converter(objArr[0]).getInteger()).getDouble());
+//		}
+//		dtbl.addDataRow(dRow);
+//
+//
+//		dtbl.setUnitLabel(Helper.getTranslation("project"));
+//		allTables.add(dtbl);
 		return allTables;
 	}
 

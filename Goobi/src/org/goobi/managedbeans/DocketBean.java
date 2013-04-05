@@ -113,7 +113,6 @@ public class DocketBean extends BasisForm {
 	}
 
 	public void setMyDocket(Docket docket) {
-		Helper.getHibernateSession().clear();
 		this.myDocket = docket;
 	}
 }

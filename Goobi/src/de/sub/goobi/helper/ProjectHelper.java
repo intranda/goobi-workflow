@@ -37,12 +37,12 @@ import java.util.List;
 import org.goobi.beans.Project;
 import org.goobi.beans.Step;
 import org.goobi.production.flow.statistics.StepInformation;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+//import org.hibernate.Criteria;
+//import org.hibernate.Session;
+//import org.hibernate.criterion.Order;
+//import org.hibernate.criterion.ProjectionList;
+//import org.hibernate.criterion.Projections;
+//import org.hibernate.criterion.Restrictions;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -70,120 +70,121 @@ public class ProjectHelper {
 		Long totalNumberOfProc = 0l;
 		Long totalNumberOfImages = 0l;
 
-		Session session = Helper.getHibernateSession();
-
-	
-
-		Criteria critTotals = session.createCriteria(Process.class, "proc");
-		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
-		critTotals.add(Restrictions.eq("proc.projekt", project));
-
-		ProjectionList proList = Projections.projectionList();
-
-		proList.add(Projections.count("proc.id"));
-		proList.add(Projections.sum("proc.sortHelperImages"));
-
-		critTotals.setProjection(proList);
-
-		List<Object> list = critTotals.list();
-
-		for (Object obj : list) {
-			Object[] row = (Object[]) obj;
-
-			totalNumberOfProc = (Long) row[FieldList.totalProcessCount.fieldLocation];
-			totalNumberOfImages = (Long) row[FieldList.totalImageCount.fieldLocation];
-			;
-		}
-
-		proList = null;
-		list = null;
-
-	
-
-		Criteria critSteps = session.createCriteria(Step.class);
-
-		critSteps.createCriteria("prozess", "proc");
-		critSteps.addOrder(Order.asc("reihenfolge"));
-
-		critSteps.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
-		critSteps.add(Restrictions.eq("proc.projekt", project));
-
-		proList = Projections.projectionList();
-
-		proList.add(Projections.groupProperty(("titel")));
-		proList.add(Projections.count("id"));
-		proList.add(Projections.avg("reihenfolge"));
-
-	
-		critSteps.setProjection(proList);
-
-		// now we have to discriminate the hits where the max number of hits doesn't reach numberOfProcs
-		// and extract a workflow, which is the workflow common for all processes according to its titel
-		// the position will be calculated by the average of 'reihenfolge' of steps
-
-		list = critSteps.list();
-
-		String title;
-		Double averageStepOrder;
-		Long numberOfSteps;
-		Long numberOfImages;
-
-		List<StepInformation> workFlow = new ArrayList<StepInformation>();
-
-		for (Object obj : list) {
-			Object[] row = (Object[]) obj;
-
-			title = (String) (row[FieldList.stepName.fieldLocation]);
-			numberOfSteps = (Long) (row[FieldList.stepCount.fieldLocation]);
-			averageStepOrder = (Double) (row[FieldList.stepOrder.fieldLocation]);
-
-			// in this step we only take the steps which are present in each of the workflows
-			if (numberOfSteps.equals(totalNumberOfProc)) {
-				StepInformation newStep = new StepInformation(title, averageStepOrder);
-				newStep.setNumberOfTotalImages(totalNumberOfImages.intValue());
-				newStep.setNumberOfTotalSteps(totalNumberOfProc.intValue());
-				workFlow.add(newStep);
-			}
-		}
-
-		Criteria critStepDone = session.createCriteria(Step.class, "step");
-
-		critStepDone.createCriteria("prozess", "proc");
-
-		critStepDone.add(Restrictions.eq("step.bearbeitungsstatus", StepStatus.DONE.getValue()));
-		critStepDone.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
-		critStepDone.add(Restrictions.eq("proc.projekt", project));
-
-		ProjectionList proCount = Projections.projectionList();
-
-		proCount.add(Projections.groupProperty(("step.titel")));
-		proCount.add(Projections.count("proc.id"));
-		proCount.add(Projections.sum("proc.sortHelperImages"));
-
-		critStepDone.setProjection(proCount);
-
-		list = critStepDone.list();
-
-		for (Object obj : list) {
-
-			Object[] row = (Object[]) obj;
-
-			title = (String) (row[FieldList.stepName.fieldLocation]);
-			numberOfSteps = (Long) (row[FieldList.stepCount.fieldLocation]);
-			numberOfImages = (Long) (row[FieldList.imageCount.fieldLocation]);
-
-			// getting from the workflow collection the collection which represents step <title>
-			// we only created one for each step holding the counts of processes
-			for (StepInformation currentStep : workFlow) {
-				if (currentStep.getTitle().equals(title)) {
-					currentStep.setNumberOfStepsDone(numberOfSteps.intValue());
-					currentStep.setNumberOfImagesDone(numberOfImages.intValue());
-				}
-			}
-		}
-		Comparator<StepInformation> comp = new compareWorkflowSteps();
-		Collections.sort(workFlow, comp);
-		return workFlow;
+//		Session session = Helper.getHibernateSession();
+//
+//	
+//
+//		Criteria critTotals = session.createCriteria(Process.class, "proc");
+//		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
+//		critTotals.add(Restrictions.eq("proc.projekt", project));
+//
+//		ProjectionList proList = Projections.projectionList();
+//
+//		proList.add(Projections.count("proc.id"));
+//		proList.add(Projections.sum("proc.sortHelperImages"));
+//
+//		critTotals.setProjection(proList);
+//
+//		List<Object> list = critTotals.list();
+//
+//		for (Object obj : list) {
+//			Object[] row = (Object[]) obj;
+//
+//			totalNumberOfProc = (Long) row[FieldList.totalProcessCount.fieldLocation];
+//			totalNumberOfImages = (Long) row[FieldList.totalImageCount.fieldLocation];
+//			;
+//		}
+//
+//		proList = null;
+//		list = null;
+//
+//	
+//
+//		Criteria critSteps = session.createCriteria(Step.class);
+//
+//		critSteps.createCriteria("prozess", "proc");
+//		critSteps.addOrder(Order.asc("reihenfolge"));
+//
+//		critSteps.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
+//		critSteps.add(Restrictions.eq("proc.projekt", project));
+//
+//		proList = Projections.projectionList();
+//
+//		proList.add(Projections.groupProperty(("titel")));
+//		proList.add(Projections.count("id"));
+//		proList.add(Projections.avg("reihenfolge"));
+//
+//	
+//		critSteps.setProjection(proList);
+//
+//		// now we have to discriminate the hits where the max number of hits doesn't reach numberOfProcs
+//		// and extract a workflow, which is the workflow common for all processes according to its titel
+//		// the position will be calculated by the average of 'reihenfolge' of steps
+//
+//		list = critSteps.list();
+//
+//		String title;
+//		Double averageStepOrder;
+//		Long numberOfSteps;
+//		Long numberOfImages;
+//
+//		List<StepInformation> workFlow = new ArrayList<StepInformation>();
+//
+//		for (Object obj : list) {
+//			Object[] row = (Object[]) obj;
+//
+//			title = (String) (row[FieldList.stepName.fieldLocation]);
+//			numberOfSteps = (Long) (row[FieldList.stepCount.fieldLocation]);
+//			averageStepOrder = (Double) (row[FieldList.stepOrder.fieldLocation]);
+//
+//			// in this step we only take the steps which are present in each of the workflows
+//			if (numberOfSteps.equals(totalNumberOfProc)) {
+//				StepInformation newStep = new StepInformation(title, averageStepOrder);
+//				newStep.setNumberOfTotalImages(totalNumberOfImages.intValue());
+//				newStep.setNumberOfTotalSteps(totalNumberOfProc.intValue());
+//				workFlow.add(newStep);
+//			}
+//		}
+//
+//		Criteria critStepDone = session.createCriteria(Step.class, "step");
+//
+//		critStepDone.createCriteria("prozess", "proc");
+//
+//		critStepDone.add(Restrictions.eq("step.bearbeitungsstatus", StepStatus.DONE.getValue()));
+//		critStepDone.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
+//		critStepDone.add(Restrictions.eq("proc.projekt", project));
+//
+//		ProjectionList proCount = Projections.projectionList();
+//
+//		proCount.add(Projections.groupProperty(("step.titel")));
+//		proCount.add(Projections.count("proc.id"));
+//		proCount.add(Projections.sum("proc.sortHelperImages"));
+//
+//		critStepDone.setProjection(proCount);
+//
+//		list = critStepDone.list();
+//
+//		for (Object obj : list) {
+//
+//			Object[] row = (Object[]) obj;
+//
+//			title = (String) (row[FieldList.stepName.fieldLocation]);
+//			numberOfSteps = (Long) (row[FieldList.stepCount.fieldLocation]);
+//			numberOfImages = (Long) (row[FieldList.imageCount.fieldLocation]);
+//
+//			// getting from the workflow collection the collection which represents step <title>
+//			// we only created one for each step holding the counts of processes
+//			for (StepInformation currentStep : workFlow) {
+//				if (currentStep.getTitle().equals(title)) {
+//					currentStep.setNumberOfStepsDone(numberOfSteps.intValue());
+//					currentStep.setNumberOfImagesDone(numberOfImages.intValue());
+//				}
+//			}
+//		}
+//		Comparator<StepInformation> comp = new compareWorkflowSteps();
+//		Collections.sort(workFlow, comp);
+//		return workFlow;
+		return null;
 	}
 
 	/*
@@ -222,86 +223,86 @@ public class ProjectHelper {
 
 	@SuppressWarnings("unchecked")
 	public static List<StepInformation> getWorkFlow(Project inProj, Boolean notOnlyCommonFlow) {
-		Long totalNumberOfProc = 0l;
-		// false as default
-		if (notOnlyCommonFlow == null) {
-			notOnlyCommonFlow = false;
-		}
-		List<StepInformation> workFlow = new ArrayList<StepInformation>();
-		Session session = Helper.getHibernateSession();
-	
-
-		Criteria critTotals = session.createCriteria(Process.class, "proc");
-		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
-		critTotals.add(Restrictions.eq("proc.projekt", inProj));
-
-		ProjectionList proList = Projections.projectionList();
-
-		proList.add(Projections.count("proc.id"));
-
-		critTotals.setProjection(proList);
-
-		List<Object> list = critTotals.list();
-
-		for (Object obj : list) {
-			Object[] row = (Object[]) obj;
-
-			totalNumberOfProc = (Long) row[FieldList.totalProcessCount.fieldLocation];
-		}
-
-		proList = null;
-		list = null;
-
-	
-		Criteria critSteps = session.createCriteria(Step.class);
-
-		critSteps.createCriteria("prozess", "proc");
-		critSteps.addOrder(Order.asc("reihenfolge"));
-
-		critSteps.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
-		critSteps.add(Restrictions.eq("proc.projekt", inProj));
-
-		proList = Projections.projectionList();
-
-		proList.add(Projections.groupProperty(("titel")));
-		proList.add(Projections.count("id"));
-		proList.add(Projections.avg("reihenfolge"));
-
-		
-
-		critSteps.setProjection(proList);
-
-		// now we have to discriminate the hits where the max number of hits doesn't reach numberOfProcs
-		// and extract a workflow, which is the workflow common for all processes according to its titel
-		// the position will be calculated by the average of 'reihenfolge' of steps
-
-		list = critSteps.list();
-
-		String title;
-		Double averageStepOrder;
-		Integer numberOfSteps;
-
-		for (Object obj : list) {
-			Object[] row = (Object[]) obj;
-
-			title = (String) (row[FieldList.stepName.fieldLocation]);
-			numberOfSteps = (Integer) (row[FieldList.stepCount.fieldLocation]);
-			averageStepOrder = (Double) (row[FieldList.stepOrder.fieldLocation]);
-
-			// in this step we only take the steps which are present in each of the workflows unless notOnlyCommonFlow is set to true
-			if (numberOfSteps.equals(totalNumberOfProc) || notOnlyCommonFlow) {
-				// for each step we create a new collection which is child of the collection workFlow created above
-				StepInformation newStep = new StepInformation(title, averageStepOrder);
-				workFlow.add(newStep);
-				// should probably use a different implementation of IGoobiProperty
-				// maybe StandardGoobiProperty
-				// for each field we create a property, which is part of the newStep collection
-
-			}
-		}
-		Comparator<StepInformation> comp = new compareWorkflowSteps();
-		Collections.sort(workFlow, comp);
-		return workFlow;
-
+//		Long totalNumberOfProc = 0l;
+//		// false as default
+//		if (notOnlyCommonFlow == null) {
+//			notOnlyCommonFlow = false;
+//		}
+//		List<StepInformation> workFlow = new ArrayList<StepInformation>();
+//		Session session = Helper.getHibernateSession();
+//	
+//
+//		Criteria critTotals = session.createCriteria(Process.class, "proc");
+//		critTotals.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
+//		critTotals.add(Restrictions.eq("proc.projekt", inProj));
+//
+//		ProjectionList proList = Projections.projectionList();
+//
+//		proList.add(Projections.count("proc.id"));
+//
+//		critTotals.setProjection(proList);
+//
+//		List<Object> list = critTotals.list();
+//
+//		for (Object obj : list) {
+//			Object[] row = (Object[]) obj;
+//
+//			totalNumberOfProc = (Long) row[FieldList.totalProcessCount.fieldLocation];
+//		}
+//
+//		proList = null;
+//		list = null;
+//
+//	
+//		Criteria critSteps = session.createCriteria(Step.class);
+//
+//		critSteps.createCriteria("prozess", "proc");
+//		critSteps.addOrder(Order.asc("reihenfolge"));
+//
+//		critSteps.add(Restrictions.eq("proc.istTemplate", Boolean.FALSE));
+//		critSteps.add(Restrictions.eq("proc.projekt", inProj));
+//
+//		proList = Projections.projectionList();
+//
+//		proList.add(Projections.groupProperty(("titel")));
+//		proList.add(Projections.count("id"));
+//		proList.add(Projections.avg("reihenfolge"));
+//
+//		
+//
+//		critSteps.setProjection(proList);
+//
+//		// now we have to discriminate the hits where the max number of hits doesn't reach numberOfProcs
+//		// and extract a workflow, which is the workflow common for all processes according to its titel
+//		// the position will be calculated by the average of 'reihenfolge' of steps
+//
+//		list = critSteps.list();
+//
+//		String title;
+//		Double averageStepOrder;
+//		Integer numberOfSteps;
+//
+//		for (Object obj : list) {
+//			Object[] row = (Object[]) obj;
+//
+//			title = (String) (row[FieldList.stepName.fieldLocation]);
+//			numberOfSteps = (Integer) (row[FieldList.stepCount.fieldLocation]);
+//			averageStepOrder = (Double) (row[FieldList.stepOrder.fieldLocation]);
+//
+//			// in this step we only take the steps which are present in each of the workflows unless notOnlyCommonFlow is set to true
+//			if (numberOfSteps.equals(totalNumberOfProc) || notOnlyCommonFlow) {
+//				// for each step we create a new collection which is child of the collection workFlow created above
+//				StepInformation newStep = new StepInformation(title, averageStepOrder);
+//				workFlow.add(newStep);
+//				// should probably use a different implementation of IGoobiProperty
+//				// maybe StandardGoobiProperty
+//				// for each field we create a property, which is part of the newStep collection
+//
+//			}
+//		}
+//		Comparator<StepInformation> comp = new compareWorkflowSteps();
+//		Collections.sort(workFlow, comp);
+//		return workFlow;
+return null;
 	}
 }

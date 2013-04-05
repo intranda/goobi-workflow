@@ -34,14 +34,12 @@ import org.goobi.managedbeans.DatabasePaginator;
 import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 
 public class BasisForm implements Serializable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger
 	.getLogger(BasisForm.class);
 	private static final long serialVersionUID = 2950419497162710096L;
-	protected Page page;
 	protected DatabasePaginator paginator;
 	protected String zurueck = "";
 	protected String filter = null;
@@ -49,9 +47,7 @@ public class BasisForm implements Serializable {
 
 	protected String sortierung = "";
 
-	public Page getPage() {
-		return this.page;
-	}
+	
 
 	public DatabasePaginator getPaginator() {
 		return paginator;

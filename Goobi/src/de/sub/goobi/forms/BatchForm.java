@@ -43,442 +43,451 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportDocket;
-import org.goobi.production.flow.statistics.hibernate.IEvaluableFilter;
-import org.goobi.production.flow.statistics.hibernate.UserDefinedFilter;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Batch;
 import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+
 //import de.sub.goobi.persistence.ProzessDAO;
 
-@ManagedBean(name="BatchForm") 
+@ManagedBean(name = "BatchForm")
 @SessionScoped
 public class BatchForm extends BasisForm {
 
-	private static final long serialVersionUID = 8234897225425856549L;
+    private static final long serialVersionUID = 8234897225425856549L;
 
-	private static final Logger logger = Logger.getLogger(BatchForm.class);
+    private static final Logger logger = Logger.getLogger(BatchForm.class);
 
-	private List<Process> currentProcesses;
-	private List<Process> selectedProcesses;
-	private List<Batch> currentBatches;
-	private List<String> selectedBatches;
-	private String batchfilter;
-	private String processfilter;
-	private IEvaluableFilter myFilteredDataSource;
-	
-//	private ProzessDAO dao = new ProzessDAO();
-	private String modusBearbeiten = "";
+    private List<Process> currentProcesses;
+    private List<Process> selectedProcesses;
+    private List<Batch> currentBatches;
+    private List<String> selectedBatches;
+    private String batchfilter;
+    private String processfilter;
+    //	private IEvaluableFilter myFilteredDataSource;
 
-	private int getBatchMaxSize(){
-		int batchsize =ConfigMain.getIntParameter("batchMaxSize",100);
-		return batchsize;
-	}
-	
-	public List<Process> getCurrentProcesses() {
-		return this.currentProcesses;
-	}
+    //	private ProzessDAO dao = new ProzessDAO();
+    private String modusBearbeiten = "";
+ 
+    private BatchProcessHelper batchHelper;
 
-	public void setCurrentProcesses(List<Process> currentProcesses) {
-		this.currentProcesses = currentProcesses;
-	}
+    private int getBatchMaxSize() {
+        int batchsize = ConfigMain.getIntParameter("batchMaxSize", 100);
+        return batchsize;
+    }
 
-	public void loadBatchData() {
-		this.currentBatches = new ArrayList<Batch>();
-		this.selectedBatches = new ArrayList<String>();
-		for (Process p : this.selectedProcesses) {
-			if (p.getBatchID() != null && !this.currentBatches.contains(p.getBatchID())) {
-				this.currentBatches.add(generateBatch(p.getBatchID()));
-			}
-		}
-	}
+    public List<Process> getCurrentProcesses() {
+        return this.currentProcesses;
+    }
 
-	private Batch generateBatch(Integer id) {
-		Session session = Helper.getHibernateSession();
+    public void setCurrentProcesses(List<Process> currentProcesses) {
+        this.currentProcesses = currentProcesses;
+    }
 
-		Criteria crit = session.createCriteria(Process.class);
-		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-		if (id != null) {
-			crit.add(Restrictions.eq("batchID", id));
-		} else {
-			crit.add(Restrictions.isNull("batchID"));
-		}
-		crit.setProjection(Projections.rowCount());
-		
-		String msg1 = Helper.getTranslation("batch");
-		String msg2 = Helper.getTranslation("prozesse");
-		if (id != null) {
-			String text = msg1 + " " + id + " (" + crit.uniqueResult() + " " + msg2 + ")";
-			return new Batch(id, text);
-		} else {
-			String text = Helper.getTranslation("withoutBatch") + " (" + crit.uniqueResult() + " " + msg2 + ")";
-			return new Batch(null, text);
-		}
-	}
+    public void loadBatchData() {
+        this.currentBatches = new ArrayList<Batch>();
+        this.selectedBatches = new ArrayList<String>();
+        for (Process p : this.selectedProcesses) {
+            if (p.getBatchID() != null && !this.currentBatches.contains(p.getBatchID())) {
+                this.currentBatches.add(generateBatch(p.getBatchID()));
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public void loadProcessData() {
-		Session session = Helper.getHibernateSession();
-		Criteria crit = session.createCriteria(Process.class);
-		crit.setMaxResults(getBatchMaxSize());
-		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-		List<Integer> ids = new ArrayList<Integer>();
-		for (String s : this.selectedBatches) {
-			if (s != null && !s.equals("") && !s.equals("null")) {
-				ids.add(new Integer(s));
-			}
-		}
-		if (this.selectedBatches.size() > 0) {
-			if (this.selectedBatches.contains(null) || this.selectedBatches.contains("null")) {
-				crit.add(Restrictions.isNull("batchID"));
-			} else {
-				crit.add(Restrictions.in("batchID", ids));
-			}
-		}
-		this.currentProcesses = crit.list();
-	}
+    private Batch generateBatch(Integer id) {
+        //		Session session = Helper.getHibernateSession();
+        String filter = "";
+        if (id != null) {
+            filter = " batchID = " + id + " AND istTemplate = false ";
+        } else {
+            filter = " batchID = null AND istTemplate = false ";
+        }
+        //		Criteria crit = session.createCriteria(Process.class);
+        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        //		if (id != null) {
+        //			crit.add(Restrictions.eq("batchID", id));
+        //		} else {
+        //			crit.add(Restrictions.isNull("batchID"));
+        //		}
+        //		crit.setProjection(Projections.rowCount());
 
-	@SuppressWarnings("unchecked")
-	public void filterProcesses() {
+        String msg1 = Helper.getTranslation("batch");
+        String msg2 = Helper.getTranslation("prozesse");
+        if (id != null) {
+            String text = msg1 + " " + id + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
+            return new Batch(id, text);
+        } else {
+            String text = Helper.getTranslation("withoutBatch") + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
+            return new Batch(null, text);
+        }
+    }
 
-		if (this.processfilter == null) {
-			this.processfilter = "";
-		}
-		this.myFilteredDataSource = new UserDefinedFilter(this.processfilter);
-		Criteria crit = this.myFilteredDataSource.getCriteria();
-		crit.addOrder(Order.desc("erstellungsdatum"));
-		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-		crit.setMaxResults(getBatchMaxSize());
-		try {
-			this.currentProcesses = crit.list();
-		} catch (HibernateException e) {
-			this.currentProcesses = new ArrayList<Process>();
-		}
-	}
+    public void loadProcessData() {
 
-	@SuppressWarnings("unchecked")
-	public void filterBatches() {
-		Integer number = null;
-		try {
-			number = new Integer(this.batchfilter);
-		} catch (Exception e) {
-			logger.warn("NAN Exception: " + this.batchfilter);
-		}
-		if (number != null) {
-			Session session = Helper.getHibernateSession();
-			Query query = session.createQuery("select distinct batchID from Prozess order by batchID desc");
-			query.setMaxResults(getBatchMaxSize());
+        String filter = " istTemplate = false ";
+        //		Session session = Helper.getHibernateSession();
+        //		Criteria crit = session.createCriteria(Process.class);
+        //		crit.setMaxResults(getBatchMaxSize());
+        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        List<Integer> ids = new ArrayList<Integer>();
+        for (String s : this.selectedBatches) {
+            if (s != null && !s.equals("") && !s.equals("null")) {
+                ids.add(new Integer(s));
+            }
+        }
+        if (this.selectedBatches.size() > 0) {
+            if (this.selectedBatches.contains(null) || this.selectedBatches.contains("null")) {
+                filter += " AND batchID = null ";
+                //				crit.add(Restrictions.isNull("batchID"));
+            } else {
+                filter += " AND (";
+                for (Integer id : ids) {
+                    filter += " batchID = " + id + " OR";
+                }
+                filter = filter.substring(0, filter.length() - 3) + ")";
+                //				crit.add(Restrictions.in("batchID", ids));
+            }
+        }
+        this.currentProcesses = ProcessManager.getProcesses(null, filter, 0, getBatchMaxSize());
+    }
 
-			List<Integer> allBatches = query.list();
-			this.currentBatches = new ArrayList<Batch>();
-			for (Integer in : allBatches) {
-				if (in != null && Integer.toString(in).contains(this.batchfilter)) {
-					this.currentBatches.add(generateBatch(in));
-				}
-			}
-		} else {
-			Session session = Helper.getHibernateSession();
-			Query query = session.createQuery("select distinct batchID from Prozess order by batchID desc");
-			query.setMaxResults(getBatchMaxSize());
-			List<Integer> ids = query.list();
-			this.currentBatches = new ArrayList<Batch>();
-			for (Integer in : ids) {
-				this.currentBatches.add(generateBatch(in));
-			}
-		}
-	}
+    public void filterProcesses() {
 
-	public List<SelectItem> getCurrentProcessesAsSelectItems() {
-		List<SelectItem> answer = new ArrayList<SelectItem>();
-		for (Process p : this.currentProcesses) {
-			answer.add(new SelectItem(p, p.getTitel()));
-		}
-		return answer;
-	}
+        if (this.processfilter == null) {
+            this.processfilter = "";
+        }
+        //		this.myFilteredDataSource = new UserDefinedFilter(this.processfilter);
+        //		Criteria crit = this.myFilteredDataSource.getCriteria();
+        //		crit.addOrder(Order.desc("erstellungsdatum"));
+        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        //		crit.setMaxResults(getBatchMaxSize());
+        //		try {
+        //			this.currentProcesses = crit.list();
+        //		} catch (HibernateException e) {
+        //			this.currentProcesses = new ArrayList<Process>();
+        //		}
+    }
 
-	public String getBatchfilter() {
-		return this.batchfilter;
-	}
+    public void filterBatches() {
+        Integer number = null;
+        try {
+            number = new Integer(this.batchfilter);
+        } catch (Exception e) {
+            logger.warn("NAN Exception: " + this.batchfilter);
+        }
+        if (number != null) {
+            //            Session session = Helper.getHibernateSession();
+            //            Query query = session.createQuery("select distinct batchID from Prozess order by batchID desc");
+            //            query.setMaxResults(getBatchMaxSize());
 
-	public void setBatchfilter(String batchfilter) {
-		this.batchfilter = batchfilter;
-	}
+            List<Integer> allBatches = ProcessManager.getBatchIds(getBatchMaxSize());
+            this.currentBatches = new ArrayList<Batch>();
+            for (Integer in : allBatches) {
+                if (in != null && Integer.toString(in).contains(this.batchfilter)) {
+                    this.currentBatches.add(generateBatch(in));
+                }
+            }
+        } else {
+            //            Session session = Helper.getHibernateSession();
+            //            Query query = session.createQuery("select distinct batchID from Prozess order by batchID desc");
+            //            query.setMaxResults(getBatchMaxSize());
+            //            List<Integer> ids = query.list();
+            List<Integer> ids = ProcessManager.getBatchIds(getBatchMaxSize());
+            this.currentBatches = new ArrayList<Batch>();
+            for (Integer in : ids) {
+                this.currentBatches.add(generateBatch(in));
+            }
+        }
+    }
 
-	public String getProcessfilter() {
-		return this.processfilter;
-	}
+    public List<SelectItem> getCurrentProcessesAsSelectItems() {
+        List<SelectItem> answer = new ArrayList<SelectItem>();
+        for (Process p : this.currentProcesses) {
+            answer.add(new SelectItem(p, p.getTitel()));
+        }
+        return answer;
+    }
 
-	public void setProcessfilter(String processfilter) {
-		this.processfilter = processfilter;
-	}
+    public String getBatchfilter() {
+        return this.batchfilter;
+    }
 
-	public List<Batch> getCurrentBatches() {
-		return this.currentBatches;
-	}
+    public void setBatchfilter(String batchfilter) {
+        this.batchfilter = batchfilter;
+    }
 
-	public void setCurrentBatches(List<Batch> currentBatches) {
-		this.currentBatches = currentBatches;
-	}
+    public String getProcessfilter() {
+        return this.processfilter;
+    }
 
-	public List<Process> getSelectedProcesses() {
-		return this.selectedProcesses;
-	}
+    public void setProcessfilter(String processfilter) {
+        this.processfilter = processfilter;
+    }
 
-	public void setSelectedProcesses(List<Process> selectedProcesses) {
-		this.selectedProcesses = selectedProcesses;
-	}
+    public List<Batch> getCurrentBatches() {
+        return this.currentBatches;
+    }
 
-	public List<String> getSelectedBatches() {
-		return this.selectedBatches;
-	}
+    public void setCurrentBatches(List<Batch> currentBatches) {
+        this.currentBatches = currentBatches;
+    }
 
-	public void setSelectedBatches(List<String> selectedBatches) {
-		this.selectedBatches = selectedBatches;
-	}
+    public List<Process> getSelectedProcesses() {
+        return this.selectedProcesses;
+    }
 
-	public String FilterAlleStart() {
-		filterBatches();
-		filterProcesses();
-		return "batch_all";
-	}
+    public void setSelectedProcesses(List<Process> selectedProcesses) {
+        this.selectedProcesses = selectedProcesses;
+    }
 
-	@SuppressWarnings("unchecked")
-	public String downloadDocket() {
-		logger.debug("generate docket for process list");
-		String rootpath = ConfigMain.getParameter("xsltFolder");
-		File xsltfile = new File(rootpath, "docket_multipage.xsl");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		List<Process> docket = new ArrayList<Process>();
-		if (this.selectedBatches.size() == 0) {
-			Helper.setFehlerMeldung("noBatchSelected");
-		} else if (this.selectedBatches.size() == 1) {
-			Session session = Helper.getHibernateSession();
-			Criteria crit = session.createCriteria(Process.class);
-			crit.setMaxResults(getBatchMaxSize());
-			crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-//			List<Integer> ids = new ArrayList<Integer>();
-			crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
-			docket = crit.list();
-		} else {
-			Helper.setFehlerMeldung("tooManyBatchesSelected");
-		}
-		if (docket.size() > 0) {
-			if (!facesContext.getResponseComplete()) {
-				HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-				String fileName = "batch_docket" + ".pdf";
-				ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-				String contentType = servletContext.getMimeType(fileName);
-				response.setContentType(contentType);
-				response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+    public List<String> getSelectedBatches() {
+        return this.selectedBatches;
+    }
 
-				try {
-					ServletOutputStream out = response.getOutputStream();
-					ExportDocket ern = new ExportDocket();
-					ern.startExport(docket, out, xsltfile.getAbsolutePath());
-					out.flush();
-				} catch (IOException e) {
-					logger.error("IOException while exporting run note", e);
-				}
+    public void setSelectedBatches(List<String> selectedBatches) {
+        this.selectedBatches = selectedBatches;
+    }
 
-				facesContext.responseComplete();
-			}
-		}
-		return "";
-	}
+    public String FilterAlleStart() {
+        filterBatches();
+        filterProcesses();
+        return "batch_all";
+    }
 
-	@SuppressWarnings("unchecked")
-	public void deleteBatch() {
-		if (this.selectedBatches.size() == 0) {
-			Helper.setFehlerMeldung("noBatchSelected");
-		} else if (this.selectedBatches.size() == 1) {
-			if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-				Session session = Helper.getHibernateSession();
-				Criteria crit = session.createCriteria(Process.class);
-				crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-//				List<Integer> ids = new ArrayList<Integer>();
-				crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
-				List<Process> deleteList = crit.list();
-				{
-					for (Process p : deleteList) {
-						p.setBatchID(null);
-//						try {
-//							session.saveOrUpdate(p);
-//						} catch (Exception e) {
-//							Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//							logger.error(e);
-//						}
-					}
-//					try {
-					ProcessManager.updateBatchList(deleteList);
-//						session.flush();
-//						session.connection().commit();
-//					} catch (DAOException e) {
-//						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//						logger.error(e);
-//					}
-				}
-			} else {
-				Helper.setFehlerMeldung("noBatchSelected");
-			}
-		} else {
-			Helper.setFehlerMeldung("toḾanyBatchesSelected");
-		}
-		FilterAlleStart();
+    public String downloadDocket() {
+        logger.debug("generate docket for process list");
+        String rootpath = ConfigMain.getParameter("xsltFolder");
+        File xsltfile = new File(rootpath, "docket_multipage.xsl");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        List<Process> docket = new ArrayList<Process>();
+        if (this.selectedBatches.size() == 0) {
+            Helper.setFehlerMeldung("noBatchSelected");
+        } else if (this.selectedBatches.size() == 1) {
 
-	}
+            //            Session session = Helper.getHibernateSession();
+            //            Criteria crit = session.createCriteria(Process.class);
+            docket =
+                    ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
+                            getBatchMaxSize());
+            //            crit.setMaxResults(getBatchMaxSize());
+            //            crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+            //            //			List<Integer> ids = new ArrayList<Integer>();
+            //            crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
+            //            docket = crit.list();
+        } else {
+            Helper.setFehlerMeldung("tooManyBatchesSelected");
+        }
+        if (docket.size() > 0) {
+            if (!facesContext.getResponseComplete()) {
+                HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+                String fileName = "batch_docket" + ".pdf";
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType(fileName);
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
-	public void addProcessesToBatch() {
-		if (this.selectedBatches.size() == 0) {
-			Helper.setFehlerMeldung("noBatchSelected");
-		} else if (this.selectedBatches.size() > 1) {
-			Helper.setFehlerMeldung("toḾanyBatchesSelected");
-		} else {
-			try {
-//				Session session = Helper.getHibernateSession();
-				Integer batchid = new Integer(this.selectedBatches.get(0));
-				for (Process p : this.selectedProcesses) {
-					p.setBatchID(batchid);
-					p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + batchid));
-//					try {
-//						session.saveOrUpdate(p);
-//					} catch (Exception e) {
-//						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//						logger.error(e);
-//					}
-				}
-				ProcessManager.updateBatchList(this.selectedProcesses);
-//				try {
-//					session.flush();
-//					session.connection().commit();
-//				} catch (HibernateException e) {
-//					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//					logger.error(e);
-//				} catch (SQLException e) {
-//					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//					logger.error(e);
-//				}
-			} catch (Exception e) {
-				Helper.setFehlerMeldung("noBatchSelected");
-			}
-		}
-		FilterAlleStart();
-	}
+                try {
+                    ServletOutputStream out = response.getOutputStream();
+                    ExportDocket ern = new ExportDocket();
+                    ern.startExport(docket, out, xsltfile.getAbsolutePath());
+                    out.flush();
+                } catch (IOException e) {
+                    logger.error("IOException while exporting run note", e);
+                }
 
-	public void removeProcessesFromBatch() {
-//		Session session = Helper.getHibernateSession();
-		for (Process p : this.selectedProcesses) {
-			p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "removed process from batch " + p.getBatchID()));
-			p.setBatchID(null);
+                facesContext.responseComplete();
+            }
+        }
+        return "";
+    }
 
-//			try {
-//				session.saveOrUpdate(p);
-//			} catch (Exception e) {
-//				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//				logger.error(e);
-//			}
-		}
-//		try {
-		    ProcessManager.updateBatchList(this.selectedProcesses);
-//			session.flush();
-//			session.connection().commit();
-//		} catch (DAOException e) {
-//			Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//			logger.error(e);
-//		} catch (SQLException e) {
-//			Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//			logger.error(e);
-//		}
-		FilterAlleStart();
-	}
+    public void deleteBatch() {
+        if (this.selectedBatches.size() == 0) {
+            Helper.setFehlerMeldung("noBatchSelected");
+        } else if (this.selectedBatches.size() == 1) {
+            if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
+                //                Session session = Helper.getHibernateSession();
+                //                Criteria crit = session.createCriteria(Process.class);
+                //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+                //                //				List<Integer> ids = new ArrayList<Integer>();
+                //                crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
+                List<Process> deleteList =
+                        ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
+                                getBatchMaxSize());
+                {
+                    for (Process p : deleteList) {
+                        p.setBatchID(null);
+                        //						try {
+                        //							session.saveOrUpdate(p);
+                        //						} catch (Exception e) {
+                        //							Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+                        //							logger.error(e);
+                        //						}
+                    }
+                    //					try {
+                    ProcessManager.updateBatchList(deleteList);
+                    //						session.flush();
+                    //						session.connection().commit();
+                    //					} catch (DAOException e) {
+                    //						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+                    //						logger.error(e);
+                    //					}
+                }
+            } else {
+                Helper.setFehlerMeldung("noBatchSelected");
+            }
+        } else {
+            Helper.setFehlerMeldung("toḾanyBatchesSelected");
+        }
+        FilterAlleStart();
 
-	public void createNewBatch() {
-		if (this.selectedProcesses.size() > 0) {
-			Session session = Helper.getHibernateSession();
-			Integer newBatchId = 1;
-			try {
-				newBatchId += (Integer) session.createQuery("select max(batchID) from Prozess").uniqueResult();
-			} catch (Exception e1) {
-			}
+    }
 
-			for (Process p : this.selectedProcesses) {
-				p.setBatchID(newBatchId);
-				p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + newBatchId));
-//				try {
-//					session.saveOrUpdate(p);
-//				} catch (Exception e) {
-//					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//					logger.error(e);
-//				}
-			}
-//			try {
-			    ProcessManager.updateBatchList(this.selectedProcesses);
-//				session.flush();
-//				session.connection().commit();
-//			} catch (HibernateException e) {
-//				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//				logger.error(e);
-//			} catch (DAOException e) {
-//				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-//				logger.error(e);
-//			}
-		}
-		FilterAlleStart();
-	}
+    public void addProcessesToBatch() {
+        if (this.selectedBatches.size() == 0) {
+            Helper.setFehlerMeldung("noBatchSelected");
+        } else if (this.selectedBatches.size() > 1) {
+            Helper.setFehlerMeldung("toḾanyBatchesSelected");
+        } else {
+            try {
+                //				Session session = Helper.getHibernateSession();
+                Integer batchid = new Integer(this.selectedBatches.get(0));
+                for (Process p : this.selectedProcesses) {
+                    p.setBatchID(batchid);
+                    p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + batchid));
+                    //					try {
+                    //						session.saveOrUpdate(p);
+                    //					} catch (Exception e) {
+                    //						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+                    //						logger.error(e);
+                    //					}
+                }
+                ProcessManager.updateBatchList(this.selectedProcesses);
+                //				try {
+                //					session.flush();
+                //					session.connection().commit();
+                //				} catch (HibernateException e) {
+                //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+                //					logger.error(e);
+                //				} catch (SQLException e) {
+                //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+                //					logger.error(e);
+                //				}
+            } catch (Exception e) {
+                Helper.setFehlerMeldung("noBatchSelected");
+            }
+        }
+        FilterAlleStart();
+    }
 
-	/*
-	 * properties
-	 */
-	private BatchProcessHelper batchHelper;
+    public void removeProcessesFromBatch() {
+        //		Session session = Helper.getHibernateSession();
+        for (Process p : this.selectedProcesses) {
+            p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "removed process from batch " + p.getBatchID()));
+            p.setBatchID(null);
 
-	@SuppressWarnings("unchecked")
-	public String editProperties() {
-		if (this.selectedBatches.size() == 0) {
-			Helper.setFehlerMeldung("noBatchSelected");
-			return "";
-		} else if (this.selectedBatches.size() > 1) {
-			Helper.setFehlerMeldung("toḾanyBatchesSelected");
-			return "";
-		} else {
-			if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-				Session session = Helper.getHibernateSession();
-				Criteria crit = session.createCriteria(Process.class);
-				crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-//				List<Integer> ids = new ArrayList<Integer>();
-				crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
-				List<Process> propertyBatch = crit.list();
-				this.batchHelper = new BatchProcessHelper(propertyBatch);
-				return "batch_edit";
-			} else {
-				Helper.setFehlerMeldung("noBatchSelected");
-				return "";
-			}
-		}
-	}
+            //			try {
+            //				session.saveOrUpdate(p);
+            //			} catch (Exception e) {
+            //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+            //				logger.error(e);
+            //			}
+        }
+        //		try {
+        ProcessManager.updateBatchList(this.selectedProcesses);
+        //			session.flush();
+        //			session.connection().commit();
+        //		} catch (DAOException e) {
+        //			Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+        //			logger.error(e);
+        //		} catch (SQLException e) {
+        //			Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+        //			logger.error(e);
+        //		}
+        FilterAlleStart();
+    }
 
-	public BatchProcessHelper getBatchHelper() {
-		return this.batchHelper;
-	}
+    public void createNewBatch() {
+        if (this.selectedProcesses.size() > 0) {
+            //            Session session = Helper.getHibernateSession();
+            Integer newBatchId = 1;
+            try {
+                newBatchId += ProcessManager.getMaxBatchNumber();
+            } catch (Exception e1) {
+            }
 
-	public void setBatchHelper(BatchProcessHelper batchHelper) {
-		this.batchHelper = batchHelper;
-	}
+            for (Process p : this.selectedProcesses) {
+                p.setBatchID(newBatchId);
+                p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + newBatchId));
+                //				try {
+                //					session.saveOrUpdate(p);
+                //				} catch (Exception e) {
+                //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+                //					logger.error(e);
+                //				}
+            }
+            //			try {
+            ProcessManager.updateBatchList(this.selectedProcesses);
+            //				session.flush();
+            //				session.connection().commit();
+            //			} catch (HibernateException e) {
+            //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+            //				logger.error(e);
+            //			} catch (DAOException e) {
+            //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
+            //				logger.error(e);
+            //			}
+        }
+        FilterAlleStart();
+    }
 
-	public String getModusBearbeiten() {
-		return this.modusBearbeiten;
-	}
 
-	public void setModusBearbeiten(String modusBearbeiten) {
-		this.modusBearbeiten = modusBearbeiten;
-	}
+
+    public String editProperties() {
+        if (this.selectedBatches.size() == 0) {
+            Helper.setFehlerMeldung("noBatchSelected");
+            return "";
+        } else if (this.selectedBatches.size() > 1) {
+            Helper.setFehlerMeldung("toḾanyBatchesSelected");
+            return "";
+        } else {
+            if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
+                //                Session session = Helper.getHibernateSession();
+                //                Criteria crit = session.createCriteria(Process.class);
+                //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+                //                //				List<Integer> ids = new ArrayList<Integer>();
+                //                crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
+                //                List<Process> propertyBatch = crit.list();
+
+                List<Process> propertyBatch =
+                        ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
+                                getBatchMaxSize());
+                this.batchHelper = new BatchProcessHelper(propertyBatch);
+                return "batch_edit";
+            } else {
+                Helper.setFehlerMeldung("noBatchSelected");
+                return "";
+            }
+        }
+    }
+
+    public BatchProcessHelper getBatchHelper() {
+        return this.batchHelper;
+    }
+
+    public void setBatchHelper(BatchProcessHelper batchHelper) {
+        this.batchHelper = batchHelper;
+    }
+
+    public String getModusBearbeiten() {
+        return this.modusBearbeiten;
+    }
+
+    public void setModusBearbeiten(String modusBearbeiten) {
+        this.modusBearbeiten = modusBearbeiten;
+    }
 }

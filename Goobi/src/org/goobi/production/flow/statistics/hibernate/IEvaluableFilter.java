@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Observable;
 
 import org.goobi.production.flow.statistics.IDataSource;
-import org.hibernate.Criteria;
+//import org.hibernate.Criteria;
 
 /**
  * This interface defines a filter, which can be used in the goobi/hibernate
@@ -58,7 +58,7 @@ public interface IEvaluableFilter extends IDataSource {
 	/**
 	 * @return Criteria based on the implemented filter  
 	 */
-	public Criteria getCriteria();
+//	public Criteria getCriteria();
 
 	/**
 	 * allows the creation of a second filter, independent from the original one

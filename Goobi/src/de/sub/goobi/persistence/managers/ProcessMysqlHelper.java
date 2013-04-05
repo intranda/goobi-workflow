@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +34,7 @@ class ProcessMysqlHelper {
         }
     }
 
-    public static void saveProcess(Process o) throws DAOException {
+    public static void saveProcess(Process o, boolean processOnly) throws DAOException {
         try {
 
             if (o.getId() == null) {
@@ -49,9 +50,12 @@ class ProcessMysqlHelper {
                 //                List<Step> stepList = o.getSchritte();
                 //                StepMysqlHelper.updateBatchList(stepList);
             }
-            List<Step> stepList = o.getSchritte();
-            for (Step s : stepList) {
-                StepMysqlHelper.saveStep(s);
+
+            if (!processOnly) {
+                List<Step> stepList = o.getSchritte();
+                for (Step s : stepList) {
+                    StepMysqlHelper.saveStep(s);
+                }
             }
             // TODO Eigenschaften speichern
             // TODO Werkstuecke speichern
@@ -370,4 +374,82 @@ class ProcessMysqlHelper {
         //        updateBatchList
 
     }
+
+    public static int getMaxBatchNumber() throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        String sql = "SELECT max(batchId) FROM prozesse";
+        try {
+            return new QueryRunner().query(connection, sql, MySQLUtils.resultSetToIntegerHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static List<Integer> getIDList(String filter) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT prozesseID FROM prozesse");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" WHERE " + filter);
+        }
+
+        try {
+            logger.debug(sql.toString());
+            List<Integer> ret = null;
+            ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerListHandler);
+
+            return ret;
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+
+    }
+
+    public static int countProcesses(String filter) throws SQLException {
+        String sql = "select count(prozesseID) from prozesse ";
+        if (filter != null && filter.length() > 0) {
+            sql += " WHERE " + filter;
+        }
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql, MySQLUtils.resultSetToIntegerHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+    
+    public static List<Integer> getBatchIds(int limit) throws SQLException {
+        String sql = "select distinct batchID from Prozess order by batchID desc ";
+        if (limit > 0) {
+            sql += " limit " + limit;
+        }
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql, MySQLUtils.resultSetToIntegerListHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static List runSQL(String sql) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        List answer = new ArrayList();
+        try {
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery(sql);
+            int columnCount = rs.getMetaData().getColumnCount();
+            while (rs.next()) {
+                Object[] row = new Object[columnCount];
+                for(int i = 1;i<=columnCount;i++){
+                    row[i-1]=rs.getString(i);
+                }
+                answer.add(row);
+            }
+            return answer;
+
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+    
 }

@@ -34,93 +34,85 @@ import java.util.List;
 import java.util.Set;
 
 import org.goobi.beans.Process;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
 
 public class Vorlage implements Serializable {
-	private static final long serialVersionUID = 1736135433162833277L;
-	private Integer id;
-	private String herkunft;
-	private Process prozess;
-	private Set<Vorlageeigenschaft> eigenschaften;
+    private static final long serialVersionUID = 1736135433162833277L;
+    private Integer id;
+    private String herkunft;
+    private Process prozess;
+    private Set<Vorlageeigenschaft> eigenschaften;
 
-	private boolean panelAusgeklappt = true;
+    private boolean panelAusgeklappt = true;
 
-	public Vorlage() {
-		this.eigenschaften = new HashSet<Vorlageeigenschaft>();
-	}
+    public Vorlage() {
+        this.eigenschaften = new HashSet<Vorlageeigenschaft>();
+    }
 
-	/*
-	 * ##################################################### ##################################################### ## ## Getter und Setter ##
-	 * ##################################################### ####################################################
-	 */
+    /*
+     * ##################################################### ##################################################### ## ## Getter und Setter ##
+     * ##################################################### ####################################################
+     */
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Process getProzess() {
-		return this.prozess;
-	}
+    public Process getProzess() {
+        return this.prozess;
+    }
 
-	public void setProzess(Process prozess) {
-		this.prozess = prozess;
-	}
+    public void setProzess(Process prozess) {
+        this.prozess = prozess;
+    }
 
-	public boolean isPanelAusgeklappt() {
-		return this.panelAusgeklappt;
-	}
+    public boolean isPanelAusgeklappt() {
+        return this.panelAusgeklappt;
+    }
 
-	public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-		this.panelAusgeklappt = panelAusgeklappt;
-	}
+    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
+        this.panelAusgeklappt = panelAusgeklappt;
+    }
 
-	public Set<Vorlageeigenschaft> getEigenschaften() {
-		return this.eigenschaften;
-	}
+    public Set<Vorlageeigenschaft> getEigenschaften() {
+        return this.eigenschaften;
+    }
 
-	public void setEigenschaften(Set<Vorlageeigenschaft> eigenschaften) {
-		this.eigenschaften = eigenschaften;
-	}
+    public void setEigenschaften(Set<Vorlageeigenschaft> eigenschaften) {
+        this.eigenschaften = eigenschaften;
+    }
 
-	/*
-	 * ##################################################### ##################################################### ## ## Helper ##
-	 * ##################################################### ####################################################
-	 */
+    /*
+     * ##################################################### ##################################################### ## ## Helper ##
+     * ##################################################### ####################################################
+     */
 
-	public String getHerkunft() {
-		return this.herkunft;
-	}
+    public String getHerkunft() {
+        return this.herkunft;
+    }
 
-	public void setHerkunft(String herkunft) {
-		this.herkunft = herkunft;
-	}
+    public void setHerkunft(String herkunft) {
+        this.herkunft = herkunft;
+    }
 
-	public int getEigenschaftenSize() {
-		try {
-			Hibernate.initialize(this.eigenschaften);
-		} catch (HibernateException e) {
-		}
-		if (this.eigenschaften == null) {
-			return 0;
-		} else {
-			return this.eigenschaften.size();
-		}
-	}
+    public int getEigenschaftenSize() {
 
-	public List<Vorlageeigenschaft> getEigenschaftenList() {
-		try {
-			Hibernate.initialize(this.eigenschaften);
-		} catch (HibernateException e) {
-		}
-		if (this.eigenschaften == null) {
-			return new ArrayList<Vorlageeigenschaft>();
-		}
-		return new ArrayList<Vorlageeigenschaft>(this.eigenschaften);
-	}
+        if (this.eigenschaften == null) {
+            return 0;
+        } else {
+            return this.eigenschaften.size();
+        }
+    }
+
+    public List<Vorlageeigenschaft> getEigenschaftenList() {
+
+        if (this.eigenschaften == null) {
+            return new ArrayList<Vorlageeigenschaft>();
+        }
+        return new ArrayList<Vorlageeigenschaft>(this.eigenschaften);
+    }
 
 }

@@ -56,14 +56,7 @@ import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.StatQuestProjectProgressData;
-import org.goobi.production.flow.statistics.hibernate.UserProjectFilter;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
@@ -76,7 +69,6 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.Page;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -304,10 +296,10 @@ public class ProjectBean extends BasisForm {
 	 */
 
 	public StatisticsManager getStatisticsManager1() {
-		if (this.statisticsManager1 == null) {
-			this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-					.getCurrentInstance().getViewRoot().getLocale());
-		}
+//		if (this.statisticsManager1 == null) {
+//			this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, new UserProjectFilter(this.myProjekt.getId()), FacesContext
+//					.getCurrentInstance().getViewRoot().getLocale());
+//		}
 		return this.statisticsManager1;
 	}
 
@@ -316,10 +308,10 @@ public class ProjectBean extends BasisForm {
 	 * @return instance of {@link StatisticsMode.THROUGHPUT} {@link StatisticsManager}
 	 */
 	public StatisticsManager getStatisticsManager2() {
-		if (this.statisticsManager2 == null) {
-			this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-					.getCurrentInstance().getViewRoot().getLocale());
-		}
+//		if (this.statisticsManager2 == null) {
+//			this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, new UserProjectFilter(this.myProjekt.getId()), FacesContext
+//					.getCurrentInstance().getViewRoot().getLocale());
+//		}
 		return this.statisticsManager2;
 	}
 
@@ -328,10 +320,10 @@ public class ProjectBean extends BasisForm {
 	 * @return instance of {@link StatisticsMode.CORRECTIONS} {@link StatisticsManager}
 	 */
 	public StatisticsManager getStatisticsManager3() {
-		if (this.statisticsManager3 == null) {
-			this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-					.getCurrentInstance().getViewRoot().getLocale());
-		}
+//		if (this.statisticsManager3 == null) {
+//			this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, new UserProjectFilter(this.myProjekt.getId()), FacesContext
+//					.getCurrentInstance().getViewRoot().getLocale());
+//		}
 		return this.statisticsManager3;
 	}
 
@@ -340,10 +332,10 @@ public class ProjectBean extends BasisForm {
 	 * @return instance of {@link StatisticsMode.STORAGE} {@link StatisticsManager}
 	 */
 	public StatisticsManager getStatisticsManager4() {
-		if (this.statisticsManager4 == null) {
-			this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-					.getCurrentInstance().getViewRoot().getLocale());
-		}
+//		if (this.statisticsManager4 == null) {
+//			this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, new UserProjectFilter(this.myProjekt.getId()), FacesContext
+//					.getCurrentInstance().getViewRoot().getLocale());
+//		}
 		return this.statisticsManager4;
 	}
 
@@ -353,21 +345,21 @@ public class ProjectBean extends BasisForm {
 
 	@SuppressWarnings("rawtypes")
 	public void GenerateValuesForStatistics() {
-		Criteria crit = Helper.getHibernateSession().createCriteria(Process.class).add(Restrictions.eq("projekt", this.myProjekt));
-		ProjectionList pl = Projections.projectionList();
-		pl.add(Projections.sum("sortHelperImages"));
-		pl.add(Projections.count("sortHelperImages"));
-		crit.setProjection(pl);
-		List list = crit.list();
-		Long images = 0l;
-		Long volumes = 0l;
-		for (Object obj : list) {
-			Object[] row = (Object[]) obj;
-			images = (Long) row[0];
-			volumes = (Long) row[1];
-		}
-		this.myProjekt.setNumberOfPages(images.intValue());
-		this.myProjekt.setNumberOfVolumes(volumes.intValue());
+//		Criteria crit = Helper.getHibernateSession().createCriteria(Process.class).add(Restrictions.eq("projekt", this.myProjekt));
+//		ProjectionList pl = Projections.projectionList();
+//		pl.add(Projections.sum("sortHelperImages"));
+//		pl.add(Projections.count("sortHelperImages"));
+//		crit.setProjection(pl);
+//		List list = crit.list();
+//		Long images = 0l;
+//		Long volumes = 0l;
+//		for (Object obj : list) {
+//			Object[] row = (Object[]) obj;
+//			images = (Long) row[0];
+//			volumes = (Long) row[1];
+//		}
+//		this.myProjekt.setNumberOfPages(images.intValue());
+//		this.myProjekt.setNumberOfVolumes(volumes.intValue());
 	}
 
 	/**
@@ -547,7 +539,7 @@ public class ProjectBean extends BasisForm {
 				this.projectProgressData.setCalculationUnit(CalculationUnit.volumes);
 				this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
 				this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
-				this.projectProgressData.setDataSource(new UserProjectFilter(this.myProjekt.getId()));
+//				this.projectProgressData.setDataSource(new UserProjectFilter(this.myProjekt.getId()));
 
 				if (this.projectProgressImage == null) {
 					this.projectProgressImage = "";

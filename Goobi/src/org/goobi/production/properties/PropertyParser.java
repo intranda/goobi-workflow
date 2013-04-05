@@ -33,16 +33,12 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 
 import org.goobi.beans.Process;
-import org.goobi.beans.Project;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.ProjectManager;
 
 public class PropertyParser {
 	private static final Logger logger = Logger.getLogger(PropertyParser.class);
@@ -56,8 +52,7 @@ public class PropertyParser {
 	
 
 	public static ArrayList<ProcessProperty> getPropertiesForStep(Step mySchritt) {
-		Hibernate.initialize(mySchritt.getProzess());
-		Hibernate.initialize(mySchritt.getProzess().getProjekt());
+		
 		String stepTitle = mySchritt.getTitel();
 		String projectTitle = mySchritt.getProzess().getProjekt().getTitel();
 		ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();

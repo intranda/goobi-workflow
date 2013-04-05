@@ -13,9 +13,9 @@ import org.goobi.beans.Process;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class ProcessManager implements IManager, Serializable {
- 
+
     private static final long serialVersionUID = 3898081063234221110L;
-    
+
     private static final Logger logger = Logger.getLogger(ProcessManager.class);
 
     @Override
@@ -33,7 +33,7 @@ public class ProcessManager implements IManager, Serializable {
         return (List<? extends DatabaseObject>) getProcesses(order, filter, start, count);
     }
 
-    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {        
+    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {
         List<Process> answer = new ArrayList<Process>();
         try {
             answer = ProcessMysqlHelper.getProcesses(order, filter, start, count);
@@ -41,6 +41,10 @@ public class ProcessManager implements IManager, Serializable {
             logger.error("error while getting process list", e);
         }
         return answer;
+    }
+    
+    public static List<Process> getProcesses(String order, String filter) {
+        return getProcesses(order, filter, 0, Integer.MAX_VALUE);
     }
 
     public static Process getProcessById(int id) {
@@ -55,8 +59,16 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     public static void saveProcess(Process o) throws DAOException {
-        ProcessMysqlHelper.saveProcess(o);
+        ProcessMysqlHelper.saveProcess(o, false);
 
+    }
+
+    public static void saveProcessInformation(Process o) {
+        try {
+            ProcessMysqlHelper.saveProcess(o, true);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
     }
 
     public static void deleteProcess(Process o) {
@@ -77,7 +89,6 @@ public class ProcessManager implements IManager, Serializable {
         return answer;
     }
 
-    
     public static void updateBatchList(List<Process> processList) {
         try {
             ProcessMysqlHelper.updateBatchList(processList);
@@ -85,8 +96,7 @@ public class ProcessManager implements IManager, Serializable {
             logger.error(e);
         }
     }
-    
-    
+
     public static void insertBatchProcessList(List<Process> processList) {
         try {
             ProcessMysqlHelper.insertBatchProcessList(processList);
@@ -94,8 +104,7 @@ public class ProcessManager implements IManager, Serializable {
             logger.error(e);
         }
     }
-    
-    
+
     public static int countProcessTitle(String title) {
         try {
             return ProcessMysqlHelper.getProcessCount(null, " title = '" + StringEscapeUtils.escapeSql(title) + "'");
@@ -103,5 +112,54 @@ public class ProcessManager implements IManager, Serializable {
             logger.error(e);
         }
         return 0;
+    }
+
+    public static int getMaxBatchNumber() {
+
+        try {
+            return ProcessMysqlHelper.getMaxBatchNumber();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+
+    public static int countProcesses(String filter) {
+        try {
+            return ProcessMysqlHelper.countProcesses(filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+
+    public static List<Integer> getIDList(String filter) {
+
+        try {
+            return ProcessMysqlHelper.getIDList(filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<Integer>();
+    }
+
+    public static List<Integer> getBatchIds(int limit) {
+        
+        try {
+            return ProcessMysqlHelper.getBatchIds(limit);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<Integer>();
+    }
+    
+    public static List runSQL(String sql) {
+        
+        try {
+            return ProcessMysqlHelper.runSQL(sql);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList();
     }
 }

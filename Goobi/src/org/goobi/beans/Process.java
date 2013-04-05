@@ -48,9 +48,6 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.production.export.ExportDocket;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 import ugh.dl.Fileformat;
 import ugh.exceptions.PreferencesException;
@@ -182,12 +179,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<HistoryEvent> getHistory() {
-        try {
-            @SuppressWarnings("unused")
-            Session s = Helper.getHibernateSession();
-            Hibernate.initialize(this.history);
-        } catch (HibernateException e) {
-        }
+
         if (this.history == null) {
             this.history = new ArrayList<HistoryEvent>();
         }
@@ -224,10 +216,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Prozesseigenschaft> getEigenschaften() {
-        try {
-            Hibernate.initialize(this.eigenschaften);
-        } catch (HibernateException e) {
-        }
+      
         return this.eigenschaften;
     }
 
@@ -544,10 +533,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getHistorySize() {
-        try {
-            Hibernate.initialize(this.history);
-        } catch (HibernateException e) {
-        }
+    
         if (this.history == null) {
             return 0;
         } else {
@@ -556,10 +542,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<HistoryEvent> getHistoryList() {
-        try {
-            Hibernate.initialize(this.history);
-        } catch (HibernateException e) {
-        }
+       
         List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
         if (this.history != null) {
             temp.addAll(this.history);
@@ -568,10 +551,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getEigenschaftenSize() {
-        try {
-            Hibernate.initialize(this.eigenschaften);
-        } catch (HibernateException e) {
-        }
+      
         if (this.eigenschaften == null) {
             return 0;
         } else {
@@ -580,10 +560,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Prozesseigenschaft> getEigenschaftenList() {
-        try {
-            Hibernate.initialize(this.eigenschaften);
-        } catch (HibernateException e) {
-        }
+       
         if (this.eigenschaften == null) {
             return new ArrayList<Prozesseigenschaft>();
         } else {
@@ -592,10 +569,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getWerkstueckeSize() {
-        try {
-            Hibernate.initialize(this.werkstuecke);
-        } catch (HibernateException e) {
-        }
+       
         if (this.werkstuecke == null) {
             return 0;
         } else {
@@ -604,10 +578,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Werkstueck> getWerkstueckeList() {
-        try {
-            Hibernate.initialize(this.werkstuecke);
-        } catch (HibernateException e) {
-        }
+       
         if (this.werkstuecke == null) {
             return new ArrayList<Werkstueck>();
         } else {
@@ -616,10 +587,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getVorlagenSize() {
-        try {
-            Hibernate.initialize(this.vorlagen);
-        } catch (HibernateException e) {
-        }
+       
         if (this.vorlagen == null) {
             this.vorlagen = new ArrayList<Vorlage>();
         }
@@ -627,10 +595,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Vorlage> getVorlagenList() {
-        try {
-            Hibernate.initialize(this.vorlagen);
-        } catch (HibernateException e) {
-        }
+       
         if (this.vorlagen == null) {
             this.vorlagen = new ArrayList<Vorlage>();
         }
@@ -841,7 +806,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
-        Hibernate.initialize(getRegelsatz());
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
         logger.debug("current meta.xml file type for id " + getId() + ": " + type);
@@ -993,7 +957,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String metadataFileName;
         String temporaryMetadataFileName;
 
-        Hibernate.initialize(getRegelsatz());
         switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
             case METS:
                 ff = new MetsMods(this.regelsatz.getPreferences());
@@ -1030,7 +993,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
             DAOException {
-        Hibernate.initialize(getRegelsatz());
         if (new File(getTemplateFilePath()).exists()) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());

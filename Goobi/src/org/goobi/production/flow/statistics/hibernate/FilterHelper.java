@@ -36,7 +36,6 @@ import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.flow.statistics.hibernate.UserDefinedFilter.Parameters;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -75,7 +74,7 @@ public class FilterHelper {
         return answer;
     }
 
-    private static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly) {
+    public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly) {
         /* show only open Steps or those in use by current user */
         /* identify current user */
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
@@ -494,6 +493,8 @@ public class FilterHelper {
 
         if (isStep) {
             flagSteps = true;
+            filter = checkStringBuilder(filter, true);
+            filter.append(" prozesseId not in (select prozesseID from prozesse where prozesse.istTemplate = true) ");
         }
 
         // to collect and return feedback about erroneous use of filter
@@ -791,5 +792,28 @@ public class FilterHelper {
                 message = message + ("Filter '" + filterPart + "' is not known!\n");
         }
         return message;
+    }
+    
+    protected class Parameters {
+        private Boolean flagCriticalQuery = false;
+        private Integer exactStepDone = null;
+
+        protected void setCriticalQuery() {
+            flagCriticalQuery = true;
+        }
+
+        protected void setStepDone(Integer exactStepDone) {
+            this.exactStepDone = exactStepDone;
+        }
+
+        @SuppressWarnings("unused")
+        private Boolean getCriticalQuery() {
+            return flagCriticalQuery;
+        }
+
+        private Integer getExactStepDone() {
+            return exactStepDone;
+        }
+
     }
 }

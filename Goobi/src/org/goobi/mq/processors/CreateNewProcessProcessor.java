@@ -38,14 +38,14 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.goobi.mq.ActiveMQProcessor;
 import org.goobi.mq.MapMessageObjectReader;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
+
 
 import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.AdditionalField;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 /**
@@ -182,12 +182,7 @@ public class CreateNewProcessProcessor extends ActiveMQProcessor {
 	 * @return a List<Prozess> holding all templates
 	 */
 	protected List<Process> allTemplatesFromDatabase() {
-		Session hibernateSession = Helper.getHibernateSession();
-		Criteria request = hibernateSession.createCriteria(Process.class);
-
-		@SuppressWarnings("unchecked")
-		List<Process> result = (List<Process>) request.list();
-
+		List<Process> result = ProcessManager.getAllProcesses();
 		return result;
 	}
 

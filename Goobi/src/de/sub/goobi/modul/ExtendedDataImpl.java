@@ -45,7 +45,6 @@ import de.sub.goobi.forms.ModuleServerForm;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.SimpleDAO;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.goobi.module.api.dataprovider.process.data.DataImpl;
 import de.unigoettingen.goobi.module.api.exception.GoobiException;
@@ -259,61 +258,63 @@ public class ExtendedDataImpl extends DataImpl {
     * @throws GoobiException: 1, 2, 6, 7, 254, 1501, 1502
     * ================================================================*/
    public int set(String sessionId, String type, int count, HashMap pp) throws GoobiException {
-      super.set(sessionId, type, count, pp);
-      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
-      GoobiProcessProperty gpp = new GoobiProcessProperty(pp);
-      if (gpp.getName().startsWith("#"))
-         throw new GoobiException(5, "Parameter not allowed");
-      /* --------------------------------
-       * Prozesseigenschaft
-      * --------------------------------*/
-      String myquery = "from Prozesseigenschaft where prozess=" + p.getId().intValue();
-      /* --------------------------------
-       * Werkstückeigenschaft
-      * --------------------------------*/
-      if (type.equals(isWorkpiece)) {
-         if (p.getWerkstueckeSize() - 1 < count)
-            throw new GoobiException(1500, "Workpiece does not exist");
-         Werkstueck w = (Werkstueck) p.getWerkstueckeList().get(count);
-         myquery = "from Werkstueckeigenschaft where werkstueck=" + w.getId().intValue();
-
-      }
-
-      /* --------------------------------
-       * Scanvorlageneigenschaft
-      * --------------------------------*/
-      if (type.equals(isTemplate)) {
-         if (p.getVorlagenSize() - 1 < count)
-            throw new GoobiException(1500, "Template does not exist");
-         Vorlage v = (Vorlage) p.getVorlagenList().get(count);
-         myquery = "from Vorlageeigenschaft where vorlage=" + v.getId().intValue();
-      }
-      myquery += " and titel='" + gpp.getName() + "' and id=" + gpp.getId();
-
-      try {
-    	 //TODO: Use generics
-         List hits = new SimpleDAO().search(myquery);
-         if (hits.size() > 0) {
-            if (type.equals("") || type.equals(isProcess)) {
-               Prozesseigenschaft pe = (Prozesseigenschaft) hits.get(0);
-               pe.setWert(gpp.getValue());
-            }
-            if (type.equals(isWorkpiece)) {
-               Werkstueckeigenschaft we = (Werkstueckeigenschaft) hits.get(0);
-               we.setWert(gpp.getValue());
-            }
-            if (type.equals(isTemplate)) {
-               Vorlageeigenschaft ve = (Vorlageeigenschaft) hits.get(0);
-               ve.setWert(gpp.getValue());
-            }
-            ProcessManager.saveProcess(p);
-         } else {
-            throw new GoobiException(1500, "Property " + gpp.getName() + " with id " + gpp.getId()
-                  + " does not exist");
-         }
-      } catch (DAOException e) {
-         throw new GoobiException(1400, "******** wrapped DAOException ********: " + e.getMessage() + "\n" + Helper.getStacktraceAsString(e));
-      }
+       // TODO wird das noch benutzt?
+       
+//      super.set(sessionId, type, count, pp);
+//      Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
+//      GoobiProcessProperty gpp = new GoobiProcessProperty(pp);
+//      if (gpp.getName().startsWith("#"))
+//         throw new GoobiException(5, "Parameter not allowed");
+//      /* --------------------------------
+//       * Prozesseigenschaft
+//      * --------------------------------*/
+//      String myquery = "from Prozesseigenschaft where prozess=" + p.getId().intValue();
+//      /* --------------------------------
+//       * Werkstückeigenschaft
+//      * --------------------------------*/
+//      if (type.equals(isWorkpiece)) {
+//         if (p.getWerkstueckeSize() - 1 < count)
+//            throw new GoobiException(1500, "Workpiece does not exist");
+//         Werkstueck w = (Werkstueck) p.getWerkstueckeList().get(count);
+//         myquery = "from Werkstueckeigenschaft where werkstueck=" + w.getId().intValue();
+//
+//      }
+//
+//      /* --------------------------------
+//       * Scanvorlageneigenschaft
+//      * --------------------------------*/
+//      if (type.equals(isTemplate)) {
+//         if (p.getVorlagenSize() - 1 < count)
+//            throw new GoobiException(1500, "Template does not exist");
+//         Vorlage v = (Vorlage) p.getVorlagenList().get(count);
+//         myquery = "from Vorlageeigenschaft where vorlage=" + v.getId().intValue();
+//      }
+//      myquery += " and titel='" + gpp.getName() + "' and id=" + gpp.getId();
+//
+//      try {
+//    	 //TODO: Use generics
+//         List hits = new SimpleDAO().search(myquery);
+//         if (hits.size() > 0) {
+//            if (type.equals("") || type.equals(isProcess)) {
+//               Prozesseigenschaft pe = (Prozesseigenschaft) hits.get(0);
+//               pe.setWert(gpp.getValue());
+//            }
+//            if (type.equals(isWorkpiece)) {
+//               Werkstueckeigenschaft we = (Werkstueckeigenschaft) hits.get(0);
+//               we.setWert(gpp.getValue());
+//            }
+//            if (type.equals(isTemplate)) {
+//               Vorlageeigenschaft ve = (Vorlageeigenschaft) hits.get(0);
+//               ve.setWert(gpp.getValue());
+//            }
+//            ProcessManager.saveProcess(p);
+//         } else {
+//            throw new GoobiException(1500, "Property " + gpp.getName() + " with id " + gpp.getId()
+//                  + " does not exist");
+//         }
+//      } catch (DAOException e) {
+//         throw new GoobiException(1400, "******** wrapped DAOException ********: " + e.getMessage() + "\n" + Helper.getStacktraceAsString(e));
+//      }
       return 0;
    }
 

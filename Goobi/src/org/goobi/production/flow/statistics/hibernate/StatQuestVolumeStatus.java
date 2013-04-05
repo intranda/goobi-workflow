@@ -36,14 +36,13 @@ import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 import de.intranda.commons.chart.renderer.HtmlTableRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.StepManager;
 
 /*****************************************************************************
  * Implementation of {@link IStatisticalQuestion}. 
@@ -57,31 +56,35 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 	 * (non-Javadoc)
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 */
-	public List<DataTable> getDataTables(IDataSource dataSource) {
+	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
 
-		IEvaluableFilter originalFilter;
+//		IEvaluableFilter originalFilter;
+//
+//		if (dataSource instanceof IEvaluableFilter) {
+//			originalFilter = (IEvaluableFilter) dataSource;
+//		} else {
+//			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
+//		}
 
-		if (dataSource instanceof IEvaluableFilter) {
-			originalFilter = (IEvaluableFilter) dataSource;
-		} else {
-			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-		}
-
-		Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
-		crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
-
-		if (originalFilter instanceof UserDefinedFilter) {
-			crit.createCriteria("prozess", "proz");
-			crit.add(Restrictions.in("proz.id", originalFilter.getIDList()));
-		}
+	    List<Step> stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesseId in (select prozesseId from prozesse where " + filter + ")");
+	    
+	    
+	    
+//		Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
+//		crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
+//
+//		if (originalFilter instanceof UserDefinedFilter) {
+//			crit.createCriteria("prozess", "proz");
+//			crit.add(Restrictions.in("proz.id", originalFilter.getIDList()));
+//		}
 		StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
 		DataTable dtbl = new DataTable(title.toString());
 		dtbl.setShowableInPieChart(true);
 		DataRow dRow = new DataRow(Helper.getTranslation("count"));
 
-		for (Object obj : crit.list()) {
-			Step step = (Step) obj;
+		for (Step step : stepList) {
+			
 			String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
 			dRow.addValue(kurztitel, dRow.getValue(kurztitel) + 1);
 		}

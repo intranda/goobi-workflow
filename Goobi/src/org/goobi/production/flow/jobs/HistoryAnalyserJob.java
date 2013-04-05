@@ -35,9 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
 
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
@@ -50,6 +47,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.apache.StepObjectManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.util.file.FileUtils;
 
 /**
@@ -417,32 +415,34 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 	public void updateHistoryForAllProcesses() {
 		logger.info("start history updating for all processes");
 		try {
-			Session session = Helper.getHibernateSession();
-			Query query = session.createQuery("from Prozess order by id desc");
-			@SuppressWarnings("unchecked")
-			Iterator<Process> it = query.iterate();
-			int i = 0;
-			while (it.hasNext()) {
-				i++;
-				Process proc = it.next();
+//			Session session = Helper.getHibernateSession();
+//			Query query = session.createQuery("from Prozess order by id desc");
+			List<Process> processList = ProcessManager.getAllProcesses();
+
+//			Iterator<Process> it = query.iterate();
+//			int i = 0;
+//			while (it.hasNext()) {
+//				i++;
+//				Process proc = it.next();
+			for (Process proc : processList) {
 				logger.debug("updating history entries for " + proc.getTitel());
 				try {
 					if (!proc.isSwappedOutGui()) {
 						if (true == updateHistory(proc) | updateHistoryForSteps(proc)) {
-							session.saveOrUpdate(proc);
+							ProcessManager.saveProcess(proc);
 							logger.debug("history updated for process " + proc.getId());
 						}
 					}
 
-					// commit transaction every 50 items
-					if (!it.hasNext() || i % 50 == 0) {
-						session.flush();
-						session.beginTransaction().commit();
-						session.clear();
-					}
-
-				} catch (HibernateException e) {
-					logger.error("HibernateException occured while scheduled storage calculation", e);
+//					// commit transaction every 50 items
+//					if (!it.hasNext() || i % 50 == 0) {
+//						session.flush();
+//						session.beginTransaction().commit();
+//						session.clear();
+//					}
+//
+//				} catch (HibernateException e) {
+//					logger.error("HibernateException occured while scheduled storage calculation", e);
 
 				} catch (Exception e) {
 					Helper.setFehlerMeldung("An error occured while scheduled storage calculation", e);

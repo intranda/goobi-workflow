@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
 
 import de.sub.goobi.beans.Benutzereigenschaft;
 import de.sub.goobi.config.ConfigMain;
@@ -376,10 +374,7 @@ public class User implements Serializable, DatabaseObject {
 	}
 
 	public int getEigenschaftenSize() {
-		try {
-			Hibernate.initialize(this.eigenschaften);
-		} catch (HibernateException e) {
-		}
+
 		if (this.eigenschaften == null) {
 			return 0;
 		} else {

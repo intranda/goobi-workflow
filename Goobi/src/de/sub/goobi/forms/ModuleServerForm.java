@@ -58,7 +58,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 //import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.unigoettingen.goobi.module.api.exception.GoobiException;
 import de.unigoettingen.goobi.module.api.exception.GoobiModuleException;
 import de.unigoettingen.goobi.module.api.message.Message;
@@ -393,11 +392,7 @@ public class ModuleServerForm {
 		String prozessidStr = getProcessIDFromShortSession(sessionId);
 		try {
 		    Process tempProz = ProcessManager.getProcessById(Integer.parseInt(prozessidStr));
-			Helper.getHibernateSession().flush();
-			Helper.getHibernateSession().clear();
-			if (tempProz != null && tempProz.getId() != null)
-				Helper.getHibernateSession().refresh(tempProz);
-
+		
 			return tempProz;
 		} catch (NumberFormatException e) {
 			new Helper();

@@ -71,7 +71,6 @@ import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
-import org.goobi.production.flow.statistics.hibernate.IEvaluableFilter;
 
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
@@ -126,7 +125,6 @@ public class ProcessBean extends BasisForm {
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
-    private IEvaluableFilter myFilteredDataSource;
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
     private Prozesseigenschaft myProzessEigenschaft;
@@ -1164,20 +1162,7 @@ public class ProcessBean extends BasisForm {
     }
 
     public String Reload() {
-        if (this.mySchritt != null && this.mySchritt.getId() != null) {
-            try {
-                Helper.getHibernateSession().refresh(this.mySchritt);
-            } catch (Exception e) {
-                logger.debug("could not refresh step with id " + this.mySchritt.getId(), e);
-            }
-        }
-        if (this.myProzess != null && this.myProzess.getId() != null) {
-            try {
-                Helper.getHibernateSession().refresh(this.myProzess);
-            } catch (Exception e) {
-                logger.debug("could not refresh process with id " + this.myProzess.getId(), e);
-            }
-        }
+       
         return "";
     }
 
@@ -1433,50 +1418,50 @@ public class ProcessBean extends BasisForm {
 
     public void StatisticsStatusVolumes() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale());
+                new StatisticsManager(StatisticsMode.STATUS_VOLUMES,  FacesContext.getCurrentInstance().getViewRoot()
+                        .getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsUsergroups() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.USERGROUPS, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale());
+                new StatisticsManager(StatisticsMode.USERGROUPS,  FacesContext.getCurrentInstance().getViewRoot()
+                        .getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsRuntimeSteps() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale());
+                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS,  FacesContext.getCurrentInstance().getViewRoot()
+                        .getLocale(), filter);
     }
 
     public void StatisticsProduction() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PRODUCTION, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale());
+                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot()
+                        .getLocale(), filter);
     }
 
     public void StatisticsStorage() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STORAGE, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot().getLocale());
+                new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsCorrection() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.CORRECTIONS, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale());
+                new StatisticsManager(StatisticsMode.CORRECTIONS,  FacesContext.getCurrentInstance().getViewRoot()
+                        .getLocale(), filter);
     }
 
     public void StatisticsTroughput() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.THROUGHPUT, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale());
+                new StatisticsManager(StatisticsMode.THROUGHPUT,  FacesContext.getCurrentInstance().getViewRoot()
+                        .getLocale(), filter);
     }
 
     public void StatisticsProject() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PROJECTS, this.myFilteredDataSource, FacesContext.getCurrentInstance().getViewRoot().getLocale());
+                new StatisticsManager(StatisticsMode.PROJECTS,  FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 

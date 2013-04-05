@@ -35,19 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.HibernateUtilOld;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -376,11 +368,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	 */
 
 	public int getEigenschaftenSize() {
-		try {
-			Hibernate.initialize(this.eigenschaften);
-		} catch (HibernateException e) {
-			return 0;
-		}
+		
 		if (this.eigenschaften == null) {
 			return 0;
 		} else {
@@ -389,10 +377,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	}
 
 	public List<Schritteigenschaft> getEigenschaftenList() {
-		try {
-			Hibernate.initialize(this.eigenschaften);
-		} catch (HibernateException e) {
-		}
+		
 		if (this.eigenschaften == null) {
 			return new ArrayList<Schritteigenschaft>();
 		}
@@ -400,10 +385,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	}
 
 	public int getBenutzerSize() {
-		try {
-			Hibernate.initialize(this.benutzer);
-		} catch (HibernateException e) {
-		}
+		
 		if (this.benutzer == null) {
 			return 0;
 		} else {
@@ -412,10 +394,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	}
 
 	public List<User> getBenutzerList() {
-		try {
-			Hibernate.initialize(this.benutzer);
-		} catch (HibernateException e) {
-		}
+		
 		if (this.benutzer == null) {
 			return new ArrayList<User>();
 		}
@@ -423,10 +402,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	}
 
 	public int getBenutzergruppenSize() {
-		try {
-			Hibernate.initialize(this.benutzergruppen);
-		} catch (HibernateException e) {
-		}
+	
 		if (this.benutzergruppen == null) {
 			return 0;
 		} else {
@@ -435,10 +411,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	}
 
 	public List<Usergroup> getBenutzergruppenList() {
-		try {
-			Hibernate.initialize(this.benutzergruppen);
-		} catch (HibernateException e) {
-		}
+		
 		if (this.benutzergruppen == null) {
 			return new ArrayList<Usergroup>();
 		}
@@ -802,45 +775,45 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>{
 	}
 
 	public boolean getBatchSize() {
-
+	    // TODO
 		Integer batchNumber = this.prozess.getBatchID();
 		if (batchNumber != null) {
 			// only steps with same title
-			Session session = Helper.getHibernateSession();
-			Criteria crit = session.createCriteria(Step.class);
-			crit.add(Restrictions.eq("titel", this.titel));
-			// only steps with same batchid
-			crit.createCriteria("prozess", "proc");
-			crit.add(Restrictions.eq("proc.batchID", batchNumber));
-			crit.add(Restrictions.eq("batchStep", true));
-			if (crit.list().size() > 1) {
-				return true;
-			}
+//			Session session = Helper.getHibernateSession();
+//			Criteria crit = session.createCriteria(Step.class);
+//			crit.add(Restrictions.eq("titel", this.titel));
+//			// only steps with same batchid
+//			crit.createCriteria("prozess", "proc");
+//			crit.add(Restrictions.eq("proc.batchID", batchNumber));
+//			crit.add(Restrictions.eq("batchStep", true));
+//			if (crit.list().size() > 1) {
+//				return true;
+//			}
 		}
 		return false;
 	}
 
-	/**
-	 * Get the current object for this row.
-	 * 
-	 * @return Employee The current object representing a row.
-	 */
-	public Step getCurrent() {
-		boolean hasOpen = HibernateUtilOld.hasOpenSession();
-		Session sess = Helper.getHibernateSession();
-
-		Step current = (Step) sess.get(Step.class, this.getId());
-		if (current == null) {
-			current = (Step) sess.load(Step.class, this.getId());
-		}
-		if (!hasOpen) {
-			current.eigenschaften.size();
-			current.benutzer.size();
-			current.benutzergruppen.size();
-			sess.close();
-		}
-		return current;
-	}
+//	/**
+//	 * Get the current object for this row.
+//	 * 
+//	 * @return Employee The current object representing a row.
+//	 */
+//	public Step getCurrent() {
+//		boolean hasOpen = HibernateUtilOld.hasOpenSession();
+//		Session sess = Helper.getHibernateSession();
+//
+//		Step current = (Step) sess.get(Step.class, this.getId());
+//		if (current == null) {
+//			current = (Step) sess.load(Step.class, this.getId());
+//		}
+//		if (!hasOpen) {
+//			current.eigenschaften.size();
+//			current.benutzer.size();
+//			current.benutzergruppen.size();
+//			sess.close();
+//		}
+//		return current;
+//	}
 
 	public String getStepPlugin() {
 		return stepPlugin;

@@ -12,8 +12,7 @@ import org.goobi.beans.Step;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class StepManager implements IManager, Serializable {
-    
-  
+
     private static final long serialVersionUID = -8285339735960375871L;
     private static final Logger logger = Logger.getLogger(StepManager.class);
 
@@ -28,7 +27,6 @@ public class StepManager implements IManager, Serializable {
 
     }
 
-    
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
         return (List<? extends DatabaseObject>) getSteps(order, filter, start, count);
@@ -118,5 +116,29 @@ public class StepManager implements IManager, Serializable {
         }
         return 0;
     }
-    
+
+    public static List<Step> getSteps(String order, String filter) {
+
+        return getSteps(order, filter, 0, Integer.MAX_VALUE);
+    }
+
+    public static List<Integer> getIDList(String filter) {
+
+        try {
+            return StepMysqlHelper.getIDList(filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<Integer>();
+    }
+
+    public static List<String> getDistinctStepTitles() {
+
+        try {
+            return StepMysqlHelper.getDistinctStepTitles();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<String>();
+    }
 }

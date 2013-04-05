@@ -44,6 +44,7 @@ import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.ResultOutput;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.flow.statistics.hibernate.StatQuestThroughput;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultValueDataset;
@@ -51,6 +52,7 @@ import org.jfree.data.general.DefaultValueDataset;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.statistik.StatistikLaufzeitSchritte;
 import de.sub.goobi.statistik.StatistikStatus;
 
@@ -86,6 +88,7 @@ public class StatisticsManager implements Serializable {
 	private List<StatisticsRenderingElement> renderingElements;
 	static private Locale myLocale = null;
 	private Boolean includeLoops = null;
+	private String filter = "";
 
 	private StatisticsManager() {
 		super();
@@ -99,10 +102,10 @@ public class StatisticsManager implements Serializable {
 	 * @param inDataSource
 	 *            as {@link IDataSource}
 	 ****************************************************************************/
-	public StatisticsManager(StatisticsMode inMode, IDataSource inDataSource, Locale locale) {
+	public StatisticsManager(StatisticsMode inMode,  Locale locale, String filter) {
 		this();
 		statisticMode = inMode;
-		myDataSource = inDataSource;
+		this.filter = filter;
 		targetResultOutput = ResultOutput.chartAndTable;
 		targetTimeUnit = TimeUnit.months;
 		sourceTimeUnit = TimeUnit.months;
@@ -114,7 +117,9 @@ public class StatisticsManager implements Serializable {
 
 			case SIMPLE_RUNTIME_STEPS:
 				try {
-					jfreeImage = StatistikLaufzeitSchritte.createChart(inDataSource.getSourceData());
+				    filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+				    List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE);
+					jfreeImage = StatistikLaufzeitSchritte.createChart(processList);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -122,7 +127,9 @@ public class StatisticsManager implements Serializable {
 				break;
 
 			default:
-				jfreeDataset = StatistikStatus.getDiagramm(inDataSource.getSourceData());
+			    filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+                List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE);
+				jfreeDataset = StatistikStatus.getDiagramm(processList);
 				break;
 			}
 		}
@@ -162,7 +169,16 @@ public class StatisticsManager implements Serializable {
 	 * {@link StatisticsMode} for presention and rendering
 	 * 
 	 ****************************************************************************/
+	
+
+	
+	
 	public void calculate() {
+	    // TODO fix this
+	    filter = "project:tu";
+        filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+
+	    
 		/*
 		 * -------------------------------- if to-date is before from-date, show
 		 * error message --------------------------------
@@ -203,7 +219,7 @@ public class StatisticsManager implements Serializable {
 				question.setCalculationUnit(targetCalculationUnit);
 			}
 			renderingElements = new ArrayList<StatisticsRenderingElement>();
-			List<DataTable> myDataTables = question.getDataTables(myDataSource);
+			List<DataTable> myDataTables = question.getDataTables(myDataSource, filter);
 
 			/*
 			 * -------------------------------- if DataTables exist analyze them
