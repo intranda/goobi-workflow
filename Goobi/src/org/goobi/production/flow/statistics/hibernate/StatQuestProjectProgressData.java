@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.StepInformation;
@@ -538,7 +537,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 	}
 
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+	public List<DataTable> getDataTables(String filter) {
 		return null;
 	}
 

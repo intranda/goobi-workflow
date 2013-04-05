@@ -151,7 +151,7 @@ public class StepBean extends BasisForm {
 	public String FilterAlleStart() {
 	    
 	    StepManager m = new StepManager();
-	    String sql = FilterHelper.criteriaBuilder(filter, false, null, nurOffeneSchritte, nurEigeneSchritte, false, true);
+	    String sql = FilterHelper.criteriaBuilder(filter, false, nurOffeneSchritte, nurEigeneSchritte, false, true);
 	    // TODO automatic tasks
 	    // TODO hide correction tasks
 	    

@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.goobi.beans.Step;
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -56,7 +55,7 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 	 * (non-Javadoc)
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 */
-	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+	public List<DataTable> getDataTables(String filter) {
 
 //		IEvaluableFilter originalFilter;
 //

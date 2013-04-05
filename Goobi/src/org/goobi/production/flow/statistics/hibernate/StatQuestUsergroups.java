@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -57,7 +56,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
-    public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+    public List<DataTable> getDataTables( String filter) {
         List<Step> stepList = null;
         if (filter == null || filter.length() == 0) {
             stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ");

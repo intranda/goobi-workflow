@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -72,7 +71,7 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 */
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+	public List<DataTable> getDataTables(String filter) {
 
 		List<DataTable> allTables = new ArrayList<DataTable>();
 

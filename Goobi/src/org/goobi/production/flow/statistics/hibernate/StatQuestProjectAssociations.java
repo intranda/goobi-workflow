@@ -31,7 +31,6 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -42,96 +41,101 @@ import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 /*****************************************************************************
- * Implementation of {@link IStatisticalQuestion}. 
- * Statistical Request with predefined Values in data Table
+ * Implementation of {@link IStatisticalQuestion}. Statistical Request with predefined Values in data Table
  * 
  * @author Wulf Riebensahm
  ****************************************************************************/
 public class StatQuestProjectAssociations implements IStatisticalQuestion {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
-	 */
-	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
+     */
+    public List<DataTable> getDataTables(String filter) {
 
-		IEvaluableFilter originalFilter;
-
-		if (dataSource instanceof IEvaluableFilter) {
-			originalFilter = (IEvaluableFilter) dataSource;
-		} else {
-			throw new UnsupportedOperationException(
-					"This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-		}
         List<DataTable> allTables = new ArrayList<DataTable>();
 
-//		ProjectionList proj = Projections.projectionList();
-//		proj.add(Projections.count("id"));
-//		proj.add(Projections.groupProperty("proj.titel"));
-//
-//		Criteria crit;
-//
-////		if (originalFilter instanceof UserDefinedFilter) {
-////			crit = new UserDefinedFilter(originalFilter.getIDList())
-////					.getCriteria();
-////			crit.createCriteria("projekt", "proj");
-////		} else {
-//			crit = originalFilter.clone().getCriteria();
-////		}
-//
-//		// use a clone on the filter and apply the projection on the clone
-//		crit.setProjection(proj);
-//
-//		StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(
-//				this.getClass()).getTitle());
-//
-//		DataTable dtbl = new DataTable(title.toString());
-//		dtbl.setShowableInPieChart(true);
-//		DataRow dRow = new DataRow(Helper.getTranslation("count"));
-//
-//		for (Object obj : crit.list()) {
-//			Object[] objArr = (Object[]) obj;
-//			dRow.addValue(new Converter(objArr[1]).getString(), new Converter(
-//					new Converter(objArr[0]).getInteger()).getDouble());
-//		}
-//		dtbl.addDataRow(dRow);
-//
-//
-//		dtbl.setUnitLabel(Helper.getTranslation("project"));
-//		allTables.add(dtbl);
-		return allTables;
-	}
+        List<Integer> idList = ProcessManager.getIDList(filter);
+        //        select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID group by prozesse.projekteId;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted(de.intranda.commons.chart.renderer.IRenderer)
-	 */
-	public Boolean isRendererInverted(IRenderer inRenderer) {
-		return inRenderer instanceof HtmlTableRenderer;
-	}
+        if (idList == null || idList.isEmpty()) {
+            return null;
+        }
+        String condition = "prozesse.prozesseId in (";
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit(org.goobi.production.flow.statistics.enums.CalculationUnit)
-	 */
-	public void setCalculationUnit(CalculationUnit cu) {
-	}
+        for (Integer i : idList) {
+            condition = condition.concat(i.toString() + ",");
+        }
+        condition = condition.substring(0, condition.length() - ",".length()) + ")";
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)
-	 */
-	public void setTimeUnit(TimeUnit timeUnit) {
-	}
+        
+        String sql = " select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID AND " + condition + " group by prozesse.projekteId";
+        
+        //		ProjectionList proj = Projections.projectionList();
+        //		proj.add(Projections.count("id"));
+        //		proj.add(Projections.groupProperty("proj.titel"));
+        //
+        //		Criteria crit;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getNumberFormatPattern()
-	 */
-	public String getNumberFormatPattern() {
-		return "#";
-	}
+        //		if (originalFilter instanceof UserDefinedFilter) {
+        //			crit = new UserDefinedFilter(originalFilter.getIDList())
+        //					.getCriteria();
+        //			crit.createCriteria("projekt", "proj");
+        //		} else {
+        //			crit = originalFilter.clone().getCriteria();
+        //		}
+
+        // use a clone on the filter and apply the projection on the clone
+        //		crit.setProjection(proj);
+        List rawData = ProcessManager.runSQL(sql);
+        StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
+
+        DataTable dtbl = new DataTable(title.toString());
+        dtbl.setShowableInPieChart(true);
+        DataRow dRow = new DataRow(Helper.getTranslation("count"));
+
+        for (Object obj : rawData) {
+            Object[] objArr = (Object[]) obj;
+            dRow.addValue((String)objArr[0],  new Converter(new Converter(objArr[1]).getInteger()).getDouble());
+        }
+        dtbl.addDataRow(dRow);
+
+        dtbl.setUnitLabel(Helper.getTranslation("project"));
+        allTables.add(dtbl);
+        return allTables;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted(de.intranda.commons.chart.renderer.IRenderer)
+     */
+    public Boolean isRendererInverted(IRenderer inRenderer) {
+        return inRenderer instanceof HtmlTableRenderer;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit(org.goobi.production.flow.statistics.enums.CalculationUnit)
+     */
+    public void setCalculationUnit(CalculationUnit cu) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)
+     */
+    public void setTimeUnit(TimeUnit timeUnit) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getNumberFormatPattern()
+     */
+    public String getNumberFormatPattern() {
+        return "#";
+    }
 
 }

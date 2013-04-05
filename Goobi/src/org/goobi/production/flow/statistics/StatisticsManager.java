@@ -74,7 +74,6 @@ public class StatisticsManager implements Serializable {
 	private String jfreeImage;
 	/* internal StatisticsMode */
 	private StatisticsMode statisticMode;
-	private IDataSource myDataSource;
 	private Date sourceDateFrom;
 	private Date sourceDateTo = new Date();
 	private int sourceNumberOfTimeUnits;
@@ -110,14 +109,13 @@ public class StatisticsManager implements Serializable {
 		targetTimeUnit = TimeUnit.months;
 		sourceTimeUnit = TimeUnit.months;
 		myLocale = locale;
-
 		/* for backward compatibility create old jfreechart datasets */
 		if (inMode.getIsSimple()) {
 			switch (inMode) {
 
 			case SIMPLE_RUNTIME_STEPS:
 				try {
-				    filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+				    filter = FilterHelper.criteriaBuilder(filter, false, null,  null, true, false);
 				    List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE);
 					jfreeImage = StatistikLaufzeitSchritte.createChart(processList);
 				} catch (IOException e) {
@@ -127,7 +125,7 @@ public class StatisticsManager implements Serializable {
 				break;
 
 			default:
-			    filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+			    filter = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
                 List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE);
 				jfreeDataset = StatistikStatus.getDiagramm(processList);
 				break;
@@ -175,8 +173,8 @@ public class StatisticsManager implements Serializable {
 	
 	public void calculate() {
 	    // TODO fix this
-	    filter = "project:tu";
-        filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+	    filter = "project:tu stepdone:2";
+        filter = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
 
 	    
 		/*
@@ -219,7 +217,7 @@ public class StatisticsManager implements Serializable {
 				question.setCalculationUnit(targetCalculationUnit);
 			}
 			renderingElements = new ArrayList<StatisticsRenderingElement>();
-			List<DataTable> myDataTables = question.getDataTables(myDataSource, filter);
+			List<DataTable> myDataTables = question.getDataTables(filter);
 
 			/*
 			 * -------------------------------- if DataTables exist analyze them

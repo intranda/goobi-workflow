@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -109,7 +108,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 	 * (org.goobi.production.flow.statistics.IDataSource)
 	 */
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+	public List<DataTable> getDataTables(String filter) {
 
 		List<DataTable> allTables = new ArrayList<DataTable>();
 
@@ -352,12 +351,12 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
 	// TODO Remove redundant code
 	private DataTable buildDataTableFromSQL(String natSQL, String headerFromSQL) {
-//		Session session = Helper.getHibernateSession();
-//
-//		// creating header row from headerSQL (gets all columns in one row
-//		DataRow headerRow = null;
-//		if (headerFromSQL != null) {
-//			headerRow = new DataRow(null);
+
+
+		// creating header row from headerSQL (gets all columns in one row
+		DataRow headerRow = null;
+		if (headerFromSQL != null) {
+			headerRow = new DataRow(null);
 //			SQLQuery headerQuery = session.createSQLQuery(headerFromSQL);
 //
 //			// needs to be there otherwise an exception is thrown
@@ -365,23 +364,21 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 //			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
 //			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
 //			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
-//
-//			@SuppressWarnings("rawtypes")
+			List headerList = ProcessManager.runSQL(headerFromSQL);
 //			List headerList = headerQuery.list();
-//			for (Object obj : headerList) {
-//				Object[] objArr = (Object[]) obj;
-//				try {
-//					headerRow.setName(new Converter(objArr[3]).getString() + "");
-//					headerRow.addValue(new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString()
-//							+ ")", (new Converter(objArr[0]).getDouble()));
-//
-//				} catch (Exception e) {
-//					headerRow.addValue(e.getMessage(), new Double(0));
-//				}
-//			}
-//
-//		}
-//
+			for (Object obj : headerList) {
+				Object[] objArr = (Object[]) obj;		
+				try {
+					headerRow.setName(new Converter(objArr[3]).getString() + "");
+					headerRow.addValue(new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", (new Converter(objArr[0]).getDouble()));
+
+				} catch (Exception e) {
+					headerRow.addValue(e.getMessage(), new Double(0));
+				}
+			}
+
+		}
+
 //		SQLQuery query = session.createSQLQuery(natSQL);
 //
 //		// needs to be there otherwise an exception is thrown
@@ -389,68 +386,69 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 //		query.addScalar("stepName", StandardBasicTypes.STRING);
 //		query.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
 //		query.addScalar("intervall", StandardBasicTypes.STRING);
-//
-//		@SuppressWarnings("rawtypes")
+
+		@SuppressWarnings("rawtypes")
 //		List list = query.list();
-//
+		List list = ProcessManager.runSQL(natSQL);
 		DataTable dtbl = new DataTable("");
-//
-//		// if headerRow is set then add it to the DataTable to set columns
-//		// needs to be removed later
-//		if (headerRow != null) {
-//			dtbl.addDataRow(headerRow);
-//		}
-//
-//		DataRow dataRow = null;
-//
-//		// each data row comes out as an Array of Objects
-//		// the only way to extract the data is by knowing
-//		// in which order they come out
-//
-//		// checks if intervall has changed which then triggers the start for a
-//		// new row
-//		// intervall here is the timeGroup Expression (e.g. "2006/05" or
-//		// "2006-10-05")
-//		String observeIntervall = "";
-//
-//		for (Object obj : list) {
-//			Object[] objArr = (Object[]) obj;
-//			try {
-//				// objArr[3]
-//				if (!observeIntervall.equals(new Converter(objArr[3]).getString())) {
-//					observeIntervall = new Converter(objArr[3]).getString();
-//
-//					// row cannot be added before it is filled because the add
-//					// process triggers
-//					// a testing for header alignement -- this is where we add
-//					// it after iterating it first
-//					if (dataRow != null) {
-//						dtbl.addDataRow(dataRow);
-//					}
-//
-//					dataRow = new DataRow(null);
-//					// setting row name with localized time group and the
-//					// date/time extraction based on the group
-//					dataRow.setName(new Converter(objArr[3]).getString() + "");
-//				}
-//				dataRow.addValue(
+
+		// if headerRow is set then add it to the DataTable to set columns
+		// needs to be removed later
+		if (headerRow != null) {
+			dtbl.addDataRow(headerRow);
+		}
+
+		DataRow dataRow = null;
+
+		// each data row comes out as an Array of Objects
+		// the only way to extract the data is by knowing
+		// in which order they come out
+
+		// checks if intervall has changed which then triggers the start for a
+		// new row
+		// intervall here is the timeGroup Expression (e.g. "2006/05" or
+		// "2006-10-05")
+		String observeIntervall = "";
+
+		for (Object obj : list) {
+			Object[] objArr = (Object[]) obj;
+			try {
+				// objArr[1]
+				if (!observeIntervall.equals(new Converter(objArr[1]).getString())) {
+					observeIntervall = new Converter(objArr[1]).getString();
+
+					// row cannot be added before it is filled because the add
+					// process triggers
+					// a testing for header alignement -- this is where we add
+					// it after iterating it first
+					if (dataRow != null) {
+						dtbl.addDataRow(dataRow);
+					}
+
+					dataRow = new DataRow(null);
+					// setting row name with localized time group and the
+					// date/time extraction based on the group
+					dataRow.setName(new Converter(objArr[1]).getString() + "");
+				}
+				dataRow.addValue(
+				        new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[2]).getDouble());
 //						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
 //						(new Converter(objArr[0]).getDouble()));
-//
-//			} catch (Exception e) {
-//				dataRow.addValue(e.getMessage(), new Double(0));
-//			}
-//		}
-//		// to add the last row
-//		if (dataRow != null) {
-//			dtbl.addDataRow(dataRow);
-//		}
-//
-//		// now removing headerRow
-//		if (headerRow != null) {
-//			dtbl.removeDataRow(headerRow);
-//		
-//		}
+
+			} catch (Exception e) {
+				dataRow.addValue(e.getMessage(), new Double(0));
+			}
+		}
+		// to add the last row
+		if (dataRow != null) {
+			dtbl.addDataRow(dataRow);
+		}
+
+		// now removing headerRow
+		if (headerRow != null) {
+			dtbl.removeDataRow(headerRow);
+		
+		}
 
 		return dtbl;
 	}

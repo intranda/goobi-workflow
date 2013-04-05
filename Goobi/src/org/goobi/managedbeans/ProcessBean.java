@@ -358,7 +358,7 @@ public class ProcessBean extends BasisForm {
         this.statisticsManager = null;
         this.myAnzahlList = null;
         ProcessManager m = new ProcessManager();
-        String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+        String sql = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
         if (this.modusAnzeige.equals("vorlagen")) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
@@ -406,7 +406,7 @@ public class ProcessBean extends BasisForm {
         //            return "";
         //        }
 
-        String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
+        String sql = FilterHelper.criteriaBuilder(filter, true, null, null, true, false);
 
         if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
             if (!sql.isEmpty()) {
@@ -445,7 +445,7 @@ public class ProcessBean extends BasisForm {
         this.statisticsManager = null;
         this.myAnzahlList = null;
 
-        String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
+        String sql = FilterHelper.criteriaBuilder(filter, null, null, null, true, false);
         if (this.modusAnzeige.equals("vorlagen")) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";

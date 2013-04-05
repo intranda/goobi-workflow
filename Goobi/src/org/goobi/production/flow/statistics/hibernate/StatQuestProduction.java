@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.goobi.production.flow.statistics.IDataSource;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -74,7 +73,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 ****************************************************************************/
 	@Override
-	public List<DataTable> getDataTables(IDataSource dataSource, String filter) {
+	public List<DataTable> getDataTables(String filter) {
 
 		// contains an intger representing "reihenfolge" in schritte, as defined for this request
 		// if not defined it will trigger a fall back on a different way of retrieving the statistical data
@@ -82,25 +81,19 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 		String stepname = null;
 		List<DataTable> allTables = new ArrayList<DataTable>();
 
-		IEvaluableFilter originalFilter;
-
-		if (dataSource instanceof IEvaluableFilter) {
-			originalFilter = (IEvaluableFilter) dataSource;
-		} else {
-			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-		}
+		
 
 		// gathering some information from the filter passed by dataSource
 		// exactStepDone is very important ...
 
-		try {
-			exactStepDone = originalFilter.stepDone();
-		} catch (UnsupportedOperationException e1) {
-		}
-		try {
-			stepname = originalFilter.stepDoneName();
-		} catch (UnsupportedOperationException e1) {
-		}
+//		try {
+			exactStepDone = FilterHelper.getStepDone(filter);
+//		} catch (UnsupportedOperationException e1) {
+//		}
+//		try {
+			stepname = FilterHelper.getStepDoneName(filter);
+//		} catch (UnsupportedOperationException e1) {
+//		}
 
 		// we have to build a query from scratch by reading the ID's
 		List<Integer> IDlist = null;
