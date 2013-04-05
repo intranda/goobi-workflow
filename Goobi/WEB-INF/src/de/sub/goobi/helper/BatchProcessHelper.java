@@ -258,6 +258,14 @@ public class BatchProcessHelper {
 		this.processPropertyList = PropertyParser.getPropertiesForProcess(this.currentProcess);
 		
 		for (ProcessProperty pt : this.processPropertyList) {
+		    if (pt.getProzesseigenschaft() == null) {
+                Prozesseigenschaft pe = new Prozesseigenschaft();
+                pe.setProzess(process);
+                pt.setProzesseigenschaft(pe);
+                process.getEigenschaften().add(pe);
+                pt.transfer();
+            }
+		    
 			if (!this.containers.keySet().contains(pt.getContainer())) {
 				PropertyListObject plo = new PropertyListObject(pt.getContainer());
 				plo.addToList(pt);
@@ -268,6 +276,12 @@ public class BatchProcessHelper {
 				this.containers.put(pt.getContainer(), plo);
 			}
 		}
+		try {
+            pdao.save(process);
+        } catch (DAOException e) {
+            logger.error(e);
+            Helper.setFehlerMeldung("propertiesNotSaved");
+        }
 //		for (ProcessProperty pt : this.processPropertyList) {
 //			if (!this.containers.keySet().contains(pt.getContainer())) {
 //				this.containers.put(pt.getContainer(), 1);
@@ -284,6 +298,7 @@ public class BatchProcessHelper {
 				}
 			}
 		}
+		
 		
 	}
 

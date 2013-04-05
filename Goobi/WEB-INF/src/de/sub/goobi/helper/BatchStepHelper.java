@@ -285,6 +285,15 @@ public class BatchStepHelper {
 			pList.add(step.getProzess());
 		}
 		for (ProcessProperty pt : this.processPropertyList) {
+		    if (pt.getProzesseigenschaft() == null) {
+                Prozesseigenschaft pe = new Prozesseigenschaft();
+                pe.setProzess(s.getProzess());
+                pt.setProzesseigenschaft(pe);
+                s.getProzess().getEigenschaften().add(pe);
+                pt.transfer();
+            }
+		    
+		    
 			if (!this.containers.keySet().contains(pt.getContainer())) {
 				PropertyListObject plo = new PropertyListObject(pt.getContainer());
 				plo.addToList(pt);
@@ -295,6 +304,13 @@ public class BatchStepHelper {
 				this.containers.put(pt.getContainer(), plo);
 			}
 		}
+		try {
+            pdao.save(s.getProzess());
+        } catch (DAOException e) {
+            logger.error(e);
+            Helper.setFehlerMeldung("propertiesNotSaved");
+        }
+		
 		// for (ProcessProperty pt : this.processPropertyList) {
 		// if (!this.containers.keySet().contains(pt.getContainer())) {
 		// this.containers.put(pt.getContainer(), 1);

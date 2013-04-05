@@ -1216,6 +1216,15 @@ public class AktuelleSchritteForm extends BasisForm {
 		// }
 		// Collections.sort(this.containers);
 		for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getProzesseigenschaft() == null) {
+                Prozesseigenschaft pe = new Prozesseigenschaft();
+                pe.setProzess(this.mySchritt.getProzess());
+                pt.setProzesseigenschaft(pe);
+                this.mySchritt.getProzess().getEigenschaften().add(pe);
+                pt.transfer();
+            }
+		    
+		    
 			if (!this.containers.keySet().contains(pt.getContainer())) {
 				PropertyListObject plo = new PropertyListObject(pt.getContainer());
 				plo.addToList(pt);
@@ -1226,6 +1235,12 @@ public class AktuelleSchritteForm extends BasisForm {
 				this.containers.put(pt.getContainer(), plo);
 			}
 		}
+		try {
+            this.pdao.save(this.mySchritt.getProzess());
+        } catch (DAOException e) {
+            myLogger.error(e);
+            Helper.setFehlerMeldung("propertiesNotSaved");
+        }
 	}
 
 	// TODO validierung nur bei Schritt abgeben, nicht bei normalen speichern
