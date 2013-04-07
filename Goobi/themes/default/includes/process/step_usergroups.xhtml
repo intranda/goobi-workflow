@@ -49,7 +49,7 @@
 
 			<x:dataTable styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
 				rowClasses="standardTable_Row1,standardTable_Row2" columnClasses="standardTable_Column,standardTable_ColumnCentered" var="item"
-				value="#{BenutzergruppenForm.page.list}">
+				value="#{BenutzergruppenForm.paginator.list}">
 
 				<h:column id="id9">
 					<f:facet name="header">
@@ -83,7 +83,7 @@
 					</td>
 					<td align="center">
 						<!-- ===================== Datascroller für die Ergebnisse ====================== -->
-						<x:aliasBean alias="#{mypage}" value="#{BenutzergruppenForm.page}">
+						<x:aliasBean alias="#{mypage}" value="#{BenutzergruppenForm.paginator}">
 							<ui:include src="../../includes/datascroller2.xhtml" />
 						</x:aliasBean>
 						<!-- ===================== // Datascroller für die Ergebnisse ====================== -->
