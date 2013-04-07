@@ -5,7 +5,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src-dubious"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/work"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/private"/>
         <property name="context-root" value="Goobi1.9"/>
         <property name="java-output-path" value="/Goobi1.9/WEB-INF/classes"/>

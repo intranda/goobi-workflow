@@ -57,7 +57,6 @@
 	<x:stylesheet media="screen" path="#{LoginForm.myBenutzer == null?'/css/default.css':LoginForm.myBenutzer.css}"/>
 	<x:stylesheet media="print" path="/css/system/print.css"/>
 	<%--Styles für panelTabbedPane unter Menü Administration- Projekte --%>
-	<f:loadBundle basename="messages.messages" var="msgs" />
 	<title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}"/></title>
     <!-- <h:outputText value="internal version number: #{HelperForm.buildVersion}"/> -->
 </head>

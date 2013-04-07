@@ -40,6 +40,7 @@ import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.DesEncrypter;
@@ -72,6 +73,7 @@ public class User implements Serializable, DatabaseObject {
 	public void lazyLoad(){
 		try {
 			this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
+			this.projekte = ProjectManager.getProjectsForUser(this);
 		} catch (DAOException e) {
 			logger.error("error during lazy loading of User", e);
 		}

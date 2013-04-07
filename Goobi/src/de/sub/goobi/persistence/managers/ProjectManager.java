@@ -9,6 +9,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Project;
+import org.goobi.beans.User;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -78,6 +79,17 @@ public class ProjectManager implements IManager {
             logger.error(e);
         }
 	    return projectList;
+	}
+	
+	public static List<Project> getProjectsForUser(User user) throws DAOException{
+		List<Project> answer = new ArrayList<Project>();
+		try {
+			answer = ProjectMysqlHelper.getProjectsForUser(user);
+		} catch (SQLException e) {
+			logger.error("error while getting Usergroups", e);
+			throw new DAOException(e);
+		}
+		return answer;
 	}
 	
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */

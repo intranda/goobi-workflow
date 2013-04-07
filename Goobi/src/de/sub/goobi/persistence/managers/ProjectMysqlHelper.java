@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
+import org.goobi.beans.User;
 
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -34,6 +35,10 @@ public class ProjectMysqlHelper {
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
+	}
+	
+	public static List<Project> getProjectsForUser(User user) throws SQLException {
+		return getProjects("titel","ProjekteID IN (SELECT ProjekteID FROM projektbenutzer WHERE BenutzerID=" + user.getId() +")",null,null);
 	}
 
 	public static int getProjectCount(String order, String filter) throws SQLException {
