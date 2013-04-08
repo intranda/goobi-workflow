@@ -63,10 +63,10 @@ public class BatchForm extends BasicBean {
 
     private static final Logger logger = Logger.getLogger(BatchForm.class);
 
-    private List<Process> currentProcesses;
-    private List<Process> selectedProcesses;
-    private List<Batch> currentBatches;
-    private List<String> selectedBatches;
+    private List<Process> currentProcesses = new ArrayList<Process>();
+    private List<Process> selectedProcesses = new ArrayList<Process>();
+    private List<Batch> currentBatches = new ArrayList<Batch>();
+    private List<String> selectedBatches = new ArrayList<String>();
     private String batchfilter;
     private String processfilter;
     //	private IEvaluableFilter myFilteredDataSource;

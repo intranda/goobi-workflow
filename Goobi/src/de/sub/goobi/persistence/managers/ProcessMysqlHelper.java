@@ -425,7 +425,7 @@ class ProcessMysqlHelper {
     }
     
     public static List<Integer> getBatchIds(int limit) throws SQLException {
-        String sql = "select distinct batchID from Prozess order by batchID desc ";
+        String sql = "select distinct batchID from prozesse order by batchID desc ";
         if (limit > 0) {
             sql += " limit " + limit;
         }
