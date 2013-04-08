@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 
+import de.sub.goobi.beans.ProjectFileGroup;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
@@ -178,4 +179,21 @@ public class ProjectMysqlHelper {
 			}
 		}
 	}
+	
+	   public static List<ProjectFileGroup> getFilegroupsForProjectId(int projectId) throws SQLException {
+           Connection connection = MySQLHelper.getInstance().getConnection();
+	        StringBuilder sql = new StringBuilder();
+
+	        sql.append("SELECT * FROM projectfilegroups WHERE ProjekteID = ? ");
+	        try {
+	            Object[] param = { projectId };
+	            logger.debug(sql.toString() + ", " + param);
+	            List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToProjectFilegroupListHandler,
+	                    param);
+	            return answer;
+
+	        } finally {
+                MySQLHelper.closeConnection(connection);
+	        }
+	    }
 }

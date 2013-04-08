@@ -38,6 +38,7 @@ import de.sub.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.enums.MetadataFormat;
+import de.sub.goobi.persistence.managers.ProjectManager;
 
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
 	private static final long serialVersionUID = -8543713331407761617L;
@@ -210,6 +211,9 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 	}
 
 	public List<ProjectFileGroup> getFilegroups() {
+	    if (filegroups == null || filegroups.isEmpty()) {
+	        filegroups = ProjectManager.getFilegroupsForProjectId(id);
+	    }
 		return this.filegroups;
 	}
 

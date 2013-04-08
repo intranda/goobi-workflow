@@ -11,7 +11,9 @@ import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 
+import de.sub.goobi.beans.ProjectFileGroup;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.apache.MySQLHelper;
 
 public class ProjectManager implements IManager {
 	private static final Logger logger = Logger.getLogger(ProjectManager.class);
@@ -91,6 +93,19 @@ public class ProjectManager implements IManager {
 		}
 		return answer;
 	}
+	
+	   public static List<ProjectFileGroup> getFilegroupsForProjectId(int projectId) {
+	        try {
+	            List<ProjectFileGroup> filegroups = ProjectMysqlHelper.getFilegroupsForProjectId(projectId);
+	            if (filegroups == null) {
+	                filegroups = new ArrayList<ProjectFileGroup>();
+	            }
+	            return filegroups;
+	        } catch (SQLException e) {
+	            logger.error("Cannot not load project filegroups with id " + projectId, e);
+	        }
+	        return null;
+	    }
 	
 	/* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
