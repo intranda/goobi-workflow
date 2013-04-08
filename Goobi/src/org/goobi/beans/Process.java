@@ -73,6 +73,7 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
@@ -216,7 +217,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Prozesseigenschaft> getEigenschaften() {
-      
+      if (eigenschaften == null || eigenschaften.isEmpty()) {
+          eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
+      }
         return this.eigenschaften;
     }
 
@@ -551,21 +554,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getEigenschaftenSize() {
-      
-        if (this.eigenschaften == null) {
-            return 0;
-        } else {
-            return this.eigenschaften.size();
-        }
+       return getEigenschaften().size();
     }
 
     public List<Prozesseigenschaft> getEigenschaftenList() {
        
-        if (this.eigenschaften == null) {
-            return new ArrayList<Prozesseigenschaft>();
-        } else {
-            return new ArrayList<Prozesseigenschaft>(this.eigenschaften);
-        }
+   
+            return new ArrayList<Prozesseigenschaft>(getEigenschaften());
+        
     }
 
     public int getWerkstueckeSize() {

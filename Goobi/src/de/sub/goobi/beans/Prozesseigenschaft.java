@@ -33,10 +33,9 @@ import java.util.Date;
 import java.util.List;
 import org.goobi.beans.Process;
 
-import org.goobi.managedbeans.ProcessBean;
-
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class Prozesseigenschaft implements Serializable, IGoobiProperty, Comparable<Prozesseigenschaft> {
 	private static final long serialVersionUID = -2356566712752716107L;
@@ -50,6 +49,7 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
 	private String auswahl;
 	private Date creationDate;
 	private Integer container;
+	private int processId;
 
 	public Prozesseigenschaft() {
 		this.istObligatorisch = false;
@@ -181,6 +181,9 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
 	}
 
 	public Process getProzess() {
+	    if (prozess == null) {
+	        prozess = ProcessManager.getProcessById(processId);
+	    }
 		return this.prozess;
 	}
 
@@ -218,4 +221,72 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
 	public int compareTo(Prozesseigenschaft o) {
 		return this.getTitel().toLowerCase().compareTo(o.getTitel().toLowerCase());
 	}
+
+    public int getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(int processId) {
+        this.processId = processId;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((container == null) ? 0 : container.hashCode());
+        result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
+        result = prime * result + ((datentyp == null) ? 0 : datentyp.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + processId;
+        result = prime * result + ((titel == null) ? 0 : titel.hashCode());
+        result = prime * result + ((wert == null) ? 0 : wert.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Prozesseigenschaft other = (Prozesseigenschaft) obj;
+        if (container == null) {
+            if (other.container != null)
+                return false;
+        } else if (!container.equals(other.container))
+            return false;
+        if (creationDate == null) {
+            if (other.creationDate != null)
+                return false;
+        } else if (!creationDate.equals(other.creationDate))
+            return false;
+        if (datentyp == null) {
+            if (other.datentyp != null)
+                return false;
+        } else if (!datentyp.equals(other.datentyp))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (processId != other.processId)
+            return false;
+        if (titel == null) {
+            if (other.titel != null)
+                return false;
+        } else if (!titel.equals(other.titel))
+            return false;
+        if (wert == null) {
+            if (other.wert != null)
+                return false;
+        } else if (!wert.equals(other.wert))
+            return false;
+        return true;
+    }
+    
+    
 }

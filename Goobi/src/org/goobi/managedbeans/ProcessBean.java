@@ -1990,11 +1990,11 @@ public class ProcessBean extends BasisForm {
             this.processProperty.transfer();
 
             List<Prozesseigenschaft> props = this.myProzess.getEigenschaftenList();
-            for (Prozesseigenschaft pe : props) {
-                if (pe.getTitel() == null) {
-                    this.myProzess.getEigenschaften().remove(pe);
-                }
-            }
+//            for (Prozesseigenschaft pe : props) {
+//                if (pe.getTitel() == null) {
+//                    this.myProzess.getEigenschaften().remove(pe);
+//                }
+//            }
             if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }

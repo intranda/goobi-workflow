@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
+import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -57,6 +58,11 @@ class ProcessMysqlHelper {
                     StepMysqlHelper.saveStep(s);
                 }
             }
+            List<Prozesseigenschaft> properties = o.getEigenschaften();
+            for (Prozesseigenschaft pe : properties) {
+                PropertyManager.save(pe);
+            }
+            
             // TODO Eigenschaften speichern
             // TODO Werkstuecke speichern
             // TODO Vorlagen speichern
