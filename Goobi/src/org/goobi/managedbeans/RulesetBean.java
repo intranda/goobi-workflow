@@ -35,7 +35,6 @@ import javax.faces.bean.SessionScoped;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.ProcessManager;
@@ -43,7 +42,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 
 @ManagedBean(name = "RegelsaetzeForm")
 @SessionScoped
-public class RulesetBean extends BasisForm {
+public class RulesetBean extends BasicBean {
 	private static final long serialVersionUID = -8994941188718721705L;
 	private Ruleset myRegelsatz = new Ruleset();
 

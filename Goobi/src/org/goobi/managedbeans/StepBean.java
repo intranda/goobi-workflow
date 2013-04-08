@@ -69,7 +69,6 @@ import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.BatchStepHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
@@ -91,7 +90,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 
 @ManagedBean(name = "AktuelleSchritteForm")
 @SessionScoped
-public class StepBean extends BasisForm {
+public class StepBean extends BasicBean {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger myLogger = Logger.getLogger(StepBean.class);
     private Process myProzess = new Process();

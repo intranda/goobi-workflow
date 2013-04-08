@@ -99,7 +99,6 @@ import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.export.download.ExportPdf;
 import de.sub.goobi.export.download.Multipage;
 import de.sub.goobi.export.download.TiffHeader;
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
@@ -119,7 +118,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 
 @ManagedBean(name = "ProzessverwaltungForm")
 @SessionScoped
-public class ProcessBean extends BasisForm {
+public class ProcessBean extends BasicBean {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = Logger.getLogger(ProcessBean.class);
     private Process myProzess = new Process();

@@ -562,7 +562,6 @@ public class StepMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             logger.debug(sql.toString());
-            List<Integer> ret = null;
             return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
 
         } finally {

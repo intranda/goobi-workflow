@@ -67,7 +67,6 @@ import de.intranda.commons.chart.results.ChartDraw.ChartType;
 import de.sub.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -76,7 +75,7 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 
 @ManagedBean(name="ProjekteForm") 
 @SessionScoped
-public class ProjectBean extends BasisForm {
+public class ProjectBean extends BasicBean {
 	private static final long serialVersionUID = 6735912903249358786L;
 	private static final Logger myLogger = Logger.getLogger(ProjectBean.class);
 

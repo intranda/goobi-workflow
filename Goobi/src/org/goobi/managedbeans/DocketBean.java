@@ -35,7 +35,6 @@ import javax.faces.bean.SessionScoped;
 import org.goobi.beans.Docket;
 
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.ProcessManager;
@@ -43,7 +42,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 
 @ManagedBean(name="DocketForm") 
 @SessionScoped
-public class DocketBean extends BasisForm {
+public class DocketBean extends BasicBean {
 	private static final long serialVersionUID = 3006854499230483171L;
 	private Docket myDocket = new Docket();
 

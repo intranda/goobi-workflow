@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,15 +30,13 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.DatabasePaginator;
-import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.helper.Helper;
 
-public class BasisForm implements Serializable {
+public class BasicBean implements Serializable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger
-	.getLogger(BasisForm.class);
+	.getLogger(BasicBean.class);
 	private static final long serialVersionUID = 2950419497162710096L;
 	protected DatabasePaginator paginator;
 	protected String zurueck = "";

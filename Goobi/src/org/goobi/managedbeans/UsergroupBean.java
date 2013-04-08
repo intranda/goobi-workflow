@@ -32,14 +32,13 @@ import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name="BenutzergruppenForm") 
 @SessionScoped
-public class UsergroupBean extends BasisForm {
+public class UsergroupBean extends BasicBean {
 	private static final long serialVersionUID = 8051160917458068675L;
 	private Usergroup myBenutzergruppe = new Usergroup();
 

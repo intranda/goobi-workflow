@@ -10,12 +10,15 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.log4j.Logger;
 
 import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.apache.MySQLHelper;
+import de.sub.goobi.persistence.apache.MySQLUtils;
 
 public class PropertyMysqlHelper {
+    private static final Logger logger = Logger.getLogger(PropertyMysqlHelper.class);
 
     public static List<Prozesseigenschaft> getProcessPropertiesForProcess(int processId) throws SQLException {
         String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel";
@@ -126,6 +129,18 @@ public class PropertyMysqlHelper {
         } finally {
             MySQLHelper.closeConnection(connection);
         }
+    }
+    
+    
+    public static List<String> getDistinctPropertyTitles() throws SQLException {
+        String sql = "select distinct titel from prozesseeigenschaften";
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            logger.debug(sql.toString());
+            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
 
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
     }
 }

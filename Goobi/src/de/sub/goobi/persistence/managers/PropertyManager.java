@@ -29,4 +29,14 @@ public class PropertyManager {
         }
     }
 
+    public static List<String> getDistinctProcessPropertyTitles() {
+        List<String> titleList = new ArrayList<String>();
+        try {
+            titleList = PropertyMysqlHelper.getDistinctPropertyTitles();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return titleList;
+    }
+
 }

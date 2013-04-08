@@ -32,14 +32,13 @@ import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Ldap;
 
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.LdapManager;
 
 @ManagedBean(name="LdapGruppenForm") 
 @SessionScoped
-public class LdapBean extends BasisForm {
+public class LdapBean extends BasicBean {
 	private static final long serialVersionUID = -5644561256582235244L;
 	private Ldap myLdapGruppe = new Ldap();
 	

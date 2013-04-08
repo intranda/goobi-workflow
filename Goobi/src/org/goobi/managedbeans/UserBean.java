@@ -50,7 +50,6 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.forms.BasisForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -61,7 +60,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name = "BenutzerverwaltungForm")
 @SessionScoped
-public class UserBean extends BasisForm {
+public class UserBean extends BasicBean {
 	private static final long serialVersionUID = -3635859455444639614L;
 	private User myClass = new User();
 	private boolean hideInactiveUsers = true;

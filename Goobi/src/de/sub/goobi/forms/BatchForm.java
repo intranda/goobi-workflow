@@ -41,6 +41,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.goobi.managedbeans.BasicBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportDocket;
 
@@ -56,7 +57,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 @ManagedBean(name = "BatchForm")
 @SessionScoped
-public class BatchForm extends BasisForm {
+public class BatchForm extends BasicBean {
 
     private static final long serialVersionUID = 8234897225425856549L;
 
