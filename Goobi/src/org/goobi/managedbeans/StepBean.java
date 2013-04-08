@@ -182,10 +182,10 @@ public class StepBean extends BasicBean {
 
     private String sortList() {
         if (sortierung == null) {
-            return "prioritaet";
+            return "prioritaet desc";
         }
 
-        String answer = "prioritaet";
+        String answer = "prioritaet desc";
 
         if (this.sortierung.equals("schrittAsc")) {
             answer = "titel";
