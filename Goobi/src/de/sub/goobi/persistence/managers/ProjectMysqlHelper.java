@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -88,33 +89,32 @@ public class ProjectMysqlHelper {
 		try {
 			QueryRunner run = new QueryRunner();
 			StringBuilder sql = new StringBuilder();
-
 			if (ro.getId() == null) {
-								
-				String propNames = "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
+
+			    String propNames = "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
 				StringBuilder propValues = new StringBuilder();
-				propValues.append("'" + ro.getTitel() + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "',");
 				propValues.append(ro.isUseDmsImport() + ",");
 				propValues.append(ro.getDmsImportTimeOut() + ",");
-				propValues.append("'" + ro.getDmsImportRootPath() + "',");
-				propValues.append("'" + ro.getDmsImportImagesPath() + "',");
-				propValues.append("'" + ro.getDmsImportSuccessPath() + "',");
-				propValues.append("'" + ro.getDmsImportErrorPath() + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()) + "',");
 				propValues.append(ro.isDmsImportCreateProcessFolder() + ",");
-				propValues.append("'" + ro.getFileFormatInternal() + "',");
-				propValues.append("'" + ro.getFileFormatDmsExport() + "',");
-				propValues.append("'" + ro.getMetsRightsOwner() + "',");
-				propValues.append("'" + ro.getMetsRightsOwnerLogo() + "',");
-				propValues.append("'" + ro.getMetsRightsOwnerSite() + "',");
-				propValues.append("'" + ro.getMetsRightsOwnerMail() + "',");
-				propValues.append("'" + ro.getMetsDigiprovReference() + "',");
-				propValues.append("'" + ro.getMetsDigiprovPresentation() + "',");
-				propValues.append("'" + ro.getMetsDigiprovReferenceAnchor() + "',");
-				propValues.append("'" + ro.getMetsDigiprovPresentationAnchor() + "',");
-				propValues.append("'" + ro.getMetsPointerPath() + "',");
-				propValues.append("'" + ro.getMetsPointerPathAnchor() + "',");
-				propValues.append("'" + ro.getMetsPurl() + "',");
-				propValues.append("'" + ro.getMetsContentIDs() + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getFileFormatInternal()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReference()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentation()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReferenceAnchor()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentationAnchor())+ "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPointerPath()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPointerPathAnchor()) + "',");
+				propValues.append("'" +StringEscapeUtils.escapeSql( ro.getMetsPurl()) + "',");
+				propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsContentIDs()) + "',");
 				propValues.append(ro.getStartDate() + ",");
 				propValues.append(ro.getEndDate() + ",");
 				propValues.append(ro.getNumberOfPages() + ",");
@@ -128,28 +128,28 @@ public class ProjectMysqlHelper {
 				sql.append(")");
 			} else {
 				sql.append("UPDATE projekte SET ");
-				sql.append("Titel = '" + ro.getTitel() + "',");
+				sql.append("Titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "',");
 				sql.append("useDmsImport =" + ro.isUseDmsImport() + ",");
 				sql.append("dmsImportTimeOut =" + ro.getDmsImportTimeOut() + ",");
-				sql.append("dmsImportRootPath = '" + ro.getDmsImportRootPath() + "',");
-				sql.append("dmsImportImagesPath = '" + ro.getDmsImportImagesPath() + "',");
-				sql.append("dmsImportSuccessPath = '" + ro.getDmsImportSuccessPath() + "',");
-				sql.append("dmsImportErrorPath = '" + ro.getDmsImportErrorPath() + "',");
+				sql.append("dmsImportRootPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()) + "',");
+				sql.append("dmsImportImagesPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()) + "',");
+				sql.append("dmsImportSuccessPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()) + "',");
+				sql.append("dmsImportErrorPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()) + "',");
 				sql.append("dmsImportCreateProcessFolder =" + ro.isDmsImportCreateProcessFolder() + ",");
-				sql.append("fileFormatInternal = '" + ro.getFileFormatInternal() + "',");
-				sql.append("fileFormatDmsExport = '" + ro.getFileFormatDmsExport() + "',");
-				sql.append("metsRightsOwner = '" + ro.getMetsRightsOwner() + "',");
-				sql.append("metsRightsOwnerLogo = '" + ro.getMetsRightsOwnerLogo() + "',");
-				sql.append("metsRightsOwnerSite = '" + ro.getMetsRightsOwnerSite() + "',");
-				sql.append("metsRightsOwnerMail = '" + ro.getMetsRightsOwnerMail() + "',");
-				sql.append("metsDigiprovReference = '" + ro.getMetsDigiprovReference() + "',");
-				sql.append("metsDigiprovPresentation = '" + ro.getMetsDigiprovPresentation() + "',");
-				sql.append("metsDigiprovReferenceAnchor = '" + ro.getMetsDigiprovReferenceAnchor() + "',");
-				sql.append("metsDigiprovPresentationAnchor = '" + ro.getMetsDigiprovPresentationAnchor() + "',");
-				sql.append("metsPointerPath = '" + ro.getMetsPointerPath() + "',");
-				sql.append("metsPointerPathAnchor = '" + ro.getMetsPointerPathAnchor() + "',");
-				sql.append("metsPurl = '" + ro.getMetsPurl() + "',");
-				sql.append("metsContentIDs = '" + ro.getMetsContentIDs() + "',");
+				sql.append("fileFormatInternal = '" + StringEscapeUtils.escapeSql(ro.getFileFormatInternal()) + "',");
+				sql.append("fileFormatDmsExport = '" + StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()) + "',");
+				sql.append("metsRightsOwner = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()) + "',");
+				sql.append("metsRightsOwnerLogo = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()) + "',");
+				sql.append("metsRightsOwnerSite = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()) + "',");
+				sql.append("metsRightsOwnerMail = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()) + "',");
+				sql.append("metsDigiprovReference = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReference()) + "',");
+				sql.append("metsDigiprovPresentation = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentation()) + "',");
+				sql.append("metsDigiprovReferenceAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReferenceAnchor()) + "',");
+				sql.append("metsDigiprovPresentationAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentationAnchor()) + "',");
+				sql.append("metsPointerPath = '" + StringEscapeUtils.escapeSql(ro.getMetsPointerPath()) + "',");
+				sql.append("metsPointerPathAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsPointerPathAnchor()) + "',");
+				sql.append("metsPurl = '" + StringEscapeUtils.escapeSql(ro.getMetsPurl()) + "',");
+				sql.append("metsContentIDs = '" + StringEscapeUtils.escapeSql(ro.getMetsContentIDs()) + "',");
 				sql.append("startDate =" + ro.getStartDate() + ",");
 				sql.append("endDate =" + ro.getEndDate() + ",");
 				sql.append("numberOfPages =" + ro.getNumberOfPages() + ",");
@@ -161,6 +161,7 @@ public class ProjectMysqlHelper {
 			}
 			logger.debug(sql.toString());
 			run.update(connection, sql.toString());
+			// TODO FileGroups speichern
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}
