@@ -143,4 +143,28 @@ public class PropertyMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
+
+    public static List<String> getDistinctTemplatePropertyTitles() throws SQLException {
+        String sql = "select distinct titel from vorlageneigenschaften";
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            logger.debug(sql.toString());
+            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
+
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static List<String> getDistinctMasterpiecePropertyTitles() throws SQLException {
+        String sql = "select distinct titel from werkstueckeeigenschaften";
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            logger.debug(sql.toString());
+            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
+
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
 }

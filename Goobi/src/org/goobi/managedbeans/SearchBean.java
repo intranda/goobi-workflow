@@ -119,7 +119,8 @@ public class SearchBean {
         //		crit = session.createCriteria(Werkstueckeigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
-        //		this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.masterpiecePropertyTitles.addAll(PropertyManager.getDistinctMasterpiecePropertyTitles());
         //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
         //			this.masterpiecePropertyTitles.add((String) it.next());
         //		}
@@ -128,7 +129,8 @@ public class SearchBean {
         //		crit = session.createCriteria(Vorlageeigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
-        //		this.templatePropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.templatePropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.templatePropertyTitles.addAll(PropertyManager.getDistinctTemplatePropertyTitles());
         //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
         //			this.templatePropertyTitles.add((String) it.next());
         //		}
@@ -138,7 +140,7 @@ public class SearchBean {
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
         this.processPropertyTitles.add(Helper.getTranslation("notSelected"));
-        processPropertyTitles.addAll(PropertyManager.getDistinctProcessPropertyTitles());
+        this.processPropertyTitles.addAll(PropertyManager.getDistinctMasterpiecePropertyTitles());
         //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
         //			String itstr = (String) it.next();
         //			if (itstr!=null){
@@ -150,7 +152,7 @@ public class SearchBean {
         //		crit = session.createCriteria(Schritteigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
-        //		this.stepPropertyTitles.add(Helper.getTranslation("notSelected"));
+        //        		this.stepPropertyTitles.add(Helper.getTranslation("notSelected"));
         //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
         //			this.stepPropertyTitles.add((String) it.next());
         //		}

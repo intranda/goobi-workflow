@@ -39,4 +39,24 @@ public class PropertyManager {
         return titleList;
     }
 
+    
+    public static List<String> getDistinctTemplatePropertyTitles() {
+        List<String> titleList = new ArrayList<String>();
+        try {
+            titleList = PropertyMysqlHelper.getDistinctTemplatePropertyTitles();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return titleList;
+    }
+    
+    public static List<String> getDistinctMasterpiecePropertyTitles() {
+        List<String> titleList = new ArrayList<String>();
+        try {
+            titleList = PropertyMysqlHelper.getDistinctMasterpiecePropertyTitles();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return titleList;
+    }
 }
