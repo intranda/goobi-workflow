@@ -161,8 +161,8 @@ public class SearchForm {
 //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
 //			this.stepPropertyTitles.add((String) it.next());
 //		}
-
-		stepTitles = StepManager.getDistinctStepTitles();
+        this.stepTitles.add(Helper.getTranslation("notSelected"));
+		stepTitles.addAll(StepManager.getDistinctStepTitles());
 //		crit = session.createCriteria(Step.class);
 //		crit.addOrder(Order.asc("titel"));
 //		crit.setProjection(Projections.distinct(Projections.property("titel")));
