@@ -16,6 +16,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
+import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -41,15 +42,11 @@ class ProcessMysqlHelper {
             if (o.getId() == null) {
                 // new process
                 insertProcess(o);
-                // TODO prozesseID in Schritten setzen?
-                //                List<Step> stepList = o.getSchritte();
-                //                StepMysqlHelper.insertBatchStepList(stepList);
+          
 
             } else {
                 // process exists already in database
                 updateProcess(o);
-                //                List<Step> stepList = o.getSchritte();
-                //                StepMysqlHelper.updateBatchList(stepList);
             }
 
             if (!processOnly) {
@@ -62,10 +59,14 @@ class ProcessMysqlHelper {
             for (Processproperty pe : properties) {
                 PropertyManager.saveProcessproperty(pe);
             }
-            
-            // TODO Eigenschaften speichern
+
             // TODO Werkstuecke speichern
-            // TODO Vorlagen speichern
+          
+            
+            List<Vorlage> templates = o.getVorlagen();
+            for (Vorlage template : templates) {
+                TemplateManager.saveTemplate(template);
+            }
 
         } catch (SQLException e) {
             //            logger.error("Error while saving process " + o.getTitel(), e);

@@ -121,6 +121,35 @@ class PropertyMysqlHelper {
             return properties;
         }
     };
+    
+    public static ResultSetHandler<Vorlageeigenschaft> resultSetToTemplatePropertyHandler = new ResultSetHandler<Vorlageeigenschaft>() {
+        @Override
+        public Vorlageeigenschaft handle(ResultSet rs) throws SQLException {
+            if (rs.next()) {
+                int id = rs.getInt("vorlageneigenschaftenID");
+                String title = rs.getString("Titel");
+                String value = rs.getString("Wert");
+                Boolean mandatory = rs.getBoolean("IstObligatorisch");
+                int type = rs.getInt("DatentypenID");
+                String choice = rs.getString("Auswahl");
+                int templateId = rs.getInt("vorlagenID");
+                Date creationDate = rs.getDate("creationDate");
+                int container = rs.getInt("container");
+                Vorlageeigenschaft ve = new Vorlageeigenschaft();
+                ve.setId(id);
+                ve.setTitel(title);
+                ve.setWert(value);
+                ve.setIstObligatorisch(mandatory);
+                ve.setType(PropertyType.getById(type));
+                ve.setAuswahl(choice);
+                ve.setTemplateId(templateId);
+                ve.setCreationDate(creationDate);
+                ve.setContainer(container);
+                return ve;
+            }
+            return null;
+        }
+    };
 
     public static void saveProcessproperty(Processproperty pe) throws SQLException {
         if (pe.getId() == null) {
@@ -211,11 +240,12 @@ class PropertyMysqlHelper {
         }
     }
 
-    public static void saveTemplateproperty(Vorlageeigenschaft property) throws SQLException {
+    public static Vorlageeigenschaft saveTemplateproperty(Vorlageeigenschaft property) throws SQLException {
         if (property.getId() == null) {
-            insertTemplateproperty(property);
+            return insertTemplateproperty(property);
         } else {
             updateTemplateproperty(property);
+            return property;
         }
     }
 
@@ -235,7 +265,7 @@ class PropertyMysqlHelper {
         }
     }
 
-    private static void insertTemplateproperty(Vorlageeigenschaft property) throws SQLException {
+    private static Vorlageeigenschaft insertTemplateproperty(Vorlageeigenschaft property) throws SQLException {
         String sql =
                 "INSERT INTO vorlageneigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, vorlagenID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param =
@@ -244,9 +274,12 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, param);
+            int  id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler,  param);
+            property.setId(id);
+            return property;
         } finally {
             MySQLHelper.closeConnection(connection);
         }
+        // TODO retrieve propertyId
     }
 }

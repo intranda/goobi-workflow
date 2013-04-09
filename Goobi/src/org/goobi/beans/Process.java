@@ -497,7 +497,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public Project getProjekt() {
-       if (projekt == null) {
+       if (projekt == null && projectId != null) {
            try {
             projekt = ProjectManager.getProjectById(projectId);
         } catch (DAOException e) {

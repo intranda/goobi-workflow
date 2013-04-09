@@ -37,9 +37,11 @@ class TemplateMysqlHelper {
 
             while (rs.next()) {
                 int templateId = rs.getInt("VorlagenID");
+                String herkunft = rs.getString("Herkunft");
                 int processId = rs.getInt("ProzesseID");
                 Vorlage template = new Vorlage();
                 template.setId(templateId);
+                template.setHerkunft(herkunft);
                 template.setProcessId(processId);
                 List<Vorlageeigenschaft> properties = PropertyManager.getTemplateProperties(templateId);
                 template.setEigenschaften(properties);
@@ -54,13 +56,15 @@ class TemplateMysqlHelper {
         public Vorlage handle(ResultSet rs) throws SQLException {
 
             if (rs.next()) {
-                int templateId = rs.getInt("VorlagenID");
+//                int templateId = rs.getInt("VorlagenID");
+                String herkunft = rs.getString("Herkunft");
                 int processId = rs.getInt("ProzesseID");
                 Vorlage template = new Vorlage();
-                template.setId(templateId);
+//                template.setId(templateId);
+                template.setHerkunft(herkunft);
                 template.setProcessId(processId);
-                List<Vorlageeigenschaft> properties = PropertyManager.getTemplateProperties(templateId);
-                template.setEigenschaften(properties);
+//                List<Vorlageeigenschaft> properties = PropertyManager.getTemplateProperties(templateId);
+//                template.setEigenschaften(properties);
                 return template;
             }
             return null;
@@ -95,27 +99,25 @@ class TemplateMysqlHelper {
             String sql = "";
 
             if (template.getId() == null) {
-                sql = "INSERT INTO vorlagen ( Herkunft, ProzesseID ) VALUES ( NULL, " + template.getProcessId() + ")";
-                run.update(connection, sql.toString());
-                int templateId = getLastTemplateId(connection);
-                template.setId(templateId);
+                sql = "INSERT INTO vorlagen ( Herkunft, ProzesseID ) VALUES ( ?, ?)";
+                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
+
+                int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler , param);
+                template.setId(id);
             } else {
-                sql = "UPDATE vorlagen set Herkunft = NULL, ProzesseID = " + template.getProcessId() + " WHERE VorlagenID =" + template.getId();
-                run.update(connection, sql);
+                sql = "UPDATE vorlagen set Herkunft = ?, ProzesseID = ? WHERE VorlagenID =" + template.getId();
+                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
+                run.update(connection, sql, param);
             }
-            List<Vorlageeigenschaft> templateProperties = template.getEigenschaften();
-            for (Vorlageeigenschaft property : templateProperties) {
-                property.setTemplateId(template.getId());
-                PropertyManager.saveTemplateProperty(property);
-            }
+
         } finally {
             MySQLHelper.closeConnection(connection);
         }
-    }
 
-    private static int getLastTemplateId(Connection connection) throws SQLException {
-        String sql = "SELECT VorlagenID from vorlagen order by VorlagenID desc limit 1";
-        QueryRunner run = new QueryRunner();
-        return run.query(sql, MySQLUtils.resultSetToIntegerHandler);
+        List<Vorlageeigenschaft> templateProperties = template.getEigenschaften();
+        for (Vorlageeigenschaft property : templateProperties) {
+            property.setTemplateId(template.getId());
+            property = PropertyManager.saveTemplateProperty(property);
+        }
     }
 }

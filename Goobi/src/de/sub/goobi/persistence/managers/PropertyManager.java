@@ -72,11 +72,13 @@ public class PropertyManager {
         return propertyList;
     }
 
-    public static void saveTemplateProperty(Vorlageeigenschaft property) {
+    public static Vorlageeigenschaft saveTemplateProperty(Vorlageeigenschaft property) {
         try {
-            PropertyMysqlHelper.saveTemplateproperty(property);
+            property = PropertyMysqlHelper.saveTemplateproperty(property);
+            return property;
         } catch (SQLException e) {
             logger.error(e);
         }
+        return null;
     }
 }
