@@ -12,7 +12,7 @@ import org.goobi.beans.Usergroup;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class UsergroupMysqlHelper {
+class UsergroupMysqlHelper {
 	private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
 
 	public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws SQLException {

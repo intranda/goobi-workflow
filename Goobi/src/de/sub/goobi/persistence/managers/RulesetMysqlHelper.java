@@ -11,7 +11,7 @@ import org.goobi.beans.Ruleset;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class RulesetMysqlHelper {
+class RulesetMysqlHelper {
 	private static final Logger logger = Logger.getLogger(RulesetMysqlHelper.class);
 
 	public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws SQLException {

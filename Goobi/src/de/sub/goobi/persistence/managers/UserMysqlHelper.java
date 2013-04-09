@@ -14,7 +14,7 @@ import org.goobi.beans.Usergroup;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class UserMysqlHelper {
+class UserMysqlHelper {
     private static final Logger logger = Logger.getLogger(UserMysqlHelper.class);
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws SQLException {

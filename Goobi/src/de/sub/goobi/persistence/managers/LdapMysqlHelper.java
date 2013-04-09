@@ -11,7 +11,7 @@ import org.goobi.beans.Ldap;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class LdapMysqlHelper {
+class LdapMysqlHelper {
 	private static final Logger logger = Logger.getLogger(LdapMysqlHelper.class);
 
 	public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws SQLException {

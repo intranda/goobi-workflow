@@ -18,7 +18,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class StepMysqlHelper {
+class StepMysqlHelper {
     private static final Logger logger = Logger.getLogger(StepMysqlHelper.class);
 
     public static List<Step> getStepsForProcess(int processId) throws SQLException {

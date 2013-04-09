@@ -30,5 +30,26 @@ public class TemplateManager {
         }
         return null;
     }
+    
+    
+    public static int countTemplates() {
+        try {
+            return TemplateMysqlHelper.getCountOfTemplates();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
 
+    
+    public static void saveTemplate(Vorlage template) {
+        
+        try {
+            TemplateMysqlHelper.saveTemplate(template);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        
+    }
+    
 }

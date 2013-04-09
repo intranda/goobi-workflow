@@ -18,7 +18,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class PropertyMysqlHelper {
+class PropertyMysqlHelper {
     private static final Logger logger = Logger.getLogger(PropertyMysqlHelper.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {

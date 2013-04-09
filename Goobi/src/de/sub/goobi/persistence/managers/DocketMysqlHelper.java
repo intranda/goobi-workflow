@@ -11,7 +11,7 @@ import org.goobi.beans.Docket;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class DocketMysqlHelper {
+class DocketMysqlHelper {
     private static final Logger logger = Logger.getLogger(DocketMysqlHelper.class);
 
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws SQLException {

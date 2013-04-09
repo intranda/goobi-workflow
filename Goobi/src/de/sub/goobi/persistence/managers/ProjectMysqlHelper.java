@@ -14,7 +14,7 @@ import de.sub.goobi.beans.ProjectFileGroup;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 
-public class ProjectMysqlHelper {
+class ProjectMysqlHelper {
 	private static final Logger logger = Logger.getLogger(ProjectMysqlHelper.class);
 
 	public static List<Project> getProjects(String order, String filter, Integer start, Integer count) throws SQLException {

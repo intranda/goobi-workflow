@@ -36,16 +36,12 @@
 						<tr>
 							<h:panelGroup rendered="#{Metadaten.bildNummer != '1'}">
 								<td>
-									<!-- zurueck-Schaltknopf-->
-									<h:commandLink action="#{Metadaten.BildBlaettern}" value="#{msgs.previous}" immediate="true">
+									<!-- zurueck-Schaltknopf--> <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{msgs.previous}" immediate="true">
 										<f:param name="Anzahl" value="-1" />
-									</h:commandLink>
-									<!-- Trennzeichen -->
-									<h:outputText value=" | " />
+									</h:commandLink> <!-- Trennzeichen --> <h:outputText value=" | " />
 								</td>
 							</h:panelGroup>
-							<td align="center">
-								<h:panelGroup rendered="#{Metadaten.bildNummer != '1'}">
+							<td align="center"><h:panelGroup rendered="#{Metadaten.bildNummer != '1'}">
 									<!-- erstes-Schaltknopf -->
 									<h:commandLink action="#{Metadaten.BildBlaettern}" value="1" immediate="true">
 										<f:param name="Anzahl" value="-#{Metadaten.bildNummer}" />
@@ -76,12 +72,8 @@
 										<!-- Trennzeichen -->
 										<h:outputText value=" | " />
 									</h:panelGroup>
-								</h:panelGroup>
-
-								<h:outputText value="#{Metadaten.bildNummer}" style="font-weight: bold" />
-
-								<!-- nur anzeigen, wenn nicht letzte Seite -->
-								<h:panelGroup rendered="#{Metadaten.bildNummer != Metadaten.bildLetztes}">
+								</h:panelGroup> <h:outputText value="#{Metadaten.bildNummer}" style="font-weight: bold" /> <!-- nur anzeigen, wenn nicht letzte Seite --> <h:panelGroup
+									rendered="#{Metadaten.bildNummer != Metadaten.bildLetztes}">
 
 									<!-- wenn es mindestens das vorvorletzte Bild ist -->
 									<h:panelGroup rendered="#{Metadaten.bildNummer lt (Metadaten.bildLetztes - 1)}">
@@ -109,15 +101,12 @@
 									<h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildLetztes}" immediate="true">
 										<f:param name="Anzahl" value="#{Metadaten.bildLetztes}" />
 									</h:commandLink>
-								</h:panelGroup>
-							</td>
+								</h:panelGroup></td>
 
 							<h:panelGroup rendered="#{Metadaten.bildNummer != Metadaten.bildLetztes}">
 								<td align="right">
-									<!-- vorwaerts-Schaltknopf -->
-									<!-- Trennzeichen -->
-									<h:outputText value=" | " />
-									<h:commandLink action="#{Metadaten.BildBlaettern}" value="#{msgs.seiteVor}" immediate="true">
+									<!-- vorwaerts-Schaltknopf --> <!-- Trennzeichen --> <h:outputText value=" | " /> <h:commandLink action="#{Metadaten.BildBlaettern}"
+										value="#{msgs.seiteVor}" immediate="true">
 										<f:param name="Anzahl" value="1" />
 									</h:commandLink>
 								</td>
@@ -220,6 +209,19 @@
 
 		<!-- wenn kein Bild vorhanden, dann nur Meldung -->
 		<h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" />
+
+
+		<h:form id="representative">
+			<h:outputText value="#{msgs.setRepresentative} " />
+
+			<h:panelGroup rendered="#{Metadaten.alleSeiten != null}">
+				<h:selectOneMenu style="width: 200px" value="#{Metadaten.currentRepresentativePage}">
+					<f:selectItems value="#{Metadaten.alleSeiten}" />
+				</h:selectOneMenu>
+				<h:commandButton action="#{Metadaten.Reload}" value="#{msgs.saveValue}" />
+			</h:panelGroup>
+
+		</h:form>
 
 	</composite:implementation>
 

@@ -43,6 +43,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
@@ -125,10 +126,7 @@ public class StatistikForm {
      * @throws DAOException
      */
     public Long getAnzahlVorlagen() {
-        //	    Session session = Helper.getHibernateSession();
-        //	    return (Long) session.createQuery("select count(*) " + "from Vorlage").uniqueResult();
-        // TODO
-        return 0l;
+        return (long) TemplateManager.countTemplates();
     }
 
     /**

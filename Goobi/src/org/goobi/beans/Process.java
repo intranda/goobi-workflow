@@ -74,6 +74,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.TemplateManager;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = Logger.getLogger(Process.class);
@@ -168,7 +169,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Step> getSchritte() {
-        if (this.schritte == null || schritte.isEmpty()) {
+        if ((this.schritte == null || schritte.isEmpty()) && id != null) {
             schritte = StepManager.getStepsForProcess(id);
         }
         return this.schritte;
@@ -192,6 +193,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Vorlage> getVorlagen() {
+        if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
+            vorlagen = TemplateManager.getTemplatesForProcess(id);
+        }
         return this.vorlagen;
     }
 
@@ -583,18 +587,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public int getVorlagenSize() {
        
-        if (this.vorlagen == null) {
-            this.vorlagen = new ArrayList<Vorlage>();
-        }
-        return this.vorlagen.size();
+//        if (this.getVorlagen == null) {
+//            this.vorlagen = new ArrayList<Vorlage>();
+//        }
+        return this.getVorlagen().size();
     }
 
     public List<Vorlage> getVorlagenList() {
        
-        if (this.vorlagen == null) {
-            this.vorlagen = new ArrayList<Vorlage>();
-        }
-        return new ArrayList<Vorlage>(this.vorlagen);
+       
+        return getVorlagen();
     }
 
     public Integer getSortHelperArticles() {
