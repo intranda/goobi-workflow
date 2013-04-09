@@ -122,15 +122,15 @@ class PropertyMysqlHelper {
         }
     };
 
-    public static void save(Processproperty pe) throws SQLException {
+    public static void saveProcessproperty(Processproperty pe) throws SQLException {
         if (pe.getId() == null) {
-            insert(pe);
+            insertProcessproperty(pe);
         } else {
-            update(pe);
+            updateProcessproperty(pe);
         }
     }
 
-    private static void insert(Processproperty pe) throws SQLException {
+    private static void insertProcessproperty(Processproperty pe) throws SQLException {
         String sql =
                 "INSERT INTO prozesseeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, prozesseID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param =
@@ -146,7 +146,7 @@ class PropertyMysqlHelper {
 
     }
 
-    private static void update(Processproperty pe) throws SQLException {
+    private static void updateProcessproperty(Processproperty pe) throws SQLException {
         String sql =
                 "UPDATE prozesseeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, prozesseID = ?, creationDate = ?, container = ? WHERE prozesseeigenschaftenID = "
                         + pe.getId();
@@ -206,6 +206,45 @@ class PropertyMysqlHelper {
         try {
             List<Vorlageeigenschaft> ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplatePropertyListHandler, param);
             return ret;
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void saveTemplateproperty(Vorlageeigenschaft property) throws SQLException {
+        if (property.getId() == null) {
+            insertTemplateproperty(property);
+        } else {
+            updateTemplateproperty(property);
+        }
+    }
+
+    private static void updateTemplateproperty(Vorlageeigenschaft property) throws SQLException {
+        String sql =
+                "UPDATE vorlageneigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, vorlagenID = ?, creationDate = ?, container = ? WHERE vorlageneigenschaftenID = "
+                        + property.getId();
+        Object[] param =
+                { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(), property.getTemplateId(),
+                property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            run.update(connection, sql, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    private static void insertTemplateproperty(Vorlageeigenschaft property) throws SQLException {
+        String sql =
+                "INSERT INTO vorlageneigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, vorlagenID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        Object[] param =
+                { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(), property.getTemplateId(),
+                property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            run.update(connection, sql, param);
         } finally {
             MySQLHelper.closeConnection(connection);
         }

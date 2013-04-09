@@ -25,7 +25,7 @@ public class PropertyManager {
 
     public static void saveProcessproperty(Processproperty pe) {
         try {
-            PropertyMysqlHelper.save(pe);
+            PropertyMysqlHelper.saveProcessproperty(pe);
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -70,5 +70,13 @@ public class PropertyManager {
             logger.error(e);
         }
         return propertyList;
+    }
+
+    public static void saveTemplateProperty(Vorlageeigenschaft property) {
+        try {
+            PropertyMysqlHelper.saveTemplateproperty(property);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
 }

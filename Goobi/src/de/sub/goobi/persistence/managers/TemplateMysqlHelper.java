@@ -88,22 +88,34 @@ class TemplateMysqlHelper {
         }
     }
 
-    public static void saveTemplate(Vorlage template) throws SQLException  {
-        if (template.getId() == null) {
-            insertTemplate(template);
-        } else {
-            updateTemplate(template);
+    public static void saveTemplate(Vorlage template) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            String sql = "";
+
+            if (template.getId() == null) {
+                sql = "INSERT INTO vorlagen ( Herkunft, ProzesseID ) VALUES ( NULL, " + template.getProcessId() + ")";
+                run.update(connection, sql.toString());
+                int templateId = getLastTemplateId(connection);
+                template.setId(templateId);
+            } else {
+                sql = "UPDATE vorlagen set Herkunft = NULL, ProzesseID = " + template.getProcessId() + " WHERE VorlagenID =" + template.getId();
+                run.update(connection, sql);
+            }
+            List<Vorlageeigenschaft> templateProperties = template.getEigenschaften();
+            for (Vorlageeigenschaft property : templateProperties) {
+                property.setTemplateId(template.getId());
+                PropertyManager.saveTemplateProperty(property);
+            }
+        } finally {
+            MySQLHelper.closeConnection(connection);
         }
     }
 
-    private static void updateTemplate(Vorlage template) throws SQLException  {
-        // TODO Auto-generated method stub
-        
+    private static int getLastTemplateId(Connection connection) throws SQLException {
+        String sql = "SELECT VorlagenID from vorlagen order by VorlagenID desc limit 1";
+        QueryRunner run = new QueryRunner();
+        return run.query(sql, MySQLUtils.resultSetToIntegerHandler);
     }
-
-    private static void insertTemplate(Vorlage template) throws SQLException  {
-        // TODO Auto-generated method stub
-        
-    }
-
 }
