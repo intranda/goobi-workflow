@@ -59,6 +59,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Project;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -87,7 +88,6 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -126,7 +126,7 @@ public class ProcessBean extends BasicBean {
     private StatisticsManager statisticsManager;
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
-    private Prozesseigenschaft myProzessEigenschaft;
+    private Processproperty myProzessEigenschaft;
     private Schritteigenschaft mySchrittEigenschaft;
     private User myBenutzer;
     private Vorlage myVorlage;
@@ -218,7 +218,7 @@ public class ProcessBean extends BasicBean {
                     return "";
                 } else {
                     /* Prozesseigenschaften */
-                    for (Prozesseigenschaft pe : this.myProzess.getEigenschaftenList()) {
+                    for (Processproperty pe : this.myProzess.getEigenschaftenList()) {
                         if (pe != null && pe.getWert() != null) {
                             if (pe.getWert().contains(this.myProzess.getTitel())) {
                                 pe.setWert(pe.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
@@ -554,7 +554,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public String ProzessEigenschaftNeu() {
-        myProzessEigenschaft = new Prozesseigenschaft();
+        myProzessEigenschaft = new Processproperty();
         return "";
     }
 
@@ -1063,11 +1063,11 @@ public class ProcessBean extends BasicBean {
         loadProcessProperties();
     }
 
-    public Prozesseigenschaft getMyProzessEigenschaft() {
+    public Processproperty getMyProzessEigenschaft() {
         return this.myProzessEigenschaft;
     }
 
-    public void setMyProzessEigenschaft(Prozesseigenschaft myProzessEigenschaft) {
+    public void setMyProzessEigenschaft(Processproperty myProzessEigenschaft) {
         this.myProzessEigenschaft = myProzessEigenschaft;
     }
 
@@ -1907,7 +1907,7 @@ public class ProcessBean extends BasicBean {
 
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(myProzess);
                 pt.setProzesseigenschaft(pe);
                 myProzess.getEigenschaften().add(pe);
@@ -1941,7 +1941,7 @@ public class ProcessBean extends BasicBean {
         if (valid) {
             for (ProcessProperty p : this.processPropertyList) {
                 if (p.getProzesseigenschaft() == null) {
-                    Prozesseigenschaft pe = new Prozesseigenschaft();
+                    Processproperty pe = new Processproperty();
                     pe.setProzess(this.myProzess);
                     p.setProzesseigenschaft(pe);
                     this.myProzess.getEigenschaften().add(pe);
@@ -1952,8 +1952,8 @@ public class ProcessBean extends BasicBean {
                 }
             }
 
-            List<Prozesseigenschaft> props = this.myProzess.getEigenschaftenList();
-            for (Prozesseigenschaft pe : props) {
+            List<Processproperty> props = this.myProzess.getEigenschaftenList();
+            for (Processproperty pe : props) {
                 if (pe.getTitel() == null) {
                     this.myProzess.getEigenschaften().remove(pe);
                 }
@@ -1981,14 +1981,14 @@ public class ProcessBean extends BasicBean {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(this.myProzess);
                 this.processProperty.setProzesseigenschaft(pe);
                 this.myProzess.getEigenschaften().add(pe);
             }
             this.processProperty.transfer();
 
-            List<Prozesseigenschaft> props = this.myProzess.getEigenschaftenList();
+            List<Processproperty> props = this.myProzess.getEigenschaftenList();
 //            for (Prozesseigenschaft pe : props) {
 //                if (pe.getTitel() == null) {
 //                    this.myProzess.getEigenschaften().remove(pe);
@@ -2044,8 +2044,8 @@ public class ProcessBean extends BasicBean {
 
         }
 
-        List<Prozesseigenschaft> props = this.myProzess.getEigenschaftenList();
-        for (Prozesseigenschaft pe : props) {
+        List<Processproperty> props = this.myProzess.getEigenschaftenList();
+        for (Processproperty pe : props) {
             if (pe.getTitel() == null) {
                 this.myProzess.getEigenschaften().remove(pe);
             }
@@ -2121,7 +2121,7 @@ public class ProcessBean extends BasicBean {
             this.processPropertyList.add(newProp);
             this.processProperty = newProp;
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(this.myProzess);
                 this.processProperty.setProzesseigenschaft(pe);
                 this.myProzess.getEigenschaften().add(pe);

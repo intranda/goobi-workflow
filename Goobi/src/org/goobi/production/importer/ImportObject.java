@@ -30,9 +30,9 @@ package org.goobi.production.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Processproperty;
 import org.goobi.production.enums.ImportReturnValue;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueckeigenschaft;
 
@@ -50,7 +50,7 @@ public class ImportObject {
 	private String errorMessage ="";
 	
 	// additional information
-	private List<Prozesseigenschaft> processProperties = new ArrayList<Prozesseigenschaft>();
+	private List<Processproperty> processProperties = new ArrayList<Processproperty>();
 	private List<Werkstueckeigenschaft> workProperties = new ArrayList<Werkstueckeigenschaft>();
 	private List<Vorlageeigenschaft> templateProperties = new ArrayList<Vorlageeigenschaft>();
 	
@@ -88,10 +88,10 @@ public class ImportObject {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-	public List<Prozesseigenschaft> getProcessProperties() {
+	public List<Processproperty> getProcessProperties() {
 		return this.processProperties;
 	}
-	public void setProcessProperties(List<Prozesseigenschaft> processProperties) {
+	public void setProcessProperties(List<Processproperty> processProperties) {
 		this.processProperties = processProperties;
 	}
 	public List<Werkstueckeigenschaft> getWorkProperties() {

@@ -40,7 +40,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 //import org.hibernate.criterion.Restrictions;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
+import org.goobi.beans.Processproperty;
+
 import de.sub.goobi.helper.Helper;
 
 public class SearchResultGeneration {

@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -31,13 +31,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.goobi.beans.Process;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-public class Prozesseigenschaft implements Serializable, IGoobiProperty, Comparable<Prozesseigenschaft> {
+public class Processproperty implements Serializable, IGoobiProperty, Comparable<Processproperty> {
 	private static final long serialVersionUID = -2356566712752716107L;
 
 	private Process prozess;
@@ -51,7 +50,7 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
 	private Integer container;
 	private int processId;
 
-	public Prozesseigenschaft() {
+	public Processproperty() {
 		this.istObligatorisch = false;
 		this.datentyp = PropertyType.String.getId();
 		this.creationDate = new Date();
@@ -218,7 +217,7 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
 	}
 
 	@Override
-	public int compareTo(Prozesseigenschaft o) {
+	public int compareTo(Processproperty o) {
 		return this.getTitel().toLowerCase().compareTo(o.getTitel().toLowerCase());
 	}
 
@@ -252,7 +251,7 @@ public class Prozesseigenschaft implements Serializable, IGoobiProperty, Compara
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Prozesseigenschaft other = (Prozesseigenschaft) obj;
+        Processproperty other = (Processproperty) obj;
         if (container == null) {
             if (other.container != null)
                 return false;

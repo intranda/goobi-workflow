@@ -33,12 +33,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -50,13 +50,13 @@ public class BeanHelper {
 	
 
 	public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
-		Prozesseigenschaft eig = new Prozesseigenschaft();
+		Processproperty eig = new Processproperty();
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
 		eig.setProzess(inProzess);
-		List<Prozesseigenschaft> eigenschaften = inProzess.getEigenschaften();
+		List<Processproperty> eigenschaften = inProzess.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new ArrayList<Prozesseigenschaft>();
+			eigenschaften = new ArrayList<Processproperty>();
 		}
 		eigenschaften.add(eig);
 	}
@@ -222,10 +222,10 @@ public class BeanHelper {
 
 	public void EigenschaftenKopieren(Process prozessVorlage, Process prozessKopie) {
 		// TODO Reihenfolge!
-	    List<Prozesseigenschaft> myEigenschaften = new ArrayList<Prozesseigenschaft>();
-		for (Iterator<Prozesseigenschaft> iterator = prozessVorlage.getEigenschaftenList().iterator(); iterator.hasNext();) {
-			Prozesseigenschaft eig = iterator.next();
-			Prozesseigenschaft eigneu = new Prozesseigenschaft();
+	    List<Processproperty> myEigenschaften = new ArrayList<Processproperty>();
+		for (Iterator<Processproperty> iterator = prozessVorlage.getEigenschaftenList().iterator(); iterator.hasNext();) {
+			Processproperty eig = iterator.next();
+			Processproperty eigneu = new Processproperty();
 			eigneu.setIstObligatorisch(eig.isIstObligatorisch());
 			eigneu.setType(eig.getType());
 			eigneu.setTitel(eig.getTitel());

@@ -35,7 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
+import org.goobi.beans.Processproperty;
+
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
@@ -94,8 +95,8 @@ public class ExtendedDataImpl extends DataImpl {
       * --------------------------------*/
       if (type.equals("") || type.equals(isProcess)) {
          if (p.getEigenschaften() == null)
-            p.setEigenschaften(new ArrayList<Prozesseigenschaft>());
-         Prozesseigenschaft pe = new Prozesseigenschaft();
+            p.setEigenschaften(new ArrayList<Processproperty>());
+         Processproperty pe = new Processproperty();
          pe.setProzess(p);
          pe.setTitel(gpp.getName());
          pe.setWert(gpp.getValue());
@@ -207,8 +208,8 @@ public class ExtendedDataImpl extends DataImpl {
        * --------------------------------*/
       if (type.equals("") || type.equals(isProcess)) {
     	  //TODO: Use for loops
-         for (Iterator<Prozesseigenschaft> it = p.getEigenschaftenList().iterator(); it.hasNext();) {
-            Prozesseigenschaft pe = (Prozesseigenschaft) it.next();
+         for (Iterator<Processproperty> it = p.getEigenschaftenList().iterator(); it.hasNext();) {
+            Processproperty pe = (Processproperty) it.next();
             if (!pe.getTitel().startsWith("#"))
                gpps.add(new GoobiProcessProperty(pe.getTitel(), String.valueOf(pe.getId().intValue()), pe
                      .getWert()));

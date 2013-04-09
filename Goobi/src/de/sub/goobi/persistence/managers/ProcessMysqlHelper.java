@@ -13,9 +13,9 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -58,8 +58,8 @@ class ProcessMysqlHelper {
                     StepMysqlHelper.saveStep(s);
                 }
             }
-            List<Prozesseigenschaft> properties = o.getEigenschaften();
-            for (Prozesseigenschaft pe : properties) {
+            List<Processproperty> properties = o.getEigenschaften();
+            for (Processproperty pe : properties) {
                 PropertyManager.save(pe);
             }
             

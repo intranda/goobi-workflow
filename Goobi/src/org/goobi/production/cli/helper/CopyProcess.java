@@ -69,9 +69,9 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
@@ -1030,7 +1030,7 @@ public class CopyProcess extends ProzesskopieForm {
 			bh.EigenschaftHinzufuegen(werk, "TifHeaderImagedescription", this.tifHeader_imagedescription);
 			bh.EigenschaftHinzufuegen(werk, "TifHeaderDocumentname", this.tifHeader_documentname);
 
-			for (Prozesseigenschaft pe : io.getProcessProperties()) {
+			for (Processproperty pe : io.getProcessProperties()) {
 				addProperty(this.prozessKopie, pe);
 			}
 			for (Werkstueckeigenschaft we : io.getWorkProperties()) {
@@ -1520,25 +1520,25 @@ public class CopyProcess extends ProzesskopieForm {
 		eigenschaften.add(eig);
 	}
 
-	private void addProperty(Process inProcess, Prozesseigenschaft property) {
+	private void addProperty(Process inProcess, Processproperty property) {
 		if (property.getContainer() == 0) {
-			for (Prozesseigenschaft pe : inProcess.getEigenschaftenList()) {
+			for (Processproperty pe : inProcess.getEigenschaftenList()) {
 				if (pe.getTitel().equals(property.getTitel()) && pe.getContainer() > 0) {
 					pe.setWert(property.getWert());
 					return;
 				}
 			}
 		}
-		Prozesseigenschaft eig = new Prozesseigenschaft();
+		Processproperty eig = new Processproperty();
 		eig.setTitel(property.getTitel());
 		eig.setWert(property.getWert());
 		eig.setAuswahl(property.getAuswahl());
 		eig.setContainer(property.getContainer());
 		eig.setType(property.getType());
 		eig.setProzess(inProcess);
-		List<Prozesseigenschaft> eigenschaften = inProcess.getEigenschaften();
+		List<Processproperty> eigenschaften = inProcess.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new ArrayList<Prozesseigenschaft>();
+			eigenschaften = new ArrayList<Processproperty>();
 		}
 		eigenschaften.add(eig);
 	}

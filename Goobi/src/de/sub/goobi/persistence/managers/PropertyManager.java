@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Processproperty;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 
 public class PropertyManager {
     private static final Logger logger = Logger.getLogger(PropertyManager.class);
 
-    public static List<Prozesseigenschaft> getProcessPropertiesForProcess(int processId) {
-        List<Prozesseigenschaft> propertyList = new ArrayList<Prozesseigenschaft>();
+    public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
+        List<Processproperty> propertyList = new ArrayList<Processproperty>();
         try {
             propertyList = PropertyMysqlHelper.getProcessPropertiesForProcess(processId);
         } catch (SQLException e) {
@@ -21,7 +21,7 @@ public class PropertyManager {
         return propertyList;
     }
 
-    public static void save(Prozesseigenschaft pe) {
+    public static void save(Processproperty pe) {
         try {
             PropertyMysqlHelper.save(pe);
         } catch (SQLException e) {

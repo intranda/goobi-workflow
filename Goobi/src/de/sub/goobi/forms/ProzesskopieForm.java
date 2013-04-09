@@ -46,6 +46,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -79,7 +80,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.beans.Werkstueck;
@@ -452,7 +452,7 @@ public class ProzesskopieForm {
         }
 
         if (tempProcess.getEigenschaftenSize() > 0) {
-            for (Prozesseigenschaft pe : tempProcess.getEigenschaften()) {
+            for (Processproperty pe : tempProcess.getEigenschaften()) {
                 if (pe.getTitel().equals("digitalCollection")) {
                     digitalCollections.add(pe.getWert());
                 }

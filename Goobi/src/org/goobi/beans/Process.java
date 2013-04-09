@@ -58,7 +58,6 @@ import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 import ugh.fileformats.mets.XStream;
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Werkstueck;
 import de.sub.goobi.config.ConfigMain;
@@ -90,7 +89,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<HistoryEvent> history;
     private List<Werkstueck> werkstuecke;
     private List<Vorlage> vorlagen;
-    private List<Prozesseigenschaft> eigenschaften;
+    private List<Processproperty> eigenschaften;
     private String sortHelperStatus;
     private Integer sortHelperImages;
     private Integer sortHelperArticles;
@@ -123,7 +122,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.titel = "";
         this.istTemplate = false;
         this.inAuswahllisteAnzeigen = false;
-        this.eigenschaften = new ArrayList<Prozesseigenschaft>();
+        this.eigenschaften = new ArrayList<Processproperty>();
         this.schritte = new ArrayList<Step>();
         this.erstellungsdatum = new Date();
 
@@ -216,14 +215,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.ausgabename = ausgabename;
     }
 
-    public List<Prozesseigenschaft> getEigenschaften() {
+    public List<Processproperty> getEigenschaften() {
       if (eigenschaften == null || eigenschaften.isEmpty()) {
           eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
       }
         return this.eigenschaften;
     }
 
-    public void setEigenschaften(List<Prozesseigenschaft> eigenschaften) {
+    public void setEigenschaften(List<Processproperty> eigenschaften) {
         this.eigenschaften = eigenschaften;
     }
 
@@ -557,10 +556,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
        return getEigenschaften().size();
     }
 
-    public List<Prozesseigenschaft> getEigenschaftenList() {
+    public List<Processproperty> getEigenschaftenList() {
        
    
-            return new ArrayList<Prozesseigenschaft>(getEigenschaften());
+            return new ArrayList<Processproperty>(getEigenschaften());
         
     }
 

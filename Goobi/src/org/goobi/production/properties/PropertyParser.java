@@ -35,9 +35,9 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.Helper;
 
 public class PropertyParser {
@@ -138,8 +138,8 @@ public class PropertyParser {
 		// add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
 		// 'eigenschaften'
 		ArrayList<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
-		List<Prozesseigenschaft> plist = mySchritt.getProzess().getEigenschaftenList();
-		for (Prozesseigenschaft pe : plist) {
+		List<Processproperty> plist = mySchritt.getProzess().getEigenschaftenList();
+		for (Processproperty pe : plist) {
 
 			for (ProcessProperty pp : listClone) {
 				// TODO added temporarily a fix for NPE. Properties without title shouldn't exist at all
@@ -171,8 +171,8 @@ public class PropertyParser {
 		String projectTitle = process.getProjekt().getTitel();
 		ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
 		if (process.isIstTemplate()) {
-			List<Prozesseigenschaft> plist = process.getEigenschaftenList();
-			for (Prozesseigenschaft pe : plist) {
+			List<Processproperty> plist = process.getEigenschaftenList();
+			for (Processproperty pe : plist) {
 				ProcessProperty pp = new ProcessProperty();
 				pp.setName(pe.getTitel());
 				pp.setProzesseigenschaft(pe);
@@ -236,8 +236,8 @@ public class PropertyParser {
 		}// add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
 			// 'eigenschaften'
 		List<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
-		List<Prozesseigenschaft> plist = process.getEigenschaftenList();
-		for (Prozesseigenschaft pe : plist) {
+		List<Processproperty> plist = process.getEigenschaftenList();
+		for (Processproperty pe : plist) {
 
 			// TODO added temporarily a fix for NPE. Properties without title shouldn't exist at all
 			if (pe.getTitel() != null) {
@@ -272,7 +272,7 @@ public class PropertyParser {
 		}
 		// create ProcessProperties to remaining 'eigenschaften'
 		if (plist.size() > 0) {
-			for (Prozesseigenschaft pe : plist) {
+			for (Processproperty pe : plist) {
 				ProcessProperty pp = new ProcessProperty();
 				pp.setProzesseigenschaft(pe);
 				pp.setName(pe.getTitel());

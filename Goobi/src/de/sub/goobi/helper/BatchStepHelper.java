@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.StepBean;
@@ -54,7 +55,6 @@ import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
@@ -171,7 +171,7 @@ public class BatchStepHelper {
 				return;
 			}
 			if (this.processProperty.getProzesseigenschaft() == null) {
-				Prozesseigenschaft pe = new Prozesseigenschaft();
+				Processproperty pe = new Processproperty();
 				pe.setProzess(this.currentStep.getProzess());
 				this.processProperty.setProzesseigenschaft(pe);
 				this.currentStep.getProzess().getEigenschaften().add(pe);
@@ -179,8 +179,8 @@ public class BatchStepHelper {
 			this.processProperty.transfer();
 
 			Process p = this.currentStep.getProzess();
-			List<Prozesseigenschaft> props = p.getEigenschaftenList();
-			for (Prozesseigenschaft pe : props) {
+			List<Processproperty> props = p.getEigenschaftenList();
+			for (Processproperty pe : props) {
 				if (pe.getTitel() == null) {
 					p.getEigenschaften().remove(pe);
 				}
@@ -208,14 +208,14 @@ public class BatchStepHelper {
 				return;
 			}
 			if (this.processProperty.getProzesseigenschaft() == null) {
-				Prozesseigenschaft pe = new Prozesseigenschaft();
+				Processproperty pe = new Processproperty();
 				pe.setProzess(this.currentStep.getProzess());
 				this.processProperty.setProzesseigenschaft(pe);
 				this.currentStep.getProzess().getEigenschaften().add(pe);
 			}
 			this.processProperty.transfer();
 
-			Prozesseigenschaft pe = new Prozesseigenschaft();
+			Processproperty pe = new Processproperty();
 			pe.setTitel(this.processProperty.getName());
 			pe.setWert(this.processProperty.getValue());
 			pe.setContainer(this.processProperty.getContainer());
@@ -227,7 +227,7 @@ public class BatchStepHelper {
 					if (pe.getTitel() != null) {
 						boolean match = false;
 
-						for (Prozesseigenschaft processPe : process.getEigenschaftenList()) {
+						for (Processproperty processPe : process.getEigenschaftenList()) {
 							if (processPe.getTitel() != null) {
 								if (pe.getTitel().equals(processPe.getTitel()) && pe.getContainer() == processPe.getContainer()) {
 									processPe.setWert(pe.getWert());
@@ -237,7 +237,7 @@ public class BatchStepHelper {
 							}
 						}
 						if (!match) {
-							Prozesseigenschaft p = new Prozesseigenschaft();
+							Processproperty p = new Processproperty();
 							p.setTitel(pe.getTitel());
 							p.setWert(pe.getWert());
 							p.setContainer(pe.getContainer());
@@ -252,8 +252,8 @@ public class BatchStepHelper {
 					}
 				}
 
-				List<Prozesseigenschaft> props = process.getEigenschaftenList();
-				for (Prozesseigenschaft peig : props) {
+				List<Processproperty> props = process.getEigenschaftenList();
+				for (Processproperty peig : props) {
 					if (peig.getTitel() == null) {
 						process.getEigenschaften().remove(peig);
 					}
@@ -282,7 +282,7 @@ public class BatchStepHelper {
 		}
 		for (ProcessProperty pt : this.processPropertyList) {
 		    if (pt.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(s.getProzess());
                 pt.setProzesseigenschaft(pe);
                 s.getProzess().getEigenschaften().add(pe);
@@ -300,7 +300,7 @@ public class BatchStepHelper {
 		}
 
 		for (Process p : pList) {
-			for (Prozesseigenschaft pe : p.getEigenschaftenList()) {
+			for (Processproperty pe : p.getEigenschaftenList()) {
 				if (!this.containers.keySet().contains(pe.getContainer())) {
 					this.containers.put(pe.getContainer(), null);
 				}
@@ -398,8 +398,8 @@ public class BatchStepHelper {
 
 	private void saveStep() {
 	    Process p = this.currentStep.getProzess();
-		List<Prozesseigenschaft> props = p.getEigenschaftenList();
-		for (Prozesseigenschaft pe : props) {
+		List<Processproperty> props = p.getEigenschaftenList();
+		for (Processproperty pe : props) {
 			if (pe.getTitel() == null) {
 				p.getEigenschaften().remove(pe);
 			}

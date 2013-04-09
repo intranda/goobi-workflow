@@ -55,9 +55,9 @@ import org.jdom.transform.XSLTransformException;
 import org.jdom.transform.XSLTransformer;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.beans.Vorlageeigenschaft;
@@ -181,7 +181,7 @@ public class ExportXmlLog implements IProcessDataExport {
 	
 
 		ArrayList<Element> processProperties = new ArrayList<Element>();
-		for (Prozesseigenschaft prop : process.getEigenschaftenList()) {
+		for (Processproperty prop : process.getEigenschaftenList()) {
 			Element property = new Element("property", xmlns);
 			property.setAttribute("propertyIdentifier", prop.getTitel());
 			if (prop.getWert() != null) {

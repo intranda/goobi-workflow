@@ -11,8 +11,8 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Processproperty;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -20,21 +20,21 @@ import de.sub.goobi.persistence.apache.MySQLUtils;
 public class PropertyMysqlHelper {
     private static final Logger logger = Logger.getLogger(PropertyMysqlHelper.class);
 
-    public static List<Prozesseigenschaft> getProcessPropertiesForProcess(int processId) throws SQLException {
+    public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
         String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel";
         Connection connection = MySQLHelper.getInstance().getConnection();
         Object[] param = {processId};
         try {
-            List<Prozesseigenschaft> ret = new QueryRunner().query(connection, sql.toString(), resultSetToPropertyListHandler, param);
+            List<Processproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToPropertyListHandler, param);
             return ret;
         } finally {
             MySQLHelper.closeConnection(connection);
         }
     }
 
-    public static ResultSetHandler<Prozesseigenschaft> resultSetToPropertyHandler = new ResultSetHandler<Prozesseigenschaft>() {
+    public static ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<Processproperty>() {
         @Override
-        public Prozesseigenschaft handle(ResultSet rs) throws SQLException {
+        public Processproperty handle(ResultSet rs) throws SQLException {
             if (rs.next()) {
                 int id = rs.getInt("prozesseeigenschaftenID");
                 String title = rs.getString("Titel");
@@ -45,7 +45,7 @@ public class PropertyMysqlHelper {
                 int processId = rs.getInt("prozesseID");
                 Date creationDate = rs.getDate("creationDate");
                 int container = rs.getInt("container");
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setId(id);
                 pe.setTitel(title);
                 pe.setWert(value);
@@ -61,10 +61,10 @@ public class PropertyMysqlHelper {
         }
     };
 
-    public static ResultSetHandler<List<Prozesseigenschaft>> resultSetToPropertyListHandler = new ResultSetHandler<List<Prozesseigenschaft>>() {
+    public static ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<List<Processproperty>>() {
         @Override
-        public List<Prozesseigenschaft> handle(ResultSet rs) throws SQLException {
-            List<Prozesseigenschaft> properties = new ArrayList<Prozesseigenschaft>();
+        public List<Processproperty> handle(ResultSet rs) throws SQLException {
+            List<Processproperty> properties = new ArrayList<Processproperty>();
             while (rs.next()) {
                 int id = rs.getInt("prozesseeigenschaftenID");
                 String title = rs.getString("Titel");
@@ -75,7 +75,7 @@ public class PropertyMysqlHelper {
                 int processId = rs.getInt("prozesseID");
                 Date creationDate = rs.getDate("creationDate");
                 int container = rs.getInt("container");
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setId(id);
                 pe.setTitel(title);
                 pe.setWert(value);
@@ -91,7 +91,7 @@ public class PropertyMysqlHelper {
         }
     };
 
-    public static void save(Prozesseigenschaft pe) throws SQLException {
+    public static void save(Processproperty pe) throws SQLException {
         if (pe.getId() == null) {
             insert(pe);
         } else {
@@ -99,7 +99,7 @@ public class PropertyMysqlHelper {
         }
     }
 
-    private static void insert(Prozesseigenschaft pe) throws SQLException {
+    private static void insert(Processproperty pe) throws SQLException {
         String sql =
                 "INSERT INTO prozesseeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, prozesseID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param =
@@ -115,7 +115,7 @@ public class PropertyMysqlHelper {
 
     }
 
-    private static void update(Prozesseigenschaft pe) throws SQLException {
+    private static void update(Processproperty pe) throws SQLException {
         String sql =
                 "UPDATE prozesseeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, prozesseID = ?, creationDate = ?, container = ? WHERE prozesseeigenschaftenID = "
                         + pe.getId();

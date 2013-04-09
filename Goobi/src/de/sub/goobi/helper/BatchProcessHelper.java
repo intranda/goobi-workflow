@@ -39,7 +39,8 @@ import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
+import org.goobi.beans.Processproperty;
+
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -143,7 +144,7 @@ public class BatchProcessHelper {
 				return;
 			}
 			if (this.processProperty.getProzesseigenschaft() == null) {
-				Prozesseigenschaft pe = new Prozesseigenschaft();
+				Processproperty pe = new Processproperty();
 				pe.setProzess(this.currentProcess);
 				this.processProperty.setProzesseigenschaft(pe);
 				this.currentProcess.getEigenschaften().add(pe);
@@ -151,8 +152,8 @@ public class BatchProcessHelper {
 			this.processProperty.transfer();
 
 			Process p = this.currentProcess;
-			List<Prozesseigenschaft> props = p.getEigenschaftenList();
-			for (Prozesseigenschaft pe : props) {
+			List<Processproperty> props = p.getEigenschaftenList();
+			for (Processproperty pe : props) {
 				if (pe.getTitel() == null) {
 					p.getEigenschaften().remove(pe);
 				}
@@ -183,14 +184,14 @@ public class BatchProcessHelper {
 				return;
 			}
 			if (this.processProperty.getProzesseigenschaft() == null) {
-				Prozesseigenschaft pe = new Prozesseigenschaft();
+				Processproperty pe = new Processproperty();
 				pe.setProzess(this.currentProcess);
 				this.processProperty.setProzesseigenschaft(pe);
 				this.currentProcess.getEigenschaften().add(pe);
 			}			
 			this.processProperty.transfer();
 
-			Prozesseigenschaft pe = new Prozesseigenschaft();
+			Processproperty pe = new Processproperty();
 			pe.setTitel(this.processProperty.getName());
 			pe.setWert(this.processProperty.getValue());
 			pe.setContainer(this.processProperty.getContainer());
@@ -202,7 +203,7 @@ public class BatchProcessHelper {
 					if (pe.getTitel() != null) {
 						boolean match = false;
 
-						for (Prozesseigenschaft processPe : process.getEigenschaftenList()) {
+						for (Processproperty processPe : process.getEigenschaftenList()) {
 							if (processPe.getTitel() != null) {
 								if (pe.getTitel().equals(processPe.getTitel()) && pe.getContainer() == processPe.getContainer()) {
 									processPe.setWert(pe.getWert());
@@ -212,7 +213,7 @@ public class BatchProcessHelper {
 							}
 						}
 						if (!match) {
-							Prozesseigenschaft p = new Prozesseigenschaft();
+							Processproperty p = new Processproperty();
 							p.setTitel(pe.getTitel());
 							p.setWert(pe.getWert());
 							p.setContainer(pe.getContainer());
@@ -227,8 +228,8 @@ public class BatchProcessHelper {
 					}
 				}
 
-				List<Prozesseigenschaft> props = process.getEigenschaftenList();
-				for (Prozesseigenschaft peig : props) {
+				List<Processproperty> props = process.getEigenschaftenList();
+				for (Processproperty peig : props) {
 					if (peig.getTitel() == null) {
 						process.getEigenschaften().remove(peig);
 					}
@@ -258,7 +259,7 @@ public class BatchProcessHelper {
 		
 		for (ProcessProperty pt : this.processPropertyList) {
 		    if (pt.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(process);
                 pt.setProzesseigenschaft(pe);
                 process.getEigenschaften().add(pe);
@@ -275,7 +276,7 @@ public class BatchProcessHelper {
 			}
 		}
 		for (Process p : this.processes) {
-			for (Prozesseigenschaft pe : p.getEigenschaftenList()) {
+			for (Processproperty pe : p.getEigenschaftenList()) {
 				if (!this.containers.keySet().contains(pe.getContainer())) {
 					this.containers.put(pe.getContainer(), null);
 				}

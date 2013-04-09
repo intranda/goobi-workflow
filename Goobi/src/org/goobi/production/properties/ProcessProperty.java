@@ -39,9 +39,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.beans.Prozesseigenschaft;
 
 public class ProcessProperty implements IProperty, Serializable {
 
@@ -55,7 +55,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	private List<String> projects;
 	private List<ShowStepCondition> showStepConditions;
 	private AccessCondition showProcessGroupAccessCondition;
-	private Prozesseigenschaft prozesseigenschaft;
+	private Processproperty prozesseigenschaft;
 	private AccessCondition currentStepAccessCondition;
 	private boolean currentStepDuplicationAllowed = false;
 	
@@ -301,7 +301,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	 * @see org.goobi.production.properties.IProperty#getProzesseigenschaft()
 	 */
 
-	public Prozesseigenschaft getProzesseigenschaft() {
+	public Processproperty getProzesseigenschaft() {
 		return this.prozesseigenschaft;
 	}
 
@@ -311,7 +311,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	 * @see org.goobi.production.properties.IProperty#setProzesseigenschaft(de.sub.goobi.Beans.Prozesseigenschaft)
 	 */
 
-	public void setProzesseigenschaft(Prozesseigenschaft prozesseigenschaft) {
+	public void setProzesseigenschaft(Processproperty prozesseigenschaft) {
 		this.prozesseigenschaft = prozesseigenschaft;
 	}
 

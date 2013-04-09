@@ -44,6 +44,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.WikiFieldHelper;
@@ -64,7 +65,6 @@ import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Prozesseigenschaft;
 import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
@@ -1138,7 +1138,7 @@ public class StepBean extends BasicBean {
 
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(this.mySchritt.getProzess());
                 pt.setProzesseigenschaft(pe);
                 this.mySchritt.getProzess().getEigenschaften().add(pe);
@@ -1171,7 +1171,7 @@ public class StepBean extends BasicBean {
         if (valid) {
             for (ProcessProperty p : this.processPropertyList) {
                 if (p.getProzesseigenschaft() == null) {
-                    Prozesseigenschaft pe = new Prozesseigenschaft();
+                    Processproperty pe = new Processproperty();
                     pe.setProzess(this.mySchritt.getProzess());
                     p.setProzesseigenschaft(pe);
                     this.mySchritt.getProzess().getEigenschaften().add(pe);
@@ -1182,8 +1182,8 @@ public class StepBean extends BasicBean {
                 }
             }
             Process p = this.mySchritt.getProzess();
-            List<Prozesseigenschaft> props = p.getEigenschaftenList();
-            for (Prozesseigenschaft pe : props) {
+            List<Processproperty> props = p.getEigenschaftenList();
+            for (Processproperty pe : props) {
                 if (pe.getTitel() == null) {
                     p.getEigenschaften().remove(pe);
                 }
@@ -1212,15 +1212,15 @@ public class StepBean extends BasicBean {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(this.mySchritt.getProzess());
                 this.processProperty.setProzesseigenschaft(pe);
                 this.myProzess.getEigenschaften().add(pe);
             }
             this.processProperty.transfer();
 
-            List<Prozesseigenschaft> props = this.mySchritt.getProzess().getEigenschaftenList();
-            for (Prozesseigenschaft pe : props) {
+            List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
+            for (Processproperty pe : props) {
                 if (pe.getTitel() == null) {
                     this.mySchritt.getProzess().getEigenschaften().remove(pe);
                 }
@@ -1268,8 +1268,8 @@ public class StepBean extends BasicBean {
         // this.mySchritt.getProzess().removeProperty(this.processProperty.getProzesseigenschaft());
         // }
 
-        List<Prozesseigenschaft> props = this.mySchritt.getProzess().getEigenschaftenList();
-        for (Prozesseigenschaft pe : props) {
+        List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
+        for (Processproperty pe : props) {
             if (pe.getTitel() == null) {
                 this.mySchritt.getProzess().getEigenschaften().remove(pe);
             }
@@ -1366,7 +1366,7 @@ public class StepBean extends BasicBean {
             this.processPropertyList.add(newProp);
             this.processProperty = newProp;
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Prozesseigenschaft pe = new Prozesseigenschaft();
+                Processproperty pe = new Processproperty();
                 pe.setProzess(this.mySchritt.getProzess());
                 this.processProperty.setProzesseigenschaft(pe);
                 this.mySchritt.getProzess().getEigenschaften().add(pe);
