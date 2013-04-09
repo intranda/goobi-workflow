@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Processproperty;
 
+import de.sub.goobi.beans.Vorlageeigenschaft;
+
 
 public class PropertyManager {
     private static final Logger logger = Logger.getLogger(PropertyManager.class);
@@ -21,7 +23,7 @@ public class PropertyManager {
         return propertyList;
     }
 
-    public static void save(Processproperty pe) {
+    public static void saveProcessproperty(Processproperty pe) {
         try {
             PropertyMysqlHelper.save(pe);
         } catch (SQLException e) {
@@ -58,5 +60,15 @@ public class PropertyManager {
             logger.error(e);
         }
         return titleList;
+    }
+
+    public static List<Vorlageeigenschaft> getTemplateProperties(int templateId) {
+        List<Vorlageeigenschaft> propertyList = new ArrayList<Vorlageeigenschaft>();
+        try {
+            propertyList = PropertyMysqlHelper.getTemplateProperties(templateId);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return propertyList;
     }
 }

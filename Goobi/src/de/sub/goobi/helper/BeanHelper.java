@@ -82,9 +82,9 @@ public class BeanHelper {
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
 		eig.setVorlage(inVorlage);
-		Set<Vorlageeigenschaft> eigenschaften = inVorlage.getEigenschaften();
+		List<Vorlageeigenschaft> eigenschaften = inVorlage.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Vorlageeigenschaft>();
+			eigenschaften = new ArrayList<Vorlageeigenschaft>();
 		}
 		eigenschaften.add(eig);
 	}
@@ -250,7 +250,7 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Eigenschaften des Schritts
 			 * --------------------------------*/
-			HashSet<Vorlageeigenschaft> myEigenschaften = new HashSet<Vorlageeigenschaft>();
+			List<Vorlageeigenschaft> myEigenschaften = new ArrayList<Vorlageeigenschaft>();
 			for (Iterator<Vorlageeigenschaft> iterator = vor.getEigenschaften().iterator(); iterator.hasNext();) {
 				Vorlageeigenschaft eig = iterator.next();
 				Vorlageeigenschaft eigneu = new Vorlageeigenschaft();

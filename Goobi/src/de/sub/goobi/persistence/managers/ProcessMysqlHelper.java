@@ -60,7 +60,7 @@ class ProcessMysqlHelper {
             }
             List<Processproperty> properties = o.getEigenschaften();
             for (Processproperty pe : properties) {
-                PropertyManager.save(pe);
+                PropertyManager.saveProcessproperty(pe);
             }
             
             // TODO Eigenschaften speichern

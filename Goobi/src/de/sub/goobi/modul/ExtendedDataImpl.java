@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -129,7 +128,7 @@ public class ExtendedDataImpl extends DataImpl {
             throw new GoobiException(1500, "Template does not exist");
          Vorlage v = (Vorlage) p.getVorlagenList().get(count);
          if (v.getEigenschaften() == null)
-            v.setEigenschaften(new HashSet<Vorlageeigenschaft>());
+            v.setEigenschaften(new ArrayList<Vorlageeigenschaft>());
          Vorlageeigenschaft ve = new Vorlageeigenschaft();
          ve.setVorlage(v);
          ve.setTitel(gpp.getName());

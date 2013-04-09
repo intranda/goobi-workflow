@@ -1513,9 +1513,9 @@ public class CopyProcess extends ProzesskopieForm {
 		eig.setContainer(property.getContainer());
 		eig.setType(property.getType());
 		eig.setVorlage(inVorlage);
-		Set<Vorlageeigenschaft> eigenschaften = inVorlage.getEigenschaften();
+		List<Vorlageeigenschaft> eigenschaften = inVorlage.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Vorlageeigenschaft>();
+			eigenschaften = new ArrayList<Vorlageeigenschaft>();
 		}
 		eigenschaften.add(eig);
 	}

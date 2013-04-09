@@ -13,6 +13,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Processproperty;
 
+import de.sub.goobi.beans.Vorlageeigenschaft;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -90,6 +91,36 @@ public class PropertyMysqlHelper {
             return properties;
         }
     };
+    
+    public static ResultSetHandler<List<Vorlageeigenschaft>> resultSetToTemplatePropertyListHandler = new ResultSetHandler<List<Vorlageeigenschaft>>() {
+        @Override
+        public List<Vorlageeigenschaft> handle(ResultSet rs) throws SQLException {
+            List<Vorlageeigenschaft> properties = new ArrayList<Vorlageeigenschaft>();
+            while (rs.next()) {
+                int id = rs.getInt("vorlageneigenschaftenID");
+                String title = rs.getString("Titel");
+                String value = rs.getString("Wert");
+                Boolean mandatory = rs.getBoolean("IstObligatorisch");
+                int type = rs.getInt("DatentypenID");
+                String choice = rs.getString("Auswahl");
+                int templateId = rs.getInt("vorlagenID");
+                Date creationDate = rs.getDate("creationDate");
+                int container = rs.getInt("container");
+                Vorlageeigenschaft ve = new Vorlageeigenschaft();
+                ve.setId(id);
+                ve.setTitel(title);
+                ve.setWert(value);
+                ve.setIstObligatorisch(mandatory);
+                ve.setType(PropertyType.getById(type));
+                ve.setAuswahl(choice);
+                ve.setTemplateId(templateId);
+                ve.setCreationDate(creationDate);
+                ve.setContainer(container);
+                properties.add(ve);
+            }
+            return properties;
+        }
+    };
 
     public static void save(Processproperty pe) throws SQLException {
         if (pe.getId() == null) {
@@ -163,6 +194,18 @@ public class PropertyMysqlHelper {
             logger.debug(sql.toString());
             return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
 
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static List<Vorlageeigenschaft> getTemplateProperties(int templateId) throws SQLException {
+        String sql = "SELECT * FROM vorlageneigenschaften WHERE vorlagenID = ? ORDER BY container, Titel";
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        Object[] param = {templateId};
+        try {
+            List<Vorlageeigenschaft> ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplatePropertyListHandler, param);
+            return ret;
         } finally {
             MySQLHelper.closeConnection(connection);
         }

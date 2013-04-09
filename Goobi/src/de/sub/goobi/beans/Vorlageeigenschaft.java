@@ -33,9 +33,11 @@ import java.util.List;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
+import de.sub.goobi.persistence.managers.TemplateManager;
 
 public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 	private static final long serialVersionUID = -5981263038302791497L;
+	private Integer templateId;
 	private Vorlage vorlage;
 	private Integer id;
 	private String titel;
@@ -180,6 +182,9 @@ public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 	}
 
 	public Vorlage getVorlage() {
+	    if (vorlage == null) {
+	        vorlage = TemplateManager.getTemplateForTemplateID(templateId);
+	    }
 		return this.vorlage;
 	}
 
@@ -210,4 +215,12 @@ public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 	public String getNormalizedValue() {
 		return this.wert.replace(" ", "_").trim();
 	}
+
+    public Integer getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(Integer templateId) {
+        this.templateId = templateId;
+    }
 }

@@ -29,23 +29,24 @@ package de.sub.goobi.beans;
  */
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.goobi.beans.Process;
+
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class Vorlage implements Serializable {
     private static final long serialVersionUID = 1736135433162833277L;
     private Integer id;
     private String herkunft;
     private Process prozess;
-    private Set<Vorlageeigenschaft> eigenschaften;
+    private Integer processId;
+    private List<Vorlageeigenschaft> eigenschaften;
 
     private boolean panelAusgeklappt = true;
 
     public Vorlage() {
-        this.eigenschaften = new HashSet<Vorlageeigenschaft>();
+        this.eigenschaften = new ArrayList<Vorlageeigenschaft>();
     }
 
     /*
@@ -62,6 +63,9 @@ public class Vorlage implements Serializable {
     }
 
     public Process getProzess() {
+        if (prozess == null) {
+            prozess = ProcessManager.getProcessById(processId);
+        }
         return this.prozess;
     }
 
@@ -77,11 +81,11 @@ public class Vorlage implements Serializable {
         this.panelAusgeklappt = panelAusgeklappt;
     }
 
-    public Set<Vorlageeigenschaft> getEigenschaften() {
+    public List<Vorlageeigenschaft> getEigenschaften() {
         return this.eigenschaften;
     }
 
-    public void setEigenschaften(Set<Vorlageeigenschaft> eigenschaften) {
+    public void setEigenschaften(List<Vorlageeigenschaft> eigenschaften) {
         this.eigenschaften = eigenschaften;
     }
 
@@ -113,6 +117,14 @@ public class Vorlage implements Serializable {
             return new ArrayList<Vorlageeigenschaft>();
         }
         return new ArrayList<Vorlageeigenschaft>(this.eigenschaften);
+    }
+
+    public Integer getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(Integer processId) {
+        this.processId = processId;
     }
 
 }
