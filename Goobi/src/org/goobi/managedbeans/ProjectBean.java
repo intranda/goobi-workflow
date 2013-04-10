@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Project;
+import org.goobi.beans.ProjectFileGroup;
 import org.goobi.production.chart.IProjectTask;
 import org.goobi.production.chart.IProvideProjectTaskList;
 import org.goobi.production.chart.ProjectStatusDataTable;
@@ -64,7 +65,6 @@ import org.joda.time.Years;
 
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
-import de.sub.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;

@@ -44,6 +44,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -65,7 +66,6 @@ import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
@@ -101,7 +101,7 @@ public class StepBean extends BasicBean {
     private String solutionMessage;
 
     private String modusBearbeiten = "";
-    private Schritteigenschaft mySchrittEigenschaft;
+//    private Schritteigenschaft mySchrittEigenschaft;
     private WebDav myDav = new WebDav();
     private int gesamtAnzahlImages = 0;
     private int pageAnzahlImages = 0;
@@ -531,11 +531,11 @@ public class StepBean extends BasicBean {
      *  Eigenschaften bearbeiten
      */
 
-    public String SchrittEigenschaftNeu() {
-        this.mySchritt.setBearbeitungszeitpunkt(new Date());
-        this.mySchrittEigenschaft = new Schritteigenschaft();
-        return "";
-    }
+//    public String SchrittEigenschaftNeu() {
+//        this.mySchritt.setBearbeitungszeitpunkt(new Date());
+//        this.mySchrittEigenschaft = new Schritteigenschaft();
+//        return "";
+//    }
 
     public String SperrungAufheben() {
         MetadatenSperrung.UnlockProcess(this.mySchritt.getProzess().getId());
@@ -581,7 +581,7 @@ public class StepBean extends BasicBean {
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
             temp.setBearbeitungsende(null);
-            Schritteigenschaft se = new Schritteigenschaft();
+            ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
             se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
@@ -612,7 +612,7 @@ public class StepBean extends BasicBean {
                 // if (step.getPrioritaet().intValue() == 0)
                 step.setCorrectionStep();
                 step.setBearbeitungsende(null);
-                Schritteigenschaft seg = new Schritteigenschaft();
+                ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
                 seg.setWert(Helper.getTranslation("KorrekturFuer") + temp.getTitel() + ": " + this.problemMessage);
                 seg.setSchritt(step);
@@ -691,7 +691,7 @@ public class StepBean extends BasicBean {
                     // step.setBearbeitungsbeginn(null);
                     step.setBearbeitungszeitpunkt(now);
                 }
-                Schritteigenschaft seg = new Schritteigenschaft();
+                ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
                 step.setBearbeitungszeitpunkt(new Date());
                 if (ben != null) {
@@ -982,13 +982,13 @@ public class StepBean extends BasicBean {
         this.solutionMessage = solutionMessage;
     }
 
-    public Schritteigenschaft getMySchrittEigenschaft() {
-        return this.mySchrittEigenschaft;
-    }
-
-    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
-        this.mySchrittEigenschaft = mySchrittEigenschaft;
-    }
+//    public Schritteigenschaft getMySchrittEigenschaft() {
+//        return this.mySchrittEigenschaft;
+//    }
+//
+//    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
+//        this.mySchrittEigenschaft = mySchrittEigenschaft;
+//    }
 
     /*
      * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden 

@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -54,8 +55,8 @@ import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.beans.HistoryEvent;
+
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -494,7 +495,7 @@ public class BatchStepHelper {
 				temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
 				temp.setCorrectionStep();
 				temp.setBearbeitungsende(null);
-				Schritteigenschaft se = new Schritteigenschaft();
+				ErrorProperty se = new ErrorProperty();
 
 				se.setTitel(Helper.getTranslation("Korrektur notwendig"));
 				se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
@@ -533,7 +534,7 @@ public class BatchStepHelper {
 					step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
 					step.setCorrectionStep();
 					step.setBearbeitungsende(null);
-					Schritteigenschaft seg = new Schritteigenschaft();
+					ErrorProperty seg = new ErrorProperty();
 					seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
 					seg.setWert(Helper.getTranslation("KorrekturFuer") + temp.getTitel() + ": " + this.problemMessage);
 					seg.setSchritt(step);
@@ -629,7 +630,7 @@ public class BatchStepHelper {
 						step.setBearbeitungsende(null);
 						step.setBearbeitungszeitpunkt(now);
 					}
-					Schritteigenschaft seg = new Schritteigenschaft();
+					ErrorProperty seg = new ErrorProperty();
 					seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
 					seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
 							+ Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);

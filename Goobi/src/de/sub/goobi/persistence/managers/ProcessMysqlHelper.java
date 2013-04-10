@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
 
-import de.sub.goobi.beans.Vorlage;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -57,14 +57,14 @@ class ProcessMysqlHelper {
             }
             List<Processproperty> properties = o.getEigenschaften();
             for (Processproperty pe : properties) {
-                PropertyManager.saveProcessproperty(pe);
+                PropertyManager.saveProcessProperty(pe);
             }
 
             // TODO Werkstuecke speichern
           
             
-            List<Vorlage> templates = o.getVorlagen();
-            for (Vorlage template : templates) {
+            List<Template> templates = o.getVorlagen();
+            for (Template template : templates) {
                 TemplateManager.saveTemplate(template);
             }
 

@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Templateproperty;
 
-import de.sub.goobi.beans.Vorlageeigenschaft;
 
 
 public class PropertyManager {
@@ -23,7 +24,7 @@ public class PropertyManager {
         return propertyList;
     }
 
-    public static void saveProcessproperty(Processproperty pe) {
+    public static void saveProcessProperty(Processproperty pe) {
         try {
             PropertyMysqlHelper.saveProcessproperty(pe);
         } catch (SQLException e) {
@@ -31,6 +32,14 @@ public class PropertyManager {
         }
     }
 
+    public static void deleteProcessProperty(Processproperty pe) {
+        try {
+            PropertyMysqlHelper.deleteProcessProperty(pe);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+    
     public static List<String> getDistinctProcessPropertyTitles() {
         List<String> titleList = new ArrayList<String>();
         try {
@@ -62,8 +71,8 @@ public class PropertyManager {
         return titleList;
     }
 
-    public static List<Vorlageeigenschaft> getTemplateProperties(int templateId) {
-        List<Vorlageeigenschaft> propertyList = new ArrayList<Vorlageeigenschaft>();
+    public static List<Templateproperty> getTemplateProperties(int templateId) {
+        List<Templateproperty> propertyList = new ArrayList<Templateproperty>();
         try {
             propertyList = PropertyMysqlHelper.getTemplateProperties(templateId);
         } catch (SQLException e) {
@@ -72,7 +81,7 @@ public class PropertyManager {
         return propertyList;
     }
 
-    public static Vorlageeigenschaft saveTemplateProperty(Vorlageeigenschaft property) {
+    public static Templateproperty saveTemplateProperty(Templateproperty property) {
         try {
             property = PropertyMysqlHelper.saveTemplateproperty(property);
             return property;
@@ -81,4 +90,43 @@ public class PropertyManager {
         }
         return null;
     }
+    
+    public static void deleteTemplateProperty(Templateproperty property) {
+        try {
+            PropertyMysqlHelper.deleteTemplateProperty(property);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+    
+    
+    public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) {
+        List<Masterpieceproperty> propertyList = new ArrayList<Masterpieceproperty>();
+        try {
+            propertyList = PropertyMysqlHelper.getMasterpieceProperties(templateId);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return propertyList;
+    }
+
+    public static Masterpieceproperty saveMasterpieceProperty(Masterpieceproperty property) {
+        try {
+            property = PropertyMysqlHelper.saveMasterpieceProperty(property);
+            return property;
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return null;
+    }
+    
+    public static void deleteMasterpieceProperty(Masterpieceproperty property) {
+        try {
+            PropertyMysqlHelper.deleteMasterpieceProperty(property);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+    
+    
 }

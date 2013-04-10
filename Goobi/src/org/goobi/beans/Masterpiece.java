@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -29,21 +29,22 @@ package de.sub.goobi.beans;
  */
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.goobi.beans.Process;
 
-public class Werkstueck implements Serializable {
+
+import de.sub.goobi.persistence.managers.ProcessManager;
+
+public class Masterpiece implements Serializable {
 	private static final long serialVersionUID = 123266825187246791L;
 	private Integer id;
 	private Process prozess;
-	private Set<Werkstueckeigenschaft> eigenschaften;
+    private Integer processId;
+	private List<Masterpieceproperty> eigenschaften;
 	private boolean panelAusgeklappt = true;
 
-	public Werkstueck() {
-		this.eigenschaften = new HashSet<Werkstueckeigenschaft>();
+	public Masterpiece() {
+		this.eigenschaften = new ArrayList<Masterpieceproperty>();
 	}
 
 	/*
@@ -60,6 +61,9 @@ public class Werkstueck implements Serializable {
 	}
 
 	public Process getProzess() {
+	    if (prozess == null && processId != null) {
+            prozess = ProcessManager.getProcessById(processId);
+        }
 		return this.prozess;
 	}
 
@@ -75,11 +79,11 @@ public class Werkstueck implements Serializable {
 		this.panelAusgeklappt = panelAusgeklappt;
 	}
 
-	public Set<Werkstueckeigenschaft> getEigenschaften() {
+	public List<Masterpieceproperty> getEigenschaften() {
 		return this.eigenschaften;
 	}
 
-	public void setEigenschaften(Set<Werkstueckeigenschaft> eigenschaften) {
+	public void setEigenschaften(List<Masterpieceproperty> eigenschaften) {
 		this.eigenschaften = eigenschaften;
 	}
 
@@ -97,11 +101,19 @@ public class Werkstueck implements Serializable {
 		}
 	}
 
-	public List<Werkstueckeigenschaft> getEigenschaftenList() {
+	public List<Masterpieceproperty> getEigenschaftenList() {
 
 		if (this.eigenschaften == null) {
-			return new ArrayList<Werkstueckeigenschaft>();
+			return new ArrayList<Masterpieceproperty>();
 		}
-		return new ArrayList<Werkstueckeigenschaft>(this.eigenschaften);
+		return new ArrayList<Masterpieceproperty>(this.eigenschaften);
 	}
+	
+    public Integer getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(Integer processId) {
+        this.processId = processId;
+    }
 }

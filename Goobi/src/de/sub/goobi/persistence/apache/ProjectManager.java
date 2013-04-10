@@ -31,8 +31,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.ProjectFileGroup;
 
-import de.sub.goobi.beans.ProjectFileGroup;
 
 public class ProjectManager {
 	private static final Logger logger = Logger.getLogger(MySQLHelper.class);

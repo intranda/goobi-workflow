@@ -8,9 +8,9 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
+import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 
-import de.sub.goobi.beans.ProjectFileGroup;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
 

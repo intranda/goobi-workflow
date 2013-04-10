@@ -58,8 +58,6 @@ import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 import ugh.fileformats.mets.XStream;
 import de.sub.goobi.beans.HistoryEvent;
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Werkstueck;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -71,6 +69,7 @@ import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -88,8 +87,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Date erstellungsdatum;
     private List<Step> schritte;
     private List<HistoryEvent> history;
-    private List<Werkstueck> werkstuecke;
-    private List<Vorlage> vorlagen;
+    private List<Masterpiece> werkstuecke;
+    private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
     private String sortHelperStatus;
     private Integer sortHelperImages;
@@ -107,7 +106,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Integer projectId;
     private Integer MetadatenKonfigurationID;
     private Integer docketId;
-    
 
     private final MetadatenSperrung msp = new MetadatenSperrung();
     Helper help = new Helper();
@@ -192,22 +190,25 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.history = history;
     }
 
-    public List<Vorlage> getVorlagen() {
+    public List<Template> getVorlagen() {
         if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
             vorlagen = TemplateManager.getTemplatesForProcess(id);
         }
         return this.vorlagen;
     }
 
-    public void setVorlagen(List<Vorlage> vorlagen) {
+    public void setVorlagen(List<Template> vorlagen) {
         this.vorlagen = vorlagen;
     }
 
-    public List<Werkstueck> getWerkstuecke() {
+    public List<Masterpiece> getWerkstuecke() {
+        if ((werkstuecke == null || werkstuecke.isEmpty()) && id != null) {
+            werkstuecke = MasterpieceManager.getMasterpiecesForProcess(id);
+        }
         return this.werkstuecke;
     }
 
-    public void setWerkstuecke(List<Werkstueck> werkstuecke) {
+    public void setWerkstuecke(List<Masterpiece> werkstuecke) {
         this.werkstuecke = werkstuecke;
     }
 
@@ -220,9 +221,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Processproperty> getEigenschaften() {
-      if (eigenschaften == null || eigenschaften.isEmpty()) {
-          eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
-      }
+        if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
+            eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
+        }
         return this.eigenschaften;
     }
 
@@ -497,13 +498,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public Project getProjekt() {
-       if (projekt == null && projectId != null) {
-           try {
-            projekt = ProjectManager.getProjectById(projectId);
-        } catch (DAOException e) {
-            logger.error(e);
+        if (projekt == null && projectId != null) {
+            try {
+                projekt = ProjectManager.getProjectById(projectId);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
         }
-       }
         return this.projekt;
     }
 
@@ -539,7 +540,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getHistorySize() {
-    
+
         if (this.history == null) {
             return 0;
         } else {
@@ -548,7 +549,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<HistoryEvent> getHistoryList() {
-       
+
         List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
         if (this.history != null) {
             temp.addAll(this.history);
@@ -557,45 +558,35 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getEigenschaftenSize() {
-       return getEigenschaften().size();
+        return getEigenschaften().size();
     }
 
     public List<Processproperty> getEigenschaftenList() {
-       
-   
-            return new ArrayList<Processproperty>(getEigenschaften());
-        
+
+        return new ArrayList<Processproperty>(getEigenschaften());
+
     }
 
     public int getWerkstueckeSize() {
-       
-        if (this.werkstuecke == null) {
-            return 0;
-        } else {
-            return this.werkstuecke.size();
-        }
+
+        return getWerkstuecke().size();
     }
 
-    public List<Werkstueck> getWerkstueckeList() {
-       
-        if (this.werkstuecke == null) {
-            return new ArrayList<Werkstueck>();
-        } else {
-            return new ArrayList<Werkstueck>(this.werkstuecke);
-        }
+    public List<Masterpiece> getWerkstueckeList() {
+
+        return getWerkstuecke();
     }
 
     public int getVorlagenSize() {
-       
-//        if (this.getVorlagen == null) {
-//            this.vorlagen = new ArrayList<Vorlage>();
-//        }
+
+        //        if (this.getVorlagen == null) {
+        //            this.vorlagen = new ArrayList<Vorlage>();
+        //        }
         return this.getVorlagen().size();
     }
 
-    public List<Vorlage> getVorlagenList() {
-       
-       
+    public List<Template> getVorlagenList() {
+
         return getVorlagen();
     }
 
@@ -1208,7 +1199,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Integer getDocketId() {
         return docketId;
     }
-    
+
     public void setDocketId(Integer docketId) {
         this.docketId = docketId;
     }

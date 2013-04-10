@@ -58,10 +58,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
@@ -88,11 +92,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritteigenschaft;
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
+//import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
@@ -114,7 +114,9 @@ import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.TemplateManager;
 
 @ManagedBean(name = "ProzessverwaltungForm")
 @SessionScoped
@@ -127,12 +129,12 @@ public class ProcessBean extends BasicBean {
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
     private Processproperty myProzessEigenschaft;
-    private Schritteigenschaft mySchrittEigenschaft;
+//    private Schritteigenschaft mySchrittEigenschaft;
     private User myBenutzer;
-    private Vorlage myVorlage;
-    private Vorlageeigenschaft myVorlageEigenschaft;
-    private Werkstueck myWerkstueck;
-    private Werkstueckeigenschaft myWerkstueckEigenschaft;
+    private Template myVorlage;
+    private Templateproperty myVorlageEigenschaft;
+    private Masterpiece myWerkstueck;
+    private Masterpieceproperty myWerkstueckEigenschaft;
     private Usergroup myBenutzergruppe;
     private String modusAnzeige = "aktuell";
     private String modusBearbeiten = "";
@@ -226,16 +228,16 @@ public class ProcessBean extends BasicBean {
                         }
                     }
                     /* Scanvorlageneigenschaften */
-                    for (Vorlage vl : this.myProzess.getVorlagenList()) {
-                        for (Vorlageeigenschaft ve : vl.getEigenschaftenList()) {
+                    for (Template vl : this.myProzess.getVorlagenList()) {
+                        for (Templateproperty ve : vl.getEigenschaftenList()) {
                             if (ve.getWert().contains(this.myProzess.getTitel())) {
                                 ve.setWert(ve.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
                             }
                         }
                     }
                     /* Werkstückeigenschaften */
-                    for (Werkstueck w : this.myProzess.getWerkstueckeList()) {
-                        for (Werkstueckeigenschaft we : w.getEigenschaftenList()) {
+                    for (Masterpiece w : this.myProzess.getWerkstueckeList()) {
+                        for (Masterpieceproperty we : w.getEigenschaftenList()) {
                             if (we.getWert().contains(this.myProzess.getTitel())) {
                                 we.setWert(we.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
                             }
@@ -381,7 +383,7 @@ public class ProcessBean extends BasicBean {
             }
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
-        
+
         paginator = new DatabasePaginator(sortList(), sql, m);
 
         this.modusAnzeige = "aktuell";
@@ -391,7 +393,7 @@ public class ProcessBean extends BasicBean {
     public String FilterVorlagen() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
-        
+
         //        try {
         //            this.myFilteredDataSource = new UserTemplatesFilter(true);
         //            Criteria crit = this.myFilteredDataSource.getCriteria();
@@ -514,42 +516,35 @@ public class ProcessBean extends BasicBean {
      * Eigenschaften
      */
     public String ProzessEigenschaftLoeschen() {
-        try {
-            myProzess.getEigenschaften().remove(myProzessEigenschaft);
-            ProcessManager.saveProcess(myProzess);
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-        }
+        myProzess.getEigenschaften().remove(myProzessEigenschaft);
+        PropertyManager.deleteProcessProperty(myProzessEigenschaft);
+        //            ProcessManager.saveProcess(myProzess);
         return "";
     }
 
-    public String SchrittEigenschaftLoeschen() {
-        try {
-            mySchritt.getEigenschaften().remove(mySchrittEigenschaft);
-            ProcessManager.saveProcess(myProzess);
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-        }
-        return "";
-    }
+//    public String SchrittEigenschaftLoeschen() {
+//        try {
+//            mySchritt.getEigenschaften().remove(mySchrittEigenschaft);
+//            ProcessManager.saveProcess(myProzess);
+//        } catch (DAOException e) {
+//            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
+//        }
+//        return "";
+//    }
 
     public String VorlageEigenschaftLoeschen() {
-        try {
-            myVorlage.getEigenschaften().remove(myVorlageEigenschaft);
-            ProcessManager.saveProcess(myProzess);
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-        }
+
+        myVorlage.getEigenschaften().remove(myVorlageEigenschaft);
+        PropertyManager.deleteTemplateProperty(myVorlageEigenschaft);
+        //            ProcessManager.saveProcess(myProzess);
+
         return "";
     }
 
     public String WerkstueckEigenschaftLoeschen() {
-        try {
-            myWerkstueck.getEigenschaften().remove(myWerkstueckEigenschaft);
-            ProcessManager.saveProcess(myProzess);
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-        }
+        myWerkstueck.getEigenschaften().remove(myWerkstueckEigenschaft);
+        PropertyManager.deleteMasterpieceProperty(myWerkstueckEigenschaft);
+        //            ProcessManager.saveProcess(myProzess);
         return "";
     }
 
@@ -558,46 +553,49 @@ public class ProcessBean extends BasicBean {
         return "";
     }
 
-    public String SchrittEigenschaftNeu() {
-        mySchrittEigenschaft = new Schritteigenschaft();
-        return "";
-    }
+//    public String SchrittEigenschaftNeu() {
+//        mySchrittEigenschaft = new Schritteigenschaft();
+//        return "";
+//    }
 
     public String VorlageEigenschaftNeu() {
-        myVorlageEigenschaft = new Vorlageeigenschaft();
+        myVorlageEigenschaft = new Templateproperty();
         return "";
     }
 
     public String WerkstueckEigenschaftNeu() {
-        myWerkstueckEigenschaft = new Werkstueckeigenschaft();
+        myWerkstueckEigenschaft = new Masterpieceproperty();
         return "";
     }
 
     public String ProzessEigenschaftUebernehmen() {
         myProzess.getEigenschaften().add(myProzessEigenschaft);
         myProzessEigenschaft.setProzess(myProzess);
-        Speichern();
+//        Speichern();
+        PropertyManager.saveProcessProperty(myProzessEigenschaft);
         return "";
     }
 
-    public String SchrittEigenschaftUebernehmen() {
-        mySchritt.getEigenschaften().add(mySchrittEigenschaft);
-        mySchrittEigenschaft.setSchritt(mySchritt);
-        Speichern();
-        return "";
-    }
+//    public String SchrittEigenschaftUebernehmen() {
+//        mySchritt.getEigenschaften().add(mySchrittEigenschaft);
+//        mySchrittEigenschaft.setSchritt(mySchritt);
+//        Speichern();
+//        return "";
+//    }
 
     public String VorlageEigenschaftUebernehmen() {
         myVorlage.getEigenschaften().add(myVorlageEigenschaft);
         myVorlageEigenschaft.setVorlage(myVorlage);
-        Speichern();
+        PropertyManager.saveTemplateProperty(myVorlageEigenschaft);
+//        Speichern();
         return "";
     }
 
     public String WerkstueckEigenschaftUebernehmen() {
         myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
         myWerkstueckEigenschaft.setWerkstueck(myWerkstueck);
-        Speichern();
+//        Speichern();
+        PropertyManager.saveMasterpieceProperty(myWerkstueckEigenschaft);
         return "";
     }
 
@@ -679,23 +677,26 @@ public class ProcessBean extends BasicBean {
      */
 
     public String VorlageNeu() {
-        this.myVorlage = new Vorlage();
+        this.myVorlage = new Template();
         this.myProzess.getVorlagen().add(this.myVorlage);
         this.myVorlage.setProzess(this.myProzess);
-        Speichern();
+        TemplateManager.saveTemplate(myVorlage);
+        //        Speichern();        
         return "process_edit_template";
     }
 
     public String VorlageUebernehmen() {
         this.myProzess.getVorlagen().add(this.myVorlage);
         this.myVorlage.setProzess(this.myProzess);
-        Speichern();
+        TemplateManager.saveTemplate(myVorlage);
+        //        Speichern();
         return "";
     }
 
     public String VorlageLoeschen() {
         this.myProzess.getVorlagen().remove(this.myVorlage);
-        Speichern();
+        TemplateManager.deleteTemplate(myVorlage);
+        //        Speichern();
         return "process_edit";
     }
 
@@ -704,7 +705,7 @@ public class ProcessBean extends BasicBean {
      */
 
     public String WerkstueckNeu() {
-        this.myWerkstueck = new Werkstueck();
+        this.myWerkstueck = new Masterpiece();
         this.myProzess.getWerkstuecke().add(this.myWerkstueck);
         this.myWerkstueck.setProzess(this.myProzess);
         Speichern();
@@ -1083,51 +1084,51 @@ public class ProcessBean extends BasicBean {
         this.mySchritt = mySchritt;
     }
 
-    public Schritteigenschaft getMySchrittEigenschaft() {
-        return this.mySchrittEigenschaft;
-    }
+//    public Schritteigenschaft getMySchrittEigenschaft() {
+//        return this.mySchrittEigenschaft;
+//    }
+//
+//    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
+//        this.mySchrittEigenschaft = mySchrittEigenschaft;
+//    }
 
-    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
-        this.mySchrittEigenschaft = mySchrittEigenschaft;
-    }
-
-    public Vorlage getMyVorlage() {
+    public Template getMyVorlage() {
         return this.myVorlage;
     }
 
-    public void setMyVorlage(Vorlage myVorlage) {
+    public void setMyVorlage(Template myVorlage) {
         this.myVorlage = myVorlage;
     }
 
-    public void setMyVorlageReload(Vorlage myVorlage) {
+    public void setMyVorlageReload(Template myVorlage) {
         this.myVorlage = myVorlage;
     }
 
-    public Vorlageeigenschaft getMyVorlageEigenschaft() {
+    public Templateproperty getMyVorlageEigenschaft() {
         return this.myVorlageEigenschaft;
     }
 
-    public void setMyVorlageEigenschaft(Vorlageeigenschaft myVorlageEigenschaft) {
+    public void setMyVorlageEigenschaft(Templateproperty myVorlageEigenschaft) {
         this.myVorlageEigenschaft = myVorlageEigenschaft;
     }
 
-    public Werkstueck getMyWerkstueck() {
+    public Masterpiece getMyWerkstueck() {
         return this.myWerkstueck;
     }
 
-    public void setMyWerkstueck(Werkstueck myWerkstueck) {
+    public void setMyWerkstueck(Masterpiece myWerkstueck) {
         this.myWerkstueck = myWerkstueck;
     }
 
-    public void setMyWerkstueckReload(Werkstueck myWerkstueck) {
+    public void setMyWerkstueckReload(Masterpiece myWerkstueck) {
         this.myWerkstueck = myWerkstueck;
     }
 
-    public Werkstueckeigenschaft getMyWerkstueckEigenschaft() {
+    public Masterpieceproperty getMyWerkstueckEigenschaft() {
         return this.myWerkstueckEigenschaft;
     }
 
-    public void setMyWerkstueckEigenschaft(Werkstueckeigenschaft myWerkstueckEigenschaft) {
+    public void setMyWerkstueckEigenschaft(Masterpieceproperty myWerkstueckEigenschaft) {
         this.myWerkstueckEigenschaft = myWerkstueckEigenschaft;
     }
 
@@ -1161,7 +1162,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public String Reload() {
-       
+
         return "";
     }
 
@@ -1417,50 +1418,42 @@ public class ProcessBean extends BasicBean {
 
     public void StatisticsStatusVolumes() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STATUS_VOLUMES,  FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale(), filter);
+                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsUsergroups() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.USERGROUPS,  FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale(), filter);
+                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsRuntimeSteps() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS,  FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale(), filter);
+                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsProduction() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale(), filter);
+                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsStorage() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsCorrection() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.CORRECTIONS,  FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale(), filter);
+                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsTroughput() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.THROUGHPUT,  FacesContext.getCurrentInstance().getViewRoot()
-                        .getLocale(), filter);
+                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsProject() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PROJECTS,  FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
@@ -1989,11 +1982,11 @@ public class ProcessBean extends BasicBean {
             this.processProperty.transfer();
 
             List<Processproperty> props = this.myProzess.getEigenschaftenList();
-//            for (Prozesseigenschaft pe : props) {
-//                if (pe.getTitel() == null) {
-//                    this.myProzess.getEigenschaften().remove(pe);
-//                }
-//            }
+            //            for (Prozesseigenschaft pe : props) {
+            //                if (pe.getTitel() == null) {
+            //                    this.myProzess.getEigenschaften().remove(pe);
+            //                }
+            //            }
             if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }

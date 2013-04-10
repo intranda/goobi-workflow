@@ -46,8 +46,12 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
@@ -80,10 +84,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.helper.BeanHelper;
@@ -426,8 +426,8 @@ public class ProzesskopieForm {
         Process tempProcess = ProcessManager.getProcessById(this.auswahl);
         if (tempProcess.getWerkstueckeSize() > 0) {
             /* erstes Werkstück durchlaufen */
-            Werkstueck werk = tempProcess.getWerkstueckeList().get(0);
-            for (Werkstueckeigenschaft eig : werk.getEigenschaften()) {
+            Masterpiece werk = tempProcess.getWerkstueckeList().get(0);
+            for (Masterpieceproperty eig : werk.getEigenschaften()) {
                 for (AdditionalField field : this.additionalFields) {
                     if (field.getTitel().equals(eig.getTitel())) {
                         field.setWert(eig.getWert());
@@ -441,8 +441,8 @@ public class ProzesskopieForm {
 
         if (tempProcess.getVorlagenSize() > 0) {
             /* erste Vorlage durchlaufen */
-            Vorlage vor = tempProcess.getVorlagenList().get(0);
-            for (Vorlageeigenschaft eig : vor.getEigenschaften()) {
+            Template vor = tempProcess.getVorlagenList().get(0);
+            for (Templateproperty eig : vor.getEigenschaften()) {
                 for (AdditionalField field : this.additionalFields) {
                     if (field.getTitel().equals(eig.getTitel())) {
                         field.setWert(eig.getWert());
@@ -883,13 +883,13 @@ public class ProzesskopieForm {
         /*
          * -------------------------------- Vorlageneigenschaften initialisieren --------------------------------
          */
-        Vorlage vor;
+        Template vor;
         if (this.prozessKopie.getVorlagenSize() > 0) {
             vor = this.prozessKopie.getVorlagenList().get(0);
         } else {
-            vor = new Vorlage();
+            vor = new Template();
             vor.setProzess(this.prozessKopie);
-            List<Vorlage> vorlagen = new ArrayList<Vorlage>();
+            List<Template> vorlagen = new ArrayList<Template>();
             vorlagen.add(vor);
             this.prozessKopie.setVorlagen(vorlagen);
         }
@@ -897,13 +897,13 @@ public class ProzesskopieForm {
         /*
          * -------------------------------- Werkstückeigenschaften initialisieren --------------------------------
          */
-        Werkstueck werk;
+        Masterpiece werk;
         if (this.prozessKopie.getWerkstueckeSize() > 0) {
             werk = this.prozessKopie.getWerkstueckeList().get(0);
         } else {
-            werk = new Werkstueck();
+            werk = new Masterpiece();
             werk.setProzess(this.prozessKopie);
-            List<Werkstueck> werkstuecke = new ArrayList<Werkstueck>();
+            List<Masterpiece> werkstuecke = new ArrayList<Masterpiece>();
             werkstuecke.add(werk);
             this.prozessKopie.setWerkstuecke(werkstuecke);
         }

@@ -28,22 +28,20 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Schritteigenschaft;
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
+//import de.sub.goobi.beans.Schritteigenschaft;
 
 public class BeanHelper {
 
@@ -63,42 +61,42 @@ public class BeanHelper {
 
 	
 
-	public void EigenschaftHinzufuegen(Step inSchritt, String inTitel, String inWert) {
-		Schritteigenschaft eig = new Schritteigenschaft();
-		eig.setTitel(inTitel);
-		eig.setWert(inWert);
-		eig.setSchritt(inSchritt);
-		List<Schritteigenschaft> eigenschaften = inSchritt.getEigenschaften();
-		if (eigenschaften == null) {
-			eigenschaften = new ArrayList<Schritteigenschaft>();
-		}
-		eigenschaften.add(eig);
-	}
+//	public void EigenschaftHinzufuegen(Step inSchritt, String inTitel, String inWert) {
+//		Schritteigenschaft eig = new Schritteigenschaft();
+//		eig.setTitel(inTitel);
+//		eig.setWert(inWert);
+//		eig.setSchritt(inSchritt);
+//		List<Schritteigenschaft> eigenschaften = inSchritt.getEigenschaften();
+//		if (eigenschaften == null) {
+//			eigenschaften = new ArrayList<Schritteigenschaft>();
+//		}
+//		eigenschaften.add(eig);
+//	}
 
 	
 
-	public void EigenschaftHinzufuegen(Vorlage inVorlage, String inTitel, String inWert) {
-		Vorlageeigenschaft eig = new Vorlageeigenschaft();
+	public void EigenschaftHinzufuegen(Template inVorlage, String inTitel, String inWert) {
+		Templateproperty eig = new Templateproperty();
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
 		eig.setVorlage(inVorlage);
-		List<Vorlageeigenschaft> eigenschaften = inVorlage.getEigenschaften();
+		List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new ArrayList<Vorlageeigenschaft>();
+			eigenschaften = new ArrayList<Templateproperty>();
 		}
 		eigenschaften.add(eig);
 	}
 
 	
 
-	public void EigenschaftHinzufuegen(Werkstueck inWerkstueck, String inTitel, String inWert) {
-		Werkstueckeigenschaft eig = new Werkstueckeigenschaft();
+	public void EigenschaftHinzufuegen(Masterpiece inWerkstueck, String inTitel, String inWert) {
+		Masterpieceproperty eig = new Masterpieceproperty();
 		eig.setTitel(inTitel);
 		eig.setWert(inWert);
 		eig.setWerkstueck(inWerkstueck);
-		Set<Werkstueckeigenschaft> eigenschaften = inWerkstueck.getEigenschaften();
+		List<Masterpieceproperty> eigenschaften = inWerkstueck.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Werkstueckeigenschaft>();
+			eigenschaften = new ArrayList<Masterpieceproperty>();
 		}
 		eigenschaften.add(eig);
 	}
@@ -153,17 +151,17 @@ public class BeanHelper {
 			/* --------------------------------
 			 * Eigenschaften des Schritts
 			 * --------------------------------*/
-			List<Schritteigenschaft> myEigenschaften = new ArrayList<Schritteigenschaft>();
-			for (Schritteigenschaft eig : step.getEigenschaftenList()) {
-				Schritteigenschaft eigneu = new Schritteigenschaft();
-				eigneu.setIstObligatorisch(eig.isIstObligatorisch());
-				eigneu.setType(eig.getType());
-				eigneu.setTitel(eig.getTitel());
-				eigneu.setWert(eig.getWert());
-				eigneu.setSchritt(stepneu);
-				myEigenschaften.add(eigneu);
-			}
-			stepneu.setEigenschaften(myEigenschaften);
+//			List<Schritteigenschaft> myEigenschaften = new ArrayList<Schritteigenschaft>();
+//			for (Schritteigenschaft eig : step.getEigenschaftenList()) {
+//				Schritteigenschaft eigneu = new Schritteigenschaft();
+//				eigneu.setIstObligatorisch(eig.isIstObligatorisch());
+//				eigneu.setType(eig.getType());
+//				eigneu.setTitel(eig.getTitel());
+//				eigneu.setWert(eig.getWert());
+//				eigneu.setSchritt(stepneu);
+//				myEigenschaften.add(eigneu);
+//			}
+//			stepneu.setEigenschaften(myEigenschaften);
 
 			/* --------------------------------
 			 * Benutzer übernehmen
@@ -190,21 +188,21 @@ public class BeanHelper {
 	}
 
 	public void WerkstueckeKopieren(Process prozessVorlage, Process prozessKopie) {
-		List<Werkstueck> myWerkstuecke = new ArrayList<Werkstueck>();
-		for (Werkstueck werk : prozessVorlage.getWerkstuecke()) {
+		List<Masterpiece> myWerkstuecke = new ArrayList<Masterpiece>();
+		for (Masterpiece werk : prozessVorlage.getWerkstuecke()) {
 			/* --------------------------------
 			 * Details des Werkstücks
 			 * --------------------------------*/
-			Werkstueck werkneu = new Werkstueck();
+			Masterpiece werkneu = new Masterpiece();
 			werkneu.setProzess(prozessKopie);
 
 			/* --------------------------------
 			 * Eigenschaften des Schritts
 			 * --------------------------------*/
-			HashSet<Werkstueckeigenschaft> myEigenschaften = new HashSet<Werkstueckeigenschaft>();
-			for (Iterator<Werkstueckeigenschaft> iterator = werk.getEigenschaften().iterator(); iterator.hasNext();) {
-				Werkstueckeigenschaft eig = iterator.next();
-				Werkstueckeigenschaft eigneu = new Werkstueckeigenschaft();
+			List<Masterpieceproperty> myEigenschaften = new ArrayList<Masterpieceproperty>();
+			for (Iterator<Masterpieceproperty> iterator = werk.getEigenschaften().iterator(); iterator.hasNext();) {
+				Masterpieceproperty eig = iterator.next();
+				Masterpieceproperty eigneu = new Masterpieceproperty();
 				eigneu.setIstObligatorisch(eig.isIstObligatorisch());
 				eigneu.setType(eig.getType());
 				eigneu.setTitel(eig.getTitel());
@@ -238,22 +236,22 @@ public class BeanHelper {
 	}
 
 	public void ScanvorlagenKopieren(Process prozessVorlage, Process prozessKopie) {
-		List<Vorlage> myVorlagen = new ArrayList<Vorlage>();
-		for (Vorlage vor : prozessVorlage.getVorlagen()) {
+		List<Template> myVorlagen = new ArrayList<Template>();
+		for (Template vor : prozessVorlage.getVorlagen()) {
 			/* --------------------------------
 			 * Details der Vorlage
 			 * --------------------------------*/
-			Vorlage vorneu = new Vorlage();
+			Template vorneu = new Template();
 			vorneu.setHerkunft(vor.getHerkunft());
 			vorneu.setProzess(prozessKopie);
 
 			/* --------------------------------
 			 * Eigenschaften des Schritts
 			 * --------------------------------*/
-			List<Vorlageeigenschaft> myEigenschaften = new ArrayList<Vorlageeigenschaft>();
-			for (Iterator<Vorlageeigenschaft> iterator = vor.getEigenschaften().iterator(); iterator.hasNext();) {
-				Vorlageeigenschaft eig = iterator.next();
-				Vorlageeigenschaft eigneu = new Vorlageeigenschaft();
+			List<Templateproperty> myEigenschaften = new ArrayList<Templateproperty>();
+			for (Iterator<Templateproperty> iterator = vor.getEigenschaften().iterator(); iterator.hasNext();) {
+				Templateproperty eig = iterator.next();
+				Templateproperty eigneu = new Templateproperty();
 				eigneu.setIstObligatorisch(eig.isIstObligatorisch());
 				eigneu.setType(eig.getType());
 				eigneu.setTitel(eig.getTitel());
@@ -271,8 +269,8 @@ public class BeanHelper {
 
 	public String WerkstueckEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
 		String Eigenschaft = "";
-		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
-			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
+		for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
+			for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft)) {
 					Eigenschaft = eigenschaft.getWert();
 				}
@@ -283,8 +281,8 @@ public class BeanHelper {
 
 	public String ScanvorlagenEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
 		String Eigenschaft = "";
-		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
-			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
+		for (Template myVorlage : myProzess.getVorlagenList()) {
+			for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft)) {
 					Eigenschaft = eigenschaft.getWert();
 				}
@@ -294,8 +292,8 @@ public class BeanHelper {
 	}
 
 	public void WerkstueckEigenschaftAendern(Process myProzess, String inEigenschaft, String inWert) {
-		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
-			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
+		for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
+			for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft)) {
 					eigenschaft.setWert(inWert);
 				}
@@ -304,8 +302,8 @@ public class BeanHelper {
 	}
 
 	public void ScanvorlagenEigenschaftAendern(Process myProzess, String inEigenschaft, String inWert) {
-		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
-			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
+		for (Template myVorlage : myProzess.getVorlagenList()) {
+			for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft)) {
 					eigenschaft.setWert(inWert);
 				}
@@ -314,8 +312,8 @@ public class BeanHelper {
 	}
 
 	public void WerkstueckEigenschaftLoeschen(Process myProzess, String inEigenschaft, String inWert) {
-		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
-			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
+		for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
+			for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft) && eigenschaft.getWert().equals(inWert)) {
 					myWerkstueck.getEigenschaften().remove(eigenschaft);
 				}
@@ -324,8 +322,8 @@ public class BeanHelper {
 	}
 
 	public void ScanvorlagenEigenschaftLoeschen(Process myProzess, String inEigenschaft, String inWert) {
-		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
-			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
+		for (Template myVorlage : myProzess.getVorlagenList()) {
+			for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
 				if (eigenschaft.getTitel().equals(inEigenschaft) && eigenschaft.getWert().equals(inWert)) {
 					myVorlage.getEigenschaften().remove(eigenschaft);
 				}
@@ -334,9 +332,9 @@ public class BeanHelper {
 	}
 
 	public void WerkstueckEigenschaftDoppelteLoeschen(Process myProzess) {
-		for (Werkstueck myWerkstueck : myProzess.getWerkstueckeList()) {
+		for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
 			List<String> einzelstuecke = new ArrayList<String>();
-			for (Werkstueckeigenschaft eigenschaft : myWerkstueck.getEigenschaftenList()) {
+			for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
 				/* prüfen, ob die Eigenschaft doppelt, wenn ja, löschen */
 				if (einzelstuecke.contains(eigenschaft.getTitel() + "|" + eigenschaft.getWert())) {
 					myWerkstueck.getEigenschaften().remove(eigenschaft);
@@ -348,9 +346,9 @@ public class BeanHelper {
 	}
 
 	public void ScanvorlageEigenschaftDoppelteLoeschen(Process myProzess) {
-		for (Vorlage myVorlage : myProzess.getVorlagenList()) {
+		for (Template myVorlage : myProzess.getVorlagenList()) {
 			List<String> einzelstuecke = new ArrayList<String>();
-			for (Vorlageeigenschaft eigenschaft : myVorlage.getEigenschaftenList()) {
+			for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
 				/* prüfen, ob die Eigenschaft doppelt, wenn ja, löschen */
 				if (einzelstuecke.contains(eigenschaft.getTitel() + "|" + eigenschaft.getWert())) {
 					myVorlage.getEigenschaften().remove(eigenschaft);

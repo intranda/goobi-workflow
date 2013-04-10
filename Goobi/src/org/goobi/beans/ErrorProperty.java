@@ -1,4 +1,5 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,14 +32,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
-import de.sub.goobi.persistence.managers.TemplateManager;
 
-public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
-	private static final long serialVersionUID = -5981263038302791497L;
-	private Integer templateId;
-	private Vorlage vorlage;
+public class ErrorProperty implements Serializable, IGoobiProperty {
+	private static final long serialVersionUID = -443521810121056341L;
+	private Step schritt;
 	private Integer id;
 	private String titel;
 	private String wert;
@@ -48,7 +49,7 @@ public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 	private Date creationDate;
 	private Integer container;
 
-	public Vorlageeigenschaft() {
+	public ErrorProperty() {
 		this.istObligatorisch = false;
 		this.datentyp = PropertyType.String.getId();
 		this.creationDate = new Date();
@@ -177,18 +178,16 @@ public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 		this.valueList = valueList;
 	}
 
-	public void setVorlage(Vorlage vorlage) {
-		this.vorlage = vorlage;
+
+	public Step getSchritt() {
+		return this.schritt;
 	}
 
-	public Vorlage getVorlage() {
-	    if (vorlage == null) {
-	        vorlage = TemplateManager.getTemplateForTemplateID(templateId);
-	    }
-		return this.vorlage;
+	public void setSchritt(Step schritt) {
+		this.schritt = schritt;
 	}
 
-	
+
 	
 	@Override
 	public Integer getContainer() {
@@ -205,7 +204,7 @@ public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 		}
 		this.container = order;
 	}
-	
+
 	@Override
 	public String getNormalizedTitle() {
 		return this.titel.replace(" ", "_").trim();
@@ -215,12 +214,4 @@ public class Vorlageeigenschaft implements Serializable, IGoobiProperty {
 	public String getNormalizedValue() {
 		return this.wert.replace(" ", "_").trim();
 	}
-
-    public Integer getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(Integer templateId) {
-        this.templateId = templateId;
-    }
 }

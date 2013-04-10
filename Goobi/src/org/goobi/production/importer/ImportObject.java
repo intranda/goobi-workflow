@@ -30,11 +30,11 @@ package org.goobi.production.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Templateproperty;
 import org.goobi.production.enums.ImportReturnValue;
 
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
 
 public class ImportObject {
 
@@ -51,8 +51,8 @@ public class ImportObject {
 	
 	// additional information
 	private List<Processproperty> processProperties = new ArrayList<Processproperty>();
-	private List<Werkstueckeigenschaft> workProperties = new ArrayList<Werkstueckeigenschaft>();
-	private List<Vorlageeigenschaft> templateProperties = new ArrayList<Vorlageeigenschaft>();
+	private List<Masterpieceproperty> workProperties = new ArrayList<Masterpieceproperty>();
+	private List<Templateproperty> templateProperties = new ArrayList<Templateproperty>();
 	
 	
 	
@@ -94,16 +94,16 @@ public class ImportObject {
 	public void setProcessProperties(List<Processproperty> processProperties) {
 		this.processProperties = processProperties;
 	}
-	public List<Werkstueckeigenschaft> getWorkProperties() {
+	public List<Masterpieceproperty> getWorkProperties() {
 		return this.workProperties;
 	}
-	public void setWorkProperties(List<Werkstueckeigenschaft> workProperties) {
+	public void setWorkProperties(List<Masterpieceproperty> workProperties) {
 		this.workProperties = workProperties;
 	}
-	public List<Vorlageeigenschaft> getTemplateProperties() {
+	public List<Templateproperty> getTemplateProperties() {
 		return this.templateProperties;
 	}
-	public void setTemplateProperties(List<Vorlageeigenschaft> templateProperties) {
+	public void setTemplateProperties(List<Templateproperty> templateProperties) {
 		this.templateProperties = templateProperties;
 	}
 	public Integer getBatchId() {

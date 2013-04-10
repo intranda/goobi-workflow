@@ -9,9 +9,9 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Project;
+import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 
-import de.sub.goobi.beans.ProjectFileGroup;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 

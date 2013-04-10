@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<!--  
+package org.goobi.beans;
+/**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
@@ -25,27 +25,84 @@
  * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
- -->
-<!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+ */
+import java.io.Serializable;
 
-<hibernate-mapping>
 
-	<class name="de.sub.goobi.beans.Vorlage" table="vorlagen">
-		<id name="id" column="VorlagenID" type="integer">
-			<generator class="native"/>
-		</id>
-		
-		<property name="herkunft" column="Herkunft" type="string"/>
-		
-<!-- 		<many-to-one name="prozess" class="de.sub.goobi.beans.Prozess" column="ProzesseID"/> -->
-		
-		<set name="eigenschaften" cascade="all,delete-orphan" inverse="true" order-by="titel">
-			<key column="vorlagenID"/>
-			<one-to-many class="de.sub.goobi.beans.Vorlageeigenschaft"/>
-		</set>
-		
-	</class>
 
-</hibernate-mapping>
+public class ProjectFileGroup implements Serializable {
+	private static final long serialVersionUID = -5506252462891480484L;
+	private Integer id;
+	private String name;
+	private String path;
+	private String mimetype; // optional
+	private String suffix; // optional
+	private String folder;
+
+	private Project project;
+
+	/*#####################################################
+	 #####################################################
+	 ##																															 
+	 ##				Getter und Setter									
+	 ##                                                   															    
+	 #####################################################
+	 ####################################################*/
+
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Project getProject() {
+		return this.project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	public String getPath() {
+		return this.path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getMimetype() {
+		return this.mimetype;
+	}
+
+	public void setMimetype(String mimetype) {
+		this.mimetype = mimetype;
+	}
+
+	public String getSuffix() {
+		return this.suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+
+	public String getFolder() {
+		return this.folder;
+	}
+
+	public void setFolder(String folder) {
+		this.folder = folder;
+	}
+
+}

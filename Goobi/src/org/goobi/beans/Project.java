@@ -34,7 +34,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.StepInformation;
 
-import de.sub.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.enums.MetadataFormat;

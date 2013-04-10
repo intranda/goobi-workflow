@@ -68,14 +68,15 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
+
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.forms.AdditionalField;
@@ -443,8 +444,8 @@ public class CopyProcess extends ProzesskopieForm {
 	    Process tempProzess = ProcessManager.getProcessById(this.auswahl);
 		if (tempProzess.getWerkstueckeSize() > 0) {
 			/* erstes Werkstück durchlaufen */
-			Werkstueck werk = tempProzess.getWerkstueckeList().get(0);
-			for (Werkstueckeigenschaft eig : werk.getEigenschaften()) {
+			Masterpiece werk = tempProzess.getWerkstueckeList().get(0);
+			for (Masterpieceproperty eig : werk.getEigenschaften()) {
 				for (AdditionalField field : this.additionalFields) {
 					if (field.getTitel().equals(eig.getTitel())) {
 						field.setWert(eig.getWert());
@@ -455,8 +456,8 @@ public class CopyProcess extends ProzesskopieForm {
 
 		if (tempProzess.getVorlagenSize() > 0) {
 			/* erste Vorlage durchlaufen */
-			Vorlage vor = tempProzess.getVorlagenList().get(0);
-			for (Vorlageeigenschaft eig : vor.getEigenschaften()) {
+			Template vor = tempProzess.getVorlagenList().get(0);
+			for (Templateproperty eig : vor.getEigenschaften()) {
 				for (AdditionalField field : this.additionalFields) {
 					if (field.getTitel().equals(eig.getTitel())) {
 						field.setWert(eig.getWert());
@@ -975,13 +976,13 @@ public class CopyProcess extends ProzesskopieForm {
 		 * -------------------------------- Vorlageneigenschaften initialisieren --------------------------------
 		 */
 
-		Vorlage vor;
+		Template vor;
 		if (this.prozessKopie.getVorlagenSize() > 0) {
 			vor = this.prozessKopie.getVorlagenList().get(0);
 		} else {
-			vor = new Vorlage();
+			vor = new Template();
 			vor.setProzess(this.prozessKopie);
-			List<Vorlage> vorlagen = new ArrayList<Vorlage>();
+			List<Template> vorlagen = new ArrayList<Template>();
 			vorlagen.add(vor);
 			this.prozessKopie.setVorlagen(vorlagen);
 		}
@@ -989,13 +990,13 @@ public class CopyProcess extends ProzesskopieForm {
 		/*
 		 * -------------------------------- Werkstückeigenschaften initialisieren --------------------------------
 		 */
-		Werkstueck werk;
+		Masterpiece werk;
 		if (this.prozessKopie.getWerkstueckeSize() > 0) {
 			werk = this.prozessKopie.getWerkstueckeList().get(0);
 		} else {
-			werk = new Werkstueck();
+			werk = new Masterpiece();
 			werk.setProzess(this.prozessKopie);
-			List<Werkstueck> werkstuecke = new ArrayList<Werkstueck>();
+			List<Masterpiece> werkstuecke = new ArrayList<Masterpiece>();
 			werkstuecke.add(werk);
 			this.prozessKopie.setWerkstuecke(werkstuecke);
 		}
@@ -1033,11 +1034,11 @@ public class CopyProcess extends ProzesskopieForm {
 			for (Processproperty pe : io.getProcessProperties()) {
 				addProperty(this.prozessKopie, pe);
 			}
-			for (Werkstueckeigenschaft we : io.getWorkProperties()) {
+			for (Masterpieceproperty we : io.getWorkProperties()) {
 				addProperty(werk, we);
 			}
 
-			for (Vorlageeigenschaft ve : io.getTemplateProperties()) {
+			for (Templateproperty ve : io.getTemplateProperties()) {
 				addProperty(vor, ve);
 			}
 			bh.EigenschaftHinzufuegen(prozessKopie, "Template", prozessVorlage.getTitel());
@@ -1497,25 +1498,25 @@ public class CopyProcess extends ProzesskopieForm {
 		}
 	}
 
-	private void addProperty(Vorlage inVorlage, Vorlageeigenschaft property) {
+	private void addProperty(Template inVorlage, Templateproperty property) {
 		if (property.getContainer() == 0) {
-			for (Vorlageeigenschaft ve : inVorlage.getEigenschaftenList()) {
+			for (Templateproperty ve : inVorlage.getEigenschaftenList()) {
 				if (ve.getTitel().equals(property.getTitel()) && ve.getContainer() > 0) {
 					ve.setWert(property.getWert());
 					return;
 				}
 			}
 		}
-		Vorlageeigenschaft eig = new Vorlageeigenschaft();
+		Templateproperty eig = new Templateproperty();
 		eig.setTitel(property.getTitel());
 		eig.setWert(property.getWert());
 		eig.setAuswahl(property.getAuswahl());
 		eig.setContainer(property.getContainer());
 		eig.setType(property.getType());
 		eig.setVorlage(inVorlage);
-		List<Vorlageeigenschaft> eigenschaften = inVorlage.getEigenschaften();
+		List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new ArrayList<Vorlageeigenschaft>();
+			eigenschaften = new ArrayList<Templateproperty>();
 		}
 		eigenschaften.add(eig);
 	}
@@ -1543,25 +1544,25 @@ public class CopyProcess extends ProzesskopieForm {
 		eigenschaften.add(eig);
 	}
 
-	private void addProperty(Werkstueck inWerk, Werkstueckeigenschaft property) {
+	private void addProperty(Masterpiece inWerk, Masterpieceproperty property) {
 		if (property.getContainer() == 0) {
-			for (Werkstueckeigenschaft we : inWerk.getEigenschaftenList()) {
+			for (Masterpieceproperty we : inWerk.getEigenschaftenList()) {
 				if (we.getTitel().equals(property.getTitel()) && we.getContainer() > 0) {
 					we.setWert(property.getWert());
 					return;
 				}
 			}
 		}
-		Werkstueckeigenschaft eig = new Werkstueckeigenschaft();
+		Masterpieceproperty eig = new Masterpieceproperty();
 		eig.setTitel(property.getTitel());
 		eig.setWert(property.getWert());
 		eig.setAuswahl(property.getAuswahl());
 		eig.setContainer(property.getContainer());
 		eig.setType(property.getType());
 		eig.setWerkstueck(inWerk);
-		Set<Werkstueckeigenschaft> eigenschaften = inWerk.getEigenschaften();
+		List<Masterpieceproperty> eigenschaften = inWerk.getEigenschaften();
 		if (eigenschaften == null) {
-			eigenschaften = new HashSet<Werkstueckeigenschaft>();
+			eigenschaften = new ArrayList<Masterpieceproperty>();
 		}
 		eigenschaften.add(eig);
 	}

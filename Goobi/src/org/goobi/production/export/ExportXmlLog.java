@@ -54,15 +54,15 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformException;
 import org.jdom.transform.XSLTransformer;
 
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 
-import de.sub.goobi.beans.Schritteigenschaft;
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
+//import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -236,27 +236,27 @@ public class ExportXmlLog implements IProcessDataExport {
 			editType.setText(s.getEditTypeEnum().getTitle());
 			stepElement.addContent(editType);
 
-			ArrayList<Element> stepProperties = new ArrayList<Element>();
-			for (Schritteigenschaft prop : s.getEigenschaftenList()) {
-				Element property = new Element("property", xmlns);
-				property.setAttribute("propertyIdentifier", prop.getTitel());
-				if (prop.getWert() != null) {
-					property.setAttribute("value", replacer(prop.getWert()));
-				} else {
-					property.setAttribute("value", "");
-				}
-			
-				Element label = new Element("label", xmlns);
-				
-				label.setText(prop.getTitel());
-				property.addContent(label);
-				stepProperties.add(property);
-			}
-			if (stepProperties.size() != 0) {
-				Element properties = new Element("properties", xmlns);
-				properties.addContent(stepProperties);
-				stepElement.addContent(properties);
-			}
+//			ArrayList<Element> stepProperties = new ArrayList<Element>();
+//			for (Schritteigenschaft prop : s.getEigenschaftenList()) {
+//				Element property = new Element("property", xmlns);
+//				property.setAttribute("propertyIdentifier", prop.getTitel());
+//				if (prop.getWert() != null) {
+//					property.setAttribute("value", replacer(prop.getWert()));
+//				} else {
+//					property.setAttribute("value", "");
+//				}
+//			
+//				Element label = new Element("label", xmlns);
+//				
+//				label.setText(prop.getTitel());
+//				property.addContent(label);
+//				stepProperties.add(property);
+//			}
+//			if (stepProperties.size() != 0) {
+//				Element properties = new Element("properties", xmlns);
+//				properties.addContent(stepProperties);
+//				stepElement.addContent(properties);
+//			}
 
 			stepElements.add(stepElement);
 		}
@@ -268,12 +268,12 @@ public class ExportXmlLog implements IProcessDataExport {
 		// template information
 		Element templates = new Element("originals", xmlns);
 		ArrayList<Element> templateElements = new ArrayList<Element>();
-		for (Vorlage v : process.getVorlagenList()) {
+		for (Template v : process.getVorlagenList()) {
 			Element template = new Element("original", xmlns);
 			template.setAttribute("originalID", String.valueOf(v.getId()));
 
 			ArrayList<Element> templateProperties = new ArrayList<Element>();
-			for (Vorlageeigenschaft prop : v.getEigenschaftenList()) {
+			for (Templateproperty prop : v.getEigenschaftenList()) {
 				Element property = new Element("property", xmlns);
 				property.setAttribute("propertyIdentifier", prop.getTitel());
 				if (prop.getWert() != null) {
@@ -315,12 +315,12 @@ public class ExportXmlLog implements IProcessDataExport {
 		// digital document information
 		Element digdoc = new Element("digitalDocuments", xmlns);
 		ArrayList<Element> docElements = new ArrayList<Element>();
-		for (Werkstueck w : process.getWerkstueckeList()) {
+		for (Masterpiece w : process.getWerkstueckeList()) {
 			Element dd = new Element("digitalDocument", xmlns);
 			dd.setAttribute("digitalDocumentID", String.valueOf(w.getId()));
 
 			ArrayList<Element> docProperties = new ArrayList<Element>();
-			for (Werkstueckeigenschaft prop : w.getEigenschaftenList()) {
+			for (Masterpieceproperty prop : w.getEigenschaftenList()) {
 				Element property = new Element("property", xmlns);
 				property.setAttribute("propertyIdentifier", prop.getTitel());
 				if (prop.getWert() != null) {

@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Template;
 
-import de.sub.goobi.beans.Vorlage;
 
 public class TemplateManager {
     private static final Logger logger = Logger.getLogger(TemplateManager.class);
 
-    public static List<Vorlage> getTemplatesForProcess(int processId) {
-        List<Vorlage> templates = new ArrayList<Vorlage>();
+    public static List<Template> getTemplatesForProcess(int processId) {
+        List<Template> templates = new ArrayList<Template>();
         try {
             templates = TemplateMysqlHelper.getTemplatesForProcess(processId);
         } catch (SQLException e) {
@@ -22,7 +22,7 @@ public class TemplateManager {
         return templates;
     }
 
-    public static Vorlage getTemplateForTemplateID(int templateId) {
+    public static Template getTemplateForTemplateID(int templateId) {
         try {
             return TemplateMysqlHelper.getTemplateForTemplateID(templateId);
         } catch (SQLException e) {
@@ -30,8 +30,7 @@ public class TemplateManager {
         }
         return null;
     }
-    
-    
+
     public static int countTemplates() {
         try {
             return TemplateMysqlHelper.getCountOfTemplates();
@@ -41,15 +40,22 @@ public class TemplateManager {
         return 0;
     }
 
-    
-    public static void saveTemplate(Vorlage template) {
-        
+    public static void saveTemplate(Template template) {
+
         try {
             TemplateMysqlHelper.saveTemplate(template);
         } catch (SQLException e) {
             logger.error(e);
         }
-        
     }
     
+    public static void deleteTemplate(Template template) {
+        try {
+            TemplateMysqlHelper.deleteTemplate(template);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        
+    }
+
 }

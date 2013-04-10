@@ -44,13 +44,14 @@ import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
+
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 
-import de.sub.goobi.beans.Vorlage;
-import de.sub.goobi.beans.Vorlageeigenschaft;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -218,8 +219,8 @@ public class VariableReplacer {
 
 			for (MatchResult r : findRegexMatches("\\(product\\.([\\w.-]*)\\)", inString)) {
 				String propertyTitle = r.group(1);
-				for (Werkstueck ws : this.process.getWerkstueckeList()) {
-					for (Werkstueckeigenschaft we : ws.getEigenschaftenList()) {
+				for (Masterpiece ws : this.process.getWerkstueckeList()) {
+					for (Masterpieceproperty we : ws.getEigenschaftenList()) {
 						if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
 							inString = inString.replace(r.group(), we.getWert());
 							break;
@@ -232,8 +233,8 @@ public class VariableReplacer {
 
 			for (MatchResult r : findRegexMatches("\\(template\\.([\\w.-]*)\\)", inString)) {
 				String propertyTitle = r.group(1);
-				for (Vorlage v : this.process.getVorlagenList()) {
-					for (Vorlageeigenschaft ve : v.getEigenschaftenList()) {
+				for (Template v : this.process.getVorlagenList()) {
+					for (Templateproperty ve : v.getEigenschaftenList()) {
 						if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
 							inString = inString.replace(r.group(), ve.getWert());
 							break;

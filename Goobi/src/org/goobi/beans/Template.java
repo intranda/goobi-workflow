@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -31,22 +31,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.goobi.beans.Process;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-public class Vorlage implements Serializable {
+public class Template implements Serializable {
     private static final long serialVersionUID = 1736135433162833277L;
     private Integer id;
     private String herkunft;
     private Process prozess;
     private Integer processId;
-    private List<Vorlageeigenschaft> eigenschaften;
+    private List<Templateproperty> eigenschaften;
 
     private boolean panelAusgeklappt = true;
 
-    public Vorlage() {
-        this.eigenschaften = new ArrayList<Vorlageeigenschaft>();
+    public Template() {
+        this.eigenschaften = new ArrayList<Templateproperty>();
     }
 
     /*
@@ -63,7 +62,7 @@ public class Vorlage implements Serializable {
     }
 
     public Process getProzess() {
-        if (prozess == null) {
+        if (prozess == null && processId != null) {
             prozess = ProcessManager.getProcessById(processId);
         }
         return this.prozess;
@@ -81,11 +80,11 @@ public class Vorlage implements Serializable {
         this.panelAusgeklappt = panelAusgeklappt;
     }
 
-    public List<Vorlageeigenschaft> getEigenschaften() {
+    public List<Templateproperty> getEigenschaften() {
         return this.eigenschaften;
     }
 
-    public void setEigenschaften(List<Vorlageeigenschaft> eigenschaften) {
+    public void setEigenschaften(List<Templateproperty> eigenschaften) {
         this.eigenschaften = eigenschaften;
     }
 
@@ -111,12 +110,12 @@ public class Vorlage implements Serializable {
         }
     }
 
-    public List<Vorlageeigenschaft> getEigenschaftenList() {
+    public List<Templateproperty> getEigenschaftenList() {
 
         if (this.eigenschaften == null) {
-            return new ArrayList<Vorlageeigenschaft>();
+            return new ArrayList<Templateproperty>();
         }
-        return new ArrayList<Vorlageeigenschaft>(this.eigenschaften);
+        return new ArrayList<Templateproperty>(this.eigenschaften);
     }
 
     public Integer getProcessId() {

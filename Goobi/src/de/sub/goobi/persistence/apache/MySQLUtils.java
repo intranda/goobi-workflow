@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.goobi.beans.ProjectFileGroup;
 
-import de.sub.goobi.beans.ProjectFileGroup;
 
 public class MySQLUtils {
 

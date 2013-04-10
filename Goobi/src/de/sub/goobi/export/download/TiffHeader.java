@@ -36,9 +36,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import de.sub.goobi.beans.Werkstueck;
-import de.sub.goobi.beans.Werkstueckeigenschaft;
 
 
 /**
@@ -69,9 +69,9 @@ public class TiffHeader {
 	 */
 	public TiffHeader(Process inProzess) {
 		if (inProzess.getWerkstueckeSize() > 0) {
-			Werkstueck myWerkstueck = inProzess.getWerkstueckeList().get(0);
+			Masterpiece myWerkstueck = inProzess.getWerkstueckeList().get(0);
 			if (myWerkstueck.getEigenschaftenSize() > 0) {
-				for (Werkstueckeigenschaft eig : myWerkstueck.getEigenschaftenList()) {
+				for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
 					// Werkstueckeigenschaft eig = (Werkstueckeigenschaft) iter.next();
 
 					if (eig.getTitel().equals("TifHeaderDocumentname")) {

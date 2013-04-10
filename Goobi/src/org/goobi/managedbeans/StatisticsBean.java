@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -35,12 +35,12 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 import org.apache.log4j.Logger;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
@@ -49,8 +49,8 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name = "StatistikForm")
 @ApplicationScoped
-public class StatistikForm {
-    private static final Logger myLogger = Logger.getLogger(StatistikForm.class);
+public class StatisticsBean {
+    private static final Logger myLogger = Logger.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;
 
@@ -134,10 +134,7 @@ public class StatistikForm {
      * @throws DAOException
      */
     public Long getAnzahlWerkstuecke() {
-        //		Session session = Helper.getHibernateSession();
-        //		return (Long) session.createQuery("select count(*) " + "from Werkstueck").uniqueResult();
-        // TODO
-        return 0l;
+        return (long) MasterpieceManager.countMasterpieces();
     }
 
     /**

@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -34,9 +34,10 @@ import java.util.List;
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 
-public class Werkstueckeigenschaft implements Serializable, IGoobiProperty {
+public class Masterpieceproperty implements Serializable, IGoobiProperty {
 	private static final long serialVersionUID = -88407008893258729L;
-	private Werkstueck werkstueck;
+	private Integer masterpieceId;
+	private Masterpiece werkstueck;
 	private Integer id;
 	private String titel;
 	private String wert;
@@ -46,7 +47,7 @@ public class Werkstueckeigenschaft implements Serializable, IGoobiProperty {
 	private Date creationDate;
 	private Integer container;
 
-	public Werkstueckeigenschaft() {
+	public Masterpieceproperty() {
 		this.istObligatorisch = false;
 		this.datentyp = PropertyType.String.getId();
 		this.creationDate = new Date();
@@ -175,11 +176,14 @@ public class Werkstueckeigenschaft implements Serializable, IGoobiProperty {
 		this.valueList = valueList;
 	}
 
-	public Werkstueck getWerkstueck() {
+	public Masterpiece getWerkstueck() {
+	    if (werkstueck == null && masterpieceId != null) {
+//	        werkstueck = //TODO
+	    }
 		return this.werkstueck;
 	}
 
-	public void setWerkstueck(Werkstueck werkstueck) {
+	public void setWerkstueck(Masterpiece werkstueck) {
 		this.werkstueck = werkstueck;
 	}
 
@@ -211,4 +215,14 @@ public class Werkstueckeigenschaft implements Serializable, IGoobiProperty {
 	public String getNormalizedValue() {
 		return this.wert.replace(" ", "_").trim();
 	}
+
+    public Integer getMasterpieceId() {
+        return masterpieceId;
+    }
+
+    public void setMasterpieceId(Integer masterpieceId) {
+        this.masterpieceId = masterpieceId;
+    }
+
+  
 }

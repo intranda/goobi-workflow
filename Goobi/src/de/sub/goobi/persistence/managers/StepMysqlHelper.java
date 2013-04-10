@@ -11,8 +11,10 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Step;
 
+import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.apache.MySQLHelper;
@@ -150,8 +152,45 @@ class StepMysqlHelper {
         s.setBatchStep(rs.getBoolean("batchStep"));
         s.setStepPlugin(rs.getString("stepPlugin"));
         s.setValidationPlugin(rs.getString("validationPlugin"));
+        // load error properties
+        List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
+        if (!stepList.isEmpty()) {
+            for (ErrorProperty property : stepList) {
+                property.setSchritt(s);
+            }
+            s.setEigenschaften(stepList);
+        }
         return s;
     }
+
+    public static ResultSetHandler<List<ErrorProperty>> resultSetToErrorPropertyListHandler = new ResultSetHandler<List<ErrorProperty>>() {
+
+        @Override
+        public List<ErrorProperty> handle(ResultSet rs) throws SQLException {
+            List<ErrorProperty> properties = new ArrayList<ErrorProperty>();
+            while (rs.next()) {
+                int id = rs.getInt("schritteeigenschaftenID");
+                String title = rs.getString("Titel");
+                String value = rs.getString("Wert");
+                Boolean mandatory = rs.getBoolean("IstObligatorisch");
+                int type = rs.getInt("DatentypenID");
+                String choice = rs.getString("Auswahl");
+                Date creationDate = rs.getDate("creationDate");
+                int container = rs.getInt("container");
+                ErrorProperty ve = new ErrorProperty();
+                ve.setId(id);
+                ve.setTitel(title);
+                ve.setWert(value);
+                ve.setIstObligatorisch(mandatory);
+                ve.setType(PropertyType.getById(type));
+                ve.setAuswahl(choice);
+                ve.setCreationDate(creationDate);
+                ve.setContainer(container);
+                properties.add(ve);
+            }
+            return properties;
+        }
+    };
 
     public static Step getStepById(int id) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
@@ -203,6 +242,61 @@ class StepMysqlHelper {
             updateStep(o);
         }
 
+        if (o.getEigenschaftenSize() > 0) {
+            for (ErrorProperty property : o.getEigenschaften()) {
+                saveErrorProperty(property);
+            }
+        }
+
+    }
+
+    private static void saveErrorProperty(ErrorProperty property) throws SQLException {
+        if (property.getId() == null) {
+            String sql =
+                    "INSERT INTO schritteeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, schritteID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            Object[] param =
+                    { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
+                            property.getSchritt().getId(),
+                            property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                QueryRunner run = new QueryRunner();
+                logger.debug(sql.toString());
+                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, param);
+                if (id != null) {
+                    property.setId(id);
+                }
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+
+        } else {
+            String sql =
+                    "UPDATE schritteeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, schritteID = ?, creationDate = ?, container = ? WHERE schritteeigenschaftenID = "
+                            + property.getId();
+            Object[] param =
+                    { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
+                            property.getSchritt().getId(),
+                            property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                QueryRunner run = new QueryRunner();
+                run.update(connection, sql, param);
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    private static List<ErrorProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
+        String sql = "SELECT * FROM schritteeigenschaften WHERE schritteID = " + stepId;
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql, resultSetToErrorPropertyListHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
     }
 
     private static void insertStep(Step o) throws SQLException {
@@ -223,13 +317,6 @@ class StepMysqlHelper {
 
     private static Object[] generateParameter(Step o, boolean includeID) {
         if (includeID) {
-
-            //                    + ", , , , , "
-            //                    + ", , , , , , , "
-            //                    + ", , , , , , "
-            //                    + ", , , , )
-
-            //            [76, Bibliographic import, 0, 1, 3, 2011-12-09 00:00:00.0, null, null, 0, false, false, false, false, false, false, false, false, false, false, null, false, null, 1, 14, 3, false, null, null, null, null, null, null, null, null, null, false, null, null],
             Object[] param =
                     {
                             o.getId(), //SchritteID

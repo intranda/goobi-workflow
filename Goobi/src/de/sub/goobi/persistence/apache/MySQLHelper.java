@@ -36,8 +36,8 @@ import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
+import org.goobi.beans.ProjectFileGroup;
 
-import de.sub.goobi.beans.ProjectFileGroup;
 
 public class MySQLHelper {
 
