@@ -126,6 +126,13 @@ class ProjectMysqlHelper {
 				sql.append(") VALUES (");
 				sql.append(propValues.toString());
 				sql.append(")");
+				
+				 logger.debug(sql.toString());
+	                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+	                if (id != null) {
+	                    ro.setId(id);
+	                }
+				
 			} else {
 				sql.append("UPDATE projekte SET ");
 				sql.append("Titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "',");
@@ -158,9 +165,9 @@ class ProjectMysqlHelper {
 				
 				sql.append(" WHERE ProjekteID = " + ro.getId()
 						+ ";");
+				logger.debug(sql.toString());
+				run.update(connection, sql.toString());
 			}
-			logger.debug(sql.toString());
-			run.update(connection, sql.toString());
 			// TODO FileGroups speichern
 		} finally {
 			MySQLHelper.closeConnection(connection);

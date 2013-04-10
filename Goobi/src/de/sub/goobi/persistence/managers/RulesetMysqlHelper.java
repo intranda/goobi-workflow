@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
 
@@ -87,21 +88,27 @@ class RulesetMysqlHelper {
 
 			if (ro.getId() == null) {
 				String propNames = "Titel, Datei, orderMetadataByRuleset";
-				String propValues = "'" + ro.getTitel() + "','" + ro.getDatei() + "'," + ro.isOrderMetadataByRuleset() + "";
+				String propValues = "'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "','" + StringEscapeUtils.escapeSql(ro.getDatei()) + "'," + ro.isOrderMetadataByRuleset() + "";
 				sql.append("INSERT INTO metadatenkonfigurationen (");
 				sql.append(propNames);
 				sql.append(") VALUES (");
 				sql.append(propValues);
 				sql.append(")");
+				
+                logger.debug(sql.toString());
+                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                if (id != null) {
+                    ro.setId(id);
+                }
 			} else {
 				sql.append("UPDATE metadatenkonfigurationen SET ");
-				sql.append("Titel = '" + ro.getTitel() + "', ");
-				sql.append("Datei = '" + ro.getDatei() + "', ");
+				sql.append("Titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "', ");
+				sql.append("Datei = '" + StringEscapeUtils.escapeSql(ro.getDatei()) + "', ");
 				sql.append("orderMetadataByRuleset = " + ro.isOrderMetadataByRuleset() + " ");
 				sql.append(" WHERE MetadatenKonfigurationID = " + ro.getId() + ";");
+				logger.debug(sql.toString());
+				run.update(connection, sql.toString());
 			}
-			logger.debug(sql.toString());
-			run.update(connection, sql.toString());
 		} finally {
 			MySQLHelper.closeConnection(connection);
 		}

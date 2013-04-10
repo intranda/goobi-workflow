@@ -79,14 +79,19 @@ class DocketMysqlHelper {
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
+                logger.debug(sql.toString());
+                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                if (id != null) {
+                    ro.setId(id);
+                }              
             } else {
                 sql.append("UPDATE dockets SET ");
                 sql.append("name = '" + ro.getName() + "', ");
                 sql.append("file = '" + ro.getFile() + "' ");
                 sql.append(" WHERE docketID = " + ro.getId() + ";");
+                logger.debug(sql.toString());
+                run.update(connection, sql.toString());
             }
-            logger.debug(sql.toString());
-            run.update(connection, sql.toString());
         } finally {
             MySQLHelper.closeConnection(connection);
         }

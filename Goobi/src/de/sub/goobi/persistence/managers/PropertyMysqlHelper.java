@@ -168,7 +168,11 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, param);
+            logger.debug(sql.toString());
+            Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, param);
+            if (id != null) {
+                pe.setId(id);
+            }
         } finally {
             MySQLHelper.closeConnection(connection);
         }

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -83,48 +84,55 @@ class UserMysqlHelper {
                 String propNames =
                         "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, confVorgangsdatumAnzeigen, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin";
                 StringBuilder propValues = new StringBuilder();
-                propValues.append("'" + ro.getVorname() + "',");
-                propValues.append("'" + ro.getNachname() + "',");
-                propValues.append("'" + ro.getLogin() + "',");
-                propValues.append("'" + ro.getPasswort() + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getVorname()) + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getNachname()) + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getLogin())+ "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getPasswort()) + "',");
                 propValues.append(ro.isIstAktiv() + ",");
-                propValues.append("'" + ro.getStandort() + "',");
-                propValues.append("'" + ro.getMetadatenSprache() + "',");
-                propValues.append("'" + ro.getCss() + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql( ro.getStandort()) + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetadatenSprache()) + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getCss()) + "',");
                 propValues.append(ro.isMitMassendownload() + ",");
                 propValues.append(ro.isConfVorgangsdatumAnzeigen() + ",");
                 propValues.append(ro.getTabellengroesse() + ",");
                 propValues.append(ro.getSessiontimeout() + ",");
                 propValues.append(ro.getLdapGruppe().getId() + ",");
                 propValues.append(visible + ",");
-                propValues.append("'" + ro.getLdaplogin() + "'");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getLdaplogin()) + "'");
 
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
+                
+                logger.debug(sql.toString());
+                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                if (id != null) {
+                    ro.setId(id);
+                }
+                
             } else {
                 sql.append("UPDATE benutzer SET ");
-                sql.append("Vorname = '" + ro.getVorname() + "',");
-                sql.append("Nachname = '" + ro.getNachname() + "',");
-                sql.append("login = '" + ro.getLogin() + "',");
-                sql.append("passwort = '" + ro.getPasswort() + "',");
+                sql.append("Vorname = '" + StringEscapeUtils.escapeSql(ro.getVorname()) + "',");
+                sql.append("Nachname = '" + StringEscapeUtils.escapeSql(ro.getNachname()) + "',");
+                sql.append("login = '" + StringEscapeUtils.escapeSql(ro.getLogin()) + "',");
+                sql.append("passwort = '" + StringEscapeUtils.escapeSql(ro.getPasswort())+ "',");
                 sql.append("IstAktiv = " + ro.isIstAktiv() + ",");
-                sql.append("Standort = '" + ro.getStandort() + "',");
-                sql.append("metadatensprache = '" + ro.getMetadatenSprache() + "',");
-                sql.append("css = '" + ro.getCss() + "',");
+                sql.append("Standort = '" + StringEscapeUtils.escapeSql(ro.getStandort()) + "',");
+                sql.append("metadatensprache = '" + StringEscapeUtils.escapeSql(ro.getMetadatenSprache()) + "',");
+                sql.append("css = '" + StringEscapeUtils.escapeSql(ro.getCss()) + "',");
                 sql.append("mitMassendownload = " + ro.isMitMassendownload() + ",");
                 sql.append("confVorgangsdatumAnzeigen = " + ro.isConfVorgangsdatumAnzeigen() + ",");
                 sql.append("Tabellengroesse = " + ro.getTabellengroesse() + ",");
                 sql.append("sessiontimeout = " + ro.getSessiontimeout() + ",");
                 sql.append("ldapgruppenID = " + ro.getLdapGruppe().getId() + ",");
                 sql.append("isVisible = " + visible + ",");
-                sql.append("ldaplogin = '" + ro.getLdaplogin() + "'");
+                sql.append("ldaplogin = '" + StringEscapeUtils.escapeSql(ro.getLdaplogin()) + "'");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
+                logger.debug(sql.toString());
+                run.update(connection, sql.toString());
             }
-            logger.debug(sql.toString());
-            run.update(connection, sql.toString());
         } finally {
             MySQLHelper.closeConnection(connection);
         }

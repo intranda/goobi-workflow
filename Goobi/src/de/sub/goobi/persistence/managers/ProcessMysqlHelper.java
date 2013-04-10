@@ -186,7 +186,11 @@ class ProcessMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, param);
+            logger.debug(sql.toString());
+            Integer id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
+            if (id != null) {
+                o.setId(id);
+            }
         } finally {
             MySQLHelper.closeConnection(connection);
         }
