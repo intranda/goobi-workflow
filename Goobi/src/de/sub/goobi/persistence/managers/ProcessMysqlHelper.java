@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -60,8 +61,9 @@ class ProcessMysqlHelper {
                 PropertyManager.saveProcessProperty(pe);
             }
 
-            // TODO Werkstuecke speichern
-          
+            for (Masterpiece object : o.getWerkstuecke()) {
+                MasterpieceManager.saveMasterpiece(object);
+            }
             
             List<Template> templates = o.getVorlagen();
             for (Template template : templates) {
@@ -76,6 +78,24 @@ class ProcessMysqlHelper {
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
+            
+            // delete properties
+            
+            for (Processproperty object : o.getEigenschaften()) {
+                PropertyManager.deleteProcessProperty(object);
+            }
+            // delete templates
+            
+            for (Template object : o.getVorlagen()) {
+                TemplateManager.deleteTemplate(object);
+            }
+            
+            // delete masterpieces
+            for (Masterpiece object : o.getWerkstuecke()) {
+                MasterpieceManager.deleteMasterpiece(object);
+            }
+            
+            // delete process
             String sql = "DELETE FROM prozesse WHERE ProzesseID = ?";
             Object[] param = { o.getId() };
             Connection connection = MySQLHelper.getInstance().getConnection();
@@ -442,6 +462,7 @@ class ProcessMysqlHelper {
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static List runSQL(String sql) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         List answer = new ArrayList();

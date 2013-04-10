@@ -119,6 +119,9 @@ class MasterpieceMysqlHelper {
 
     public static void deleteMasterpiece(Masterpiece object) throws SQLException {
         if (object.getId() != null) {
+            for (Masterpieceproperty property : object.getEigenschaften()) {
+                PropertyManager.deleteMasterpieceProperty(property);
+            }
             Connection connection = MySQLHelper.getInstance().getConnection();
             try {
                 QueryRunner run = new QueryRunner();
@@ -128,6 +131,5 @@ class MasterpieceMysqlHelper {
                 MySQLHelper.closeConnection(connection);
             }
         }
-
     }
 }

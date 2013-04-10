@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
@@ -56,15 +57,15 @@ class TemplateMysqlHelper {
         public Template handle(ResultSet rs) throws SQLException {
 
             if (rs.next()) {
-//                int templateId = rs.getInt("VorlagenID");
+                //                int templateId = rs.getInt("VorlagenID");
                 String herkunft = rs.getString("Herkunft");
                 int processId = rs.getInt("ProzesseID");
                 Template template = new Template();
-//                template.setId(templateId);
+                //                template.setId(templateId);
                 template.setHerkunft(herkunft);
                 template.setProcessId(processId);
-//                List<Vorlageeigenschaft> properties = PropertyManager.getTemplateProperties(templateId);
-//                template.setEigenschaften(properties);
+                //                List<Vorlageeigenschaft> properties = PropertyManager.getTemplateProperties(templateId);
+                //                template.setEigenschaften(properties);
                 return template;
             }
             return null;
@@ -102,7 +103,7 @@ class TemplateMysqlHelper {
                 sql = "INSERT INTO vorlagen ( Herkunft, ProzesseID ) VALUES ( ?, ?)";
                 Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
 
-                int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler , param);
+                int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
                 template.setId(id);
             } else {
                 sql = "UPDATE vorlagen set Herkunft = ?, ProzesseID = ? WHERE VorlagenID =" + template.getId();
@@ -123,6 +124,9 @@ class TemplateMysqlHelper {
 
     public static void deleteTemplate(Template template) throws SQLException {
         if (template.getId() != null) {
+            for (Templateproperty property : template.getEigenschaften()) {
+                PropertyManager.deleteTemplateProperty(property);
+            }
             Connection connection = MySQLHelper.getInstance().getConnection();
             try {
                 QueryRunner run = new QueryRunner();
@@ -132,6 +136,6 @@ class TemplateMysqlHelper {
                 MySQLHelper.closeConnection(connection);
             }
         }
-        
+
     }
 }

@@ -206,6 +206,10 @@ class StepMysqlHelper {
 
     public static void deleteStep(Step o) throws SQLException {
         if (o.getId() != null) {
+            for (ErrorProperty property : o.getEigenschaften()) {
+                deleteErrorProperty(property);
+            }
+            
             String sql = "DELETE FROM schritte WHERE SchritteID = ?";
             Object[] param = { o.getId() };
             Connection connection = MySQLHelper.getInstance().getConnection();
@@ -294,6 +298,17 @@ class StepMysqlHelper {
         try {
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql, resultSetToErrorPropertyListHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+    
+    private static void deleteErrorProperty(ErrorProperty property) throws SQLException {
+        String sql = "DELETE FROM schritteeigenschaften WHERE schritteeigenschaftenID = " + property.getId();
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            run.update(connection, sql, resultSetToErrorPropertyListHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
