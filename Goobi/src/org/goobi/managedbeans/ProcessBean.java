@@ -481,30 +481,22 @@ public class ProcessBean extends BasicBean {
     private String sortList() {
         String answer = "titel";
         if (this.sortierung.equals("titelAsc")) {
-            answer = "titel";
+            answer = "prozesse.titel";
         } else if (this.sortierung.equals("titelDesc")) {
-            answer = "titel desc";
+            answer = "prozesse.titel desc";
         } else if (this.sortierung.equals("batchAsc")) {
             answer = "batchID";
         } else if (this.sortierung.equals("batchDesc")) {
             answer = "batchID desc";
-        }
-
-        else if (this.sortierung.equals("projektAsc")) {
-            // TODO auf titel matchen
-            answer = "projektID";
-        }
-
-        else if (this.sortierung.equals("projektDesc")) {
-            // TODO auf titel matchen
-            answer = "projektID desc";
+        } else if (this.sortierung.equals("projektAsc")) {
+            answer = "projekte.Titel";
+        } else if (this.sortierung.equals("projektDesc")) {
+            answer = "projekte.Titel desc";
         } else if (this.sortierung.equals("vorgangsdatumAsc")) {
             answer = "erstellungsdatum";
         } else if (this.sortierung.equals("vorgangsdatumDesc")) {
             answer = "erstellungsdatum";
-        }
-
-        else if (this.sortierung.equals("fortschrittAsc")) {
+        } else if (this.sortierung.equals("fortschrittAsc")) {
             answer = "sortHelperStatus";
         } else if (this.sortierung.equals("fortschrittDesc")) {
             answer = "sortHelperStatus";
@@ -1181,7 +1173,7 @@ public class ProcessBean extends BasicBean {
     public String reihenfolgeDown() {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
         try {
-            StepManager.saveStep(mySchritt); 
+            StepManager.saveStep(mySchritt);
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {

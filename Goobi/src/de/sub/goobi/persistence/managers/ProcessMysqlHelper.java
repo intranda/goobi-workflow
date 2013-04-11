@@ -112,9 +112,9 @@ class ProcessMysqlHelper {
 
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProzesseID) FROM prozesse");
+        sql.append("SELECT COUNT(ProzesseID) FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" AND " + filter);
         }
         try {
             logger.debug(sql.toString());
@@ -131,9 +131,9 @@ class ProcessMysqlHelper {
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM prozesse");
+        sql.append("SELECT * FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" AND " + filter);
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
