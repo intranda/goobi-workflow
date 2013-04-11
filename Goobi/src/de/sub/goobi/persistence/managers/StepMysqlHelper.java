@@ -41,9 +41,9 @@ class StepMysqlHelper {
 
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(SchritteID) FROM schritte");
+        sql.append("SELECT COUNT(SchritteID) FROM schritte, prozesse, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" AND " + filter);
         }
         try {
             logger.debug(sql.toString());

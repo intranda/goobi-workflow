@@ -8,7 +8,7 @@
 	<composite:implementation>
 
 		<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
-		<h:panelGroup rendered="#{AktuelleSchritteForm.paginator.totalResults > 0}">
+		<h:panelGroup>
 
 			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
 				<tr>
@@ -16,7 +16,7 @@
 						<h:outputText value="#{msgs.moeglicheAktionen}" />
 					</td>
 				</tr>
-				<h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload}">
+				<h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
 
 					<tr valign="top">
 						<td class="eingabeBoxen_row2">
