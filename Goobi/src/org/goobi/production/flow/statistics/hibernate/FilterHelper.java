@@ -188,11 +188,11 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepRange(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
                     + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = "
                     + inStatus.getValue().intValue() + ")";
         } else {
-            return " ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge > "
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge > "
                     + FilterHelper.getStepStart(parameters)
                     + " AND schritte.Reihenfolge < + "
                     + FilterHelper.getStepEnd(parameters)
@@ -209,11 +209,11 @@ public class FilterHelper {
     protected static String filterStepName(String parameters, StepStatus inStatus, boolean negate) {
 
         if (!negate) {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(parameters)
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(parameters)
                     + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
 
         } else {
-            return " ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(parameters)
+            return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(parameters)
                     + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
 
         }
@@ -221,9 +221,9 @@ public class FilterHelper {
 
     protected static String filterAutomaticSteps(String tok, boolean flagSteps) {
         if (tok.substring(tok.indexOf(":") + 1).equalsIgnoreCase("true")) {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = true )";
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = true )";
         } else {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = false )";
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = false )";
         }
     }
 
@@ -235,10 +235,10 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepMin(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
                     + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
-            return " ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= "
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= "
                     + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
         }
     }
@@ -251,10 +251,10 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepMax(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
                     + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
-            return " ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= "
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= "
                     + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
         }
     }
@@ -267,10 +267,10 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterStepExact(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters)
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters)
                     + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
-            return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters)
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters)
                     + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         }
     }
@@ -286,7 +286,7 @@ public class FilterHelper {
          */
 
         String login = tok.substring(tok.indexOf(":") + 1);
-        return " ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login LIKE '%"
+        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login LIKE '%"
                 + StringEscapeUtils.escapeSql(login) + "%'" + "))";
     }
 
@@ -298,10 +298,10 @@ public class FilterHelper {
     protected static String filterProject(String tok, boolean negate) {
         /* filter according to linked project */
         if (!negate) {
-            return "prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%"
+            return " prozesse.prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%"
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
         } else {
-            return "prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%"
+            return " prozesse.prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%"
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
         }
     }
@@ -316,27 +316,27 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
                         + "%' AND vorlageneigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
                         + "%'))";
 
             } else {
-                return " prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
 
             }
         } else {
             if (ts.length > 1) {
-                return " prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
+                return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
                         + "%' AND vorlageneigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
                         + "%'))";
 
             } else {
-                return " prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
+                return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
 
             }
@@ -348,20 +348,20 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return "prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '%"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '%"
                         + StringEscapeUtils.escapeSql(ts[1]) + "%' " + " AND Titel like '%" + StringEscapeUtils.escapeSql(ts[0]) + "%' ))";
 
             } else {
-                return "prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '%"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
             }
         } else {
             if (ts.length > 1) {
-                return "prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%"
                         + StringEscapeUtils.escapeSql(ts[1]) + "%' " + " AND Titel like '%" + StringEscapeUtils.escapeSql(ts[0]) + "%' ))";
 
             } else {
-                return "prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
             }
         }
@@ -436,19 +436,19 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
                         + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
                         + "%'))";
             } else {
 
-                return " prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
             }
         } else {
             if (ts.length > 1) {
-                return " prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
                         + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
@@ -456,7 +456,7 @@ public class FilterHelper {
 
             } else {
 
-                return " prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
 
             }
@@ -502,7 +502,7 @@ public class FilterHelper {
         if (isStep) {
             flagSteps = true;
             filter = checkStringBuilder(filter, true);
-            filter.append(" prozesseId not in (select prozesseID from prozesse where prozesse.istTemplate = true) ");
+            filter.append(" prozesse.prozesseId not in (select prozesseID from prozesse where prozesse.istTemplate = true) ");
         }
 
         // to collect and return feedback about erroneous use of filter
@@ -699,17 +699,17 @@ public class FilterHelper {
             if (stepTitle.startsWith("-")) {
                 stepTitle = stepTitle.substring(1);
 
-                return " ProzesseID in (select ProzesseID from schritte where schritte.Titel not like '%" + StringEscapeUtils.escapeSql(stepTitle)
+                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel not like '%" + StringEscapeUtils.escapeSql(stepTitle)
                         + "%' AND schritte.Bearbeitungsstatus >= 1 )";
 
             } else {
 
-                return " ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(stepTitle)
+                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(stepTitle)
                         + "%' AND schritte.Bearbeitungsstatus >= 1 )";
 
             }
         }
-        return " ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
+        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
                 + " AND schritte.Bearbeitungsstatus >= 1 )";
     }
 

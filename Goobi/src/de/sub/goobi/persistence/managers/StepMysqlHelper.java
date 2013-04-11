@@ -60,16 +60,20 @@ class StepMysqlHelper {
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM schritte");
+        sql.append("SELECT * FROM schritte, prozesse WHERE schritte.prozesseId = prozesse.ProzesseID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(" AND " + filter);
         }
+
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
+        
+      
+        
         try {
             logger.debug(sql.toString());
             List<Step> ret = null;

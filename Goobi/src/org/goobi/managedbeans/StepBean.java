@@ -193,6 +193,7 @@ public class StepBean extends BasicBean {
             answer = "titel desc";
         }
 
+        
         // TODO nach Projekt/Prozess sortieren 
         //		Order order = Order.asc("proc.titel");
         //		if (this.sortierung.equals("schrittAsc")) {
@@ -201,12 +202,14 @@ public class StepBean extends BasicBean {
         //		if (this.sortierung.equals("schrittDesc")) {
         //			order = Order.desc("titel");
         //		}
-        //		if (this.sortierung.equals("prozessAsc")) {
-        //			order = Order.asc("proc.titel");
-        //		}
-        //		if (this.sortierung.equals("prozessDesc")) {
+        		if (this.sortierung.equals("prozessAsc")) {
+        		    answer = "prozesse.Titel";
+//        			order = Order.asc("proc.titel");
+        		}
+        		if (this.sortierung.equals("prozessDesc")) {
+        		    answer = "prozesse.Titel desc";
         //			order = Order.desc("proc.titel");
-        //		}
+        		}
         //		if (this.sortierung.equals("batchAsc")) {
         //			order = Order.asc("proc.batchID");
         //		}
