@@ -60,7 +60,7 @@ class StepMysqlHelper {
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM schritte, prozesse WHERE schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("SELECT * FROM schritte, prozesse, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }

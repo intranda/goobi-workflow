@@ -101,7 +101,7 @@ public class StepBean extends BasicBean {
     private String solutionMessage;
 
     private String modusBearbeiten = "";
-//    private Schritteigenschaft mySchrittEigenschaft;
+    //    private Schritteigenschaft mySchrittEigenschaft;
     private WebDav myDav = new WebDav();
     private int gesamtAnzahlImages = 0;
     private int pageAnzahlImages = 0;
@@ -192,43 +192,31 @@ public class StepBean extends BasicBean {
         } else if (this.sortierung.equals("schrittDesc")) {
             answer = "titel desc";
         }
+        if (this.sortierung.equals("prozessAsc")) {
+            answer = "prozesse.Titel";
+        }
+        if (this.sortierung.equals("prozessDesc")) {
+            answer = "prozesse.Titel desc";
+        }
+        if (this.sortierung.equals("batchAsc")) {
+            answer = "prozesse.batchID";
+        }
+        if (this.sortierung.equals("batchDesc")) {
+            answer = "prozesse.batchID desc";
+        }
+        if (this.sortierung.equals("prozessdateAsc")) {
 
-        
-        // TODO nach Projekt/Prozess sortieren 
-        //		Order order = Order.asc("proc.titel");
-        //		if (this.sortierung.equals("schrittAsc")) {
-        //			order = Order.asc("titel");
-        //		}
-        //		if (this.sortierung.equals("schrittDesc")) {
-        //			order = Order.desc("titel");
-        //		}
-        		if (this.sortierung.equals("prozessAsc")) {
-        		    answer = "prozesse.Titel";
-//        			order = Order.asc("proc.titel");
-        		}
-        		if (this.sortierung.equals("prozessDesc")) {
-        		    answer = "prozesse.Titel desc";
-        //			order = Order.desc("proc.titel");
-        		}
-        //		if (this.sortierung.equals("batchAsc")) {
-        //			order = Order.asc("proc.batchID");
-        //		}
-        //		if (this.sortierung.equals("batchDesc")) {
-        //			order = Order.desc("proc.batchID");
-        //		}
-        //		if (this.sortierung.equals("prozessdateAsc")) {
-        //			order = Order.asc("proc.erstellungsdatum");
-        //		}
-        //		if (this.sortierung.equals("prozessdateDesc")) {
-        //			order = Order.desc("proc.erstellungsdatum");
-        //		}
-        //		if (this.sortierung.equals("projektAsc")) {
-        //			order = Order.asc("proj.titel");
-        //		}
-        //		if (this.sortierung.equals("projektDesc")) {
-        //			order = Order.desc("proj.titel");
-        //		}
-        else if (this.sortierung.equals("modulesAsc")) {
+            answer = "prozesse.erstellungsdatum";
+        }
+        if (this.sortierung.equals("prozessdateDesc")) {
+            answer = "prozesse.erstellungsdatum desc";
+        }
+        if (this.sortierung.equals("projektAsc")) {
+            answer = "projekte.Titel";
+        }
+        if (this.sortierung.equals("projektDesc")) {
+            answer = "projekte.Titel desc";
+        } else if (this.sortierung.equals("modulesAsc")) {
             answer = "typModulName";
         } else if (this.sortierung.equals("modulesDesc")) {
             answer = "typModulName desc";
@@ -534,11 +522,11 @@ public class StepBean extends BasicBean {
      *  Eigenschaften bearbeiten
      */
 
-//    public String SchrittEigenschaftNeu() {
-//        this.mySchritt.setBearbeitungszeitpunkt(new Date());
-//        this.mySchrittEigenschaft = new Schritteigenschaft();
-//        return "";
-//    }
+    //    public String SchrittEigenschaftNeu() {
+    //        this.mySchritt.setBearbeitungszeitpunkt(new Date());
+    //        this.mySchrittEigenschaft = new Schritteigenschaft();
+    //        return "";
+    //    }
 
     public String SperrungAufheben() {
         MetadatenSperrung.UnlockProcess(this.mySchritt.getProzess().getId());
@@ -985,13 +973,13 @@ public class StepBean extends BasicBean {
         this.solutionMessage = solutionMessage;
     }
 
-//    public Schritteigenschaft getMySchrittEigenschaft() {
-//        return this.mySchrittEigenschaft;
-//    }
-//
-//    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
-//        this.mySchrittEigenschaft = mySchrittEigenschaft;
-//    }
+    //    public Schritteigenschaft getMySchrittEigenschaft() {
+    //        return this.mySchrittEigenschaft;
+    //    }
+    //
+    //    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
+    //        this.mySchrittEigenschaft = mySchrittEigenschaft;
+    //    }
 
     /*
      * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden 
