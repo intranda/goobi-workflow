@@ -116,6 +116,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 
 @ManagedBean(name = "ProzessverwaltungForm")
@@ -650,26 +651,39 @@ public class ProcessBean extends BasicBean {
 
     public String BenutzerLoeschen() {
         this.mySchritt.getBenutzer().remove(this.myBenutzer);
-        Speichern();
+        try {
+            StepManager.saveStep(mySchritt);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
         return "";
     }
 
     public String BenutzergruppeLoeschen() {
         this.mySchritt.getBenutzergruppen().remove(this.myBenutzergruppe);
-        Speichern();
-        return "";
+        try {
+            StepManager.saveStep(mySchritt);
+        } catch (DAOException e) {
+            logger.error(e);
+        }        return "";
     }
 
     public String BenutzergruppeHinzufuegen() {
         this.mySchritt.getBenutzergruppen().add(this.myBenutzergruppe);
-        Speichern();
-        return "";
+        try {
+            StepManager.saveStep(mySchritt);
+        } catch (DAOException e) {
+            logger.error(e);
+        }        return "";
     }
 
     public String BenutzerHinzufuegen() {
         this.mySchritt.getBenutzer().add(this.myBenutzer);
-        Speichern();
-        return "";
+        try {
+            StepManager.saveStep(mySchritt);
+        } catch (DAOException e) {
+            logger.error(e);
+        }        return "";
     }
 
     /*
