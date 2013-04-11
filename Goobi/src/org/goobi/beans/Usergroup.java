@@ -110,6 +110,13 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 	}
 
 	public List<User> getBenutzer() {
+	    if (benutzer == null) {
+	        try {
+                benutzer = UserManager.getUsersForUsergroup(this);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
+	    }
 		return this.benutzer;
 	}
 

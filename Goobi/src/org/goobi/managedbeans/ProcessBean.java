@@ -130,7 +130,7 @@ public class ProcessBean extends BasicBean {
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
     private Processproperty myProzessEigenschaft;
-//    private Schritteigenschaft mySchrittEigenschaft;
+    //    private Schritteigenschaft mySchrittEigenschaft;
     private User myBenutzer;
     private Template myVorlage;
     private Templateproperty myVorlageEigenschaft;
@@ -523,15 +523,15 @@ public class ProcessBean extends BasicBean {
         return "";
     }
 
-//    public String SchrittEigenschaftLoeschen() {
-//        try {
-//            mySchritt.getEigenschaften().remove(mySchrittEigenschaft);
-//            ProcessManager.saveProcess(myProzess);
-//        } catch (DAOException e) {
-//            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-//        }
-//        return "";
-//    }
+    //    public String SchrittEigenschaftLoeschen() {
+    //        try {
+    //            mySchritt.getEigenschaften().remove(mySchrittEigenschaft);
+    //            ProcessManager.saveProcess(myProzess);
+    //        } catch (DAOException e) {
+    //            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
+    //        }
+    //        return "";
+    //    }
 
     public String VorlageEigenschaftLoeschen() {
 
@@ -554,10 +554,10 @@ public class ProcessBean extends BasicBean {
         return "";
     }
 
-//    public String SchrittEigenschaftNeu() {
-//        mySchrittEigenschaft = new Schritteigenschaft();
-//        return "";
-//    }
+    //    public String SchrittEigenschaftNeu() {
+    //        mySchrittEigenschaft = new Schritteigenschaft();
+    //        return "";
+    //    }
 
     public String VorlageEigenschaftNeu() {
         myVorlageEigenschaft = new Templateproperty();
@@ -572,30 +572,30 @@ public class ProcessBean extends BasicBean {
     public String ProzessEigenschaftUebernehmen() {
         myProzess.getEigenschaften().add(myProzessEigenschaft);
         myProzessEigenschaft.setProzess(myProzess);
-//        Speichern();
+        //        Speichern();
         PropertyManager.saveProcessProperty(myProzessEigenschaft);
         return "";
     }
 
-//    public String SchrittEigenschaftUebernehmen() {
-//        mySchritt.getEigenschaften().add(mySchrittEigenschaft);
-//        mySchrittEigenschaft.setSchritt(mySchritt);
-//        Speichern();
-//        return "";
-//    }
+    //    public String SchrittEigenschaftUebernehmen() {
+    //        mySchritt.getEigenschaften().add(mySchrittEigenschaft);
+    //        mySchrittEigenschaft.setSchritt(mySchritt);
+    //        Speichern();
+    //        return "";
+    //    }
 
     public String VorlageEigenschaftUebernehmen() {
         myVorlage.getEigenschaften().add(myVorlageEigenschaft);
         myVorlageEigenschaft.setVorlage(myVorlage);
         PropertyManager.saveTemplateProperty(myVorlageEigenschaft);
-//        Speichern();
+        //        Speichern();
         return "";
     }
 
     public String WerkstueckEigenschaftUebernehmen() {
         myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
         myWerkstueckEigenschaft.setWerkstueck(myWerkstueck);
-//        Speichern();
+        //        Speichern();
         PropertyManager.saveMasterpieceProperty(myWerkstueckEigenschaft);
         return "";
     }
@@ -651,21 +651,14 @@ public class ProcessBean extends BasicBean {
 
     public String BenutzerLoeschen() {
         this.mySchritt.getBenutzer().remove(this.myBenutzer);
-        try {
-            StepManager.saveStep(mySchritt);
-        } catch (DAOException e) {
-            logger.error(e);
-        }
+        StepManager.removeUserFromStep(mySchritt, myBenutzer);
         return "";
     }
 
     public String BenutzergruppeLoeschen() {
         this.mySchritt.getBenutzergruppen().remove(this.myBenutzergruppe);
-        try {
-            StepManager.saveStep(mySchritt);
-        } catch (DAOException e) {
-            logger.error(e);
-        }        return "";
+        StepManager.removeUsergroupFromStep(mySchritt, myBenutzergruppe);
+        return "";
     }
 
     public String BenutzergruppeHinzufuegen() {
@@ -674,7 +667,8 @@ public class ProcessBean extends BasicBean {
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
             logger.error(e);
-        }        return "";
+        }
+        return "";
     }
 
     public String BenutzerHinzufuegen() {
@@ -683,7 +677,8 @@ public class ProcessBean extends BasicBean {
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
             logger.error(e);
-        }        return "";
+        }
+        return "";
     }
 
     /*
@@ -1025,7 +1020,11 @@ public class ProcessBean extends BasicBean {
                 }
             }
         }
-        Speichern();
+        try {
+            StepManager.saveStep(mySchritt);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
         deleteSymlinksFromUserHomes();
     }
 
@@ -1037,7 +1036,11 @@ public class ProcessBean extends BasicBean {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
         this.mySchritt.setBearbeitungsstatusDown();
-        Speichern();
+        try {
+            StepManager.saveStep(mySchritt);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
         deleteSymlinksFromUserHomes();
         return "";
     }
@@ -1098,13 +1101,13 @@ public class ProcessBean extends BasicBean {
         this.mySchritt = mySchritt;
     }
 
-//    public Schritteigenschaft getMySchrittEigenschaft() {
-//        return this.mySchrittEigenschaft;
-//    }
-//
-//    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
-//        this.mySchrittEigenschaft = mySchrittEigenschaft;
-//    }
+    //    public Schritteigenschaft getMySchrittEigenschaft() {
+    //        return this.mySchrittEigenschaft;
+    //    }
+    //
+    //    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
+    //        this.mySchrittEigenschaft = mySchrittEigenschaft;
+    //    }
 
     public Template getMyVorlage() {
         return this.myVorlage;
@@ -1165,13 +1168,25 @@ public class ProcessBean extends BasicBean {
 
     public String reihenfolgeUp() {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() - 1));
-        Speichern();
+        try {
+            StepManager.saveStep(mySchritt);
+            // set list to null to reload list of steps in new order
+            myProzess.setSchritte(null);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
         return Reload();
     }
 
     public String reihenfolgeDown() {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
-        Speichern();
+        try {
+            StepManager.saveStep(mySchritt); 
+            // set list to null to reload list of steps in new order
+            myProzess.setSchritte(null);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
         return Reload();
     }
 

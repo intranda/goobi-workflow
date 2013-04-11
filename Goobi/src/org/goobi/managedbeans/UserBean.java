@@ -194,6 +194,7 @@ public class UserBean extends BasicBean {
 			}
 		}
 		this.myClass.setBenutzergruppen(neu);
+		UserManager.deleteUsergroupAssignment(myClass, gruppenID);
 		return "";
 	}
 
@@ -207,6 +208,7 @@ public class UserBean extends BasicBean {
 				}
 			}
 			this.myClass.getBenutzergruppen().add(usergroup);
+			UserManager.addUsergroupAssignment(myClass, gruppenID);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;
@@ -224,6 +226,7 @@ public class UserBean extends BasicBean {
 			}
 		}
 		this.myClass.setProjekte(neu);
+		UserManager.deleteProjectAssignment(myClass, projektID);
 		return "";
 	}
 
@@ -237,6 +240,7 @@ public class UserBean extends BasicBean {
 				}
 			}
 			this.myClass.getProjekte().add(project);
+		     UserManager.addProjectAssignment(myClass, projektID);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
 			return null;

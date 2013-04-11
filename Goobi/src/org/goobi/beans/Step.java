@@ -341,6 +341,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public List<User> getBenutzer() {
+        if ((benutzer == null || benutzer.isEmpty()) && id != null) {
+            benutzer = UserManager.getUserForStep(id);
+        }
         return this.benutzer;
     }
 
@@ -349,6 +352,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public List<Usergroup> getBenutzergruppen() {
+        if ((benutzergruppen == null || benutzergruppen.isEmpty()) && id != null) {
+            benutzergruppen = UsergroupManager.getUserGroupsForStep(id);
+        }
         return this.benutzergruppen;
     }
 
@@ -371,36 +377,23 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public int getBenutzerSize() {
 
-        if (this.benutzer == null) {
-            return 0;
-        } else {
-            return this.benutzer.size();
-        }
+        return getBenutzer().size();
+
     }
 
     public List<User> getBenutzerList() {
 
-        if (this.benutzer == null) {
-            return new ArrayList<User>();
-        }
-        return new ArrayList<User>(this.benutzer);
+        return getBenutzer();
     }
 
     public int getBenutzergruppenSize() {
 
-        if (this.benutzergruppen == null) {
-            return 0;
-        } else {
-            return this.benutzergruppen.size();
-        }
+        return getBenutzergruppen().size();
     }
 
     public List<Usergroup> getBenutzergruppenList() {
 
-        if (this.benutzergruppen == null) {
-            return new ArrayList<Usergroup>();
-        }
-        return new ArrayList<Usergroup>(this.benutzergruppen);
+        return getBenutzergruppen();
     }
 
     public void setBearbeitungsstatusUp() {

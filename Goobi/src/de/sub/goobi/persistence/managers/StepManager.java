@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Step;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -141,4 +143,31 @@ public class StepManager implements IManager, Serializable {
         }
         return new ArrayList<String>();
     }
+    
+    
+    public static void saveUserAssignment(Step step) {
+        try {
+            StepMysqlHelper.saveUserAssignment(step);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
+    public static void removeUsergroupFromStep(Step step, Usergroup usergroup) {
+        try {
+            StepMysqlHelper.removeUsergroupFromStep(step, usergroup);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        
+    }
+
+    public static void removeUserFromStep(Step step, User user) {
+        try {
+            StepMysqlHelper.removeUserFromStep(step, user);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
 }

@@ -13,6 +13,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Step;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -192,6 +194,20 @@ class StepMysqlHelper {
         }
     };
 
+    
+    public static ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
+
+        @Override
+        public Boolean handle(ResultSet rs) throws SQLException {
+
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        }
+    };
+    
+    
     public static Step getStepById(int id) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         String sql = "SELECT * FROM schritte WHERE SchritteID = ?";
@@ -209,7 +225,7 @@ class StepMysqlHelper {
             for (ErrorProperty property : o.getEigenschaften()) {
                 deleteErrorProperty(property);
             }
-            
+
             String sql = "DELETE FROM schritte WHERE SchritteID = ?";
             Object[] param = { o.getId() };
             Connection connection = MySQLHelper.getInstance().getConnection();
@@ -250,6 +266,13 @@ class StepMysqlHelper {
             for (ErrorProperty property : o.getEigenschaften()) {
                 saveErrorProperty(property);
             }
+        }
+
+        if (o.getBenutzerSize() > 0) {
+            saveUserAssignment(o);
+        }
+        if (o.getBenutzergruppenSize() > 0) {
+            saveUserGroupAssignment(o);
         }
 
     }
@@ -302,7 +325,7 @@ class StepMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
-    
+
     private static void deleteErrorProperty(ErrorProperty property) throws SQLException {
         String sql = "DELETE FROM schritteeigenschaften WHERE schritteeigenschaftenID = " + property.getId();
         Connection connection = MySQLHelper.getInstance().getConnection();
@@ -675,4 +698,80 @@ class StepMysqlHelper {
         }
     }
 
+    public static void saveUserAssignment(Step step) throws SQLException {
+        if (step.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                for (User user : step.getBenutzer()) {
+                    // check if assignment exists
+                    String sql = " SELECT * from schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
+                    boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                    if (!exists) {
+                        String insert =
+                                " INSERT INTO schritteberechtigtebenutzer (BenutzerID , schritteID) VALUES (" + user.getId() + "," + step.getId()
+                                        + ")";
+                        new QueryRunner().update(connection, insert);
+                    }
+                }
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    private static void saveUserGroupAssignment(Step step) throws SQLException {
+        if (step.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                for (Usergroup userGroup : step.getBenutzergruppen()) {
+                    // check if assignment exists
+                    String sql =
+                            " SELECT * from schritteberechtigtegruppen WHERE BenutzerGruppenID =" + userGroup.getId() + " AND schritteID = "
+                                    + step.getId();
+                    boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                    if (!exists) {
+                        String insert =
+                                " INSERT INTO schritteberechtigtegruppen (BenutzerGruppenID , schritteID) VALUES (" + userGroup.getId() + ","
+                                        + step.getId() + ")";
+                        new QueryRunner().update(connection, insert);
+                    }
+                }
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+
+
+    public static void removeUsergroupFromStep(Step step, Usergroup usergroup) throws SQLException {
+        if (step.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                String sql =
+                        "DELETE FROM schritteberechtigtegruppen WHERE BenutzerGruppenID =" + usergroup.getId() + " AND schritteID = " + step.getId();
+
+                new QueryRunner().update(connection, sql);
+
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void removeUserFromStep(Step step, User user) throws SQLException {
+        if (step.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                String sql =
+                        "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
+
+                new QueryRunner().update(connection, sql);
+
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

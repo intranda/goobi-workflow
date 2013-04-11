@@ -1,12 +1,14 @@
 package de.sub.goobi.persistence.managers;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
@@ -68,7 +70,7 @@ class UserMysqlHelper {
         }
     }
 
-    public static void saveUser(User ro) throws SQLException {
+    public static User saveUser(User ro) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
@@ -86,10 +88,10 @@ class UserMysqlHelper {
                 StringBuilder propValues = new StringBuilder();
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getVorname()) + "',");
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getNachname()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getLogin())+ "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getLogin()) + "',");
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getPasswort()) + "',");
                 propValues.append(ro.isIstAktiv() + ",");
-                propValues.append("'" + StringEscapeUtils.escapeSql( ro.getStandort()) + "',");
+                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getStandort()) + "',");
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetadatenSprache()) + "',");
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getCss()) + "',");
                 propValues.append(ro.isMitMassendownload() + ",");
@@ -105,19 +107,19 @@ class UserMysqlHelper {
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
-                
+
                 logger.debug(sql.toString());
                 Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
                 if (id != null) {
                     ro.setId(id);
                 }
-                
+
             } else {
                 sql.append("UPDATE benutzer SET ");
                 sql.append("Vorname = '" + StringEscapeUtils.escapeSql(ro.getVorname()) + "',");
                 sql.append("Nachname = '" + StringEscapeUtils.escapeSql(ro.getNachname()) + "',");
                 sql.append("login = '" + StringEscapeUtils.escapeSql(ro.getLogin()) + "',");
-                sql.append("passwort = '" + StringEscapeUtils.escapeSql(ro.getPasswort())+ "',");
+                sql.append("passwort = '" + StringEscapeUtils.escapeSql(ro.getPasswort()) + "',");
                 sql.append("IstAktiv = " + ro.isIstAktiv() + ",");
                 sql.append("Standort = '" + StringEscapeUtils.escapeSql(ro.getStandort()) + "',");
                 sql.append("metadatensprache = '" + StringEscapeUtils.escapeSql(ro.getMetadatenSprache()) + "',");
@@ -136,6 +138,7 @@ class UserMysqlHelper {
         } finally {
             MySQLHelper.closeConnection(connection);
         }
+        return ro;
     }
 
     public static void hideUser(User ro) throws SQLException {
@@ -226,4 +229,82 @@ class UserMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
+
+    public static void addUsergroupAssignment(User user, Integer gruppenID) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                // check if assignment exists
+                String sql =
+                        " SELECT * FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId() + " AND BenutzerGruppenID = " + gruppenID;
+                boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                if (!exists) {
+                    String insert =
+                            " INSERT INTO benutzergruppenmitgliedschaft (BenutzerID , BenutzerGruppenID) VALUES (" + user.getId() + "," + gruppenID
+                                    + ")";
+                    new QueryRunner().update(connection, insert);
+                }
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void addProjectAssignment(User user, Integer projektID) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                // check if assignment exists
+                String sql = " SELECT * FROM projektbenutzer WHERE BenutzerID =" + user.getId() + " AND ProjekteID = " + projektID;
+                boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                if (!exists) {
+                    String insert = " INSERT INTO projektbenutzer (BenutzerID , ProjekteID) VALUES (" + user.getId() + "," + projektID + ")";
+                    new QueryRunner().update(connection, insert);
+                }
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteUsergroupAssignment(User user, int gruppenID) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                String sql =
+                        " DELETE FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId() + " AND BenutzerGruppenID = " + gruppenID;
+                new QueryRunner().update(connection, sql);
+
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteProjectAssignment(User user, int projektID) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            try {
+                String sql =
+                        "DELETE FROM projektbenutzer WHERE BenutzerID =" + user.getId() + " AND ProjekteID = " + projektID;
+
+                new QueryRunner().update(connection, sql);
+
+            } finally {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
+
+        @Override
+        public Boolean handle(ResultSet rs) throws SQLException {
+
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        }
+    };
 }
