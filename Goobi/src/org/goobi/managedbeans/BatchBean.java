@@ -1,4 +1,4 @@
-package de.sub.goobi.forms;
+package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -41,7 +41,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.goobi.managedbeans.BasicBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -58,11 +57,11 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 @ManagedBean(name = "BatchForm")
 @SessionScoped
-public class BatchForm extends BasicBean {
+public class BatchBean extends BasicBean {
 
     private static final long serialVersionUID = 8234897225425856549L;
 
-    private static final Logger logger = Logger.getLogger(BatchForm.class);
+    private static final Logger logger = Logger.getLogger(BatchBean.class);
 
     private List<Process> currentProcesses = new ArrayList<Process>();
     private List<Process> selectedProcesses = new ArrayList<Process>();
