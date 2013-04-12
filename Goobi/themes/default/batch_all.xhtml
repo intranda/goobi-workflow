@@ -13,6 +13,8 @@
 
 	<ui:define name="content">
 		<h:form rendered="#{((LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2))}">
+		
+		<h:messages globalOnly="false" />
 			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 				<tr>
 					<td colspan="2" class="eingabeBoxen_row1">
@@ -69,7 +71,8 @@
 							<f:selectItems value="#{BatchForm.currentProcessesAsSelectItems}" />
 						</h:selectManyListbox>
 						<h:panelGrid columns="1" cellpadding="2px">
-							<h:commandLink action="#{BatchForm.loadBatchData}">
+						<h:messages globalOnly="false" for="loadBatchData" />
+							<h:commandLink action="#{BatchForm.loadBatchData}" id="loadBatchData">
 								<h:graphicImage alt="reload" value="images/buttons/reload_doc.gif" style="vertical-align:middle" />
 								<h:outputText value="#{msgs.loadAssociatedBatchOfProcess}" />
 							</h:commandLink>

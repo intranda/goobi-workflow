@@ -298,10 +298,10 @@ public class FilterHelper {
     protected static String filterProject(String tok, boolean negate) {
         /* filter according to linked project */
         if (!negate) {
-            return " prozesse.prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%"
+            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%"
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
         } else {
-            return " prozesse.prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%"
+            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%"
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
         }
     }

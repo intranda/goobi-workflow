@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.goobi.managedbeans.BasicBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportDocket;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import org.goobi.beans.Process;
 
@@ -161,6 +162,12 @@ public class BatchForm extends BasicBean {
         if (this.processfilter == null) {
             this.processfilter = "";
         }
+        String filter = FilterHelper.criteriaBuilder(processfilter, false, null, null, true, false);
+        if (!filter.isEmpty()) {
+            filter += " AND ";
+        }
+        filter += " istTemplate = false ";
+       
         //		this.myFilteredDataSource = new UserDefinedFilter(this.processfilter);
         //		Criteria crit = this.myFilteredDataSource.getCriteria();
         //		crit.addOrder(Order.desc("erstellungsdatum"));
@@ -171,6 +178,8 @@ public class BatchForm extends BasicBean {
         //		} catch (HibernateException e) {
         //			this.currentProcesses = new ArrayList<Process>();
         //		}
+        
+        this.currentProcesses = ProcessManager.getProcesses("prozesse.erstellungsdatum", filter, 0, getBatchMaxSize());
     }
 
     public void filterBatches() {
@@ -322,6 +331,7 @@ public class BatchForm extends BasicBean {
                 {
                     for (Process p : deleteList) {
                         p.setBatchID(null);
+                        ProcessManager.saveProcessInformation(p);
                         //						try {
                         //							session.saveOrUpdate(p);
                         //						} catch (Exception e) {
@@ -330,7 +340,7 @@ public class BatchForm extends BasicBean {
                         //						}
                     }
                     //					try {
-                    ProcessManager.updateBatchList(deleteList);
+//                    ProcessManager.updateBatchList(deleteList);
                     //						session.flush();
                     //						session.connection().commit();
                     //					} catch (DAOException e) {
