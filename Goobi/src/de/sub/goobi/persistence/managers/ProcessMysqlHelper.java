@@ -17,7 +17,10 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
+import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.apache.MySQLHelper;
 import de.sub.goobi.persistence.apache.MySQLUtils;
@@ -43,7 +46,6 @@ class ProcessMysqlHelper {
             if (o.getId() == null) {
                 // new process
                 insertProcess(o);
-          
 
             } else {
                 // process exists already in database
@@ -64,7 +66,7 @@ class ProcessMysqlHelper {
             for (Masterpiece object : o.getWerkstuecke()) {
                 MasterpieceManager.saveMasterpiece(object);
             }
-            
+
             List<Template> templates = o.getVorlagen();
             for (Template template : templates) {
                 TemplateManager.saveTemplate(template);
@@ -78,23 +80,23 @@ class ProcessMysqlHelper {
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
-            
+
             // delete properties
-            
+
             for (Processproperty object : o.getEigenschaften()) {
                 PropertyManager.deleteProcessProperty(object);
             }
             // delete templates
-            
+
             for (Template object : o.getVorlagen()) {
                 TemplateManager.deleteTemplate(object);
             }
-            
+
             // delete masterpieces
             for (Masterpiece object : o.getWerkstuecke()) {
                 MasterpieceManager.deleteMasterpiece(object);
             }
-            
+
             // delete process
             String sql = "DELETE FROM prozesse WHERE ProzesseID = ?";
             Object[] param = { o.getId() };
@@ -448,9 +450,18 @@ class ProcessMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
-    
+
     public static List<Integer> getBatchIds(int limit) throws SQLException {
-        String sql = "select distinct batchID from prozesse order by batchID desc ";
+        String sql = "SELECT distinct batchID FROM prozesse";
+        
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (login != null && login.getMaximaleBerechtigung() > 1) {
+            sql += " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = "
+                                + login.getMyBenutzer().getId() + ")";
+        }
+        
+        
+        sql += " ORDER BY batchID desc ";
         if (limit > 0) {
             sql += " limit " + limit;
         }
@@ -472,8 +483,8 @@ class ProcessMysqlHelper {
             int columnCount = rs.getMetaData().getColumnCount();
             while (rs.next()) {
                 Object[] row = new Object[columnCount];
-                for(int i = 1;i<=columnCount;i++){
-                    row[i-1]=rs.getString(i);
+                for (int i = 1; i <= columnCount; i++) {
+                    row[i - 1] = rs.getString(i);
                 }
                 answer.add(row);
             }
@@ -483,5 +494,5 @@ class ProcessMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
-    
+
 }

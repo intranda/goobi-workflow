@@ -73,7 +73,7 @@ public class BatchBean extends BasicBean {
 
     //	private ProzessDAO dao = new ProzessDAO();
     private String modusBearbeiten = "";
- 
+
     private BatchProcessHelper batchHelper;
 
     private int getBatchMaxSize() {
@@ -105,7 +105,7 @@ public class BatchBean extends BasicBean {
         if (id != null) {
             filter = " batchID = " + id + " AND istTemplate = false ";
         } else {
-            filter = " batchID = null AND istTemplate = false ";
+            filter = " batchID is NULL AND istTemplate = false ";
         }
         //		Criteria crit = session.createCriteria(Process.class);
         //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
@@ -166,18 +166,7 @@ public class BatchBean extends BasicBean {
             filter += " AND ";
         }
         filter += " istTemplate = false ";
-       
-        //		this.myFilteredDataSource = new UserDefinedFilter(this.processfilter);
-        //		Criteria crit = this.myFilteredDataSource.getCriteria();
-        //		crit.addOrder(Order.desc("erstellungsdatum"));
-        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        //		crit.setMaxResults(getBatchMaxSize());
-        //		try {
-        //			this.currentProcesses = crit.list();
-        //		} catch (HibernateException e) {
-        //			this.currentProcesses = new ArrayList<Process>();
-        //		}
-        
+
         this.currentProcesses = ProcessManager.getProcesses("prozesse.erstellungsdatum", filter, 0, getBatchMaxSize());
     }
 
@@ -189,10 +178,6 @@ public class BatchBean extends BasicBean {
             logger.warn("NAN Exception: " + this.batchfilter);
         }
         if (number != null) {
-            //            Session session = Helper.getHibernateSession();
-            //            Query query = session.createQuery("select distinct batchID from Prozess order by batchID desc");
-            //            query.setMaxResults(getBatchMaxSize());
-
             List<Integer> allBatches = ProcessManager.getBatchIds(getBatchMaxSize());
             this.currentBatches = new ArrayList<Batch>();
             for (Integer in : allBatches) {
@@ -201,10 +186,6 @@ public class BatchBean extends BasicBean {
                 }
             }
         } else {
-            //            Session session = Helper.getHibernateSession();
-            //            Query query = session.createQuery("select distinct batchID from Prozess order by batchID desc");
-            //            query.setMaxResults(getBatchMaxSize());
-            //            List<Integer> ids = query.list();
             List<Integer> ids = ProcessManager.getBatchIds(getBatchMaxSize());
             this.currentBatches = new ArrayList<Batch>();
             for (Integer in : ids) {
@@ -339,7 +320,7 @@ public class BatchBean extends BasicBean {
                         //						}
                     }
                     //					try {
-//                    ProcessManager.updateBatchList(deleteList);
+                    //                    ProcessManager.updateBatchList(deleteList);
                     //						session.flush();
                     //						session.connection().commit();
                     //					} catch (DAOException e) {
@@ -454,8 +435,6 @@ public class BatchBean extends BasicBean {
         }
         FilterAlleStart();
     }
-
-
 
     public String editProperties() {
         if (this.selectedBatches.size() == 0) {
