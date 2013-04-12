@@ -479,7 +479,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private String sortList() {
-        String answer = "titel";
+        String answer = "prozesse.titel";
         if (this.sortierung.equals("titelAsc")) {
             answer = "prozesse.titel";
         } else if (this.sortierung.equals("titelDesc")) {
