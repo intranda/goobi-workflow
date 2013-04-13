@@ -47,9 +47,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>private</name>
+			<name>src_merge</name>
 			<type>2</type>
-			<location>/home/robert/git/goobi-private/Goobi-Configuration/src_merge</location>
+			<location>/Users/steffen/git/goobi-private/Goobi-Configuration/src_merge</location>
 		</link>
 	</linkedResources>
 </projectDescription>

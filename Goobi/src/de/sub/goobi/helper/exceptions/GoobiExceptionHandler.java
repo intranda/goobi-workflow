@@ -92,7 +92,7 @@ t.printStackTrace();
 //						System.out.println(ste.toString());
 //					}
 					flash.put("exceptionStacktrace", trace);
-					navigationHandler.handleNavigation(facesContext, null, "/themes/default/error?faces-redirect=true");
+					navigationHandler.handleNavigation(facesContext, null, "/ui/error?faces-redirect=true");
 					facesContext.renderResponse();
 				} finally {
 					i.remove();

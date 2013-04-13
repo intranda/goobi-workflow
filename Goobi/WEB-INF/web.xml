@@ -167,7 +167,7 @@
 	<!-- Error pages -->
 	<!-- <error-page>
 		<exception-type>java.lang.Throwable</exception-type>
-		<location>/themes/default/error.xhtml</location>
+		<location>/ui/error.xhtml</location>
 	</error-page> -->
 
 
