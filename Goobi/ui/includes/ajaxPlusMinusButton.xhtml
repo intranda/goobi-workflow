@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<h:commandLink style="color:black" id="plusminusbutton">
+			<h:graphicImage value="images/plus.gif" style="margin-right:4px" rendered="#{!item.panelAusgeklappt}" />
+			<h:graphicImage value="images/minus.gif" style="margin-right:4px" rendered="#{item.panelAusgeklappt}" />
+			<x:updateActionListener value="#{item.panelAusgeklappt?false:true}" property="#{item.panelAusgeklappt}" />
+			<h:outputText value="#{item.titel}" />
+		</h:commandLink>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

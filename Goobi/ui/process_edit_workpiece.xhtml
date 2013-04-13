@@ -1,0 +1,181 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<ui:define name="breadcrumb">
+		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:commandLink id="id3" value="#{msgs.prozessverwaltung}" action="process_all" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:commandLink value="#{msgs.prozessDetails}" action="process_edit">
+		</h:commandLink>
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:outputText value="#{msgs.werkstueckDetails}" />
+	</ui:define>
+
+	<ui:define name="title">
+		<h:outputText value="#{msgs.neueWerkstueckAnlegen}" rendered="#{ProzessverwaltungForm.myWerkstueck.id == null}" />
+		<h:outputText value="#{msgs.werkstueckDetails}" rendered="#{ProzessverwaltungForm.myWerkstueck.id != null}" />
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+
+			<table cellpadding="3" cellspacing="0" width="100%" class="main_statistikboxen">
+
+				<tr>
+					<td class="main_statistikboxen_row1">
+						<h:outputText value="#{msgs.eigenschaften}" />
+					</td>
+					<td class="main_statistikboxen_row1" align="right">
+						<h:commandLink action="#{ProzessverwaltungForm.Reload}">
+							<h:graphicImage value="images/reload.gif" />
+						</h:commandLink>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="main_statistikboxen_row2" colspan="2">
+
+						<table border="0" width="90%" cellpadding="2">
+							<tr>
+								<td width="150">
+									<h:outputText value="#{msgs.id}:" />
+								</td>
+								<td>
+									<h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
+								</td>
+								<td rowspan="2" align="right">
+									<h:commandLink title="#{msgs.loeschen}" action="#{ProzessverwaltungForm.WerkstueckLoeschen}" style="margin-right:20px">
+										<h:graphicImage value="images/buttons/waste1a_20px.gif" />
+									</h:commandLink>
+								</td>
+							</tr>
+
+						</table>
+
+					</td>
+				</tr>
+			</table>
+
+
+			<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+			<!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
+			<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+			<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='werkstueckeigenschaft'}">
+
+
+				<h4 style="margin-top: 15">
+					<h:outputText value="#{msgs.eigenschaften}" />
+				</h4>
+
+				<x:dataTable id="werkstueckeigenschaften" styleClass="standardTable" width="100%" cellspacing="1px" cellpadding="1px"
+					headerClass="standardTable_Header" rowClasses="standardTable_Row1"
+					columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered" var="item"
+					value="#{ProzessverwaltungForm.myWerkstueck.eigenschaftenList}">
+
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.titel}" />
+						</f:facet>
+						<h:outputText value="#{item.titel}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.wert}" />
+						</f:facet>
+						<h:outputText value="#{item.wert}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.auswahl}" />
+						</f:facet>
+						<!-- Bearbeiten-Schaltknopf -->
+						<h:commandLink action="process_edit_workpiece" title="#{msgs.bearbeiten}">
+							<h:graphicImage value="images/buttons/edit.gif" />
+							<x:updateActionListener property="#{ProzessverwaltungForm.myWerkstueckEigenschaft}" value="#{item}" />
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="werkstueckeigenschaft" />
+						</h:commandLink>
+					</h:column>
+				</x:dataTable>
+
+				<!-- Neu-Schaltknopf -->
+				<h:commandLink action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}" value="#{msgs.eigenschaftHinzufuegen}"
+					title="#{msgs.eigenschaftHinzufuegen}">
+					<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="werkstueckeigenschaft" />
+				</h:commandLink>
+			</h:panelGroup>
+
+
+			<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+			<!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
+			<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+			<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='werkstueckeigenschaft'}">
+
+				<h4 style="margin-top: 15">
+					<h:outputText value="#{msgs.eigenschaftBearbeiten}" />
+				</h4>
+				<!-- Box für die Bearbeitung der Details -->
+				<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
+
+					<tr>
+						<td class="eingabeBoxen_row1" colspan="2">
+							<h:outputText value="#{msgs.eigenschaft}" />
+						</td>
+					</tr>
+
+					<!-- Formular für die Bearbeitung der Eigenschaft -->
+					<tr>
+						<td class="eingabeBoxen_row2" colspan="2">
+							<h:panelGrid columns="2">
+
+								<!-- Felder -->
+								<h:outputLabel for="eigenschafttitel" value="#{msgs.titel}" />
+								<h:panelGroup>
+									<h:inputText id="eigenschafttitel" style="width: 300px;margin-right:15px" value="#{ProzessverwaltungForm.myWerkstueckEigenschaft.titel}"
+										required="true" />
+									<x:message for="eigenschafttitel" style="color: red" detailFormat="#{msgs.keinTitelAngegeben}" />
+								</h:panelGroup>
+
+								<h:outputLabel for="eigenschaftwert" value="#{msgs.wert}" />
+								<h:panelGroup>
+									<h:inputText id="eigenschaftwert" style="width: 300px;margin-right:15px" value="#{ProzessverwaltungForm.myWerkstueckEigenschaft.wert}" />
+								</h:panelGroup>
+							</h:panelGrid>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="eingabeBoxen_row3" align="left">
+							<h:commandButton value="#{msgs.abbrechen}" action="#{NavigationForm.Reload}" immediate="true">
+								<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+							</h:commandButton>
+						</td>
+						<td class="eingabeBoxen_row3" align="right">
+							<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.WerkstueckEigenschaftLoeschen}"
+								onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')"
+								rendered="#{ProzessverwaltungForm.myWerkstueckEigenschaft.id != null}">
+								<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+							</h:commandButton>
+							<h:commandButton value="#{msgs.uebernehmen}" action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">
+								<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+							</h:commandButton>
+						</td>
+					</tr>
+				</table>
+			</h:panelGroup>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+
+
+
+
+

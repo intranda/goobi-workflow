@@ -1,0 +1,385 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<h:form id="formular1">
+			<h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson)}">
+
+
+				<!-- ########################################
+
+                          Speichern der Metadaten und Überschrift
+
+		 		#########################################-->
+				<table width="540">
+					<tr>
+						<td>
+							<!-- passende Überschrift -->
+							<h3 style="margin-top: 0px">
+								<h:outputText value="#{msgs.metadatenBearbeiten}" rendered="#{not Metadaten.nurLesenModus}" />
+								<h:outputText value="#{msgs.metadatenBetrachten}" rendered="#{Metadaten.nurLesenModus}" />
+								<h:outputText value=" (#{msgs.schreibgeschuetzt})" rendered="#{Metadaten.nurLesenModus}" style="color: red" />
+							</h3>
+						</td>
+
+						<!--
+			<td width="1%" valign="bottom" align="right" nowrap="">
+				<div id="x1"
+					style="display: none;border: 2px dashed silver;padding:3px">
+					<h:outputLink value="Metadaten2rechts.jsf" target="_self"
+						title="#{msgs.dieAenderungenVerwerfen}">
+						<h:graphicImage value="images/buttons/cancel3.gif"
+							style="border: 0px;vertical-align:middle;" />
+						<h:outputText value="#{msgs.abbrechen}" />
+					</h:outputLink>
+				</div>
+			</td>
+			<td width="1%" valign="bottom" align="right" nowrap="">
+				<div id="y1"
+					style="display: none;border: 2px dashed red;padding:3px">
+					<h:commandLink action="#{Metadaten.Reload}"
+						title="#{msgs.dieAenderungenSpeichern}"
+						onclick="document.getElementById('formular4:DatenGeaendert').value = '0'"
+						rendered="#{not Metadaten.nurLesenModus}">
+						<h:graphicImage value="images/buttons/ok.gif"
+							style="border: 0px;vertical-align:middle;" />
+						<h:outputText value="#{msgs.speichern}" />
+					</h:commandLink>
+				</div>
+			</td>  -->
+					</tr>
+				</table>
+
+				<!-- ########################################
+
+                         Tabelle für die Personen
+
+    			#########################################-->
+				<h:panelGroup rendered="#{!empty Metadaten.myPersonen}">
+
+					<h4 style="margin-top: 0px; margin-bottom: 1px">
+						<h:outputText value="#{msgs.personen}" />
+					</h4>
+
+					<!-- öffnen der Tabelle -->
+					<h:dataTable value="#{Metadaten.myPersonen}" var="Item" styleClass="Tabelle" style="background-color:#F0F0F0"
+						columnClasses="TabelleSpalteLinks,TabelleSpalteLinks">
+
+						<!-- Metadaten -->
+						<h:column>
+							<h:panelGrid columns="2">
+								<h:outputText value="#{msgs.vorname}" style="font-size: 11px" />
+								<h:inputText value="#{Item.vorname}" styleClass="metadatenInput" style="width: 350px;" readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" />
+								</h:inputText>
+								<h:outputText value="#{msgs.nachname}" style="font-size: 11px" />
+								<h:inputText value="#{Item.nachname}" styleClass="metadatenInput" style="width: 350px;" readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" />
+								</h:inputText>
+								<h:outputText value="#{msgs.rolle}" style="font-size: 11px" />
+								<h:selectOneMenu value="#{Item.rolle}" styleClass="metadatenInput" style="width: 350px;" disabled="#{Metadaten.nurLesenModus}"
+									readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" />
+									<f:selectItems value="#{Item.addableRollen}" />
+								</h:selectOneMenu>
+							</h:panelGrid>
+						</h:column>
+
+						<!-- Link für Details -->
+						<h:column rendered="#{not Metadaten.nurLesenModus}">
+							<!-- Kopieren-Schaltknopf -->
+							<h:commandLink id="l7" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}">
+								<h:graphicImage value="images/buttons/copy.gif" />
+								<f:param name="ID" value="#{Item.identifier}" />
+								<x:updateActionListener property="#{Metadaten.curPerson}" value="#{Item}" />
+							</h:commandLink>
+							<!-- Transliterieren-Schaltknopf -->
+							<!-- 		<h:commandLink action="#{Metadaten.TransliterierenPerson}"
+					rendered="#{Item.rolle=='Author'}"
+					title="#{msgs.diesesFeldTransliterieren}">
+					<h:graphicImage value="images/buttons/translit.gif"
+						style="margin-left:3px" />
+					<f:param name="ID" value="#{Item.identifier}" />
+					<x:updateActionListener property="#{Metadaten.curPerson}"
+						value="#{Item}" />
+				</h:commandLink>
+	-->
+							<!-- Löschen-Schaltknopf -->
+							<h:commandLink id="l6" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}">
+								<h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:3px" />
+								<f:param name="ID" value="#{Item.identifier}" />
+								<x:updateActionListener property="#{Metadaten.curPerson}" value="#{Item}" />
+							</h:commandLink>
+
+
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+
+				<!-- ########################################
+
+                                                 Tabelle für die Metadaten
+
+ 				#########################################-->
+				<h:panelGroup rendered="#{!empty Metadaten.myMetadaten}"
+					style="#{empty Metadaten.myPersonen ? 'margin-top:0px':'margin-top:15px;'}; display:block">
+					<h4 style="margin-top: 0px; margin-bottom: 1px">
+						<h:outputText value="#{msgs.metadaten}" />
+					</h4>
+
+					<!-- öffnen der Tabelle -->
+					<x:dataTable value="#{Metadaten.myMetadaten}" var="Item" styleClass="Tabelle" headerClass="TabelleHeader"
+						columnClasses="TabelleSpalteLinks,TabelleSpalteLinks,TabelleSpalteLinks">
+
+						<!-- Metadaten -->
+						<x:column width="70px">
+							<h:outputText value="#{Item.typ}" style="font-size: 11px" />
+						</x:column>
+
+						<!-- Metadaten -->
+						<h:column>
+							<h:panelGrid columns="1" rendered="#{(Item.outputType == 'textarea')}">
+
+								<h:inputTextarea value="#{Item.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput"
+									style="width: 350px;height: 45px;">
+									<f:ajax execute="@form" event="change" render="@form" />
+								</h:inputTextarea>
+
+							</h:panelGrid>
+							<h:panelGrid columns="1" rendered="#{(Item.outputType == 'input')}">
+								<h:inputText value="#{Item.value}" styleClass="metadatenInput" style="width: 350px;" readonly="#{Metadaten.nurLesenModus}">
+									<f:ajax execute="@form" event="change" render="@form" />
+								</h:inputText>
+
+							</h:panelGrid>
+
+
+							<h:selectManyListbox value="#{Item.selectedItems}" rendered="#{(Item.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
+								<f:ajax execute="@form" event="change" render="@form" />
+								<f:selectItems value="#{Item.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
+							</h:selectManyListbox>
+							<h:selectOneMenu value="#{Item.selectedItem}" rendered="#{(Item.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
+								<f:ajax execute="@form" event="change" render="@form" />
+								<f:selectItems value="#{Item.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
+							</h:selectOneMenu>
+							<h:outputText id="myOutput" value="#{Item.value}" rendered="#{(Item.outputType == 'readonly')}" styleClass="metadatenInput"
+								style="width: 350px; border: 0 none;" />
+						</h:column>
+
+						<!-- Link für Details -->
+						<h:column rendered="#{not Metadaten.nurLesenModus}">
+							<!-- Kopieren-Schaltknopf -->
+							<h:commandLink id="l5" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}">
+								<h:graphicImage value="images/buttons/copy.gif" />
+								<f:param name="ID" value="#{Item.identifier}" />
+								<x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{Item}" />
+							</h:commandLink>
+							<!-- Transliterieren-Schaltknopf -->
+							<h:commandLink action="#{Metadaten.Transliterieren}" rendered="#{Item.typ=='russian Title'}" title="#{msgs.diesesFeldTransliterieren}">
+								<h:graphicImage value="images/buttons/translit.gif" style="margin-left:3px" />
+								<f:param name="ID" value="#{Item.identifier}" />
+								<x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{Item}" />
+							</h:commandLink>
+							<!-- Löschen-Schaltknopf -->
+							<h:commandLink id="l4" action="#{Metadaten.Loeschen}" title="#{msgs.metadatenLoeschen}">
+								<h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:3px" />
+								<f:param name="ID" value="#{Item.identifier}" />
+								<x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{Item}" />
+							</h:commandLink>
+
+						</h:column>
+					</x:dataTable>
+				</h:panelGroup>
+
+				<!-- ########################################
+
+                          Speichern der Metadaten oder neue hinzufügen
+
+ 				#########################################-->
+				<table width="540">
+					<tr>
+						<td>
+							<h:panelGroup rendered="#{not Metadaten.modusHinzufuegen and not Metadaten.modusHinzufuegenPerson and not Metadaten.nurLesenModus}"
+								style="margin-top:10px">
+								<!-- Hinzufuegen-Schaltknopf für Person-->
+								<h:commandLink id="l2" action="#{Metadaten.HinzufuegenPerson}" style="margin-left:2px" title="#{msgs.neuePersonAnlegen}"
+									rendered="#{Metadaten.sizeOfRoles!=0}">
+
+
+									<h:graphicImage value="images/buttons/new.gif" style="border: 0px;vertical-align:middle" />
+									<h:outputText value="#{msgs.neuePersonHinzufuegen}" />
+								</h:commandLink>
+								<br />
+								<!-- Hinzufuegen-Schaltknopf für Metadaten -->
+								<h:commandLink id="l1" action="#{Metadaten.Hinzufuegen}" style="margin-left:2px" title="#{msgs.neuesMetadatumAnlegen}"
+									rendered="#{Metadaten.sizeOfMetadata!=0}">
+									<h:graphicImage value="images/buttons/new.gif" style="border: 0px;vertical-align:middle" />
+									<h:outputText value="#{msgs.neueMetadatenHinzufuegen}" />
+								</h:commandLink>
+							</h:panelGroup>
+						</td>
+						<!-- 
+			<td width="10%" valign="top" align="right" nowrap="">
+				<div id="x2">
+					<h:outputLink value="Metadaten2rechts.jsf" target="_self"
+						title="#{msgs.dieAenderungenVerwerfen}"
+						rendered="#{not Metadaten.nurLesenModus}">
+						<h:graphicImage value="images/buttons/cancel3.gif"
+							style="border: 0px;vertical-align:middle;" />
+						<h:outputText value="#{msgs.abbrechen}" />
+					</h:outputLink>
+				</div>
+			</td>
+			<td width="10%" valign="top" align="right" nowrap="">
+				<div id="y2">
+					<h:commandLink action="#{Metadaten.Reload}" style="margin:5px"
+						title="#{msgs.dieAenderungenSpeichern}"
+						onclick="document.getElementById('formular4:DatenGeaendert').value = '0'"
+						rendered="#{not Metadaten.nurLesenModus}">
+						<h:graphicImage value="images/buttons/ok.gif"
+							style="border: 0px;vertical-align:middle;" />
+						<h:outputText value="#{msgs.speichern}" />
+					</h:commandLink>
+				</div>
+			</td>
+			-->
+					</tr>
+				</table>
+
+			</h:panelGroup>
+
+
+			<!-- ########################################
+
+                  Formular für neue Metadaten
+
+			#########################################-->
+			<h:panelGroup rendered="#{Metadaten.modusHinzufuegen}">
+				<h3 style="margin-top: 0px">
+					<h:outputText value="#{msgs.neuesMetadatumAnlegen}" />
+				</h3>
+				<table id="render" cellpadding="3" cellspacing="0" style="width: 540px" class="eingabeBoxen">
+					<tr>
+						<td class="eingabeBoxen_row1">
+							<h:outputText value="#{msgs.metadatenBearbeiten}" />
+						</td>
+					</tr>
+					<tr>
+						<td class="eingabeBoxen_row2">
+							<h:panelGrid id="grid1" columns="2">
+								<!-- typ -->
+								<h:outputLabel for="mytyp" value="#{msgs.typ}" />
+
+								<h:panelGroup>
+									<h:selectOneMenu id="mytyp" style="width: 400px;margin-right:15px" value="#{Metadaten.tempTyp}" required="true" onchange="loadValue()">
+										<f:selectItems value="#{Metadaten.addableMetadataTypes}" />
+									</h:selectOneMenu>
+									<x:message for="mytyp" style="color: red" replaceIdWithLabel="true" />
+								</h:panelGroup>
+
+								<h:outputLabel for="myValues" value="#{msgs.wert}" />
+
+								<h:panelGroup>
+									<x:div id="myValues">
+
+										<h:inputTextarea id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}"
+											styleClass="metadatenInput" style="width: 350px;height: 45px;">
+										</h:inputTextarea>
+										<h:inputText id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input')}" styleClass="metadatenInput"
+											style="width: 350px;" />
+										<h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}"
+											immediate="true">
+											<f:selectItems value="#{Metadaten.metadatum.items}" />
+										</h:selectManyListbox>
+										<h:selectOneMenu id="mySelect1" value="#{Metadaten.metadatum.selectedItem}" rendered="#{(Metadaten.outputType == 'select1')}"
+											immediate="true">
+											<f:selectItems value="#{Metadaten.metadatum.items}" />
+										</h:selectOneMenu>
+										<h:outputText id="myOutput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'readonly')}"
+											styleClass="metadatenInput" style="width: 350px;" />
+									</x:div>
+								</h:panelGroup>
+							</h:panelGrid>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="eingabeBoxen_row3">
+							<h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
+								<x:updateActionListener value="huhu" property="#{Metadaten.metadatum.value}"></x:updateActionListener>
+							</h:commandButton>
+							<x:commandButton id="absenden" forceId="true" type="submit" action="#{Metadaten.Speichern}" value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
+						</td>
+					</tr>
+
+				</table>
+			</h:panelGroup>
+
+
+
+			<!-- ########################################
+
+                     			Formular für neue Person
+
+  #########################################-->
+			<h:panelGroup rendered="#{Metadaten.modusHinzufuegenPerson}">
+				<h3 style="margin-top: 0px">
+					<h:outputText value="#{msgs.neuePersonAnlegen}" />
+				</h3>
+				<table cellpadding="3" cellspacing="0" style="width: 540px" class="eingabeBoxen">
+					<tr>
+						<td class="eingabeBoxen_row1">
+							<h:outputText value="#{msgs.personBearbeiten}" />
+						</td>
+					</tr>
+					<tr>
+						<td class="eingabeBoxen_row2">
+							<h:panelGrid columns="2">
+								<!-- vorname -->
+								<h:outputLabel for="vorname" value="#{msgs.vorname}" />
+								<h:panelGroup>
+									<h:inputText id="vorname" style="width: 400px;margin-right:15px" value="#{Metadaten.tempPersonVorname}" />
+									<x:message for="vorname" style="color: red" replaceIdWithLabel="true" />
+								</h:panelGroup>
+
+								<!-- nachname -->
+								<h:outputLabel for="nachname" value="#{msgs.nachname}" />
+								<h:panelGroup>
+									<h:inputText id="nachname" style="width: 400px;margin-right:15px" value="#{Metadaten.tempPersonNachname}" />
+									<x:message for="nachname" style="color: red" replaceIdWithLabel="true" />
+								</h:panelGroup>
+
+								<!-- Rolle -->
+								<h:outputLabel for="Rolle" value="#{msgs.rolle}" />
+								<h:panelGroup>
+									<h:selectOneMenu id="Rolle" value="#{Metadaten.tempPersonRolle}" style="width: 400px;margin-right:15px">
+										<f:selectItems value="#{Metadaten.addableRollen}" />
+									</h:selectOneMenu>
+									<x:message for="Rolle" style="color: red" replaceIdWithLabel="true" />
+								</h:panelGroup>
+
+							</h:panelGrid>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="eingabeBoxen_row3">
+							<h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true"></h:commandButton>
+							<x:commandButton id="absenden2" forceId="true" type="submit" action="#{Metadaten.SpeichernPerson}" value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
+						</td>
+					</tr>
+
+				</table>
+			</h:panelGroup>
+
+		</h:form>
+	</composite:implementation>
+
+</ui:composition>
+
+

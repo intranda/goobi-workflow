@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<ui:define name="title">
+		<title>Custom Exception Page</title>
+
+	</ui:define>
+
+
+	<ui:define name="content">
+		<h:form>
+
+			<p>SOME UNHANDLED EXCEPTION OCCURED</p>
+			<br />	
+   				 #{currentView}
+      		<br /> 
+    			#{flash.exceptionInfo}
+    		 <br />
+			<x:dataList value="#{flash.exceptionStacktrace}" var="e">
+				<h:outputText value="#{e}"></h:outputText>
+				<br />
+			</x:dataList>
+		</h:form>
+	</ui:define>
+</ui:composition>

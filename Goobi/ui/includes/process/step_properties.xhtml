@@ -1,0 +1,201 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+		<!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritteeigenschaft'}">
+			<h4 style="margin-top: 15">
+				<h:outputText value="#{msgs.eigenschaften}" />
+			</h4>
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritteeigenschaft'}">
+			<table width="100%" class="standardTable" cellspacing="1px" cellpadding="1px">
+
+				<thead class="standardTable_Header">
+					<th>
+						<h:outputText value="#{msgs.titel}" />
+					</th>
+					<th>
+						<h:outputText value="#{msgs.wert}" />
+					</th>
+					<th>
+						<h:outputText value="#{msgs.auswahl}" />
+					</th>
+				</thead>
+
+				<x:dataList var="container" value="#{ProzessverwaltungForm.mySchritt.displayProperties.containers}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+					<x:dataList var="item" value="#{ProzessverwaltungForm.mySchritt.displayProperties.sortedProperties}">
+						<h:panelGroup rendered="#{item.container==container}">
+							<tr class="standardTable_Row1">
+								<td class="standardTable_Column">
+									<h:outputText value="#{item.titel}" />
+								</td>
+								<td class="standardTable_Column">
+									<h:outputText value="#{item.date}" rendered="#{item.type.name == 'date'}">
+										<f:convertDateTime dateStyle="medium" />
+									</h:outputText>
+									<h:outputText value="#{item.selectedValueBeautified}" rendered="#{item.type.name != 'date'}" />
+								</td>
+								<td class="standardTable_ColumnCentered">
+									<!-- Bearbeiten-Schaltknopf -->
+									<h:commandLink action="process_edit_step" title="#{msgs.bearbeiten}">
+										<h:graphicImage value="images/buttons/edit.gif" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.mySchritt.displayProperties.currentProperty}" value="#{item}" />
+										<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="schritteeigenschaft" />
+									</h:commandLink>
+									<!-- duplicate -->
+									<h:commandLink action="#{ProzessverwaltungForm.mySchritt.displayProperties.duplicateProperty}">
+										<h:graphicImage value="images/buttons/copy.gif" />
+										<x:updateActionListener value="#{item}" property="#{ProzessverwaltungForm.mySchritt.displayProperties.currentProperty}" />
+									</h:commandLink>
+								</td>
+							</tr>
+						</h:panelGroup>
+
+					</x:dataList>
+					<h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
+						<tr>
+							<td colspan="3" class="standardTable_Row1">
+								<h:outputText value="&amp;nbsp;" escape="false" />
+							</td>
+						</tr>
+					</h:panelGroup>
+				</x:dataList>
+
+			</table>
+		</h:panelGroup>
+
+
+		<!-- Neu-Schaltknopf -->
+		<h:commandLink action="#{ProzessverwaltungForm.mySchritt.displayProperties.createNewProperty}" value="#{msgs.eigenschaftHinzufuegen}"
+			title="#{msgs.eigenschaftHinzufuegen}" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritteeigenschaft'}">
+			<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="schritteeigenschaft" />
+		</h:commandLink>
+
+
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+		<!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
+		<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='schritteeigenschaft'}">
+			<h4 style="margin-top: 15">
+				<h:outputText value="#{msgs.eigenschaftBearbeiten}" />
+			</h4>
+		</h:panelGroup>
+		<!-- Box für die Bearbeitung der Details -->
+		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='schritteeigenschaft'}">
+
+			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
+
+				<tr>
+					<td class="eingabeBoxen_row1" colspan="2">
+						<h:outputText value="#{msgs.eigenschaft}" />
+					</td>
+				</tr>
+
+				<!-- Formular für die Bearbeitung der Eigenschaft -->
+				<tr>
+					<td class="eingabeBoxen_row2" colspan="2">
+						<x:aliasBean alias="#{myitem}" value="#{ProzessverwaltungForm.mySchritt.displayProperties.currentProperty}">
+							<h:panelGrid columns="2">
+
+
+								<!-- Felder -->
+								<h:outputLabel for="eigenschafttitel" value="#{msgs.titel}" />
+								<h:panelGroup>
+									<h:inputText id="eigenschafttitel" style="width: 500px;margin-right:15px"
+										value="#{ProzessverwaltungForm.mySchritt.displayProperties.currentProperty.titel}" required="true" />
+									<x:message for="eigenschafttitel" style="color: red" detailFormat="#{msgs.keinTitelAngegeben}" />
+								</h:panelGroup>
+
+
+
+								<h:outputText value="#{msgs.wert}" />
+								<!-- textarea -->
+								<h:panelGroup id="prpvw15_1" rendered="#{((myitem.type.name == 'string') || (myitem.type.name == 'null'))}">
+									<h:inputText id="file" style="width: 500px;margin-right:15px" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+										value="#{myitem.selectedValue}" required="#{myitem.required}" />
+								</h:panelGroup>
+
+								<!-- numbers only -->
+								<h:panelGroup id="prpvw15_1mnk" rendered="#{myitem.type.name == 'integer' || myitem.type.name == 'number'}">
+
+									<h:inputText id="numberstuff122334mnktodo" style="width: 500px;margin-right:15px"
+										readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" value="#{myitem.selectedValue}" required="#{myitem.required}">
+										<f:validateLongRange minimum="0" />
+									</h:inputText>
+								</h:panelGroup>
+
+								<!--  SelectOneMenu -->
+								<h:panelGroup id="prpvw15_2" rendered="#{(myitem.type.name == 'list')}">
+									<h:selectOneMenu value="#{myitem.selectedValue}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+										style="width: 500px;margin-right:15px" id="prpvw15_2_1">
+										<f:selectItems id="prpvw15_2_2" value="#{myitem.valuesList}" var="myitems" itemLabel="#{myitems}" itemValue="#{myitems}" />
+									</h:selectOneMenu>
+								</h:panelGroup>
+
+								<!--  SelectManyMenu -->
+								<h:panelGroup id="prpvw15_3" rendered="#{(myitem.type.name == 'listmultiselect')}">
+									<h:selectManyListbox id="prpvw15_3_1" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+										style="width: 500px;margin-right:15px" value="#{myitem.selectedValuesList}" required="#{myitem.required}" size="10">
+										<f:selectItems id="prpvw15_3_2" value="#{myitem.valuesList}" var="myitems" itemLabel="#{myitems}" itemValue="#{myitems}" />
+									</h:selectManyListbox>
+								</h:panelGroup>
+
+								<!--  Boolean -->
+								<h:panelGroup id="prpvw15_4" rendered="#{(myitem.type.name == 'boolean')}">
+									<h:selectOneMenu value="#{myitem.selectedValue}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+										style="width: 500px;margin-right:15px" id="prpvw15_4_1" required="#{myitem.required}">
+										<f:selectItem id="prpvw15_4_2" itemValue="true" itemLabel="#{msgs.yes}" />
+										<f:selectItem id="prpvw15_4_3" itemValue="false" itemLabel="#{msgs.no}" />
+									</h:selectOneMenu>
+								</h:panelGroup>
+
+								<!--  Date  -->
+								<h:panelGroup id="prpvw15_5" style="width: 500px;margin-right:15px" rendered="#{(myitem.type.name == 'date')}">
+									<x:inputCalendar id="to" style="width:110px" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+										value="#{myitem.dateValue}" renderAsPopup="true" renderPopupButtonAsImage="true" popupTodayString="#{msgs.heute}"
+										popupWeekString="#{msgs.kw}" imageLocation="images/calendarImages" popupButtonImageUrl="images/calendarImages/calendar.gif" />
+
+								</h:panelGroup>
+
+							</h:panelGrid>
+						</x:aliasBean>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="eingabeBoxen_row3" align="left">
+						<h:commandButton value="#{msgs.abbrechen}" action="#{NavigationForm.Reload}" immediate="true">
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+						</h:commandButton>
+					</td>
+					<td class="eingabeBoxen_row3" align="right">
+						<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.mySchritt.displayProperties.deleteProperty}"
+							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')"
+							rendered="#{ProzessverwaltungForm.mySchritt.displayProperties.currentProperty.id != null}">
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+						</h:commandButton>
+						<h:commandButton value="#{msgs.uebernehmen}" action="#{ProzessverwaltungForm.SchrittEigenschaftUebernehmen}">
+							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+						</h:commandButton>
+					</td>
+				</tr>
+			</table>
+		</h:panelGroup>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+		<table id="myTree" class="layoutTreeView2" style="width: 100%; height: 100%;">
+			<tr>
+				<td valign="top" height="100%">
+					<h:form rendered="true" id="treeform">
+
+						<h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action"
+							style="position:absolute;left:165px"></h:graphicImage>
+
+						<x:dataTable id="tabelle" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" cellpadding="0" cellspacing="0">
+
+							<h:column>
+
+								<h:commandLink action="#{NavigationForm.Reload}">
+									<x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
+									<h:graphicImage value="images/plus.gif" rendered="#{item.node.hasChildren and not item.node.expanded}"
+										style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
+									<h:graphicImage value="images/minus.gif" rendered="#{item.node.hasChildren and item.node.expanded}"
+										style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
+								</h:commandLink>
+
+								<x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="17" displayAtDistanceY="-40">
+
+									<f:facet name="popup">
+										<div>
+											<h:panelGrid columns="1" style="background-color:white; font-size:11px; border: 1px solid #e3c240; padding: 1px;"
+												rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
+												<h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
+
+													<h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
+
+													<h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
+
+													<h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
+
+													<h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
+
+													<h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
+												</h:panelGrid>
+											</h:panelGrid>
+										</div>
+									</f:facet>
+
+									<h:graphicImage value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" />
+									<h:graphicImage value="images/document.png" rendered="#{!item.node.hasChildren}"
+										style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" />
+
+								</x:popup>
+
+								<h:outputText value="#{item.niveau}" style="color:grey;margin-right:4px" rendered="#{Metadaten.treeProperties.showtreelevel}" />
+
+								<h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}"
+									action="#{Metadaten.loadRightFrame}">
+									<h:outputText value="#{item.node.description}"
+										rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
+									<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
+									<x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
+								</h:commandLink>
+
+								<h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px"
+									rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
+
+								<h:outputText value="-#{item.node.lastImage})" style="color:grey;margin-left:0px"
+									rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
+
+							</h:column>
+
+						</x:dataTable>
+
+					</h:form>
+					<h:form id="formWarn" style="display:none">
+						<h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" />
+					</h:form>
+				</td>
+			</tr>
+		</table>
+	</composite:implementation>
+
+</ui:composition>
+
+

@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<ui:define name="breadcrumb">
+		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:commandLink id="id3" value="#{msgs.prozessverwaltung}" action="process_all" />
+		<f:verbatim> &#8250;&#8250; </f:verbatim>
+		<h:outputText id="id4" value="#{msgs.einenNeuenProzessAnlegen}" />
+	</ui:define>
+
+	<ui:define name="title">
+		<h:outputText id="id6" value="#{msgs.einenNeuenProzessAnlegen}" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form>
+			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
+
+				<tr>
+					<td class="eingabeBoxen_row1" colspan="2">
+						<h:outputText value="#{msgs.zusaetzlicheDetails}" />
+					</td>
+				</tr>
+
+				<tr>
+					<td class="eingabeBoxen_row2" colspan="2">
+						<x:dataTable cellspacing="1px" cellpadding="1px" headerClass="standardTable_Header"
+							columnClasses="standardTable_Column,standardTable_Column,standardTable_ColumnCentered" var="item"
+							value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
+
+							<h:column>
+								<h:outputText value="#{item.titel}" />
+							</h:column>
+
+							<h:column>
+								<h:inputText value="#{item.wert}" style="width:500px" />
+							</h:column>
+						</x:dataTable>
+					</td>
+				</tr>
+				<tr>
+					<td class="eingabeBoxen_row3" align="left">
+						<h:commandButton value="#{msgs.abbrechen}" immediate="true" action="process_all">
+						</h:commandButton>
+					</td>
+					<td class="eingabeBoxen_row3" align="right">
+						<h:commandButton value="#{msgs.zurueck}" action="#{ProzesskopieForm.GoToSeite1}">
+						</h:commandButton>
+						<h:commandButton value="#{msgs.speichern}" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+						</h:commandButton>
+					</td>
+				</tr>
+			</table>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+
+
+
+
+

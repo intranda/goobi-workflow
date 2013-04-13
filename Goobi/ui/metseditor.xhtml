@@ -1,0 +1,219 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template_metadata.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<ui:define name="top_title">
+		<!-- 		<h:outputText style="#{HelperForm.applicationTitleStyle}" value="#{Metadaten.myProzess.titel}" /> -->
+		<h:outputText value="#{Metadaten.myProzess.titel}" />
+	</ui:define>
+
+	<ui:define name="top_individual">
+		<ui:include src="includes/metseditor/metseditor_top.xhtml" />
+	</ui:define>
+
+	<ui:define name="sidebar_top">
+		<ui:include src="includes/metseditor/metseditor_left.xhtml" />
+	</ui:define>
+
+	<ui:define name="breadcrumb">
+
+		<table id="bla" width="100%" cellspacing="0" cellpadding="0">
+			<tr>
+				<td><h:panelGroup id="vdid3" rendered="#{not Metadaten.nurLesenModus}">
+
+						<h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
+							<f:param id="vdid5" name="Ansicht" value="Paginierung" />
+						</h:commandLink>
+						<h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px"
+							rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
+						<h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
+
+						<h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
+							<f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
+						</h:commandLink>
+
+						<h:outputText id="vdid10" value="#{msgs.strukturdaten}" style="font-weight:bold;font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
+						<h:outputText id="vdid11" value=" | " style="font-size: 11px;" />
+
+						<h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}" value="#{msgs.metadaten}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
+							<f:param id="vdid13" name="Ansicht" value="Metadaten" />
+						</h:commandLink>
+
+						<h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
+
+					</h:panelGroup></td>
+
+				<td align="right"><h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}"
+						value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" /> <h:commandLink
+						action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==false}" value="#{msgs.metadatenBildAnzeigen}"
+						style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" /> <h:outputText value=" | " style="font-size: 11px;" /> <!-- Metadaten validieren -->
+					<h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}" rendered="#{not Metadaten.nurLesenModus}" /> <h:outputText
+						value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten nicht schreiben, nur zurück gehen--> <h:commandLink
+						style="font-size:11px" action="#{Metadaten.goZurueck}" value="#{msgs.goBack}" target="_parent" immediate="true" id="returnButton" /> <h:outputText
+						value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten schreiben --> <h:commandLink
+						style="font-size:11px" action="#{Metadaten.Reload}" value="#{msgs.speichern}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" /> <h:outputText
+						value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten schreiben und zurück gehen--> <h:commandLink
+						style="font-size:11px" target="_parent" action="#{Metadaten.XMLschreiben}" value="#{msgs.speichernZurueck}"
+						rendered="#{not Metadaten.nurLesenModus}" immediate="false" /></td>
+			</tr>
+		</table>
+	</ui:define>
+
+	<ui:define name="content">
+		<table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
+
+			<tr valign="top" style="width: 100%; height: 100%">
+				<td><h:panelGroup rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
+						<ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
+					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Strukturdaten'}">
+						<ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
+					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
+						<ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
+					</h:panelGroup></td>
+
+				<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
+					<td style="top: 10px;"><h:panelGroup id="BildArea2"
+							style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
+							<ui:include src="includes/metseditor/metseditor_image.xhtml" />
+						</h:panelGroup></td>
+				</h:panelGroup>
+			</tr>
+		</table>
+
+
+		<script type="text/javascript">
+			function focusForPicture() {
+				
+				 //alert(document.getElementById("hiddenBildNummer").value);
+				 //alert(document.getElementsByName("myform:myCheckboxes").length);
+				  
+				for (i = 0; i &lt; document
+						.getElementsByName("myform:myCheckboxes").length; i++) {
+					if (i == document.getElementById("hiddenBildNummer").value - 1) {
+						if (i + 1 &lt; document
+								.getElementsByName("myform:myCheckboxes").length) {
+							document
+									.getElementsByName("myform:myCheckboxes")[i + 1]
+									.focus();
+						}
+						document.getElementsByName("myform:myCheckboxes")[i]
+								.focus();
+					}
+				}
+			}
+
+			document.documentElement.onkeypress = function (event) {
+				//alert("Sie haben die Taste mit dem Wert " + event.which + " gedrueckt");
+				myButton = null;
+				event = event || window.event; // IE sucks
+				var key = event.which || event.keyCode; // IE uses .keyCode, Moz uses .which
+				
+				// -----------  previous20 image - cursor up
+				if ((key == 76 || key == 12 || key == 40) &amp;&amp; // "L" "^L" or "l"
+					event.shiftKey &amp;&amp; event.ctrlKey) {
+					myButton = document.getElementById("formularBild:imageBack20");
+					//goToImageBack();
+					if (event.preventDefault) {
+						event.preventDefault(); 
+					}
+					else {
+						event.returnValue = false;
+					} // IE sucks
+				}
+				
+				// -----------  previous image - cursor left
+				if ((key == 76 || key == 12 || key == 37) &amp;&amp; // "L" "^L" or "l"
+					event.shiftKey &amp;&amp; event.ctrlKey) {
+					myButton = document.getElementById("formularBild:imageBack");
+					//goToImageBack();
+					if (event.preventDefault) {
+						event.preventDefault(); 
+					}
+					else {
+						event.returnValue = false;
+					} // IE sucks
+				}
+				
+				// -----------  next image - cursor right
+				if ((key == 76 || key == 12 || key == 39) &amp;&amp; // "L" "^L" or "l"
+					event.shiftKey &amp;&amp; event.ctrlKey) {
+					myButton = document.getElementById("formularBild:imageNext");
+					//goToImageNext();
+					if (event.preventDefault) {
+						event.preventDefault(); 
+					}
+					else {
+						event.returnValue = false;
+					} // IE sucks
+				}
+				
+				// -----------  next image - cursor down
+				if ((key == 76 || key == 12 || key == 38) &amp;&amp; // "L" "^L" or "l"
+					event.shiftKey &amp;&amp; event.ctrlKey) {
+					myButton = document.getElementById("formularBild:imageNext20");
+					//goToImageNext();
+					if (event.preventDefault) {
+						event.preventDefault(); 
+					}
+					else {
+						event.returnValue = false;
+					} // IE sucks
+				}
+				
+				// -----------  first image - pos1
+				if ((key == 76 || key == 12 || key == 36) &amp;&amp; // "L" "^L" or "l"
+					event.shiftKey &amp;&amp; event.ctrlKey) {
+					myButton = document.getElementById("formularBild:imageFirst");
+					//goToImageNext();
+					if (event.preventDefault) {
+						event.preventDefault(); 
+					}
+					else {
+						event.returnValue = false;
+					} // IE sucks
+				}
+				
+				// -----------  last image - end
+				if ((key == 76 || key == 12 || key == 35) &amp;&amp; // "L" "^L" or "l"
+					event.shiftKey &amp;&amp; event.ctrlKey) {
+					myButton = document.getElementById("formularBild:imageLast");
+					//goToImageNext();
+					if (event.preventDefault) {
+						event.preventDefault(); 
+					}
+					else {
+						event.returnValue = false;
+					} // IE sucks
+				}
+				
+				// ---------- click my Button
+				try{
+					if (myButton!=null)
+						myButton.click();
+				}catch(e){}	
+			}
+			
+			
+			function paginierungWertAnzeigen(element) {
+				var inputBoxElement = document.getElementById("paginierungWert");
+				inputBoxElement.style.display = (element.value == 3 ? 'none' : '');
+				if (element.value == 2 || element.value == 5) {
+					inputBoxElement.value = 'I';
+				}
+				if (element.value == 1 || element.value == 4) {
+					inputBoxElement.value = '1';
+				}
+			}
+				</script>
+	</ui:define>
+
+</ui:composition>
+
+
+
+
+
