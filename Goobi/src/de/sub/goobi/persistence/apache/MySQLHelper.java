@@ -327,19 +327,19 @@ public class MySQLHelper {
 		}
 	}
 
-	public static ProjectObject getProjectObjectById(int projectId) throws SQLException {
-		Connection connection = helper.getConnection();
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM projekte WHERE ProjekteID = ?");
-		try {
-			Object[] param = { projectId };
-			logger.debug(sql.toString() + ", " + param);
-			ProjectObject answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToProjectHandler, param);
-			return answer;
-		} finally {
-			closeConnection(connection);
-		}
-	}
+//	public static ProjectObject getProjectObjectById(int projectId) throws SQLException {
+//		Connection connection = helper.getConnection();
+//		StringBuilder sql = new StringBuilder();
+//		sql.append("SELECT * FROM projekte WHERE ProjekteID = ?");
+//		try {
+//			Object[] param = { projectId };
+//			logger.debug(sql.toString() + ", " + param);
+//			ProjectObject answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToProjectHandler, param);
+//			return answer;
+//		} finally {
+//			closeConnection(connection);
+//		}
+//	}
 
 	public static List<ProjectFileGroup> getFilegroupsForProjectId(int projectId) throws SQLException {
 		Connection connection = helper.getConnection();

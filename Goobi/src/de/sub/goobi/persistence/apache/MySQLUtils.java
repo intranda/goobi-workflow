@@ -248,50 +248,50 @@ public class MySQLUtils {
 //        return so;
 //    }
 
-    public static ResultSetHandler<ProjectObject> resultSetToProjectHandler = new ResultSetHandler<ProjectObject>() {
-        @Override
-        public ProjectObject handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                int projekteID = rs.getInt("ProjekteID");
-                String titel = rs.getString("Titel");
-                boolean useDmsImport = rs.getBoolean("useDmsImport");
-                int dmsImportTimeOut = rs.getInt("dmsImportTimeOut");
-                String dmsImportRootPath = rs.getString("dmsImportRootPath");
-                String dmsImportImagesPath = rs.getString("dmsImportImagesPath");
-                String dmsImportSuccessPath = rs.getString("dmsImportSuccessPath");
-                String dmsImportErrorPath = rs.getString("dmsImportErrorPath");
-                boolean dmsImportCreateProcessFolder = rs.getBoolean("dmsImportCreateProcessFolder");
-                String fileFormatInternal = rs.getString("fileFormatInternal");
-                String fileFormatDmsExport = rs.getString("fileFormatDmsExport");
-                String metsRightsOwner = rs.getString("metsRightsOwner");
-                String metsRightsOwnerLogo = rs.getString("metsRightsOwnerLogo");
-                String metsRightsOwnerSite = rs.getString("metsRightsOwnerSite");
-                String metsDigiprovReference = rs.getString("metsDigiprovReference");
-                String metsDigiprovPresentation = rs.getString("metsDigiprovPresentation");
-                String metsPointerPath = rs.getString("metsPointerPath");
-                String metsPointerPathAnchor = rs.getString("metsPointerPathAnchor");
-                String metsDigiprovReferenceAnchor = rs.getString("metsDigiprovReferenceAnchor");
-                String metsDigiprovPresentationAnchor = rs.getString("metsDigiprovPresentationAnchor");
-                String metsPurl = rs.getString("metsPurl");
-                String metsContentIDs = rs.getString("metsContentIDs");
-                String metsRightsOwnerMail = rs.getString("metsRightsOwnerMail");
-                Date startDate = rs.getTimestamp("startDate");
-                Date endDate = rs.getTimestamp("endDate");
-                int numberOfPages = rs.getInt("numberOfPages");
-                int numberOfVolumes = rs.getInt("numberOfVolumes");
-                boolean projectIsArchived = rs.getBoolean("projectIsArchived");
-
-                ProjectObject po =
-                        new ProjectObject(projekteID, titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath,
-                                dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport,
-                                metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsDigiprovReference, metsDigiprovPresentation,
-                                metsPointerPath, metsPointerPathAnchor, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPurl,
-                                metsContentIDs, metsRightsOwnerMail, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived);
-                return po;
-            }
-            return null;
-        }
-    };
+//    public static ResultSetHandler<ProjectObject> resultSetToProjectHandler = new ResultSetHandler<ProjectObject>() {
+//        @Override
+//        public ProjectObject handle(ResultSet rs) throws SQLException {
+//            if (rs.next()) {
+//                int projekteID = rs.getInt("ProjekteID");
+//                String titel = rs.getString("Titel");
+//                boolean useDmsImport = rs.getBoolean("useDmsImport");
+//                int dmsImportTimeOut = rs.getInt("dmsImportTimeOut");
+//                String dmsImportRootPath = rs.getString("dmsImportRootPath");
+//                String dmsImportImagesPath = rs.getString("dmsImportImagesPath");
+//                String dmsImportSuccessPath = rs.getString("dmsImportSuccessPath");
+//                String dmsImportErrorPath = rs.getString("dmsImportErrorPath");
+//                boolean dmsImportCreateProcessFolder = rs.getBoolean("dmsImportCreateProcessFolder");
+//                String fileFormatInternal = rs.getString("fileFormatInternal");
+//                String fileFormatDmsExport = rs.getString("fileFormatDmsExport");
+//                String metsRightsOwner = rs.getString("metsRightsOwner");
+//                String metsRightsOwnerLogo = rs.getString("metsRightsOwnerLogo");
+//                String metsRightsOwnerSite = rs.getString("metsRightsOwnerSite");
+//                String metsDigiprovReference = rs.getString("metsDigiprovReference");
+//                String metsDigiprovPresentation = rs.getString("metsDigiprovPresentation");
+//                String metsPointerPath = rs.getString("metsPointerPath");
+//                String metsPointerPathAnchor = rs.getString("metsPointerPathAnchor");
+//                String metsDigiprovReferenceAnchor = rs.getString("metsDigiprovReferenceAnchor");
+//                String metsDigiprovPresentationAnchor = rs.getString("metsDigiprovPresentationAnchor");
+//                String metsPurl = rs.getString("metsPurl");
+//                String metsContentIDs = rs.getString("metsContentIDs");
+//                String metsRightsOwnerMail = rs.getString("metsRightsOwnerMail");
+//                Date startDate = rs.getTimestamp("startDate");
+//                Date endDate = rs.getTimestamp("endDate");
+//                int numberOfPages = rs.getInt("numberOfPages");
+//                int numberOfVolumes = rs.getInt("numberOfVolumes");
+//                boolean projectIsArchived = rs.getBoolean("projectIsArchived");
+//
+//                ProjectObject po =
+//                        new ProjectObject(projekteID, titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath,
+//                                dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport,
+//                                metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsDigiprovReference, metsDigiprovPresentation,
+//                                metsPointerPath, metsPointerPathAnchor, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPurl,
+//                                metsContentIDs, metsRightsOwnerMail, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived);
+//                return po;
+//            }
+//            return null;
+//        }
+//    };
 
     public static ResultSetHandler<List<ProjectFileGroup>> resultSetToProjectFilegroupListHandler = new ResultSetHandler<List<ProjectFileGroup>>() {
         @Override

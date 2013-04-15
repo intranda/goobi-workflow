@@ -44,17 +44,21 @@ import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.export.dms.AutomaticDmsExportWithoutHibernate;
+import de.sub.goobi.export.dms.AutomaticDmsExport;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.apache.FolderInformation;
 import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
@@ -305,14 +309,14 @@ public class HelperSchritteWithoutHibernate {
     }
 
     public void executeDmsExport(Step step, boolean automatic) {
-        AutomaticDmsExportWithoutHibernate dms =
-                new AutomaticDmsExportWithoutHibernate(ConfigMain.getBooleanParameter("automaticExportWithImages", true));
+        AutomaticDmsExport dms =
+                new AutomaticDmsExport(ConfigMain.getBooleanParameter("automaticExportWithImages", true));
         if (!ConfigMain.getBooleanParameter("automaticExportWithOcr", true)) {
             dms.setExportFulltext(false);
         }
-        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
+//        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
         try {
-            boolean validate = dms.startExport(po);
+            boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 CloseStepObjectAutomatic(step);
             } else {
@@ -346,6 +350,18 @@ public class HelperSchritteWithoutHibernate {
             // validation error
             abortStep(step);
             return;
+        } catch (DocStructHasNoTypeException e) {
+            logger.error(e);
+            abortStep(step);
+        } catch (MetadataTypeNotAllowedException e) {
+            logger.error(e);
+            abortStep(step);
+        } catch (ExportFileException e) {
+            logger.error(e);
+            abortStep(step);
+        } catch (UghHelperException e) {
+            logger.error(e);
+            abortStep(step);
         }
 
     }
