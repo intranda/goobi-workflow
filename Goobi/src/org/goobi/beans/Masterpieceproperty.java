@@ -33,6 +33,7 @@ import java.util.List;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
+import de.sub.goobi.persistence.managers.MasterpieceManager;
 
 public class Masterpieceproperty implements Serializable, IGoobiProperty {
 	private static final long serialVersionUID = -88407008893258729L;
@@ -178,7 +179,7 @@ public class Masterpieceproperty implements Serializable, IGoobiProperty {
 
 	public Masterpiece getWerkstueck() {
 	    if (werkstueck == null && masterpieceId != null) {
-//	        werkstueck = //TODO
+	      werkstueck = MasterpieceManager.getMasterpieceForTemplateID(masterpieceId);
 	    }
 		return this.werkstueck;
 	}

@@ -182,7 +182,7 @@ public class Templateproperty implements Serializable, IGoobiProperty {
 	}
 
 	public Template getVorlage() {
-	    if (vorlage == null) {
+	    if (vorlage == null && templateId != null) {
 	        vorlage = TemplateManager.getTemplateForTemplateID(templateId);
 	    }
 		return this.vorlage;
