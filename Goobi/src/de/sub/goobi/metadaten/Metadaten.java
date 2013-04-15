@@ -245,6 +245,7 @@ public class Metadaten {
             cleanupMetadata();
             // ignoring result of store operation
             storeMetadata();
+            MetadatenalsTree3Einlesen1();
 			return "";
 		}
 	}
@@ -342,6 +343,7 @@ public class Metadaten {
 		if (!SperrungAktualisieren()) {
 			return "metseditor_timeout";
 		}
+		MetadatenalsTree3Einlesen1();
 		return "";
 	}
 
@@ -916,7 +918,7 @@ public class Metadaten {
 	 * 
 	 * @param inStrukturelement ============================================================== ==
 	 */
-	private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
+    private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
 		OberKnoten.setMainTitle(MetadatenErmitteln(inStrukturelement, "TitleDocMain"));
 		OberKnoten.setZblNummer(MetadatenErmitteln(inStrukturelement, "ZBLIdentifier"));
 		OberKnoten.setZblSeiten(MetadatenErmitteln(inStrukturelement, "ZBLPageNumber"));
