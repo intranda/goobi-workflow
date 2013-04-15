@@ -178,12 +178,12 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
-    public static List<String> loadScripts(int id) {
-        try {
-            return StepMysqlHelper.getScriptsForStep(id);
-        } catch (SQLException e) {
-            logger.error("Cannot not load scripts for step with id " + id, e);
-        }
-        return new ArrayList<String>();
-    }
+//    public static List<String> loadScripts(int id) {
+//        try {
+//            return StepMysqlHelper.getScriptsForStep(id);
+//        } catch (SQLException e) {
+//            logger.error("Cannot not load scripts for step with id " + id, e);
+//        }
+//        return new ArrayList<String>();
+//    }
 }

@@ -35,44 +35,40 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
-import de.sub.goobi.persistence.managers.StepManager;
-
-
-
 public class ScriptThreadWithoutHibernate extends Thread {
-	HelperSchritteWithoutHibernate hs = new HelperSchritteWithoutHibernate();
-	private Step step;
-	public String rueckgabe = "";
-	public boolean stop = false;
-	private static final Logger logger = Logger.getLogger(ScriptThreadWithoutHibernate.class);
+    HelperSchritteWithoutHibernate hs = new HelperSchritteWithoutHibernate();
+    private Step step;
+    public String rueckgabe = "";
+    public boolean stop = false;
+    private static final Logger logger = Logger.getLogger(ScriptThreadWithoutHibernate.class);
 
-	public ScriptThreadWithoutHibernate(Step step) {
-		this.step = step;
-		setDaemon(true);
-	}
+    public ScriptThreadWithoutHibernate(Step step) {
+        this.step = step;
+        setDaemon(true);
+    }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		boolean automatic = this.step.isTypAutomatisch();
-		logger.debug("step is automatic: " + automatic);
-		List<String> scriptPaths = StepManager.loadScripts(this.step.getId());
-		logger.debug("found " + scriptPaths.size() + " scripts");
-		if (scriptPaths.size() > 0) {
-			this.hs.executeAllScriptsForStep(this.step, automatic);
-		} else if (this.step.isTypExportDMS()) {
-			this.hs.executeDmsExport(this.step, automatic);
-		} else if (this.step.getStepPlugin() != null && this.step.getStepPlugin().length() > 0) {
-			IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
-			isp.initialize(step, "");
-			if (isp.execute()) {
-				hs.CloseStepObjectAutomatic(step);
-			}
-		}
-	}
+        boolean automatic = this.step.isTypAutomatisch();
+        logger.debug("step is automatic: " + automatic);
+        List<String> scriptPaths = step.getAllScriptPaths();
+        logger.debug("found " + scriptPaths.size() + " scripts");
+        if (scriptPaths.size() > 0) {
+            this.hs.executeAllScriptsForStep(this.step, automatic);
+        } else if (this.step.isTypExportDMS()) {
+            this.hs.executeDmsExport(this.step, automatic);
+        } else if (this.step.getStepPlugin() != null && this.step.getStepPlugin().length() > 0) {
+            IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+            isp.initialize(step, "");
+            if (isp.execute()) {
+                hs.CloseStepObjectAutomatic(step);
+            }
+        }
+    }
 
-	public void stopThread() {
-		this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
-		this.stop = true;
-	}
+    public void stopThread() {
+        this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
+        this.stop = true;
+    }
 }

@@ -221,7 +221,7 @@ public class HelperSchritteWithoutHibernate {
     }
 
     public void executeAllScriptsForStep(Step step, boolean automatic) {
-        List<String> scriptpaths = StepManager.loadScripts(step.getId());
+        List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
         int size = scriptpaths.size();
         int returnParameter = 0;
