@@ -1,4 +1,5 @@
 package de.sub.goobi.helper.servletfilter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,44 +37,36 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import org.goobi.managedbeans.LoginBean;
 
 public class SecurityCheckFilter implements Filter {
 
-   
+    public SecurityCheckFilter() { //called once. no method arguments allowed here!
+    }
 
-   public SecurityCheckFilter() { //called once. no method arguments allowed here!
-   }
+    @Override
+    public void init(FilterConfig conf) throws ServletException {
+    }
 
-   
+    @Override
+    public void destroy() {
+    }
 
-   @Override
-public void init(FilterConfig conf) throws ServletException {
-   }
+    /** Creates a new instance of SecurityCheckFilter */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-   
+        HttpServletRequest hreq = (HttpServletRequest) request;
+        HttpServletResponse hres = (HttpServletResponse) response;
+        String url = hreq.getRequestURI();
+        LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
 
-   @Override
-public void destroy() {
-   }
-
-   
-
-   /** Creates a new instance of SecurityCheckFilter */
-   @Override
-public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-         throws IOException, ServletException {
-
-      HttpServletRequest hreq = (HttpServletRequest) request;
-      HttpServletResponse hres = (HttpServletResponse) response;
-      HttpSession session = hreq.getSession();
-
-      if (session.isNew() && !hreq.getRequestURI().contains("newpages/Main.jsf")) {
-         hres.sendRedirect(hreq.getContextPath());
-         return;
-      }
-
-      //deliver request to next filter 
-      chain.doFilter(request, response);
-   }
+        if (((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("index.xhtml")) && !url.contains("javax.faces.resource") && !url.contains("wi?")
+                && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains("index.xhtml")) {
+            hres.sendRedirect("index.xhtml");
+        } else {
+            chain.doFilter(request, response);
+        }
+    }
 }

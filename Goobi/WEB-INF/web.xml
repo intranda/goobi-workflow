@@ -90,13 +90,24 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</filter-mapping>
 
+
+	<filter>
+		<filter-name>SecurityCheckFilter</filter-name>
+		<filter-class>de.sub.goobi.helper.servletfilter.SecurityCheckFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SecurityCheckFilter</filter-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</filter-mapping>
+
+
 	<listener>
 		<listener-class>org.goobi.production.ImageIOInitializer</listener-class>
 	</listener>
 
-	<listener>
-		<listener-class>org.goobi.mq.ActiveMQDirector</listener-class>
-	</listener>
+<!-- 	<listener> -->
+<!-- 		<listener-class>org.goobi.mq.ActiveMQDirector</listener-class> -->
+<!-- 	</listener> -->
 
 	<!-- xml-Rpc-Server starten <listener> <listener-class> de.sub.goobi.XmlRpc.Listener </listener-class> </listener> -->
 
@@ -127,8 +138,7 @@
         </description>
 		<display-name>GoobiContentServer</display-name>
 		<servlet-name>GoobiContentServer</servlet-name>
-		<servlet-class>org.goobi.presentation.contentServlet.controller.GoobiContentServer
-		</servlet-class>
+		<servlet-class>org.goobi.presentation.contentServlet.controller.GoobiContentServer</servlet-class>
 	</servlet>
 
 	<servlet>
@@ -136,8 +146,7 @@
         </description>
 		<display-name>ContentServer</display-name>
 		<servlet-name>ContentServer</servlet-name>
-		<servlet-class>de.unigoettingen.sub.commons.contentlib.servlet.controller.ContentServer
-		</servlet-class>
+		<servlet-class>de.unigoettingen.sub.commons.contentlib.servlet.controller.ContentServer</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -165,26 +174,23 @@
 
 
 	<!-- Error pages -->
-	<!-- <error-page>
-		<exception-type>java.lang.Throwable</exception-type>
-		<location>/ui/error.xhtml</location>
-	</error-page> -->
+	<!-- <error-page> <exception-type>java.lang.Throwable</exception-type> <location>/ui/error.xhtml</location> </error-page> -->
 
 
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
-<!-- 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>com.sun.jersey.config.property.packages</param-name> -->
-<!-- 			<param-value>org.goobi.webapi.resources; org.goobi.webapi.provider</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<load-on-startup>1</load-on-startup> -->
-<!-- 	</servlet> -->
+	<!-- <servlet> -->
+	<!-- <servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
+	<!-- <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> -->
+	<!-- <init-param> -->
+	<!-- <param-name>com.sun.jersey.config.property.packages</param-name> -->
+	<!-- <param-value>org.goobi.webapi.resources; org.goobi.webapi.provider</param-value> -->
+	<!-- </init-param> -->
+	<!-- <load-on-startup>1</load-on-startup> -->
+	<!-- </servlet> -->
 
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
-<!-- 		<url-pattern>/rest/*</url-pattern> -->
-<!-- 	</servlet-mapping> -->
+	<!-- <servlet-mapping> -->
+	<!-- <servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
+	<!-- <url-pattern>/rest/*</url-pattern> -->
+	<!-- </servlet-mapping> -->
 </web-app>
 
 
