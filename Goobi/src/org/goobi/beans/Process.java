@@ -57,7 +57,6 @@ import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 import ugh.fileformats.mets.XStream;
-import de.sub.goobi.beans.HistoryEvent;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;

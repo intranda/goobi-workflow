@@ -41,6 +41,7 @@ import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -54,7 +55,6 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
-import de.sub.goobi.beans.HistoryEvent;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;

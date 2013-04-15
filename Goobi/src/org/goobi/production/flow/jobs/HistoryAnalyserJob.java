@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.HistoryEvent;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 

@@ -35,7 +35,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.beans.Benutzereigenschaft;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -65,7 +64,7 @@ public class User implements Serializable, DatabaseObject {
 	private List<Step> schritte;
 	private List<Step> bearbeitungsschritte;
 	private List<Project> projekte;
-	private List<Benutzereigenschaft> eigenschaften;
+	private List<UserProperty> eigenschaften;
 	private boolean mitMassendownload = false;
 	private Ldap ldapGruppe;
 	private String css;
@@ -367,11 +366,11 @@ public class User implements Serializable, DatabaseObject {
 		this.css = css;
 	}
 	
-	public List<Benutzereigenschaft> getEigenschaften() {
+	public List<UserProperty> getEigenschaften() {
 		return this.eigenschaften;
 	}
 
-	public void setEigenschaften(List<Benutzereigenschaft> eigenschaften) {
+	public void setEigenschaften(List<UserProperty> eigenschaften) {
 		this.eigenschaften = eigenschaften;
 	}
 

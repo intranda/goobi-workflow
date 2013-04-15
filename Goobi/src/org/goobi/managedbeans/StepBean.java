@@ -45,6 +45,7 @@ import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -64,7 +65,6 @@ import org.goobi.production.properties.PropertyParser;
 //import org.hibernate.criterion.Order;
 //import org.hibernate.criterion.Restrictions;
 
-import de.sub.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;

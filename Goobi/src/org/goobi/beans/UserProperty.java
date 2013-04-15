@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,12 +31,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.goobi.beans.User;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 
-public class Benutzereigenschaft implements Serializable, IGoobiProperty {
+public class UserProperty implements Serializable, IGoobiProperty {
 	private static final long serialVersionUID = -2356566712752716107L;
 
 	private User benutzer;
@@ -48,7 +47,7 @@ public class Benutzereigenschaft implements Serializable, IGoobiProperty {
 	private String auswahl;
 	private Date creationDate;
 
-	public Benutzereigenschaft() {
+	public UserProperty() {
 		this.istObligatorisch = false;
 		this.datentyp = PropertyType.String.getId();
 		this.creationDate = new Date();

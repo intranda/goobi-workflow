@@ -1,4 +1,4 @@
-package de.sub.goobi.beans;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -29,7 +29,6 @@ package de.sub.goobi.beans;
  */
 import java.io.Serializable;
 import java.util.Date;
-import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
 
