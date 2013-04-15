@@ -1,4 +1,4 @@
-package de.sub.goobi.persistence.apache;
+package de.sub.goobi.persistence.managers;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.

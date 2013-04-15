@@ -37,8 +37,8 @@ import org.goobi.beans.Docket;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 @ManagedBean(name="DocketForm") 
 @SessionScoped

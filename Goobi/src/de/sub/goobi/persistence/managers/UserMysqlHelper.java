@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +15,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class UserMysqlHelper {
     private static final Logger logger = Logger.getLogger(UserMysqlHelper.class);
@@ -51,7 +50,7 @@ class UserMysqlHelper {
         }
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -109,7 +108,7 @@ class UserMysqlHelper {
                 sql.append(")");
 
                 logger.debug(sql.toString());
-                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -176,7 +175,7 @@ class UserMysqlHelper {
         try {
             Object[] param = { userId };
             logger.debug(sql.toString() + ", " + param);
-            List<String> answer = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToFilterListtHandler, param);
+            List<String> answer = new QueryRunner().query(connection, sql.toString(), resultSetToFilterListtHandler, param);
             return answer;
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -305,6 +304,18 @@ class UserMysqlHelper {
                 return true;
             }
             return false;
+        }
+    };
+    
+    public static ResultSetHandler<List<String>> resultSetToFilterListtHandler = new ResultSetHandler<List<String>>() {
+        @Override
+        public List<String> handle(ResultSet rs) throws SQLException {
+            List<String> answer = new ArrayList<String>();
+            while (rs.next()) {
+                String filter = rs.getString("Wert");
+                answer.add(filter);
+            }
+            return answer;
         }
     };
 }

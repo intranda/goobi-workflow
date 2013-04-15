@@ -13,7 +13,6 @@ import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.apache.MySQLHelper;
 
 public class ProjectManager implements IManager {
 	private static final Logger logger = Logger.getLogger(ProjectManager.class);

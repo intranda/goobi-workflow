@@ -12,8 +12,6 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class TemplateMysqlHelper {
 
@@ -87,7 +85,7 @@ class TemplateMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         String sql = " SELECT count(VorlagenID) from vorlagen";
         try {
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -103,7 +101,7 @@ class TemplateMysqlHelper {
                 sql = "INSERT INTO vorlagen ( Herkunft, ProzesseID ) VALUES ( ?, ?)";
                 Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
 
-                int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
+                int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
                 template.setId(id);
             } else {
                 sql = "UPDATE vorlagen set Herkunft = ?, ProzesseID = ? WHERE VorlagenID =" + template.getId();

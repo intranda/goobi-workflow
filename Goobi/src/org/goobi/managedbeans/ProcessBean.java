@@ -102,7 +102,7 @@ import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperSchritteWithoutHibernate;
+import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -931,7 +931,7 @@ public class ProcessBean extends BasicBean {
                 so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
                 so.setEditTypeEnum(StepEditType.ADMIN);
                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
-                    new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
+                    new HelperSchritte().CloseStepObjectAutomatic(so, true);
                 } else {
                     User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                     if (ben != null) {
@@ -1001,7 +1001,7 @@ public class ProcessBean extends BasicBean {
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(mySchritt, true);
+                new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
             } else {
                 mySchritt.setBearbeitungszeitpunkt(new Date());
                 User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");

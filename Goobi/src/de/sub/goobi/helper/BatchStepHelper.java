@@ -755,7 +755,7 @@ public class BatchStepHelper {
 				Step so = StepManager.getStepById(step.getId());
 				String scriptPath = step.getAllScripts().get(this.script);
 
-				new HelperSchritteWithoutHibernate().executeScriptForStepObject(so, scriptPath, false);
+				new HelperSchritte().executeScriptForStepObject(so, scriptPath, false);
 
 			}
 		}
@@ -805,7 +805,7 @@ public class BatchStepHelper {
 		// this.processProperty = pp;
 		// saveCurrentPropertyForAll();
 		// }
-		HelperSchritteWithoutHibernate helper = new HelperSchritteWithoutHibernate();
+		HelperSchritte helper = new HelperSchritte();
 		for (Step s : this.steps) {
 			boolean error = false;
 			if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {

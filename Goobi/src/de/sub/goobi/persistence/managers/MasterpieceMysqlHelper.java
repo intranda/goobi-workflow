@@ -11,8 +11,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class MasterpieceMysqlHelper {
 
@@ -82,7 +80,7 @@ class MasterpieceMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         String sql = " SELECT count(WerkstueckeID) from werkstuecke";
         try {
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -98,7 +96,7 @@ class MasterpieceMysqlHelper {
                 sql = "INSERT INTO werkstuecke (  ProzesseID ) VALUES ( ?)";
                 Object[] param = { object.getProzess().getId() };
 
-                int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
+                int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
                 object.setId(id);
             } else {
                 sql = "UPDATE werkstuecke set  ProzesseID = ? WHERE WerkstueckeID =" + object.getId();

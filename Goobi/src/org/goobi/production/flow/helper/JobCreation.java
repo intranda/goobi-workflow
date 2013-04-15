@@ -49,7 +49,7 @@ import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.apache.ProcessManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
 public class JobCreation {

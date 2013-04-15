@@ -37,7 +37,7 @@ import org.goobi.beans.Ruleset;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.apache.ProcessManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 
 @ManagedBean(name = "RegelsaetzeForm")

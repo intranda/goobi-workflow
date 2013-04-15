@@ -18,12 +18,9 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class ProcessMysqlHelper {
     private static final Logger logger = Logger.getLogger(ProcessMysqlHelper.class);
@@ -121,9 +118,9 @@ class ProcessMysqlHelper {
         try {
             logger.debug(sql.toString());
             if (filter != null && !filter.isEmpty()) {
-                return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             } else {
-                return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             }
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -209,7 +206,7 @@ class ProcessMysqlHelper {
         try {
             QueryRunner run = new QueryRunner();
             logger.debug(sql.toString());
-            Integer id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
+            Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
             }
@@ -412,7 +409,7 @@ class ProcessMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         String sql = "SELECT max(batchId) FROM prozesse";
         try {
-            return new QueryRunner().query(connection, sql, MySQLUtils.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -429,7 +426,7 @@ class ProcessMysqlHelper {
         try {
             logger.debug(sql.toString());
             List<Integer> ret = null;
-            ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerListHandler);
+            ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
 
             return ret;
         } finally {
@@ -445,7 +442,7 @@ class ProcessMysqlHelper {
         }
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
-            return new QueryRunner().query(connection, sql, MySQLUtils.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -453,21 +450,21 @@ class ProcessMysqlHelper {
 
     public static List<Integer> getBatchIds(int limit) throws SQLException {
         String sql = "SELECT distinct batchID FROM prozesse";
-        
+
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && login.getMaximaleBerechtigung() > 1) {
-            sql += " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = "
-                                + login.getMyBenutzer().getId() + ")";
+            sql +=
+                    " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = "
+                            + login.getMyBenutzer().getId() + ")";
         }
-        
-        
+
         sql += " ORDER BY batchID desc ";
         if (limit > 0) {
             sql += " limit " + limit;
         }
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
-            return new QueryRunner().query(connection, sql, MySQLUtils.resultSetToIntegerListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerListHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -495,4 +492,79 @@ class ProcessMysqlHelper {
         }
     }
 
+    public static void updateImages(Integer numberOfFiles, int processId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            StringBuilder sql = new StringBuilder();
+            Object[] param = { numberOfFiles, processId };
+            sql.append("UPDATE prozesse SET sortHelperImages = ? WHERE ProzesseID = ?");
+            logger.debug(sql.toString() + ", " + param);
+            run.update(connection, sql.toString(), param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void updateProcessLog(String logValue, int processId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            StringBuilder sql = new StringBuilder();
+            Object[] param = { logValue, processId };
+            sql.append("UPDATE prozesse SET wikifield = ? WHERE ProzesseID = ?");
+            logger.debug(sql.toString() + ", " + param);
+            run.update(connection, sql.toString(), param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void updateProcessStatus(String value, int processId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            StringBuilder sql = new StringBuilder();
+            Object[] param = { value, processId };
+            sql.append("UPDATE prozesse SET sortHelperStatus = ? WHERE ProzesseID = ?");
+            logger.debug(sql.toString() + ", " + param);
+            run.update(connection, sql.toString(), param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static int getCountOfProcessesWithRuleset(int rulesetId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+
+        String query = "select count(ProzesseID) from prozesse where MetadatenKonfigurationID = ?";
+        try {
+            Object[] param = { rulesetId };
+            return new QueryRunner().query(connection, query, MySQLHelper.resultSetToIntegerHandler, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static int getCountOfProcessesWithDocket(int docketId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        String query = "select count(ProzesseID) from prozesse where  docketID= ?";
+        try {
+            Object[] param = { docketId };
+            return new QueryRunner().query(connection, query, MySQLHelper.resultSetToIntegerHandler, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static int getCountOfProcessesWithTitle(String title) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        String query = "select count(ProzesseID) from prozesse where  titel = ?";
+        try {
+            Object[] param = { title };
+            return new QueryRunner().query(connection, query, MySQLHelper.resultSetToIntegerHandler, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
 }

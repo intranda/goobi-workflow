@@ -42,7 +42,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         return answer;
     }
-    
+
     public static List<Process> getProcesses(String order, String filter) {
         return getProcesses(order, filter, 0, Integer.MAX_VALUE);
     }
@@ -144,7 +144,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     public static List<Integer> getBatchIds(int limit) {
-        
+
         try {
             return ProcessMysqlHelper.getBatchIds(limit);
         } catch (SQLException e) {
@@ -152,9 +152,9 @@ public class ProcessManager implements IManager, Serializable {
         }
         return new ArrayList<Integer>();
     }
-    
+
     public static List runSQL(String sql) {
-        
+
         try {
             return ProcessMysqlHelper.runSQL(sql);
         } catch (SQLException e) {
@@ -162,4 +162,60 @@ public class ProcessManager implements IManager, Serializable {
         }
         return new ArrayList();
     }
+
+    public static int getNumberOfProcessesWithTitle(String title) {
+        int answer = 0;
+        try {
+            answer = ProcessMysqlHelper.getCountOfProcessesWithTitle(title);
+        } catch (SQLException e) {
+            logger.error("Cannot not load information about processes with title " + title, e);
+        }
+        return answer;
+    }
+
+    public static int getNumberOfProcessesWithRuleset(int rulesetId) {
+        Integer answer = null;
+        try {
+            answer = ProcessMysqlHelper.getCountOfProcessesWithRuleset(rulesetId);
+        } catch (SQLException e) {
+            logger.error("Cannot not load information about ruleset with id " + rulesetId, e);
+        }
+        return answer;
+    }
+
+    public static int getNumberOfProcessesWithDocket(int docketId) {
+        Integer answer = null;
+        try {
+            answer = ProcessMysqlHelper.getCountOfProcessesWithDocket(docketId);
+        } catch (SQLException e) {
+            logger.error("Cannot not load information about docket with id " + docketId, e);
+        }
+        return answer;
+    }
+
+    public static void updateImages(Integer numberOfFiles, int processId) {
+        try {
+            ProcessMysqlHelper.updateImages(numberOfFiles, processId);
+        } catch (SQLException e) {
+            logger.error("Cannot not update status for process with id " + processId, e);
+        }
+
+    }
+
+    public static void addLogfile(String value, int processId) {
+        try {
+            ProcessMysqlHelper.updateProcessLog(value, processId);
+        } catch (SQLException e) {
+            logger.error("Cannot not update status for process with id " + processId, e);
+        }
+    }
+
+    public static void updateProcessStatus(String value, int processId) {
+        try {
+            ProcessMysqlHelper.updateProcessStatus(value, processId);
+        } catch (SQLException e) {
+            logger.error("Cannot not update status for process with id " + processId, e);
+        }
+    }
+
 }

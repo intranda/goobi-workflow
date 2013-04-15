@@ -36,7 +36,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
 public class ScriptThreadWithoutHibernate extends Thread {
-    HelperSchritteWithoutHibernate hs = new HelperSchritteWithoutHibernate();
+    HelperSchritte hs = new HelperSchritte();
     private Step step;
     public String rueckgabe = "";
     public boolean stop = false;

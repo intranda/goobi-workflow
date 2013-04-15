@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -59,14 +60,11 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.apache.FolderInformation;
-import de.sub.goobi.persistence.apache.ProcessManager;
-import de.sub.goobi.persistence.apache.ProcessObject;
-import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-public class HelperSchritteWithoutHibernate {
-    private static final Logger logger = Logger.getLogger(HelperSchritteWithoutHibernate.class);
+public class HelperSchritte {
+    private static final Logger logger = Logger.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
 
     /**
@@ -171,10 +169,20 @@ public class HelperSchritteWithoutHibernate {
                 }
             }
         }
-        ProcessObject po = ProcessManager.getProcessObjectForId(processId);
-        FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
-        if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true)))) {
-            ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true))), processId);
+        Process po = ProcessManager.getProcessById(processId);
+       
+        try {
+            if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true)))) {
+                ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true))), processId);
+            }
+        } catch (SwapException e) {
+            logger.error(e);
+        } catch (DAOException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
         }
         logger.debug("update process status");
         updateProcessStatus(processId);
@@ -252,13 +260,10 @@ public class HelperSchritteWithoutHibernate {
         }
         script = script.replace("{", "(").replace("}", ")");
         DigitalDocument dd = null;
-        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
-
-        FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
+        Process po = step.getProzess();
         Prefs prefs = null;
         try {
-            prefs = RulesetManager.getRulesetById(po.getRulesetId()).getPreferences();
-            dd = po.readMetadataFile(fi.getMetadataFilePath(), prefs).getDigitalDocument();
+            dd = po.readMetadataFile().getDigitalDocument();
         } catch (DAOException e1) {
             logger.error(e1);
         } catch (PreferencesException e2) {
@@ -267,8 +272,14 @@ public class HelperSchritteWithoutHibernate {
             logger.error(e2);
         } catch (IOException e2) {
             logger.error(e2);
+        } catch (SwapException e) {
+            logger.error(e);
+        } catch (WriteException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
         }
-        VariableReplacerWithoutHibernate replacer = new VariableReplacerWithoutHibernate(dd, prefs, po, step);
+        VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
 
         script = replacer.replace(script);
         int rueckgabe = -1;

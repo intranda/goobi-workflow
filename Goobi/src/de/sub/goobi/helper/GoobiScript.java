@@ -214,7 +214,7 @@ public class GoobiScript {
 	}
 
 	private void runScript(List<Process> inProzesse, String stepname, String scriptname) {
-		HelperSchritteWithoutHibernate hs = new HelperSchritteWithoutHibernate();
+		HelperSchritte hs = new HelperSchritte();
 		for (Process p : inProzesse) {
 			for (Step step : p.getSchritteList()) {
 				if (step.getTitel().equalsIgnoreCase(stepname)) {

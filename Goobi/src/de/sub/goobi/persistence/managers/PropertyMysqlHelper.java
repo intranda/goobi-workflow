@@ -16,8 +16,6 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.helper.enums.PropertyType;
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class PropertyMysqlHelper {
     private static final Logger logger = Logger.getLogger(PropertyMysqlHelper.class);
@@ -231,7 +229,7 @@ class PropertyMysqlHelper {
         try {
             QueryRunner run = new QueryRunner();
             logger.debug(sql.toString());
-            Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, param);
+            Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 pe.setId(id);
             }
@@ -275,7 +273,7 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
 
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -287,7 +285,7 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
 
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -299,7 +297,7 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
 
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -354,7 +352,7 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
-            int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
+            int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             property.setId(id);
             return property;
         } finally {
@@ -423,7 +421,7 @@ class PropertyMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             QueryRunner run = new QueryRunner();
-            int id = run.insert(connection, sql, MySQLUtils.resultSetToIntegerHandler, param);
+            int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             property.setId(id);
             return property;
         } finally {

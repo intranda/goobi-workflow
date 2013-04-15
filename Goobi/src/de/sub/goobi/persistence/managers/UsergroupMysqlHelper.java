@@ -10,8 +10,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class UsergroupMysqlHelper {
     private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
@@ -52,7 +50,7 @@ class UsergroupMysqlHelper {
         }
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }
@@ -87,7 +85,7 @@ class UsergroupMysqlHelper {
                 sql.append(")");
 
                 logger.debug(sql.toString());
-                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
                 if (id != null) {
                     ro.setId(id);
                 }

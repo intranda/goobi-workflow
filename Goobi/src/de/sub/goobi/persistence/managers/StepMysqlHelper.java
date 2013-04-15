@@ -19,8 +19,6 @@ import org.goobi.beans.Usergroup;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
-import de.sub.goobi.persistence.apache.MySQLHelper;
-import de.sub.goobi.persistence.apache.MySQLUtils;
 
 class StepMysqlHelper {
     private static final Logger logger = Logger.getLogger(StepMysqlHelper.class);
@@ -48,9 +46,9 @@ class StepMysqlHelper {
         try {
             logger.debug(sql.toString());
             if (filter != null && !filter.isEmpty()) {
-                return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             } else {
-                return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler);
+                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             }
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -289,7 +287,7 @@ class StepMysqlHelper {
             try {
                 QueryRunner run = new QueryRunner();
                 logger.debug(sql.toString());
-                Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, param);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     property.setId(id);
                 }
@@ -344,7 +342,7 @@ class StepMysqlHelper {
         try {
             QueryRunner run = new QueryRunner();
             logger.debug(sql.toString());
-            Integer id = run.insert(connection, sql.toString(), MySQLUtils.resultSetToIntegerHandler, param);
+            Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
             }
@@ -677,7 +675,7 @@ class StepMysqlHelper {
         try {
             logger.debug(sql.toString());
             List<Integer> ret = null;
-            ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToIntegerListHandler);
+            ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
 
             return ret;
         } finally {
@@ -691,7 +689,7 @@ class StepMysqlHelper {
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             logger.debug(sql.toString());
-            return new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
 
         } finally {
             MySQLHelper.closeConnection(connection);
@@ -795,10 +793,35 @@ class StepMysqlHelper {
         try {
             Object[] params = { stepId };
             logger.debug(sql.toString() + ", " + stepId);
-            List<String> ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToScriptsHandler, params);
+            List<String> ret = new QueryRunner().query(connection, sql.toString(), resultSetToScriptsHandler, params);
             return ret;
         } finally {
             MySQLHelper.closeConnection(connection);
         }
     }
+    
+    public static ResultSetHandler<List<String>> resultSetToScriptsHandler = new ResultSetHandler<List<String>>() {
+        @Override
+        public List<String> handle(ResultSet rs) throws SQLException {
+            List<String> answer = new ArrayList<String>();
+            if (rs.next()) {
+                if (rs.getString("typAutomatischScriptpfad") != null && rs.getString("typAutomatischScriptpfad").length() > 0) {
+                    answer.add(rs.getString("typAutomatischScriptpfad"));
+                }
+                if (rs.getString("typAutomatischScriptpfad2") != null && rs.getString("typAutomatischScriptpfad2").length() > 0) {
+                    answer.add(rs.getString("typAutomatischScriptpfad2"));
+                }
+                if (rs.getString("typAutomatischScriptpfad3") != null && rs.getString("typAutomatischScriptpfad3").length() > 0) {
+                    answer.add(rs.getString("typAutomatischScriptpfad3"));
+                }
+                if (rs.getString("typAutomatischScriptpfad4") != null && rs.getString("typAutomatischScriptpfad4").length() > 0) {
+                    answer.add(rs.getString("typAutomatischScriptpfad4"));
+                }
+                if (rs.getString("typAutomatischScriptpfad5") != null && rs.getString("typAutomatischScriptpfad5").length() > 0) {
+                    answer.add(rs.getString("typAutomatischScriptpfad5"));
+                }
+            }
+            return answer;
+        }
+    };
 }

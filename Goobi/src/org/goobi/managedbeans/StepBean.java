@@ -72,7 +72,7 @@ import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.helper.BatchStepHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperSchritteWithoutHibernate;
+import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -511,7 +511,7 @@ public class StepBean extends BasicBean {
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
 //        Step so = StepObjectManager.getStepById(this.mySchritt.getId());
-        new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(mySchritt, true);
+        new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
         // new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
         return FilterAlleStart();
     }
@@ -846,7 +846,7 @@ public class StepBean extends BasicBean {
 
     public void executeScript() {
 //        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
-        new HelperSchritteWithoutHibernate().executeScriptForStepObject(mySchritt, this.scriptPath, false);
+        new HelperSchritte().executeScriptForStepObject(mySchritt, this.scriptPath, false);
 
     }
 
