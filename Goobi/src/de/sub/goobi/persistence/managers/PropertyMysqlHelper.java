@@ -225,7 +225,7 @@ class PropertyMysqlHelper {
         String sql =
                 "INSERT INTO prozesseeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, prozesseID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param =
-                { pe.getTitel(), pe.getWert(), pe.isIstObligatorisch(), pe.getType().getId(), pe.getAuswahl(), pe.getProcessId(),
+                { pe.getTitel(), pe.getWert(), pe.isIstObligatorisch(), pe.getType().getId(), pe.getAuswahl(), pe.getProzess().getId(),
                         pe.getCreationDate() == null ? null : new Timestamp(pe.getCreationDate().getTime()), pe.getContainer() };
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -246,7 +246,7 @@ class PropertyMysqlHelper {
                 "UPDATE prozesseeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, prozesseID = ?, creationDate = ?, container = ? WHERE prozesseeigenschaftenID = "
                         + pe.getId();
         Object[] param =
-                { pe.getTitel(), pe.getWert(), pe.isIstObligatorisch(), pe.getType().getId(), pe.getAuswahl(), pe.getProcessId(),
+                { pe.getTitel(), pe.getWert(), pe.isIstObligatorisch(), pe.getType().getId(), pe.getAuswahl(), pe.getProzess().getId(),
                         pe.getCreationDate() == null ? null : new Timestamp(pe.getCreationDate().getTime()), pe.getContainer() };
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -333,7 +333,7 @@ class PropertyMysqlHelper {
                         + property.getId();
         Object[] param =
                 { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
-                        property.getTemplateId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
+                        property.getVorlage().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
                         property.getContainer() };
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -349,7 +349,7 @@ class PropertyMysqlHelper {
                 "INSERT INTO vorlageneigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, vorlagenID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param =
                 { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
-                        property.getTemplateId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
+                        property.getVorlage().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
                         property.getContainer() };
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -402,7 +402,7 @@ class PropertyMysqlHelper {
                         + property.getId();
         Object[] param =
                 { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
-                        property.getMasterpieceId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
+                        property.getWerkstueck().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
                         property.getContainer() };
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
@@ -418,7 +418,7 @@ class PropertyMysqlHelper {
                 "INSERT INTO werkstueckeeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, werkstueckeID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param =
                 { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
-                        property.getMasterpieceId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
+                        property.getWerkstueck().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
                         property.getContainer() };
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
