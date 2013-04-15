@@ -71,9 +71,7 @@ class StepMysqlHelper {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
-        
-      
-        
+
         try {
             logger.debug(sql.toString());
             List<Step> ret = null;
@@ -198,7 +196,6 @@ class StepMysqlHelper {
         }
     };
 
-    
     public static ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
 
         @Override
@@ -210,8 +207,7 @@ class StepMysqlHelper {
             return false;
         }
     };
-    
-    
+
     public static Step getStepById(int id) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
         String sql = "SELECT * FROM schritte WHERE SchritteID = ?";
@@ -747,8 +743,6 @@ class StepMysqlHelper {
 
     }
 
-
-
     public static void removeUsergroupFromStep(Step step, Usergroup usergroup) throws SQLException {
         if (step.getId() != null) {
             Connection connection = MySQLHelper.getInstance().getConnection();
@@ -768,14 +762,43 @@ class StepMysqlHelper {
         if (step.getId() != null) {
             Connection connection = MySQLHelper.getInstance().getConnection();
             try {
-                String sql =
-                        "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
+                String sql = "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
 
                 new QueryRunner().update(connection, sql);
 
             } finally {
                 MySQLHelper.closeConnection(connection);
             }
+        }
+    }
+
+    public static void addHistory(Date date, double order, String value, int type, int processId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        Timestamp datetime = new Timestamp(date.getTime());
+
+        try {
+            QueryRunner run = new QueryRunner();
+            // String propNames = "numericValue, stringvalue, type, date, processId";
+            Object[] param = { order, value, type, datetime, processId };
+            String sql = "INSERT INTO " + "history" + " (numericValue, stringvalue, type, date, processId) VALUES ( ?, ?, ?, ? ,?)";
+            logger.trace("added history event " + sql + ", " + param);
+            run.update(connection, sql, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static List<String> getScriptsForStep(int stepId) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM schritte WHERE SchritteID = ? ");
+        try {
+            Object[] params = { stepId };
+            logger.debug(sql.toString() + ", " + stepId);
+            List<String> ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToScriptsHandler, params);
+            return ret;
+        } finally {
+            MySQLHelper.closeConnection(connection);
         }
     }
 }

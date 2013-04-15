@@ -31,10 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -65,8 +63,6 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -222,7 +218,7 @@ public class GoobiScript {
 		for (Process p : inProzesse) {
 			for (Step step : p.getSchritteList()) {
 				if (step.getTitel().equalsIgnoreCase(stepname)) {
-					StepObject so = StepObjectManager.getStepById(step.getId());
+					Step so = StepManager.getStepById(step.getId());
 					if (scriptname != null) {
 						if (step.getAllScripts().containsKey(scriptname)) {
 							String path = step.getAllScripts().get(scriptname);

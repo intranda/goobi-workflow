@@ -43,32 +43,32 @@ public class MySQLUtils {
 
     public static SimpleDateFormat sdfShowDateTime = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
 
-    public static ResultSetHandler<List<StepObject>> resultSetToStepObjectListHandler = new ResultSetHandler<List<StepObject>>() {
-        @Override
-        public List<StepObject> handle(ResultSet rs) throws SQLException {
-            List<StepObject> answer = new ArrayList<StepObject>();
-
-            while (rs.next()) {
-                StepObject o = parseStepObject(rs);
-                if (o != null) {
-                    answer.add(o);
-                }
-            }
-            return answer;
-        }
-    };
-
-    public static ResultSetHandler<StepObject> resultSetToStepObjectHandler = new ResultSetHandler<StepObject>() {
-        @Override
-        public StepObject handle(ResultSet rs) throws SQLException {
-            StepObject answer = null;
-
-            if (rs.next()) {
-                answer = parseStepObject(rs);
-            }
-            return answer;
-        }
-    };
+//    public static ResultSetHandler<List<StepObject>> resultSetToStepObjectListHandler = new ResultSetHandler<List<StepObject>>() {
+//        @Override
+//        public List<StepObject> handle(ResultSet rs) throws SQLException {
+//            List<StepObject> answer = new ArrayList<StepObject>();
+//
+//            while (rs.next()) {
+//                StepObject o = parseStepObject(rs);
+//                if (o != null) {
+//                    answer.add(o);
+//                }
+//            }
+//            return answer;
+//        }
+//    };
+//
+//    public static ResultSetHandler<StepObject> resultSetToStepObjectHandler = new ResultSetHandler<StepObject>() {
+//        @Override
+//        public StepObject handle(ResultSet rs) throws SQLException {
+//            StepObject answer = null;
+//
+//            if (rs.next()) {
+//                answer = parseStepObject(rs);
+//            }
+//            return answer;
+//        }
+//    };
 
     public static ResultSetHandler<List<Property>> resultSetToProcessPropertyListHandler = new ResultSetHandler<List<Property>>() {
         @Override
@@ -215,38 +215,38 @@ public class MySQLUtils {
         }
     };
 
-    private static StepObject parseStepObject(ResultSet rs) throws SQLException {
-        StepObject so = null;
-
-        if (rs != null) {
-            int id = rs.getInt("SchritteID");
-            String title = rs.getString("Titel");
-            int reihenfolge = rs.getInt("Reihenfolge");
-            int bearbeitungsstatus = rs.getInt("bearbeitungsstatus");
-
-            Date bearbeitungszeitpunkt = rs.getTimestamp("bearbeitungszeitpunkt");
-            Date bearbeitungsbeginn = rs.getTimestamp("bearbeitungsbeginn");
-            Date bearbeitungsende = rs.getTimestamp("bearbeitungsende");
-            int processId = rs.getInt("ProzesseID");
-            int bearbeitungsbenutzer = rs.getInt("BearbeitungsBenutzerID");
-            int editType = rs.getInt("edittype");
-            boolean typExport = rs.getBoolean("typExportDMS");
-            boolean typAutomatisch = rs.getBoolean("typAutomatisch");
-            boolean readAccess = rs.getBoolean("typImagesLesen");
-            boolean writeAccess = rs.getBoolean("typImagesSchreiben");
-            boolean metadataAccess = rs.getBoolean("typMetadaten");
-            boolean typeFinishImmediately = rs.getBoolean("typBeimAnnehmenAbschliessen");
-            String stepPlugin = rs.getString("stepPlugin");
-            String validationPlugin = rs.getString("validationPlugin");
-
-            so =
-                    new StepObject(id, title, reihenfolge, bearbeitungsstatus, bearbeitungszeitpunkt, bearbeitungsbeginn, bearbeitungsende,
-                            bearbeitungsbenutzer, editType, typExport, typAutomatisch, processId, readAccess, writeAccess, metadataAccess,
-                            typeFinishImmediately, stepPlugin, validationPlugin);
-        }
-
-        return so;
-    }
+//    private static StepObject parseStepObject(ResultSet rs) throws SQLException {
+//        StepObject so = null;
+//
+//        if (rs != null) {
+//            int id = rs.getInt("SchritteID");
+//            String title = rs.getString("Titel");
+//            int reihenfolge = rs.getInt("Reihenfolge");
+//            int bearbeitungsstatus = rs.getInt("bearbeitungsstatus");
+//
+//            Date bearbeitungszeitpunkt = rs.getTimestamp("bearbeitungszeitpunkt");
+//            Date bearbeitungsbeginn = rs.getTimestamp("bearbeitungsbeginn");
+//            Date bearbeitungsende = rs.getTimestamp("bearbeitungsende");
+//            int processId = rs.getInt("ProzesseID");
+//            int bearbeitungsbenutzer = rs.getInt("BearbeitungsBenutzerID");
+//            int editType = rs.getInt("edittype");
+//            boolean typExport = rs.getBoolean("typExportDMS");
+//            boolean typAutomatisch = rs.getBoolean("typAutomatisch");
+//            boolean readAccess = rs.getBoolean("typImagesLesen");
+//            boolean writeAccess = rs.getBoolean("typImagesSchreiben");
+//            boolean metadataAccess = rs.getBoolean("typMetadaten");
+//            boolean typeFinishImmediately = rs.getBoolean("typBeimAnnehmenAbschliessen");
+//            String stepPlugin = rs.getString("stepPlugin");
+//            String validationPlugin = rs.getString("validationPlugin");
+//
+//            so =
+//                    new StepObject(id, title, reihenfolge, bearbeitungsstatus, bearbeitungszeitpunkt, bearbeitungsbeginn, bearbeitungsende,
+//                            bearbeitungsbenutzer, editType, typExport, typAutomatisch, processId, readAccess, writeAccess, metadataAccess,
+//                            typeFinishImmediately, stepPlugin, validationPlugin);
+//        }
+//
+//        return so;
+//    }
 
     public static ResultSetHandler<ProjectObject> resultSetToProjectHandler = new ResultSetHandler<ProjectObject>() {
         @Override

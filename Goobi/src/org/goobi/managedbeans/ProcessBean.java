@@ -109,8 +109,6 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -926,19 +924,19 @@ public class ProcessBean extends BasicBean {
     }
 
     private void stepStatusUp(int processId) throws DAOException {
-        List<StepObject> stepList = StepObjectManager.getStepsForProcess(processId);
+        List<Step> stepList = StepManager.getStepsForProcess(processId);
 
-        for (StepObject so : stepList) {
-            if (so.getBearbeitungsstatus() != StepStatus.DONE.getValue()) {
-                so.setBearbeitungsstatus(so.getBearbeitungsstatus() + 1);
-                so.setEditType(StepEditType.ADMIN.getValue());
-                if (so.getBearbeitungsstatus() == StepStatus.DONE.getValue()) {
+        for (Step so : stepList) {
+            if (!so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+                so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
+                so.setEditTypeEnum(StepEditType.ADMIN);
+                if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                     new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
                 } else {
                     User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                     if (ben != null) {
-                        so.setBearbeitungsbenutzer(ben.getId());
-                        StepObjectManager.updateStep(so);
+                        so.setBearbeitungsbenutzer(ben);
+                        StepManager.saveStep(so);
                     }
                 }
                 break;
@@ -1001,9 +999,9 @@ public class ProcessBean extends BasicBean {
         if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
+            //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
+                new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(mySchritt, true);
             } else {
                 mySchritt.setBearbeitungszeitpunkt(new Date());
                 User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");

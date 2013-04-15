@@ -41,14 +41,16 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
+import org.goobi.beans.Step;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.apache.ProcessManager;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.StepManager;
 
 public class JobCreation {
 	private static final Logger logger = Logger.getLogger(JobCreation.class);
@@ -101,9 +103,9 @@ public class JobCreation {
 				p = cp.createProcess(io);
 				if (p != null && p.getId() != null) {
 					moveFiles(metsfile, basepath, p);
-					List<StepObject> steps = StepObjectManager.getStepsForProcess(p.getId());
-					for (StepObject s : steps) {
-						if (s.getBearbeitungsstatus() == 1 && s.isTypAutomatisch()) {
+					List<Step> steps = StepManager.getStepsForProcess(p.getId());
+					for (Step s : steps) {
+						if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
 							ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
 							myThread.start();
 						}

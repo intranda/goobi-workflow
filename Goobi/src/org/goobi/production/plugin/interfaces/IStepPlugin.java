@@ -33,13 +33,10 @@ import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.StepReturnValue;
 
-import de.sub.goobi.persistence.apache.StepObject;
 
 public interface IStepPlugin extends IPlugin {
 
 	public void initialize(Step step, String returnPath);
-
-	public void initialize(StepObject stepobject, String returnPath);
 
 	public boolean execute();
 

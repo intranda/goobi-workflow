@@ -95,22 +95,22 @@ public class MySQLHelper {
 		return helper;
 	}
 
-	public static List<StepObject> getStepsForProcess(int processId) throws SQLException {
-		Connection connection = helper.getConnection();
-
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM schritte WHERE ProzesseID = ?");
-		sql.append(" ORDER BY Reihenfolge ASC");
-		try {
-			Object[] params = { processId };
-			logger.debug(sql.toString() + ", " + processId);
-			List<StepObject> ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStepObjectListHandler, params);
-			// (connection, stmt, MySQLUtils.resultSetToStepObjectListHandler);
-			return ret;
-		} finally {
-			closeConnection(connection);
-		}
-	}
+//	public static List<StepObject> getStepsForProcess(int processId) throws SQLException {
+//		Connection connection = helper.getConnection();
+//
+//		StringBuilder sql = new StringBuilder();
+//		sql.append("SELECT * FROM schritte WHERE ProzesseID = ?");
+//		sql.append(" ORDER BY Reihenfolge ASC");
+//		try {
+//			Object[] params = { processId };
+//			logger.debug(sql.toString() + ", " + processId);
+//			List<StepObject> ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStepObjectListHandler, params);
+//			// (connection, stmt, MySQLUtils.resultSetToStepObjectListHandler);
+//			return ret;
+//		} finally {
+//			closeConnection(connection);
+//		}
+//	}
 
 	public static List<Property> getProcessPropertiesForProcess(int processId) throws SQLException {
 		Connection connection = helper.getConnection();
@@ -172,23 +172,23 @@ public class MySQLHelper {
 	}
 
 
-
-	public static StepObject getStepByStepId(int stepId) throws SQLException {
-		Connection connection = helper.getConnection();
-		StringBuilder sql = new StringBuilder();
-
-		sql.append("SELECT * FROM schritte WHERE SchritteID = ?");
-		// sql.append(" ORDER BY Reihenfolge ASC");
-
-		try {
-			Object[] params = { stepId };
-			logger.debug(sql.toString() + ", " + stepId);
-			StepObject ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStepObjectHandler, params);
-			return ret;
-		} finally {
-			closeConnection(connection);
-		}
-	}
+//
+//	public static StepObject getStepByStepId(int stepId) throws SQLException {
+//		Connection connection = helper.getConnection();
+//		StringBuilder sql = new StringBuilder();
+//
+//		sql.append("SELECT * FROM schritte WHERE SchritteID = ?");
+//		// sql.append(" ORDER BY Reihenfolge ASC");
+//
+//		try {
+//			Object[] params = { stepId };
+//			logger.debug(sql.toString() + ", " + stepId);
+//			StepObject ret = new QueryRunner().query(connection, sql.toString(), MySQLUtils.resultSetToStepObjectHandler, params);
+//			return ret;
+//		} finally {
+//			closeConnection(connection);
+//		}
+//	}
 
 	
 	public static List<String> getScriptsForStep(int stepId) throws SQLException {
@@ -222,49 +222,49 @@ public class MySQLHelper {
 
 
 	
-	public int updateStep(StepObject step) throws SQLException {
-		int ret = -1;
-		Connection connection = helper.getConnection();
-		try {
-
-			QueryRunner run = new QueryRunner();
-			StringBuilder sql = new StringBuilder();
-			sql.append("UPDATE schritte SET Titel = ? , ");
-			sql.append("Reihenfolge = ? , ");
-			sql.append("Bearbeitungsstatus = ? , ");
-			Timestamp time = null;
-			sql.append("BearbeitungsZeitpunkt = ? , ");
-			if (step.getBearbeitungszeitpunkt() != null) {
-				time = new Timestamp(step.getBearbeitungszeitpunkt().getTime());
-
-			}
-			Timestamp start = null;
-			sql.append("BearbeitungsBeginn = ? , ");
-			if (step.getBearbeitungsbeginn() != null) {
-				start = new Timestamp(step.getBearbeitungsbeginn().getTime());
-			}
-			Timestamp end = null;
-			sql.append("BearbeitungsEnde = ? , ");
-			if (step.getBearbeitungsende() != null) {
-				end = new Timestamp(step.getBearbeitungsende().getTime());
-			}
-
-			sql.append("BearbeitungsBenutzerID = ? , ");
-			sql.append("edittype = ?, ");
-			sql.append("typAutomatisch = ? ");
-			sql.append(" WHERE SchritteID = ? ");
-			Object[] param = { step.getTitle(), step.getReihenfolge(), step.getBearbeitungsstatus(), time, start, end,
-					step.getBearbeitungsbenutzer(), step.getEditType(), step.isTypAutomatisch(), step.getId() };
-			logger.debug("saving step: " + sql.toString() + ", " + param);
-
-			run.update(connection, sql.toString(), param);
-			// logger.debug(sql);
-			ret = step.getId();
-			return ret;
-		} finally {
-			closeConnection(connection);
-		}
-	}
+//	public int updateStep(StepObject step) throws SQLException {
+//		int ret = -1;
+//		Connection connection = helper.getConnection();
+//		try {
+//
+//			QueryRunner run = new QueryRunner();
+//			StringBuilder sql = new StringBuilder();
+//			sql.append("UPDATE schritte SET Titel = ? , ");
+//			sql.append("Reihenfolge = ? , ");
+//			sql.append("Bearbeitungsstatus = ? , ");
+//			Timestamp time = null;
+//			sql.append("BearbeitungsZeitpunkt = ? , ");
+//			if (step.getBearbeitungszeitpunkt() != null) {
+//				time = new Timestamp(step.getBearbeitungszeitpunkt().getTime());
+//
+//			}
+//			Timestamp start = null;
+//			sql.append("BearbeitungsBeginn = ? , ");
+//			if (step.getBearbeitungsbeginn() != null) {
+//				start = new Timestamp(step.getBearbeitungsbeginn().getTime());
+//			}
+//			Timestamp end = null;
+//			sql.append("BearbeitungsEnde = ? , ");
+//			if (step.getBearbeitungsende() != null) {
+//				end = new Timestamp(step.getBearbeitungsende().getTime());
+//			}
+//
+//			sql.append("BearbeitungsBenutzerID = ? , ");
+//			sql.append("edittype = ?, ");
+//			sql.append("typAutomatisch = ? ");
+//			sql.append(" WHERE SchritteID = ? ");
+//			Object[] param = { step.getTitle(), step.getReihenfolge(), step.getBearbeitungsstatus(), time, start, end,
+//					step.getBearbeitungsbenutzer(), step.getEditType(), step.isTypAutomatisch(), step.getId() };
+//			logger.debug("saving step: " + sql.toString() + ", " + param);
+//
+//			run.update(connection, sql.toString(), param);
+//			// logger.debug(sql);
+//			ret = step.getId();
+//			return ret;
+//		} finally {
+//			closeConnection(connection);
+//		}
+//	}
 
 	public void addHistory(Date date, double order, String value, int type, int processId) throws SQLException {
 		Connection connection = helper.getConnection();

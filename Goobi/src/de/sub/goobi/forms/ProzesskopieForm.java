@@ -96,9 +96,8 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.importer.ImportOpac;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
@@ -761,9 +760,9 @@ public class ProzesskopieForm {
 //        Helper.getHibernateSession().refresh(this.prozessKopie);
        
 
-        List<StepObject> steps = StepObjectManager.getStepsForProcess(prozessKopie.getId());
-        for (StepObject s : steps) {
-            if (s.getBearbeitungsstatus() == 1 && s.isTypAutomatisch()) {
+        List<Step> steps = StepManager.getStepsForProcess(prozessKopie.getId());
+        for (Step s : steps) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
                 myThread.start();
             }

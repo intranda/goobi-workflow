@@ -28,7 +28,6 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
@@ -58,294 +58,307 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.apache.FolderInformation;
 import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.RulesetManager;
-
+import de.sub.goobi.persistence.managers.StepManager;
 
 public class HelperSchritteWithoutHibernate {
-	private static final Logger logger = Logger.getLogger(HelperSchritteWithoutHibernate.class);
-	public final static String DIRECTORY_PREFIX = "orig_";
+    private static final Logger logger = Logger.getLogger(HelperSchritteWithoutHibernate.class);
+    public final static String DIRECTORY_PREFIX = "orig_";
 
-	/**
-	 * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
-	 */
+    /**
+     * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
+     */
 
-	public void CloseStepObjectAutomatic(StepObject currentStep) {
-		closeStepObject(currentStep, currentStep.getProcessId(), false);
-	}
-	
-	public void CloseStepObjectAutomatic(StepObject currentStep, boolean requestFromGUI) {
-		closeStepObject(currentStep, currentStep.getProcessId(), requestFromGUI);
-	}
+    public void CloseStepObjectAutomatic(Step currentStep) {
+        closeStepObject(currentStep, currentStep.getProcessId(), false);
+    }
 
-	private void closeStepObject(StepObject currentStep, int processId, boolean requestFromGUI) {
-		logger.debug("closing step with id " + currentStep.getId() + " and process id " + processId);
-		currentStep.setBearbeitungsstatus(3);
-		Date myDate = new Date();
-		logger.debug("set new date for edit time");
-		currentStep.setBearbeitungszeitpunkt(myDate);
-		try {
-			LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-			if (lf != null) {
-				User ben = lf.getMyBenutzer();
-				if (ben != null) {
-					logger.debug("set new user");
-					currentStep.setBearbeitungsbenutzer(ben.getId());
-				}
-			}
-		} catch (Exception e) {
-			logger.debug("cannot resolve LoginForm", e);
-		}
-		logger.debug("set new end date");
-		currentStep.setBearbeitungsende(myDate);
-		logger.debug("saving step");
-		StepObjectManager.updateStep(currentStep);
-		List<StepObject> automatischeSchritte = new ArrayList<StepObject>();
-		List<StepObject> stepsToFinish = new ArrayList<StepObject>();
+    public void CloseStepObjectAutomatic(Step currentStep, boolean requestFromGUI) {
+        closeStepObject(currentStep, currentStep.getProcessId(), requestFromGUI);
+    }
 
-		logger.debug("create history events for step");
+    private void closeStepObject(Step currentStep, int processId, boolean requestFromGUI) {
+        logger.debug("closing step with id " + currentStep.getId() + " and process id " + processId);
+        currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
+        Date myDate = new Date();
+        logger.debug("set new date for edit time");
+        currentStep.setBearbeitungszeitpunkt(myDate);
+        try {
+            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            if (lf != null) {
+                User ben = lf.getMyBenutzer();
+                if (ben != null) {
+                    logger.debug("set new user");
+                    currentStep.setBearbeitungsbenutzer(ben);
+                }
+            }
+        } catch (Exception e) {
+            logger.debug("cannot resolve LoginForm", e);
+        }
+        logger.debug("set new end date");
+        currentStep.setBearbeitungsende(myDate);
+        logger.debug("saving step");
+        try {
+            StepManager.saveStep(currentStep);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+        List<Step> automatischeSchritte = new ArrayList<Step>();
+        List<Step> stepsToFinish = new ArrayList<Step>();
 
-		StepObjectManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitle(),
-				HistoryEventType.stepDone.getValue(), processId);
-		/* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
+        logger.debug("create history events for step");
 
-		List<StepObject> steps = StepObjectManager.getStepsForProcess(processId);
-		List<StepObject> allehoeherenSchritte = new ArrayList<StepObject>();
-		int offeneSchritteGleicherReihenfolge = 0;
-		for (StepObject so : steps) {
-			if (so.getReihenfolge() == currentStep.getReihenfolge() && so.getBearbeitungsstatus() != 3 && so.getId() != currentStep.getId()) {
-				offeneSchritteGleicherReihenfolge++;
-			} else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
-				allehoeherenSchritte.add(so);
-			}
-		}
-		/* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
-		if (offeneSchritteGleicherReihenfolge == 0) {
-			logger.debug("found " + allehoeherenSchritte.size() + " tasks");
-			int reihenfolge = 0;
-			boolean matched = false;
-			for (StepObject myStep : allehoeherenSchritte) {
-				if (reihenfolge < myStep.getReihenfolge() && !matched) {
-					reihenfolge = myStep.getReihenfolge();
-				}
+        StepManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
+                .getValue(), processId);
+        /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
 
-				if (reihenfolge == myStep.getReihenfolge() && myStep.getBearbeitungsstatus() != 3 && myStep.getBearbeitungsstatus() != 2) {
-					/*
-					 * den Schritt aktivieren, wenn es kein vollautomatischer ist
-					 */
-					logger.debug("open step " + myStep.getTitle());
-					myStep.setBearbeitungsstatus(1);
-					myStep.setBearbeitungszeitpunkt(myDate);
-					myStep.setEditType(4);
-					logger.debug("create history events for next step");
-					StepObjectManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitle(),
-							HistoryEventType.stepOpen.getValue(), processId);
-					/* wenn es ein automatischer Schritt mit Script ist */
-					logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
-					if (myStep.isTypAutomatisch()) {
-						logger.debug("add step to list of automatic tasks");
-						automatischeSchritte.add(myStep);
-					} else if (myStep.isTypeFinishImmediately()) {
-						stepsToFinish.add(myStep);
-					}
-					logger.debug("");
-					StepObjectManager.updateStep(myStep);
-					matched = true;
+        List<Step> steps = StepManager.getStepsForProcess(processId);
+        List<Step> allehoeherenSchritte = new ArrayList<Step>();
+        int offeneSchritteGleicherReihenfolge = 0;
+        for (Step so : steps) {
+            if (so.getReihenfolge() == currentStep.getReihenfolge() && !so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
+                    && so.getId() != currentStep.getId()) {
+                offeneSchritteGleicherReihenfolge++;
+            } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
+                allehoeherenSchritte.add(so);
+            }
+        }
+        /* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
+        if (offeneSchritteGleicherReihenfolge == 0) {
+            logger.debug("found " + allehoeherenSchritte.size() + " tasks");
+            int reihenfolge = 0;
+            boolean matched = false;
+            for (Step myStep : allehoeherenSchritte) {
+                if (reihenfolge < myStep.getReihenfolge() && !matched) {
+                    reihenfolge = myStep.getReihenfolge();
+                }
 
-				} else {
-					if (matched) {
-						break;
-					}
-				}
-			}
-		}
-		ProcessObject po = ProcessManager.getProcessObjectForId(processId);
-		FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
-		if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true)))) {
-			ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true))), processId);
-		}
-		logger.debug("update process status");
-		updateProcessStatus(processId);
-		logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
-		for (StepObject automaticStep : automatischeSchritte) {
-			logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
-			ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-			myThread.start();
-		}
-		for (StepObject finish : stepsToFinish) {
-			logger.debug("closing task " + finish.getTitle());
-			CloseStepObjectAutomatic(finish);
-		}
+                if (reihenfolge == myStep.getReihenfolge() && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
+                        && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+                    /*
+                     * den Schritt aktivieren, wenn es kein vollautomatischer ist
+                     */
+                    logger.debug("open step " + myStep.getTitel());
+                    myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                    myStep.setBearbeitungszeitpunkt(myDate);
+                    myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                    logger.debug("create history events for next step");
+                    StepManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
+                            .getValue(), processId);
+                    /* wenn es ein automatischer Schritt mit Script ist */
+                    logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
+                    if (myStep.isTypAutomatisch()) {
+                        logger.debug("add step to list of automatic tasks");
+                        automatischeSchritte.add(myStep);
+                    } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
+                        stepsToFinish.add(myStep);
+                    }
+                    try {
+                        StepManager.saveStep(myStep);
+                    } catch (DAOException e) {
+                        logger.error(e);
+                    }
+                    matched = true;
 
-	}
+                } else {
+                    if (matched) {
+                        break;
+                    }
+                }
+            }
+        }
+        ProcessObject po = ProcessManager.getProcessObjectForId(processId);
+        FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
+        if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true)))) {
+            ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(fi.getImagesOrigDirectory(true))), processId);
+        }
+        logger.debug("update process status");
+        updateProcessStatus(processId);
+        logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
+        for (Step automaticStep : automatischeSchritte) {
+            logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
+            myThread.start();
+        }
+        for (Step finish : stepsToFinish) {
+            logger.debug("closing task " + finish.getTitel());
+            CloseStepObjectAutomatic(finish);
+        }
 
-	public void updateProcessStatus(int processId) {
+    }
 
-		int offen = 0;
-		int inBearbeitung = 0;
-		int abgeschlossen = 0;
-		List<StepObject> stepsForProcess = StepObjectManager.getStepsForProcess(processId);
-		for (StepObject step : stepsForProcess) {
-			if (step.getBearbeitungsstatus() == 3) {
-				abgeschlossen++;
-			} else if (step.getBearbeitungsstatus() == 0) {
-				offen++;
-			} else {
-				inBearbeitung++;
-			}
-		}
-		double offen2 = 0;
-		double inBearbeitung2 = 0;
-		double abgeschlossen2 = 0;
+    public void updateProcessStatus(int processId) {
 
-		if ((offen + inBearbeitung + abgeschlossen) == 0) {
-			offen = 1;
-		}
+        int offen = 0;
+        int inBearbeitung = 0;
+        int abgeschlossen = 0;
+        List<Step> stepsForProcess = StepManager.getStepsForProcess(processId);
+        for (Step step : stepsForProcess) {
+            if (step.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+                abgeschlossen++;
+            } else if (step.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                offen++;
+            } else {
+                inBearbeitung++;
+            }
+        }
+        double offen2 = 0;
+        double inBearbeitung2 = 0;
+        double abgeschlossen2 = 0;
 
-		offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-		inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-		abgeschlossen2 = 100 - offen2 - inBearbeitung2;
-		// (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
-		java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
-		String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
+        if ((offen + inBearbeitung + abgeschlossen) == 0) {
+            offen = 1;
+        }
 
-		ProcessManager.updateProcessStatus(value, processId);
-	}
+        offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
+        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
+        abgeschlossen2 = 100 - offen2 - inBearbeitung2;
+        // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
+        String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
 
-	public void executeAllScriptsForStep(StepObject step, boolean automatic) {
-		List<String> scriptpaths = StepObjectManager.loadScripts(step.getId());
-		int count = 1;
-		int size = scriptpaths.size();
-		int returnParameter = 0;
-		for (String script : scriptpaths) {
-			logger.debug("starting script " + script);
-			if (returnParameter != 0) {
-				abortStep(step);
-				break;
-			}
-			if (script != null && !script.equals(" ") && script.length() != 0) {
-				if (automatic && (count == size)) {
-					returnParameter = executeScriptForStepObject(step, script, true);
-				} else {
-					returnParameter = executeScriptForStepObject(step, script, false);
-				}
-			}
-			count++;
-		}
-	}
+        ProcessManager.updateProcessStatus(value, processId);
+    }
 
-	public int executeScriptForStepObject(StepObject step, String script, boolean automatic) {
-		if (script == null || script.length() == 0) {
-			return -1;
-		}
-		script = script.replace("{", "(").replace("}", ")");
-		DigitalDocument dd = null;
-		ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
+    public void executeAllScriptsForStep(Step step, boolean automatic) {
+        List<String> scriptpaths = StepManager.loadScripts(step.getId());
+        int count = 1;
+        int size = scriptpaths.size();
+        int returnParameter = 0;
+        for (String script : scriptpaths) {
+            logger.debug("starting script " + script);
+            if (returnParameter != 0) {
+                abortStep(step);
+                break;
+            }
+            if (script != null && !script.equals(" ") && script.length() != 0) {
+                if (automatic && (count == size)) {
+                    returnParameter = executeScriptForStepObject(step, script, true);
+                } else {
+                    returnParameter = executeScriptForStepObject(step, script, false);
+                }
+            }
+            count++;
+        }
+    }
 
-		FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
-		Prefs prefs = null;
-		try {
-			prefs = RulesetManager.getRulesetById(po.getRulesetId()).getPreferences();
-			dd = po.readMetadataFile(fi.getMetadataFilePath(), prefs).getDigitalDocument();
-		} catch (DAOException e1) {
-			logger.error(e1);
-		} catch (PreferencesException e2) {
-			logger.error(e2);
-		} catch (ReadException e2) {
-			logger.error(e2);
-		} catch (IOException e2) {
-			logger.error(e2);
-		}
-		VariableReplacerWithoutHibernate replacer = new VariableReplacerWithoutHibernate(dd, prefs, po, step);
+    public int executeScriptForStepObject(Step step, String script, boolean automatic) {
+        if (script == null || script.length() == 0) {
+            return -1;
+        }
+        script = script.replace("{", "(").replace("}", ")");
+        DigitalDocument dd = null;
+        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
 
-		script = replacer.replace(script);
-		int rueckgabe = -1;
-		try {
-			logger.info("Calling the shell: " + script);
+        FolderInformation fi = new FolderInformation(po.getId(), po.getTitle());
+        Prefs prefs = null;
+        try {
+            prefs = RulesetManager.getRulesetById(po.getRulesetId()).getPreferences();
+            dd = po.readMetadataFile(fi.getMetadataFilePath(), prefs).getDigitalDocument();
+        } catch (DAOException e1) {
+            logger.error(e1);
+        } catch (PreferencesException e2) {
+            logger.error(e2);
+        } catch (ReadException e2) {
+            logger.error(e2);
+        } catch (IOException e2) {
+            logger.error(e2);
+        }
+        VariableReplacerWithoutHibernate replacer = new VariableReplacerWithoutHibernate(dd, prefs, po, step);
+
+        script = replacer.replace(script);
+        int rueckgabe = -1;
+        try {
+            logger.info("Calling the shell: " + script);
             rueckgabe = ShellScript.legacyCallShell2(script);
             if (automatic) {
-				if (rueckgabe == 0) {
-					step.setEditType(StepEditType.AUTOMATIC.getValue());
-					step.setBearbeitungsstatus(StepStatus.DONE.getValue());
-					if (step.getValidationPlugin() != null && step.getValidationPlugin().length() >0) {
-						IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, step.getValidationPlugin());
-						ivp.setStepObject(step);
-						if (!ivp.validate()) {
-							step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
-							StepObjectManager.updateStep(step);
-						} else {
-							CloseStepObjectAutomatic(step);							
-						}
-					} else {
-						CloseStepObjectAutomatic(step);
-					}
-					
-				} else {
-					step.setEditType(StepEditType.AUTOMATIC.getValue());
-					step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
-					StepObjectManager.updateStep(step);
-				}
-			}
-		} catch (IOException e) {
-			Helper.setFehlerMeldung("IOException: ", e.getMessage());
-		} catch (InterruptedException e) {
-			Helper.setFehlerMeldung("InterruptedException: ", e.getMessage());
-		}
-		return rueckgabe;
-	}
+                if (rueckgabe == 0) {
+                    step.setEditTypeEnum(StepEditType.AUTOMATIC);
+                    step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                    if (step.getValidationPlugin() != null && step.getValidationPlugin().length() > 0) {
+                        IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, step.getValidationPlugin());
+                        ivp.setStep(step);
+                        if (!ivp.validate()) {
+                            step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                            StepManager.saveStep(step);
+                        } else {
+                            CloseStepObjectAutomatic(step);
+                        }
+                    } else {
+                        CloseStepObjectAutomatic(step);
+                    }
 
-	public void executeDmsExport(StepObject step, boolean automatic) {
-		AutomaticDmsExportWithoutHibernate dms = new AutomaticDmsExportWithoutHibernate(ConfigMain.getBooleanParameter("automaticExportWithImages",
-				true));
-		if (!ConfigMain.getBooleanParameter("automaticExportWithOcr", true)) {
-			dms.setExportFulltext(false);
-		}
-		ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
-		try {
-			boolean validate = dms.startExport(po);
-			if (validate) {
-				CloseStepObjectAutomatic(step);
-			} else {
-				abortStep(step);
-			}
-		} catch (DAOException e) {
-			logger.error(e);
-			abortStep(step);
-			return;
-		} catch (PreferencesException e) {
-			logger.error(e);
-			abortStep(step);
-			return;
-		} catch (WriteException e) {
-			logger.error(e);
-			abortStep(step);
-			return;
-		} catch (SwapException e) {
-			logger.error(e);
-			abortStep(step);
-			return;
-		} catch (TypeNotAllowedForParentException e) {
-			logger.error(e);
-			abortStep(step);
-			return;
-		} catch (IOException e) {
-			logger.error(e);
-			abortStep(step);
-			return;
-		} catch (InterruptedException e) {
-			// validation error
-			abortStep(step);
-			return;
-		}
+                } else {
+                    step.setEditTypeEnum(StepEditType.AUTOMATIC);
+                    step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                    StepManager.saveStep(step);
+                }
+            }
+        } catch (IOException e) {
+            Helper.setFehlerMeldung("IOException: ", e.getMessage());
+        } catch (InterruptedException e) {
+            Helper.setFehlerMeldung("InterruptedException: ", e.getMessage());
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+        return rueckgabe;
+    }
 
-	}
+    public void executeDmsExport(Step step, boolean automatic) {
+        AutomaticDmsExportWithoutHibernate dms =
+                new AutomaticDmsExportWithoutHibernate(ConfigMain.getBooleanParameter("automaticExportWithImages", true));
+        if (!ConfigMain.getBooleanParameter("automaticExportWithOcr", true)) {
+            dms.setExportFulltext(false);
+        }
+        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
+        try {
+            boolean validate = dms.startExport(po);
+            if (validate) {
+                CloseStepObjectAutomatic(step);
+            } else {
+                abortStep(step);
+            }
+        } catch (DAOException e) {
+            logger.error(e);
+            abortStep(step);
+            return;
+        } catch (PreferencesException e) {
+            logger.error(e);
+            abortStep(step);
+            return;
+        } catch (WriteException e) {
+            logger.error(e);
+            abortStep(step);
+            return;
+        } catch (SwapException e) {
+            logger.error(e);
+            abortStep(step);
+            return;
+        } catch (TypeNotAllowedForParentException e) {
+            logger.error(e);
+            abortStep(step);
+            return;
+        } catch (IOException e) {
+            logger.error(e);
+            abortStep(step);
+            return;
+        } catch (InterruptedException e) {
+            // validation error
+            abortStep(step);
+            return;
+        }
 
-	private void abortStep(StepObject step) {
+    }
 
-		step.setBearbeitungsstatus(StepStatus.OPEN.getValue());
-		step.setEditType(StepEditType.AUTOMATIC.getValue());
+    private void abortStep(Step step) {
 
-		StepObjectManager.updateStep(step);
-	}
+        step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+        step.setEditTypeEnum(StepEditType.AUTOMATIC);
+
+        try {
+            StepManager.saveStep(step);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+    }
 }

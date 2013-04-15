@@ -66,8 +66,6 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -754,7 +752,7 @@ public class BatchStepHelper {
 		for (Step step : this.steps) {
 
 			if (step.getAllScripts().containsKey(this.script)) {
-				StepObject so = StepObjectManager.getStepById(step.getId());
+				Step so = StepManager.getStepById(step.getId());
 				String scriptPath = step.getAllScripts().get(this.script);
 
 				new HelperSchritteWithoutHibernate().executeScriptForStepObject(so, scriptPath, false);
@@ -871,8 +869,8 @@ public class BatchStepHelper {
 			}
 			if (!error) {
 				this.myDav.UploadFromHome(s.getProzess());
-				StepObject so = StepObjectManager.getStepById(s.getId());
-				so.setEditType(StepEditType.MANUAL_MULTI.getValue());
+				Step so = StepManager.getStepById(s.getId());
+				so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
 				helper.CloseStepObjectAutomatic(so, true);
 			}
 		}

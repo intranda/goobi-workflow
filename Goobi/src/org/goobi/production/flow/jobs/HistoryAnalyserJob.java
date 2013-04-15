@@ -46,8 +46,8 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.apache.StepObjectManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.commons.util.file.FileUtils;
 
 /**
@@ -384,7 +384,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
 		// if storedValue is different to current value - update history
 		if (diff != 0) {
-			StepObjectManager.addHistory(new Date(), diff, null, inType.getValue(), inProcess.getId());
+			StepManager.addHistory(new Date(), diff, null, inType.getValue(), inProcess.getId());
 			return true;
 		} else {
 			return false;

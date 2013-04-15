@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -143,8 +144,7 @@ public class StepManager implements IManager, Serializable {
         }
         return new ArrayList<String>();
     }
-    
-    
+
     public static void saveUserAssignment(Step step) {
         try {
             StepMysqlHelper.saveUserAssignment(step);
@@ -159,7 +159,7 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
-        
+
     }
 
     public static void removeUserFromStep(Step step, User user) {
@@ -170,4 +170,20 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
+    public static void addHistory(Date myDate, double order, String value, int type, int processId) {
+        try {
+            StepMysqlHelper.addHistory(myDate, order, value, type, processId);
+        } catch (SQLException e) {
+            logger.error("Cannot not save history event", e);
+        }
+    }
+
+    public static List<String> loadScripts(int id) {
+        try {
+            return StepMysqlHelper.getScriptsForStep(id);
+        } catch (SQLException e) {
+            logger.error("Cannot not load scripts for step with id " + id, e);
+        }
+        return new ArrayList<String>();
+    }
 }

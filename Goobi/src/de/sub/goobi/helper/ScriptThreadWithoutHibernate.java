@@ -30,21 +30,23 @@ package de.sub.goobi.helper;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
+import de.sub.goobi.persistence.managers.StepManager;
+
+
 
 public class ScriptThreadWithoutHibernate extends Thread {
 	HelperSchritteWithoutHibernate hs = new HelperSchritteWithoutHibernate();
-	private StepObject step;
+	private Step step;
 	public String rueckgabe = "";
 	public boolean stop = false;
 	private static final Logger logger = Logger.getLogger(ScriptThreadWithoutHibernate.class);
 
-	public ScriptThreadWithoutHibernate(StepObject step) {
+	public ScriptThreadWithoutHibernate(Step step) {
 		this.step = step;
 		setDaemon(true);
 	}
@@ -54,11 +56,11 @@ public class ScriptThreadWithoutHibernate extends Thread {
 
 		boolean automatic = this.step.isTypAutomatisch();
 		logger.debug("step is automatic: " + automatic);
-		List<String> scriptPaths = StepObjectManager.loadScripts(this.step.getId());
+		List<String> scriptPaths = StepManager.loadScripts(this.step.getId());
 		logger.debug("found " + scriptPaths.size() + " scripts");
 		if (scriptPaths.size() > 0) {
 			this.hs.executeAllScriptsForStep(this.step, automatic);
-		} else if (this.step.isTypExport()) {
+		} else if (this.step.isTypExportDMS()) {
 			this.hs.executeDmsExport(this.step, automatic);
 		} else if (this.step.getStepPlugin() != null && this.step.getStepPlugin().length() > 0) {
 			IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());

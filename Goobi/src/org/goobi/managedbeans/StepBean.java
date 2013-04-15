@@ -83,8 +83,6 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.apache.StepObjectManager;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -512,8 +510,8 @@ public class StepBean extends BasicBean {
          */
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
-        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
-        new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(so, true);
+//        Step so = StepObjectManager.getStepById(this.mySchritt.getId());
+        new HelperSchritteWithoutHibernate().CloseStepObjectAutomatic(mySchritt, true);
         // new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
         return FilterAlleStart();
     }
@@ -847,8 +845,8 @@ public class StepBean extends BasicBean {
     }
 
     public void executeScript() {
-        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
-        new HelperSchritteWithoutHibernate().executeScriptForStepObject(so, this.scriptPath, false);
+//        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
+        new HelperSchritteWithoutHibernate().executeScriptForStepObject(mySchritt, this.scriptPath, false);
 
     }
 

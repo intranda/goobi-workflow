@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -50,7 +51,6 @@ import de.sub.goobi.persistence.apache.FolderInformation;
 import de.sub.goobi.persistence.apache.ProcessManager;
 import de.sub.goobi.persistence.apache.ProcessObject;
 import de.sub.goobi.persistence.apache.Property;
-import de.sub.goobi.persistence.apache.StepObject;
 import de.sub.goobi.persistence.managers.RulesetManager;
 
 public class VariableReplacerWithoutHibernate {
@@ -68,13 +68,13 @@ public class VariableReplacerWithoutHibernate {
 	// $(abc)
 
 	private ProcessObject process;
-	private StepObject step;
+	private Step step;
 
 	@SuppressWarnings("unused")
 	private VariableReplacerWithoutHibernate() {
 	}
 
-	public VariableReplacerWithoutHibernate(DigitalDocument inDigitalDocument, Prefs inPrefs, ProcessObject p, StepObject s) {
+	public VariableReplacerWithoutHibernate(DigitalDocument inDigitalDocument, Prefs inPrefs, ProcessObject p, Step s) {
 		this.dd = inDigitalDocument;
 		this.prefs = inPrefs;
 		this.uhelp = new UghHelper();
@@ -211,7 +211,7 @@ public class VariableReplacerWithoutHibernate {
 
 			if (this.step != null) {
 				String stepId = String.valueOf(this.step.getId());
-				String stepname = this.step.getTitle();
+				String stepname = this.step.getTitel();
 
 				inString = inString.replace("(stepid)", stepId);
 				inString = inString.replace("(stepname)", stepname);

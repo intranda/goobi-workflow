@@ -29,8 +29,6 @@ package org.goobi.production.plugin.interfaces;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.persistence.apache.StepObject;
-
 public interface IValidatorPlugin extends IPlugin {
 	
 	public void initialize(Process inProcess);
@@ -41,8 +39,10 @@ public interface IValidatorPlugin extends IPlugin {
 	
 	public void setStep(Step step);
 	
-	public StepObject getStepObject();
+	@Deprecated
+	public Step getStepObject();
 	
-	public void setStepObject(StepObject so);
+	@Deprecated
+	public void setStepObject(Step so);
 	
 }
