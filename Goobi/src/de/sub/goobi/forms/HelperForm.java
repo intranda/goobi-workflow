@@ -56,11 +56,10 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 @SessionScoped
 public class HelperForm {
 
+    private static Boolean massImportAllowed = null;
+
     // TODO re-added temporary for compiling issues
     public static final String MAIN_JSF_PATH = "/newpages";
-
-    //	public static final String IMAGE_PATH = "/nimages";
-    //	public static final String CSS_PATH = "/css";
 
     public String getBuildVersion() {
         return GoobiVersion.getBuildversion();
@@ -69,52 +68,6 @@ public class HelperForm {
     public String getVersion() {
         return GoobiVersion.getBuildversion();
     }
-
-    //	/**
-    //	 * @author Wulf
-    //	 * @param none
-    //	 * @return returns dynamically resolved path for Version Logo
-    //	 */
-    //	public String getApplicationVersionLogo() {
-    //		String logo = getServletPathWithHostAsUrl() + IMAGE_PATH + "/template/";
-    //		logo += ConfigMain.getParameter("ApplicationVersionLogo", "Goobi151Logo.jpg");
-    //		return logo;
-    //
-    //	}
-
-    //	public String getApplicationLogo() {
-    //		// GetMethod method = null;
-    //		// try {
-    //		// HttpClient httpclient = new HttpClient();
-    //		// method = new GetMethod("http://is.gd/feWO5");
-    //		// int statusCode = httpclient.executeMethod(method);
-    //		// if (statusCode == HttpStatus.SC_OK) {
-    //		// return method.getURI().getURI();
-    //		// }
-    //		// } catch (URIException e) {
-    //		// // do nothing, no internet connection found, using local image
-    //		// } catch (HttpException e) {
-    //		// // do nothing, no internet connection found, using local image
-    //		// } catch (IOException e) {
-    //		// // do nothing, no internet connection found, using local image
-    //		// } finally {
-    //		// method.releaseConnection();
-    //		// }
-    //		String logo = getServletPathWithHostAsUrl() + IMAGE_PATH + "/template/";
-    //		logo += ConfigMain.getParameter("ApplicationLogo", "goobi_meta_klein.jpg");
-    //
-    //		return logo;
-    //	}
-
-    //	public String getApplicationHeaderBackground() {
-    //		String logo = getServletPathWithHostAsUrl() + IMAGE_PATH + "/template/";
-    //		logo += ConfigMain.getParameter("ApplicationHeaderBackground", "goobi_meta_verlauf.jpg");
-    //		/* wenn ein Background angegeben wurde, dann diesen jetzt strecken */
-    //		if (logo.length() > 0) {
-    //			logo = "background: url(" + logo + ") repeat-x;";
-    //		}
-    //		return logo;
-    //	}
 
     // TODO: Change the defaults
     public String getApplicationHeaderTitle() {
@@ -230,68 +183,20 @@ public class HelperForm {
         return FacesContext.getCurrentInstance().getMessages().hasNext();
     }
 
-    //	public List<SelectItem> getCssFiles() {
-    //		List<SelectItem> myList = new ArrayList<SelectItem>();
-    //
-    //		FacesContext context = FacesContext.getCurrentInstance();
-    //		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-    //		String filename = session.getServletContext().getRealPath("/css") + File.separator;
-    //		File cssDir = new File(filename);
-    //		FilenameFilter filter = new FilenameFilter() {
-    //			@Override
-    //			public boolean accept(File dir, String name) {
-    //				return (name.endsWith(".css"));
-    //			}
-    //		};
-    //
-    //		String[] dateien = cssDir.list(filter);
-    //		for (String string : dateien) {
-    //			myList.add(new SelectItem("/css/" + string, string));
-    //		}
-    //		return myList;
-    //	}
-
-    //	/*
-    //	 * method returns a valid css file, which is the suggestion unless
-    //	 * suggestion is not available if not available default.css is returned
-    //	 * 
-    //	 * @author Wulf
-    //	 * 
-    //	 * @param suggested css file
-    //	 * 
-    //	 * @return valid css file
-    //	 */
-    //	public String getCssLinkIfExists(String cssFileName) {
-    //		FacesContext context = FacesContext.getCurrentInstance();
-    //		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-    //		String filename = session.getServletContext().getRealPath(CSS_PATH) + File.separator;
-    //		File cssDir = new File(filename);
-    //		FilenameFilter filter = new FilenameFilter() {
-    //			@Override
-    //			public boolean accept(File dir, String name) {
-    //				return (name.endsWith(".css"));
-    //			}
-    //		};
-    //
-    //		String[] dateien = cssDir.list(filter);
-    //		for (String string : dateien) {
-    //			if ((CSS_PATH + "/" + string).equals(cssFileName)) {
-    //				return cssFileName;
-    //			}
-    //		}
-    //		return CSS_PATH + "/default.css";
-    //	}
-
     public TimeZone getTimeZone() {
         return TimeZone.getDefault();
     }
 
     public boolean getMassImportAllowed() {
-        boolean value = false;
-        if (ConfigMain.getBooleanParameter("massImportAllowed", false)) {
-            return !PluginLoader.getPluginList(PluginType.Import).isEmpty();
+        if (massImportAllowed == null) {
+            if (ConfigMain.getBooleanParameter("massImportAllowed", false)) {
+
+                massImportAllowed = !PluginLoader.getPluginList(PluginType.Import).isEmpty();
+            } else {
+                massImportAllowed = false;
+            }
         }
-        return value;
+        return massImportAllowed;
     }
 
     public boolean getIsIE() {
