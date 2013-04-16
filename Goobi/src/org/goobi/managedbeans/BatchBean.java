@@ -197,7 +197,7 @@ public class BatchBean extends BasicBean {
     public List<SelectItem> getCurrentProcessesAsSelectItems() {
         List<SelectItem> answer = new ArrayList<SelectItem>();
         for (Process p : this.currentProcesses) {
-            answer.add(new SelectItem(p, p.getTitel()));
+            answer.add(new SelectItem(String.valueOf(p.getId()), p.getTitel()));
         }
         return answer;
     }
@@ -233,11 +233,30 @@ public class BatchBean extends BasicBean {
     public void setSelectedProcesses(List<Process> selectedProcesses) {
         this.selectedProcesses = selectedProcesses;
     }
+    
+    public void setSelectedProcessIds(List<String> processIds) {
+        selectedProcesses = new ArrayList<Process>();
+        for (String idString : processIds) {
+            Integer id = new Integer(idString);
+            
+            selectedProcesses.add(ProcessManager.getProcessById(id));
+        }
+    }
 
+    public List<String> getSelectedProcessIds() {
+        List<String> idList = new ArrayList<String>();
+        for (Process p : selectedProcesses) {
+            idList.add(String.valueOf(p.getId()));
+        }
+        return idList;
+    }
+    
+    
     public List<String> getSelectedBatches() {
         return this.selectedBatches;
     }
 
+    
     public void setSelectedBatches(List<String> selectedBatches) {
         this.selectedBatches = selectedBatches;
     }

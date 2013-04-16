@@ -66,8 +66,14 @@
 							<h:inputText value="#{BatchForm.processfilter}" style="width:350px" />
 							<h:commandButton action="#{BatchForm.filterProcesses}" value="#{msgs.filter}" title="#{msgs.filter}" />
 						</h:panelGroup>
-						<h:selectManyListbox value="#{BatchForm.selectedProcesses}" converter="ProcessConverter" style="width:90%;margin-bottom:10px;display:block;"
-							size="20">
+						
+						
+<!-- 						<h:selectManyListbox value="#{BatchForm.selectedProcesses}" converter="ProcessConverter" style="width:90%;margin-bottom:10px;display:block;" -->
+<!-- 							size="20"> -->
+							
+							<h:selectManyListbox value="#{BatchForm.selectedProcessIds}" style="width:90%;margin-bottom:10px;display:block;" size="20">
+						
+						
 							<f:selectItems value="#{BatchForm.currentProcessesAsSelectItems}" />
 						</h:selectManyListbox>
 						<h:panelGrid columns="1" cellpadding="2px">
