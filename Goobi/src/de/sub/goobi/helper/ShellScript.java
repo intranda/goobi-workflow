@@ -239,15 +239,25 @@ public class ShellScript {
 	 */
 	public static int legacyCallShell2(String nonSpacesafeScriptingCommand)
 			throws IOException, InterruptedException {
-		String[] tokenisedCommand = nonSpacesafeScriptingCommand.split("\\s");
+//		String[] tokenisedCommand = nonSpacesafeScriptingCommand.split("\\s");
 		ShellScript s;
 		int err = ShellScript.ERRORLEVEL_ERROR;
 		try {
-			s = new ShellScript(new File(tokenisedCommand[0]));
+		    String scriptname = "";
+		    String paramList = "";
+		    if (nonSpacesafeScriptingCommand.contains(" ")) {
+		        scriptname = nonSpacesafeScriptingCommand.substring(0, nonSpacesafeScriptingCommand.indexOf(" "));
+		        paramList = nonSpacesafeScriptingCommand.substring(nonSpacesafeScriptingCommand.indexOf(" ") +1 );
+		    } else {
+		        scriptname = nonSpacesafeScriptingCommand;
+		    }
+			s = new ShellScript(new File(scriptname));
+			
 			ArrayList<String> scriptingArgs = new ArrayList<String>();
-			for (int i = 1; i < tokenisedCommand.length; i++) {
-				scriptingArgs.add(tokenisedCommand[i]);
-			}
+//			for (int i = 1; i < tokenisedCommand.length; i++) {
+//				scriptingArgs.add(tokenisedCommand[i]);
+//			}
+			scriptingArgs.add(paramList);
 			err = s.run(scriptingArgs);
 			for (String line : s.getStdOut()) {
 				Helper.setMeldung(line);
