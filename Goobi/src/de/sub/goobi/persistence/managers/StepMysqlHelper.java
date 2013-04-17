@@ -25,7 +25,7 @@ class StepMysqlHelper {
 
     public static List<Step> getStepsForProcess(int processId) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
-        String sql = "SELECT * FROM schritte WHERE ProzesseID = ? order by Reihenfolge";
+        String sql = "SELECT * FROM schritte WHERE schritte.ProzesseID = ? order by Reihenfolge";
         Object[] param = { processId };
         try {
             List<Step> list = new QueryRunner().query(connection, sql, resultSetToStepListHandler, param);

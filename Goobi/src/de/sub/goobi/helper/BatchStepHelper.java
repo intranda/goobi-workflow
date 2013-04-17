@@ -518,7 +518,7 @@ public class BatchStepHelper {
 				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 				 */
 				
-	             List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+	             List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
 		
 				
@@ -551,7 +551,7 @@ public class BatchStepHelper {
 
 	public List<SelectItem> getPreviousStepsForProblemReporting() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
-	      List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge() , 0, Integer.MAX_VALUE);
+	      List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge() , 0, Integer.MAX_VALUE);
 
 		for (Step s : alleVorherigenSchritte) {
 			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -561,7 +561,7 @@ public class BatchStepHelper {
 
 	public List<SelectItem> getNextStepsForProblemSolution() {
 		List<SelectItem> answer = new ArrayList<SelectItem>();
-        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
 		for (Step s : alleNachfolgendenSchritte) {
 			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -615,7 +615,7 @@ public class BatchStepHelper {
 				/*
 				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
 				 */
-	            List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+	            List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
 				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
 					Step step = iter.next();

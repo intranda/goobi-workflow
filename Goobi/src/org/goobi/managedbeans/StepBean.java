@@ -537,7 +537,7 @@ public class StepBean extends BasicBean {
 
     public List<Step> getPreviousStepsForProblemReporting() {
         List<Step> alleVorherigenSchritte =
-                StepManager.getSteps("Reihenfolge desc", " prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < "
+                StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < "
                         + this.mySchritt.getReihenfolge(), 0, Integer.MAX_VALUE);
 
         //		List<Step> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
@@ -590,7 +590,7 @@ public class StepBean extends BasicBean {
              */
 
             List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge desc", " prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
+                    StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
                             + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
             //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
@@ -630,7 +630,7 @@ public class StepBean extends BasicBean {
     public List<Step> getNextStepsForProblemSolution() {
 
         List<Step> alleNachfolgendenSchritte =
-                StepManager.getSteps("Reihenfolge", " prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge > "
+                StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge > "
                         + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
         //		List<Step> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
@@ -662,7 +662,7 @@ public class StepBean extends BasicBean {
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
             List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge", " prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
+                    StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
                             + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
             //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
