@@ -425,7 +425,7 @@ class StepMysqlHelper {
                                     .getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
                             o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
                             (o.getTypModulName() == null || o.getTypModulName().equals("")) ? null : o.getTypModulName(), // typModulName
-                            o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
+                            o.getBearbeitungsbenutzer() == null ? null : o.getBearbeitungsbenutzer().getId(), //BearbeitungsBenutzerID
                             o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
                             o.getEditTypeEnum().getValue(), //edittype
                             o.getTypScriptStep(), //typScriptStep
