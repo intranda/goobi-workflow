@@ -89,6 +89,9 @@ public class SearchBean {
     private String templatePropertyOperand = "";
     private String stepPropertyOperand = "";
     private String stepOperand = "";
+    
+    private String batchid = "";
+    
 
     public SearchBean() {
         for (StepStatus s : StepStatus.values()) {
@@ -371,6 +374,11 @@ public class SearchBean {
         if (!this.idin.isEmpty()) {
             search += "\"" + FilterString.ID + this.idin + "\" ";
         }
+        
+        if (!this.batchid.isEmpty()) {
+            search += "\"" + FilterString.BATCH + this.batchid + "\" ";
+        }
+        
         if (!this.project.isEmpty() && !this.project.equals(Helper.getTranslation("notSelected"))) {
             search += "\"" + this.projectOperand + FilterString.PROJECT + this.project + "\" ";
         }
@@ -487,6 +495,14 @@ public class SearchBean {
 
     public void setProcessOperand(String processOperand) {
         this.processOperand = processOperand;
+    }
+
+    public String getBatchid() {
+        return batchid;
+    }
+
+    public void setBatchid(String batchid) {
+        this.batchid = batchid;
     }
 
 }

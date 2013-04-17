@@ -136,6 +136,11 @@
 							<h:outputText value="#{msgs.id}: " />
 							<h:inputText value="#{SearchForm.idin}" style="width:690px" />
 
+							<!-- batch id -->
+							<h:outputText value="#{msgs.batch}: " />
+							<h:inputText value="#{SearchForm.batchid}" style="width:690px" />
+
+
 							<h:outputText value="#{msgs.showArchivedProjects}:" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
 							<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
 

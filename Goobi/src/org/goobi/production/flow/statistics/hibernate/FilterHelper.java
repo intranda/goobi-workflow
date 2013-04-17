@@ -213,8 +213,8 @@ public class FilterHelper {
                     + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
 
         } else {
-            return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(parameters)
-                    + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '%"
+                    + StringEscapeUtils.escapeSql(parameters) + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
 
         }
     }
@@ -489,8 +489,8 @@ public class FilterHelper {
      * @param stepOpenOnly
      * @return String used to pass on error messages about errors in the filter expression
      */
-    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly,
-            Boolean userAssignedStepsOnly, boolean isProcess, boolean isStep) {
+    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, boolean isProcess,
+            boolean isStep) {
         StringBuilder filter = new StringBuilder();
         boolean flagSteps = false;
         boolean flagProcesses = false;
@@ -607,9 +607,17 @@ public class FilterHelper {
                 filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
 
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
-                int value = Integer.valueOf(tok.substring(tok.indexOf(":") + 1));
-                filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.batchID = " + value);
+                try {
+                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    if (substring.contains(" ")) {
+                        substring = substring.substring(0, substring.indexOf(" "));
+                    }
+                    int value = Integer.valueOf(substring);
+                    filter = checkStringBuilder(filter, true);
+                    filter.append(" prozesse.batchID = " + value);
+                } catch (NumberFormatException e) {
+                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                }
 
             } else if (tok.toLowerCase().startsWith(FilterString.WORKPIECE) || tok.toLowerCase().startsWith(FilterString.WERKSTUECK)) {
                 filter = checkStringBuilder(filter, true);
@@ -699,13 +707,13 @@ public class FilterHelper {
             if (stepTitle.startsWith("-")) {
                 stepTitle = stepTitle.substring(1);
 
-                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel not like '%" + StringEscapeUtils.escapeSql(stepTitle)
-                        + "%' AND schritte.Bearbeitungsstatus >= 1 )";
+                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel not like '%"
+                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 )";
 
             } else {
 
-                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(stepTitle)
-                        + "%' AND schritte.Bearbeitungsstatus >= 1 )";
+                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%"
+                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 )";
 
             }
         }
