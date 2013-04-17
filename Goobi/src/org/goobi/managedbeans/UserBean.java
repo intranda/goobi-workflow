@@ -43,6 +43,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -61,257 +62,266 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 @ManagedBean(name = "BenutzerverwaltungForm")
 @SessionScoped
 public class UserBean extends BasicBean {
-	private static final long serialVersionUID = -3635859455444639614L;
-	private User myClass = new User();
-	private boolean hideInactiveUsers = true;
-	private static final Logger logger = Logger.getLogger(UserBean.class);
-	private String displayMode = "";
+    private static final long serialVersionUID = -3635859455444639614L;
+    private User myClass = new User();
+    private boolean hideInactiveUsers = true;
+    private static final Logger logger = Logger.getLogger(UserBean.class);
+    private String displayMode = "";
 
-	public String Neu() {
-		this.myClass = new User();
-		this.myClass.setVorname("");
-		this.myClass.setNachname("");
-		this.myClass.setLogin("");
-		this.myClass.setLdaplogin("");
-		this.myClass.setPasswortCrypt("Passwort");
-		return "user_edit";
-	}
+    public String Neu() {
+        this.myClass = new User();
+        this.myClass.setVorname("");
+        this.myClass.setNachname("");
+        this.myClass.setLogin("");
+        this.myClass.setLdaplogin("");
+        this.myClass.setPasswortCrypt("Passwort");
+        return "user_edit";
+    }
 
-	private String getBasicFilter() {
-		String hide = "isVisible is null";
-		if (this.hideInactiveUsers) {
-			hide += " AND istAktiv=true";
-		}
-		return hide;
-	}
+    private String getBasicFilter() {
+        String hide = "isVisible is null";
+        if (this.hideInactiveUsers) {
+            hide += " AND istAktiv=true";
+        }
+        return hide;
+    }
 
-	public String FilterKein() {
-		displayMode = "";
-		this.filter = null;
-		this.sortierung = "nachname, vorname";
-		UserManager m = new UserManager();
-		paginator = new DatabasePaginator(sortierung, getBasicFilter(), m);
-		return "user_all";
-	}
+    public String FilterKein() {
+        displayMode = "";
+        this.filter = null;
+        this.sortierung = "nachname, vorname";
+        UserManager m = new UserManager();
+        paginator = new DatabasePaginator(sortierung, getBasicFilter(), m);
+        return "user_all";
+    }
 
-	public String FilterKeinMitZurueck() {
-		FilterKein();
-		return this.zurueck;
-	}
+    public String FilterKeinMitZurueck() {
+        FilterKein();
+        return this.zurueck;
+    }
 
-	public String FilterAlleStart() {
-		this.sortierung = "nachname, vorname";
-		UserManager m = new UserManager();
-		String myfilter = getBasicFilter();
-		if (this.filter != null || this.filter.length() != 0) {
-			myfilter += " AND (vorname like '%" + this.filter + "%' OR nachname like '%" + this.filter + "%')";
-		}
-		paginator = new DatabasePaginator(sortierung, myfilter, m);
-		return "user_all";
-	}
+    public String FilterAlleStart() {
+        this.sortierung = "nachname, vorname";
+        UserManager m = new UserManager();
+        String myfilter = getBasicFilter();
+        if (this.filter != null || this.filter.length() != 0) {
+            myfilter +=
+                    " AND (vorname like '%"
+                            + StringEscapeUtils.escapeSql(this.filter)
+                            + "%' OR nachname like '%"
+                            + StringEscapeUtils.escapeSql(this.filter)
+                            + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
+                            + StringEscapeUtils.escapeSql(this.filter)
+                            + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
+                            + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+        }
 
-	public String Speichern() {
-		String bla = this.myClass.getLogin();
+        paginator = new DatabasePaginator(sortierung, myfilter, m);
+        return "user_all";
+    }
 
-		if (!LoginValide(bla)) {
-			return "";
-		}
+    public String Speichern() {
+        String bla = this.myClass.getLogin();
 
-		Integer blub = this.myClass.getId();
-		try {
-			/* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
-			int num = new UserManager().getHitSize(null, "login='" + bla + "'AND BenutzerID<>" + blub);
-			if (num == 0) {
-				UserManager.saveUser(this.myClass);
-				paginator.load();
-				return "user_all";
-			} else {
-				Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
-				return "";
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
-			return "";
-		}
-	}
+        if (!LoginValide(bla)) {
+            return "";
+        }
 
-	private boolean LoginValide(String inLogin) {
-		boolean valide = true;
-		String patternStr = "[A-Za-z0-9@_\\-.]*";
-		Pattern pattern = Pattern.compile(patternStr);
-		Matcher matcher = pattern.matcher(inLogin);
-		valide = matcher.matches();
-		if (!valide) {
-			Helper.setFehlerMeldung("", Helper.getTranslation("loginNotValid"));
-		}
+        Integer blub = this.myClass.getId();
+        try {
+            /* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
+            int num = new UserManager().getHitSize(null, "login='" + bla + "'AND BenutzerID<>" + blub);
+            if (num == 0) {
+                UserManager.saveUser(this.myClass);
+                paginator.load();
+                return "user_all";
+            } else {
+                Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
+                return "";
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error, could not save", e.getMessage());
+            return "";
+        }
+    }
 
-		/* Pfad zur Datei ermitteln */
-		FacesContext context = FacesContext.getCurrentInstance();
-		HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-		String filename = session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator
-				+ "goobi_loginBlacklist.txt";
-		/* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-			BufferedReader in = new BufferedReader(isr);
-			String str;
-			while ((str = in.readLine()) != null) {
-				if (str.length() > 0 && inLogin.equalsIgnoreCase(str)) {
-					valide = false;
-					Helper.setFehlerMeldung("", "Login " + str + Helper.getTranslation("loginNotValid"));
-				}
-			}
-			in.close();
-		} catch (IOException e) {
-		}
-		return valide;
-	}
+    private boolean LoginValide(String inLogin) {
+        boolean valide = true;
+        String patternStr = "[A-Za-z0-9@_\\-.]*";
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(inLogin);
+        valide = matcher.matches();
+        if (!valide) {
+            Helper.setFehlerMeldung("", Helper.getTranslation("loginNotValid"));
+        }
 
-	/**
-	 * The function Loeschen() deletes a user account.
-	 * Please note that deleting a user in goobi.production will not delete the user from a connected LDAP service.
-	 * 
-	 * @return a string indicating the screen showing up after the command has been performed.
-	 */
-	public String Loeschen() {
-		try {
-			UserManager.hideUser(myClass);
-			paginator.load();
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
-			return "";
-		}
-		return "user_all";
-	}
+        /* Pfad zur Datei ermitteln */
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        String filename =
+                session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator + "goobi_loginBlacklist.txt";
+        /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
+        try {
+            FileInputStream fis = new FileInputStream(filename);
+            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+            BufferedReader in = new BufferedReader(isr);
+            String str;
+            while ((str = in.readLine()) != null) {
+                if (str.length() > 0 && inLogin.equalsIgnoreCase(str)) {
+                    valide = false;
+                    Helper.setFehlerMeldung("", "Login " + str + Helper.getTranslation("loginNotValid"));
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+        }
+        return valide;
+    }
 
-	public String AusGruppeLoeschen() {
-		int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
-		List<Usergroup> neu = new ArrayList<Usergroup>();
-		for (Usergroup u : this.myClass.getBenutzergruppen()) {
-			if (u.getId().intValue() != gruppenID) {
-				neu.add(u);
-			}
-		}
-		this.myClass.setBenutzergruppen(neu);
-		UserManager.deleteUsergroupAssignment(myClass, gruppenID);
-		return "";
-	}
+    /**
+     * The function Loeschen() deletes a user account. Please note that deleting a user in goobi.production will not delete the user from a connected
+     * LDAP service.
+     * 
+     * @return a string indicating the screen showing up after the command has been performed.
+     */
+    public String Loeschen() {
+        try {
+            UserManager.hideUser(myClass);
+            paginator.load();
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
+            return "";
+        }
+        return "user_all";
+    }
 
-	public String ZuGruppeHinzufuegen() {
-		Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
-		try {
-			Usergroup usergroup = UsergroupManager.getUsergroupById(gruppenID);
-			for (Usergroup b : this.myClass.getBenutzergruppen()) {
-				if (b.equals(usergroup)) {
-					return "";
-				}
-			}
-			this.myClass.getBenutzergruppen().add(usergroup);
-			UserManager.addUsergroupAssignment(myClass, gruppenID);
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
-			return null;
-		}
-		displayMode = "";
-		return "";
-	}
+    public String AusGruppeLoeschen() {
+        int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        List<Usergroup> neu = new ArrayList<Usergroup>();
+        for (Usergroup u : this.myClass.getBenutzergruppen()) {
+            if (u.getId().intValue() != gruppenID) {
+                neu.add(u);
+            }
+        }
+        this.myClass.setBenutzergruppen(neu);
+        UserManager.deleteUsergroupAssignment(myClass, gruppenID);
+        return "";
+    }
 
-	public String AusProjektLoeschen() {
-		int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-		List<Project> neu = new ArrayList<Project>();
-		for (Project p: this.myClass.getProjekte()) {
-			if (p.getId().intValue() != projektID) {
-				neu.add(p);
-			}
-		}
-		this.myClass.setProjekte(neu);
-		UserManager.deleteProjectAssignment(myClass, projektID);
-		return "";
-	}
+    public String ZuGruppeHinzufuegen() {
+        Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        try {
+            Usergroup usergroup = UsergroupManager.getUsergroupById(gruppenID);
+            for (Usergroup b : this.myClass.getBenutzergruppen()) {
+                if (b.equals(usergroup)) {
+                    return "";
+                }
+            }
+            this.myClass.getBenutzergruppen().add(usergroup);
+            UserManager.addUsergroupAssignment(myClass, gruppenID);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error on reading database", e.getMessage());
+            return null;
+        }
+        displayMode = "";
+        return "";
+    }
 
-	public String ZuProjektHinzufuegen() {
-		Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
-		try {
-			Project project = ProjectManager.getProjectById(projektID);
-			for (Project p : this.myClass.getProjekte()) {
-				if (p.equals(project)) {
-					return "";
-				}
-			}
-			this.myClass.getProjekte().add(project);
-		     UserManager.addProjectAssignment(myClass, projektID);
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error on reading database", e.getMessage());
-			return null;
-		}
-		displayMode = "";
-		return "";
-	}
+    public String AusProjektLoeschen() {
+        int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        List<Project> neu = new ArrayList<Project>();
+        for (Project p : this.myClass.getProjekte()) {
+            if (p.getId().intValue() != projektID) {
+                neu.add(p);
+            }
+        }
+        this.myClass.setProjekte(neu);
+        UserManager.deleteProjectAssignment(myClass, projektID);
+        return "";
+    }
 
-	public User getMyClass() {
-		return this.myClass;
-	}
+    public String ZuProjektHinzufuegen() {
+        Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        try {
+            Project project = ProjectManager.getProjectById(projektID);
+            for (Project p : this.myClass.getProjekte()) {
+                if (p.equals(project)) {
+                    return "";
+                }
+            }
+            this.myClass.getProjekte().add(project);
+            UserManager.addProjectAssignment(myClass, projektID);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error on reading database", e.getMessage());
+            return null;
+        }
+        displayMode = "";
+        return "";
+    }
 
-	public void setMyClass(User inMyClass) {
-		this.myClass = inMyClass;
-	}
+    public User getMyClass() {
+        return this.myClass;
+    }
 
-	public Integer getLdapGruppeAuswahl() {
-		if (this.myClass.getLdapGruppe() != null) {
-			return this.myClass.getLdapGruppe().getId();
-		} else {
-			return Integer.valueOf(0);
-		}
-	}
+    public void setMyClass(User inMyClass) {
+        this.myClass = inMyClass;
+    }
 
-	public void setLdapGruppeAuswahl(Integer inAuswahl) {
-		if (inAuswahl.intValue() != 0) {
-			try {
-				this.myClass.setLdapGruppe(LdapManager.getLdapById(inAuswahl));
-			} catch (DAOException e) {
-				Helper.setFehlerMeldung("Error on writing to database",e);
-			}
-		}
-	}
+    public Integer getLdapGruppeAuswahl() {
+        if (this.myClass.getLdapGruppe() != null) {
+            return this.myClass.getLdapGruppe().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
 
-	public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
-		List<SelectItem> myLdapGruppen = new ArrayList<SelectItem>();
-		List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
-		for (Ldap gru : temp) {
-			myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
-		}
-		return myLdapGruppen;
-	}
+    public void setLdapGruppeAuswahl(Integer inAuswahl) {
+        if (inAuswahl.intValue() != 0) {
+            try {
+                this.myClass.setLdapGruppe(LdapManager.getLdapById(inAuswahl));
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("Error on writing to database", e);
+            }
+        }
+    }
 
-	public String LdapKonfigurationSchreiben() {
-		LdapAuthentication myLdap = new LdapAuthentication();
-		try {
-			myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
-		} catch (Exception e) {
-			logger.warn("Could not generate ldap entry: " + e.getMessage());
-			Helper.setFehlerMeldung("Error on writing to database", e);
-		}
-		return "";
-	}
+    public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
+        List<SelectItem> myLdapGruppen = new ArrayList<SelectItem>();
+        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
+        for (Ldap gru : temp) {
+            myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
+        }
+        return myLdapGruppen;
+    }
 
-	public boolean isHideInactiveUsers() {
-		return this.hideInactiveUsers;
-	}
+    public String LdapKonfigurationSchreiben() {
+        LdapAuthentication myLdap = new LdapAuthentication();
+        try {
+            myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
+        } catch (Exception e) {
+            logger.warn("Could not generate ldap entry: " + e.getMessage());
+            Helper.setFehlerMeldung("Error on writing to database", e);
+        }
+        return "";
+    }
 
-	public void setHideInactiveUsers(boolean hideInactiveUsers) {
-		this.hideInactiveUsers = hideInactiveUsers;
-	}
+    public boolean isHideInactiveUsers() {
+        return this.hideInactiveUsers;
+    }
 
-	public String getDisplayMode() {
-		return displayMode;
-	}
+    public void setHideInactiveUsers(boolean hideInactiveUsers) {
+        this.hideInactiveUsers = hideInactiveUsers;
+    }
 
-	public void setDisplayMode(String displayMode) {
-		this.displayMode = displayMode;
-	}
+    public String getDisplayMode() {
+        return displayMode;
+    }
 
-	public boolean getLdapUsage() {
-		return ConfigMain.getBooleanParameter("ldap_use");
-	}
+    public void setDisplayMode(String displayMode) {
+        this.displayMode = displayMode;
+    }
+
+    public boolean getLdapUsage() {
+        return ConfigMain.getBooleanParameter("ldap_use");
+    }
 }
