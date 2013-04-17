@@ -167,7 +167,7 @@ public class BatchBean extends BasicBean {
         }
         filter += " istTemplate = false ";
 
-        this.currentProcesses = ProcessManager.getProcesses("prozesse.erstellungsdatum", filter, 0, getBatchMaxSize());
+        this.currentProcesses = ProcessManager.getProcesses("prozesse.titel", filter, 0, getBatchMaxSize());
     }
 
     public void filterBatches() {
