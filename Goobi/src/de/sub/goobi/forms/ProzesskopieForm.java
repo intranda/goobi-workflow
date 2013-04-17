@@ -295,7 +295,7 @@ public class ProzesskopieForm {
                 //				crit.add(dis);
             }
         }
-        List<Process> selectList = ProcessManager.getProcesses("titel", filter);
+        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter);
         //		for (Object proz : crit.list()) {
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
@@ -422,7 +422,12 @@ public class ProzesskopieForm {
      */
     public String TemplateAuswahlAuswerten() throws DAOException {
         /* den ausgewählten Process laden */
+        if (auswahl == null || auswahl == 0) {
+            Helper.setFehlerMeldung("ErrorTemplateSelectionIsEmpty");
+            return "";
+        }
         Process tempProcess = ProcessManager.getProcessById(this.auswahl);
+       
         if (tempProcess.getWerkstueckeSize() > 0) {
             /* erstes Werkstück durchlaufen */
             Masterpiece werk = tempProcess.getWerkstueckeList().get(0);
