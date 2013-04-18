@@ -254,6 +254,12 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public User getBearbeitungsbenutzer() {
+        if (bearbeitungsbenutzer == null && userId != null) {
+            try {
+                bearbeitungsbenutzer = UserManager.getUserById(userId);
+            } catch (DAOException e) {
+            }
+        }
         return this.bearbeitungsbenutzer;
     }
 
