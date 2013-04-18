@@ -110,6 +110,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -560,8 +561,10 @@ public class ProcessBean extends BasicBean {
     }
 
     public String ProzessEigenschaftUebernehmen() {
-        myProzess.getEigenschaften().add(myProzessEigenschaft);
-        myProzessEigenschaft.setProzess(myProzess);
+        if (!myProzess.getEigenschaften().contains(myProzessEigenschaft)) {
+            myProzess.getEigenschaften().add(myProzessEigenschaft);
+            myProzessEigenschaft.setProzess(myProzess);
+        }
         //        Speichern();
         PropertyManager.saveProcessProperty(myProzessEigenschaft);
         return "";
@@ -575,16 +578,20 @@ public class ProcessBean extends BasicBean {
     //    }
 
     public String VorlageEigenschaftUebernehmen() {
-        myVorlage.getEigenschaften().add(myVorlageEigenschaft);
-        myVorlageEigenschaft.setVorlage(myVorlage);
+        if (!myVorlage.getEigenschaften().contains(myVorlageEigenschaft)) {
+            myVorlage.getEigenschaften().add(myVorlageEigenschaft);
+            myVorlageEigenschaft.setVorlage(myVorlage);
+        }
         PropertyManager.saveTemplateProperty(myVorlageEigenschaft);
         //        Speichern();
         return "";
     }
 
     public String WerkstueckEigenschaftUebernehmen() {
-        myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
-        myWerkstueckEigenschaft.setWerkstueck(myWerkstueck);
+        if (!myWerkstueck.getEigenschaften().contains(myWerkstueckEigenschaft)) {
+            myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
+            myWerkstueckEigenschaft.setWerkstueck(myWerkstueck);
+        }
         //        Speichern();
         PropertyManager.saveMasterpieceProperty(myWerkstueckEigenschaft);
         return "";
@@ -685,8 +692,6 @@ public class ProcessBean extends BasicBean {
     }
 
     public String VorlageUebernehmen() {
-        this.myProzess.getVorlagen().add(this.myVorlage);
-        this.myVorlage.setProzess(this.myProzess);
         TemplateManager.saveTemplate(myVorlage);
         //        Speichern();
         return "";
@@ -707,20 +712,18 @@ public class ProcessBean extends BasicBean {
         this.myWerkstueck = new Masterpiece();
         this.myProzess.getWerkstuecke().add(this.myWerkstueck);
         this.myWerkstueck.setProzess(this.myProzess);
-        Speichern();
+        MasterpieceManager.saveMasterpiece(myWerkstueck);
         return "process_edit_workpiece";
     }
 
     public String WerkstueckUebernehmen() {
-        this.myProzess.getWerkstuecke().add(this.myWerkstueck);
-        this.myWerkstueck.setProzess(this.myProzess);
-        Speichern();
+        MasterpieceManager.saveMasterpiece(myWerkstueck);
         return "";
     }
 
     public String WerkstueckLoeschen() {
         this.myProzess.getWerkstuecke().remove(this.myWerkstueck);
-        Speichern();
+        MasterpieceManager.deleteMasterpiece(myWerkstueck);
         return "process_edit";
     }
 
