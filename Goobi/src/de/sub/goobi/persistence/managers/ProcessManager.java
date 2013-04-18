@@ -153,8 +153,8 @@ public class ProcessManager implements IManager, Serializable {
         return new ArrayList<Integer>();
     }
 
+    @SuppressWarnings("rawtypes")
     public static List runSQL(String sql) {
-
         try {
             return ProcessMysqlHelper.runSQL(sql);
         } catch (SQLException e) {

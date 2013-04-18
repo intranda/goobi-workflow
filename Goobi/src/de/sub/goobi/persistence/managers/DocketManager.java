@@ -9,7 +9,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
-import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 

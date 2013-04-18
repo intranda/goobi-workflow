@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
