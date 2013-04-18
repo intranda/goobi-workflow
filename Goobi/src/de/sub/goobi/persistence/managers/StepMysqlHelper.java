@@ -118,9 +118,18 @@ class StepMysqlHelper {
         s.setPrioritaet(rs.getInt("Prioritaet"));
         s.setReihenfolge(rs.getInt("Reihenfolge"));
         s.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(rs.getInt("Bearbeitungsstatus")));
-        s.setBearbeitungszeitpunkt(rs.getDate("BearbeitungsZeitpunkt"));
-        s.setBearbeitungsbeginn(rs.getDate("BearbeitungsBeginn"));
-        s.setBearbeitungsende(rs.getDate("BearbeitungsEnde"));
+        Timestamp time = rs.getTimestamp("BearbeitungsZeitpunkt");
+        if (time!=null) {
+            s.setBearbeitungszeitpunkt(new Date(time.getTime()));
+        }
+        Timestamp start =rs.getTimestamp("BearbeitungsBeginn");
+        if (start != null) {
+            s.setBearbeitungsbeginn(new Date(start.getTime()));
+        }
+        Timestamp end =rs.getTimestamp("BearbeitungsBeginn");
+        if (end != null) {
+            s.setBearbeitungsende(new Date(end.getTime()));
+        }
         s.setHomeverzeichnisNutzen(rs.getShort("homeverzeichnisNutzen"));
         s.setTypMetadaten(rs.getBoolean("typMetadaten"));
         s.setTypAutomatisch(rs.getBoolean("typAutomatisch"));
