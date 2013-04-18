@@ -183,45 +183,45 @@ public class StepBean extends BasicBean {
             return "prioritaet desc";
         }
 
-        String answer = "prioritaet desc";
+        String answer = "prioritaet desc ";
 
         if (this.sortierung.equals("schrittAsc")) {
-            answer = "titel";
+            answer += ", schritte.titel";
         } else if (this.sortierung.equals("schrittDesc")) {
-            answer = "titel desc";
+            answer += ", schritte.titel desc";
         }
         if (this.sortierung.equals("prozessAsc")) {
-            answer = "prozesse.Titel";
+            answer += ", prozesse.Titel";
         }
         if (this.sortierung.equals("prozessDesc")) {
-            answer = "prozesse.Titel desc";
+            answer += ", prozesse.Titel desc";
         }
         if (this.sortierung.equals("batchAsc")) {
-            answer = "prozesse.batchID";
+            answer += ", prozesse.batchID";
         }
         if (this.sortierung.equals("batchDesc")) {
-            answer = "prozesse.batchID desc";
+            answer += ", prozesse.batchID desc";
         }
         if (this.sortierung.equals("prozessdateAsc")) {
 
-            answer = "prozesse.erstellungsdatum";
+            answer += ", prozesse.erstellungsdatum";
         }
         if (this.sortierung.equals("prozessdateDesc")) {
-            answer = "prozesse.erstellungsdatum desc";
+            answer += ", prozesse.erstellungsdatum desc";
         }
         if (this.sortierung.equals("projektAsc")) {
-            answer = "projekte.Titel";
+            answer += " ,projekte.Titel";
         }
         if (this.sortierung.equals("projektDesc")) {
-            answer = "projekte.Titel desc";
+            answer += ", projekte.Titel desc";
         } else if (this.sortierung.equals("modulesAsc")) {
-            answer = "typModulName";
+            answer += ", typModulName";
         } else if (this.sortierung.equals("modulesDesc")) {
-            answer = "typModulName desc";
+            answer += ", typModulName desc";
         } else if (this.sortierung.equals("statusAsc")) {
-            answer = "bearbeitungsstatus";
+            answer += ", bearbeitungsstatus";
         } else if (this.sortierung.equals("statusDesc")) {
-            answer = "bearbeitungsstatus desc";
+            answer += ", bearbeitungsstatus desc";
         }
 
         return answer;
@@ -510,7 +510,7 @@ public class StepBean extends BasicBean {
          */
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
-//        Step so = StepObjectManager.getStepById(this.mySchritt.getId());
+        //        Step so = StepObjectManager.getStepById(this.mySchritt.getId());
         new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
         // new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
         return FilterAlleStart();
@@ -845,7 +845,7 @@ public class StepBean extends BasicBean {
     }
 
     public void executeScript() {
-//        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
+        //        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
         new HelperSchritte().executeScriptForStepObject(mySchritt, this.scriptPath, false);
 
     }
