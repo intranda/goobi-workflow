@@ -27,117 +27,73 @@ package de.sub.goobi.persistence.managers;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.Loader;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import de.sub.goobi.config.ConfigMain;
 
-import de.sub.goobi.helper.Helper;
 public class SqlConfiguration {
 
+    private String username = "goobi";
+    private String password = "CHANGEIT";
+    private String url = "jdbc:mysql://localhost/goobi?autoReconnect=true&amp;autoReconnectForPools=true";
+    private String driverClassName = "com.mysql.jdbc.Driver";
+    private long maxWait = -1l;
+    private boolean removeAbandoned = false;
+    private int removeAbandonedTimeout = 300;
+    private int initialSize = 1;
+    private int maxActive = 20;
 
-	private String dbDriverName = "com.mysql.jdbc.Driver";
-	private String dbUser = "goobi";
-	private String dbPassword = "CHANGEIT";
-	private String dbURI = "jdbc:mysql://localhost/goobi?autoReconnect=true&amp;autoReconnectForPools=true";
-	private static final Logger logger = Logger.getLogger(MySQLHelper.class);
-					
+    private static SqlConfiguration sqlConfiguration = new SqlConfiguration();
 
-	private int dbPoolMinSize = 1;
-	private int dbPoolMaxSize = 20;
+    private SqlConfiguration() {
+        username = ConfigMain.getParameter("DatabaseUsername", "goobi");
+        password = ConfigMain.getParameter("DatabasePassword", "goobi");
+        url = ConfigMain.getParameter("DatabaseConnection", "jdbc:mysql://localhost/goobi?autoReconnect=true&amp;autoReconnectForPools=true");
+        driverClassName = ConfigMain.getParameter("DatabaseDriverClassName", "com.mysql.jdbc.Driver");
+        initialSize = ConfigMain.getIntParameter("DatabaseConnectionInitialSize", 1);
+        maxActive = ConfigMain.getIntParameter("DatabaseConnectionMaxSize", 20);
+        maxWait = ConfigMain.getLongParameter("DatabaseConnectionTimeout", 30000);
+        removeAbandoned = ConfigMain.getBooleanParameter("DatabaseRemoveAbandonedConnection", false);
+        removeAbandonedTimeout = ConfigMain.getIntParameter("DatabaseRemoveAbandonedConnectionTimeout", 300);
+    }
 
-	private static SqlConfiguration sqlConfiguration = new SqlConfiguration();
+    public static SqlConfiguration getInstance() {
+        return sqlConfiguration;
+    }
 
-	private SqlConfiguration() {
-		try {
-			
-			File f = new File(new Helper().getGoobiConfigDirectory(), "hibernate.cfg.xml");
-			if (!f.exists() && !f.canRead()) {
-				f = new File(Loader.getResource("hibernate.cfg.xml").getFile());
-			}
-			
-			logger.info("loading configuration from " + f.getAbsolutePath());
-			SAXBuilder sb = new SAXBuilder(false);
-			sb.setValidation(false);
-			sb.setFeature("http://xml.org/sax/features/validation", false);
-			sb.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-			sb.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			
-			Document doc = sb.build(f);
-			logger.debug("could read configuration file");
-			Element root = doc.getRootElement();
-			logger.debug("found root element");
-			Element sessionFactory = root.getChild("session-factory");
-			logger.debug("found session-factory element");
-			@SuppressWarnings("unchecked")
-			List<Element> properties = sessionFactory.getChildren("property");
-			logger.debug("found " + properties.size() + " property elements");
-			for (Element property : properties) {
-				if (property.getAttribute("name").getValue().equals("hibernate.connection.url")) {
-					this.dbURI = property.getText().replace("&", "&amp;").trim();
-					logger.debug("found uri element: " + this.dbURI);
-				} else if (property.getAttribute("name").getValue().equals("hibernate.connection.driver_class")) {
-					this.dbDriverName = property.getText().trim();
-					logger.debug("found driver element: " + this.dbDriverName);
-				} else if (property.getAttribute("name").getValue().equals("hibernate.connection.username")) {
-					this.dbUser = property.getText().trim();
-					logger.debug("found user element: " + this.dbUser);
-				} else if (property.getAttribute("name").getValue().equals("hibernate.connection.password")) {
-					this.dbPassword = property.getText().trim();
-					logger.debug("found password element: " + this.dbPassword);
-				} else if (property.getAttribute("name").getValue().equals("hibernate.c3p0.max_size")) {
-					this.dbPoolMaxSize = new Integer(property.getText().trim()).intValue();
-					logger.debug("found max poolsize element: " + this.dbPoolMaxSize);
-				}else if (property.getAttribute("name").getValue().equals("hibernate.c3p0.min_size")) {
-					this.dbPoolMinSize = new Integer(property.getText().trim()).intValue();
-					logger.debug("found min poolsize element: " + this.dbPoolMinSize);
-				}
+    public String getDbDriverName() {
+        return this.driverClassName;
+    }
 
-			}
+    public String getDbUser() {
+        return this.username;
+    }
 
-		} catch (JDOMException e1) {
-			logger.error(e1);
-		} catch (IOException e1) {
-			logger.error(e1);
-		}
-	}
+    public String getDbPassword() {
+        return this.password;
+    }
 
-	public static SqlConfiguration getInstance() {
-		return sqlConfiguration;
-	}
+    public String getDbURI() {
+        return this.url;
+    }
 
-	public String getDbDriverName() {
-		return this.dbDriverName;
-	}
+    public int getDbPoolMinSize() {
+        return this.initialSize;
+    }
 
-	public String getDbUser() {
-		return this.dbUser;
-	}
+    public int getDbPoolMaxSize() {
+        return this.maxActive;
+    }
 
-	public String getDbPassword() {
-		return this.dbPassword;
-	}
+    public long getMaxWait() {
+        return maxWait;
+    }
 
-	public String getDbURI() {
-		return this.dbURI;
-	}
+    public int getRemoveAbandonedTimeout() {
+        return removeAbandonedTimeout;
+    }
 
-	public int getDbPoolMinSize() {
-		return this.dbPoolMinSize;
-	}
-
-	public int getDbPoolMaxSize() {
-		return this.dbPoolMaxSize;
-	}
-
-	public static void main(String[] args) {
-		SqlConfiguration.getInstance();
-	}
+    public boolean isRemoveAbandoned() {
+        return removeAbandoned;
+    }
 
 }

@@ -93,7 +93,7 @@ public class ConnectionManager {
 
 		logger.debug("Trying to connect to database...");
 		try {
-			this.ds = setupDataSource(config.getDbURI(), config.getDbUser(), config.getDbPassword(), config.getDbPoolMinSize(), config.getDbPoolMaxSize());
+			this.ds = setupDataSource();
 			logger.debug("Connection attempt to database succeeded.");
 		} catch (Exception e) {
 			logger.error("Error when attempting to connect to DB ", e);
@@ -114,7 +114,7 @@ public class ConnectionManager {
 	 *            - Connection Pool Maximum Capacity (Size)
 	 * @throws Exception
 	 */
-	public static DataSource setupDataSource(String connectURI, String username, String password, int minIdle, int maxActive) {
+	public static DataSource setupDataSource() {
 		//
 		// First, we'll need a ObjectPool that serves as the
 		// actual pool of connections.
@@ -124,9 +124,9 @@ public class ConnectionManager {
 		//
 		GenericObjectPool connectionPool = new GenericObjectPool(null);
 
-		connectionPool.setMinIdle(minIdle);
-		connectionPool.setMaxActive(maxActive);
-
+		connectionPool.setMinIdle(SqlConfiguration.getInstance().getDbPoolMinSize());
+		connectionPool.setMaxActive(SqlConfiguration.getInstance().getDbPoolMaxSize());
+		connectionPool.setMaxWait(SqlConfiguration.getInstance().getMaxWait());
 		ConnectionManager._pool = connectionPool;
 		// we keep it for two reasons
 		// #1 We need it for statistics/debugging
@@ -139,7 +139,7 @@ public class ConnectionManager {
 		// We'll use the DriverManagerConnectionFactory,
 		// using the connect string from configuration
 		//
-		ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(connectURI, username, password);
+		ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(SqlConfiguration.getInstance().getDbURI(), SqlConfiguration.getInstance().getDbUser(), SqlConfiguration.getInstance().getDbPassword());
 
 		//
 		// Now we'll create the PoolableConnectionFactory, which wraps
