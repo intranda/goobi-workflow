@@ -2,7 +2,9 @@ package de.sub.goobi.persistence.managers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -133,8 +135,14 @@ public class ProjectManager implements IManager {
 		r.setMetsPointerPathAnchor(rs.getString("metsPointerPathAnchor"));
 		r.setMetsPurl(rs.getString("metsPurl"));
 		r.setMetsContentIDs(rs.getString("metsContentIDs"));
-		r.setStartDate(rs.getDate("startDate"));
-		r.setEndDate(rs.getDate("endDate"));
+        Timestamp startDate = rs.getTimestamp("startDate");
+        if (startDate!=null) {
+            r.setStartDate(new Date(startDate.getTime()));
+        }
+        Timestamp endDate = rs.getTimestamp("endDate");
+        if (endDate!=null) {
+            r.setEndDate(new Date(endDate.getTime()));
+        }
 		r.setNumberOfPages(rs.getInt("numberOfPages"));
 		r.setNumberOfVolumes(rs.getInt("numberOfVolumes"));
 		r.setProjectIsArchived(rs.getBoolean("projectIsArchived"));

@@ -43,7 +43,11 @@ class PropertyMysqlHelper {
                 int type = rs.getInt("DatentypenID");
                 String choice = rs.getString("Auswahl");
                 int processId = rs.getInt("prozesseID");
-                Date creationDate = rs.getDate("creationDate");
+                Timestamp time = rs.getTimestamp("creationDate");
+                Date creationDate = null;
+                if (time!=null) {
+                    creationDate= new Date(time.getTime());
+                }
                 int container = rs.getInt("container");
                 Processproperty pe = new Processproperty();
                 pe.setId(id);
@@ -73,7 +77,11 @@ class PropertyMysqlHelper {
                 int type = rs.getInt("DatentypenID");
                 String choice = rs.getString("Auswahl");
                 int processId = rs.getInt("prozesseID");
-                Date creationDate = rs.getDate("creationDate");
+                Timestamp time = rs.getTimestamp("creationDate");
+                Date creationDate = null;
+                if (time!=null) {
+                    creationDate= new Date(time.getTime());
+                }
                 int container = rs.getInt("container");
                 Processproperty pe = new Processproperty();
                 pe.setId(id);
@@ -104,7 +112,11 @@ class PropertyMysqlHelper {
                         int type = rs.getInt("DatentypenID");
                         String choice = rs.getString("Auswahl");
                         int templateId = rs.getInt("vorlagenID");
-                        Date creationDate = rs.getDate("creationDate");
+                        Timestamp time = rs.getTimestamp("creationDate");
+                        Date creationDate = null;
+                        if (time!=null) {
+                            creationDate= new Date(time.getTime());
+                        }
                         int container = rs.getInt("container");
                         Templateproperty ve = new Templateproperty();
                         ve.setId(id);
@@ -133,7 +145,11 @@ class PropertyMysqlHelper {
                 int type = rs.getInt("DatentypenID");
                 String choice = rs.getString("Auswahl");
                 int templateId = rs.getInt("vorlagenID");
-                Date creationDate = rs.getDate("creationDate");
+                Timestamp time = rs.getTimestamp("creationDate");
+                Date creationDate = null;
+                if (time!=null) {
+                    creationDate= new Date(time.getTime());
+                }
                 int container = rs.getInt("container");
                 Templateproperty ve = new Templateproperty();
                 ve.setId(id);
@@ -164,7 +180,11 @@ class PropertyMysqlHelper {
                         int type = rs.getInt("DatentypenID");
                         String choice = rs.getString("Auswahl");
                         int templateId = rs.getInt("werkstueckeID");
-                        Date creationDate = rs.getDate("creationDate");
+                        Timestamp time = rs.getTimestamp("creationDate");
+                        Date creationDate = null;
+                        if (time!=null) {
+                            creationDate= new Date(time.getTime());
+                        }
                         int container = rs.getInt("container");
                         Masterpieceproperty ve = new Masterpieceproperty();
                         ve.setId(id);
@@ -193,7 +213,11 @@ class PropertyMysqlHelper {
                 int type = rs.getInt("DatentypenID");
                 String choice = rs.getString("Auswahl");
                 int templateId = rs.getInt("werkstueckeID");
-                Date creationDate = rs.getDate("creationDate");
+                Timestamp time = rs.getTimestamp("creationDate");
+                Date creationDate = null;
+                if (time!=null) {
+                    creationDate= new Date(time.getTime());
+                }
                 int container = rs.getInt("container");
                 Masterpieceproperty ve = new Masterpieceproperty();
                 ve.setId(id);

@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,8 +118,8 @@ class ProjectMysqlHelper {
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPointerPathAnchor()) + "',");
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPurl()) + "',");
                 propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsContentIDs()) + "',");
-                propValues.append(ro.getStartDate() + ",");
-                propValues.append(ro.getEndDate() + ",");
+                sql.append(ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()) + ",");
+                sql.append(ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()) + ",");
                 propValues.append(ro.getNumberOfPages() + ",");
                 propValues.append(ro.getNumberOfVolumes() + ",");
                 propValues.append(ro.getProjectIsArchived());
@@ -159,8 +160,8 @@ class ProjectMysqlHelper {
                 sql.append("metsPointerPathAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsPointerPathAnchor()) + "',");
                 sql.append("metsPurl = '" + StringEscapeUtils.escapeSql(ro.getMetsPurl()) + "',");
                 sql.append("metsContentIDs = '" + StringEscapeUtils.escapeSql(ro.getMetsContentIDs()) + "',");
-                sql.append("startDate =" + ro.getStartDate() + ",");
-                sql.append("endDate =" + ro.getEndDate() + ",");
+                sql.append("startDate =" + ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()) + ",");
+                sql.append("endDate =" + ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()) + ",");
                 sql.append("numberOfPages =" + ro.getNumberOfPages() + ",");
                 sql.append("numberOfVolumes =" + ro.getNumberOfVolumes() + ",");
                 sql.append("projectIsArchived =" + ro.getProjectIsArchived());

@@ -186,7 +186,11 @@ class StepMysqlHelper {
                 Boolean mandatory = rs.getBoolean("IstObligatorisch");
                 int type = rs.getInt("DatentypenID");
                 String choice = rs.getString("Auswahl");
-                Date creationDate = rs.getDate("creationDate");
+                Timestamp time = rs.getTimestamp("creationDate");
+                Date creationDate = null;
+                if (time!=null) {
+                    creationDate= new Date(time.getTime());
+                }
                 int container = rs.getInt("container");
                 ErrorProperty ve = new ErrorProperty();
                 ve.setId(id);

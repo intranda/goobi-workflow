@@ -308,7 +308,10 @@ class ProcessMysqlHelper {
         p.setSortHelperStatus(rs.getString("sortHelperStatus"));
         p.setSortHelperImages(rs.getInt("sortHelperImages"));
         p.setSortHelperArticles(rs.getInt("sortHelperArticles"));
-        p.setErstellungsdatum(rs.getDate("erstellungsdatum"));
+        Timestamp time = rs.getTimestamp("erstellungsdatum");
+        if (time!=null) {
+            p.setErstellungsdatum(new Date(time.getTime()));
+        }
         p.setProjectId(rs.getInt("ProjekteID"));
         p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
         p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
