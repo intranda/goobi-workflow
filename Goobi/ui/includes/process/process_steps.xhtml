@@ -47,18 +47,22 @@
 					<h:outputText value="#{msgs.titel}" />
 				</f:facet>
 
-				<h:panelGroup>
+				<h:panelGroup id="possibleActions1">
 
 					<h:commandLink id="expandbutton1">
-						<h:graphicImage value="images/plus.gif" style="margin-right:5px;display:none;" />
-						<h:graphicImage value="images/minus.gif" style="margin-right:5px;" />
+<!-- 						<h:graphicImage value="images/plus.gif" style="margin-right:5px;display:none;" /> -->
+<!-- 						<h:graphicImage value="images/minus.gif" style="margin-right:5px;" /> -->
+<!-- 						<s:effectToggle event="click" duration="0.1" forId="possibleActions1" mode="blind" appendJs="return false;" /> -->
+						<h:graphicImage value="images/plus.gif" style="margin-right:4px" rendered="#{!item.panelAusgeklappt}" />
+						<h:graphicImage value="images/minus.gif" style="margin-right:4px" rendered="#{item.panelAusgeklappt}" />
+						<x:updateActionListener value="#{item.panelAusgeklappt?false:true}" property="#{item.panelAusgeklappt}" />
+						<f:ajax render="possibleActions1" />
 						<h:outputText value="#{item.titelLokalisiert}" />
-						<s:effectToggle event="click" duration="0.1" forId="possibleActions1" mode="blind" appendJs="return false;" />
 					</h:commandLink>
 
 
 
-					<x:div id="possibleActions1" style="display:none;padding:10px;">
+					<x:div  style="padding:10px;" rendered="#{item.panelAusgeklappt}">
 
 						<table cellpadding="3" cellspacing="0" width="100%" class="main_statistikboxen" border="0">
 
