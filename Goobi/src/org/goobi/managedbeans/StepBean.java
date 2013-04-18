@@ -432,7 +432,8 @@ public class StepBean extends BasicBean {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-            ProcessManager.saveProcess(this.mySchritt.getProzess());
+//            ProcessManager.saveProcess(this.mySchritt.getProzess());
+            StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
         }
         // calcHomeImages();
