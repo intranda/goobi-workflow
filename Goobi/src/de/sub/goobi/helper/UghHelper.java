@@ -132,7 +132,7 @@ public class UghHelper {
 
 				return md;
 			} catch (MetadataTypeNotAllowedException e) {
-				myLogger.error(e);
+				myLogger.debug(e);
 			}
 		}
 		return all.get(0);
@@ -157,7 +157,7 @@ public class UghHelper {
 
 				return md;
 			} catch (MetadataTypeNotAllowedException e) {
-				myLogger.error(e);
+				myLogger.debug(e);
 			}
 		}
 		return all.get(0);
