@@ -31,7 +31,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class Template implements Serializable {
@@ -102,20 +101,11 @@ public class Template implements Serializable {
     }
 
     public int getEigenschaftenSize() {
-
-        if (this.eigenschaften == null) {
-            return 0;
-        } else {
-            return this.eigenschaften.size();
-        }
+        return getEigenschaften().size();
     }
 
     public List<Templateproperty> getEigenschaftenList() {
-
-        if (this.eigenschaften == null) {
-            return new ArrayList<Templateproperty>();
-        }
-        return new ArrayList<Templateproperty>(this.eigenschaften);
+        return getEigenschaften();
     }
 
     public Integer getProcessId() {

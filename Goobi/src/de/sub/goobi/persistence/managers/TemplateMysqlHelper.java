@@ -12,7 +12,6 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
-
 class TemplateMysqlHelper {
 
     public static List<Template> getTemplatesForProcess(int processId) throws SQLException {
@@ -55,15 +54,15 @@ class TemplateMysqlHelper {
         public Template handle(ResultSet rs) throws SQLException {
 
             if (rs.next()) {
-                //                int templateId = rs.getInt("VorlagenID");
+                int templateId = rs.getInt("VorlagenID");
                 String herkunft = rs.getString("Herkunft");
                 int processId = rs.getInt("ProzesseID");
                 Template template = new Template();
-                //                template.setId(templateId);
+                template.setId(templateId);
                 template.setHerkunft(herkunft);
                 template.setProcessId(processId);
-                //                List<Vorlageeigenschaft> properties = PropertyManager.getTemplateProperties(templateId);
-                //                template.setEigenschaften(properties);
+                List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
+                template.setEigenschaften(properties);
                 return template;
             }
             return null;
