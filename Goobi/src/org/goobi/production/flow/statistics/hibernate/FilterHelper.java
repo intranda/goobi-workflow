@@ -551,9 +551,10 @@ public class FilterHelper {
             // original filter, is left here for compatibility reason
             // doesn't fit into new keyword scheme
             else if (tok.toLowerCase().startsWith(FilterString.STEP) || tok.toLowerCase().startsWith(FilterString.SCHRITT)) {
-                filter = checkStringBuilder(filter, true);
-                filter.append(createHistoricFilter(tok, flagSteps));
-
+                if (flagSteps) {
+                    filter = checkStringBuilder(filter, true);
+                    filter.append(createHistoricFilter(tok, flagSteps));
+                }
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false));
@@ -707,18 +708,19 @@ public class FilterHelper {
             if (stepTitle.startsWith("-")) {
                 stepTitle = stepTitle.substring(1);
 
-                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel not like '%"
-                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 )";
+                return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '%"
+                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
 
             } else {
 
-                return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%"
-                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND schritte.Bearbeitungsstatus >= 1 )";
+                return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '%"
+                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
 
             }
         }
-        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
-                + " AND schritte.Bearbeitungsstatus >= 1 )";
+        return " schritte.SchritteID IN (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
+                + " AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+
     }
 
     /************************************************************************************
