@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -67,11 +66,9 @@ import org.joda.time.Years;
 
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
-import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 
@@ -348,7 +345,7 @@ public class ProjectBean extends BasicBean {
 	 */
 
 	public void GenerateValuesForStatistics() {
-	    String projectFilter =  FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, true, false) + " prozesse.istTemplate = false ";
+	    String projectFilter =  FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, true, false) + " AND prozesse.istTemplate = false ";
 	    Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 	    Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
 //		ProjectionList pl = Projections.projectionList();
@@ -544,7 +541,7 @@ public class ProjectBean extends BasicBean {
 				this.projectProgressData.setCalculationUnit(CalculationUnit.volumes);
 				this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
 				this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
-//				this.projectProgressData.setDataSource(new UserProjectFilter(this.myProjekt.getId()));
+				this.projectProgressData.setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, true, false) + " AND prozesse.istTemplate = false ");
 
 				if (this.projectProgressImage == null) {
 					this.projectProgressImage = "";

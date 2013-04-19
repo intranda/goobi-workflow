@@ -385,10 +385,10 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
         for (Object obj : list) {
             Object[] objArr = (Object[]) obj;
-            String stepName = new Converter(objArr[1]).getString();
+            String stepName = new Converter(objArr[2]).getString();
             if (isInWorkFlow(stepName)) {
                 try {
-                    String intervall = new Converter(objArr[2]).getString();
+                    String intervall = new Converter(objArr[1]).getString();
 
                     if (!observeIntervall.equals(intervall)) {
                         observeIntervall = intervall;
