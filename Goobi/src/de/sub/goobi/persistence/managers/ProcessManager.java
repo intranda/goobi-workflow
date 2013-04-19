@@ -58,6 +58,24 @@ public class ProcessManager implements IManager, Serializable {
         return p;
     }
 
+    public static long getSumOfFieldValue(String columnname, String filter) {
+        try {
+            return ProcessMysqlHelper.getSumOfFieldValue(columnname,  filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+    
+    public static long getCountOfFieldValue(String columnname, String filter) {
+        try {
+            return ProcessMysqlHelper.getCountOfFieldValue(columnname,  filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+    
     public static void saveProcess(Process o) throws DAOException {
         ProcessMysqlHelper.saveProcess(o, false);
 

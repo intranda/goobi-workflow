@@ -562,10 +562,36 @@ class ProcessMysqlHelper {
 
     public static int getCountOfProcessesWithTitle(String title) throws SQLException {
         Connection connection = MySQLHelper.getInstance().getConnection();
-        String query = "select count(ProzesseID) from prozesse where  titel = ?";
+        String query = "select count(prozesse.ProzesseID) from prozesse where  titel = ?";
         try {
             Object[] param = { title };
             return new QueryRunner().query(connection, query, MySQLHelper.resultSetToIntegerHandler, param);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static long getSumOfFieldValue(String columnname, String filter) throws SQLException {
+        String sql = "select sum(prozesse." + columnname + ") from prozesse ";
+        if (filter != null && filter.length() > 0) {
+            sql += " WHERE " + filter;
+        }
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToLongHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+    
+    public static long getCountOfFieldValue(String columnname, String filter) throws SQLException {
+        String sql = "select count(prozesse." + columnname + ") from prozesse ";
+        if (filter != null && filter.length() > 0) {
+            sql += " WHERE " + filter;
+        }
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToLongHandler);
         } finally {
             MySQLHelper.closeConnection(connection);
         }

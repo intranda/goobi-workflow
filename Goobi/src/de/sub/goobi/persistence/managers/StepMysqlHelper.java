@@ -119,14 +119,14 @@ class StepMysqlHelper {
         s.setReihenfolge(rs.getInt("Reihenfolge"));
         s.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(rs.getInt("Bearbeitungsstatus")));
         Timestamp time = rs.getTimestamp("BearbeitungsZeitpunkt");
-        if (time!=null) {
+        if (time != null) {
             s.setBearbeitungszeitpunkt(new Date(time.getTime()));
         }
-        Timestamp start =rs.getTimestamp("BearbeitungsBeginn");
+        Timestamp start = rs.getTimestamp("BearbeitungsBeginn");
         if (start != null) {
             s.setBearbeitungsbeginn(new Date(start.getTime()));
         }
-        Timestamp end =rs.getTimestamp("BearbeitungsBeginn");
+        Timestamp end = rs.getTimestamp("BearbeitungsBeginn");
         if (end != null) {
             s.setBearbeitungsende(new Date(end.getTime()));
         }
@@ -188,8 +188,8 @@ class StepMysqlHelper {
                 String choice = rs.getString("Auswahl");
                 Timestamp time = rs.getTimestamp("creationDate");
                 Date creationDate = null;
-                if (time!=null) {
-                    creationDate= new Date(time.getTime());
+                if (time != null) {
+                    creationDate = new Date(time.getTime());
                 }
                 int container = rs.getInt("container");
                 ErrorProperty ve = new ErrorProperty();
@@ -697,8 +697,18 @@ class StepMysqlHelper {
 
     }
 
-    public static List<String> getDistinctStepTitles() throws SQLException {
-        String sql = "select distinct titel from schritte";
+
+
+    public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select distinct schritte.titel from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" AND " + filter);
+        }
+
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
         Connection connection = MySQLHelper.getInstance().getConnection();
         try {
             logger.debug(sql.toString());
@@ -812,7 +822,7 @@ class StepMysqlHelper {
             MySQLHelper.closeConnection(connection);
         }
     }
-    
+
     public static ResultSetHandler<List<String>> resultSetToScriptsHandler = new ResultSetHandler<List<String>>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
@@ -837,4 +847,74 @@ class StepMysqlHelper {
             return answer;
         }
     };
+
+    public static long getSumOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select sum(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID  ");
+        if (filter != null && filter.length() > 0) {
+            sql.append(" AND " + filter);
+        }
+
+        if (group != null && !group.isEmpty()) {
+            sql.append(" GROUP BY " + group);
+        }
+
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
+
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToLongHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static long getCountOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select count(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID  ");
+        if (filter != null && filter.length() > 0) {
+            sql.append(" AND " + filter);
+        }
+
+        if (group != null && !group.isEmpty()) {
+            sql.append(" GROUP BY " + group);
+        }
+
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
+
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToLongHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    
+    public static double getAverageOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select avg(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
+        if (filter != null && filter.length() > 0) {
+            sql.append(" AND " + filter);
+        }
+
+        if (group != null && !group.isEmpty()) {
+            sql.append(" GROUP BY " + group);
+        }
+
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
+
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToLongHandler);
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
 }

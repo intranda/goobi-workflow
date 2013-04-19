@@ -43,6 +43,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Project;
@@ -56,6 +57,7 @@ import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.flow.statistics.hibernate.StatQuestProjectProgressData;
 
 import org.joda.time.DateTime;
@@ -70,6 +72,7 @@ import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 
 
@@ -297,10 +300,10 @@ public class ProjectBean extends BasicBean {
 	 */
 
 	public StatisticsManager getStatisticsManager1() {
-//		if (this.statisticsManager1 == null) {
-//			this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-//					.getCurrentInstance().getViewRoot().getLocale());
-//		}
+		if (this.statisticsManager1 == null) {
+			this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext
+					.getCurrentInstance().getViewRoot().getLocale(), "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"");
+		}
 		return this.statisticsManager1;
 	}
 
@@ -309,10 +312,10 @@ public class ProjectBean extends BasicBean {
 	 * @return instance of {@link StatisticsMode.THROUGHPUT} {@link StatisticsManager}
 	 */
 	public StatisticsManager getStatisticsManager2() {
-//		if (this.statisticsManager2 == null) {
-//			this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-//					.getCurrentInstance().getViewRoot().getLocale());
-//		}
+		if (this.statisticsManager2 == null) {
+			this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext
+					.getCurrentInstance().getViewRoot().getLocale(), "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"");
+		}
 		return this.statisticsManager2;
 	}
 
@@ -321,10 +324,10 @@ public class ProjectBean extends BasicBean {
 	 * @return instance of {@link StatisticsMode.CORRECTIONS} {@link StatisticsManager}
 	 */
 	public StatisticsManager getStatisticsManager3() {
-//		if (this.statisticsManager3 == null) {
-//			this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-//					.getCurrentInstance().getViewRoot().getLocale());
-//		}
+		if (this.statisticsManager3 == null) {
+			this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext
+					.getCurrentInstance().getViewRoot().getLocale(), "\"project:" +StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"");
+		}
 		return this.statisticsManager3;
 	}
 
@@ -333,10 +336,10 @@ public class ProjectBean extends BasicBean {
 	 * @return instance of {@link StatisticsMode.STORAGE} {@link StatisticsManager}
 	 */
 	public StatisticsManager getStatisticsManager4() {
-//		if (this.statisticsManager4 == null) {
-//			this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, new UserProjectFilter(this.myProjekt.getId()), FacesContext
-//					.getCurrentInstance().getViewRoot().getLocale());
-//		}
+		if (this.statisticsManager4 == null) {
+			this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContext
+					.getCurrentInstance().getViewRoot().getLocale(), "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"");
+		}
 		return this.statisticsManager4;
 	}
 
@@ -344,9 +347,10 @@ public class ProjectBean extends BasicBean {
 	 * generates values for count of volumes and images for statistics
 	 */
 
-	@SuppressWarnings("rawtypes")
 	public void GenerateValuesForStatistics() {
-//		Criteria crit = Helper.getHibernateSession().createCriteria(Process.class).add(Restrictions.eq("projekt", this.myProjekt));
+	    String projectFilter =  FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, true, false) + " prozesse.istTemplate = false ";
+	    Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
+	    Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
 //		ProjectionList pl = Projections.projectionList();
 //		pl.add(Projections.sum("sortHelperImages"));
 //		pl.add(Projections.count("sortHelperImages"));
@@ -359,8 +363,8 @@ public class ProjectBean extends BasicBean {
 //			images = (Long) row[0];
 //			volumes = (Long) row[1];
 //		}
-//		this.myProjekt.setNumberOfPages(images.intValue());
-//		this.myProjekt.setNumberOfVolumes(volumes.intValue());
+		this.myProjekt.setNumberOfPages(images.intValue());
+		this.myProjekt.setNumberOfVolumes(volumes.intValue());
 	}
 
 	/**

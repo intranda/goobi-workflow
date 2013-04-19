@@ -138,7 +138,17 @@ public class StepManager implements IManager, Serializable {
     public static List<String> getDistinctStepTitles() {
 
         try {
-            return StepMysqlHelper.getDistinctStepTitles();
+            return StepMysqlHelper.getDistinctStepTitles(null, null);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<String>();
+    }
+    
+    public static List<String> getDistinctStepTitles(String order, String filter) {
+
+        try {
+            return StepMysqlHelper.getDistinctStepTitles(order, filter);
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -177,13 +187,31 @@ public class StepManager implements IManager, Serializable {
             logger.error("Cannot not save history event", e);
         }
     }
-
-//    public static List<String> loadScripts(int id) {
-//        try {
-//            return StepMysqlHelper.getScriptsForStep(id);
-//        } catch (SQLException e) {
-//            logger.error("Cannot not load scripts for step with id " + id, e);
-//        }
-//        return new ArrayList<String>();
-//    }
+    
+    public static long getCountOfFieldValue(String columnname, String filter, String order, String group) {
+        try {
+            return StepMysqlHelper.getCountOfFieldValue(columnname, filter, order, group);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0l;
+    }
+    
+    public static long getSumOfFieldValue(String columnname, String filter, String order, String group) {
+        try {
+            return StepMysqlHelper.getSumOfFieldValue(columnname, filter, order, group);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0l;
+    }
+    
+    public static double getAverageOfFieldValue(String columnname, String filter, String order, String group) {
+        try {
+            return StepMysqlHelper.getAverageOfFieldValue(columnname, filter, order, group);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0.0;
+    }
 }

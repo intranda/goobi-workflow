@@ -128,4 +128,26 @@ public class MySQLHelper {
             return answer;
         }
     };
+    
+    public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<Long>() {
+        @Override
+        public Long handle(ResultSet rs) throws SQLException {
+            Long answer = null;
+            if (rs.next()) {
+                answer = new Long(rs.getLong(1));
+            }
+            return answer;
+        }
+    };
+    
+    public static ResultSetHandler<Double> resultSetToDoubleHandler = new ResultSetHandler<Double>() {
+        @Override
+        public Double handle(ResultSet rs) throws SQLException {
+            Double answer = null;
+            if (rs.next()) {
+                answer = new Double(rs.getDouble(1));
+            }
+            return answer;
+        }
+    };
 }
