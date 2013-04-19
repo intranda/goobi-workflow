@@ -122,8 +122,10 @@ public class MySQLHelper {
         public Integer handle(ResultSet rs) throws SQLException {
             Integer answer = null;
             if (rs.next()) {
-                Object object = rs.getObject(1);
-                Integer id = (Integer) object;
+                Integer id = rs.getInt(1);
+                if (rs.wasNull()) {
+                    id = null;
+                }
                 return id;
             }
             return answer;
