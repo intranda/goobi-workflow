@@ -172,7 +172,7 @@ public class StatisticsManager implements Serializable {
 	
 	
 	public void calculate() {
-        filter = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
+        String filterString = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
 
 	    
 		/*
@@ -215,7 +215,7 @@ public class StatisticsManager implements Serializable {
 				question.setCalculationUnit(targetCalculationUnit);
 			}
 			renderingElements = new ArrayList<StatisticsRenderingElement>();
-			List<DataTable> myDataTables = question.getDataTables(filter);
+			List<DataTable> myDataTables = question.getDataTables(filterString);
 
 			/*
 			 * -------------------------------- if DataTables exist analyze them
