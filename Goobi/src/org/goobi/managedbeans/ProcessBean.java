@@ -2065,21 +2065,21 @@ public class ProcessBean extends BasicBean {
         for (ProcessProperty pp : ppList) {
             this.processPropertyList.remove(pp);
             this.myProzess.getEigenschaften().remove(pp.getProzesseigenschaft());
-
+            PropertyManager.deleteProcessProperty(pp.getProzesseigenschaft());
         }
 
-        List<Processproperty> props = this.myProzess.getEigenschaftenList();
-        for (Processproperty pe : props) {
-            if (pe.getTitel() == null) {
-                this.myProzess.getEigenschaften().remove(pe);
-            }
-        }
-        try {
-            ProcessManager.saveProcess(this.myProzess);
-        } catch (DAOException e) {
-            logger.error(e);
-            Helper.setFehlerMeldung("propertiesNotDeleted");
-        }
+//        List<Processproperty> props = this.myProzess.getEigenschaftenList();
+//        for (Processproperty pe : props) {
+//            if (pe.getTitel() == null) {
+//                this.myProzess.getEigenschaften().remove(pe);
+//            }
+//        }
+//        try {
+//            ProcessManager.saveProcess(this.myProzess);
+//        } catch (DAOException e) {
+//            logger.error(e);
+//            Helper.setFehlerMeldung("propertiesNotDeleted");
+//        }
         // saveWithoutValidation();
         loadProcessProperties();
     }
