@@ -49,6 +49,12 @@
 							</h:panelGrid>
 							<h:panelGrid columns="3" width="100%" columnClasses="standardTable_Column,standardTable_Column"  >
 								<h:outputText value="#{msgs.ersteSeite}: " />
+								
+<!-- 									<h:selectOneMenu style="width: 200px" id="pageStartGroup" -->
+<!-- 										value="#{Metadaten.pagesStart}"> -->
+<!-- 										<f:selectItems value="#{Metadaten.alleSeiten}" /> -->
+<!-- 									</h:selectOneMenu> -->
+									
 								<h:panelGroup id="pageStartGroup">
 									<x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" />
 								</h:panelGroup>
@@ -60,6 +66,12 @@
 								</h:commandLink>
 
 								<h:outputText value="#{msgs.letzteSeite}: " />
+								
+<!-- 									<h:selectOneMenu style="width: 200px" id="pageEndGroup" -->
+<!-- 										value="#{Metadaten.pagesEnd}"> -->
+<!-- 										<f:selectItems value="#{Metadaten.alleSeiten}" /> -->
+<!-- 									</h:selectOneMenu> -->
+								
 								<h:panelGroup  id="pageEndGroup">
 									<x:inputText id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" />
 								</h:panelGroup>
@@ -238,11 +250,11 @@
 						<tr>
 							<td class="eingabeBoxen_row1">
 								<h:outputText value="#{msgs.seitenzuordnung} " />
-								<h:commandLink>
-									<h:outputText value="(normal)" rendered="#{Metadaten.treeProperties.showpagesasajax==true}" />
-									<h:outputText value="(ajax)" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" />
-									<x:updateActionListener value="#{Metadaten.treeProperties.showpagesasajax?false:true}" property="#{Metadaten.treeProperties.showpagesasajax}" />
-								</h:commandLink>
+<!-- 								<h:commandLink> -->
+<!-- 									<h:outputText value="(normal)" rendered="#{Metadaten.treeProperties.showpagesasajax==true}" /> -->
+<!-- 									<h:outputText value="(ajax)" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" /> -->
+<!-- 									<x:updateActionListener value="#{Metadaten.treeProperties.showpagesasajax?false:true}" property="#{Metadaten.treeProperties.showpagesasajax}" /> -->
+<!-- 								</h:commandLink> -->
 							</td>
 						</tr>
 						<tr>
@@ -252,23 +264,10 @@
 									<h:commandLink action="#{Metadaten.BildErsteSeiteAnzeigen}">
 										<h:outputText value="#{msgs.ersteSeite}" />
 									</h:commandLink>
-									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
-										<x:inputText id="pagestart" forceId="true" value="#{Metadaten.ajaxSeiteStart}" />
-										<!-- 
-  <h:graphicImage value="images/calendarImages/drop1.gif"
-										onclick="document.getElementById('formular2:suggestion').callSuggestion(true);"
-										alt="" />
-		-->
-										<!-- 
-									<rich:suggestionbox height="200" width="145" for="pagestart"
-										var="startpage" id="suggestion"
-										suggestionAction="#{Metadaten.autocomplete}">
-										<h:column>
-											<h:outputText value="#{startpage}" />
-										</h:column>
-									</rich:suggestionbox>
- -->
-									</h:panelGroup>
+<!-- 									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
+<!-- 										<x:inputText id="pagestart" forceId="true" value="#{Metadaten.ajaxSeiteStart}" /> -->
+										
+<!-- 									</h:panelGroup> -->
 
 									<h:selectOneMenu style="width: 200px" rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
 										value="#{Metadaten.alleSeitenAuswahl_ersteSeite}">
@@ -278,18 +277,9 @@
 									<h:commandLink action="#{Metadaten.BildLetzteSeiteAnzeigen}">
 										<h:outputText value="#{msgs.letzteSeite}" />
 									</h:commandLink>
-									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
-										<x:inputText id="pageend" forceId="true" value="#{Metadaten.ajaxSeiteEnde}" />
-										<!-- 
-									<rich:suggestionbox tokens=":" height="200" width="200"
-										for="pageend" var="endpage" id="suggestion2"
-										suggestionAction="#{Metadaten.autocomplete}">
-										<h:column>
-											<h:outputText value="#{endpage}" />
-										</h:column>
-									</rich:suggestionbox>
- -->
-									</h:panelGroup>
+<!-- 									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
+<!-- 										<x:inputText id="pageend" forceId="true" value="#{Metadaten.ajaxSeiteEnde}" /> -->
+<!-- 									</h:panelGroup> -->
 									<h:selectOneMenu style="width: 200px" rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
 										value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
 										<f:selectItems value="#{Metadaten.alleSeiten}" />

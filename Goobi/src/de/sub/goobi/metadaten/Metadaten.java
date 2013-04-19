@@ -190,7 +190,7 @@ public class Metadaten {
 		this.treeProperties.put("showtitle", Boolean.valueOf(false));
 		this.treeProperties.put("fullexpanded", Boolean.valueOf(true));
 		this.treeProperties.put("showfirstpagenumber", Boolean.valueOf(false));
-		this.treeProperties.put("showpagesasajax", Boolean.valueOf(true));
+		this.treeProperties.put("showpagesasajax", Boolean.valueOf(false));
 	}
 
 	/**
