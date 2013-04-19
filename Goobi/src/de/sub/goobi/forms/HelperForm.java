@@ -56,7 +56,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 @SessionScoped
 public class HelperForm {
 
-    private static Boolean massImportAllowed = null;
+    private Boolean massImportAllowed = null;
 
     // TODO re-added temporary for compiling issues
     public static final String MAIN_JSF_PATH = "/newpages";
@@ -188,7 +188,7 @@ public class HelperForm {
     }
 
     public boolean getMassImportAllowed() {
-        if (massImportAllowed == null) {
+        if (massImportAllowed == null ) {
             if (ConfigMain.getBooleanParameter("massImportAllowed", false)) {
 
                 massImportAllowed = !PluginLoader.getPluginList(PluginType.Import).isEmpty();
