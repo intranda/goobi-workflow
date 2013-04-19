@@ -266,22 +266,13 @@
             <fileset dir="." includes="WEB-INF/*.*, index.jsp, LICENSE"
                      excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*"/>
 
-            <zipfileset dir="pages" prefix="pages">
+            <zipfileset dir="ui" prefix="ui">
                 <patternset>
-                    <include name="**/*.jsp"/>
+                    <include name="**/*.*"/>
                 </patternset>
             </zipfileset>
-            <zipfileset dir="newpages" prefix="newpages">
-                <patternset>
-                    <include name="**/*.jsp"/>
-                    <include name="**/*.gif"/>
-                    <include name="**/*.png"/>
-                    <include name="**/*.jpg"/>
-                    <include name="**/*.ico"/>
-                </patternset>
-            </zipfileset>
-            <zipfileset dir="css" prefix="css"/>
-        	<zipfileset dir="js" prefix="js" />
+   
+           
 
             <manifest>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
