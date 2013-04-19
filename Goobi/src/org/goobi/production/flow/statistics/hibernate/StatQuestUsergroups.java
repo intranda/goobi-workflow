@@ -61,7 +61,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
         if (filter == null || filter.length() == 0) {
             stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ");
         } else {
-            stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesseId in (select prozesseId from prozesse where " + filter + ")");
+            stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where " + filter + ")");
         }
 //        Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
 //        crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer
