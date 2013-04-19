@@ -152,7 +152,7 @@ public class StepBean extends BasicBean {
         // TODO automatic tasks
         // TODO hide correction tasks
 
-        paginator = new DatabasePaginator(sortList(), sql, m);
+        paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
         //		try {
         //			this.myFilteredDataSource = new UserDefinedStepFilter(true);

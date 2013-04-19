@@ -384,7 +384,7 @@ public class ProcessBean extends BasicBean {
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
 
-        paginator = new DatabasePaginator(sortList(), sql, m);
+        paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
 
         this.modusAnzeige = "aktuell";
         return "process_all";
@@ -422,7 +422,7 @@ public class ProcessBean extends BasicBean {
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortList(), sql, m);
+        paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
         this.modusAnzeige = "vorlagen";
         return "process_all";
     }
@@ -472,7 +472,7 @@ public class ProcessBean extends BasicBean {
         }
 
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortList(), sql, m);
+        paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
 
         return "process_all";
     }

@@ -71,7 +71,7 @@ public class LdapBean extends BasicBean {
 
 	public String FilterKein() {
 		LdapManager rm = new LdapManager();
-		paginator = new DatabasePaginator(sortierung, filter, rm);
+		paginator = new DatabasePaginator(sortierung, filter, rm, "ldap_all");
 		return "ldap_all";
 	}
 

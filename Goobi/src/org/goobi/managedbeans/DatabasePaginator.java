@@ -48,8 +48,10 @@ public class DatabasePaginator implements Serializable {
     private String order = "";
     private String filter = new String();
     private IManager manager;
+    private String returnPage;
+    
 
-    public DatabasePaginator(String order, String filter, IManager manager) {
+    public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
         this.page = 0;
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login == null || login.getMyBenutzer() == null) {
@@ -66,6 +68,7 @@ public class DatabasePaginator implements Serializable {
         } catch (DAOException e) {
             logger.error("Failed to count results", e);
         }
+        this.returnPage = returnPage;
     }
 
     public int getLastPageNumber() {
@@ -202,4 +205,9 @@ public class DatabasePaginator implements Serializable {
         return new ArrayList<DatabaseObject>();
     }
 
+    public String returnToPreviousPage() {
+        load();
+        return returnPage;
+    }
+    
 }

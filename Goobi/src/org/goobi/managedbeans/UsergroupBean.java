@@ -83,7 +83,7 @@ public class UsergroupBean extends BasicBean {
 
 	public String FilterKein() {
 		UsergroupManager m = new UsergroupManager();
-		paginator = new DatabasePaginator(sortierung, filter, m);
+		paginator = new DatabasePaginator(sortierung, filter, m, "usergroup_all");
 		return "usergroup_all";
 	}
 

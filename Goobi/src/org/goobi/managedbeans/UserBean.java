@@ -91,7 +91,7 @@ public class UserBean extends BasicBean {
         this.filter = null;
         this.sortierung = "nachname, vorname";
         UserManager m = new UserManager();
-        paginator = new DatabasePaginator(sortierung, getBasicFilter(), m);
+        paginator = new DatabasePaginator(sortierung, getBasicFilter(), m, "user_all");
         return "user_all";
     }
 
@@ -116,7 +116,7 @@ public class UserBean extends BasicBean {
                             + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
 
-        paginator = new DatabasePaginator(sortierung, myfilter, m);
+        paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
     }
 

@@ -5,7 +5,7 @@
 	<ui:define name="breadcrumb">
 		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
-		<h:commandLink id="id3" value="#{msgs.projekte}" action="project_all" />
+		<h:commandLink id="id3" value="#{msgs.projekte}" action="#{ProjekteForm.paginator.returnToPreviousPage}" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
 		<h:outputText id="id4" value="#{msgs.neuesProjektAnlegen}" rendered="#{ProjekteForm.myProjekt.id == null}" />
 		<h:outputText id="id5" value="#{msgs.projektBearbeiten}" rendered="#{ProjekteForm.myProjekt.id != null}" />

@@ -5,7 +5,7 @@
 	<ui:define name="breadcrumb">
 		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
-		<h:commandLink id="id3" value="#{msgs.benutzergruppen}" action="usergroup_all" />
+		<h:commandLink id="id3" value="#{msgs.benutzergruppen}" action="#{BenutzergruppenForm.paginator.returnToPreviousPage}" />
 		<f:verbatim> &#8250;&#8250; </f:verbatim>
 		<h:outputText id="id4" value="#{msgs.neueBenutzergruppeAnlegen}" rendered="#{BenutzergruppenForm.myBenutzergruppe.id == null}" />
 		<h:outputText id="id5" value="#{msgs.benutzergruppeBearbeiten}" rendered="#{BenutzergruppenForm.myBenutzergruppe.id != null}" />

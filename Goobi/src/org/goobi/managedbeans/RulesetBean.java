@@ -98,7 +98,7 @@ public class RulesetBean extends BasicBean {
 
 	public String FilterKein() {
 		RulesetManager rm = new RulesetManager();
-		paginator = new DatabasePaginator(sortierung, filter, rm);
+		paginator = new DatabasePaginator(sortierung, filter, rm, "ldap_all");
 		return "ruleset_all";
 	}
 
