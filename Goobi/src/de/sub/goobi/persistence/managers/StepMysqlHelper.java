@@ -148,6 +148,9 @@ class StepMysqlHelper {
         s.setTypBeimAnnehmenModul(rs.getBoolean("typBeimAnnehmenModul"));
         s.setTypBeimAnnehmenModul(rs.getBoolean("typBeimAnnehmenModul"));
         s.setUserId(rs.getInt("BearbeitungsBenutzerID"));
+        if (rs.wasNull()) {
+            s.setUserId(null);
+        }
         s.setProcessId(rs.getInt("ProzesseID"));
         s.setEditTypeEnum(StepEditType.getTypeFromValue(rs.getInt("edittype")));
         s.setTypScriptStep(rs.getBoolean("typScriptStep"));
@@ -697,8 +700,6 @@ class StepMysqlHelper {
 
     }
 
-
-
     public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("select distinct schritte.titel from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
@@ -894,7 +895,6 @@ class StepMysqlHelper {
         }
     }
 
-    
     public static double getAverageOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("select avg(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");

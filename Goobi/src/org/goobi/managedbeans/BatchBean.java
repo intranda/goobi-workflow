@@ -142,7 +142,7 @@ public class BatchBean extends BasicBean {
         }
         if (this.selectedBatches.size() > 0) {
             if (this.selectedBatches.contains(null) || this.selectedBatches.contains("null")) {
-                filter += " AND batchID = null ";
+                filter += " AND batchID is null ";
                 //				crit.add(Restrictions.isNull("batchID"));
             } else {
                 filter += " AND (";

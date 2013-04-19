@@ -139,7 +139,11 @@ public class ProjectManager implements IManager {
         r.setId(rs.getInt("ProjekteID"));
         r.setTitel(rs.getString("Titel"));
         r.setUseDmsImport(rs.getBoolean("useDmsImport"));
+        
         r.setDmsImportTimeOut(rs.getInt("dmsImportTimeOut"));
+        if (rs.wasNull()) {
+            r.setDmsImportTimeOut(null);
+        }
         r.setDmsImportRootPath(rs.getString("dmsImportRootPath"));
         r.setDmsImportImagesPath(rs.getString("dmsImportImagesPath"));
         r.setDmsImportSuccessPath(rs.getString("dmsImportSuccessPath"));

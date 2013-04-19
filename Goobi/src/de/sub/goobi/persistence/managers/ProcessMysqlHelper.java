@@ -317,7 +317,12 @@ class ProcessMysqlHelper {
         p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
         p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
         p.setWikifield(rs.getString("wikifield"));
-        p.setBatchID(rs.getInt("batchID"));
+        Integer batchID = rs.getInt("batchID");
+        if (rs.wasNull()) {
+            batchID = null;
+        }
+        p.setBatchID(batchID);
+        
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
 
         return p;

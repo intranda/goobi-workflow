@@ -36,7 +36,6 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 
-
 public class MySQLHelper {
 
     private static final int MAX_TRIES_NEW_CONNECTION = 5;
@@ -92,7 +91,7 @@ public class MySQLHelper {
     public static MySQLHelper getInstance() {
         return helper;
     }
-    
+
     public static ResultSetHandler<List<Integer>> resultSetToIntegerListHandler = new ResultSetHandler<List<Integer>>() {
         @Override
         public List<Integer> handle(ResultSet rs) throws SQLException {
@@ -123,29 +122,37 @@ public class MySQLHelper {
         public Integer handle(ResultSet rs) throws SQLException {
             Integer answer = null;
             if (rs.next()) {
-                answer = new Integer(rs.getInt(1));
+                Object object = rs.getObject(1);
+                Integer id = (Integer) object;
+                return id;
             }
             return answer;
         }
     };
-    
+
     public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<Long>() {
         @Override
         public Long handle(ResultSet rs) throws SQLException {
             Long answer = null;
             if (rs.next()) {
                 answer = new Long(rs.getLong(1));
+                if (rs.wasNull()) {
+                    answer = null;
+                }
             }
             return answer;
         }
     };
-    
+
     public static ResultSetHandler<Double> resultSetToDoubleHandler = new ResultSetHandler<Double>() {
         @Override
         public Double handle(ResultSet rs) throws SQLException {
             Double answer = null;
             if (rs.next()) {
                 answer = new Double(rs.getDouble(1));
+                if (rs.wasNull()) {
+                    answer = null;
+                }
             }
             return answer;
         }

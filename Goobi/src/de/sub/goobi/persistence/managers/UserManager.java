@@ -158,6 +158,9 @@ public class UserManager implements IManager, Serializable {
         r.setSessiontimeout(rs.getInt("sessiontimeout"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
+            if (rs.wasNull()) {
+                r.setLdapGruppe(null);
+            }
         } catch (DAOException e) {
             throw new SQLException(e);
         }
