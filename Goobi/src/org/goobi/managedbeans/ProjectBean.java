@@ -116,6 +116,7 @@ public class ProjectBean extends BasicBean {
 			for (ProjectFileGroup f : this.myProjekt.getFilegroups()) {
 				if (f.getId() == id) {
 					this.myProjekt.getFilegroups().remove(f);
+					ProjectManager.deleteProjectFileGroup(f);
 					break;
 				}
 			}
@@ -230,6 +231,7 @@ public class ProjectBean extends BasicBean {
 		if (!this.myProjekt.getFilegroups().contains(this.myFilegroup)) {
 			this.myProjekt.getFilegroups().add(this.myFilegroup);
 		}
+		ProjectManager.saveProjectFileGroup(myFilegroup);
 		return "";
 	}
 

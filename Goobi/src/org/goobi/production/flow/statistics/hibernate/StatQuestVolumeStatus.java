@@ -65,7 +65,7 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 //			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
 //		}
 
-	    List<Step> stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesseId in (select prozesseId from prozesse where " + filter + ")");
+	    List<Step> stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where " + filter + ")");
 	    
 	    
 	    

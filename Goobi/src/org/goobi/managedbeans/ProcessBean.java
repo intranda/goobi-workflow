@@ -1371,6 +1371,15 @@ public class ProcessBean extends BasicBean {
             allDocstructs += tempDocstructs;
         }
 
+        if( countOfProcessesWithImages == 0) {
+            countOfProcessesWithImages = 1;
+        }
+        if (countOfProcessesWithMetadata == 0){
+            countOfProcessesWithMetadata = 1;
+        }
+        if( countOfProcessesWithDocstructs == 0){
+            countOfProcessesWithDocstructs = 1;
+        }
         /* die prozentualen Werte anhand der Maximumwerte ergänzen */
         for (ProcessCounterObject pco : this.myAnzahlList) {
             pco.setRelImages(pco.getImages() * 100 / maxImages);

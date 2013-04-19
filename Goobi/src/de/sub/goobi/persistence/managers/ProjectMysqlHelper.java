@@ -97,38 +97,38 @@ class ProjectMysqlHelper {
                         "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
                 //                StringBuilder propValues = new StringBuilder();
                 Object[] param =
-                    {
-                            StringEscapeUtils.escapeSql(ro.getTitel()),
-                            ro.isUseDmsImport(),
-                            ro.getDmsImportTimeOut(),
-                            StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()),
+                        {
+                                StringEscapeUtils.escapeSql(ro.getTitel()),
+                                ro.isUseDmsImport(),
+                                ro.getDmsImportTimeOut(),
+                                StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()),
 
-                            StringUtils.isBlank(ro.getDmsImportImagesPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()),
-                            StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()),
-                            StringUtils.isBlank(ro.getDmsImportErrorPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()),
-                            ro.isDmsImportCreateProcessFolder(),
-                            StringUtils.isBlank(ro.getFileFormatInternal()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatInternal()),
-                            StringUtils.isBlank(ro.getFileFormatDmsExport()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()),
-                            StringUtils.isBlank(ro.getMetsRightsOwner()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()),
-                            StringUtils.isBlank(ro.getMetsRightsOwnerLogo()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()),
-                            StringUtils.isBlank(ro.getMetsRightsOwnerSite()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()),
-                            StringUtils.isBlank(ro.getMetsRightsOwnerMail()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()),
-                            StringUtils.isBlank(ro.getMetsDigiprovReference()) ? null : StringEscapeUtils
-                                    .escapeSql(ro.getMetsDigiprovReference()),
-                            StringUtils.isBlank(ro.getMetsDigiprovPresentation()) ? null : StringEscapeUtils.escapeSql(ro
-                                    .getMetsDigiprovPresentation()),
-                            StringUtils.isBlank(ro.getMetsDigiprovReferenceAnchor()) ? null : StringEscapeUtils.escapeSql(ro
-                                    .getMetsDigiprovReferenceAnchor()),
-                            StringUtils.isBlank(ro.getMetsDigiprovPresentationAnchor()) ? null : StringEscapeUtils.escapeSql(ro
-                                    .getMetsDigiprovPresentationAnchor()),
-                            StringUtils.isBlank(ro.getMetsPointerPath()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPointerPath()),
-                            StringUtils.isBlank(ro.getMetsPointerPathAnchor()) ? null : StringEscapeUtils
-                                    .escapeSql(ro.getMetsPointerPathAnchor()),
-                            StringUtils.isBlank(ro.getMetsPurl()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPurl()),
-                            StringUtils.isBlank(ro.getMetsContentIDs()) ? null : StringEscapeUtils.escapeSql(ro.getMetsContentIDs()),
-                            ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
-                            ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
-                            ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
+                                StringUtils.isBlank(ro.getDmsImportImagesPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()),
+                                StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()),
+                                StringUtils.isBlank(ro.getDmsImportErrorPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()),
+                                ro.isDmsImportCreateProcessFolder(),
+                                StringUtils.isBlank(ro.getFileFormatInternal()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatInternal()),
+                                StringUtils.isBlank(ro.getFileFormatDmsExport()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()),
+                                StringUtils.isBlank(ro.getMetsRightsOwner()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()),
+                                StringUtils.isBlank(ro.getMetsRightsOwnerLogo()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()),
+                                StringUtils.isBlank(ro.getMetsRightsOwnerSite()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()),
+                                StringUtils.isBlank(ro.getMetsRightsOwnerMail()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()),
+                                StringUtils.isBlank(ro.getMetsDigiprovReference()) ? null : StringEscapeUtils
+                                        .escapeSql(ro.getMetsDigiprovReference()),
+                                StringUtils.isBlank(ro.getMetsDigiprovPresentation()) ? null : StringEscapeUtils.escapeSql(ro
+                                        .getMetsDigiprovPresentation()),
+                                StringUtils.isBlank(ro.getMetsDigiprovReferenceAnchor()) ? null : StringEscapeUtils.escapeSql(ro
+                                        .getMetsDigiprovReferenceAnchor()),
+                                StringUtils.isBlank(ro.getMetsDigiprovPresentationAnchor()) ? null : StringEscapeUtils.escapeSql(ro
+                                        .getMetsDigiprovPresentationAnchor()),
+                                StringUtils.isBlank(ro.getMetsPointerPath()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPointerPath()),
+                                StringUtils.isBlank(ro.getMetsPointerPathAnchor()) ? null : StringEscapeUtils
+                                        .escapeSql(ro.getMetsPointerPathAnchor()),
+                                StringUtils.isBlank(ro.getMetsPurl()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPurl()),
+                                StringUtils.isBlank(ro.getMetsContentIDs()) ? null : StringEscapeUtils.escapeSql(ro.getMetsContentIDs()),
+                                ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
+                                ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
+                                ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
 
                 sql.append("INSERT INTO projekte (");
                 sql.append(propNames);
@@ -237,6 +237,75 @@ class ProjectMysqlHelper {
             List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), resultSetToProjectFilegroupListHandler, param);
             return answer;
 
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void saveProjectFileGroups(List<ProjectFileGroup> filegroupList) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            for (ProjectFileGroup pfg : filegroupList) {
+                Object[] param =
+                        { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(), StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(),
+                                StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(),
+                                StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
+                                StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+                if (pfg.getId() == null) {
+                    String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
+
+                    Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
+                    if (id != null) {
+                        pfg.setId(id);
+                    }
+                } else {
+                    String sql =
+                            "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ? WHERE ProjectFileGroupID = "
+                                    + pfg.getId();
+                    run.update(connection, sql, param);
+                }
+            }
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void saveProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+
+            Object[] param =
+                    { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(), StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(),
+                            StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(),
+                            StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
+                            StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+            if (pfg.getId() == null) {
+                String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
+
+                Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
+                if (id != null) {
+                    pfg.setId(id);
+                }
+            } else {
+                String sql =
+                        "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ? WHERE ProjectFileGroupID = "
+                                + pfg.getId();
+                run.update(connection, sql, param);
+            }
+
+        } finally {
+            MySQLHelper.closeConnection(connection);
+        }
+    }
+
+    public static void deleteProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
+        Connection connection = MySQLHelper.getInstance().getConnection();
+        try {
+            QueryRunner run = new QueryRunner();
+            String sql = "DELETE FROM projectfilegroups WHERE ProjectFileGroupID = " + pfg.getId();
+            run.update(connection, sql);
         } finally {
             MySQLHelper.closeConnection(connection);
         }

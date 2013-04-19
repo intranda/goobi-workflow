@@ -172,8 +172,6 @@ public class StatisticsManager implements Serializable {
 	
 	
 	public void calculate() {
-	    // TODO fix this
-	    filter = "project:tu stepdone:2";
         filter = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
 
 	    
