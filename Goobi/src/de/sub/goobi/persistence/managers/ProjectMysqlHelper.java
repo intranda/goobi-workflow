@@ -10,11 +10,11 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
-
 
 class ProjectMysqlHelper {
     private static final Logger logger = Logger.getLogger(ProjectMysqlHelper.class);
@@ -95,80 +95,116 @@ class ProjectMysqlHelper {
 
                 String propNames =
                         "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
-                StringBuilder propValues = new StringBuilder();
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "',");
-                propValues.append(ro.isUseDmsImport() + ",");
-                propValues.append(ro.getDmsImportTimeOut() + ",");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()) + "',");
-                propValues.append(ro.isDmsImportCreateProcessFolder() + ",");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getFileFormatInternal()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReference()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentation()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReferenceAnchor()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentationAnchor()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPointerPath()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPointerPathAnchor()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsPurl()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getMetsContentIDs()) + "',");
-                sql.append(ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()) + ",");
-                sql.append(ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()) + ",");
-                propValues.append(ro.getNumberOfPages() + ",");
-                propValues.append(ro.getNumberOfVolumes() + ",");
-                propValues.append(ro.getProjectIsArchived());
+                //                StringBuilder propValues = new StringBuilder();
+                Object[] param =
+                    {
+                            StringEscapeUtils.escapeSql(ro.getTitel()),
+                            ro.isUseDmsImport(),
+                            ro.getDmsImportTimeOut(),
+                            StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()),
+
+                            StringUtils.isBlank(ro.getDmsImportImagesPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()),
+                            StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()),
+                            StringUtils.isBlank(ro.getDmsImportErrorPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()),
+                            ro.isDmsImportCreateProcessFolder(),
+                            StringUtils.isBlank(ro.getFileFormatInternal()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatInternal()),
+                            StringUtils.isBlank(ro.getFileFormatDmsExport()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()),
+                            StringUtils.isBlank(ro.getMetsRightsOwner()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()),
+                            StringUtils.isBlank(ro.getMetsRightsOwnerLogo()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()),
+                            StringUtils.isBlank(ro.getMetsRightsOwnerSite()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()),
+                            StringUtils.isBlank(ro.getMetsRightsOwnerMail()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()),
+                            StringUtils.isBlank(ro.getMetsDigiprovReference()) ? null : StringEscapeUtils
+                                    .escapeSql(ro.getMetsDigiprovReference()),
+                            StringUtils.isBlank(ro.getMetsDigiprovPresentation()) ? null : StringEscapeUtils.escapeSql(ro
+                                    .getMetsDigiprovPresentation()),
+                            StringUtils.isBlank(ro.getMetsDigiprovReferenceAnchor()) ? null : StringEscapeUtils.escapeSql(ro
+                                    .getMetsDigiprovReferenceAnchor()),
+                            StringUtils.isBlank(ro.getMetsDigiprovPresentationAnchor()) ? null : StringEscapeUtils.escapeSql(ro
+                                    .getMetsDigiprovPresentationAnchor()),
+                            StringUtils.isBlank(ro.getMetsPointerPath()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPointerPath()),
+                            StringUtils.isBlank(ro.getMetsPointerPathAnchor()) ? null : StringEscapeUtils
+                                    .escapeSql(ro.getMetsPointerPathAnchor()),
+                            StringUtils.isBlank(ro.getMetsPurl()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPurl()),
+                            StringUtils.isBlank(ro.getMetsContentIDs()) ? null : StringEscapeUtils.escapeSql(ro.getMetsContentIDs()),
+                            ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
+                            ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
+                            ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
 
                 sql.append("INSERT INTO projekte (");
                 sql.append(propNames);
-                sql.append(") VALUES (");
-                sql.append(propValues.toString());
-                sql.append(")");
+                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 logger.debug(sql.toString());
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
                 }
 
             } else {
                 sql.append("UPDATE projekte SET ");
-                sql.append("Titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "',");
-                sql.append("useDmsImport =" + ro.isUseDmsImport() + ",");
-                sql.append("dmsImportTimeOut =" + ro.getDmsImportTimeOut() + ",");
-                sql.append("dmsImportRootPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()) + "',");
-                sql.append("dmsImportImagesPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()) + "',");
-                sql.append("dmsImportSuccessPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()) + "',");
-                sql.append("dmsImportErrorPath = '" + StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()) + "',");
-                sql.append("dmsImportCreateProcessFolder =" + ro.isDmsImportCreateProcessFolder() + ",");
-                sql.append("fileFormatInternal = '" + StringEscapeUtils.escapeSql(ro.getFileFormatInternal()) + "',");
-                sql.append("fileFormatDmsExport = '" + StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()) + "',");
-                sql.append("metsRightsOwner = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()) + "',");
-                sql.append("metsRightsOwnerLogo = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()) + "',");
-                sql.append("metsRightsOwnerSite = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()) + "',");
-                sql.append("metsRightsOwnerMail = '" + StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()) + "',");
-                sql.append("metsDigiprovReference = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReference()) + "',");
-                sql.append("metsDigiprovPresentation = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentation()) + "',");
-                sql.append("metsDigiprovReferenceAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovReferenceAnchor()) + "',");
-                sql.append("metsDigiprovPresentationAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsDigiprovPresentationAnchor()) + "',");
-                sql.append("metsPointerPath = '" + StringEscapeUtils.escapeSql(ro.getMetsPointerPath()) + "',");
-                sql.append("metsPointerPathAnchor = '" + StringEscapeUtils.escapeSql(ro.getMetsPointerPathAnchor()) + "',");
-                sql.append("metsPurl = '" + StringEscapeUtils.escapeSql(ro.getMetsPurl()) + "',");
-                sql.append("metsContentIDs = '" + StringEscapeUtils.escapeSql(ro.getMetsContentIDs()) + "',");
-                sql.append("startDate =" + ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()) + ",");
-                sql.append("endDate =" + ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()) + ",");
-                sql.append("numberOfPages =" + ro.getNumberOfPages() + ",");
-                sql.append("numberOfVolumes =" + ro.getNumberOfVolumes() + ",");
-                sql.append("projectIsArchived =" + ro.getProjectIsArchived());
+                sql.append("Titel = ?, ");
+                sql.append("useDmsImport = ?, ");
+                sql.append("dmsImportTimeOut = ?, ");
+                sql.append("dmsImportRootPath = ?, ");
+                sql.append("dmsImportImagesPath = ?, ");
+                sql.append("dmsImportSuccessPath = ?, ");
+                sql.append("dmsImportErrorPath = ?, ");
+                sql.append("dmsImportCreateProcessFolder =?, ");
+                sql.append("fileFormatInternal = ?, ");
+                sql.append("fileFormatDmsExport = ?, ");
+                sql.append("metsRightsOwner = ?, ");
+                sql.append("metsRightsOwnerLogo = ?, ");
+                sql.append("metsRightsOwnerSite = ?, ");
+                sql.append("metsRightsOwnerMail = ?, ");
+                sql.append("metsDigiprovReference = ?, ");
+                sql.append("metsDigiprovPresentation = ?, ");
+                sql.append("metsDigiprovReferenceAnchor = ?, ");
+                sql.append("metsDigiprovPresentationAnchor = ?, ");
+                sql.append("metsPointerPath = ?, ");
+                sql.append("metsPointerPathAnchor = ?, ");
+                sql.append("metsPurl = ?, ");
+                sql.append("metsContentIDs = ?, ");
+                sql.append("startDate =?, ");
+                sql.append("endDate =?, ");
+                sql.append("numberOfPages =?, ");
+                sql.append("numberOfVolumes =?, ");
+                sql.append("projectIsArchived =? ");
+                Object[] param =
+                        {
+                                StringEscapeUtils.escapeSql(ro.getTitel()),
+                                ro.isUseDmsImport(),
+                                ro.getDmsImportTimeOut(),
+                                StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportRootPath()),
 
+                                StringUtils.isBlank(ro.getDmsImportImagesPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportImagesPath()),
+                                StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()),
+                                StringUtils.isBlank(ro.getDmsImportErrorPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()),
+                                ro.isDmsImportCreateProcessFolder(),
+                                StringUtils.isBlank(ro.getFileFormatInternal()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatInternal()),
+                                StringUtils.isBlank(ro.getFileFormatDmsExport()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()),
+                                StringUtils.isBlank(ro.getMetsRightsOwner()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()),
+                                StringUtils.isBlank(ro.getMetsRightsOwnerLogo()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerLogo()),
+                                StringUtils.isBlank(ro.getMetsRightsOwnerSite()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerSite()),
+                                StringUtils.isBlank(ro.getMetsRightsOwnerMail()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwnerMail()),
+                                StringUtils.isBlank(ro.getMetsDigiprovReference()) ? null : StringEscapeUtils
+                                        .escapeSql(ro.getMetsDigiprovReference()),
+                                StringUtils.isBlank(ro.getMetsDigiprovPresentation()) ? null : StringEscapeUtils.escapeSql(ro
+                                        .getMetsDigiprovPresentation()),
+                                StringUtils.isBlank(ro.getMetsDigiprovReferenceAnchor()) ? null : StringEscapeUtils.escapeSql(ro
+                                        .getMetsDigiprovReferenceAnchor()),
+                                StringUtils.isBlank(ro.getMetsDigiprovPresentationAnchor()) ? null : StringEscapeUtils.escapeSql(ro
+                                        .getMetsDigiprovPresentationAnchor()),
+                                StringUtils.isBlank(ro.getMetsPointerPath()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPointerPath()),
+                                StringUtils.isBlank(ro.getMetsPointerPathAnchor()) ? null : StringEscapeUtils
+                                        .escapeSql(ro.getMetsPointerPathAnchor()),
+                                StringUtils.isBlank(ro.getMetsPurl()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPurl()),
+                                StringUtils.isBlank(ro.getMetsContentIDs()) ? null : StringEscapeUtils.escapeSql(ro.getMetsContentIDs()),
+                                ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
+                                ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
+                                ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
                 logger.debug(sql.toString());
-                run.update(connection, sql.toString());
+                run.update(connection, sql.toString(), param);
             }
             // TODO FileGroups speichern
         } finally {
