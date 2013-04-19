@@ -906,7 +906,7 @@ public class ProcessBean extends BasicBean {
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenPage() throws DAOException {
         for (Process proz : (List<Process>) this.paginator.getList()) {
-            stepStatusUp(proz.getId());
+            stepStatusUp(proz);
         }
     }
 
@@ -914,7 +914,7 @@ public class ProcessBean extends BasicBean {
     public void BearbeitungsstatusHochsetzenSelection() throws DAOException {
         for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
-                stepStatusUp(proz.getId());
+                stepStatusUp(proz);
             }
         }
     }
@@ -922,13 +922,13 @@ public class ProcessBean extends BasicBean {
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenHits() throws DAOException {
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            stepStatusUp(proz.getId());
+            stepStatusUp(proz);
         }
     }
 
-    private void stepStatusUp(int processId) throws DAOException {
-        List<Step> stepList = StepManager.getStepsForProcess(processId);
-
+    private void stepStatusUp(Process proz) throws DAOException {
+        List<Step> stepList = new ArrayList<Step>(proz.getSchritteList());
+        
         for (Step so : stepList) {
             if (!so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                 so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
@@ -939,8 +939,8 @@ public class ProcessBean extends BasicBean {
                     User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                     if (ben != null) {
                         so.setBearbeitungsbenutzer(ben);
-                        StepManager.saveStep(so);
                     }
+                    ProcessManager.saveProcess(proz);
                 }
                 break;
             }
