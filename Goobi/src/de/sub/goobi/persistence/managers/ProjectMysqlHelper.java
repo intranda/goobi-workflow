@@ -20,7 +20,7 @@ class ProjectMysqlHelper {
     private static final Logger logger = Logger.getLogger(ProjectMysqlHelper.class);
 
     public static List<Project> getProjects(String order, String filter, Integer start, Integer count) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM projekte");
         if (filter != null && !filter.isEmpty()) {
@@ -33,11 +33,14 @@ class ProjectMysqlHelper {
             sql.append(" LIMIT " + start + ", " + count);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -46,49 +49,59 @@ class ProjectMysqlHelper {
     }
 
     public static int getProjectCount(String order, String filter) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProjekteID) FROM projekte");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static Project getProjectById(int id) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM projekte WHERE ProjekteID = " + id);
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             Project ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static List<Project> getAllProjects() throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM projekte");
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveProject(Project ro) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
             if (ro.getId() == null) {
@@ -208,43 +221,52 @@ class ProjectMysqlHelper {
             }
             // TODO FileGroups speichern
         } finally {
-            MySQLHelper.closeConnection(connection);
-        }
-    }
-
-    public static void deleteProject(Project ro) throws SQLException {
-        if (ro.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
-            try {
-                QueryRunner run = new QueryRunner();
-                String sql = "DELETE FROM projekte WHERE ProjekteID = " + ro.getId() + ";";
-                logger.debug(sql);
-                run.update(connection, sql);
-            } finally {
+            if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
         }
     }
 
+    public static void deleteProject(Project ro) throws SQLException {
+        if (ro.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                String sql = "DELETE FROM projekte WHERE ProjekteID = " + ro.getId() + ";";
+                logger.debug(sql);
+                run.update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     public static List<ProjectFileGroup> getFilegroupsForProjectId(int projectId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT * FROM projectfilegroups WHERE ProjekteID = ? ");
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { projectId };
             logger.debug(sql.toString() + ", " + param);
             List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), resultSetToProjectFilegroupListHandler, param);
             return answer;
 
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveProjectFileGroups(List<ProjectFileGroup> filegroupList) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             for (ProjectFileGroup pfg : filegroupList) {
                 Object[] param =
@@ -267,13 +289,16 @@ class ProjectMysqlHelper {
                 }
             }
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
 
             Object[] param =
@@ -294,20 +319,24 @@ class ProjectMysqlHelper {
                                 + pfg.getId();
                 run.update(connection, sql, param);
             }
-
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void deleteProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             String sql = "DELETE FROM projectfilegroups WHERE ProjectFileGroupID = " + pfg.getId();
             run.update(connection, sql);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -315,23 +344,29 @@ class ProjectMysqlHelper {
         @Override
         public List<ProjectFileGroup> handle(ResultSet rs) throws SQLException {
             List<ProjectFileGroup> answer = new ArrayList<ProjectFileGroup>();
-            while (rs.next()) {
-                int ProjectFileGroupID = rs.getInt("ProjectFileGroupID");
-                String name = rs.getString("name");
-                String path = rs.getString("path");
-                String mimetype = rs.getString("mimetype");
-                String suffix = rs.getString("suffix");
-                // int ProjekteID = rs.getInt("ProjekteID");
-                String folder = rs.getString("folder");
-                ProjectFileGroup pfg = new ProjectFileGroup();
-                pfg.setId(ProjectFileGroupID);
-                pfg.setName(name);
-                pfg.setPath(path);
-                pfg.setMimetype(mimetype);
-                pfg.setSuffix(suffix);
-                // ProjekteId?
-                pfg.setFolder(folder);
-                answer.add(pfg);
+            try {
+                while (rs.next()) {
+                    int ProjectFileGroupID = rs.getInt("ProjectFileGroupID");
+                    String name = rs.getString("name");
+                    String path = rs.getString("path");
+                    String mimetype = rs.getString("mimetype");
+                    String suffix = rs.getString("suffix");
+                    // int ProjekteID = rs.getInt("ProjekteID");
+                    String folder = rs.getString("folder");
+                    ProjectFileGroup pfg = new ProjectFileGroup();
+                    pfg.setId(ProjectFileGroupID);
+                    pfg.setName(name);
+                    pfg.setPath(path);
+                    pfg.setMimetype(mimetype);
+                    pfg.setSuffix(suffix);
+                    // ProjekteId?
+                    pfg.setFolder(folder);
+                    answer.add(pfg);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }

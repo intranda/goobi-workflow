@@ -115,7 +115,7 @@ public class ProjectManager implements IManager {
             logger.error("error while deleting ProjectFileGroup", e);
         }
     }
-    
+
     public static void saveProjectFileGroups(List<ProjectFileGroup> pfgList) {
         try {
             ProjectMysqlHelper.saveProjectFileGroups(pfgList);
@@ -123,7 +123,7 @@ public class ProjectManager implements IManager {
             logger.error("error while saving ProjectFileGroups", e);
         }
     }
-    
+
     public static void saveProjectFileGroup(ProjectFileGroup pfg) {
         try {
             ProjectMysqlHelper.saveProjectFileGroup(pfg);
@@ -139,7 +139,7 @@ public class ProjectManager implements IManager {
         r.setId(rs.getInt("ProjekteID"));
         r.setTitel(rs.getString("Titel"));
         r.setUseDmsImport(rs.getBoolean("useDmsImport"));
-        
+
         r.setDmsImportTimeOut(rs.getInt("dmsImportTimeOut"));
         if (rs.wasNull()) {
             r.setDmsImportTimeOut(null);
@@ -180,8 +180,14 @@ public class ProjectManager implements IManager {
     public static ResultSetHandler<Project> resultSetToProjectHandler = new ResultSetHandler<Project>() {
         @Override
         public Project handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                return convert(rs);
+            try {
+                if (rs.next()) {
+                    return convert(rs);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return null;
         }
@@ -191,11 +197,16 @@ public class ProjectManager implements IManager {
         @Override
         public List<Project> handle(ResultSet rs) throws SQLException {
             List<Project> answer = new ArrayList<Project>();
-
-            while (rs.next()) {
-                Project o = convert(rs);
-                if (o != null) {
-                    answer.add(o);
+            try {
+                while (rs.next()) {
+                    Project o = convert(rs);
+                    if (o != null) {
+                        answer.add(o);
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
                 }
             }
             return answer;

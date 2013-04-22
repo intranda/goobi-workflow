@@ -172,8 +172,14 @@ public class UserManager implements IManager, Serializable {
     public static ResultSetHandler<User> resultSetToUserHandler = new ResultSetHandler<User>() {
         @Override
         public User handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                return convert(rs);
+            try {
+                if (rs.next()) {
+                    return convert(rs);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return null;
         }
@@ -183,11 +189,16 @@ public class UserManager implements IManager, Serializable {
         @Override
         public List<User> handle(ResultSet rs) throws SQLException {
             List<User> answer = new ArrayList<User>();
-
-            while (rs.next()) {
-                User o = convert(rs);
-                if (o != null) {
-                    answer.add(o);
+            try {
+                while (rs.next()) {
+                    User o = convert(rs);
+                    if (o != null) {
+                        answer.add(o);
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
                 }
             }
             return answer;

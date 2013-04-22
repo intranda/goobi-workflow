@@ -14,15 +14,18 @@ import org.goobi.beans.Templateproperty;
 class TemplateMysqlHelper {
 
     public static List<Template> getTemplatesForProcess(int processId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
 
         String sql = " SELECT * from vorlagen WHERE ProzesseID = " + processId;
 
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             List<Template> ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplateListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
     }
@@ -31,18 +34,23 @@ class TemplateMysqlHelper {
         @Override
         public List<Template> handle(ResultSet rs) throws SQLException {
             List<Template> answer = new ArrayList<Template>();
-
-            while (rs.next()) {
-                int templateId = rs.getInt("VorlagenID");
-                String herkunft = rs.getString("Herkunft");
-                int processId = rs.getInt("ProzesseID");
-                Template template = new Template();
-                template.setId(templateId);
-                template.setHerkunft(herkunft);
-                template.setProcessId(processId);
-                List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
-                template.setEigenschaften(properties);
-                answer.add(template);
+            try {
+                while (rs.next()) {
+                    int templateId = rs.getInt("VorlagenID");
+                    String herkunft = rs.getString("Herkunft");
+                    int processId = rs.getInt("ProzesseID");
+                    Template template = new Template();
+                    template.setId(templateId);
+                    template.setHerkunft(herkunft);
+                    template.setProcessId(processId);
+                    List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
+                    template.setEigenschaften(properties);
+                    answer.add(template);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }
@@ -51,47 +59,59 @@ class TemplateMysqlHelper {
     public static ResultSetHandler<Template> resultSetToTemplateHandler = new ResultSetHandler<Template>() {
         @Override
         public Template handle(ResultSet rs) throws SQLException {
-
-            if (rs.next()) {
-                int templateId = rs.getInt("VorlagenID");
-                String herkunft = rs.getString("Herkunft");
-                int processId = rs.getInt("ProzesseID");
-                Template template = new Template();
-                template.setId(templateId);
-                template.setHerkunft(herkunft);
-                template.setProcessId(processId);
-                List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
-                template.setEigenschaften(properties);
-                return template;
+            try {
+                if (rs.next()) {
+                    int templateId = rs.getInt("VorlagenID");
+                    String herkunft = rs.getString("Herkunft");
+                    int processId = rs.getInt("ProzesseID");
+                    Template template = new Template();
+                    template.setId(templateId);
+                    template.setHerkunft(herkunft);
+                    template.setProcessId(processId);
+                    List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
+                    template.setEigenschaften(properties);
+                    return template;
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return null;
         }
     };
 
     public static Template getTemplateForTemplateID(int templateId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         String sql = " SELECT * from vorlagen WHERE VorlagenID = " + templateId;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             Template ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplateHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static int getCountOfTemplates() throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         String sql = " SELECT count(VorlagenID) from vorlagen";
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveTemplate(Template template) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             String sql = "";
 
@@ -106,9 +126,10 @@ class TemplateMysqlHelper {
                 Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
                 run.update(connection, sql, param);
             }
-
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
         List<Templateproperty> templateProperties = template.getEigenschaften();
@@ -123,13 +144,16 @@ class TemplateMysqlHelper {
             for (Templateproperty property : template.getEigenschaften()) {
                 PropertyManager.deleteTemplateProperty(property);
             }
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM vorlagen WHERE VorlagenID = " + template.getId();
                 run.update(connection, sql);
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
 

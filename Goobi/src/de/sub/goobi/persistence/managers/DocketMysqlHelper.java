@@ -8,12 +8,11 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Docket;
 
-
 class DocketMysqlHelper {
     private static final Logger logger = Logger.getLogger(DocketMysqlHelper.class);
 
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM dockets");
         if (filter != null && !filter.isEmpty()) {
@@ -26,45 +25,57 @@ class DocketMysqlHelper {
             sql.append(" LIMIT " + start + ", " + count);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static int getDocketCount(String order, String filter) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(docketID) FROM dockets");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static Docket getDocketById(int id) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
+
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM dockets WHERE docketID = " + id);
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             Docket ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveDocket(Docket ro) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
+
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
@@ -81,7 +92,7 @@ class DocketMysqlHelper {
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
                 if (id != null) {
                     ro.setId(id);
-                }              
+                }
             } else {
                 sql.append("UPDATE dockets SET ");
                 sql.append("name = '" + ro.getName() + "', ");
@@ -91,35 +102,44 @@ class DocketMysqlHelper {
                 run.update(connection, sql.toString());
             }
         } finally {
-            MySQLHelper.closeConnection(connection);
-        }
-    }
-
-    public static void deleteDocket(Docket ro) throws SQLException {
-        if (ro.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
-            try {
-                QueryRunner run = new QueryRunner();
-                String sql = "DELETE FROM dockets WHERE docketID = " + ro.getId() + ";";
-                logger.debug(sql);
-                run.update(connection, sql);
-            } finally {
+            if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
         }
     }
 
+    public static void deleteDocket(Docket ro) throws SQLException {
+        if (ro.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                String sql = "DELETE FROM dockets WHERE docketID = " + ro.getId() + ";";
+                logger.debug(sql);
+                run.update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     public static List<Docket> getAllDockets() throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM dockets");
 
         try {
+            connection = MySQLHelper.getInstance().getConnection();
+
             logger.debug(sql.toString());
             List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 }

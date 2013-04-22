@@ -24,26 +24,30 @@ class StepMysqlHelper {
     private static final Logger logger = Logger.getLogger(StepMysqlHelper.class);
 
     public static List<Step> getStepsForProcess(int processId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         String sql = "SELECT * FROM schritte WHERE schritte.ProzesseID = ? order by Reihenfolge";
         Object[] param = { processId };
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             List<Step> list = new QueryRunner().query(connection, sql, resultSetToStepListHandler, param);
             return list;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static int getStepCount(String order, String filter) throws SQLException {
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(SchritteID) FROM schritte, prozesse, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             if (filter != null && !filter.isEmpty()) {
                 return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
@@ -51,12 +55,14 @@ class StepMysqlHelper {
                 return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             }
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM schritte, prozesse, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
@@ -71,6 +77,7 @@ class StepMysqlHelper {
         }
 
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Step> ret = null;
             if (filter != null && !filter.isEmpty()) {
@@ -80,7 +87,9 @@ class StepMysqlHelper {
             }
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -89,8 +98,14 @@ class StepMysqlHelper {
         @Override
         public List<Step> handle(ResultSet rs) throws SQLException {
             List<Step> answer = new ArrayList<Step>();
-            while (rs.next()) {
-                answer.add(convert(rs));
+            try {
+                while (rs.next()) {
+                    answer.add(convert(rs));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }
@@ -99,12 +114,18 @@ class StepMysqlHelper {
 
     public static ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<Step>() {
         public Step handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                try {
-                    Step o = convert(rs);
-                    return o;
-                } catch (SQLException e) {
-                    logger.error(e);
+            try {
+                if (rs.next()) {
+                    try {
+                        Step o = convert(rs);
+                        return o;
+                    } catch (SQLException e) {
+                        logger.error(e);
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
                 }
             }
             return null;
@@ -182,29 +203,35 @@ class StepMysqlHelper {
         @Override
         public List<ErrorProperty> handle(ResultSet rs) throws SQLException {
             List<ErrorProperty> properties = new ArrayList<ErrorProperty>();
-            while (rs.next()) {
-                int id = rs.getInt("schritteeigenschaftenID");
-                String title = rs.getString("Titel");
-                String value = rs.getString("Wert");
-                Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                int type = rs.getInt("DatentypenID");
-                String choice = rs.getString("Auswahl");
-                Timestamp time = rs.getTimestamp("creationDate");
-                Date creationDate = null;
-                if (time != null) {
-                    creationDate = new Date(time.getTime());
+            try {
+                while (rs.next()) {
+                    int id = rs.getInt("schritteeigenschaftenID");
+                    String title = rs.getString("Titel");
+                    String value = rs.getString("Wert");
+                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
+                    int type = rs.getInt("DatentypenID");
+                    String choice = rs.getString("Auswahl");
+                    Timestamp time = rs.getTimestamp("creationDate");
+                    Date creationDate = null;
+                    if (time != null) {
+                        creationDate = new Date(time.getTime());
+                    }
+                    int container = rs.getInt("container");
+                    ErrorProperty ve = new ErrorProperty();
+                    ve.setId(id);
+                    ve.setTitel(title);
+                    ve.setWert(value);
+                    ve.setIstObligatorisch(mandatory);
+                    ve.setType(PropertyType.getById(type));
+                    ve.setAuswahl(choice);
+                    ve.setCreationDate(creationDate);
+                    ve.setContainer(container);
+                    properties.add(ve);
                 }
-                int container = rs.getInt("container");
-                ErrorProperty ve = new ErrorProperty();
-                ve.setId(id);
-                ve.setTitel(title);
-                ve.setWert(value);
-                ve.setIstObligatorisch(mandatory);
-                ve.setType(PropertyType.getById(type));
-                ve.setAuswahl(choice);
-                ve.setCreationDate(creationDate);
-                ve.setContainer(container);
-                properties.add(ve);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return properties;
         }
@@ -214,23 +241,31 @@ class StepMysqlHelper {
 
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
-
-            if (rs.next()) {
-                return true;
+            try {
+                if (rs.next()) {
+                    return true;
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return false;
         }
     };
 
     public static Step getStepById(int id) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         String sql = "SELECT * FROM schritte WHERE SchritteID = ?";
         Object[] param = { id };
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             Step s = new QueryRunner().query(connection, sql, resultSetToStepHandler, param);
             return s;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -242,27 +277,33 @@ class StepMysqlHelper {
 
             String sql = "DELETE FROM schritte WHERE SchritteID = ?";
             Object[] param = { o.getId() };
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 run.update(connection, sql, param);
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
 
     }
 
     public static List<Step> getAllSteps() throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM schritte");
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Step> ret = new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -299,8 +340,9 @@ class StepMysqlHelper {
                     { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
                             property.getSchritt().getId(),
                             property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 logger.debug(sql.toString());
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
@@ -308,7 +350,9 @@ class StepMysqlHelper {
                     property.setId(id);
                 }
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
 
         } else {
@@ -319,43 +363,53 @@ class StepMysqlHelper {
                     { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
                             property.getSchritt().getId(),
                             property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 run.update(connection, sql, param);
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
 
     private static List<ErrorProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
         String sql = "SELECT * FROM schritteeigenschaften WHERE schritteID = " + stepId;
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql, resultSetToErrorPropertyListHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     private static void deleteErrorProperty(ErrorProperty property) throws SQLException {
         String sql = "DELETE FROM schritteeigenschaften WHERE schritteeigenschaftenID = " + property.getId();
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             run.update(connection, sql, resultSetToErrorPropertyListHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     private static void insertStep(Step o) throws SQLException {
         String sql = "INSERT INTO schritte " + generateInsertQuery(false) + generateValueQuery(false);
         Object[] param = generateParameter(o, false);
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             logger.debug(sql.toString());
             Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
@@ -363,7 +417,9 @@ class StepMysqlHelper {
                 o.setId(id);
             }
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -534,12 +590,15 @@ class StepMysqlHelper {
 
         Object[] param = generateParameter(o, false);
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             run.update(connection, sql.toString(), param);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
     }
@@ -605,8 +664,9 @@ class StepMysqlHelper {
 
         String deleteTempTable = "DROP TEMPORARY TABLE " + tablename + ";";
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             // create temporary table
             run.update(connection, tempTable);
@@ -617,7 +677,9 @@ class StepMysqlHelper {
             // delete temporary table
             run.update(connection, deleteTempTable);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -634,12 +696,15 @@ class StepMysqlHelper {
 
         values = values.substring(0, values.length() - 1);
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             run.update(connection, values, paramArray);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -681,7 +746,7 @@ class StepMysqlHelper {
     }
 
     public static List<Integer> getIDList(String filter) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT SchritteId FROM schritte");
         if (filter != null && !filter.isEmpty()) {
@@ -689,15 +754,17 @@ class StepMysqlHelper {
         }
 
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Integer> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
 
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
-
     }
 
     public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
@@ -710,20 +777,23 @@ class StepMysqlHelper {
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
-
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveUserAssignment(Step step) throws SQLException {
         if (step.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 for (User user : step.getBenutzer()) {
                     // check if assignment exists
                     String sql = " SELECT * from schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
@@ -736,15 +806,18 @@ class StepMysqlHelper {
                     }
                 }
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
 
     private static void saveUserGroupAssignment(Step step) throws SQLException {
         if (step.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 for (Usergroup userGroup : step.getBenutzergruppen()) {
                     // check if assignment exists
                     String sql =
@@ -759,7 +832,9 @@ class StepMysqlHelper {
                     }
                 }
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
 
@@ -767,38 +842,43 @@ class StepMysqlHelper {
 
     public static void removeUsergroupFromStep(Step step, Usergroup usergroup) throws SQLException {
         if (step.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 String sql =
                         "DELETE FROM schritteberechtigtegruppen WHERE BenutzerGruppenID =" + usergroup.getId() + " AND schritteID = " + step.getId();
 
                 new QueryRunner().update(connection, sql);
-
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
 
     public static void removeUserFromStep(Step step, User user) throws SQLException {
         if (step.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 String sql = "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
 
                 new QueryRunner().update(connection, sql);
-
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
 
     public static void addHistory(Date date, double order, String value, int type, int processId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         Timestamp datetime = new Timestamp(date.getTime());
 
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             // String propNames = "numericValue, stringvalue, type, date, processId";
             Object[] param = { order, value, type, datetime, processId };
@@ -806,21 +886,26 @@ class StepMysqlHelper {
             logger.trace("added history event " + sql + ", " + param);
             run.update(connection, sql, param);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM schritte WHERE SchritteID = ? ");
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             Object[] params = { stepId };
             logger.debug(sql.toString() + ", " + stepId);
             List<String> ret = new QueryRunner().query(connection, sql.toString(), resultSetToScriptsHandler, params);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -828,21 +913,27 @@ class StepMysqlHelper {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<String>();
-            if (rs.next()) {
-                if (rs.getString("typAutomatischScriptpfad") != null && rs.getString("typAutomatischScriptpfad").length() > 0) {
-                    answer.add(rs.getString("typAutomatischScriptpfad"));
+            try {
+                if (rs.next()) {
+                    if (rs.getString("typAutomatischScriptpfad") != null && rs.getString("typAutomatischScriptpfad").length() > 0) {
+                        answer.add(rs.getString("typAutomatischScriptpfad"));
+                    }
+                    if (rs.getString("typAutomatischScriptpfad2") != null && rs.getString("typAutomatischScriptpfad2").length() > 0) {
+                        answer.add(rs.getString("typAutomatischScriptpfad2"));
+                    }
+                    if (rs.getString("typAutomatischScriptpfad3") != null && rs.getString("typAutomatischScriptpfad3").length() > 0) {
+                        answer.add(rs.getString("typAutomatischScriptpfad3"));
+                    }
+                    if (rs.getString("typAutomatischScriptpfad4") != null && rs.getString("typAutomatischScriptpfad4").length() > 0) {
+                        answer.add(rs.getString("typAutomatischScriptpfad4"));
+                    }
+                    if (rs.getString("typAutomatischScriptpfad5") != null && rs.getString("typAutomatischScriptpfad5").length() > 0) {
+                        answer.add(rs.getString("typAutomatischScriptpfad5"));
+                    }
                 }
-                if (rs.getString("typAutomatischScriptpfad2") != null && rs.getString("typAutomatischScriptpfad2").length() > 0) {
-                    answer.add(rs.getString("typAutomatischScriptpfad2"));
-                }
-                if (rs.getString("typAutomatischScriptpfad3") != null && rs.getString("typAutomatischScriptpfad3").length() > 0) {
-                    answer.add(rs.getString("typAutomatischScriptpfad3"));
-                }
-                if (rs.getString("typAutomatischScriptpfad4") != null && rs.getString("typAutomatischScriptpfad4").length() > 0) {
-                    answer.add(rs.getString("typAutomatischScriptpfad4"));
-                }
-                if (rs.getString("typAutomatischScriptpfad5") != null && rs.getString("typAutomatischScriptpfad5").length() > 0) {
-                    answer.add(rs.getString("typAutomatischScriptpfad5"));
+            } finally {
+                if (rs != null) {
+                    rs.close();
                 }
             }
             return answer;
@@ -864,11 +955,14 @@ class StepMysqlHelper {
             sql.append(" ORDER BY " + order);
         }
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToLongHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -887,11 +981,14 @@ class StepMysqlHelper {
             sql.append(" ORDER BY " + order);
         }
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToLongHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -910,11 +1007,14 @@ class StepMysqlHelper {
             sql.append(" ORDER BY " + order);
         }
 
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToLongHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 }

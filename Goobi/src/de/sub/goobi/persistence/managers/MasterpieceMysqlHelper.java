@@ -11,19 +11,21 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 
-
 class MasterpieceMysqlHelper {
 
     public static List<Masterpiece> getMasterpiecesForProcess(int processId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
 
         String sql = " SELECT * from werkstuecke WHERE ProzesseID = " + processId;
 
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             List<Masterpiece> ret = new QueryRunner().query(connection, sql.toString(), resultSetToMasterpieceListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
     }
@@ -32,16 +34,21 @@ class MasterpieceMysqlHelper {
         @Override
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
             List<Masterpiece> answer = new ArrayList<Masterpiece>();
-
-            while (rs.next()) {
-                int id = rs.getInt("WerkstueckeID");
-                int processId = rs.getInt("ProzesseID");
-                Masterpiece object = new Masterpiece();
-                object.setId(id);
-                object.setProcessId(processId);
-                List<Masterpieceproperty> properties = PropertyManager.getMasterpieceProperties(id);
-                object.setEigenschaften(properties);
-                answer.add(object);
+            try {
+                while (rs.next()) {
+                    int id = rs.getInt("WerkstueckeID");
+                    int processId = rs.getInt("ProzesseID");
+                    Masterpiece object = new Masterpiece();
+                    object.setId(id);
+                    object.setProcessId(processId);
+                    List<Masterpieceproperty> properties = PropertyManager.getMasterpieceProperties(id);
+                    object.setEigenschaften(properties);
+                    answer.add(object);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }
@@ -50,45 +57,57 @@ class MasterpieceMysqlHelper {
     public static ResultSetHandler<Masterpiece> resultSetToMasterpieceHandler = new ResultSetHandler<Masterpiece>() {
         @Override
         public Masterpiece handle(ResultSet rs) throws SQLException {
-
-            if (rs.next()) {
-                int id = rs.getInt("WerkstueckeID");
-                int processId = rs.getInt("ProzesseID");
-                Masterpiece object = new Masterpiece();
-                object.setId(id);
-                object.setProcessId(processId);
-                List<Masterpieceproperty> properties = PropertyManager.getMasterpieceProperties(id);
-                object.setEigenschaften(properties);
-                return object;
+            try {
+                if (rs.next()) {
+                    int id = rs.getInt("WerkstueckeID");
+                    int processId = rs.getInt("ProzesseID");
+                    Masterpiece object = new Masterpiece();
+                    object.setId(id);
+                    object.setProcessId(processId);
+                    List<Masterpieceproperty> properties = PropertyManager.getMasterpieceProperties(id);
+                    object.setEigenschaften(properties);
+                    return object;
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return null;
         }
     };
 
     public static Masterpiece getMasterpieceForTemplateID(int templateId) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         String sql = " SELECT * from werkstuecke WHERE WerkstueckeID = " + templateId;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             Masterpiece ret = new QueryRunner().query(connection, sql.toString(), resultSetToMasterpieceHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static int countMasterpieces() throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         String sql = " SELECT count(WerkstueckeID) from werkstuecke";
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveMasterpiece(Masterpiece object) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             String sql = "";
 
@@ -105,7 +124,9 @@ class MasterpieceMysqlHelper {
             }
 
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
         List<Masterpieceproperty> templateProperties = object.getEigenschaften();
@@ -120,13 +141,16 @@ class MasterpieceMysqlHelper {
             for (Masterpieceproperty property : object.getEigenschaften()) {
                 PropertyManager.deleteMasterpieceProperty(property);
             }
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM werkstuecke WHERE WerkstueckeID = " + object.getId();
                 run.update(connection, sql);
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }

@@ -96,11 +96,17 @@ public class MySQLHelper {
         @Override
         public List<Integer> handle(ResultSet rs) throws SQLException {
             List<Integer> answer = new ArrayList<Integer>();
-            while (rs.next()) {
-                // returning object to get null object, rs.getInt returns '0' on null value
-                Object object = rs.getObject(1);
-                Integer id = (Integer) object;
-                answer.add(id);
+            try {
+                while (rs.next()) {
+                    // returning object to get null object, rs.getInt returns '0' on null value
+                    Object object = rs.getObject(1);
+                    Integer id = (Integer) object;
+                    answer.add(id);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }
@@ -110,8 +116,14 @@ public class MySQLHelper {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<String>();
-            while (rs.next()) {
-                answer.add(rs.getString(1));
+            try {
+                while (rs.next()) {
+                    answer.add(rs.getString(1));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }
@@ -121,12 +133,18 @@ public class MySQLHelper {
         @Override
         public Integer handle(ResultSet rs) throws SQLException {
             Integer answer = null;
-            if (rs.next()) {
-                Integer id = rs.getInt(1);
-                if (rs.wasNull()) {
-                    id = null;
+            try {
+                if (rs.next()) {
+                    Integer id = rs.getInt(1);
+                    if (rs.wasNull()) {
+                        id = null;
+                    }
+                    return id;
                 }
-                return id;
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
             }
             return answer;
         }
@@ -136,10 +154,16 @@ public class MySQLHelper {
         @Override
         public Long handle(ResultSet rs) throws SQLException {
             Long answer = null;
-            if (rs.next()) {
-                answer = new Long(rs.getLong(1));
-                if (rs.wasNull()) {
-                    answer = null;
+            try {
+                if (rs.next()) {
+                    answer = new Long(rs.getLong(1));
+                    if (rs.wasNull()) {
+                        answer = null;
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
                 }
             }
             return answer;
@@ -150,10 +174,16 @@ public class MySQLHelper {
         @Override
         public Double handle(ResultSet rs) throws SQLException {
             Double answer = null;
-            if (rs.next()) {
-                answer = new Double(rs.getDouble(1));
-                if (rs.wasNull()) {
-                    answer = null;
+            try {
+                if (rs.next()) {
+                    answer = new Double(rs.getDouble(1));
+                    if (rs.wasNull()) {
+                        answer = null;
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
                 }
             }
             return answer;

@@ -10,12 +10,11 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-
 class UsergroupMysqlHelper {
     private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
 
     public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
@@ -28,11 +27,14 @@ class UsergroupMysqlHelper {
             sql.append(" LIMIT " + start + ", " + count);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -42,42 +44,49 @@ class UsergroupMysqlHelper {
     }
 
     public static int getUsergroupCount(String order, String filter) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(BenutzergruppenID) FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static Usergroup getUsergroupById(int id) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzergruppen WHERE BenutzergruppenID = " + id);
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveUsergroup(Usergroup ro) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
                 String propNames = "titel, berechtigung";
-                String propValues = "'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "'," +ro.getBerechtigung() + "";
+                String propValues = "'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "'," + ro.getBerechtigung() + "";
                 sql.append("INSERT INTO benutzergruppen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
@@ -99,20 +108,25 @@ class UsergroupMysqlHelper {
                 run.update(connection, sql.toString());
             }
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void deleteUsergroup(Usergroup ro) throws SQLException {
         if (ro.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM benutzergruppen WHERE BenutzergruppenID = " + ro.getId() + ";";
                 logger.debug(sql);
                 run.update(connection, sql);
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
@@ -120,14 +134,17 @@ class UsergroupMysqlHelper {
     public static List<Usergroup> getUserGroupsForStep(Integer stepId) throws SQLException {
         String sql =
                 "select * from benutzergruppen where BenutzergruppenID in (select BenutzergruppenID from schritteberechtigtegruppen where  schritteberechtigtegruppen.schritteID = ? )";
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
             logger.debug(sql.toString() + ", " + param);
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 }

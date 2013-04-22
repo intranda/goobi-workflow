@@ -9,12 +9,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 
-
 class LdapMysqlHelper {
     private static final Logger logger = Logger.getLogger(LdapMysqlHelper.class);
 
     public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM ldapgruppen");
         if (filter != null && !filter.isEmpty()) {
@@ -27,45 +26,55 @@ class LdapMysqlHelper {
             sql.append(" LIMIT " + start + ", " + count);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapListHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static int getLdapCount(String order, String filter) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ldapgruppenID) FROM ldapgruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static Ldap getLdapById(int id) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM ldapgruppen WHERE ldapgruppenID = " + id);
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             Ldap ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapHandler);
             return ret;
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void saveLdap(Ldap ro) throws SQLException {
-        Connection connection = MySQLHelper.getInstance().getConnection();
+        Connection connection = null;
         try {
+            connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
@@ -126,20 +135,25 @@ class LdapMysqlHelper {
                 run.update(connection, sql.toString());
             }
         } finally {
-            MySQLHelper.closeConnection(connection);
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
     public static void deleteLdap(Ldap ro) throws SQLException {
         if (ro.getId() != null) {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+            Connection connection = null;
             try {
+                connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM ldapgruppen WHERE ldapgruppenID = " + ro.getId() + ";";
                 logger.debug(sql);
                 run.update(connection, sql);
             } finally {
-                MySQLHelper.closeConnection(connection);
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
