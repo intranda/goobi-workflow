@@ -28,21 +28,23 @@
 
 package de.sub.goobi.helper.exceptions;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.application.NavigationHandler;
+import javax.faces.application.ViewExpiredException;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import com.sun.faces.context.flash.ELFlash;
-
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -50,6 +52,10 @@ import com.sun.faces.context.flash.ELFlash;
  *
  */
 public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
+
+    private static final Logger logger = Logger.getLogger(GoobiExceptionHandler.class);
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 
 	private ExceptionHandler exceptionHandler;
 
@@ -64,44 +70,54 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
 	@Override
 	public void handle() throws FacesException {
-		for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
-			ExceptionQueuedEvent exceptionQueuedEvent = i.next();
+	       for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
+	            ExceptionQueuedEvent event = i.next();
+	            ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
+	            Throwable t = context.getException();
 
-			ExceptionQueuedEventContext exceptionQueuedEventContext = (ExceptionQueuedEventContext) exceptionQueuedEvent.getSource();
+	            // Handle ViewExpiredExceptions here ... or even others :)
+	            if (!t.getClass().equals(ViewExpiredException.class)) {
+	                logger.error("CLASS: " + t.getClass().getName());
+	            }
+	            FacesContext fc = FacesContext.getCurrentInstance();
+	            @SuppressWarnings("unchecked")
+                Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
+	            NavigationHandler nav = fc.getApplication().getNavigationHandler();
 
-			Throwable throwable = exceptionQueuedEventContext.getException();
+	            if (t instanceof ViewExpiredException) {
+	                ViewExpiredException vee = (ViewExpiredException) t;
+	                try {
+	                    // Push some useful stuff to the request scope for use in the page
+	                    requestMap.put("currentViewId", vee.getViewId());
+	                    nav.handleNavigation(fc, null, "error");
+	                    fc.renderResponse();
+	                } finally {
+	                    i.remove();
+	                }
+	            } else {
+	                logger.error(t.getMessage(), t);
+	                try {
+	                    // Push some useful stuff to the request scope for use in the page
+	                    requestMap.put("errorDetails", sdf.format(new Date()) + ": " + t.getMessage());
+	                    
+	                    // get root cause
+	                    while (t.getCause() != null) {
+	                      t = t.getCause();
+	                  }
+	                    List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
+	                    
+	                    requestMap.put("stacktrace", trace);
+	                    
+	                    nav.handleNavigation(fc, null, "error");
+	                    fc.renderResponse();
+	                } finally {
+	                    i.remove();
+	                }
+	            }
+	        }
+	        // At this point, the queue will not contain any ViewExpiredEvents.
+	        // Therefore, let the parent handle them.
+	        getWrapped().handle();
 
-			if (throwable instanceof Throwable) {
-				Throwable t = (Throwable) throwable;
-t.printStackTrace();
-				FacesContext facesContext = FacesContext.getCurrentInstance();
-
-				@SuppressWarnings("unchecked")
-				Map<String, Object> requestMap = facesContext.getExternalContext().getRequestMap();
-				NavigationHandler navigationHandler = facesContext.getApplication().getNavigationHandler();
-
-				try {
-					requestMap.put("currentView", t.getMessage());
-					ELFlash flash = ELFlash.getFlash(facesContext.getExternalContext(), true);
-					flash.put("exceptionInfo",t.getCause());
-					while (t.getCause() != null) {
-						t = t.getCause();
-					}
-					List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
-//					for (StackTraceElement ste : trace) {
-//						System.out.println(ste.toString());
-//					}
-					flash.put("exceptionStacktrace", trace);
-					navigationHandler.handleNavigation(facesContext, null, "/ui/error?faces-redirect=true");
-					facesContext.renderResponse();
-				} finally {
-					i.remove();
-
-				}
-			}
-
-		}
-		getWrapped().handle();
-	}
-
+	    }
 }

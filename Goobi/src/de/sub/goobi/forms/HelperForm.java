@@ -58,6 +58,10 @@ public class HelperForm {
 
     private Boolean massImportAllowed = null;
 
+    private boolean showError = false;
+
+    
+    
     // TODO re-added temporary for compiling issues
     public static final String MAIN_JSF_PATH = "/newpages";
 
@@ -224,4 +228,12 @@ public class HelperForm {
         return !ConfigMain.getBooleanParameter("ldap_readonly", false);
     }
 
+    
+    public boolean isShowError() {
+        return showError;
+    }
+
+    public void setShowError(boolean showError) {
+        this.showError = showError;
+    }
 }
