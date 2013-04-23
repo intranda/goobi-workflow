@@ -283,7 +283,7 @@ public class MetadatenImagesHelper {
             if (!imagesWithoutPageElements.isEmpty()) {
                 // create new page elements
 
-                int currentPhysicalOrder = assignedImages.size();
+                int currentPhysicalOrder = physicaldocstruct.getAllChildren().size();
                 for (String newImage : imagesWithoutPageElements) {
                     DocStruct dsPage = this.mydocument.createDocStruct(newPage);
                     try {
