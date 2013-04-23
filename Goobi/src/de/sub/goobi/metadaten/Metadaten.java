@@ -1601,14 +1601,14 @@ public class Metadaten {
 
 		List<String> dataList = new ArrayList<String>();
 		myLogger.trace("dataList");
-		try {
+//		try {
 		    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
 			myLogger.trace("dataList 2");
-		} catch (InvalidImagesException e) {
-			myLogger.trace("dataList error");
-			myLogger.error("Images could not be read", e);
-			Helper.setFehlerMeldung("images could not be read", e);
-		}
+//		} catch (InvalidImagesException e) {
+//			myLogger.trace("dataList error");
+//			myLogger.error("Images could not be read", e);
+//			Helper.setFehlerMeldung("images could not be read", e);
+//		}
 
 		if (dataList != null && dataList.size() > 0) {
 			myLogger.trace("dataList not null");

@@ -38,8 +38,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -47,6 +49,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 
+import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -55,6 +58,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.dl.Reference;
 import ugh.dl.RomanNumeral;
+import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
@@ -121,11 +125,10 @@ public class MetadatenImagesHelper {
             MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
             try {
                 Metadata mdForPath = new Metadata(MDTypeForPath);
-                // TODO: add the possibilty for using other image formats
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    mdForPath.setValue("file:/" + inProzess.getImagesDirectory() + inProzess.getTitel().trim() + "_tif");
+                    mdForPath.setValue("file:/" + inProzess.getImagesTifDirectory(false));
                 } else {
-                    mdForPath.setValue("file://" + inProzess.getImagesDirectory() + inProzess.getTitel().trim() + "_tif");
+                    mdForPath.setValue("file://" + inProzess.getImagesTifDirectory(false));
                 }
                 physicaldocstruct.addMetadata(mdForPath);
             } catch (MetadataTypeNotAllowedException e1) {
@@ -153,37 +156,82 @@ public class MetadatenImagesHelper {
          * add new page/images if necessary
          * --------------------------------*/
 
+        if (oldPages.size() == this.myLastImage) {
+            return;
+        }
+        
         String defaultPagination = ConfigMain.getParameter("MetsEditorDefaultPagination", "uncounted");
+        Map<String, DocStruct> assignedImages = new HashMap<String, DocStruct>();
+        List<DocStruct> pageElementsWithoutImages = new ArrayList<DocStruct>();
+        List<String> imagesWithoutPageElements = new ArrayList<String>();
+        for (DocStruct page : physicaldocstruct.getAllChildren()) {
+            if (page.getImageName() != null) {
+                File imageFile = null;
+                if (directory == null) {
+                    imageFile = new File(inProzess.getImagesTifDirectory(true), page.getImageName());
+                } else {
+                    imageFile = new File(inProzess.getImagesDirectory() + directory, page.getImageName());
+                }
+                if (imageFile.exists()) {
+                    assignedImages.put(page.getImageName(), page);
+                } else {
+                    try {
+                        page.removeContentFile(page.getAllContentFiles().get(0));
+                        pageElementsWithoutImages.add(page);
+                    } catch (ContentFileNotLinkedException e) {
+                        logger.error(e);
+                    }
+                }
+            } else {
+                pageElementsWithoutImages.add(page);
+            }
+        }
+        try {
+            List<String> imageNamesInMediaFolder = getDataFiles(inProzess);
+            for (String imageName : imageNamesInMediaFolder) {
+                if (!assignedImages.containsKey(imageName)) {
+                    imagesWithoutPageElements.add(imageName);
+                }
+            }
+        } catch (InvalidImagesException e1) {
+            logger.error(e1);
+        }
 
-        if (oldPages.size() < this.myLastImage) {
-            for (int i = oldPages.size(); i < this.myLastImage; i++) {
+        // handle possible cases
+
+        // case 1: existing pages but no images (some images are removed)
+        if (!pageElementsWithoutImages.isEmpty() && imagesWithoutPageElements.isEmpty()) {
+            for (DocStruct pageToRemove : pageElementsWithoutImages) {
+                physicaldocstruct.removeChild(pageToRemove);
+                List<Reference> refs = new ArrayList<Reference>(pageToRemove.getAllFromReferences());
+                for (ugh.dl.Reference ref : refs) {
+                    ref.getSource().removeReferenceTo(pageToRemove);
+                }
+            }
+        }
+
+        // case 2: no page docs but images (some images are added)
+        else if (pageElementsWithoutImages.isEmpty() && !imagesWithoutPageElements.isEmpty()) {
+            int currentPhysicalOrder = assignedImages.size();
+            for (String newImage : imagesWithoutPageElements) {
                 DocStruct dsPage = this.mydocument.createDocStruct(newPage);
                 try {
-
-                    /*
-                     * -------------------------------- die physischen Seiten
-                     * anlegen, sind nicht änderbar für den Benutzer
-                     * --------------------------------
-                     */
+                    // physical page no
                     physicaldocstruct.addChild(dsPage);
                     MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
                     Metadata mdTemp = new Metadata(mdt);
-                    mdTemp.setValue(String.valueOf(i + 1));
+                    mdTemp.setValue(String.valueOf(++currentPhysicalOrder));
                     dsPage.addMetadata(mdTemp);
 
-                    /*
-                     * -------------------------------- die logischen
-                     * Seitennummern anlegen, die der Benutzer auch ändern kann
-                     * --------------------------------
-                     */
+                    // logical page no
                     mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
                     mdTemp = new Metadata(mdt);
 
                     if (defaultPagination.equalsIgnoreCase("arabic")) {
-                        mdTemp.setValue(String.valueOf(i + 1));
+                        mdTemp.setValue(String.valueOf(currentPhysicalOrder));
                     } else if (defaultPagination.equalsIgnoreCase("roman")) {
                         RomanNumeral roman = new RomanNumeral();
-                        roman.setValue(i + 1);
+                        roman.setValue(currentPhysicalOrder);
                         mdTemp.setValue(roman.getNumber());
                     } else {
                         mdTemp.setValue("uncounted");
@@ -191,6 +239,15 @@ public class MetadatenImagesHelper {
 
                     dsPage.addMetadata(mdTemp);
                     log.addReferenceTo(dsPage, "logical_physical");
+
+                    // image name
+                    ContentFile cf = new ContentFile();
+                    if (SystemUtils.IS_OS_WINDOWS) {
+                        cf.setLocation("file:/" + inProzess.getImagesTifDirectory(false) + newImage);
+                    } else {
+                        cf.setLocation("file://" + inProzess.getImagesTifDirectory(false) + newImage);
+                    }
+                    dsPage.addContentFile(cf);
 
                 } catch (TypeNotAllowedAsChildException e) {
                     logger.error(e);
@@ -200,18 +257,22 @@ public class MetadatenImagesHelper {
             }
         }
 
-        else if (oldPages.size() > this.myLastImage) {
-            MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
-            for (DocStruct page : oldPages) {
-                List<? extends Metadata> mdts = page.getAllMetadataByType(mdt);
-                if (mdts.size() != 1) {
-                    throw new SwapException("found page DocStruct with more or less than 1 pysical pagination");
-                }
-                /*
-                 * delete page DocStruct, if physical pagenumber higher than
-                 * last imagenumber
-                 */
-                if (Integer.parseInt(mdts.get(0).getValue()) > this.myLastImage) {
+        // case 3: empty page docs and unassinged images
+        else {
+            for (DocStruct page : pageElementsWithoutImages) {
+                if (!imagesWithoutPageElements.isEmpty()) {
+                    // assign new image name to page
+                    String newImageName = imagesWithoutPageElements.get(0);
+                    imagesWithoutPageElements.remove(0);
+                    ContentFile cf = new ContentFile();
+                    if (SystemUtils.IS_OS_WINDOWS) {
+                        cf.setLocation("file:/" + inProzess.getImagesTifDirectory(false) + newImageName);
+                    } else {
+                        cf.setLocation("file://" + inProzess.getImagesTifDirectory(false) + newImageName);
+                    }
+                    page.addContentFile(cf);
+                } else {
+                    // remove page
                     physicaldocstruct.removeChild(page);
                     List<Reference> refs = new ArrayList<Reference>(page.getAllFromReferences());
                     for (ugh.dl.Reference ref : refs) {
@@ -219,11 +280,56 @@ public class MetadatenImagesHelper {
                     }
                 }
             }
+            if (!imagesWithoutPageElements.isEmpty()) {
+                // create new page elements
 
+                int currentPhysicalOrder = assignedImages.size();
+                for (String newImage : imagesWithoutPageElements) {
+                    DocStruct dsPage = this.mydocument.createDocStruct(newPage);
+                    try {
+                        // physical page no
+                        physicaldocstruct.addChild(dsPage);
+                        MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
+                        Metadata mdTemp = new Metadata(mdt);
+                        mdTemp.setValue(String.valueOf(++currentPhysicalOrder));
+                        dsPage.addMetadata(mdTemp);
+
+                        // logical page no
+                        mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
+                        mdTemp = new Metadata(mdt);
+
+                        if (defaultPagination.equalsIgnoreCase("arabic")) {
+                            mdTemp.setValue(String.valueOf(currentPhysicalOrder));
+                        } else if (defaultPagination.equalsIgnoreCase("roman")) {
+                            RomanNumeral roman = new RomanNumeral();
+                            roman.setValue(currentPhysicalOrder);
+                            mdTemp.setValue(roman.getNumber());
+                        } else {
+                            mdTemp.setValue("uncounted");
+                        }
+
+                        dsPage.addMetadata(mdTemp);
+                        log.addReferenceTo(dsPage, "logical_physical");
+
+                        // image name
+                        ContentFile cf = new ContentFile();
+                        if (SystemUtils.IS_OS_WINDOWS) {
+                            cf.setLocation("file:/" + inProzess.getImagesTifDirectory(false) + newImage);
+                        } else {
+                            cf.setLocation("file://" + inProzess.getImagesTifDirectory(false) + newImage);
+                        }
+                        dsPage.addContentFile(cf);
+
+                    } catch (TypeNotAllowedAsChildException e) {
+                        logger.error(e);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        logger.error(e);
+                    }
+                }
+
+            }
         }
     }
-
-    // TODO: Try to replace some functionality with ContentServer2 (via HTTP)
 
     /**
      * scale given image file to png using internal embedded content server
@@ -459,7 +565,7 @@ public class MetadatenImagesHelper {
         }
     }
 
-    public List<String> getImageFiles(DocStruct physical) throws InvalidImagesException {
+    public List<String> getImageFiles(DocStruct physical) {
         List<String> orderedFileList = new ArrayList<String>();
         List<DocStruct> pages = physical.getAllChildren();
         for (DocStruct page : pages) {
@@ -469,7 +575,7 @@ public class MetadatenImagesHelper {
             } else {
                 logger.error("cannot find imgage");
             }
-            
+
         }
         return orderedFileList;
     }
