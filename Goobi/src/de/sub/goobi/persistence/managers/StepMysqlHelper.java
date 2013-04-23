@@ -141,15 +141,15 @@ class StepMysqlHelper {
         s.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(rs.getInt("Bearbeitungsstatus")));
         Timestamp time = rs.getTimestamp("BearbeitungsZeitpunkt");
         if (time != null) {
-            s.setBearbeitungszeitpunkt(new Date(time.getTime()));
+            s.setBearbeitungszeitpunkt(new java.util.Date(time.getTime()));
         }
         Timestamp start = rs.getTimestamp("BearbeitungsBeginn");
         if (start != null) {
-            s.setBearbeitungsbeginn(new Date(start.getTime()));
+            s.setBearbeitungsbeginn(new java.util.Date(start.getTime()));
         }
-        Timestamp end = rs.getTimestamp("BearbeitungsBeginn");
+        Timestamp end = rs.getTimestamp("BearbeitungsEnde");
         if (end != null) {
-            s.setBearbeitungsende(new Date(end.getTime()));
+            s.setBearbeitungsende(new java.util.Date(end.getTime()));
         }
         s.setHomeverzeichnisNutzen(rs.getShort("homeverzeichnisNutzen"));
         s.setTypMetadaten(rs.getBoolean("typMetadaten"));

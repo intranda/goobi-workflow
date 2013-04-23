@@ -43,7 +43,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
 import de.sub.goobi.config.ConfigMain;
-import org.goobi.beans.Process;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
+
 import org.goobi.beans.Step;
 
 public class StatistikLaufzeitSchritte {
@@ -51,15 +53,27 @@ public class StatistikLaufzeitSchritte {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Dataset getDiagramm(List inProzesse) {
 		DefaultCategoryDataset categoryDataSet = new DefaultCategoryDataset();
-		for (Process proz : (List<Process>) inProzesse) {
-			for (Step step : proz.getSchritteList()) {
-				/* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
-				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
-					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
-					categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, proz.getTitel());
-				}
-			}
+		for (Integer processId : (List<Integer>)inProzesse) {
+		   List<Step> stepList = StepManager.getStepsForProcess(processId);
+		   String processTitle = ProcessManager.getProcessTitle(processId);
+		   for (Step step : stepList) {
+		       if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
+		           String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
+		           categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, processTitle);
+             }
+		   
+		   
+		   }
 		}
+//		for (Process proz : (List<Process>) inProzesse) {
+//			for (Step step : proz.getSchritteList()) {
+				/* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
+//				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
+//					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
+//					categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, proz.getTitel());
+//				}
+//			}
+//		}
 		return categoryDataSet;
 	}
 

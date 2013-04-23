@@ -153,11 +153,34 @@ class ProcessMysqlHelper {
             connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Process> ret = null;
-            if (filter != null && !filter.isEmpty()) {
                 ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
-            } else {
-                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
             }
+        }
+    }
+    
+    
+    public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT prozesse.ProzesseID FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" AND " + filter);
+        }
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
+        if (start != null && count != null) {
+            sql.append(" LIMIT " + start + ", " + count);
+        }
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            logger.debug(sql.toString());
+            List<Integer> ret = null;
+                ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -672,6 +695,19 @@ class ProcessMysqlHelper {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToLongHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static String getProcessTitle(int processId) throws SQLException {
+        String sql = "SELECT titel from prozesse WHERE ProzesseID = " + processId;
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

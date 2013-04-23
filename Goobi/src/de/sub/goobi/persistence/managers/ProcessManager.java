@@ -42,6 +42,16 @@ public class ProcessManager implements IManager, Serializable {
         }
         return answer;
     }
+    
+    public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) {
+        List<Integer> answer = new ArrayList<Integer>();
+        try {
+            answer = ProcessMysqlHelper.getProcessIdList(order, filter, start, count);
+        } catch (SQLException e) {
+            logger.error("error while getting process list", e);
+        }
+        return answer;
+    }
 
     public static List<Process> getProcesses(String order, String filter) {
         return getProcesses(order, filter, 0, Integer.MAX_VALUE);
@@ -236,4 +246,14 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
+    
+    public static String getProcessTitle(int processId) {
+        String answer = "";
+        try {
+            answer = ProcessMysqlHelper.getProcessTitle(processId);
+        } catch (SQLException e) {
+            logger.error("Cannot not load information about process with id " + processId, e);
+        }
+        return answer;
+    }
 }

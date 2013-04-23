@@ -115,8 +115,9 @@ public class StatisticsManager implements Serializable {
 
 			case SIMPLE_RUNTIME_STEPS:
 				try {
+				    // TODO auf IDs umstellen
 				    filter = FilterHelper.criteriaBuilder(filter, false, null,  null, true, false);
-				    List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE);
+				    List<Integer> processList = ProcessManager. getProcessIdList(null, filter, 0, Integer.MAX_VALUE);
 					jfreeImage = StatistikLaufzeitSchritte.createChart(processList);
 				} catch (IOException e) {
 					e.printStackTrace();

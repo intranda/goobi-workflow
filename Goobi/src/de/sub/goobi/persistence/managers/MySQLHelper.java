@@ -54,7 +54,6 @@ public class MySQLHelper {
     public Connection getConnection() throws SQLException {
 
         Connection connection = this.cm.getDataSource().getConnection();
-
         if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
             return connection;
         }
@@ -119,6 +118,23 @@ public class MySQLHelper {
             try {
                 while (rs.next()) {
                     answer.add(rs.getString(1));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
+
+    public static ResultSetHandler<String> resultSetToStringHandler = new ResultSetHandler<String>() {
+        @Override
+        public String handle(ResultSet rs) throws SQLException {
+            String answer = "";
+            try {
+                if (rs.next()) {
+                    answer = rs.getString(1);
                 }
             } finally {
                 if (rs != null) {
