@@ -960,28 +960,76 @@ public class GoobiScript {
 			try {
 				dms.startExport(prozess);
 			} catch (DocStructHasNoTypeException e) {
+			    List<String> parameterList = new ArrayList<String>();
+			    parameterList.add(prozess.getTitel());
+			    parameterList.add(e.getMessage());
+			    Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("DocStructHasNoTypeException", e);
 			} catch (PreferencesException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("PreferencesException", e);
 			} catch (WriteException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("WriteException", e);
 			} catch (MetadataTypeNotAllowedException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("MetadataTypeNotAllowedException", e);
 			} catch (ReadException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("ReadException", e);
 			} catch (TypeNotAllowedForParentException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("TypeNotAllowedForParentException", e);
 			} catch (IOException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("IOException", e);
 			} catch (InterruptedException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("InterruptedException", e);
 			} catch (ExportFileException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("ExportFileException", e);
 			} catch (UghHelperException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("UghHelperException", e);
 			} catch (SwapException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("SwapException", e);
 			} catch (DAOException e) {
+			    List<String> parameterList = new ArrayList<String>();
+                parameterList.add(prozess.getTitel());
+                parameterList.add(e.getMessage());
+                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameterList));
 				logger.error("DAOException", e);
 			}
 		}
