@@ -29,8 +29,10 @@ package de.sub.goobi.export.dms;
  */
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 
 import ugh.dl.DocStruct;
@@ -386,9 +388,9 @@ public class ExportDms extends ExportMets {
 		 * -------------------------------- jetzt die Ausgangsordner in die
 		 * Zielordner kopieren --------------------------------
 		 */
+		File zielTif = new File(benutzerHome + File.separator + atsPpnBand
+		        + ordnerEndung);
 		if (tifOrdner.exists() && tifOrdner.list().length > 0) {
-			File zielTif = new File(benutzerHome + File.separator + atsPpnBand
-					+ ordnerEndung);
 
 			/* bei Agora-Import einfach den Ordner anlegen */
 			if (myProzess.getProjekt().isUseDmsImport()) {
@@ -421,5 +423,24 @@ public class ExportDms extends ExportMets {
 			}
 		}
 
+        if (ConfigMain.getBooleanParameter("ExportFilesFromOptionalMetsFileGroups", false)) {
+
+            List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
+            if (myFilegroups != null && myFilegroups.size() > 0) {
+                for (ProjectFileGroup pfg : myFilegroups) {
+                    // check if source files exists
+                    if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
+                        File folder = new File(myProzess.getMethodFromName(pfg.getFolder()));
+                        if (folder != null && folder.exists() && folder.list().length > 0) {
+                            File[] files = folder.listFiles();
+                            for (int i = 0; i < files.length; i++) {
+                                File meinZiel = new File(zielTif + File.separator + files[i].getName());
+                                Helper.copyFile(files[i], meinZiel);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 	}
 }
