@@ -57,6 +57,7 @@ import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.helper.ConfigDispayRules;
 
+import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -645,7 +646,8 @@ public class Metadaten {
 		 */
 		this.gdzfile = this.myProzess.readMetadataFile();
 		this.mydocument = this.gdzfile.getDigitalDocument();
-		this.mydocument.addAllContentFiles();
+		// TODO
+//		this.mydocument.addAllContentFiles();
 		this.metahelper = new MetadatenHelper(this.myPrefs, this.mydocument);
 		this.imagehelper = new MetadatenImagesHelper(this.myPrefs, this.mydocument);
 
@@ -1603,10 +1605,10 @@ public class Metadaten {
 		myLogger.trace("ocr BildErmitteln");
 		this.ocrResult = "";
 
-		ArrayList<String> dataList = new ArrayList<String>();
+		List<String> dataList = new ArrayList<String>();
 		myLogger.trace("dataList");
 		try {
-			dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+		    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
 			myLogger.trace("dataList 2");
 		} catch (InvalidImagesException e) {
 			myLogger.trace("dataList error");
@@ -1640,21 +1642,22 @@ public class Metadaten {
 					if (pos > dataList.size() - 1) {
 						pos = dataList.size() - 1;
 					}
-					if (this.currentTifFolder != null) {
-						myLogger.trace("currentTifFolder: " + this.currentTifFolder);
-						try {
-							dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
-
-						} catch (InvalidImagesException e1) {
-							myLogger.trace("dataList error");
-							myLogger.error("Images could not be read", e1);
-							Helper.setFehlerMeldung("images could not be read", e1);
-						}
-					}
-					if (dataList == null) {
-						myLogger.trace("dataList: null");
-						return;
-					}
+//					if (this.currentTifFolder != null) {
+//						myLogger.trace("currentTifFolder: " + this.currentTifFolder);
+//						try {
+//						    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+////							dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+//
+//						} catch (InvalidImagesException e1) {
+//							myLogger.trace("dataList error");
+//							myLogger.error("Images could not be read", e1);
+//							Helper.setFehlerMeldung("images could not be read", e1);
+//						}
+//					}
+//					if (dataList == null) {
+//						myLogger.trace("dataList: null");
+//						return;
+//					}
 					/* das aktuelle tif erfassen */
 					if (dataList.size() > pos) {
 						this.myBild = dataList.get(pos);
