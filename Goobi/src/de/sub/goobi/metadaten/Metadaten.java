@@ -57,7 +57,6 @@ import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.helper.ConfigDispayRules;
 
-import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -634,7 +633,6 @@ public class Metadaten {
 		this.modusHinzufuegen = false;
 		this.modusHinzufuegenPerson = false;
 		this.modusStrukturelementVerschieben = false;
-		// TODO: Make file pattern configurable
 		this.myBild = null;
 		this.myBildNummer = 1;
 		this.myImageRotation = 0;
@@ -646,8 +644,8 @@ public class Metadaten {
 		 */
 		this.gdzfile = this.myProzess.readMetadataFile();
 		this.mydocument = this.gdzfile.getDigitalDocument();
-		// TODO
-//		this.mydocument.addAllContentFiles();
+
+		this.mydocument.addAllContentFiles();
 		this.metahelper = new MetadatenHelper(this.myPrefs, this.mydocument);
 		this.imagehelper = new MetadatenImagesHelper(this.myPrefs, this.mydocument);
 
@@ -655,8 +653,7 @@ public class Metadaten {
 		 * -------------------------------- Das Hauptelement ermitteln --------------------------------
 		 */
 
-		// TODO: think something up, how to handle a not matching ruleset
-		// causing logicalDocstruct to be null
+	
 		this.logicalTopstruct = this.mydocument.getLogicalDocStruct();
 
 		// this exception needs some serious feedback because data is corrupted
@@ -1563,9 +1560,6 @@ public class Metadaten {
 		this.allTifFolders = new ArrayList<String>();
 		File dir = new File(this.myProzess.getImagesDirectory());
 
-		/* nur die _tif-Ordner anzeigen, die mit orig_ anfangen */
-		// TODO: Remove this, we have several implementions of this, use an
-		// existing one.
 		FilenameFilter filterVerz = new FilenameFilter() {
 			@Override
 			public boolean accept(File indir, String name) {
