@@ -58,7 +58,6 @@ import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.helper.ConfigDispayRules;
 
-import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -2786,12 +2785,59 @@ public class Metadaten {
         retrieveAllImages();
     }
 
-    public void reOrderPagination() {
+    public void reOrderPagination()  {
+        String imageDirectory = "";
+        try {
+            imageDirectory = myProzess.getImagesDirectory();
+        } catch (SwapException e) {
+            myLogger.error(e);
+        } catch (DAOException e) {
+            myLogger.error(e);
+        } catch (IOException e) {
+            myLogger.error(e);
+        } catch (InterruptedException e) {
+            myLogger.error(e);
+            
+        }
+        if (imageDirectory.equals("")) {
+            Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
+            return;
+        }
+        
+        List<String> oldfilenames = new ArrayList<String>();
+        for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
+            oldfilenames.add(page.getImageName());
+        }
 
+        
+        
+        System.gc();
+        for (String imagename : oldfilenames) {
+            for (String folder : allTifFolders) {
+                File filename = new File(imageDirectory + folder, imagename);
+                File newFileName = new File(imageDirectory + folder, imagename + "_bak");
+                filename.renameTo(newFileName);
+            }
+        }
+        int counter = 1;
+        for (String imagename : oldfilenames) {
+            String fileExtension = imagename.substring(imagename.lastIndexOf("."));
+            String newfilename = generateFileName(counter) + fileExtension.toLowerCase();
+            for (String folder : allTifFolders) {
+                File fileToSort = new File(imageDirectory + folder, imagename);
+                File tempFileName = new File(imageDirectory + folder, fileToSort.getName() + "_bak");
+                File sortedName = new File(imageDirectory + folder, newfilename);
+                tempFileName.renameTo(sortedName);
+            }
+
+            mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newfilename);
+
+            counter++;
+        }
+        retrieveAllImages();
     }
 
     private void removeImage(String imagename) {
-        // TODO remove image in all folders?
         try {
             for (String folder : allTifFolders) {
                 File image = new File(myProzess.getImagesDirectory() + folder, imagename);
@@ -2807,5 +2853,28 @@ public class Metadaten {
             myLogger.error(e);
         }
 
+    }
+
+    private static String generateFileName(int counter) {
+        String filename = "";
+        if (counter >= 10000000) {
+            filename = "" + counter;
+        } else if (counter >= 1000000) {
+            filename = "0" + counter;
+        } else if (counter >= 100000) {
+            filename = "00" + counter;
+        } else if (counter >= 10000) {
+            filename = "000" + counter;
+        } else if (counter >= 1000) {
+            filename = "0000" + counter;
+        } else if (counter >= 100) {
+            filename = "00000" + counter;
+        } else if (counter >= 10) {
+            filename = "000000" + counter;
+        } else {
+            filename = "0000000" + counter;
+        }
+
+        return filename;
     }
 }
