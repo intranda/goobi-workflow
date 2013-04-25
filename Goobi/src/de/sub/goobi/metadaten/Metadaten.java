@@ -86,6 +86,7 @@ import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.XmlArtikelZaehlen;
 import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.importer.ImportOpac;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -1628,18 +1629,18 @@ public class Metadaten {
                     if (pos > dataList.size() - 1) {
                         pos = dataList.size() - 1;
                     }
-                    //					if (this.currentTifFolder != null) {
-                    //						myLogger.trace("currentTifFolder: " + this.currentTifFolder);
-                    //						try {
-                    //						    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
-                    ////							dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
-                    //
-                    //						} catch (InvalidImagesException e1) {
-                    //							myLogger.trace("dataList error");
-                    //							myLogger.error("Images could not be read", e1);
-                    //							Helper.setFehlerMeldung("images could not be read", e1);
-                    //						}
-                    //					}
+                    if (this.currentTifFolder != null) {
+                        myLogger.trace("currentTifFolder: " + this.currentTifFolder);
+                        try {
+                            //						    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+                            dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+                            //
+                        } catch (InvalidImagesException e1) {
+                            myLogger.trace("dataList error");
+                            myLogger.error("Images could not be read", e1);
+                            Helper.setFehlerMeldung("images could not be read", e1);
+                        }
+                    }
                     //					if (dataList == null) {
                     //						myLogger.trace("dataList: null");
                     //						return;
@@ -2724,6 +2725,7 @@ public class Metadaten {
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
 
         retrieveAllImages();
+        BildErmitteln(0);
     }
 
     public void moveSeltectedPagesDown() {
@@ -2752,6 +2754,7 @@ public class Metadaten {
 
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
+        BildErmitteln(0);
     }
 
     public void deleteSeltectedPages() {
@@ -2767,7 +2770,9 @@ public class Metadaten {
         if (selectedPages.isEmpty()) {
             return;
         }
+
         for (Integer pageIndex : selectedPages) {
+
             DocStruct pageToRemove = allPages.get(pageIndex);
             String imagename = pageToRemove.getImageName();
 
@@ -2783,9 +2788,17 @@ public class Metadaten {
         alleSeitenAuswahl = null;
         myBildLetztes = mydocument.getPhysicalDocStruct().getAllChildren().size();
         retrieveAllImages();
+
+        // current image was deleted, load first image
+        if (selectedPages.contains(myBildNummer)) {
+
+            BildErsteSeiteAnzeigen();
+        } else {
+            BildErmitteln(0);
+        }
     }
 
-    public void reOrderPagination()  {
+    public void reOrderPagination() {
         String imageDirectory = "";
         try {
             imageDirectory = myProzess.getImagesDirectory();
@@ -2797,51 +2810,115 @@ public class Metadaten {
             myLogger.error(e);
         } catch (InterruptedException e) {
             myLogger.error(e);
-            
+
         }
         if (imageDirectory.equals("")) {
             Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
             return;
         }
-        
+
         List<String> oldfilenames = new ArrayList<String>();
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
 
-        
-        
-        System.gc();
         for (String imagename : oldfilenames) {
             for (String folder : allTifFolders) {
                 File filename = new File(imageDirectory + folder, imagename);
                 File newFileName = new File(imageDirectory + folder, imagename + "_bak");
                 filename.renameTo(newFileName);
             }
+
+            try {
+                File ocr = new File(myProzess.getOcrDirectory());
+                if (ocr.exists()) {
+                    File[] allOcrFolder = ocr.listFiles();
+                    for (File folder : allOcrFolder) {
+                        File filename = new File(folder, imagename);
+                        File newFileName = new File(folder, imagename + "_bak");
+                        filename.renameTo(newFileName);
+                    }
+                }
+            } catch (SwapException e) {
+                myLogger.error(e);
+            } catch (DAOException e) {
+                myLogger.error(e);
+            } catch (IOException e) {
+                myLogger.error(e);
+            } catch (InterruptedException e) {
+                myLogger.error(e);
+            }
+
         }
         int counter = 1;
         for (String imagename : oldfilenames) {
-            String fileExtension = imagename.substring(imagename.lastIndexOf("."));
-            String newfilename = generateFileName(counter) + fileExtension.toLowerCase();
+
+            String newfilenamePrefix = generateFileName(counter);
             for (String folder : allTifFolders) {
                 File fileToSort = new File(imageDirectory + folder, imagename);
+                String fileExtension = fileToSort.getName().substring(fileToSort.getName().lastIndexOf(".")).replace("_bak", "");
                 File tempFileName = new File(imageDirectory + folder, fileToSort.getName() + "_bak");
-                File sortedName = new File(imageDirectory + folder, newfilename);
+                File sortedName = new File(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
                 tempFileName.renameTo(sortedName);
+                mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getName());
             }
-
-            mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newfilename);
-
+            try {
+                File ocr = new File(myProzess.getOcrDirectory());
+                if (ocr.exists()) {
+                    File[] allOcrFolder = ocr.listFiles();
+                    for (File folder : allOcrFolder) {
+                        File fileToSort = new File(folder, imagename);
+                        String fileExtension = fileToSort.getName().substring(fileToSort.getName().lastIndexOf(".")).replace("_bak", "");
+                        File tempFileName = new File(folder, fileToSort.getName() + "_bak");
+                        File sortedName = new File(folder, newfilenamePrefix + fileExtension.toLowerCase());
+                        tempFileName.renameTo(sortedName);
+                    }
+                }
+            } catch (SwapException e) {
+                myLogger.error(e);
+            } catch (DAOException e) {
+                myLogger.error(e);
+            } catch (IOException e) {
+                myLogger.error(e);
+            } catch (InterruptedException e) {
+                myLogger.error(e);
+            }
             counter++;
         }
         retrieveAllImages();
+
+        BildErmitteln(0);
     }
 
-    private void removeImage(String imagename) {
+    private void removeImage(String fileToDelete) {
         try {
+            String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
-                File image = new File(myProzess.getImagesDirectory() + folder, imagename);
-                image.delete();
+                File[] filesInFolder = new File(myProzess.getImagesDirectory() + folder).listFiles();
+                for (File currentFile : filesInFolder) {
+                    String filename = currentFile.getName();
+                    String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
+                    if (filenamePrefix.equals(fileToDeletePrefix)) {
+                        currentFile.delete();
+                    }
+                }
+            }
+
+            File ocr = new File(myProzess.getOcrDirectory());
+            if (ocr.exists()) {
+                File[] folder = ocr.listFiles();
+                for (File dir : folder) {
+                    if (dir.isDirectory() && dir.list().length > 0) {
+                        File[] filesInFolder = dir.listFiles();
+                        for (File currentFile : filesInFolder) {
+                            String filename = currentFile.getName();
+                            String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
+                            if (filenamePrefix.equals(fileToDeletePrefix)) {
+                                currentFile.delete();
+                            }
+                        }
+                    }
+                }
             }
         } catch (SwapException e) {
             myLogger.error(e);
@@ -2874,7 +2951,6 @@ public class Metadaten {
         } else {
             filename = "0000000" + counter;
         }
-
         return filename;
     }
 }
