@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+		<h:form id="formularFile" enctype="multipart/form-data">
+			<table width="540">
+				<tr>
+					<td>
+						<h3 style="margin-top: 0px">
+							<h:outputText value="#{msgs.fileManipulation}" />
+						</h3>
+					</td>
+				</tr>
+			</table>
+
+			<h:panelGroup>
+				<h4 style="margin-top: 0px; margin-bottom: 1px">
+					<h:outputText value="#{msgs.fileUpload}" />
+				</h4>
+
+				<h:panelGroup>
+					<x:inputFileUpload id="fileupload" value="#{Metadaten.fileManipulation.uploadedFile}" storage="file" styleClass="fileUploadInput"
+						required="false" />
+					<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{Metadaten.fileManipulation.uploadFile}">
+					</h:commandButton>
+				</h:panelGroup>
+
+
+			</h:panelGroup>
+
+<br/>
+			<h:panelGroup>
+				<h4 style="margin-top: 0px; margin-bottom: 1px">
+					<h:outputText value="#{msgs.fileDownload}" />
+				</h4>
+
+
+			</h:panelGroup>
+
+
+
+<br/>
+
+			<h:panelGroup>
+				<h4 style="margin-top: 0px; margin-bottom: 1px">
+					<h:outputText value="#{msgs.serversideUpload}" />
+				</h4>
+
+
+			</h:panelGroup>
+
+
+<br/>
+			<h:panelGroup>
+				<h4 style="margin-top: 0px; margin-bottom: 1px">
+					<h:outputText value="#{msgs.serversideDownload}" />
+				</h4>
+
+
+			</h:panelGroup>
+
+		</h:form>
+
+
+	</composite:implementation>
+
+</ui:composition>
+
+

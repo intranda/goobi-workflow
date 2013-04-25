@@ -182,6 +182,10 @@ public class Metadaten {
     private HashMap<String, Boolean> treeProperties;
     private ReentrantLock xmlReadingLock = new ReentrantLock();
 
+    private FileManipulation fileManipulation;
+
+    
+    
     /**
      * Konstruktor ================================================================
      */
@@ -2952,5 +2956,17 @@ public class Metadaten {
             filename = "0000000" + counter;
         }
         return filename;
+    }
+    
+    
+    public FileManipulation getFileManipulation() {
+        if (fileManipulation==null) {
+            fileManipulation = new FileManipulation();
+        }
+        return fileManipulation;
+    }
+
+    public void setFileManipulation(FileManipulation fileManipulation) {
+        this.fileManipulation = fileManipulation;
     }
 }

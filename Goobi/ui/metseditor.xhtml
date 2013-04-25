@@ -45,6 +45,15 @@
 						<h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;"
 							rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
 
+						<h:outputText id="vdid15" value=" | " style="font-size: 11px;" />
+
+						<h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;"
+							rendered="#{Metadaten.modusAnsicht != 'File'}">
+							<f:param id="vdid17" name="Ansicht" value="File" />
+						</h:commandLink>
+
+						<h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File'}" />
+
 					</h:panelGroup></td>
 
 				<td align="right"><h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}"
@@ -73,6 +82,8 @@
 						<ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
 					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
 						<ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
+					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='File'}">
+						<ui:include src="includes/metseditor/metseditor_file.xhtml" />
 					</h:panelGroup></td>
 
 				<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
