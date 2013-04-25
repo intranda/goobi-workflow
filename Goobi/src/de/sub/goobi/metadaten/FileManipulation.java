@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
@@ -19,6 +17,14 @@ public class FileManipulation {
 
     private File importFile = null;
 
+    
+   // insert new file after this page
+    private String insertPage = "";
+
+    // mode of insert (uncounted or into pagination sequence)
+    private String insertMode = "";
+    
+    
     private UploadedFile uploadedFile = null;
 
     /**
@@ -85,4 +91,19 @@ public class FileManipulation {
         this.uploadedFile = uploadedFile;
     }
 
+    public String getInsertPage() {
+        return insertPage;
+    }
+
+    public void setInsertPage(String insertPage) {
+        this.insertPage = insertPage;
+    }
+
+    public String getInsertMode() {
+        return insertMode;
+    }
+
+    public void setInsertMode(String insertMode) {
+        this.insertMode = insertMode;
+    }
 }

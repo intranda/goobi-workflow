@@ -23,16 +23,36 @@
 				</h4>
 
 				<h:panelGroup>
+					<h:outputLabel value="#{msgs.filename}" for="fileupload" />
 					<x:inputFileUpload id="fileupload" value="#{Metadaten.fileManipulation.uploadedFile}" storage="file" styleClass="fileUploadInput"
 						required="false" />
-					<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{Metadaten.fileManipulation.uploadFile}">
-					</h:commandButton>
 				</h:panelGroup>
 
+				<br />
+
+				<h:panelGroup>
+					<h:outputLabel value="#{msgs.paginationSelection}" for="paginationSelection" />
+					<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}" id="paginationSelection">
+						<f:selectItems value="#{Metadaten.alleSeiten}" />
+						<f:selectItem itemLabel="#{msgs.lastPage}" itemValue="#{msgs.lastPage}" />
+					</h:selectOneMenu>
+				</h:panelGroup>
+
+				<br />
+
+				<h:panelGroup>
+					<h:selectOneRadio value="Metadaten.fileManipulation.insertMode}">
+						<f:selectItem itemValue="uncounted" itemLabel="#{msgs.insertAsUncounted}" />
+						<f:selectItem itemValue="insertIntoPagination" itemLabel="#{msgs.insertIntoPagination}" />
+					</h:selectOneRadio>
+				</h:panelGroup>
+
+					<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{Metadaten.fileManipulation.uploadFile}">
+					</h:commandButton>
 
 			</h:panelGroup>
 
-<br/>
+			<br />
 			<h:panelGroup>
 				<h4 style="margin-top: 0px; margin-bottom: 1px">
 					<h:outputText value="#{msgs.fileDownload}" />
@@ -43,7 +63,7 @@
 
 
 
-<br/>
+			<br />
 
 			<h:panelGroup>
 				<h4 style="margin-top: 0px; margin-bottom: 1px">
@@ -54,7 +74,7 @@
 			</h:panelGroup>
 
 
-<br/>
+			<br />
 			<h:panelGroup>
 				<h4 style="margin-top: 0px; margin-bottom: 1px">
 					<h:outputText value="#{msgs.serversideDownload}" />
