@@ -146,8 +146,8 @@ public class FileManipulation {
                         if (index > indexToImport) {
                             DocStruct currentPage = pageList.get(index);
                             // check if element is last element
-                            currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(indexToImport + 1));
-                            if (index == pageList.size()) {
+                            currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 1));
+                            if (index + 1 == pageList.size()) {
                                 currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
                             } else {
                                 DocStruct followingPage = pageList.get(index + 1);
