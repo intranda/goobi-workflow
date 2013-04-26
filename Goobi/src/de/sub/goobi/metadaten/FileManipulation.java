@@ -4,11 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -19,11 +24,10 @@ import ugh.dl.DocStructType;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
-import ugh.dl.RomanNumeral;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
+import de.schlichtherle.io.FileInputStream;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -38,6 +42,8 @@ public class FileManipulation {
 
     // insert new file after this page
     private String insertPage = "";
+
+    private String imageSelection = "";
 
     // mode of insert (uncounted or into pagination sequence)
     private String insertMode = "";
@@ -221,5 +227,84 @@ public class FileManipulation {
 
     public void setInsertMode(String insertMode) {
         this.insertMode = insertMode;
+    }
+
+    public String getImageSelection() {
+        return imageSelection;
+    }
+
+    public void setImageSelection(String imageSelection) {
+        this.imageSelection = imageSelection;
+    }
+
+    public void downloadFile() {
+        File downloadFile = null;
+
+        int imageOrder = Integer.parseInt(imageSelection);
+        DocStruct page = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren().get(imageOrder);
+        String imagename = page.getImageName();
+        String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+        try {
+            File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder()).listFiles();
+            for (File currentFile : filesInFolder) {
+                String currentFileName = currentFile.getName();
+                String currentFileNamePrefix = currentFileName.substring(0, currentFileName.lastIndexOf("."));
+                if (filenamePrefix.equals(currentFileNamePrefix)) {
+                    downloadFile = currentFile;
+                    break;
+                }
+            }
+        } catch (SwapException e1) {
+            logger.error(e1);
+        } catch (DAOException e1) {
+            logger.error(e1);
+        } catch (IOException e1) {
+            logger.error(e1);
+        } catch (InterruptedException e1) {
+            logger.error(e1);
+        }
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            String fileName = downloadFile.getName();
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+            InputStream in = null;
+            ServletOutputStream out = null;
+            try {
+                in = new FileInputStream(downloadFile);
+                out = response.getOutputStream();
+                byte[] buffer = new byte[4096];
+                int length;
+                while ((length = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, length);
+                }
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting run note", e);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                }
+            }
+
+            facesContext.responseComplete();
+        }
+
     }
 }

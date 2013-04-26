@@ -6,17 +6,17 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<h:form id="formularFile" enctype="multipart/form-data">
-			<table width="540">
-				<tr>
-					<td>
-						<h3 style="margin-top: 0px">
-							<h:outputText value="#{msgs.fileManipulation}" />
-						</h3>
-					</td>
-				</tr>
-			</table>
+		<table width="540">
+			<tr>
+				<td>
+					<h3 style="margin-top: 0px">
+						<h:outputText value="#{msgs.fileManipulation}" />
+					</h3>
+				</td>
+			</tr>
+		</table>
 
+		<h:form id="fileUpload" enctype="multipart/form-data">
 			<h:panelGroup>
 				<h4 style="margin-top: 0px; margin-bottom: 1px">
 					<h:outputText value="#{msgs.fileUpload}" />
@@ -47,43 +47,54 @@
 					</h:selectOneRadio>
 				</h:panelGroup>
 
-					<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{Metadaten.fileManipulation.uploadFile}">
-					</h:commandButton>
+				<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{Metadaten.fileManipulation.uploadFile}">
+				</h:commandButton>
 
 			</h:panelGroup>
+		</h:form>
+		<br />
 
-			<br />
+		<h:form id="fileDownload">
 			<h:panelGroup>
 				<h4 style="margin-top: 0px; margin-bottom: 1px">
 					<h:outputText value="#{msgs.fileDownload}" />
 				</h4>
 
+				<h:panelGroup>
+					<h:outputLabel value="#{msgs.imageSelection}" for="imageSelection" />
+					<h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection">
+						<f:selectItems value="#{Metadaten.alleSeiten}" />
+					</h:selectOneMenu>
+				</h:panelGroup>
+
+				<h:commandButton value="#{msgs.downloadFile}" action="#{Metadaten.fileManipulation.downloadFile}">
+				</h:commandButton>
 
 			</h:panelGroup>
-
-
-
-			<br />
-
-			<h:panelGroup>
-				<h4 style="margin-top: 0px; margin-bottom: 1px">
-					<h:outputText value="#{msgs.serversideUpload}" />
-				</h4>
-
-
-			</h:panelGroup>
-
-
-			<br />
-			<h:panelGroup>
-				<h4 style="margin-top: 0px; margin-bottom: 1px">
-					<h:outputText value="#{msgs.serversideDownload}" />
-				</h4>
-
-
-			</h:panelGroup>
-
 		</h:form>
+
+
+		<br />
+
+		<h:panelGroup>
+			<h4 style="margin-top: 0px; margin-bottom: 1px">
+				<h:outputText value="#{msgs.serversideUpload}" />
+			</h4>
+
+
+		</h:panelGroup>
+
+
+		<br />
+		<h:panelGroup>
+			<h4 style="margin-top: 0px; margin-bottom: 1px">
+				<h:outputText value="#{msgs.serversideDownload}" />
+			</h4>
+
+
+		</h:panelGroup>
+
+
 
 
 	</composite:implementation>
