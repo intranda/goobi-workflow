@@ -2961,12 +2961,20 @@ public class Metadaten {
     
     public FileManipulation getFileManipulation() {
         if (fileManipulation==null) {
-            fileManipulation = new FileManipulation();
+            fileManipulation = new FileManipulation(this);
         }
         return fileManipulation;
     }
 
     public void setFileManipulation(FileManipulation fileManipulation) {
         this.fileManipulation = fileManipulation;
+    }
+    
+    public DigitalDocument getDocument() {
+        return mydocument;
+    }
+    
+    public void setDocument(DigitalDocument document) {
+        this.mydocument = document;
     }
 }
