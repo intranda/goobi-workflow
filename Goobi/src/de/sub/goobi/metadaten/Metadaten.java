@@ -1269,10 +1269,9 @@ public class Metadaten {
                 List<? extends Metadata> mySeitenDocStructMetadaten = mySeitenDocStruct.getAllMetadataByType(mdt);
                 for (Metadata meineSeite : mySeitenDocStructMetadaten) {
                     this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess);
-                    // TODO remove image name
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
-                                    + meineSeite.getValue() + ": " + meineSeite.getDocStruct().getImageName());
+                                    + meineSeite.getValue());
                 }
                 zaehler++;
             }
