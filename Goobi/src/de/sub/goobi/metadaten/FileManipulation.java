@@ -3,10 +3,12 @@ package de.sub.goobi.metadaten;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -30,6 +32,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 import de.schlichtherle.io.FileInputStream;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -57,6 +60,8 @@ public class FileManipulation {
     private boolean deleteFilesAfterMove = false;
 
     private boolean moveFilesInAllFolder = false;
+
+    private List<String> allImportFolder = new ArrayList<String>();
 
     /**
      * File upload with binary copying.
@@ -324,7 +329,7 @@ public class FileManipulation {
      * move files on server
      */
 
-    public void moveFilesOnServer() {
+    public void exportFiles() {
         if (selectedFiles == null || selectedFiles.isEmpty()) {
             Helper.setFehlerMeldung("noFileSelected");
             return;
@@ -340,8 +345,12 @@ public class FileManipulation {
 
             }
         }
-
-        File destination = new File(ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/") + metadataBean.getMyProzess().getTitel());
+        String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
+        File fileuploadFolder = new File(tempDirectory + "fileupload");
+        if (!fileuploadFolder.exists()) {
+            fileuploadFolder.mkdir();
+        }
+        File destination = new File(fileuploadFolder.getAbsolutePath() + File.separator + metadataBean.getMyProzess().getTitel());
         if (!destination.exists()) {
             destination.mkdir();
         }
@@ -377,7 +386,7 @@ public class FileManipulation {
                     try {
                         File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + folder).listFiles();
                         for (File currentFile : filesInFolder) {
-                            
+
                             String filenameInFolder = currentFile.getName();
                             String filenamePrefix = filenameInFolder.replace(Metadaten.getFileExtension(filenameInFolder), "");
                             if (filenamePrefix.equals(prefix)) {
@@ -433,6 +442,57 @@ public class FileManipulation {
 
     public void setMoveFilesInAllFolder(boolean moveFilesInAllFolder) {
         this.moveFilesInAllFolder = moveFilesInAllFolder;
+    }
+
+    /**
+     * import files from folder
+     * 
+     */
+
+    public List<String> getAllImportFolder() {
+
+        String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
+        File fileuploadFolder = new File(tempDirectory + "fileupload");
+
+        allImportFolder = new ArrayList<String>();
+        if (fileuploadFolder.exists() && fileuploadFolder.isDirectory()) {
+            allImportFolder.addAll(Arrays.asList(fileuploadFolder.list(directoryFilter)));
+        }
+        return allImportFolder;
+    }
+
+    public void setAllImportFolder(List<String> allImportFolder) {
+        this.allImportFolder = allImportFolder;
+    }
+
+    private static FilenameFilter directoryFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(final File dir, final String name) {
+            File toTest = new File(dir, name);
+            return toTest.exists() && toTest.isDirectory();
+        }
+    };
+
+    public void importFiles() {
+
+        if (allImportFolder == null || allImportFolder.isEmpty()) {
+            Helper.setFehlerMeldung("noFileSelected");
+            return;
+        }
+        String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
+
+        for (String importName : allImportFolder) {
+            File importfolder = new File(tempDirectory + "fileupload" + File.separator + importName);
+            File[] subfolderList = importfolder.listFiles();
+            for (File subfolder : subfolderList) {
+                
+                // check if current process has a folder with the same prefix/suffix as the current subfolder
+                
+
+            }
+            
+        }
+
     }
 
 }

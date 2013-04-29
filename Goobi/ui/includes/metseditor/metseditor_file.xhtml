@@ -94,22 +94,53 @@
 
 				<h:outputLabel for="moveFilesInAllFolder" value="#{msgs.moveFilesInAllFolder}" />
 				<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" />
-
-					<h:commandButton value="#{msgs.moveFiles}" action="#{Metadaten.fileManipulation.moveFilesOnServer}">
+	
+				<h:commandButton value="#{msgs.exportFiles}" action="#{Metadaten.fileManipulation.exportFiles}">
 				</h:commandButton>
 
 			</h:panelGroup>
 		</h:form>
 
 		<br />
-		<h:panelGroup>
-			<h4 style="margin-top: 0px; margin-bottom: 1px">
-				<h:outputText value="#{msgs.serversideDownload}" />
-			</h4>
+
+		<h:form>
+			<h:panelGroup>
+				<h4 style="margin-top: 0px; margin-bottom: 1px">
+					<h:outputText value="#{msgs.serversideDownload}" />
+				</h4>
+
+				<h:outputLabel for="folderToImport" value="#{msgs.dateien}:" />
+
+				<h:selectManyListbox value="#{Metadaten.fileManipulation.selectedFiles}" id="folderToImport" >
+					<f:selectItems itemLabel="#{folder}" itemValue="#{folder}" var="folder" value="#{Metadaten.fileManipulation.allImportFolder}" />
+				</h:selectManyListbox>
+
+				<br />
+
+				<h:panelGroup>
+					<h:outputLabel value="#{msgs.paginationSelection}" for="paginationSelection2" />
+					<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}" id="paginationSelection2">
+						<f:selectItems value="#{Metadaten.alleSeiten}" />
+						<f:selectItem itemLabel="#{msgs.lastPage}" itemValue="#{msgs.lastPage}" />
+					</h:selectOneMenu>
+				</h:panelGroup>
+
+				<br />
+
+				<h:panelGroup>
+					<h:selectOneRadio value="Metadaten.fileManipulation.insertMode}">
+						<f:selectItem itemValue="uncounted" itemLabel="#{msgs.insertAsUncounted}" />
+						<f:selectItem itemValue="insertIntoPagination" itemLabel="#{msgs.insertIntoPagination}" />
+					</h:selectOneRadio>
+				</h:panelGroup>
+
+				<h:commandButton value="#{msgs.importFiles}" action="#{Metadaten.fileManipulation.importFiles}">
+				</h:commandButton>
 
 
-		</h:panelGroup>
 
+			</h:panelGroup>
+		</h:form>
 
 
 
