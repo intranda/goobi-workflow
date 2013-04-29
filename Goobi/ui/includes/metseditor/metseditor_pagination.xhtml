@@ -19,26 +19,15 @@
 				<h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
 					<table cellpadding="3" cellspacing="0" width="200px" class="eingabeBoxen" style="margin-top: 20px">
 						<tr>
-							<td class="eingabeBoxen_row1">
-								<h:outputText value="#{msgs.auswahlDerSeiten}" />
-							</td>
+							<td class="eingabeBoxen_row1"><h:outputText value="#{msgs.auswahlDerSeiten}" /></td>
 						</tr>
 						<tr>
-							<td id="PaginierungAlleImages" class="eingabeBoxen_row2">
-								<h:selectManyCheckbox layout="pageDirection" id="myCheckboxes" value="#{Metadaten.alleSeitenAuswahl}">
+							<td id="PaginierungAlleImages" class="eingabeBoxen_row2"><h:selectManyCheckbox layout="pageDirection" id="myCheckboxes"
+									value="#{Metadaten.alleSeitenAuswahl}">
 									<f:selectItems value="#{Metadaten.alleSeiten}" id="myCheckbox" />
-								</h:selectManyCheckbox>
-							</td>
+								</h:selectManyCheckbox></td>
 						</tr>
 					</table>
-					<!-- TODO remove this - it is for tests only -->
-					<h:commandButton value="up" title="up" action="#{Metadaten.moveSeltectedPagesUp}" > 
-						
-					</h:commandButton>
-					<h:commandButton value="down" title="down" action="#{Metadaten.moveSeltectedPagesDown}" />
-					<h:commandButton value="delete" title="delete" action="#{Metadaten.deleteSeltectedPages}" />
-					<h:commandButton value="re-order" title="re-order" action="#{Metadaten.reOrderPagination}" />
-					
 				</h:panelGroup>
 				<!-- ++++++++++++++++     // Auswahl der Seiten      ++++++++++++++++ -->
 
@@ -53,83 +42,93 @@
 					<h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
 						<table cellpadding="3" cellspacing="0" id="PaginierungActionBox" class="eingabeBoxen" style="position: fixed; top: 180px; left: 450px;">
 							<tr>
-								<td class="eingabeBoxen_row1">
-									<h:outputText value="#{msgs.paginierungFestlegen}" />
-								</td>
+								<td class="eingabeBoxen_row1"><h:outputText value="#{msgs.paginierungFestlegen}" /></td>
 							</tr>
 							<tr>
-						
-								<td class="eingabeBoxen_row2">
-									<h:selectOneMenu value="#{Metadaten.paginierungArt}"
-										style="width: 270px;margin-top:10px;margin-left:5px" onchange="paginierungWertAnzeigen(this);">
+
+								<td class="eingabeBoxen_row2"><h:selectOneMenu value="#{Metadaten.paginierungArt}" style="width: 270px;margin-top:10px;margin-left:5px"
+										onchange="paginierungWertAnzeigen(this);">
 										<f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
-<!-- 										<f:selectItem itemValue="4" itemLabel="#{msgs.arabischBracket}" /> -->
+										<!-- 										<f:selectItem itemValue="4" itemLabel="#{msgs.arabischBracket}" /> -->
 										<f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
-<!-- 										<f:selectItem itemValue="5" itemLabel="#{msgs.roemischBracket}" /> -->
+										<!-- 										<f:selectItem itemValue="5" itemLabel="#{msgs.roemischBracket}" /> -->
 										<f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
 										<f:selectItem itemValue="6" itemLabel="#{msgs.paginationFreetext}" />
-<!-- 										<f:ajax render="@all" event="change" /> -->
-									</h:selectOneMenu>
-									<br />
+										<!-- 										<f:ajax render="@all" event="change" /> -->
+									</h:selectOneMenu> <br /> <x:inputText id="paginierungWert" forceId="true" value="#{Metadaten.paginierungWert}"
+										style="width: 270px;margin-top:10px;margin-bottom:5px;margin-left:5px" /> <br />
 
-									<x:inputText  id="paginierungWert" forceId="true" value="#{Metadaten.paginierungWert}" style="width: 270px;margin-top:10px;margin-bottom:5px;margin-left:5px" />
-									<br />
-			
-									<div style="margin-top: 5px;margin-bottom:10px">
+									<div style="margin-top: 5px; margin-bottom: 10px">
 										<h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}" />
 										<h:outputLabel for="checkbox-fictitious" value="#{msgs.paginationFictitious}" />
-									</div>
-
-									<br />
-									
-									<h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=1}" title="#{msgs.seitenzaehlung}">
+									</div> <br /> <h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=1}" title="#{msgs.seitenzaehlung}">
 										<h:graphicImage value="images/buttons/paginierung_seite_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<x:updateActionListener value="1" property="#{Metadaten.paginierungSeitenProImage}" />
-									</h:commandLink>
-									<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==1}" value="images/buttons/paginierung_seite.png"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlung}" />
-									<h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=2}" title="#{msgs.spaltenzaehlung}">
+									</h:commandLink> <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==1}" value="images/buttons/paginierung_seite.png"
+										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlung}" /> <h:commandLink
+										rendered="#{Metadaten.paginierungSeitenProImage!=2}" title="#{msgs.spaltenzaehlung}">
 										<h:graphicImage value="images/buttons/paginierung_spalte_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<x:updateActionListener value="2" property="#{Metadaten.paginierungSeitenProImage}" />
-									</h:commandLink>
-									<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==2}" value="images/buttons/paginierung_spalte.png"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.spaltenzaehlung}" />
-									<h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=3}" title="#{msgs.blattzaehlung}">
+									</h:commandLink> <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==2}" value="images/buttons/paginierung_spalte.png"
+										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.spaltenzaehlung}" /> <h:commandLink
+										rendered="#{Metadaten.paginierungSeitenProImage!=3}" title="#{msgs.blattzaehlung}">
 										<h:graphicImage value="images/buttons/paginierung_blatt_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<x:updateActionListener value="3" property="#{Metadaten.paginierungSeitenProImage}" />
-									</h:commandLink>
-									<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==3}" value="images/buttons/paginierung_blatt.png"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlung}" />
-									<h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=4}" title="#{msgs.blattzaehlungrectoverso}">
+									</h:commandLink> <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==3}" value="images/buttons/paginierung_blatt.png"
+										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlung}" /> <h:commandLink
+										rendered="#{Metadaten.paginierungSeitenProImage!=4}" title="#{msgs.blattzaehlungrectoverso}">
 										<h:graphicImage value="images/buttons/paginierung_blatt_rectoverso_inactive.png"
 											style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<x:updateActionListener value="4" property="#{Metadaten.paginierungSeitenProImage}" />
-									</h:commandLink>
-									<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==4}" value="images/buttons/paginierung_blatt_rectoverso.png"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlungrectoverso}" />
-									<h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=5}" title="#{msgs.seitenzaehlungrectoverso}">
+									</h:commandLink> <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==4}" value="images/buttons/paginierung_blatt_rectoverso.png"
+										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlungrectoverso}" /> <h:commandLink
+										rendered="#{Metadaten.paginierungSeitenProImage!=5}" title="#{msgs.seitenzaehlungrectoverso}">
 										<h:graphicImage value="images/buttons/paginierung_seite_rectoverso_inactive.png"
 											style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<x:updateActionListener value="5" property="#{Metadaten.paginierungSeitenProImage}" />
-									</h:commandLink>
-									<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==5}" value="images/buttons/paginierung_seite_rectoverso.png"
-										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlungrectoverso}" />
-									<br /> <br />
-									<h:commandLink id="s4" action="#{Metadaten.Paginierung}" style="margin-top:15px">
+									</h:commandLink> <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==5}" value="images/buttons/paginierung_seite_rectoverso.png"
+										style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlungrectoverso}" /> <br /> <br /> <h:commandLink
+										id="s4" action="#{Metadaten.Paginierung}" style="margin-top:15px">
 										<h:outputText value="#{msgs.nurDieMarkiertenSeiten}" />
 										<x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
-									</h:commandLink>
-									<br style="margin-top: 15px" />
-									<h:commandLink id="s5" action="#{Metadaten.Paginierung}" style="margin-top:15px">
+									</h:commandLink> <br style="margin-top: 15px" /> <h:commandLink id="s5" action="#{Metadaten.Paginierung}" style="margin-top:15px">
 										<h:outputText value="#{msgs.abDerErstenMarkiertenSeite}" />
 										<x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
-									</h:commandLink>
-								</td>
+									</h:commandLink></td>
 							</tr>
-						</table>
-					</h:panelGroup>
+							<tr>
+								<td class="eingabeBoxen_row2"><h:commandLink  action="#{Metadaten.moveSeltectedPagesUp}">
+										<h:graphicImage value="images/buttons/up_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle"/>
+										<h:outputText value="#{msgs.moveSeltectedPagesUp}" />
+									</h:commandLink></td>
+							</tr>
+							<tr>
+								<td class="eingabeBoxen_row2"><h:commandLink 
+										action="#{Metadaten.moveSeltectedPagesDown}">
+										<h:graphicImage value="images/buttons/down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle"/>
+										<h:outputText value="#{msgs.moveSeltectedPagesDown}" />
+									</h:commandLink></td>
+							</tr>
+							<tr>
+								<td class="eingabeBoxen_row2"><h:commandLink action="#{Metadaten.deleteSeltectedPages}">
+										<h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle"/>
+										<h:outputText value="#{msgs.delete}" />
+									</h:commandLink></td>
+							</tr>
+							<tr>
+								<td class="eingabeBoxen_row2"><h:commandLink action="#{Metadaten.reOrderPagination}">
+										<h:graphicImage value="images/buttons/reload.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle"/>
+										<h:outputText value="#{msgs.reOrder}" />
+									</h:commandLink></td>
+							</tr>
 
+						</table>
+
+
+					</h:panelGroup>
 					<!-- ++++++++++++++++     // Paginierung festlegen      ++++++++++++++++ -->
+
+
 				</h:panelGrid>
 			</h:panelGrid>
 		</h:form>
