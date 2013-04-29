@@ -362,7 +362,7 @@ public class MassImportForm {
 				basename = basename.substring(basename.lastIndexOf("\\") + 1);
 			}
 
-			String filename = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/temp/") + basename;
+			String filename = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/") + basename;
 
 			inputStream = new ByteArrayInputStream(this.uploadedFile.getBytes());
 			outputStream = new FileOutputStream(filename);

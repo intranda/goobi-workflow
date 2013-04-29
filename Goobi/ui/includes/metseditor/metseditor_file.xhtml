@@ -75,15 +75,31 @@
 
 
 		<br />
+		<h:form>
+			<h:panelGroup>
+				<h4 style="margin-top: 0px; margin-bottom: 1px">
+					<h:outputText value="#{msgs.serversideUpload}" />
+				</h4>
+				<h:outputLabel value="#{msgs.imageSelection}" for="filenames" />
+				<h:selectManyListbox value="#{Metadaten.fileManipulation.selectedFiles}" id="filenames" style="height: 300px;">
+					<f:selectItems value="#{Metadaten.alleSeiten}" />
+				</h:selectManyListbox>
 
-		<h:panelGroup>
-			<h4 style="margin-top: 0px; margin-bottom: 1px">
-				<h:outputText value="#{msgs.serversideUpload}" />
-			</h4>
+				<br />
 
+				<h:outputLabel for="deleteAfter" value="#{msgs.deleteAfterMove}" />
+				<h:selectBooleanCheckbox id="deleteAfter" value="#{Metadaten.fileManipulation.deleteFilesAfterMove}" />
 
-		</h:panelGroup>
+				<br />
 
+				<h:outputLabel for="moveFilesInAllFolder" value="#{msgs.moveFilesInAllFolder}" />
+				<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" />
+
+					<h:commandButton value="#{msgs.moveFiles}" action="#{Metadaten.fileManipulation.moveFilesOnServer}">
+				</h:commandButton>
+
+			</h:panelGroup>
+		</h:form>
 
 		<br />
 		<h:panelGroup>

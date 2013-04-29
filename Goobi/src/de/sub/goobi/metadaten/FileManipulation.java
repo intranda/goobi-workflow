@@ -14,6 +14,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -28,6 +29,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
 import de.schlichtherle.io.FileInputStream;
+import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -49,6 +51,12 @@ public class FileManipulation {
     private String insertMode = "";
 
     private UploadedFile uploadedFile = null;
+
+    private List<String> selectedFiles = new ArrayList<String>();
+
+    private boolean deleteFilesAfterMove = false;
+
+    private boolean moveFilesInAllFolder = false;
 
     /**
      * File upload with binary copying.
@@ -229,6 +237,10 @@ public class FileManipulation {
         this.insertMode = insertMode;
     }
 
+    /**
+     * download file
+     */
+
     public String getImageSelection() {
         return imageSelection;
     }
@@ -307,4 +319,120 @@ public class FileManipulation {
         }
 
     }
+
+    /**
+     * move files on server
+     */
+
+    public void moveFilesOnServer() {
+        if (selectedFiles == null || selectedFiles.isEmpty()) {
+            Helper.setFehlerMeldung("noFileSelected");
+            return;
+        }
+        List<DocStruct> allPages = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren();
+        List<String> filenamesToMove = new ArrayList<String>();
+
+        for (String fileIndex : selectedFiles) {
+            try {
+                int index = Integer.parseInt(fileIndex);
+                filenamesToMove.add(allPages.get(index).getImageName());
+            } catch (NumberFormatException e) {
+
+            }
+        }
+
+        File destination = new File(ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/") + metadataBean.getMyProzess().getTitel());
+        if (!destination.exists()) {
+            destination.mkdir();
+        }
+
+        if (!moveFilesInAllFolder) {
+            for (String filename : filenamesToMove) {
+                try {
+                    File currentFile = new File(metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder(), filename);
+                    File tempFolder = new File(destination.getAbsolutePath() + File.separator + metadataBean.getCurrentTifFolder());
+                    if (!tempFolder.exists()) {
+                        tempFolder.mkdir();
+                    }
+                    if (deleteFilesAfterMove) {
+                        currentFile.renameTo(new File(tempFolder, filename));
+                    } else {
+                        FileUtils.copyFileToDirectory(currentFile, tempFolder);
+                    }
+                } catch (SwapException e) {
+                    logger.error(e);
+                } catch (DAOException e) {
+                    logger.error(e);
+                } catch (IOException e) {
+                    logger.error(e);
+                } catch (InterruptedException e) {
+                    logger.error(e);
+                }
+            }
+
+        } else {
+            for (String filename : filenamesToMove) {
+                String prefix = filename.replace(Metadaten.getFileExtension(filename), "");
+                for (String folder : metadataBean.getAllTifFolders()) {
+                    try {
+                        File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + folder).listFiles();
+                        for (File currentFile : filesInFolder) {
+                            
+                            String filenameInFolder = currentFile.getName();
+                            String filenamePrefix = filenameInFolder.replace(Metadaten.getFileExtension(filenameInFolder), "");
+                            if (filenamePrefix.equals(prefix)) {
+                                File tempFolder = new File(destination.getAbsolutePath() + File.separator + folder);
+                                if (!tempFolder.exists()) {
+                                    tempFolder.mkdir();
+                                }
+                                if (deleteFilesAfterMove) {
+                                    currentFile.renameTo(new File(tempFolder, currentFile.getName()));
+                                } else {
+                                    FileUtils.copyFileToDirectory(currentFile, tempFolder);
+                                }
+                                break;
+
+                            }
+
+                        }
+
+                    } catch (SwapException e) {
+                        logger.error(e);
+                    } catch (DAOException e) {
+                        logger.error(e);
+                    } catch (IOException e) {
+                        logger.error(e);
+                    } catch (InterruptedException e) {
+                        logger.error(e);
+                    }
+                }
+            }
+        }
+        metadataBean.retrieveAllImages();
+    }
+
+    public List<String> getSelectedFiles() {
+        return selectedFiles;
+    }
+
+    public void setSelectedFiles(List<String> selectedFiles) {
+        this.selectedFiles = selectedFiles;
+    }
+
+    public boolean isDeleteFilesAfterMove() {
+        return deleteFilesAfterMove;
+    }
+
+    public void setDeleteFilesAfterMove(boolean deleteFilesAfterMove) {
+        this.deleteFilesAfterMove = deleteFilesAfterMove;
+    }
+
+    public boolean isMoveFilesInAllFolder() {
+        return moveFilesInAllFolder;
+    }
+
+    public void setMoveFilesInAllFolder(boolean moveFilesInAllFolder) {
+        this.moveFilesInAllFolder = moveFilesInAllFolder;
+    }
+
 }

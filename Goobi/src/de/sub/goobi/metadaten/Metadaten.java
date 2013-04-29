@@ -184,8 +184,6 @@ public class Metadaten {
 
     private FileManipulation fileManipulation;
 
-    
-    
     /**
      * Konstruktor ================================================================
      */
@@ -1246,7 +1244,7 @@ public class Metadaten {
     /**
      * alle Seiten ermitteln ================================================================
      */
-    private void retrieveAllImages() {
+    public void retrieveAllImages() {
         DigitalDocument mydocument = null;
         try {
             mydocument = this.gdzfile.getDigitalDocument();
@@ -1548,7 +1546,7 @@ public class Metadaten {
         return ConfigMain.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
     }
 
-    public List<String> getAllTifFolders() throws IOException, InterruptedException {
+    public List<String> getAllTifFolders()  {
         return this.allTifFolders;
     }
 
@@ -1583,7 +1581,7 @@ public class Metadaten {
         }
     }
 
-    private void BildErmitteln(int welches) {
+    public void BildErmitteln(int welches) {
         /*
          * wenn die Bilder nicht angezeigt werden, brauchen wir auch das Bild nicht neu umrechnen
          */
@@ -2855,11 +2853,10 @@ public class Metadaten {
         }
         int counter = 1;
         for (String imagename : oldfilenames) {
-
             String newfilenamePrefix = generateFileName(counter);
             for (String folder : allTifFolders) {
                 File fileToSort = new File(imageDirectory + folder, imagename);
-                String fileExtension = fileToSort.getName().substring(fileToSort.getName().lastIndexOf(".")).replace("_bak", "");
+                String fileExtension = Metadaten.getFileExtension(fileToSort.getName().replace("_bak", ""));
                 File tempFileName = new File(imageDirectory + folder, fileToSort.getName() + "_bak");
                 File sortedName = new File(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
                 tempFileName.renameTo(sortedName);
@@ -2871,7 +2868,7 @@ public class Metadaten {
                     File[] allOcrFolder = ocr.listFiles();
                     for (File folder : allOcrFolder) {
                         File fileToSort = new File(folder, imagename);
-                        String fileExtension = fileToSort.getName().substring(fileToSort.getName().lastIndexOf(".")).replace("_bak", "");
+                        String fileExtension = Metadaten.getFileExtension(fileToSort.getName().replace("_bak", ""));
                         File tempFileName = new File(folder, fileToSort.getName() + "_bak");
                         File sortedName = new File(folder, newfilenamePrefix + fileExtension.toLowerCase());
                         tempFileName.renameTo(sortedName);
@@ -2895,12 +2892,13 @@ public class Metadaten {
 
     private void removeImage(String fileToDelete) {
         try {
+            // TODO check what happens with .tar.gz
             String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
                 File[] filesInFolder = new File(myProzess.getImagesDirectory() + folder).listFiles();
                 for (File currentFile : filesInFolder) {
                     String filename = currentFile.getName();
-                    String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
+                    String filenamePrefix = filename.replace(getFileExtension(filename), "");
                     if (filenamePrefix.equals(fileToDeletePrefix)) {
                         currentFile.delete();
                     }
@@ -2956,10 +2954,9 @@ public class Metadaten {
         }
         return filename;
     }
-    
-    
+
     public FileManipulation getFileManipulation() {
-        if (fileManipulation==null) {
+        if (fileManipulation == null) {
             fileManipulation = new FileManipulation(this);
         }
         return fileManipulation;
@@ -2968,12 +2965,22 @@ public class Metadaten {
     public void setFileManipulation(FileManipulation fileManipulation) {
         this.fileManipulation = fileManipulation;
     }
-    
+
     public DigitalDocument getDocument() {
         return mydocument;
     }
-    
+
     public void setDocument(DigitalDocument document) {
         this.mydocument = document;
+    }
+
+    public static String getFileExtension(String filename) {
+        if (filename == null) {
+            return "";
+        }
+        String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
+        int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
+        int dotIndex = afterLastSlash.indexOf('.', afterLastBackslash);
+        return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex + 1);
     }
 }
