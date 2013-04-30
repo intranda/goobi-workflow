@@ -522,17 +522,16 @@ public class FileManipulation {
                         } catch (InterruptedException e) {
                             logger.error(e);
                         }
-
                     } else {
                         if (subfolder.getName().contains("_")) {
-                            String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_"));
+                            String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_")+1);
                             String folderName = currentProcess.getMethodFromName(folderSuffix);
                             if (folderName != null) {
                                 try {
                                     File directory = new File(folderName);
                                     File[] objectInFolder = subfolder.listFiles();
                                     for (File object : objectInFolder) {
-                                        if (currentProcess.getImagesTifDirectory(false).equals(folderName)) {
+                                        if (currentProcess.getImagesTifDirectory(false).equals(folderName + File.separator)) {
                                             importedFilenames.add(object.getName());
                                         }
                                         FileUtils.copyFileToDirectory(object, directory);
@@ -553,17 +552,27 @@ public class FileManipulation {
                             }
                         }
                     }
+
                 } else {
                     if (subfolder.getName().contains("_")) {
-                        String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_"));
+                        String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_")+1);
                         String folderName = currentProcess.getMethodFromName(folderSuffix);
                         if (folderName != null) {
                             File directory = new File(folderName);
                             File[] objectInFolder = subfolder.listFiles();
                             for (File object : objectInFolder) {
                                 try {
+                                    if (currentProcess.getImagesTifDirectory(false).equals(folderName + File.separator)) {
+                                        importedFilenames.add(object.getName());
+                                    }
                                     FileUtils.copyFileToDirectory(object, directory);
                                 } catch (IOException e) {
+                                    logger.error(e);
+                                } catch (SwapException e) {
+                                    logger.error(e);
+                                } catch (DAOException e) {
+                                    logger.error(e);
+                                } catch (InterruptedException e) {
                                     logger.error(e);
                                 }
                             }
@@ -573,24 +582,28 @@ public class FileManipulation {
             }
         }
         // update pagination
-        int indexToImport = Integer.parseInt(insertPage);
-        for (String filename : importedFilenames) {
-            try {
-                updatePagination(filename);
-                insertPage = String.valueOf(++indexToImport);
-            } catch (TypeNotAllowedForParentException e) {
-                logger.error(e);
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (MetadataTypeNotAllowedException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
+        try {
+            if (insertPage.equals(Helper.getTranslation("lastPage"))) {
+                metadataBean.createPagination();
+            } else {
+                int indexToImport = Integer.parseInt(insertPage);
+                for (String filename : importedFilenames) {
+                    updatePagination(filename);
+                    insertPage = String.valueOf(++indexToImport);
+                }
             }
+        } catch (TypeNotAllowedForParentException e) {
+            logger.error(e);
+        } catch (SwapException e) {
+            logger.error(e);
+        } catch (DAOException e) {
+            logger.error(e);
+        } catch (MetadataTypeNotAllowedException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
         }
 
         // delete folder
@@ -604,5 +617,4 @@ public class FileManipulation {
             }
         }
     }
-
 }
