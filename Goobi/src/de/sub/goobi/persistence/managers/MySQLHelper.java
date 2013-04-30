@@ -47,8 +47,7 @@ public class MySQLHelper {
     private ConnectionManager cm = null;
 
     private MySQLHelper() {
-        SqlConfiguration config = SqlConfiguration.getInstance();
-        this.cm = new ConnectionManager(config);
+        this.cm = new ConnectionManager();
     }
 
     public Connection getConnection() throws SQLException {
@@ -70,8 +69,7 @@ public class MySQLHelper {
         }
 
         logger.warn("Connection failed: Trying to get a connection from a new ConnectionManager");
-        SqlConfiguration config = SqlConfiguration.getInstance();
-        this.cm = new ConnectionManager(config);
+        this.cm = new ConnectionManager();
         connection = this.cm.getDataSource().getConnection();
 
         if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
