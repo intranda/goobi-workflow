@@ -92,8 +92,8 @@
 
 				<br />
 
-				<h:outputLabel for="moveFilesInAllFolder" value="#{msgs.moveFilesInAllFolder}" />
-				<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" />
+<!-- 				<h:outputLabel for="moveFilesInAllFolder" value="#{msgs.moveFilesInAllFolder}" /> -->
+<!-- 				<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" /> -->
 	
 				<h:commandButton value="#{msgs.exportFiles}" action="#{Metadaten.fileManipulation.exportFiles}">
 				</h:commandButton>
@@ -109,7 +109,7 @@
 					<h:outputText value="#{msgs.serversideDownload}" />
 				</h4>
 
-				<h:outputLabel for="folderToImport" value="#{msgs.dateien}:" />
+				<h:outputLabel for="folderToImport" value="#{msgs.dateien}" />
 
 				<h:selectManyListbox value="#{Metadaten.fileManipulation.selectedFiles}" id="folderToImport" >
 					<f:selectItems itemLabel="#{folder}" itemValue="#{folder}" var="folder" value="#{Metadaten.fileManipulation.allImportFolder}" />

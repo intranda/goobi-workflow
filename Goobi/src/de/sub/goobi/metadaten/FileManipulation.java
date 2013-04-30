@@ -32,10 +32,10 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 import de.schlichtherle.io.FileInputStream;
 import de.sub.goobi.config.ConfigMain;
-import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import org.goobi.beans.Process;
 
 public class FileManipulation {
     private static final Logger logger = Logger.getLogger(FileManipulation.class);
@@ -59,7 +59,7 @@ public class FileManipulation {
 
     private boolean deleteFilesAfterMove = false;
 
-    private boolean moveFilesInAllFolder = false;
+    private boolean moveFilesInAllFolder = true;
 
     private List<String> allImportFolder = new ArrayList<String>();
 
@@ -107,78 +107,7 @@ public class FileManipulation {
             // if file was uploaded into media folder, update pagination sequence
             if (metadataBean.getMyProzess().getImagesTifDirectory(false).equals(
                     metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder() + File.separator)) {
-                if (insertPage.equals(Helper.getTranslation("lastPage"))) {
-                    metadataBean.createPagination();
-                } else {
-
-                    Prefs prefs = metadataBean.getMyProzess().getRegelsatz().getPreferences();
-                    DigitalDocument doc = metadataBean.getDocument();
-                    DocStruct physical = doc.getPhysicalDocStruct();
-
-                    List<DocStruct> pageList = physical.getAllChildren();
-
-                    int indexToImport = Integer.parseInt(insertPage);
-                    DocStructType newPageType = prefs.getDocStrctTypeByName("page");
-                    DocStruct newPage = doc.createDocStruct(newPageType);
-                    MetadataType physicalPageNoType = prefs.getMetadataTypeByName("physPageNumber");
-                    MetadataType logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
-                    for (int index = 0; index < pageList.size(); index++) {
-
-                        if (index == indexToImport) {
-                            DocStruct oldPage = pageList.get(index);
-
-                            // physical page no for new page
-
-                            Metadata mdTemp = new Metadata(physicalPageNoType);
-                            mdTemp.setValue(String.valueOf(indexToImport));
-                            newPage.addMetadata(mdTemp);
-
-                            // new physical page no for old page
-                            oldPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(indexToImport + 1));
-
-                            // logical page no
-                            logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
-                            mdTemp = new Metadata(logicalPageNoType);
-
-                            if (insertMode.equalsIgnoreCase("uncounted")) {
-                                mdTemp.setValue("uncounted");
-                            } else {
-                                // set new logical no. for new and old page 
-                                Metadata oldPageNo = oldPage.getAllMetadataByType(logicalPageNoType).get(0);
-                                mdTemp.setValue(oldPageNo.getValue());
-                                if (index < pageList.size()) {
-                                    Metadata pageNoOfFollowingElement = pageList.get(index + 1).getAllMetadataByType(logicalPageNoType).get(0);
-                                    oldPageNo.setValue(pageNoOfFollowingElement.getValue());
-                                } else {
-                                    oldPageNo.setValue("uncounted");
-                                }
-                            }
-
-                            newPage.addMetadata(mdTemp);
-                            doc.getLogicalDocStruct().addReferenceTo(newPage, "logical_physical");
-
-                            ContentFile cf = new ContentFile();
-                            cf.setLocation(filename);
-                            newPage.addContentFile(cf);
-
-                        }
-                        if (index > indexToImport) {
-                            DocStruct currentPage = pageList.get(index);
-                            // check if element is last element
-                            currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 1));
-                            if (index + 1 == pageList.size()) {
-                                currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
-                            } else {
-                                DocStruct followingPage = pageList.get(index + 1);
-                                currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(
-                                        followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
-                            }
-
-                        }
-                    }
-                    pageList.add(indexToImport, newPage);
-
-                }
+                updatePagination(filename);
 
             }
 
@@ -215,6 +144,82 @@ public class FileManipulation {
                     logger.error(e.getMessage(), e);
                 }
             }
+        }
+    }
+
+    private void updatePagination(String filename) throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException,
+            DAOException, MetadataTypeNotAllowedException {
+        if (insertPage.equals(Helper.getTranslation("lastPage"))) {
+            metadataBean.createPagination();
+        } else {
+
+            Prefs prefs = metadataBean.getMyProzess().getRegelsatz().getPreferences();
+            DigitalDocument doc = metadataBean.getDocument();
+            DocStruct physical = doc.getPhysicalDocStruct();
+
+            List<DocStruct> pageList = physical.getAllChildren();
+
+            int indexToImport = Integer.parseInt(insertPage);
+            DocStructType newPageType = prefs.getDocStrctTypeByName("page");
+            DocStruct newPage = doc.createDocStruct(newPageType);
+            MetadataType physicalPageNoType = prefs.getMetadataTypeByName("physPageNumber");
+            MetadataType logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
+            for (int index = 0; index < pageList.size(); index++) {
+
+                if (index == indexToImport) {
+                    DocStruct oldPage = pageList.get(index);
+
+                    // physical page no for new page
+
+                    Metadata mdTemp = new Metadata(physicalPageNoType);
+                    mdTemp.setValue(String.valueOf(indexToImport));
+                    newPage.addMetadata(mdTemp);
+
+                    // new physical page no for old page
+                    oldPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(indexToImport + 1));
+
+                    // logical page no
+                    logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
+                    mdTemp = new Metadata(logicalPageNoType);
+
+                    if (insertMode.equalsIgnoreCase("uncounted")) {
+                        mdTemp.setValue("uncounted");
+                    } else {
+                        // set new logical no. for new and old page 
+                        Metadata oldPageNo = oldPage.getAllMetadataByType(logicalPageNoType).get(0);
+                        mdTemp.setValue(oldPageNo.getValue());
+                        if (index < pageList.size()) {
+                            Metadata pageNoOfFollowingElement = pageList.get(index + 1).getAllMetadataByType(logicalPageNoType).get(0);
+                            oldPageNo.setValue(pageNoOfFollowingElement.getValue());
+                        } else {
+                            oldPageNo.setValue("uncounted");
+                        }
+                    }
+
+                    newPage.addMetadata(mdTemp);
+                    doc.getLogicalDocStruct().addReferenceTo(newPage, "logical_physical");
+
+                    ContentFile cf = new ContentFile();
+                    cf.setLocation(filename);
+                    newPage.addContentFile(cf);
+
+                }
+                if (index > indexToImport) {
+                    DocStruct currentPage = pageList.get(index);
+                    // check if element is last element
+                    currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 1));
+                    if (index + 1 == pageList.size()) {
+                        currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
+                    } else {
+                        DocStruct followingPage = pageList.get(index + 1);
+                        currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(
+                                followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
+                    }
+
+                }
+            }
+            pageList.add(indexToImport, newPage);
+
         }
     }
 
@@ -326,7 +331,7 @@ public class FileManipulation {
     }
 
     /**
-     * move files on server
+     * move files on server folder
      */
 
     public void exportFiles() {
@@ -355,19 +360,56 @@ public class FileManipulation {
             destination.mkdir();
         }
 
-        if (!moveFilesInAllFolder) {
-            for (String filename : filenamesToMove) {
+        //        if (!moveFilesInAllFolder) {
+        //            for (String filename : filenamesToMove) {
+        //                try {
+        //                    File currentFile = new File(metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder(), filename);
+        //                    File tempFolder = new File(destination.getAbsolutePath() + File.separator + metadataBean.getCurrentTifFolder());
+        //                    if (!tempFolder.exists()) {
+        //                        tempFolder.mkdir();
+        //                    }
+        //                    if (deleteFilesAfterMove) {
+        //                        currentFile.renameTo(new File(tempFolder, filename));
+        //                    } else {
+        //                        FileUtils.copyFileToDirectory(currentFile, tempFolder);
+        //                    }
+        //                } catch (SwapException e) {
+        //                    logger.error(e);
+        //                } catch (DAOException e) {
+        //                    logger.error(e);
+        //                } catch (IOException e) {
+        //                    logger.error(e);
+        //                } catch (InterruptedException e) {
+        //                    logger.error(e);
+        //                }
+        //            }
+        //
+        //        } else {
+        for (String filename : filenamesToMove) {
+            String prefix = filename.replace(Metadaten.getFileExtension(filename), "");
+            for (String folder : metadataBean.getAllTifFolders()) {
                 try {
-                    File currentFile = new File(metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder(), filename);
-                    File tempFolder = new File(destination.getAbsolutePath() + File.separator + metadataBean.getCurrentTifFolder());
-                    if (!tempFolder.exists()) {
-                        tempFolder.mkdir();
+                    File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + folder).listFiles();
+                    for (File currentFile : filesInFolder) {
+
+                        String filenameInFolder = currentFile.getName();
+                        String filenamePrefix = filenameInFolder.replace(Metadaten.getFileExtension(filenameInFolder), "");
+                        if (filenamePrefix.equals(prefix)) {
+                            File tempFolder = new File(destination.getAbsolutePath() + File.separator + folder);
+                            if (!tempFolder.exists()) {
+                                tempFolder.mkdir();
+                            }
+                            if (deleteFilesAfterMove) {
+                                currentFile.renameTo(new File(tempFolder, currentFile.getName()));
+                            } else {
+                                FileUtils.copyFileToDirectory(currentFile, tempFolder);
+                            }
+                            break;
+
+                        }
+
                     }
-                    if (deleteFilesAfterMove) {
-                        currentFile.renameTo(new File(tempFolder, filename));
-                    } else {
-                        FileUtils.copyFileToDirectory(currentFile, tempFolder);
-                    }
+
                 } catch (SwapException e) {
                     logger.error(e);
                 } catch (DAOException e) {
@@ -378,45 +420,8 @@ public class FileManipulation {
                     logger.error(e);
                 }
             }
-
-        } else {
-            for (String filename : filenamesToMove) {
-                String prefix = filename.replace(Metadaten.getFileExtension(filename), "");
-                for (String folder : metadataBean.getAllTifFolders()) {
-                    try {
-                        File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + folder).listFiles();
-                        for (File currentFile : filesInFolder) {
-
-                            String filenameInFolder = currentFile.getName();
-                            String filenamePrefix = filenameInFolder.replace(Metadaten.getFileExtension(filenameInFolder), "");
-                            if (filenamePrefix.equals(prefix)) {
-                                File tempFolder = new File(destination.getAbsolutePath() + File.separator + folder);
-                                if (!tempFolder.exists()) {
-                                    tempFolder.mkdir();
-                                }
-                                if (deleteFilesAfterMove) {
-                                    currentFile.renameTo(new File(tempFolder, currentFile.getName()));
-                                } else {
-                                    FileUtils.copyFileToDirectory(currentFile, tempFolder);
-                                }
-                                break;
-
-                            }
-
-                        }
-
-                    } catch (SwapException e) {
-                        logger.error(e);
-                    } catch (DAOException e) {
-                        logger.error(e);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    } catch (InterruptedException e) {
-                        logger.error(e);
-                    }
-                }
-            }
         }
+        //        }
         metadataBean.retrieveAllImages();
     }
 
@@ -481,18 +486,123 @@ public class FileManipulation {
         }
         String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
 
+        String masterPrefix = "";
+        boolean useMasterFolder = false;
+        if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
+            useMasterFolder = true;
+            masterPrefix = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
+        }
+        Process currentProcess = metadataBean.getMyProzess();
+        List<String> importedFilenames = new ArrayList<String>();
         for (String importName : allImportFolder) {
             File importfolder = new File(tempDirectory + "fileupload" + File.separator + importName);
             File[] subfolderList = importfolder.listFiles();
             for (File subfolder : subfolderList) {
-                
-                // check if current process has a folder with the same prefix/suffix as the current subfolder
-                
 
+                if (useMasterFolder) {
+                    // check if current import folder is master folder
+                    if (subfolder.getName().startsWith(masterPrefix)) {
+                        try {
+                            String masterFolderName = currentProcess.getImagesOrigDirectory(false);
+                            File masterDirectory = new File(masterFolderName);
+                            if (!masterDirectory.exists()) {
+                                masterDirectory.mkdir();
+                            }
+                            File[] objectInFolder = subfolder.listFiles();
+                            for (File object : objectInFolder) {
+                                FileUtils.copyFileToDirectory(object, masterDirectory);
+                            }
+                        } catch (SwapException e) {
+                            logger.error(e);
+                            Helper.setFehlerMeldung("", e);
+                        } catch (DAOException e) {
+                            logger.error(e);
+                        } catch (IOException e) {
+                            logger.error(e);
+                        } catch (InterruptedException e) {
+                            logger.error(e);
+                        }
+
+                    } else {
+                        if (subfolder.getName().contains("_")) {
+                            String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_"));
+                            String folderName = currentProcess.getMethodFromName(folderSuffix);
+                            if (folderName != null) {
+                                try {
+                                    File directory = new File(folderName);
+                                    File[] objectInFolder = subfolder.listFiles();
+                                    for (File object : objectInFolder) {
+                                        if (currentProcess.getImagesTifDirectory(false).equals(folderName)) {
+                                            importedFilenames.add(object.getName());
+                                        }
+                                        FileUtils.copyFileToDirectory(object, directory);
+                                    }
+
+                                }
+
+                                catch (IOException e) {
+                                    logger.error(e);
+                                } catch (SwapException e) {
+                                    logger.error(e);
+                                } catch (DAOException e) {
+                                    logger.error(e);
+                                } catch (InterruptedException e) {
+                                    logger.error(e);
+                                }
+
+                            }
+                        }
+                    }
+                } else {
+                    if (subfolder.getName().contains("_")) {
+                        String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_"));
+                        String folderName = currentProcess.getMethodFromName(folderSuffix);
+                        if (folderName != null) {
+                            File directory = new File(folderName);
+                            File[] objectInFolder = subfolder.listFiles();
+                            for (File object : objectInFolder) {
+                                try {
+                                    FileUtils.copyFileToDirectory(object, directory);
+                                } catch (IOException e) {
+                                    logger.error(e);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            
+        }
+        // update pagination
+        int indexToImport = Integer.parseInt(insertPage);
+        for (String filename : importedFilenames) {
+            try {
+                updatePagination(filename);
+                insertPage = String.valueOf(++indexToImport);
+            } catch (TypeNotAllowedForParentException e) {
+                logger.error(e);
+            } catch (SwapException e) {
+                logger.error(e);
+            } catch (DAOException e) {
+                logger.error(e);
+            } catch (MetadataTypeNotAllowedException e) {
+                logger.error(e);
+            } catch (IOException e) {
+                logger.error(e);
+            } catch (InterruptedException e) {
+                logger.error(e);
+            }
         }
 
+        // delete folder
+
+        for (String importName : allImportFolder) {
+            File importfolder = new File(tempDirectory + "fileupload" + File.separator + importName);
+            try {
+                FileUtils.deleteDirectory(importfolder);
+            } catch (IOException e) {
+                logger.error(e);
+            }
+        }
     }
 
 }
