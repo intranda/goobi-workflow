@@ -208,7 +208,7 @@ public class ProjectBean extends BasicBean {
 		displayMode="";
 		sortierung = "Titel";
 		ProjectManager m = new ProjectManager();
-		paginator = new DatabasePaginator(sortierung, filter, m, "ldap_all");
+		paginator = new DatabasePaginator(sortierung, filter, m, "project_all");
 		return "project_all";
 	}
 
