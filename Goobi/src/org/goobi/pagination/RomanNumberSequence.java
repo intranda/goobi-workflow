@@ -29,6 +29,7 @@ import ugh.dl.RomanNumeral;
 import java.util.ArrayList;
 
 public class RomanNumberSequence extends ArrayList<String> {
+	private static final long serialVersionUID = -4571690464555111060L;
 
 	public RomanNumberSequence(int start, int end) {
 

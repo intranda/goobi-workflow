@@ -55,10 +55,10 @@ public class DigitalCollections {
 		/* alle Projekte durchlaufen */
 		List<Element> projekte = root.getChildren();
 		for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-			Element projekt = (Element) iter.next();
+			Element projekt = iter.next();
 			List<Element> projektnamen = projekt.getChildren("name");
 			for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-				Element projektname = (Element) iterator.next();
+				Element projektname = iterator.next();
 
 				/*
 				 * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
@@ -66,7 +66,7 @@ public class DigitalCollections {
 				if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
 					List<Element> myCols = projekt.getChildren("DigitalCollection");
 					for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-						Element col = (Element) it2.next();
+						Element col = it2.next();
 						result.add(col.getText());
 					}
 				}
