@@ -83,7 +83,7 @@ public class ConnectionManager {
         logger.debug("Trying to connect to database...");
         try {
             Context ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup( "java:comp/env/jdbc/GOOBIDB" );
+            ds = (DataSource) ctx.lookup( "java:comp/env/goobi" );
 
             logger.debug("Connection attempt to database succeeded.");
         } catch (Exception e) {
