@@ -175,7 +175,7 @@ public class BatchBean extends BasicBean {
         try {
             number = new Integer(this.batchfilter);
         } catch (Exception e) {
-            logger.warn("NAN Exception: " + this.batchfilter);
+            logger.trace("NAN Exception: " + this.batchfilter);
         }
         if (number != null) {
             List<Integer> allBatches = ProcessManager.getBatchIds(getBatchMaxSize());
@@ -375,18 +375,11 @@ public class BatchBean extends BasicBean {
                     //						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
                     //						logger.error(e);
                     //					}
+                    ProcessManager.saveProcessInformation(p);
                 }
-                ProcessManager.updateBatchList(this.selectedProcesses);
-                //				try {
-                //					session.flush();
-                //					session.connection().commit();
-                //				} catch (HibernateException e) {
-                //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-                //					logger.error(e);
-                //				} catch (SQLException e) {
-                //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-                //					logger.error(e);
-                //				}
+                
+//                ProcessManager.updateBatchList(this.selectedProcesses);
+               
             } catch (Exception e) {
                 Helper.setFehlerMeldung("noBatchSelected");
             }
@@ -406,9 +399,10 @@ public class BatchBean extends BasicBean {
             //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
             //				logger.error(e);
             //			}
+            ProcessManager.saveProcessInformation(p);
         }
         //		try {
-        ProcessManager.updateBatchList(this.selectedProcesses);
+//        ProcessManager.updateBatchList(this.selectedProcesses);
         //			session.flush();
         //			session.connection().commit();
         //		} catch (DAOException e) {
@@ -439,9 +433,10 @@ public class BatchBean extends BasicBean {
                 //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
                 //					logger.error(e);
                 //				}
+//                ProcessManager.saveProcessInformation(p);
             }
             //			try {
-            ProcessManager.updateBatchList(this.selectedProcesses);
+//            ProcessManager.updateBatchList(this.selectedProcesses);
             //				session.flush();
             //				session.connection().commit();
             //			} catch (HibernateException e) {
