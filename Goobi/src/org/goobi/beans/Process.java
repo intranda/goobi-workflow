@@ -405,7 +405,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
             }
             String rueckgabe = getImagesDirectory() + origOrdner + File.separator;
-            if (ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false)) {
+            if (ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false) && this.getSortHelperStatus() != "100000000") {
                 FilesystemHelper.createDirectory(rueckgabe);
             }
             return rueckgabe;
