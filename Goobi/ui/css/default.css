@@ -745,6 +745,7 @@ table.tableCalcStat .left{
     content: "•";
     padding: 0 4px;
     font-weight: normal;
+    color: white;
 }
 
 .languageSwitch span:first-child:before {

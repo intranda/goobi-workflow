@@ -27,6 +27,7 @@ package org.goobi.pagination;
 import java.util.ArrayList;
 
 public class IntegerSequence extends ArrayList<Integer> {
+	private static final long serialVersionUID = 8122111085741961640L;
 
 	public IntegerSequence() {
 	}
