@@ -401,7 +401,7 @@ public class Prozess implements Serializable {
 				origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
 			}
 			String rueckgabe = getImagesDirectory() + origOrdner + File.separator;
-			if (!new File(rueckgabe).exists() && ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false)) {
+			if (!new File(rueckgabe).exists() && ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false) && this.getSortHelperStatus() != "100000000") {
 				new Helper().createMetaDirectory(rueckgabe);
 			}
 			return rueckgabe;
