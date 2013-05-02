@@ -159,7 +159,7 @@ public class MetadatenImagesHelper {
         if (oldPages.size() == this.myLastImage) {
             return;
         }
-        
+
         String defaultPagination = ConfigMain.getParameter("MetsEditorDefaultPagination", "uncounted");
         Map<String, DocStruct> assignedImages = new HashMap<String, DocStruct>();
         List<DocStruct> pageElementsWithoutImages = new ArrayList<DocStruct>();
@@ -540,7 +540,7 @@ public class MetadatenImagesHelper {
      * @throws InvalidImagesException
      */
 
-    public ArrayList<String> getImageFiles(Process myProzess, String directory) throws InvalidImagesException {
+    public List<String> getImageFiles(Process myProzess, String directory) throws InvalidImagesException {
         File dir;
         try {
             dir = new File(myProzess.getImagesDirectory() + directory);
@@ -549,17 +549,38 @@ public class MetadatenImagesHelper {
         }
         /* Verzeichnis einlesen */
         String[] dateien = dir.list(Helper.imageNameFilter);
-        ArrayList<String> dataList = new ArrayList<String>();
+        List<String> dataList = new ArrayList<String>();
         if (dateien != null && dateien.length > 0) {
             for (int i = 0; i < dateien.length; i++) {
                 String s = dateien[i];
                 dataList.add(s);
             }
             /* alle Dateien durchlaufen */
-            if (dataList != null && dataList.size() != 0) {
-                Collections.sort(dataList, new GoobiImageFileComparator());
+        }
+        List<String> orderedFilenameList = new ArrayList<String>();
+        if (dataList != null && dataList.size() != 0) {
+            List<DocStruct> pagesList = mydocument.getPhysicalDocStruct().getAllChildren();
+            for (DocStruct page : pagesList) {
+                String filename = page.getImageName();
+                String filenamePrefix = filename.replace(Metadaten.getFileExtension(filename), "");
+                for (String currentImage : dataList) {
+                    String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
+                    if (currentImagePrefix.equals(filenamePrefix)) {
+                        orderedFilenameList.add(currentImage);
+                        break;
+                    }
+                }
+
+                //                    orderedFilenameList.add(page.getImageName());
             }
-            return dataList;
+
+            if (orderedFilenameList.size() == dataList.size()) {
+                return orderedFilenameList;
+
+            } else {
+                Collections.sort(dataList, new GoobiImageFileComparator());
+                return dataList;
+            }
         } else {
             return null;
         }
@@ -573,7 +594,7 @@ public class MetadatenImagesHelper {
             if (filename != null) {
                 orderedFileList.add(filename);
             } else {
-                logger.error("cannot find imgage");
+                logger.error("cannot find image");
             }
 
         }

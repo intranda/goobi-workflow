@@ -1269,7 +1269,7 @@ public class Metadaten {
                     this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess);
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
-                                    + meineSeite.getValue());
+                                    + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
                 }
                 zaehler++;
             }
