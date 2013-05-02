@@ -1,9 +1,12 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/ui/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
 
 	<ui:define name="title">
-		<title>Custom Exception Page</title>
-
+		#{msgs.failure}
 	</ui:define>
 
 
@@ -18,50 +21,55 @@
 			}
 		</script>
 
-		<h1 class="headLineError">#{msgs.failure}</h1>
-
 		<h:form styleClass="formError" id="errorForm">
-			<p>#{msgs.generalError}</p>
-			<br />
-			<h:outputText value="#{msgs.details}:" />
-			<div>
-				<p>
-					<h:outputText value="#{msgs.errorText} " />
-				</p>
-				<p>#{errorDetails}</p>
-				<br />
-
-				<h:outputText value="#{msgs.errorDescriptionText}" />
-				<h:button onclick="show_txt(); return false;" title="#{msgs.showErrorDetails}" value="#{msgs.showErrorDetails}" />
-
-
-				<h:panelGroup id="stacktrace" style="display:none;">
-
-					<h:outputText value="#{msgs.errorReportDescription}" />
-
-					<br />
-					<div style="border-style: inset; border-width: medium; border-color: #063555">
-						<h:outputText value="#{errorDetails}" />
-						<br />
-						<x:dataList value="#{stacktrace}" var="e" rowIndexVar="row">
-							<h:outputText value="#{e}" rendered="#{row == 0}" />
-							<h:outputText value="#{e}" style="position:relative; left: 50px;" rendered="#{row != 0 and row lt 15}" />
-
-							<h:panelGroup rendered="#{row lt 15}">
-								<br />
-							</h:panelGroup>
-						</x:dataList>
-					</div>
-
-				</h:panelGroup>
-
-
-			</div>
 			<p>
+				#{msgs.generalError}
 				<h:outputLink value="#{HelperForm.servletPathAsUrl}">
 					<h:outputText value="#{msgs.returnHome}" />
 				</h:outputLink>
 			</p>
+			<br />
+
+			<h4>
+				<h:outputText value="#{msgs.details}" />
+			</h4>
+
+			<h:outputText value="#{msgs.errorText} " />
+			<p style="padding: 10px; border: 1px dashed red;">#{errorDetails}</p>
+			<br />
+
+			<h4>
+				<h:outputText value="#{msgs.errorReport}" />
+			</h4>
+			<p>
+				<h:outputText value="#{msgs.errorReportDescription}" />
+			</p>
+			<br />
+			<h:button onclick="show_txt(); return false;"
+				title="#{msgs.showErrorDetails}" value="#{msgs.showErrorDetails}" />
+			<br />
+			<br />
+			<h:panelGroup id="stacktrace" style="display:none;">
+				<div style="padding: 10px; border: 1px dashed red;">
+					<h:outputText value="#{errorDetails}" />
+					<br />
+					<br />
+					<x:dataList value="#{stacktrace}" var="e" rowIndexVar="row">
+
+						<h:outputText value="#{e}" rendered="#{row == 0}" />
+
+						<h:outputText value="#{e}" style="position:relative; left: 50px;"
+							rendered="#{row != 0 and row lt 15}" />
+
+						<h:panelGroup rendered="#{row lt 15}">
+							<br />
+						</h:panelGroup>
+					</x:dataList>
+				</div>
+
+			</h:panelGroup>
+
+
 		</h:form>
 
 	</ui:define>
