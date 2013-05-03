@@ -63,6 +63,8 @@ public class FileManipulation {
 
     private List<String> allImportFolder = new ArrayList<String>();
 
+    private String currentFolder= ""; 
+    
     /**
      * File upload with binary copying.
      */
@@ -86,7 +88,7 @@ public class FileManipulation {
                 basename = basename.substring(basename.lastIndexOf("\\") + 1);
             }
 
-            String filename = metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder() + File.separator + basename;
+            String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator + basename;
 
             if (new File(filename).exists()) {
                 List<String> parameterList = new ArrayList<String>();
@@ -106,7 +108,7 @@ public class FileManipulation {
 
             // if file was uploaded into media folder, update pagination sequence
             if (metadataBean.getMyProzess().getImagesTifDirectory(false).equals(
-                    metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder() + File.separator)) {
+                    metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator)) {
                 updatePagination(filename);
 
             }
@@ -267,7 +269,7 @@ public class FileManipulation {
         String imagename = page.getImageName();
         String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
         try {
-            File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder()).listFiles();
+            File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + currentFolder).listFiles();
             for (File currentFile : filesInFolder) {
                 String currentFileName = currentFile.getName();
                 String currentFileNamePrefix = currentFileName.substring(0, currentFileName.lastIndexOf("."));
@@ -611,5 +613,13 @@ public class FileManipulation {
                 logger.error(e);
             }
         }
+    }
+
+    public String getCurrentFolder() {
+        return currentFolder;
+    }
+
+    public void setCurrentFolder(String currentFolder) {
+        this.currentFolder = currentFolder;
     }
 }

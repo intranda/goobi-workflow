@@ -47,6 +47,15 @@
 					</h:selectOneRadio>
 				</h:panelGroup>
 
+				<br />
+
+				<h:outputText value="#{msgs.aktuellerOrdner}: " />
+				<h:selectOneMenu value="#{Metadaten.fileManipulation.currentFolder}">
+					<f:selectItems value="#{Metadaten.allTifFolders}" var="folder" itemLabel="#{folder}" itemValue="#{folder}" />
+				</h:selectOneMenu>
+
+				<br />
+				
 				<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{Metadaten.fileManipulation.uploadFile}">
 				</h:commandButton>
 
@@ -59,6 +68,14 @@
 				<h4 style="margin-top: 0px; margin-bottom: 1px">
 					<h:outputText value="#{msgs.fileDownload}" />
 				</h4>
+
+
+				<h:outputText value="#{msgs.aktuellerOrdner}: " />
+				<h:selectOneMenu value="#{Metadaten.fileManipulation.currentFolder}">
+					<f:selectItems value="#{Metadaten.allTifFolders}" var="folder" itemLabel="#{folder}" itemValue="#{folder}" />
+				</h:selectOneMenu>
+
+				<br />
 
 				<h:panelGroup>
 					<h:outputLabel value="#{msgs.imageSelection}" for="imageSelection" />
@@ -92,9 +109,9 @@
 
 				<br />
 
-<!-- 				<h:outputLabel for="moveFilesInAllFolder" value="#{msgs.moveFilesInAllFolder}" /> -->
-<!-- 				<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" /> -->
-	
+				<!-- 				<h:outputLabel for="moveFilesInAllFolder" value="#{msgs.moveFilesInAllFolder}" /> -->
+				<!-- 				<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" /> -->
+
 				<h:commandButton value="#{msgs.exportFiles}" action="#{Metadaten.fileManipulation.exportFiles}">
 				</h:commandButton>
 
@@ -111,7 +128,7 @@
 
 				<h:outputLabel for="folderToImport" value="#{msgs.dateien}" />
 
-				<h:selectManyListbox value="#{Metadaten.fileManipulation.selectedFiles}" id="folderToImport" >
+				<h:selectManyListbox value="#{Metadaten.fileManipulation.selectedFiles}" id="folderToImport">
 					<f:selectItems itemLabel="#{folder}" itemValue="#{folder}" var="folder" value="#{Metadaten.fileManipulation.allImportFolder}" />
 				</h:selectManyListbox>
 
