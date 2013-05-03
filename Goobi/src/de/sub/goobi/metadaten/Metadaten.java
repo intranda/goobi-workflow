@@ -1269,7 +1269,9 @@ public class Metadaten {
                     this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess);
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
-                                    + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
+                                    + meineSeite.getValue());
+//                            new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
+//                                    + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
                 }
                 zaehler++;
             }
@@ -2790,6 +2792,22 @@ public class Metadaten {
         myBildLetztes = mydocument.getPhysicalDocStruct().getAllChildren().size();
         retrieveAllImages();
 
+        allPages = mydocument.getPhysicalDocStruct().getAllChildren();
+        
+        int currentPhysicalOrder = 1;
+        MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
+        for (DocStruct page : allPages) {
+            List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
+            if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
+                currentPhysicalOrder++;
+                break;
+            }
+            for (Metadata pageNo : pageNoMetadata) {
+                pageNo.setValue(String.valueOf(currentPhysicalOrder));
+            }
+            currentPhysicalOrder++;
+        }
+        
         // current image was deleted, load first image
         if (selectedPages.contains(myBildNummer)) {
 

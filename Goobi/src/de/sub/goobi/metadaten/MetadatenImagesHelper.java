@@ -329,6 +329,19 @@ public class MetadatenImagesHelper {
 
             }
         }
+        int currentPhysicalOrder = 1;
+        MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
+        for (DocStruct page : physicaldocstruct.getAllChildrenByTypeAndMetadataType("page", "*")) {
+            List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
+            if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
+                currentPhysicalOrder++;
+                break;
+            }
+            for (Metadata pageNo : pageNoMetadata) {
+                pageNo.setValue(String.valueOf(currentPhysicalOrder));
+            }
+            currentPhysicalOrder++;
+        }
     }
 
     /**

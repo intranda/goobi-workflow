@@ -360,33 +360,10 @@ public class FileManipulation {
             destination.mkdir();
         }
 
-        //        if (!moveFilesInAllFolder) {
-        //            for (String filename : filenamesToMove) {
-        //                try {
-        //                    File currentFile = new File(metadataBean.getMyProzess().getImagesDirectory() + metadataBean.getCurrentTifFolder(), filename);
-        //                    File tempFolder = new File(destination.getAbsolutePath() + File.separator + metadataBean.getCurrentTifFolder());
-        //                    if (!tempFolder.exists()) {
-        //                        tempFolder.mkdir();
-        //                    }
-        //                    if (deleteFilesAfterMove) {
-        //                        currentFile.renameTo(new File(tempFolder, filename));
-        //                    } else {
-        //                        FileUtils.copyFileToDirectory(currentFile, tempFolder);
-        //                    }
-        //                } catch (SwapException e) {
-        //                    logger.error(e);
-        //                } catch (DAOException e) {
-        //                    logger.error(e);
-        //                } catch (IOException e) {
-        //                    logger.error(e);
-        //                } catch (InterruptedException e) {
-        //                    logger.error(e);
-        //                }
-        //            }
-        //
-        //        } else {
+     
         for (String filename : filenamesToMove) {
             String prefix = filename.replace(Metadaten.getFileExtension(filename), "");
+            String processTitle = metadataBean.getMyProzess().getTitel();
             for (String folder : metadataBean.getAllTifFolders()) {
                 try {
                     File[] filesInFolder = new File(metadataBean.getMyProzess().getImagesDirectory() + folder).listFiles();
@@ -399,10 +376,13 @@ public class FileManipulation {
                             if (!tempFolder.exists()) {
                                 tempFolder.mkdir();
                             }
+                            
+                            File destinationFile = new File(tempFolder, processTitle + "_" + currentFile.getName());
+                            
                             if (deleteFilesAfterMove) {
-                                currentFile.renameTo(new File(tempFolder, currentFile.getName()));
+                                currentFile.renameTo(destinationFile);
                             } else {
-                                FileUtils.copyFileToDirectory(currentFile, tempFolder);
+                                FileUtils.copyFile(currentFile, destinationFile);
                             }
                             break;
 
@@ -421,7 +401,22 @@ public class FileManipulation {
                 }
             }
         }
-        //        }
+        if (deleteFilesAfterMove) {
+            int currentPhysicalOrder = 1;
+            MetadataType mdt = metadataBean.getMyProzess().getRegelsatz().getPreferences().getMetadataTypeByName("physPageNumber");
+            for (DocStruct page : allPages) {
+                List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
+                if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
+                    currentPhysicalOrder++;
+                    break;
+                }
+                for (Metadata pageNo : pageNoMetadata) {
+                    pageNo.setValue(String.valueOf(currentPhysicalOrder));
+                }
+                currentPhysicalOrder++;
+            }
+        }
+        
         metadataBean.retrieveAllImages();
     }
 
