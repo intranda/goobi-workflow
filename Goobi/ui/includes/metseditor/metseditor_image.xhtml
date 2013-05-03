@@ -265,15 +265,15 @@
 				</h:commandButton>
 
 				<h:outputText value="#{msgs.setRepresentative} "
-					rendered="#{Metadaten.alleSeiten != null}" />
+					rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}" />
 				<h:selectOneMenu style="width: 200px"
 					value="#{Metadaten.currentRepresentativePage}"
-					rendered="#{Metadaten.alleSeiten != null}">
+					rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}">
 					<f:selectItems value="#{Metadaten.alleSeiten}" />
 				</h:selectOneMenu>
 				<h:commandButton action="#{Metadaten.Reload}"
 					value="#{msgs.uebernehmen}"
-					rendered="#{Metadaten.alleSeiten != null}" />
+					rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}" />
 			</h:panelGrid>
 
 		</h:form>

@@ -759,6 +759,15 @@ public class Metadaten {
         }
     }
 
+    
+    public boolean isCheckForRepresentative() {
+        MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+        if (mdt != null) {
+            return true;
+        }
+        return false;
+    }
+    
     private boolean storeMetadata() {
         boolean result = true;
         try {
@@ -1637,6 +1646,9 @@ public class Metadaten {
                         try {
                             //						    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
                             dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+                            if (dataList == null) {
+                                return;
+                            }
                             //
                         } catch (InvalidImagesException e1) {
                             myLogger.trace("dataList error");
