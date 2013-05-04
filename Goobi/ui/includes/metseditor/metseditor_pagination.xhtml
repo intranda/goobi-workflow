@@ -49,10 +49,10 @@
 				<h:panelGrid id="mygrid11" columns="1" width="270px"
 					style="margin:0px;">
 					<!-- ++++++++++++++++     Paginierung festlegen      ++++++++++++++++ -->
-					<h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
+					<h:panelGroup rendered="#{Metadaten.alleSeiten !=null}" style="position: fixed; top: 180px; left: 450px;">
 						<table cellpadding="3" cellspacing="0" id="PaginierungActionBox"
 							class="eingabeBoxen"
-							style="position: fixed; top: 180px; left: 450px;width: 320px;">
+							style="width: 320px;">
 							<tr>
 								<td class="eingabeBoxen_row1"><h:outputText
 										value="#{msgs.paginierungFestlegen}" /></td>
@@ -161,10 +161,10 @@
 
 						<table cellpadding="3" cellspacing="0" id="PaginierungActionBox"
 							class="eingabeBoxen"
-							style="position: fixed; top: 420px; left: 450px; width: 320px;">
+							style="width: 320px;margin-top:10px;">
 							<tr>
 								<td class="eingabeBoxen_row1"><h:outputText
-										value="#{msgs.paginierungFestlegen}" /></td>
+										value="#{msgs.pageOrder}" /></td>
 							</tr>
 							<tr>
 								<td class="eingabeBoxen_row2"><h:commandLink
