@@ -1,5 +1,10 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:intranda="http://java.sun.com/jsf/composite/composites"
+	template="/ui/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
 
 	<ui:define name="breadcrumb">
 		<h:outputText value="#{msgs.startseite}" />
@@ -11,18 +16,26 @@
 
 	<ui:define name="content">
 
-		<h:panelGrid id="id511" columns="2" width="100%" cellpadding="15" cellspacing="0" align="center" border="0" rowClasses="rowTop">
+		<h:panelGrid id="id511" columns="2" width="100%" cellpadding="15"
+			cellspacing="0" align="center" border="0" rowClasses="rowTop">
 
 			<x:panelGroup>
-				<img src="images/template/goobiVersionLogoBig.jpg" style="display: block; margin-top: 20px; margin-left: auto; margin-right: auto" />
+				<img src="images/template/goobiVersionLogoBig.jpg"
+					style="display: block; margin-top: 20px; margin-left: auto; margin-right: auto" />
+
+				<intranda:test inhalt="hallo steffen"/>
+
+				<h:graphicImage name="help.png" />
 
 				<p style="text-align: justify;">
-					<h:outputText id="id9" style="text-align: justify;" value="#{HelperForm.applicationHomepageMsg}" escape="false"></h:outputText>
+					<h:outputText id="id9" style="text-align: justify;"
+						value="#{HelperForm.applicationHomepageMsg}" escape="false"></h:outputText>
 				</p>
 			</x:panelGroup>
 
 			<x:panelGroup style="width:200px; text-align:center">
-				<table cellpadding="3" cellspacing="0" width="100%" class="main_statistikboxen">
+				<table cellpadding="3" cellspacing="0" width="100%"
+					class="main_statistikboxen">
 					<tr>
 						<td class="main_statistikboxen_row1">
 							<h:outputText value="#{msgs.statistikDatenbank}" />
@@ -30,7 +43,8 @@
 					</tr>
 					<tr>
 						<td class="main_statistikboxen_row2">
-							<h:panelGrid width="100%" columns="2" columnClasses="columnLinks,columnRechts">
+							<h:panelGrid width="100%" columns="2"
+								columnClasses="columnLinks,columnRechts">
 								<h:outputText value="#{msgs.benutzer}:" />
 								<h:outputText value="#{StatistikForm.anzahlBenutzer}" />
 								<h:outputText value="#{msgs.benutzergruppen}:" />
