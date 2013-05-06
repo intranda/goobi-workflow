@@ -67,6 +67,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.dl.Reference;
+import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.IncompletePersonObjectException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -2792,17 +2793,24 @@ public class Metadaten {
             String imagename = pageToRemove.getImageName();
 
             removeImage(imagename);
+//            try {
+                mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
+//                pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
+//            } catch (ContentFileNotLinkedException e) {
+//                myLogger.error(e);
+//            }
 
             mydocument.getPhysicalDocStruct().removeChild(pageToRemove);
             List<Reference> refs = new ArrayList<Reference>(pageToRemove.getAllFromReferences());
             for (ugh.dl.Reference ref : refs) {
                 ref.getSource().removeReferenceTo(pageToRemove);
             }
+            
         }
 
         alleSeitenAuswahl = null;
         myBildLetztes = mydocument.getPhysicalDocStruct().getAllChildren().size();
-        retrieveAllImages();
+        
 
         allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         
@@ -2819,6 +2827,8 @@ public class Metadaten {
             }
             currentPhysicalOrder++;
         }
+        
+        retrieveAllImages();
         
         // current image was deleted, load first image
         if (selectedPages.contains(myBildNummer)) {

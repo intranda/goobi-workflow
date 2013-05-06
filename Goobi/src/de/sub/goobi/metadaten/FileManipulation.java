@@ -51,7 +51,7 @@ public class FileManipulation {
     private String imageSelection = "";
 
     // mode of insert (uncounted or into pagination sequence)
-    private String insertMode = "";
+    private String insertMode = "uncounted";
 
     private UploadedFile uploadedFile = null;
 
@@ -63,8 +63,8 @@ public class FileManipulation {
 
     private List<String> allImportFolder = new ArrayList<String>();
 
-    private String currentFolder= ""; 
-    
+    private String currentFolder = "";
+
     /**
      * File upload with binary copying.
      */
@@ -87,8 +87,10 @@ public class FileManipulation {
             if (basename.contains("\\")) {
                 basename = basename.substring(basename.lastIndexOf("\\") + 1);
             }
-
+            logger.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator + basename;
+
+            logger.trace("filename to import: " + filename);
 
             if (new File(filename).exists()) {
                 List<String> parameterList = new ArrayList<String>();
@@ -105,10 +107,11 @@ public class FileManipulation {
             while ((len = inputStream.read(buf)) > 0) {
                 outputStream.write(buf, 0, len);
             }
-
+            logger.trace(filename + " was imported");
             // if file was uploaded into media folder, update pagination sequence
             if (metadataBean.getMyProzess().getImagesTifDirectory(false).equals(
                     metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator)) {
+                logger.trace("update pagination for " + metadataBean.getMyProzess().getTitel());
                 updatePagination(filename);
 
             }
@@ -147,6 +150,8 @@ public class FileManipulation {
                 }
             }
         }
+        metadataBean.retrieveAllImages();
+        metadataBean.BildErmitteln(0);
     }
 
     private void updatePagination(String filename) throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException,
@@ -174,14 +179,14 @@ public class FileManipulation {
                     // physical page no for new page
 
                     Metadata mdTemp = new Metadata(physicalPageNoType);
-                    mdTemp.setValue(String.valueOf(indexToImport));
+                    mdTemp.setValue(String.valueOf(indexToImport + 1));
                     newPage.addMetadata(mdTemp);
 
                     // new physical page no for old page
-                    oldPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(indexToImport + 1));
+                    oldPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(indexToImport + 2));
 
                     // logical page no
-                    logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
+                    // logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
                     mdTemp = new Metadata(logicalPageNoType);
 
                     if (insertMode.equalsIgnoreCase("uncounted")) {
@@ -204,12 +209,13 @@ public class FileManipulation {
                     ContentFile cf = new ContentFile();
                     cf.setLocation(filename);
                     newPage.addContentFile(cf);
+                    doc.getFileSet().addFile(cf);
 
                 }
                 if (index > indexToImport) {
                     DocStruct currentPage = pageList.get(index);
                     // check if element is last element
-                    currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 1));
+                    currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 2));
                     if (index + 1 == pageList.size()) {
                         currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
                     } else {
@@ -288,15 +294,15 @@ public class FileManipulation {
             logger.error(e1);
         }
 
-       if ( downloadFile == null || !downloadFile.exists()) {
-           List<String> paramList = new ArrayList<String>();
-//           paramList.add(metadataBean.getMyProzess().getTitel());
-           paramList.add(filenamePrefix);
-           paramList.add(currentFolder);
-           Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", paramList));
-           return;
-       }
-        
+        if (downloadFile == null || !downloadFile.exists()) {
+            List<String> paramList = new ArrayList<String>();
+            //           paramList.add(metadataBean.getMyProzess().getTitel());
+            paramList.add(filenamePrefix);
+            paramList.add(currentFolder);
+            Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", paramList));
+            return;
+        }
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
@@ -371,7 +377,6 @@ public class FileManipulation {
             destination.mkdir();
         }
 
-     
         for (String filename : filenamesToMove) {
             String prefix = filename.replace(Metadaten.getFileExtension(filename), "");
             String processTitle = metadataBean.getMyProzess().getTitel();
@@ -387,14 +392,14 @@ public class FileManipulation {
                             if (!tempFolder.exists()) {
                                 tempFolder.mkdir();
                             }
-                            
+
                             File destinationFile = new File(tempFolder, processTitle + "_" + currentFile.getName());
-                            
-                            if (deleteFilesAfterMove) {
-                                currentFile.renameTo(destinationFile);
-                            } else {
-                                FileUtils.copyFile(currentFile, destinationFile);
-                            }
+
+                            //                            if (deleteFilesAfterMove) {
+                            //                                currentFile.renameTo(destinationFile);
+                            //                            } else {
+                            FileUtils.copyFile(currentFile, destinationFile);
+                            //                            }
                             break;
 
                         }
@@ -413,22 +418,16 @@ public class FileManipulation {
             }
         }
         if (deleteFilesAfterMove) {
-            int currentPhysicalOrder = 1;
-            MetadataType mdt = metadataBean.getMyProzess().getRegelsatz().getPreferences().getMetadataTypeByName("physPageNumber");
-            for (DocStruct page : allPages) {
-                List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
-                if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
-                    currentPhysicalOrder++;
-                    break;
-                }
-                for (Metadata pageNo : pageNoMetadata) {
-                    pageNo.setValue(String.valueOf(currentPhysicalOrder));
-                }
-                currentPhysicalOrder++;
-            }
+            String[] pagesArray = new String[selectedFiles.size()];
+            selectedFiles.toArray(pagesArray);
+            metadataBean.setAlleSeitenAuswahl(pagesArray);
+            metadataBean.deleteSeltectedPages();
+            selectedFiles = new ArrayList<String>();
+            deleteFilesAfterMove = false;
         }
-        
+
         metadataBean.retrieveAllImages();
+        metadataBean.BildErmitteln(0);
     }
 
     public List<String> getSelectedFiles() {
@@ -530,7 +529,7 @@ public class FileManipulation {
                         }
                     } else {
                         if (subfolder.getName().contains("_")) {
-                            String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_")+1);
+                            String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_") + 1);
                             String folderName = currentProcess.getMethodFromName(folderSuffix);
                             if (folderName != null) {
                                 try {
@@ -561,7 +560,7 @@ public class FileManipulation {
 
                 } else {
                     if (subfolder.getName().contains("_")) {
-                        String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_")+1);
+                        String folderSuffix = subfolder.getName().substring(subfolder.getName().lastIndexOf("_") + 1);
                         String folderName = currentProcess.getMethodFromName(folderSuffix);
                         if (folderName != null) {
                             File directory = new File(folderName);
@@ -622,6 +621,8 @@ public class FileManipulation {
                 logger.error(e);
             }
         }
+        metadataBean.retrieveAllImages();
+        metadataBean.BildErmitteln(0);
     }
 
     public String getCurrentFolder() {
