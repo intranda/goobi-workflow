@@ -288,6 +288,15 @@ public class FileManipulation {
             logger.error(e1);
         }
 
+       if ( downloadFile == null || !downloadFile.exists()) {
+           List<String> paramList = new ArrayList<String>();
+//           paramList.add(metadataBean.getMyProzess().getTitel());
+           paramList.add(filenamePrefix);
+           paramList.add(currentFolder);
+           Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", paramList));
+           return;
+       }
+        
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
