@@ -234,7 +234,7 @@
 							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 						</h:commandButton></td>
 					<td class="eingabeBoxen_row3" align="right"><h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.SchrittLoeschen}"
-							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')" rendered="#{ProzessverwaltungForm.mySchritt.id != null}" /> <h:commandButton
+							onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')) return false" rendered="#{ProzessverwaltungForm.mySchritt.id != null}" /> <h:commandButton
 							value="#{msgs.uebernehmen}" id="absenden" action="#{ProzessverwaltungForm.SchrittUebernehmen}">
 							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 						</h:commandButton></td>

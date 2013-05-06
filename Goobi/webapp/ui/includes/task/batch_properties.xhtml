@@ -259,7 +259,7 @@
 						<td class="eingabeBoxen_row3" align="right">
 							<!-- 
 				<h:commandButton value="#{msgs.loeschen}" action="#{AktuelleSchritteForm.deleteProperty}"
-					onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')">
+					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')) return false">
 					<x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 				</h:commandButton>
 			-->

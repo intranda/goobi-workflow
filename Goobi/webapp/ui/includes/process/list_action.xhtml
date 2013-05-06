@@ -24,7 +24,7 @@
 							<!-- Upload-Schaltknopf -->
 							<h:commandLink rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }" id="action1"
 								action="#{ProzessverwaltungForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
-								onclick="if (!confirm('#{msgs.upload}?')) return">
+								onclick="if (!confirm('#{msgs.upload}?')) return false">
 								<h:graphicImage value="images/buttons/load_up_set_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
 								<h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
 							</h:commandLink>
@@ -46,19 +46,19 @@
 										<!-- Download-Schaltknopf für Selection-->
 										<h:commandLink id="action2" action="#{ProzessverwaltungForm.DownloadToHomeSelection}"
 											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-											onclick="if (!confirm('#{msgs.download}?')) return">
+											onclick="if (!confirm('#{msgs.download}?')) return false">
 											<h:outputText value="- #{msgs.auswahl2}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für Page-->
 										<h:commandLink id="action3" action="#{ProzessverwaltungForm.DownloadToHomePage}" title="#{msgs.trefferDieserSeite}"
-											onclick="if (!confirm('#{msgs.download}?')) return">
+											onclick="if (!confirm('#{msgs.download}?')) return false">
 											<h:outputText value="- #{msgs.trefferDieserSeite}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für gesamtes Trefferset -->
 										<h:commandLink id="action4" action="#{ProzessverwaltungForm.DownloadToHomeHits}" title="#{msgs.gesamtesTrefferset}"
-											onclick="if (!confirm('#{msgs.download}?')) return">
+											onclick="if (!confirm('#{msgs.download}?')) return false">
 											<h:outputText value="- #{msgs.gesamtesTrefferset}" />
 										</h:commandLink>
 
@@ -87,19 +87,19 @@
 										<!-- Download-Schaltknopf für Selection-->
 										<h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}"
 											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-											onclick="if (!confirm('#{msgs.download}?')) return">
+											onclick="if (!confirm('#{msgs.download}?')) return false">
 											<h:outputText value="- #{msgs.auswahl2}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für Page-->
 										<h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7"
-											onclick="if (!confirm('#{msgs.download}?')) return">
+											onclick="if (!confirm('#{msgs.download}?')) return false">
 											<h:outputText value="- #{msgs.trefferDieserSeite}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für gesamtes Trefferset -->
 										<h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8"
-											onclick="if (!confirm('#{msgs.download}?')) return">
+											onclick="if (!confirm('#{msgs.download}?')) return false">
 											<h:outputText value="- #{msgs.gesamtesTrefferset}" />
 										</h:commandLink>
 
@@ -125,19 +125,19 @@
 										<!-- Download-Schaltknopf für Selection-->
 										<h:commandLink id="action9" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenSelection}"
 											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-											onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}?')) return">
+											onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}?')) return false">
 											<h:outputText value="- #{msgs.auswahl2}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für Page-->
 										<h:commandLink action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenPage}" title="#{msgs.trefferDieserSeite}" id="action10"
-											onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}?')) return">
+											onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}?')) return false">
 											<h:outputText value="- #{msgs.trefferDieserSeite}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für gesamtes Trefferset -->
 										<h:commandLink id="action11" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenHits}" title="#{msgs.gesamtesTrefferset}"
-											onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}?')) return">
+											onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}?')) return false">
 											<h:outputText value="- #{msgs.gesamtesTrefferset}" />
 										</h:commandLink>
 
@@ -162,19 +162,19 @@
 										<!-- Download-Schaltknopf für Selection-->
 										<h:commandLink id="action12" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenSelection}"
 											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-											onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}?')) return">
+											onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}?')) return false">
 											<h:outputText value="- #{msgs.auswahl2}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für Page-->
 										<h:commandLink id="action13" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenPage}" title="#{msgs.trefferDieserSeite}"
-											onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}?')) return">
+											onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}?')) return false">
 											<h:outputText value="- #{msgs.trefferDieserSeite}" />
 										</h:commandLink>
 
 										<!-- Download-Schaltknopf für gesamtes Trefferset -->
 										<h:commandLink id="action14" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenHits}" title="#{msgs.gesamtesTrefferset}"
-											onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}?')) return">
+											onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}?')) return false">
 											<h:outputText value="- #{msgs.gesamtesTrefferset}" />
 										</h:commandLink>
 
@@ -265,7 +265,7 @@
 												<td align="right">
 													<!-- GoobiScript für alle Treffer -->
 													<h:commandLink id="script3" action="#{ProzessverwaltungForm.GoobiScriptHits}" title="#{msgs.gesamtesTrefferset}"
-														onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+														onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 														<h:outputText value="#{msgs.gesamtesTrefferset}" />
 													</h:commandLink>
 												</td>
@@ -316,7 +316,7 @@
 
 										<!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
 										<h:commandLink id="action22" action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}"
-											onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+											onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 											<h:outputText value="- #{msgs.gesamtesTrefferset}" />
 										</h:commandLink>
 									</h:panelGrid>

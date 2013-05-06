@@ -60,12 +60,12 @@
 										<h:outputText value="" />
 										<h:panelGroup>
 											<h:commandLink id="action130" action="#{AktuelleSchritteForm.batchHelper.ReportProblemForSingle}" title="#{msgs.korrekturmeldungSenden}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 												<h:outputText value="#{msgs.korrekturmeldungSendenSingle}" />
 											</h:commandLink>
 											<h:outputText value=" | " />
 											<h:commandLink id="action131" action="#{AktuelleSchritteForm.batchHelper.ReportProblemForAll}" title="#{msgs.korrekturmeldungSenden}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 												<h:outputText value="#{msgs.korrekturmeldungSendenForAll}" />
 											</h:commandLink>
 										</h:panelGroup>
@@ -99,12 +99,12 @@
 											<h:outputText value="" />
 											<h:panelGroup>
 												<h:commandLink id="action140" action="#{AktuelleSchritteForm.batchHelper.SolveProblemForSingle}"
-													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 													<h:outputText value="#{msgs.meldungUeberProblemloesungSendenSingle}" />
 												</h:commandLink>
 												<h:outputText value=" | " />
 												<h:commandLink id="action141" action="#{AktuelleSchritteForm.batchHelper.SolveProblemForAll}"
-													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 													<h:outputText value="#{msgs.meldungUeberProblemloesungSendenForAll}" />
 												</h:commandLink>
 											</h:panelGroup>
@@ -116,13 +116,13 @@
 
 								<!-- Bearbeitung abbrechen-Schaltknopf -->
 								<h:commandLink id="action11" action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
-									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return">
+									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return false">
 									<h:graphicImage value="images/buttons/cancel3.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
 								</h:commandLink>
 								<!-- Abschliessen-Schaltknopf -->
 								<h:commandLink id="action15" action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
-									title="#{msgs.diesenSchrittAbschliessen}" onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}?')) return">
+									title="#{msgs.diesenSchrittAbschliessen}" onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}?')) return false">
 									<h:graphicImage value="images/buttons/ok.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
 								</h:commandLink>

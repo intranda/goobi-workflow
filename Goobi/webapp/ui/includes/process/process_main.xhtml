@@ -223,9 +223,9 @@
 					</td>
 					<td class="eingabeBoxen_row3" align="right">
 						<h:commandButton value="#{msgs.contentLoeschen}" action="#{ProzessverwaltungForm.ContentLoeschen}"
-							onclick="return confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}?')" rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
+							onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}?')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
 						<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.Loeschen}"
-							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')" rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
+							onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}?')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
 						<h:commandButton value="#{msgs.speichern}" action="#{ProzessverwaltungForm.Speichern}" id="absenden">
 							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 						</h:commandButton>

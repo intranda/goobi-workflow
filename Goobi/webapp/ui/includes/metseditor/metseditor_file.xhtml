@@ -147,7 +147,7 @@
 				</tr>
 				<tr>
 					<td class="eingabeBoxen_row3">
-						<h:commandButton value="#{msgs.exportFiles}"
+						<h:commandButton value="#{msgs.exportFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false"
 							action="#{Metadaten.fileManipulation.exportFiles}">
 						</h:commandButton>
 					</td>
@@ -199,7 +199,7 @@
 				</tr>
 				<tr>
 					<td class="eingabeBoxen_row3">
-						<h:commandButton value="#{msgs.importFiles}"
+						<h:commandButton value="#{msgs.importFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false"
 							action="#{Metadaten.fileManipulation.importFiles}">
 						</h:commandButton>
 					</td>

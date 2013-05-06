@@ -292,7 +292,7 @@
 					</td>
 					<td class="eingabeBoxen_row3" align="right">
 						<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.deleteProperty}"
-							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')">
+							onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')) return false">
 							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 						</h:commandButton>
 						<h:commandButton value="#{msgs.uebernehmen}" action="#{ProzessverwaltungForm.saveCurrentProperty}">

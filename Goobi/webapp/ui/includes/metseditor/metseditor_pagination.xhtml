@@ -184,7 +184,7 @@
 							</tr>
 							<tr>
 								<td class="eingabeBoxen_row2"><h:commandLink
-										action="#{Metadaten.deleteSeltectedPages}">
+										action="#{Metadaten.deleteSeltectedPages}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 										<h:graphicImage value="images/buttons/waste1a_20px.gif"
 											style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 										<h:outputText value="#{msgs.deleteSeltectedPages}" />

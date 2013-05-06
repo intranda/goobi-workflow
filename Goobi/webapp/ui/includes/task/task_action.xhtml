@@ -186,7 +186,7 @@
 
 								<!-- Bearbeitung abbrechen-Schaltknopf -->
 								<h:commandLink id="action11" action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
-									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return">
+									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return false">
 									<h:graphicImage value="images/buttons/cancel3.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
 								</h:commandLink>
@@ -211,7 +211,7 @@
 										<h:inputTextarea style="width:350px;height:80px" value="#{AktuelleSchritteForm.problemMessage}" />
 										<h:outputText value="" />
 										<h:commandLink id="action13" action="#{AktuelleSchritteForm.ReportProblem}" title="#{msgs.korrekturmeldungSenden}"
-											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return">
+											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 											<h:outputText value="#{msgs.korrekturmeldungSenden}" />
 										</h:commandLink>
 									</h:panelGrid>
@@ -240,7 +240,7 @@
 											<h:inputTextarea style="width:350px;height:80px" id="input1" value="#{AktuelleSchritteForm.solutionMessage}" />
 											<h:outputText value="" />
 											<h:commandLink id="action14" action="#{AktuelleSchritteForm.SolveProblem}" title="#{msgs.meldungUeberProblemloesungSenden}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return">
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
 												<h:outputText value="#{msgs.meldungUeberProblemloesungSenden}" />
 											</h:commandLink>
 										</h:panelGrid>
@@ -250,7 +250,7 @@
 
 								<!-- Abschliessen-Schaltknopf -->
 								<h:commandLink id="action15" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}"
-									onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}?')) return">
+									onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}?')) return false">
 									<h:graphicImage value="images/buttons/ok.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
 								</h:commandLink>
