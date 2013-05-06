@@ -2107,9 +2107,11 @@ public class Metadaten {
             }
         }
         try {
-            int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
-            BildErmitteln(pageNumber);
+//            int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
+            myBild = null;
+            BildErmitteln(0);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }
@@ -2831,7 +2833,7 @@ public class Metadaten {
         retrieveAllImages();
         
         // current image was deleted, load first image
-        if (selectedPages.contains(myBildNummer)) {
+        if (selectedPages.contains(myBildNummer -1)) {
 
             BildErsteSeiteAnzeigen();
         } else {
