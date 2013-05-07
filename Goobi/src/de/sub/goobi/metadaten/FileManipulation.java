@@ -485,7 +485,7 @@ public class FileManipulation {
 
     public void importFiles() {
 
-        if (allImportFolder == null || allImportFolder.isEmpty()) {
+        if (selectedFiles == null || selectedFiles.isEmpty()) {
             Helper.setFehlerMeldung("noFileSelected");
             return;
         }
@@ -499,7 +499,7 @@ public class FileManipulation {
         }
         Process currentProcess = metadataBean.getMyProzess();
         List<String> importedFilenames = new ArrayList<String>();
-        for (String importName : allImportFolder) {
+        for (String importName : selectedFiles) {
             File importfolder = new File(tempDirectory + "fileupload" + File.separator + importName);
             File[] subfolderList = importfolder.listFiles();
             for (File subfolder : subfolderList) {
@@ -613,7 +613,7 @@ public class FileManipulation {
 
         // delete folder
 
-        for (String importName : allImportFolder) {
+        for (String importName : selectedFiles) {
             File importfolder = new File(tempDirectory + "fileupload" + File.separator + importName);
             try {
                 FileUtils.deleteDirectory(importfolder);
