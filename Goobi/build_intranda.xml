@@ -106,13 +106,13 @@
 			<format property="date" pattern="dd−MMMM−yyyy" locale="en" />
 		</tstamp>
 
-		<war destfile="${dir.build}/${dist.name}.war" webxml="WEB-INF/web.xml">
+		<war destfile="${dir.build}/${dist.name}.war" webxml="webapp/WEB-INF/web.xml">
 			<classes dir="${dir.build.classes}" />
-			<lib dir="WEB-INF/lib" />
+			<lib dir="webapp/WEB-INF/lib" />
 			<fileset dir="." includes="WEB-INF/*.*, index.jsp" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
 			<fileset dir="." includes="js/**/*.*" />
 
-			<zipfileset dir="ui" prefix="ui">
+			<zipfileset dir="webapp/ui" prefix="ui">
 				<patternset>
 					<include name="**/*.*" />
 
