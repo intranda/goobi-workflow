@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+
+	<display-name>Goobi</display-name>
+
+	<context-param>
+		<param-name>facelets.DEVELOPMENT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+		<param-value>resources.application</param-value>
+	</context-param>
+
+
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description></description>
+		<display-name>WebInterface</display-name>
+		<servlet-name>WebInterface</servlet-name>
+		<servlet-class>org.goobi.production.cli.WebInterface</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WebInterface</servlet-name>
+		<url-pattern>/wi</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
+		<init-param>
+			<param-name>uploadMaxFileSize</param-name>
+			<param-value>20m</param-value>
+		</init-param>
+	</filter>
+
+	<!-- extension mapping for adding <script/>, <link/>, and other resource tags to JSF-pages -->
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<!-- servlet-name must match the name of your javax.faces.webapp.FacesServlet entry -->
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+
+	<!-- extension mapping for serving page-independent resources (javascript, stylesheets, images, etc.) -->
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
+	</filter-mapping>
+
+	<!-- extension mapping for adding <script/>, <link/>, and other resource tags to JSF-pages -->
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>UTF8Filter</filter-name>
+		<filter-class>de.sub.goobi.helper.servletfilter.Utf8Filter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UTF8Filter</filter-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>sessionCounterFilter</filter-name>
+		<filter-class>de.sub.goobi.helper.servletfilter.SessionCounterFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sessionCounterFilter</filter-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</filter-mapping>
+
+
+	<filter>
+		<filter-name>SecurityCheckFilter</filter-name>
+		<filter-class>de.sub.goobi.helper.servletfilter.SecurityCheckFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SecurityCheckFilter</filter-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</filter-mapping>
+
+
+	<listener>
+		<listener-class>org.goobi.production.ImageIOInitializer</listener-class>
+	</listener>
+
+<!-- 	<listener> -->
+<!-- 		<listener-class>org.goobi.mq.ActiveMQDirector</listener-class> -->
+<!-- 	</listener> -->
+
+	<!-- xml-Rpc-Server starten <listener> <listener-class> de.sub.goobi.XmlRpc.Listener </listener-class> </listener> -->
+
+	<!-- Listener für die Modularisierung <listener> <listener-class> de.sub.goobi.Modul.ModulListener </listener-class> </listener> -->
+
+	<!-- Listener for JobManager <listener> <listener-class>org.goobi.production.flow.jobs.JobManager</listener-class> </listener> -->
+	<!-- <listener> <listener-class> org.apache.myfaces.webapp.StartupServletContextListener</listener-class> </listener> -->
+
+	<listener>
+		<listener-class>org.goobi.production.GoobiVersionListener</listener-class>
+	</listener>
+
+
+
+	<servlet>
+		<description>
+        </description>
+		<display-name>Plugin Servlet</display-name>
+		<servlet-name>PluginServlet</servlet-name>
+		<servlet-class>org.goobi.production.servlets.PluginServlet</servlet-class>
+	</servlet>
+
+
+	<!-- goobiContentServer -->
+
+	<servlet>
+		<description>
+        </description>
+		<display-name>GoobiContentServer</display-name>
+		<servlet-name>GoobiContentServer</servlet-name>
+		<servlet-class>org.goobi.presentation.contentServlet.controller.GoobiContentServer</servlet-class>
+	</servlet>
+
+	<servlet>
+		<description>
+        </description>
+		<display-name>ContentServer</display-name>
+		<servlet-name>ContentServer</servlet-name>
+		<servlet-class>de.unigoettingen.sub.commons.contentlib.servlet.controller.ContentServer</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>GoobiContentServer</servlet-name>
+		<url-pattern>/gcs/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ContentServer</servlet-name>
+		<url-pattern>/cs/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>PluginServlet</servlet-name>
+		<url-pattern>/ps</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+
+	<!-- Error pages -->
+	<!-- <error-page> <exception-type>java.lang.Throwable</exception-type> <location>/ui/error.xhtml</location> </error-page> -->
+
+
+	<!-- <servlet> -->
+	<!-- <servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
+	<!-- <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> -->
+	<!-- <init-param> -->
+	<!-- <param-name>com.sun.jersey.config.property.packages</param-name> -->
+	<!-- <param-value>org.goobi.webapi.resources; org.goobi.webapi.provider</param-value> -->
+	<!-- </init-param> -->
+	<!-- <load-on-startup>1</load-on-startup> -->
+	<!-- </servlet> -->
+
+	<!-- <servlet-mapping> -->
+	<!-- <servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
+	<!-- <url-pattern>/rest/*</url-pattern> -->
+	<!-- </servlet-mapping> -->
+	
+	
+
+</web-app>
+
+
+
