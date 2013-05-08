@@ -84,15 +84,18 @@
 	</target>
 
 	<!-- copy sources to build directory -->
-	<target name="copySources" description="Copy the sources to the build directory">
+	<target name="copySources" depends="createDirs" description="Copy the sources to the build directory">
 		<copy todir="${dir.build.src}">
 			<fileset dir="${dir.src}" />
 			<fileset dir="${dir.src-dubious}" />
 		</copy>
+		<copy todir="${dir.build}/WEB-INF">
+		<fileset file="webapp/WEB-INF/faces-config.xml" />
+			</copy>
 	</target>
 
 	<!-- Normal build of application. -->
-	<target name="compile" depends="copySources, createDirs, git.revision" description="Normal build of application.">
+	<target name="compile" depends="copySources, git.revision" description="Normal build of application.">
 
 		<javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="1.5" encoding="UTF8" source="1.5" debug="true" debuglevel="lines,vars,source">
 			<compilerarg value="-Xlint" />
@@ -111,14 +114,16 @@
 			<lib dir="webapp/WEB-INF/lib" />
 			<fileset dir="." includes="WEB-INF/*.*, index.jsp" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
 			<fileset dir="." includes="js/**/*.*" />
-
+			<zipfileset dir="WEB-INF"  file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
 			<zipfileset dir="webapp/ui" prefix="ui">
 				<patternset>
 					<include name="**/*.*" />
-
 				</patternset>
 			</zipfileset>
 
+
+			
+			
 			<manifest>
 				<attribute name="Implementation-Title" value="${dist.name}" />
 				<attribute name="Implementation-Version" value="${git.revision}" />
