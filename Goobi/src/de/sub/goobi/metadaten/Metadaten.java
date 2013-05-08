@@ -63,11 +63,11 @@ import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.dl.Reference;
-import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.IncompletePersonObjectException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -111,6 +111,9 @@ public class Metadaten {
     private DocStruct tempStrukturelement;
     private List<MetadatumImpl> myMetadaten = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> myPersonen = new LinkedList<MetaPerson>();
+    
+    private List<MetadataGroup> groups = new LinkedList<MetadataGroup>();
+    
     private MetadatumImpl curMetadatum;
     private MetaPerson curPerson;
     private DigitalDocument mydocument;
@@ -845,9 +848,13 @@ public class Metadaten {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement));
             }
         }
+        
+        List<MetadataGroup> metaGroups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, (String) Helper
+                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
 
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
+        this.groups = metaGroups;
 
         /*
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------
@@ -2585,7 +2592,7 @@ public class Metadaten {
     public void setMyMetadaten(List<MetadatumImpl> myMetadaten) {
         this.myMetadaten = myMetadaten;
     }
-
+    
     public List<MetaPerson> getMyPersonen() {
         return this.myPersonen;
     }
@@ -3024,5 +3031,13 @@ public class Metadaten {
         int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
         int dotIndex = afterLastSlash.indexOf('.', afterLastBackslash);
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
+    }
+
+    public List<MetadataGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<MetadataGroup> groups) {
+        this.groups = groups;
     }
 }

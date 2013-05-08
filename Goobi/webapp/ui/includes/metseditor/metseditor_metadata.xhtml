@@ -55,6 +55,42 @@
 					</tr>
 				</table>
 
+
+
+				<h:panelGroup rendered="#{!empty Metadaten.groups}"
+					style="#{empty Metadaten.myPersonen ? 'margin-top:0px':'margin-top:15px;'}; display:block">
+					<h4 style="margin-top: 0px; margin-bottom: 1px">
+						<h:outputText value="#{msgs.metadaten}" />
+					</h4>
+
+					<!-- öffnen der Tabelle -->
+					<x:dataTable value="#{Metadaten.groups}" var="Item" styleClass="Tabelle" headerClass="TabelleHeader"
+						columnClasses="TabelleSpalteLinks,TabelleSpalteLinks,TabelleSpalteLinks">
+
+
+	
+						<!-- Metadaten -->
+						<x:column width="70px">
+							<h:outputText value="#{Item.metadataGroupType.name}" style="font-size: 11px" />
+						</x:column>
+
+<x:column>
+						<h:dataTable value="#{Item.metadataList}" var="metadata" >
+							<h:column>
+								<h:outputText value="#{metadata.type.name}" style="font-size: 11px" />
+							</h:column>
+							<h:column>
+								<h:inputText value="#{metadata.value}"  />
+							</h:column>
+						
+						</h:dataTable>
+</x:column>
+						
+					</x:dataTable>
+				</h:panelGroup>
+
+
+
 				<!-- ########################################
 
                          Tabelle für die Personen
@@ -203,8 +239,7 @@
  				#########################################-->
 				<table width="540">
 					<tr>
-						<td>
-							<h:panelGroup rendered="#{not Metadaten.modusHinzufuegen and not Metadaten.modusHinzufuegenPerson and not Metadaten.nurLesenModus}"
+						<td><h:panelGroup rendered="#{not Metadaten.modusHinzufuegen and not Metadaten.modusHinzufuegenPerson and not Metadaten.nurLesenModus}"
 								style="margin-top:10px">
 								<!-- Hinzufuegen-Schaltknopf für Person-->
 								<h:commandLink id="l2" action="#{Metadaten.HinzufuegenPerson}" style="margin-left:2px" title="#{msgs.neuePersonAnlegen}"
@@ -221,8 +256,7 @@
 									<h:graphicImage value="images/buttons/new.gif" style="border: 0px;vertical-align:middle" />
 									<h:outputText value="#{msgs.neueMetadatenHinzufuegen}" />
 								</h:commandLink>
-							</h:panelGroup>
-						</td>
+							</h:panelGroup></td>
 						<!-- 
 			<td width="10%" valign="top" align="right" nowrap="">
 				<div id="x2">
@@ -265,13 +299,10 @@
 				</h3>
 				<table id="render" cellpadding="3" cellspacing="0" style="width: 540px" class="eingabeBoxen">
 					<tr>
-						<td class="eingabeBoxen_row1">
-							<h:outputText value="#{msgs.metadatenBearbeiten}" />
-						</td>
+						<td class="eingabeBoxen_row1"><h:outputText value="#{msgs.metadatenBearbeiten}" /></td>
 					</tr>
 					<tr>
-						<td class="eingabeBoxen_row2">
-							<h:panelGrid id="grid1" columns="2">
+						<td class="eingabeBoxen_row2"><h:panelGrid id="grid1" columns="2">
 								<!-- typ -->
 								<h:outputLabel for="mytyp" value="#{msgs.typ}" />
 
@@ -304,16 +335,13 @@
 											styleClass="metadatenInput" style="width: 350px;" />
 									</x:div>
 								</h:panelGroup>
-							</h:panelGrid>
-						</td>
+							</h:panelGrid></td>
 					</tr>
 
 					<tr>
-						<td class="eingabeBoxen_row3">
-							<h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
+						<td class="eingabeBoxen_row3"><h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
 								<x:updateActionListener value="huhu" property="#{Metadaten.metadatum.value}"></x:updateActionListener>
-							</h:commandButton>
-							<x:commandButton id="absenden" forceId="true" type="submit" action="#{Metadaten.Speichern}" value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
+							</h:commandButton> <x:commandButton id="absenden" forceId="true" type="submit" action="#{Metadaten.Speichern}" value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
 						</td>
 					</tr>
 
@@ -333,13 +361,10 @@
 				</h3>
 				<table cellpadding="3" cellspacing="0" style="width: 540px" class="eingabeBoxen">
 					<tr>
-						<td class="eingabeBoxen_row1">
-							<h:outputText value="#{msgs.personBearbeiten}" />
-						</td>
+						<td class="eingabeBoxen_row1"><h:outputText value="#{msgs.personBearbeiten}" /></td>
 					</tr>
 					<tr>
-						<td class="eingabeBoxen_row2">
-							<h:panelGrid columns="2">
+						<td class="eingabeBoxen_row2"><h:panelGrid columns="2">
 								<!-- vorname -->
 								<h:outputLabel for="vorname" value="#{msgs.vorname}" />
 								<h:panelGroup>
@@ -363,13 +388,11 @@
 									<x:message for="Rolle" style="color: red" replaceIdWithLabel="true" />
 								</h:panelGroup>
 
-							</h:panelGrid>
-						</td>
+							</h:panelGrid></td>
 					</tr>
 
 					<tr>
-						<td class="eingabeBoxen_row3">
-							<h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true"></h:commandButton>
+						<td class="eingabeBoxen_row3"><h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true"></h:commandButton>
 							<x:commandButton id="absenden2" forceId="true" type="submit" action="#{Metadaten.SpeichernPerson}" value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
 						</td>
 					</tr>
