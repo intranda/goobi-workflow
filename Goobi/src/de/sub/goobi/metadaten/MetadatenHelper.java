@@ -142,6 +142,32 @@ public class MetadatenHelper implements Comparator<Object> {
                 }
             }
         }
+        if (inOldDocstruct.getAllMetadataGroups() != null && inOldDocstruct.getAllMetadataGroups().size() > 0) {
+            for (MetadataGroup mg : inOldDocstruct.getAllMetadataGroups()) {
+                boolean match = false;
+                if (newDocstruct.getPossibleMetadataGroupTypes() != null && newDocstruct.getPossibleMetadataGroupTypes().size() > 0) {
+                    for (MetadataGroupType mgt : newDocstruct.getPossibleMetadataGroupTypes()) {
+                        if (mgt.getName().equals(mg.getType().getName())) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    if (!match) {
+                        Helper.setFehlerMeldung("Person " + mg.getType().getName() + " is not allowed in new element "
+                                + newDocstruct.getType().getName());
+                    } else {
+                        newDocstruct.addMetadataGroup(mg);
+                    }
+                } else {
+                    Helper.setFehlerMeldung("Person " + mg.getType().getName() + " is not allowed in new element "
+                            + newDocstruct.getType().getName());
+                    return inOldDocstruct;
+                }
+
+            }
+
+        }
+
         /*
          * -------------------------------- alle Seiten hinzufügen --------------------------------
          */
@@ -500,7 +526,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
             }
         }
-        
+
         /*
          * wenn keine Sortierung nach Regelsatz erfolgen soll, hier alphabetisch sortieren
          */
@@ -569,6 +595,14 @@ public class MetadatenHelper implements Comparator<Object> {
      * @return localized Title of metadata type ================================================================
      */
     public String getMetadatatypeLanguage(MetadataType inMdt) {
+        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        if (label == null) {
+            label = inMdt.getName();
+        }
+        return label;
+    }
+
+    public String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
         String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
             label = inMdt.getName();

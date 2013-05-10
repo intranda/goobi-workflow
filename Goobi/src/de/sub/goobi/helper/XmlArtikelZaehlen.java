@@ -32,6 +32,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.Person;
 import ugh.exceptions.PreferencesException;
 import org.goobi.beans.Process;
@@ -120,6 +121,17 @@ public class XmlArtikelZaehlen {
 							rueckgabe++;
 						}
 					}
+				}
+				/* count metadata in groups */
+				if (inStruct.getAllMetadataGroups() != null) {
+				    for (MetadataGroup mg : inStruct.getAllMetadataGroups()) {
+				        for (Metadata md : mg.getMetadataList()) {
+	                        if (md.getValue() != null && md.getValue().trim().length() > 0) {
+	                            rueckgabe++;
+	                        }
+	                    }
+				    }
+				    
 				}
 			}
 
