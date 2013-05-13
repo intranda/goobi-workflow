@@ -402,7 +402,7 @@ public class Metadaten {
 
     public String saveGroup() {
         try {
-            MetadataGroup md = new MetadataGroup(this.myPrefs.getMetadataGroupByName(this.tempGroupType));
+            MetadataGroup md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(this.tempGroupType));
 
             for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
                 List<Metadata> metadataList = md.getMetadataList();
@@ -2516,7 +2516,7 @@ public class Metadaten {
     }
 
     public void setTempMetadataGroupType(String tempTyp) {
-        MetadataGroupType mdt = this.myPrefs.getMetadataGroupByName(tempTyp);
+        MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
         try {
             MetadataGroup md = new MetadataGroup(mdt);
             this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md);
