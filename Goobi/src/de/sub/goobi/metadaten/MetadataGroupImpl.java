@@ -21,7 +21,7 @@ package de.sub.goobi.metadaten;
  * details.
  *
  * This copyright notice MUST APPEAR in all copies of this file!
- ***************************************************************/ 
+ ***************************************************************/
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +32,17 @@ import de.sub.goobi.helper.Helper;
 
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
 
 public class MetadataGroupImpl {
-    
+
     private List<MetadatumImpl> metadataList = new ArrayList<MetadatumImpl>();
+    private List<MetaPerson> personList = new ArrayList<MetaPerson>();
     private Prefs prefs;
     private Process process;
     private MetadataGroup metadataGroup;
-    
+
     public MetadataGroupImpl(Prefs myPrefs, Process myProcess, MetadataGroup metadataGroup) {
         this.prefs = myPrefs;
         this.process = myProcess;
@@ -50,33 +52,52 @@ public class MetadataGroupImpl {
             MetadatumImpl mdum = new MetadatumImpl(md, counter++, this.prefs, this.process);
             metadataList.add(mdum);
         }
+        for (Person p : metadataGroup.getPersonList()) {
+            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct());
+            personList.add(mp);
+        }
     }
-    
+
+    public List<MetaPerson> getPersonList() {
+        return personList;
+    }
+
+    public void setPersonList(List<MetaPerson> personList) {
+        this.personList = personList;
+    }
+
     public List<MetadatumImpl> getMetadataList() {
         return metadataList;
     }
+
     public void setMetadataList(List<MetadatumImpl> metadataList) {
         this.metadataList = metadataList;
     }
+
     public Prefs getMyPrefs() {
         return prefs;
     }
+
     public void setMyPrefs(Prefs myPrefs) {
         this.prefs = myPrefs;
     }
+
     public Process getMyProcess() {
         return process;
     }
+
     public void setMyProcess(Process myProcess) {
         this.process = myProcess;
     }
+
     public MetadataGroup getMetadataGroup() {
         return metadataGroup;
     }
+
     public void setMetadataGroup(MetadataGroup metadataGroup) {
         this.metadataGroup = metadataGroup;
     }
-  
+
     public String getName() {
         String label = this.metadataGroup.getType().getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
