@@ -274,6 +274,9 @@ class PropertyMysqlHelper {
     };
 
     public static void saveProcessproperty(Processproperty pe) throws SQLException {
+        if (pe.getProcessId() == 0 && pe.getProzess() != null) {
+            pe.setProcessId(pe.getProzess().getId());
+        }
         if (pe.getId() == null) {
             insertProcessproperty(pe);
         } else {
@@ -397,6 +400,10 @@ class PropertyMysqlHelper {
     }
 
     public static Templateproperty saveTemplateproperty(Templateproperty property) throws SQLException {
+        if (property.getTemplateId() == 0 && property.getVorlage() != null) {
+            property.setTemplateId(property.getVorlage().getId());
+        }
+        
         if (property.getId() == null) {
             return insertTemplateproperty(property);
         } else {
@@ -478,6 +485,10 @@ class PropertyMysqlHelper {
     }
 
     public static Masterpieceproperty saveMasterpieceProperty(Masterpieceproperty property) throws SQLException {
+        if (property.getMasterpieceId() == 0 && property.getWerkstueck() != null) {
+            property.setMasterpieceId(property.getWerkstueck().getId());
+        }
+        
         if (property.getId() == null) {
             return insertMasterpieceproperty(property);
         } else {

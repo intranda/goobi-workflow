@@ -45,14 +45,14 @@
 						<h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;"
 							rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
 
-						<h:outputText id="vdid15" value=" | " style="font-size: 11px;" />
+						<h:outputText id="vdid15" value=" | " style="font-size: 11px;" rendered="#{Metadaten.displayFileManipulation}"  />
 
 						<h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht != 'File'}">
+							rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
 							<f:param id="vdid17" name="Ansicht" value="File" />
 						</h:commandLink>
 
-						<h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File'}" />
+						<h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File' and Metadaten.displayFileManipulation}" />
 
 					</h:panelGroup></td>
 

@@ -424,6 +424,10 @@ class StepMysqlHelper {
     }
 
     private static Object[] generateParameter(Step o, boolean includeID) {
+        if (o.getProcessId() == null && o.getProzess() != null) {
+            o.setProcessId(o.getProzess().getId());
+        }
+        
         if (includeID) {
             Object[] param =
                     {
