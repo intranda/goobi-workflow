@@ -42,6 +42,7 @@ class ProcessMysqlHelper {
 
     public static void saveProcess(Process o, boolean processOnly) throws DAOException {
         try {
+            o.setSortHelperStatus(o.getFortschritt());
 
             if (o.getId() == null) {
                 // new process
