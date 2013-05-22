@@ -294,6 +294,9 @@ class ProcessMysqlHelper {
         } else {
             d = o.getErstellungsdatum();
         }
+        if (o.getProjectId() == null && o.getProjekt() != null) {
+            o.setProjectId(o.getProjekt().getId());
+        }
 
         Timestamp datetime = new Timestamp(d.getTime());
         if (!includeProcessID) {
@@ -308,7 +311,7 @@ class ProcessMysqlHelper {
         } else {
             Object[] param =
                     { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
-                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
+                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,  o.getProjectId(),
                             o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                             o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
                             o.getDocket() == null ? null : o.getDocket().getId() };

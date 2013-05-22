@@ -602,14 +602,15 @@ public class MetadatenImagesHelper {
     public List<String> getImageFiles(DocStruct physical) {
         List<String> orderedFileList = new ArrayList<String>();
         List<DocStruct> pages = physical.getAllChildren();
-        for (DocStruct page : pages) {
-            String filename = page.getImageName();
-            if (filename != null) {
-                orderedFileList.add(filename);
-            } else {
-                logger.error("cannot find image");
+        if (pages != null && pages.size() > 0) {
+            for (DocStruct page : pages) {
+                String filename = page.getImageName();
+                if (filename != null) {
+                    orderedFileList.add(filename);
+                } else {
+                    logger.error("cannot find image");
+                }
             }
-
         }
         return orderedFileList;
     }
