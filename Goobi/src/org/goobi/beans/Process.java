@@ -351,6 +351,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return false;
         }
     }
+    
+    public Boolean getDisplayMETSButton() {
+        if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
+            return getTifDirectoryExists();
+        } else {
+            return true;
+        }
+    }
+    
+   public Boolean getDisplayPDFButton() {
+        return getTifDirectoryExists();
+    }
+   
+   public Boolean getDisplayDMSButton() {
+       if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
+           return getTifDirectoryExists();
+       } else {
+           return true;
+       }
+   }
+    
 
     public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {

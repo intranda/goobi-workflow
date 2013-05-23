@@ -48,6 +48,8 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import org.goobi.beans.Process;
+
+import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
@@ -142,35 +144,37 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        this.docStructsOhneSeiten = new ArrayList<DocStruct>();
-        this.checkDocStructsOhneSeiten(logicalTop);
-        if (this.docStructsOhneSeiten.size() != 0) {
-            for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
-                DocStruct ds = iter.next();
-                Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure")
-                        + ds.getType().getNameByLanguage(metadataLanguage));
-            }
-            ergebnis = false;
-        }
+        if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
 
-        /*
-         * -------------------------------- auf Seiten ohne Docstructs prüfen --------------------------------
-         */
-        List<String> seitenOhneDocstructs = null;
-        try {
-            seitenOhneDocstructs = checkSeitenOhneDocstructs(gdzfile);
-        } catch (PreferencesException e1) {
-            Helper.setFehlerMeldung("[" + inProzess.getTitel() + "] Can not check pages without docstructs: ");
-            ergebnis = false;
-        }
-        if (seitenOhneDocstructs != null && seitenOhneDocstructs.size() != 0) {
-            for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
-                String seite = iter.next();
-                Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationPages"), seite);
+            this.docStructsOhneSeiten = new ArrayList<DocStruct>();
+            this.checkDocStructsOhneSeiten(logicalTop);
+            if (this.docStructsOhneSeiten.size() != 0) {
+                for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
+                    DocStruct ds = iter.next();
+                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure")
+                            + ds.getType().getNameByLanguage(metadataLanguage));
+                }
+                ergebnis = false;
             }
-            ergebnis = false;
-        }
 
+            /*
+             * -------------------------------- auf Seiten ohne Docstructs prüfen --------------------------------
+             */
+            List<String> seitenOhneDocstructs = null;
+            try {
+                seitenOhneDocstructs = checkSeitenOhneDocstructs(gdzfile);
+            } catch (PreferencesException e1) {
+                Helper.setFehlerMeldung("[" + inProzess.getTitel() + "] Can not check pages without docstructs: ");
+                ergebnis = false;
+            }
+            if (seitenOhneDocstructs != null && seitenOhneDocstructs.size() != 0) {
+                for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
+                    String seite = iter.next();
+                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationPages"), seite);
+                }
+                ergebnis = false;
+            }
+        }
         /*
          * -------------------------------- auf mandatory Values der Metadaten prüfen --------------------------------
          */
@@ -196,34 +200,35 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        MetadatenImagesHelper mih = new MetadatenImagesHelper(inPrefs, dd);
-        try {
-            if (!mih.checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true))) {
+        if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
+            MetadatenImagesHelper mih = new MetadatenImagesHelper(inPrefs, dd);
+            try {
+                if (!mih.checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true))) {
+                    ergebnis = false;
+                }
+            } catch (Exception e) {
+                Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e);
                 ergebnis = false;
             }
-        } catch (Exception e) {
-            Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e);
-            ergebnis = false;
-        }
 
-        try {
-            List<String> images = mih.getDataFiles(myProzess);
-            if (images != null) {
-                int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
-                int sizeOfImages = images.size();
-                if (sizeOfPagination != sizeOfImages) {
-                    List<String> param = new ArrayList<String>();
-                    param.add(String.valueOf(sizeOfPagination));
-                    param.add(String.valueOf(sizeOfImages));
-                    Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
-                    return false;
+            try {
+                List<String> images = mih.getDataFiles(myProzess);
+                if (images != null) {
+                    int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
+                    int sizeOfImages = images.size();
+                    if (sizeOfPagination != sizeOfImages) {
+                        List<String> param = new ArrayList<String>();
+                        param.add(String.valueOf(sizeOfPagination));
+                        param.add(String.valueOf(sizeOfImages));
+                        Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
+                        return false;
+                    }
                 }
+            } catch (InvalidImagesException e1) {
+                Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e1);
+                ergebnis = false;
             }
-        } catch (InvalidImagesException e1) {
-            Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e1);
-            ergebnis = false;
         }
-
         /*
          * -------------------------------- Metadaten ggf. zum Schluss speichern --------------------------------
          */
