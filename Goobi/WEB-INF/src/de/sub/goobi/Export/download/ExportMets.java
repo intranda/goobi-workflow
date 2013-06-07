@@ -170,7 +170,7 @@ public class ExportMets {
      * @throws IOException
      * @throws TypeNotAllowedForParentException
      */
-    @SuppressWarnings("deprecation")
+
     protected boolean writeMetsFile(Prozess myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup)
             throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
             TypeNotAllowedForParentException {
@@ -243,7 +243,7 @@ public class ExportMets {
         // Replace all pathes with the given VariableReplacer, also the file
         // group pathes!
         VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
-        Set<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
+        List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroupsList();
 
         if (myFilegroups != null && myFilegroups.size() > 0) {
             for (ProjectFileGroup pfg : myFilegroups) {
