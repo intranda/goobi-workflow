@@ -249,14 +249,17 @@ public class ExportMets {
             for (ProjectFileGroup pfg : myFilegroups) {
                 // check if source files exists
                 if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
-                    File folder = new File(myProzess.getMethodFromName(pfg.getFolder()));
-                    if (folder != null && folder.exists() && folder.list().length > 0) {
-                        VirtualFileGroup v = new VirtualFileGroup();
-                        v.setName(pfg.getName());
-                        v.setPathToFiles(vp.replace(pfg.getPath()));
-                        v.setMimetype(pfg.getMimetype());
-                        v.setFileSuffix(pfg.getSuffix());
-                        mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
+                    String foldername = myProzess.getMethodFromName(pfg.getFolder());
+                    if (foldername != null) {
+                        File folder = new File(foldername);
+                        if (folder != null && folder.exists() && folder.list().length > 0) {
+                            VirtualFileGroup v = new VirtualFileGroup();
+                            v.setName(pfg.getName());
+                            v.setPathToFiles(vp.replace(pfg.getPath()));
+                            v.setMimetype(pfg.getMimetype());
+                            v.setFileSuffix(pfg.getSuffix());
+                            mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
+                        }
                     }
                 } else {
                     VirtualFileGroup v = new VirtualFileGroup();
