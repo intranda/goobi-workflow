@@ -3026,9 +3026,9 @@ public class Metadaten {
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
     }
 
-    
+
     public Boolean getDisplayFileManipulation() {
-        return ConfigMain.getBooleanParameter("MetsEditorDisplayFileManipulation", false); 
+        return ConfigMain.getBooleanParameter("MetsEditorDisplayFileManipulation", false);
     }
     
 }

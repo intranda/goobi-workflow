@@ -220,30 +220,35 @@ public class ProcessBean extends BasicBean {
                     return "";
                 } else {
                     /* Prozesseigenschaften */
-                    for (Processproperty pe : this.myProzess.getEigenschaftenList()) {
-                        if (pe != null && pe.getWert() != null) {
-                            if (pe.getWert().contains(this.myProzess.getTitel())) {
-                                pe.setWert(pe.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
+                    if (myProzess.getEigenschaftenList() != null && !myProzess.getEigenschaftenList().isEmpty()) {
+                        for (Processproperty pe : this.myProzess.getEigenschaftenList()) {
+                            if (pe != null && pe.getWert() != null) {
+                                if (pe.getWert().contains(this.myProzess.getTitel())) {
+                                    pe.setWert(pe.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
+                                }
                             }
                         }
                     }
                     /* Scanvorlageneigenschaften */
-                    for (Template vl : this.myProzess.getVorlagenList()) {
-                        for (Templateproperty ve : vl.getEigenschaftenList()) {
-                            if (ve.getWert().contains(this.myProzess.getTitel())) {
-                                ve.setWert(ve.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
+                    if (myProzess.getVorlagenList() != null && !myProzess.getVorlagenList().isEmpty()) {
+                        for (Template vl : this.myProzess.getVorlagenList()) {
+                            for (Templateproperty ve : vl.getEigenschaftenList()) {
+                                if (ve.getWert().contains(this.myProzess.getTitel())) {
+                                    ve.setWert(ve.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
+                                }
                             }
                         }
                     }
                     /* Werkstückeigenschaften */
-                    for (Masterpiece w : this.myProzess.getWerkstueckeList()) {
-                        for (Masterpieceproperty we : w.getEigenschaftenList()) {
-                            if (we.getWert().contains(this.myProzess.getTitel())) {
-                                we.setWert(we.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
+                    if (myProzess.getWerkstueckeList() != null && !myProzess.getWerkstueckeList().isEmpty()) {
+                        for (Masterpiece w : this.myProzess.getWerkstueckeList()) {
+                            for (Masterpieceproperty we : w.getEigenschaftenList()) {
+                                if (we.getWert().contains(this.myProzess.getTitel())) {
+                                    we.setWert(we.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
+                                }
                             }
                         }
                     }
-
                     try {
                         {
                             // renaming image directories
@@ -272,7 +277,7 @@ public class ProcessBean extends BasicBean {
                             }
                         }
                     } catch (Exception e) {
-                        logger.warn("could not rename folder", e);
+                        logger.trace("could not rename folder", e);
                     }
 
                     /* Vorgangstitel */
@@ -614,8 +619,10 @@ public class ProcessBean extends BasicBean {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-        this.myProzess.getSchritte().add(this.mySchritt);
-        this.mySchritt.setProzess(this.myProzess);
+        if (!myProzess.getSchritte().contains(mySchritt)) {      
+            this.myProzess.getSchritte().add(this.mySchritt);
+            this.mySchritt.setProzess(this.myProzess);
+        }
         Speichern();
     }
 
@@ -928,7 +935,7 @@ public class ProcessBean extends BasicBean {
 
     private void stepStatusUp(Process proz) throws DAOException {
         List<Step> stepList = new ArrayList<Step>(proz.getSchritteList());
-        
+
         for (Step so : stepList) {
             if (!so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                 so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
@@ -1371,13 +1378,13 @@ public class ProcessBean extends BasicBean {
             allDocstructs += tempDocstructs;
         }
 
-        if( countOfProcessesWithImages == 0) {
+        if (countOfProcessesWithImages == 0) {
             countOfProcessesWithImages = 1;
         }
-        if (countOfProcessesWithMetadata == 0){
+        if (countOfProcessesWithMetadata == 0) {
             countOfProcessesWithMetadata = 1;
         }
-        if( countOfProcessesWithDocstructs == 0){
+        if (countOfProcessesWithDocstructs == 0) {
             countOfProcessesWithDocstructs = 1;
         }
         /* die prozentualen Werte anhand der Maximumwerte ergänzen */
@@ -2068,18 +2075,18 @@ public class ProcessBean extends BasicBean {
             PropertyManager.deleteProcessProperty(pp.getProzesseigenschaft());
         }
 
-//        List<Processproperty> props = this.myProzess.getEigenschaftenList();
-//        for (Processproperty pe : props) {
-//            if (pe.getTitel() == null) {
-//                this.myProzess.getEigenschaften().remove(pe);
-//            }
-//        }
-//        try {
-//            ProcessManager.saveProcess(this.myProzess);
-//        } catch (DAOException e) {
-//            logger.error(e);
-//            Helper.setFehlerMeldung("propertiesNotDeleted");
-//        }
+        //        List<Processproperty> props = this.myProzess.getEigenschaftenList();
+        //        for (Processproperty pe : props) {
+        //            if (pe.getTitel() == null) {
+        //                this.myProzess.getEigenschaften().remove(pe);
+        //            }
+        //        }
+        //        try {
+        //            ProcessManager.saveProcess(this.myProzess);
+        //        } catch (DAOException e) {
+        //            logger.error(e);
+        //            Helper.setFehlerMeldung("propertiesNotDeleted");
+        //        }
         // saveWithoutValidation();
         loadProcessProperties();
     }

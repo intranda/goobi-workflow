@@ -296,6 +296,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public Process getProzess() {
+        if (prozess == null) {
+            lazyLoad();
+        }
         return this.prozess;
     }
 
