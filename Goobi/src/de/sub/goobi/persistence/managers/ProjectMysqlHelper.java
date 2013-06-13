@@ -107,7 +107,10 @@ class ProjectMysqlHelper {
             if (ro.getId() == null) {
 
                 String propNames =
-                        "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
+                        "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder," +
+                        " fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, " +
+                        "metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, " +
+                        "metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
                 //                StringBuilder propValues = new StringBuilder();
                 Object[] param =
                         {
@@ -120,6 +123,7 @@ class ProjectMysqlHelper {
                                 StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportSuccessPath()),
                                 StringUtils.isBlank(ro.getDmsImportErrorPath()) ? null : StringEscapeUtils.escapeSql(ro.getDmsImportErrorPath()),
                                 ro.isDmsImportCreateProcessFolder(),
+                                
                                 StringUtils.isBlank(ro.getFileFormatInternal()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatInternal()),
                                 StringUtils.isBlank(ro.getFileFormatDmsExport()) ? null : StringEscapeUtils.escapeSql(ro.getFileFormatDmsExport()),
                                 StringUtils.isBlank(ro.getMetsRightsOwner()) ? null : StringEscapeUtils.escapeSql(ro.getMetsRightsOwner()),
@@ -138,14 +142,17 @@ class ProjectMysqlHelper {
                                 StringUtils.isBlank(ro.getMetsPointerPathAnchor()) ? null : StringEscapeUtils
                                         .escapeSql(ro.getMetsPointerPathAnchor()),
                                 StringUtils.isBlank(ro.getMetsPurl()) ? null : StringEscapeUtils.escapeSql(ro.getMetsPurl()),
+                                        
                                 StringUtils.isBlank(ro.getMetsContentIDs()) ? null : StringEscapeUtils.escapeSql(ro.getMetsContentIDs()),
                                 ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
-                                ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
-                                ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
+                                ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), 
+                                ro.getNumberOfPages(),
+                                ro.getNumberOfVolumes(), 
+                                ro.getProjectIsArchived() };
 
                 sql.append("INSERT INTO projekte (");
                 sql.append(propNames);
-                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 logger.debug(sql.toString());
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);

@@ -2530,7 +2530,9 @@ public class Metadaten {
 
         if (this.selectedGroup == null) {
             getAddableMetadataGroupTypes();
-            this.selectedGroup = this.tempMetadataGroups.get(0);
+            if (tempMetadataGroups != null && !tempMetadataGroups.isEmpty()) {
+                this.selectedGroup = this.tempMetadataGroups.get(0);
+            }
         }
         return this.selectedGroup;
     }
@@ -3248,7 +3250,6 @@ public class Metadaten {
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
     }
 
-
     public List<MetadataGroupImpl> getGroups() {
         return groups;
     }
@@ -3272,8 +3273,8 @@ public class Metadaten {
     public void setModeAddGroup(boolean modeAddGroup) {
         this.modeAddGroup = modeAddGroup;
     }
-    
+
     public Boolean getDisplayFileManipulation() {
-        return ConfigMain.getBooleanParameter("MetsEditorDisplayFileManipulation", false); 
+        return ConfigMain.getBooleanParameter("MetsEditorDisplayFileManipulation", false);
     }
 }
