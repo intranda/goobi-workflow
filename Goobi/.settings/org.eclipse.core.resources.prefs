@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//webapp/index.html=UTF-8
 encoding//webapp/ui/css/default.css=UTF-8
 encoding//webapp/ui/css/print.css=UTF-8
 encoding//webapp/ui/currentUsers.xhtml=UTF-8
@@ -18,4 +19,3 @@ encoding//webapp/ui/template/template.html=UTF-8
 encoding//webapp/ui/user_config.xhtml=UTF-8
 encoding//webapp/ui/user_password.xhtml=UTF-8
 encoding/<project>=UTF-8
-encoding/index.html=UTF-8
