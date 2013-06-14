@@ -3250,6 +3250,7 @@ public class Metadaten {
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
     }
 
+
     public List<MetadataGroupImpl> getGroups() {
         return groups;
     }
