@@ -406,7 +406,7 @@ public class ProzesskopieForm {
         this.standardFields = new HashMap<String, Boolean>();
         this.standardFields.put("collections", true);
         this.standardFields.put("doctype", true);
-        this.standardFields.put("regelsatz", true);
+        this.standardFields.put("preferences", true);
         this.standardFields.put("images", true);
         this.additionalFields = new ArrayList<AdditionalField>();
         this.tifHeader_documentname = "";
