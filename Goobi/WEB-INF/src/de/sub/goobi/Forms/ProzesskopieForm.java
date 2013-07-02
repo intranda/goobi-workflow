@@ -47,7 +47,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
+import org.goobi.production.plugin.PluginLoader;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -84,7 +86,7 @@ import de.sub.goobi.Beans.Vorlage;
 import de.sub.goobi.Beans.Vorlageeigenschaft;
 import de.sub.goobi.Beans.Werkstueck;
 import de.sub.goobi.Beans.Werkstueckeigenschaft;
-import de.sub.goobi.Import.ImportOpac;
+import de.sub.goobi.Import.IOpacPlugin;
 import de.sub.goobi.Persistence.BenutzerDAO;
 import de.sub.goobi.Persistence.ProzessDAO;
 import de.sub.goobi.Persistence.apache.StepManager;
@@ -101,6 +103,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 public class ProzesskopieForm {
@@ -114,7 +117,7 @@ public class ProzesskopieForm {
 	private String opacKatalog;
 	private Prozess prozessVorlage = new Prozess();
 	private Prozess prozessKopie = new Prozess();
-	private ImportOpac myImportOpac = new ImportOpac();
+	private IOpacPlugin myImportOpac = null;
 	private ConfigOpac co;
 	/* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
 	private boolean useOpac;
@@ -304,12 +307,17 @@ public class ProzesskopieForm {
 	public String OpacAuswerten() {
 		clearValues();
 		readProjectConfigs();
+
 		try {
+		    ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+		    
+		    myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+		    
 			/* den Opac abfragen und ein RDF draus bauen lassen */
-			this.myRdf = this.myImportOpac.OpacToDocStruct(this.opacSuchfeld, this.opacSuchbegriff, this.opacKatalog, this.prozessKopie
-					.getRegelsatz().getPreferences(), true);
-			if (this.myImportOpac.getOpacDocType(true) != null) {
-				this.docType = this.myImportOpac.getOpacDocType(true).getTitle();
+			this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie
+					.getRegelsatz().getPreferences());
+			if (this.myImportOpac.getOpacDocType() != null) {
+				this.docType = this.myImportOpac.getOpacDocType().getTitle();
 			}
 			this.atstsl = this.myImportOpac.getAtstsl();
 			fillFieldsFromMetadataFile();
