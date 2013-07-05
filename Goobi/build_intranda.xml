@@ -90,8 +90,11 @@
 			<fileset dir="${dir.src-dubious}" />
 		</copy>
 		<copy todir="${dir.build}/WEB-INF">
-		<fileset file="webapp/WEB-INF/faces-config.xml" />
-			</copy>
+			<fileset file="webapp/WEB-INF/faces-config.xml" />
+		</copy>
+		<copy todir="${dir.build}">
+			<fileset file="webapp/index.html" />
+		</copy>
 	</target>
 
 	<!-- Normal build of application. -->
@@ -112,9 +115,10 @@
 		<war destfile="${dir.build}/${dist.name}.war" webxml="webapp/WEB-INF/web.xml">
 			<classes dir="${dir.build.classes}" />
 			<lib dir="webapp/WEB-INF/lib" />
-			<fileset dir="." includes="WEB-INF/*.*, index.jsp" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
+			<fileset file="${dir.build}/index.html" />
+			<fileset dir="." includes="WEB-INF/*.*, index.html" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
 			<fileset dir="." includes="js/**/*.*" />
-			<zipfileset dir="WEB-INF"  file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
+			<zipfileset dir="WEB-INF" file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
 			<zipfileset dir="webapp/ui" prefix="ui">
 				<patternset>
 					<include name="**/*.*" />
@@ -122,8 +126,8 @@
 			</zipfileset>
 
 
-			
-			
+
+
 			<manifest>
 				<attribute name="Implementation-Title" value="${dist.name}" />
 				<attribute name="Implementation-Version" value="${git.revision}" />
