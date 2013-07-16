@@ -21,7 +21,7 @@
 				<h:outputText value="#{msgs.fileUpload}" />
 			</h4>
 			<table cellpadding="3" cellspacing="0" class="eingabeBoxen"
-				style="margin-bottom: 20px; width: 400px;">
+				style="margin-bottom: 20px; width: 450px;">
 				<tr>
 					<td class="eingabeBoxen_row1">
 						<h:outputText value="#{msgs.fileUpload}" />
@@ -50,6 +50,9 @@
 								<f:selectItem itemLabel="#{msgs.lastPage}"
 									itemValue="#{msgs.lastPage}" />
 							</h:selectOneMenu>
+							
+							<h:outputText value="#{msgs.newFileName}" />
+                            <h:inputText value="#{Metadaten.fileManipulation.uploadedFileName}"  style="width:220px"/>
 
 							<h:outputText value="#{msgs.paginierung}:" />
 							<h:selectOneRadio value="#{Metadaten.fileManipulation.insertMode}">
@@ -59,8 +62,7 @@
 									itemLabel="#{msgs.insertIntoPagination}" />
 							</h:selectOneRadio>
                             
-							<h:outputText value="#{msgs.newFileName}" />
-                            <h:inputText value="#{Metadaten.fileManipulation.uploadedFileName}"  style="width:220px"/>
+
 						</h:panelGrid>
 					</td>
 				</tr>
@@ -81,7 +83,7 @@
 				<h:outputText value="#{msgs.fileDownload}" />
 			</h4>
 			<table cellpadding="3" cellspacing="0" class="eingabeBoxen"
-				style="margin-bottom: 20px; width: 400px;">
+				style="margin-bottom: 20px; width: 450px;">
 				<tr>
 					<td class="eingabeBoxen_row1">
 						<h:outputText value="#{msgs.fileDownload}" />
@@ -124,7 +126,7 @@
 				<h:outputText value="#{msgs.serversideUpload}" />
 			</h4>
 			<table cellpadding="3" cellspacing="0" class="eingabeBoxen"
-				style="margin-bottom: 20px; width: 400px;">
+				style="margin-bottom: 20px; width: 450px;">
 				<tr>
 					<td class="eingabeBoxen_row1">
 						<h:outputText value="#{msgs.serversideUpload}" />
@@ -162,7 +164,7 @@
 				<h:outputText value="#{msgs.serversideDownload}" />
 			</h4>
 			<table cellpadding="3" cellspacing="0" class="eingabeBoxen"
-				style="margin-bottom: 20px; width: 400px;">
+				style="margin-bottom: 20px; width: 450px;">
 				<tr>
 					<td class="eingabeBoxen_row1">
 						<h:outputText value="#{msgs.serversideDownload}" />
