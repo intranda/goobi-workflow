@@ -281,18 +281,36 @@
 		}
 	}
 
-	function focusForPicture(){
-	  //alert(document.getElementById("hiddenBildNummer").value);
-	  //alert(document.getElementById("formular1:BildNummer").value);
-	  //alert(document.getElementsByName("formular2:myCheckboxes").length);
-	  for (i = 0; i < document.getElementsByName("formular2:myCheckboxes").length; i++) {
-	    if (i==document.getElementById("hiddenBildNummer").value -1){
- 	    	if (i +1 < document.getElementsByName("formular2:myCheckboxes").length) {
- 	    		document.getElementsByName("formular2:myCheckboxes")[i+1].focus();
- 	    	}
-	      document.getElementsByName("formular2:myCheckboxes")[i].focus();
-	    }
-	  }
+	function isIE() {
+		var agent = navigator.userAgent.toLowerCase();
+		var name = 'MSIE';
+		if (agent.indexOf(name.toLowerCase()) > -1) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	function focusForPicture() {
+		if (isIE()) {
+			for (i = 0; i < document.getElementsByName("formular2:myCheckboxes").length; i++) {
+				if (i == document.getElementById("hiddenBildNummer").value) {
+					if (i+1 < document.getElementsByName("formular2:myCheckboxes").length) {
+						document.getElementsByName("formular2:myCheckboxes")[i + 1].focus();
+					}
+					document.getElementsByName("formular2:myCheckboxes")[i].focus();
+				}
+			}
+		} else {
+			for (i = 0; i < document.getElementsByName("formular2:myCheckboxes").length; i++) {
+				if (i == document.getElementById("hiddenBildNummer").value - 1) {
+					if (i + 1 < document.getElementsByName("formular2:myCheckboxes").length) {
+						document.getElementsByName("formular2:myCheckboxes")[i + 1].focus();
+					}
+					document.getElementsByName("formular2:myCheckboxes")[i].focus();
+				}
+			}
+		}
 	}
 	
 	function submitEnter(commandId,e){
