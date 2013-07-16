@@ -43,9 +43,9 @@
 							</h:selectOneMenu>
 
 							<h:outputLabel value="#{msgs.position}:"
-								for="paginationSelection" />
+								for="paginationSelection" rendered="#{Metadaten.alleSeiten != null}" />
 							<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}"
-								id="paginationSelection" style="width:220px">
+								id="paginationSelection" style="width:220px" rendered="#{Metadaten.alleSeiten != null}">
 								<f:selectItems value="#{Metadaten.alleSeiten}" />
 								<f:selectItem itemLabel="#{msgs.lastPage}"
 									itemValue="#{msgs.lastPage}" />
@@ -78,7 +78,7 @@
 			</table>
 		</h:form>
 
-		<h:form id="fileDownload">
+		<h:form id="fileDownload" rendered="#{Metadaten.alleSeiten != null}">
 			<h4>
 				<h:outputText value="#{msgs.fileDownload}" />
 			</h4>
@@ -121,7 +121,7 @@
 			</table>
 		</h:form>
 
-		<h:form>
+		<h:form rendered="#{Metadaten.alleSeiten != null}">
 			<h4>
 				<h:outputText value="#{msgs.serversideUpload}" />
 			</h4>
@@ -183,9 +183,9 @@
 							</h:selectManyListbox>
 
 							<h:outputLabel value="#{msgs.position}:"
-								for="paginationSelection2" />
+								for="paginationSelection2" rendered="#{Metadaten.alleSeiten != null}"/>
 							<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}"
-								id="paginationSelection2" style="width:220px">
+								id="paginationSelection2" style="width:220px" rendered="#{Metadaten.alleSeiten != null}">
 								<f:selectItems value="#{Metadaten.alleSeiten}" />
 								<f:selectItem itemLabel="#{msgs.lastPage}"
 									itemValue="#{msgs.lastPage}" />
