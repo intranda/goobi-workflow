@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +13,12 @@ import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public class RulesetManager implements IManager {
+public class RulesetManager implements IManager, Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7947612330017761755L;
+
     private static final Logger logger = Logger.getLogger(RulesetManager.class);
 
     public static Ruleset getRulesetById(int id) throws DAOException {
@@ -65,10 +71,12 @@ public class RulesetManager implements IManager {
         return answer;
     }
 
+    @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return (List<? extends DatabaseObject>) getRulesets(order, filter, start, count);
+        return getRulesets(order, filter, start, count);
     }
 
+    @Override
     public int getHitSize(String order, String filter) throws DAOException {
         int num = 0;
         try {

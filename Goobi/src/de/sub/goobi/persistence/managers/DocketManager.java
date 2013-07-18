@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +13,12 @@ import org.goobi.beans.Docket;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public class DocketManager implements IManager {
+public class DocketManager implements IManager, Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7112845186301877542L;
+
     private static final Logger logger = Logger.getLogger(DocketManager.class);
 
     public static Docket getDocketById(int id) throws DAOException {
@@ -55,10 +61,12 @@ public class DocketManager implements IManager {
         return answer;
     }
 
+    @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return (List<? extends DatabaseObject>) getDockets(order, filter, start, count);
+        return getDockets(order, filter, start, count);
     }
 
+    @Override
     public int getHitSize(String order, String filter) throws DAOException {
         int num = 0;
         try {

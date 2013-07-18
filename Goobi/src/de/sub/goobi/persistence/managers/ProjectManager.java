@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -16,7 +17,12 @@ import org.goobi.beans.User;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public class ProjectManager implements IManager {
+public class ProjectManager implements IManager, Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6722792758015394586L;
+
     private static final Logger logger = Logger.getLogger(ProjectManager.class);
 
     public static Project getProjectById(int id) throws DAOException {
@@ -59,10 +65,12 @@ public class ProjectManager implements IManager {
         return answer;
     }
 
+    @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return (List<? extends DatabaseObject>) getProjects(order, filter, start, count);
+        return getProjects(order, filter, start, count);
     }
 
+    @Override
     public int getHitSize(String order, String filter) throws DAOException {
         int num = 0;
         try {

@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +8,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 
-
-public class MasterpieceManager {
+public class MasterpieceManager implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8123847555204812322L;
     private static final Logger logger = Logger.getLogger(MasterpieceManager.class);
 
     public static List<Masterpiece> getMasterpiecesForProcess(int processId) {
@@ -48,14 +52,14 @@ public class MasterpieceManager {
             logger.error(e);
         }
     }
-    
+
     public static void deleteMasterpiece(Masterpiece object) {
         try {
             MasterpieceMysqlHelper.deleteMasterpiece(object);
         } catch (SQLException e) {
             logger.error(e);
         }
-        
+
     }
 
 }

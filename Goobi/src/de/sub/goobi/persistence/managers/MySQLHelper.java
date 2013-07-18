@@ -27,6 +27,7 @@ package de.sub.goobi.persistence.managers;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,8 +37,12 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 
-public class MySQLHelper {
+public class MySQLHelper implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1396485589047649760L;
     private static final int MAX_TRIES_NEW_CONNECTION = 5;
     private static final int TIME_FOR_CONNECTION_VALID_CHECK = 5;
 

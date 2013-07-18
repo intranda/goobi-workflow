@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -9,7 +10,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
 
-class RulesetMysqlHelper {
+class RulesetMysqlHelper implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4768263760579941811L;
     private static final Logger logger = Logger.getLogger(RulesetMysqlHelper.class);
 
     public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws SQLException {

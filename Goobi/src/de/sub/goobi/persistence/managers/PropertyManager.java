@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,12 @@ import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
 
+public class PropertyManager implements Serializable {
 
-
-public class PropertyManager {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 900347502238407686L;
     private static final Logger logger = Logger.getLogger(PropertyManager.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
@@ -39,7 +43,7 @@ public class PropertyManager {
             logger.error(e);
         }
     }
-    
+
     public static List<String> getDistinctProcessPropertyTitles() {
         List<String> titleList = new ArrayList<String>();
         try {
@@ -50,7 +54,6 @@ public class PropertyManager {
         return titleList;
     }
 
-    
     public static List<String> getDistinctTemplatePropertyTitles() {
         List<String> titleList = new ArrayList<String>();
         try {
@@ -60,7 +63,7 @@ public class PropertyManager {
         }
         return titleList;
     }
-    
+
     public static List<String> getDistinctMasterpiecePropertyTitles() {
         List<String> titleList = new ArrayList<String>();
         try {
@@ -90,7 +93,7 @@ public class PropertyManager {
         }
         return null;
     }
-    
+
     public static void deleteTemplateProperty(Templateproperty property) {
         try {
             PropertyMysqlHelper.deleteTemplateProperty(property);
@@ -98,8 +101,7 @@ public class PropertyManager {
             logger.error(e);
         }
     }
-    
-    
+
     public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) {
         List<Masterpieceproperty> propertyList = new ArrayList<Masterpieceproperty>();
         try {
@@ -119,7 +121,7 @@ public class PropertyManager {
         }
         return null;
     }
-    
+
     public static void deleteMasterpieceProperty(Masterpieceproperty property) {
         try {
             PropertyMysqlHelper.deleteMasterpieceProperty(property);
@@ -127,6 +129,5 @@ public class PropertyManager {
             logger.error(e);
         }
     }
-    
-    
+
 }

@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +12,12 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 
-class MasterpieceMysqlHelper {
+class MasterpieceMysqlHelper implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4634402187657044322L;
 
     public static List<Masterpiece> getMasterpiecesForProcess(int processId) throws SQLException {
         Connection connection = null;

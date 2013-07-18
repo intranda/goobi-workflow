@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -9,7 +10,12 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 
-class LdapMysqlHelper {
+class LdapMysqlHelper implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6697737226604394665L;
     private static final Logger logger = Logger.getLogger(LdapMysqlHelper.class);
 
     public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws SQLException {

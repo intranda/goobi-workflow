@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -8,7 +9,12 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Docket;
 
-class DocketMysqlHelper {
+class DocketMysqlHelper implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8079331483121462356L;
     private static final Logger logger = Logger.getLogger(DocketMysqlHelper.class);
 
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws SQLException {

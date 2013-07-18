@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +12,12 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
-class TemplateMysqlHelper {
+class TemplateMysqlHelper implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7884412786643552896L;
 
     public static List<Template> getTemplatesForProcess(int processId) throws SQLException {
         Connection connection = null;

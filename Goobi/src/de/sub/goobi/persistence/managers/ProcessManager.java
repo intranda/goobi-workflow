@@ -30,7 +30,7 @@ public class ProcessManager implements IManager, Serializable {
 
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) {
-        return (List<? extends DatabaseObject>) getProcesses(order, filter, start, count);
+        return getProcesses(order, filter, start, count);
     }
 
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {
@@ -42,7 +42,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         return answer;
     }
-    
+
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) {
         List<Integer> answer = new ArrayList<Integer>();
         try {
@@ -70,22 +70,22 @@ public class ProcessManager implements IManager, Serializable {
 
     public static long getSumOfFieldValue(String columnname, String filter) {
         try {
-            return ProcessMysqlHelper.getSumOfFieldValue(columnname,  filter);
+            return ProcessMysqlHelper.getSumOfFieldValue(columnname, filter);
         } catch (SQLException e) {
             logger.error(e);
         }
         return 0;
     }
-    
+
     public static long getCountOfFieldValue(String columnname, String filter) {
         try {
-            return ProcessMysqlHelper.getCountOfFieldValue(columnname,  filter);
+            return ProcessMysqlHelper.getCountOfFieldValue(columnname, filter);
         } catch (SQLException e) {
             logger.error(e);
         }
         return 0;
     }
-    
+
     public static void saveProcess(Process o) throws DAOException {
         ProcessMysqlHelper.saveProcess(o, false);
 
@@ -246,7 +246,6 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
-    
     public static String getProcessTitle(int processId) {
         String answer = "";
         try {

@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,12 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 
-class StepMysqlHelper {
+class StepMysqlHelper implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2064912552692963L;
+
     private static final Logger logger = Logger.getLogger(StepMysqlHelper.class);
 
     public static List<Step> getStepsForProcess(int processId) throws SQLException {
@@ -113,6 +119,7 @@ class StepMysqlHelper {
     };
 
     public static ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<Step>() {
+        @Override
         public Step handle(ResultSet rs) throws SQLException {
             try {
                 if (rs.next()) {
@@ -427,7 +434,7 @@ class StepMysqlHelper {
         if (o.getProcessId() == null && o.getProzess() != null) {
             o.setProcessId(o.getProzess().getId());
         }
-        
+
         if (includeID) {
             Object[] param =
                     {

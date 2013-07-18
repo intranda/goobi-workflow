@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +14,12 @@ import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public class UsergroupManager implements IManager {
+public class UsergroupManager implements IManager, Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6021826136861140126L;
+
     private static final Logger logger = Logger.getLogger(UsergroupManager.class);
 
     public static Usergroup getUsergroupById(int id) throws DAOException {
@@ -67,10 +73,12 @@ public class UsergroupManager implements IManager {
         return answer;
     }
 
+    @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return (List<? extends DatabaseObject>) getUsergroups(order, filter, start, count);
+        return getUsergroups(order, filter, start, count);
     }
 
+    @Override
     public int getHitSize(String order, String filter) throws DAOException {
         int num = 0;
         try {

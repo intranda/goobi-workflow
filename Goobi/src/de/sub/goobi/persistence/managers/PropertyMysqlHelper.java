@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,12 @@ import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.helper.enums.PropertyType;
 
-class PropertyMysqlHelper {
+class PropertyMysqlHelper implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5175567943231852013L;
+
     private static final Logger logger = Logger.getLogger(PropertyMysqlHelper.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
@@ -403,7 +409,7 @@ class PropertyMysqlHelper {
         if (property.getTemplateId() == 0 && property.getVorlage() != null) {
             property.setTemplateId(property.getVorlage().getId());
         }
-        
+
         if (property.getId() == null) {
             return insertTemplateproperty(property);
         } else {
@@ -488,7 +494,7 @@ class PropertyMysqlHelper {
         if (property.getMasterpieceId() == 0 && property.getWerkstueck() != null) {
             property.setMasterpieceId(property.getWerkstueck().getId());
         }
-        
+
         if (property.getId() == null) {
             return insertMasterpieceproperty(property);
         } else {

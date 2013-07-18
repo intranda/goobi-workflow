@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +23,12 @@ import org.goobi.managedbeans.LoginBean;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
-class ProcessMysqlHelper {
+class ProcessMysqlHelper implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5087816359001071079L;
+
     private static final Logger logger = Logger.getLogger(ProcessMysqlHelper.class);
 
     public static Process getProcessById(int id) throws SQLException {
@@ -154,7 +160,7 @@ class ProcessMysqlHelper {
             connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Process> ret = null;
-                ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
+            ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -162,8 +168,7 @@ class ProcessMysqlHelper {
             }
         }
     }
-    
-    
+
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -181,7 +186,7 @@ class ProcessMysqlHelper {
             connection = MySQLHelper.getInstance().getConnection();
             logger.debug(sql.toString());
             List<Integer> ret = null;
-                ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
+            ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -207,6 +212,7 @@ class ProcessMysqlHelper {
     }
 
     public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
+        @Override
         public List<Process> handle(ResultSet rs) throws SQLException {
             List<Process> answer = new ArrayList<Process>();
             try {
@@ -230,6 +236,7 @@ class ProcessMysqlHelper {
     };
 
     public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
+        @Override
         public Process handle(ResultSet rs) throws SQLException {
             try {
                 if (rs.next()) {
@@ -312,7 +319,7 @@ class ProcessMysqlHelper {
         } else {
             Object[] param =
                     { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
-                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,  o.getProjectId(),
+                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
                             o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                             o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
                             o.getDocket() == null ? null : o.getDocket().getId() };

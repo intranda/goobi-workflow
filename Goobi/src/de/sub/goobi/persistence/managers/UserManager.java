@@ -80,10 +80,12 @@ public class UserManager implements IManager, Serializable {
         return answer;
     }
 
+    @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return (List<? extends DatabaseObject>) getUsers(order, filter, start, count);
+        return getUsers(order, filter, start, count);
     }
 
+    @Override
     public int getHitSize(String order, String filter) throws DAOException {
         int num = 0;
         try {

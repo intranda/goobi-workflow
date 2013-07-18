@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,12 @@ import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-class UserMysqlHelper {
+class UserMysqlHelper implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6133952688951728602L;
+
     private static final Logger logger = Logger.getLogger(UserMysqlHelper.class);
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws SQLException {
@@ -370,16 +376,14 @@ class UserMysqlHelper {
             return answer;
         }
     };
-    
-    
+
     public static void main(String[] args) {
         try {
             List<Ldap> ldapList = LdapManager.getLdaps(null, null, 0, 10);
             for (Ldap ldap : ldapList) {
                 System.out.println(ldap.getTitel());
             }
-            
-            
+
             List<User> list = UserMysqlHelper.getUsers(null, "login = 'testadmin'", 0, 10);
             for (User u : list) {
                 System.out.println(u.getLogin());

@@ -32,7 +32,7 @@ public class StepManager implements IManager, Serializable {
 
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return (List<? extends DatabaseObject>) getSteps(order, filter, start, count);
+        return getSteps(order, filter, start, count);
     }
 
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) {
@@ -144,7 +144,7 @@ public class StepManager implements IManager, Serializable {
         }
         return new ArrayList<String>();
     }
-    
+
     public static List<String> getDistinctStepTitles(String order, String filter) {
 
         try {
@@ -187,7 +187,7 @@ public class StepManager implements IManager, Serializable {
             logger.error("Cannot not save history event", e);
         }
     }
-    
+
     public static long getCountOfFieldValue(String columnname, String filter, String order, String group) {
         try {
             return StepMysqlHelper.getCountOfFieldValue(columnname, filter, order, group);
@@ -196,7 +196,7 @@ public class StepManager implements IManager, Serializable {
         }
         return 0l;
     }
-    
+
     public static long getSumOfFieldValue(String columnname, String filter, String order, String group) {
         try {
             return StepMysqlHelper.getSumOfFieldValue(columnname, filter, order, group);
@@ -205,7 +205,7 @@ public class StepManager implements IManager, Serializable {
         }
         return 0l;
     }
-    
+
     public static double getAverageOfFieldValue(String columnname, String filter, String order, String group) {
         try {
             return StepMysqlHelper.getAverageOfFieldValue(columnname, filter, order, group);

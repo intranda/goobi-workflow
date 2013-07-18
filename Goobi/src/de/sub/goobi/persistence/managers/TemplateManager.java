@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +8,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Template;
 
-
-public class TemplateManager {
+public class TemplateManager implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7969538039899200231L;
     private static final Logger logger = Logger.getLogger(TemplateManager.class);
 
     public static List<Template> getTemplatesForProcess(int processId) {
@@ -48,14 +52,14 @@ public class TemplateManager {
             logger.error(e);
         }
     }
-    
+
     public static void deleteTemplate(Template template) {
         try {
             TemplateMysqlHelper.deleteTemplate(template);
         } catch (SQLException e) {
             logger.error(e);
         }
-        
+
     }
 
 }

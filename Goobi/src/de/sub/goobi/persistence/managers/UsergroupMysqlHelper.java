@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -10,7 +11,11 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-class UsergroupMysqlHelper {
+class UsergroupMysqlHelper implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6209215029673643876L;
     private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
 
     public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws SQLException {
