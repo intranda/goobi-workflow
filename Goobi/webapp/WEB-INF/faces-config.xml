@@ -85,15 +85,6 @@
 		<converter-class>de.sub.goobi.converter.ProcessConverter</converter-class>
 	</converter>
 
-	<!-- RuleSet Converter for Select-Boxes -->
-	<converter>
-		<converter-id>RegelsatzConverter</converter-id>
-		<converter-class>de.sub.goobi.converter.RegelsatzConverter</converter-class>
-	</converter>
-	
-	
-
-	
 	<factory>  
         <exception-handler-factory>  
             de.sub.goobi.helper.exceptions.GoobiExceptionHandlerFactory  
