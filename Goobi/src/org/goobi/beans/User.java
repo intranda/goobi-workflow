@@ -29,7 +29,6 @@ package org.goobi.beans;
  */
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +43,7 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.DesEncrypter;
 
-public class User implements Serializable, DatabaseObject {
-	private static final long serialVersionUID = -7482853955996650586L;
+public class User implements DatabaseObject {
 	private static final Logger logger = Logger.getLogger(User.class);
 	private Integer id;
 	private String vorname;
