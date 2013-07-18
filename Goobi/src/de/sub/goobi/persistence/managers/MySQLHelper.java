@@ -151,7 +151,7 @@ public class MySQLHelper {
                 if (rs.next()) {
                     Integer id = rs.getInt(1);
                     if (rs.wasNull()) {
-                        id = null;
+                        id = 0;
                     }
                     return id;
                 }
@@ -172,7 +172,7 @@ public class MySQLHelper {
                 if (rs.next()) {
                     answer = new Long(rs.getLong(1));
                     if (rs.wasNull()) {
-                        answer = null;
+                        answer = 0l;
                     }
                 }
             } finally {
@@ -192,7 +192,7 @@ public class MySQLHelper {
                 if (rs.next()) {
                     answer = new Double(rs.getDouble(1));
                     if (rs.wasNull()) {
-                        answer = null;
+                        answer = 0.0;
                     }
                 }
             } finally {
