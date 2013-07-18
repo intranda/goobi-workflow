@@ -63,11 +63,12 @@ import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.dl.Reference;
-import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.IncompletePersonObjectException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -111,6 +112,13 @@ public class Metadaten {
     private DocStruct tempStrukturelement;
     private List<MetadatumImpl> myMetadaten = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> myPersonen = new LinkedList<MetaPerson>();
+
+    private List<MetadataGroupImpl> groups = new LinkedList<MetadataGroupImpl>();
+    private MetadataGroupImpl currentGroup;
+    private MetadataGroupImpl selectedGroup;
+    private List<MetadataGroupImpl> tempMetadataGroups = new ArrayList<MetadataGroupImpl>();
+    private String tempGroupType;
+
     private MetadatumImpl curMetadatum;
     private MetaPerson curPerson;
     private DigitalDocument mydocument;
@@ -152,6 +160,7 @@ public class Metadaten {
 
     private boolean modusHinzufuegen = false;
     private boolean modusHinzufuegenPerson = false;
+    private boolean modeAddGroup = false;
     private String modusAnsicht = "Metadaten";
     private TreeNodeStruct3 tree3;
     private String myBild;
@@ -220,6 +229,20 @@ public class Metadaten {
         return "";
     }
 
+    public String AddGroup() {
+        this.modeAddGroup = true;
+        Modes.setBindState(BindState.create);
+
+        // reset selected groups
+        selectedGroup = null;
+        getSelectedGroup();
+
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
+
     public String HinzufuegenPerson() {
         this.modusHinzufuegenPerson = true;
         this.tempPersonNachname = "";
@@ -233,6 +256,7 @@ public class Metadaten {
     public String Abbrechen() {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
+        this.modeAddGroup = false;
         Modes.setBindState(BindState.edit);
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
@@ -252,6 +276,31 @@ public class Metadaten {
             MetadatenalsTree3Einlesen1();
             return "";
         }
+    }
+
+    public String CopyGroup() {
+        MetadataGroup newMetadataGroup;
+        try {
+            newMetadataGroup = new MetadataGroup(this.currentGroup.getMetadataGroup().getType());
+            for (MetadatumImpl metadataImpl : currentGroup.getMetadataList()) {
+
+                List<Metadata> metadataList = newMetadataGroup.getMetadataList();
+                for (Metadata metadata : metadataList) {
+                    if (metadata.getType().getName().equals(metadataImpl.getMd().getType().getName())) {
+                        metadata.setValue(metadataImpl.getMd().getValue());
+                    }
+                }
+            }
+
+            this.myDocStruct.addMetadataGroup(newMetadataGroup);
+        } catch (MetadataTypeNotAllowedException e) {
+            myLogger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
+        }
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String Kopieren() {
@@ -351,6 +400,35 @@ public class Metadaten {
         return "";
     }
 
+    public String saveGroup() {
+        try {
+            MetadataGroup md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(this.tempGroupType));
+
+            for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
+                List<Metadata> metadataList = md.getMetadataList();
+                for (Metadata metadata : metadataList) {
+                    if (metadata.getType().getName().equals(mdi.getMd().getType().getName())) {
+                        metadata.setValue(mdi.getMd().getValue());
+                    }
+                }
+            }
+
+            this.myDocStruct.addMetadataGroup(md);
+        } catch (MetadataTypeNotAllowedException e) {
+            myLogger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
+        }
+
+        this.modeAddGroup = false;
+        Modes.setBindState(BindState.edit);
+
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        MetadatenalsTree3Einlesen1();
+        return "";
+    }
+
     public String loadRightFrame() {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
@@ -375,6 +453,15 @@ public class Metadaten {
             return "";
         }
         this.modusHinzufuegenPerson = false;
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
+
+    public String deleteGroup() {
+        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup());
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -428,6 +515,18 @@ public class Metadaten {
     }
 
     public void setSizeOfMetadata(int i) {
+        // do nothing, needed for jsp only
+    }
+
+    public int getSizeOfMetadataGroups() {
+        try {
+            return getAddableMetadataGroupTypes().size();
+        } catch (NullPointerException e) {
+            return 0;
+        }
+    }
+
+    public void setSizeOfMetadataGroups(int i) {
         // do nothing, needed for jsp only
     }
 
@@ -485,6 +584,45 @@ public class Metadaten {
         this.tempMetadatumList = tempMetadatumList;
     }
 
+    public List<SelectItem> getAddableMetadataGroupTypes() {
+        List<SelectItem> myList = new ArrayList<SelectItem>();
+        /*
+         * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
+         */
+        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
+        if (types == null) {
+            return myList;
+        }
+
+        /*
+         * -------------------------------- die Metadatentypen sortieren --------------------------------
+         */
+        HelperComparator c = new HelperComparator();
+        c.setSortierart("MetadatenGroupTypes");
+        Collections.sort(types, c);
+
+        for (MetadataGroupType mdt : types) {
+            myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
+            try {
+                MetadataGroup md = new MetadataGroup(mdt);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md);
+                this.tempMetadataGroups.add(mdum);
+
+            } catch (MetadataTypeNotAllowedException e) {
+                myLogger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+            }
+        }
+        return myList;
+    }
+
+    public List<MetadataGroupImpl> getTempMetadataGroupList() {
+        return this.tempMetadataGroups;
+    }
+
+    public void setTempMetadataGroupList(List<MetadataGroupImpl> tempMetadatumList) {
+        this.tempMetadataGroups = tempMetadatumList;
+    }
+
     /**
      * die MetadatenTypen zurückgeben ================================================================
      */
@@ -518,6 +656,50 @@ public class Metadaten {
         for (MetadataType mdt : types) {
 
             myTypen[zaehler] = new SelectItem(mdt.getName(), this.metahelper.getMetadatatypeLanguage(mdt));
+            zaehler++;
+
+        }
+
+        /*
+         * -------------------------------- alle Typen, die einen Unterstrich haben nochmal rausschmeissen --------------------------------
+         */
+        SelectItem myTypenOhneUnterstrich[] = new SelectItem[zaehler];
+        for (int i = 0; i < zaehler; i++) {
+            myTypenOhneUnterstrich[i] = myTypen[i];
+        }
+        return myTypenOhneUnterstrich;
+    }
+
+    public SelectItem[] getMetadataGroupTypes() {
+        /*
+         * -------------------------------- zuerst mal die addierbaren Metadatentypen ermitteln --------------------------------
+         */
+        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
+
+        if (types == null) {
+            return new SelectItem[0];
+        }
+
+        /*
+         * -------------------------------- die Metadatentypen sortieren --------------------------------
+         */
+        HelperComparator c = new HelperComparator();
+        c.setSortierart("MetadatenGroupTypes");
+        Collections.sort(types, c);
+
+        /*
+         * -------------------------------- nun ein Array mit der richtigen Größe anlegen --------------------------------
+         */
+        int zaehler = types.size();
+        SelectItem myTypen[] = new SelectItem[zaehler];
+
+        /*
+         * -------------------------------- und anschliessend alle Elemente in das Array packen --------------------------------
+         */
+        zaehler = 0;
+        for (MetadataGroupType mdt : types) {
+
+            myTypen[zaehler] = new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt));
             zaehler++;
 
         }
@@ -760,7 +942,6 @@ public class Metadaten {
         }
     }
 
-    
     public boolean isCheckForRepresentative() {
         MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
         if (mdt != null) {
@@ -768,7 +949,7 @@ public class Metadaten {
         }
         return false;
     }
-    
+
     private boolean storeMetadata() {
         boolean result = true;
         try {
@@ -819,7 +1000,7 @@ public class Metadaten {
         this.myDocStruct = inStrukturelement;
         LinkedList<MetadatumImpl> lsMeta = new LinkedList<MetadatumImpl>();
         LinkedList<MetaPerson> lsPers = new LinkedList<MetaPerson>();
-
+        List<MetadataGroupImpl> metaGroups = new LinkedList<MetadataGroupImpl>();
         /*
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
@@ -846,8 +1027,18 @@ public class Metadaten {
             }
         }
 
+        List<MetadataGroup> groups =
+                this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, (String) Helper
+                        .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
+        if (groups != null) {
+            for (MetadataGroup mg : groups) {
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg));
+            }
+        }
+
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
+        this.groups = metaGroups;
 
         /*
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------
@@ -1280,8 +1471,8 @@ public class Metadaten {
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
                                     + meineSeite.getValue());
-//                            new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
-//                                    + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
+                    //                            new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
+                    //                                    + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
                 }
                 zaehler++;
             }
@@ -1558,7 +1749,7 @@ public class Metadaten {
         return ConfigMain.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
     }
 
-    public List<String> getAllTifFolders()  {
+    public List<String> getAllTifFolders() {
         return this.allTifFolders;
     }
 
@@ -2107,7 +2298,7 @@ public class Metadaten {
             }
         }
         try {
-//            int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
+            //            int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
             myBild = null;
             BildErmitteln(0);
         } catch (Exception e) {
@@ -2314,6 +2505,40 @@ public class Metadaten {
 
     public void setMetadatum(MetadatumImpl meta) {
         this.selectedMetadatum = meta;
+    }
+
+    public String getTempMetadataGroupType() {
+        if (this.selectedGroup == null) {
+            getAddableMetadataGroupTypes();
+            this.selectedGroup = this.tempMetadataGroups.get(0);
+        }
+        return this.selectedGroup.getMetadataGroup().getType().getName();
+    }
+
+    public void setTempMetadataGroupType(String tempTyp) {
+        MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
+        try {
+            MetadataGroup md = new MetadataGroup(mdt);
+            this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md);
+        } catch (MetadataTypeNotAllowedException e) {
+            myLogger.error(e.getMessage());
+        }
+        this.tempGroupType = tempTyp;
+    }
+
+    public MetadataGroupImpl getSelectedGroup() {
+
+        if (this.selectedGroup == null) {
+            getAddableMetadataGroupTypes();
+            if (tempMetadataGroups != null && !tempMetadataGroups.isEmpty()) {
+                this.selectedGroup = this.tempMetadataGroups.get(0);
+            }
+        }
+        return this.selectedGroup;
+    }
+
+    public void setSelectedGroup(MetadataGroupImpl meta) {
+        this.selectedGroup = meta;
     }
 
     public String getOutputType() {
@@ -2795,27 +3020,26 @@ public class Metadaten {
             String imagename = pageToRemove.getImageName();
 
             removeImage(imagename);
-//            try {
-                mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
-//                pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
-//            } catch (ContentFileNotLinkedException e) {
-//                myLogger.error(e);
-//            }
+            //            try {
+            mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
+            //                pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
+            //            } catch (ContentFileNotLinkedException e) {
+            //                myLogger.error(e);
+            //            }
 
             mydocument.getPhysicalDocStruct().removeChild(pageToRemove);
             List<Reference> refs = new ArrayList<Reference>(pageToRemove.getAllFromReferences());
             for (ugh.dl.Reference ref : refs) {
                 ref.getSource().removeReferenceTo(pageToRemove);
             }
-            
+
         }
 
         alleSeitenAuswahl = null;
         myBildLetztes = mydocument.getPhysicalDocStruct().getAllChildren().size();
-        
 
         allPages = mydocument.getPhysicalDocStruct().getAllChildren();
-        
+
         int currentPhysicalOrder = 1;
         MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
         for (DocStruct page : allPages) {
@@ -2829,11 +3053,11 @@ public class Metadaten {
             }
             currentPhysicalOrder++;
         }
-        
+
         retrieveAllImages();
-        
+
         // current image was deleted, load first image
-        if (selectedPages.contains(myBildNummer -1)) {
+        if (selectedPages.contains(myBildNummer - 1)) {
 
             BildErsteSeiteAnzeigen();
         } else {
@@ -3027,8 +3251,31 @@ public class Metadaten {
     }
 
 
+    public List<MetadataGroupImpl> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<MetadataGroupImpl> groups) {
+        this.groups = groups;
+    }
+
+    public MetadataGroupImpl getCurrentGroup() {
+        return currentGroup;
+    }
+
+    public void setCurrentGroup(MetadataGroupImpl currentGroup) {
+        this.currentGroup = currentGroup;
+    }
+
+    public boolean isModeAddGroup() {
+        return modeAddGroup;
+    }
+
+    public void setModeAddGroup(boolean modeAddGroup) {
+        this.modeAddGroup = modeAddGroup;
+    }
+
     public Boolean getDisplayFileManipulation() {
         return ConfigMain.getBooleanParameter("MetsEditorDisplayFileManipulation", false);
     }
-    
 }

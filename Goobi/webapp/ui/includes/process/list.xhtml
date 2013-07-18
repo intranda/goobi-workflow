@@ -386,38 +386,38 @@
 
 					<!-- Mets-Export-Schaltknopf -->
 					<h:commandLink action="#{ProzessverwaltungForm.ExportMets}" id="action19" title="#{msgs.exportMets}"
-						rendered="#{(ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1)) and item.tifDirectoryExists}">
+						rendered="#{(ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1)) and item.displayMETSButton}">
 						<h:graphicImage value="images/buttons/mets.png" style="margin-right:2px" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 					</h:commandLink>
 
 					<!-- Mets-Export-Schaltknopf greyed -->
 					<h:graphicImage
-						rendered="#{(ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1)) and !item.tifDirectoryExists}"
+						rendered="#{(ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1)) and !item.displayMETSButton}"
 						value="images/buttons/metsGreyed.png" style="margin-right:2px" title="#{msgs.exportMets}" />
 
 					<!-- PDF-Export-Schaltknopf -->
 					<h:commandLink action="#{ProzessverwaltungForm.ExportPdf}" id="action20" title="#{msgs.exportPdf}"
-						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and item.tifDirectoryExists}">
+						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and item.displayPDFButton}">
 						<h:graphicImage value="images/buttons/pdf.png" style="margin-right:2px" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 					</h:commandLink>
 
 					<!-- PDF-Export-Schaltknopf greyed -->
 					<h:graphicImage
-						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and !item.tifDirectoryExists}"
+						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and !item.displayPDFButton}"
 						value="images/buttons/pdfGreyed.png" style="margin-right:2px" title="#{msgs.exportPdf}" />
 
 					<!-- DMS-Export-Schaltknopf -->
 					<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" title="#{msgs.importDms}"
-						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and item.tifDirectoryExists}">
+						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and item.displayDMSButton}">
 						<h:graphicImage value="images/buttons/dms.png" style="margin-right:0px" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 					</h:commandLink>
 
 					<!-- PDF-Export-Schaltknopf greyed -->
 					<h:graphicImage
-						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and !item.tifDirectoryExists}"
+						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and !item.displayDMSButton}"
 						value="images/buttons/dmsGreyed.png" style="margin-right:2px" title="#{msgs.importDms}" />
 
 					<!-- ProzessKopie-Schaltknopf -->

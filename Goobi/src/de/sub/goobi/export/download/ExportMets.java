@@ -208,32 +208,35 @@ public class ExportMets {
         /*
          * -------------------------------- if the top element does not have any image related, set them all --------------------------------
          */
-        if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
-            if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
-                Helper.setMeldung(myProzess.getTitel()
-                        + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
-                for (DocStruct mySeitenDocStruct : dd.getPhysicalDocStruct().getAllChildren()) {
-                    topElement.addReferenceTo(mySeitenDocStruct, "logical_physical");
+
+        if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
+
+            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
+                if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
+                    Helper.setMeldung(myProzess.getTitel()
+                            + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
+                    for (DocStruct mySeitenDocStruct : dd.getPhysicalDocStruct().getAllChildren()) {
+                        topElement.addReferenceTo(mySeitenDocStruct, "logical_physical");
+                    }
+                } else {
+                    Helper.setFehlerMeldung(myProzess.getTitel() + ": could not found any referenced images, export aborted");
+                    dd = null;
+                    return false;
                 }
-            } else {
-                Helper.setFehlerMeldung(myProzess.getTitel() + ": could not found any referenced images, export aborted");
-                dd = null;
-                return false;
+            }
+
+            for (ContentFile cf : dd.getFileSet().getAllFiles()) {
+                String location = cf.getLocation();
+                // If the file's location string shoes no sign of any protocol,
+                // use the file protocol.
+                if (!location.contains("://")) {
+                    location = "file://" + location;
+                }
+                URL url = new URL(location);
+                File f = new File(imageFolder, url.getFile());
+                cf.setLocation(f.toURI().toString());
             }
         }
-
-        for (ContentFile cf : dd.getFileSet().getAllFiles()) {
-            String location = cf.getLocation();
-            // If the file's location string shoes no sign of any protocol,
-            // use the file protocol.
-            if (!location.contains("://")) {
-                location = "file://" + location;
-            }
-            URL url = new URL(location);
-            File f = new File(imageFolder, url.getFile());
-            cf.setLocation(f.toURI().toString());
-        }
-
         mm.setDigitalDocument(dd);
 
         /*
