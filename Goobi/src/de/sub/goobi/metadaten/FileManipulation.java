@@ -40,6 +40,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -78,6 +79,8 @@ public class FileManipulation {
 
     private UploadedFile uploadedFile = null;
 
+    private String uploadedFileName = null;
+
     private List<String> selectedFiles = new ArrayList<String>();
 
     private boolean deleteFilesAfterMove = false;
@@ -110,6 +113,15 @@ public class FileManipulation {
             if (basename.contains("\\")) {
                 basename = basename.substring(basename.lastIndexOf("\\") + 1);
             }
+
+            if (StringUtils.isNotBlank(uploadedFileName)) {
+                String fileExtension = Metadaten.getFileExtension(basename);
+                if (!fileExtension.isEmpty() && !uploadedFileName.endsWith(fileExtension)) {
+                    uploadedFileName = uploadedFileName + fileExtension;
+                }
+                basename = uploadedFileName;
+                
+            }
             logger.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator + basename;
 
@@ -117,7 +129,7 @@ public class FileManipulation {
 
             if (new File(filename).exists()) {
                 List<String> parameterList = new ArrayList<String>();
-                parameterList.add(filename);
+                parameterList.add(basename);
                 Helper.setFehlerMeldung(Helper.getTranslation("fileExists", parameterList));
                 return;
             }
@@ -177,9 +189,21 @@ public class FileManipulation {
         metadataBean.BildErmitteln(0);
     }
 
+    public String getUploadedFileName() {
+        return uploadedFileName;
+    }
+
+    public void setUploadedFileName(String uploadedFileName) {
+        this.uploadedFileName = uploadedFileName;
+    }
+
     private void updatePagination(String filename) throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException,
             DAOException, MetadataTypeNotAllowedException {
-        if (insertPage.equals(Helper.getTranslation("lastPage"))) {
+        if (!matchesFileConfiguration(filename)) {
+            return;
+        }
+
+        if (insertPage.equals("lastPage")) {
             metadataBean.createPagination();
         } else {
 
@@ -607,33 +631,33 @@ public class FileManipulation {
                         }
                     }
                 }
-
-                // update pagination
-                try {
-                    if (insertPage.equals(Helper.getTranslation("lastPage"))) {
-                        metadataBean.createPagination();
-                    } else {
-                        int indexToImport = Integer.parseInt(insertPage);
-                        for (String filename : importedFilenames) {
-                            updatePagination(filename);
-                            insertPage = String.valueOf(++indexToImport);
-                        }
-                    }
-                } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
-                } catch (SwapException e) {
-                    logger.error(e);
-                } catch (DAOException e) {
-                    logger.error(e);
-                } catch (MetadataTypeNotAllowedException e) {
-                    logger.error(e);
-                } catch (IOException e) {
-                    logger.error(e);
-                } catch (InterruptedException e) {
-                    logger.error(e);
-                }
             }
         }
+        // update pagination
+        try {
+            if (insertPage.equals("lastPage")) {
+                metadataBean.createPagination();
+            } else {
+                int indexToImport = Integer.parseInt(insertPage);
+                for (String filename : importedFilenames) {
+                    updatePagination(filename);
+                    insertPage = String.valueOf(++indexToImport);
+                }
+            }
+        } catch (TypeNotAllowedForParentException e) {
+            logger.error(e);
+        } catch (SwapException e) {
+            logger.error(e);
+        } catch (DAOException e) {
+            logger.error(e);
+        } catch (MetadataTypeNotAllowedException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
+        }
+
         // delete folder
 
         for (String importName : selectedFiles) {
@@ -655,4 +679,22 @@ public class FileManipulation {
     public void setCurrentFolder(String currentFolder) {
         this.currentFolder = currentFolder;
     }
+
+    private static boolean matchesFileConfiguration(String filename) {
+
+        if (filename == null) {
+            return false;
+        }
+
+        String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
+        String afterLastBackslash = afterLastSlash.substring(afterLastSlash.lastIndexOf('\\') + 1);
+
+        String prefix = ConfigMain.getParameter("ImagePrefix", "\\d{8}");
+        if (!afterLastBackslash.matches(prefix + "\\..+")) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
