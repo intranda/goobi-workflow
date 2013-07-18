@@ -110,9 +110,9 @@
 							<!-- Preferences -->
 							<h:outputLabel for="Regelsatz" rendered="#{ProzesskopieForm.standardFields.preferences}" value="#{msgs.regelsatz}" />
 							<h:panelGroup rendered="#{ProzesskopieForm.standardFields.preferences}">
-								<h:selectOneMenu id="Regelsatz" value="#{ProzesskopieForm.prozessKopie.regelsatz}" converter="RegelsatzConverter"
+								<h:selectOneMenu id="Regelsatz" value="#{ProzesskopieForm.rulesetSelection}" 
 									onchange="document.getElementById('OpacRequest').click()" styleClass="prozessKopieFeldbreite" required="true">
-									<f:selectItems value="#{HelperForm.regelsaetze}" />
+									<f:selectItems value="#{ProzesskopieForm.rulesetSelectionList}" />
 								</h:selectOneMenu>
 								<x:message for="Regelsatz" style="color: red" replaceIdWithLabel="true" />
 							</h:panelGroup>

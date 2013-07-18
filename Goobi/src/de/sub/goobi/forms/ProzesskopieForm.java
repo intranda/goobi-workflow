@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
@@ -83,7 +84,9 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.helper.BeanHelper;
@@ -97,6 +100,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.importer.ImportOpac;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
@@ -1430,5 +1434,36 @@ public class ProzesskopieForm {
             String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
             this.prozessKopie.setWikifield(WikiFieldHelper.getWikiMessage(prozessKopie.getWikifield(), "info", message));
         }
+    }
+    
+    
+    public Integer getRulesetSelection() {
+        if (this.prozessKopie.getRegelsatz() != null) {
+            return this.prozessKopie.getRegelsatz().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setRulesetSelection(Integer selected) {
+        if (selected.intValue() != 0) {
+            try {
+                Ruleset ruleset = RulesetManager.getRulesetById(selected);
+                prozessKopie.setRegelsatz(ruleset);
+                prozessKopie.setMetadatenKonfigurationID(selected);
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
+                myLogger.error(e);
+            }
+        }
+    }
+    
+    public List<SelectItem> getRulesetSelectionList() {
+        List<SelectItem> rulesets = new ArrayList<SelectItem>();
+        List<Ruleset> temp = RulesetManager.getAllRulesets();
+        for (Ruleset ruleset : temp) {
+            rulesets.add(new SelectItem(ruleset.getId(), ruleset.getTitel(), null));
+        }
+        return rulesets;
     }
 }
