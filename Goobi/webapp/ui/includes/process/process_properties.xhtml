@@ -77,7 +77,10 @@
 									<h:outputText value="#{process_item.name}" />
 								</td>
 								<td>
-									<h:outputText value="#{process_item.value}" />
+									<h:outputText value="#{process_item.value}" rendered="#{process_item.type.name != 'link'}"/>
+									<h:outputLink value="#{process_item.value}" title="#{process_item.value}" target="_blank" rendered="#{process_item.type.name == 'link'}">
+										<h:outputText value="#{process_item.value}" />
+									</h:outputLink>
 								</td>
 								<h:panelGroup rendered="#{propInd == 0}">
 									<td class="standardTable_ColumnCentered" rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
@@ -236,7 +239,7 @@
 											<x:message for="title" style="color: red" detailFormat="#{msgs.keinTitelAngegeben}" />
 										</h:panelGroup>
 										<!-- textarea -->
-										<h:panelGroup rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'null'))}">
+										<h:panelGroup rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 
 											<h:outputText style="margin-left:25px;margin-right:10px" value="#{msgs.wert}: " rendered="#{myprocess_item.isNew}" />
 											<h:inputText style="width: 500px;margin-right:15px" value="#{myprocess_item.value}"

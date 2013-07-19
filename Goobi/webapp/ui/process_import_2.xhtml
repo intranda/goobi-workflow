@@ -38,7 +38,7 @@
 							</h:column>
 
 							<h:column>
-								<h:panelGroup id="prpvw15_1" rendered="#{property.type.name == 'text'}">
+								<h:panelGroup id="prpvw15_1" rendered="#{(property.type.name == 'text') or (property.type.name == 'link')}">
 									<h:inputText id="inputText" style="width: 500px;margin-right:15px" value="#{property.value}" required="#{property.required}"
 										requiredMessage="#{msgs.valueIsRequired}" />
 									<h:message for="inputText" />

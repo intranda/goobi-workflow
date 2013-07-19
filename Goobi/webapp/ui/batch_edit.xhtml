@@ -80,7 +80,10 @@
 													<h:outputText value="#{proc.name}" />
 												</td>
 												<td>
-													<h:outputText value="#{proc.value}" />
+													<h:outputText value="#{proc.value}" rendered="#{proc.type.name != 'link'}"/>
+													<h:outputLink value="#{proc.value}" title="#{proc.value}" target="_blank" rendered="#{proc.type.name == 'link'}">
+														<h:outputText value="#{proc.value}" />
+													</h:outputLink>
 												</td>
 												<td class="standardTable_ColumnCentered">
 													<h:commandLink action="batch_edit" title="#{msgs.bearbeiten}">
@@ -185,12 +188,12 @@
 													</td>
 													<td>
 														<!-- textarea -->
-														<h:panelGroup id="prpvw15_1" rendered="#{((myprocess_item.type.name == 'text') || (myprocess_item.type.name == 'null'))}">
+														<h:panelGroup id="prpvw15_1" rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 															<h:inputText id="file" style="margin-right:15px" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 																value="#{myprocess_item.value}" />
 														</h:panelGroup>
 														<!-- numbers only -->
-														<h:panelGroup id="prpvw15_1mnk" rendered="#{myprocess_item.type.name == 'integer' || myprocess_item.type.name == 'number'}">
+														<h:panelGroup id="prpvw15_1mnk" rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
 
 															<h:inputText id="numberstuff122334mnktodo" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 																style="margin-right:15px" value="#{myprocess_item.value}">
