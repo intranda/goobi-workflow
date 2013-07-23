@@ -229,12 +229,16 @@ public class ShellScript {
 
             List<String> scriptingArgs = new ArrayList<String>();
             if (paramList != null && !paramList.isEmpty()) {
-                String[] params = paramList.split("\"");
-                if (params != null) {
-                    if (params.length == 1) {
-                        params = paramList.split(" ");
+                String[] params = null;
+                if (paramList.contains("\"")) {
+                    params = paramList.split("\"");
+                } else {
+                    params = paramList.split(" ");
+                }
+                for (String param : params) {
+                    if (!param.isEmpty()) {
+                        scriptingArgs.add(param);
                     }
-                    scriptingArgs.addAll(Arrays.asList(params));
                 }
             } else {
                 //			for (int i = 1; i < tokenisedCommand.length; i++) {
