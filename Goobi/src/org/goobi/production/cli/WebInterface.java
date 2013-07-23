@@ -29,6 +29,9 @@ package org.goobi.production.cli;
  */
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -160,6 +163,7 @@ public class WebInterface extends HttpServlet {
 	private void generateHelp(HttpServletResponse resp) throws IOException {
 		String allHelp = "";
 		List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
+		Collections.sort(mycommands, pluginComparator);
 		for (IPlugin iPlugin : mycommands) {
 			ICommandPlugin icp = (ICommandPlugin) iPlugin;
 			allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";
@@ -183,4 +187,13 @@ public class WebInterface extends HttpServlet {
 		resp.getOutputStream().print(answer);
 	}
 
+	
+	private static Comparator<IPlugin> pluginComparator = new Comparator<IPlugin>() {
+
+        @Override
+        public int compare(IPlugin o1, IPlugin o2) {
+            
+            return o1.getTitle().compareTo(o2.getTitle());
+        }
+    };
 }
