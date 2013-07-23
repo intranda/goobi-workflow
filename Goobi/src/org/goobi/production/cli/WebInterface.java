@@ -103,7 +103,7 @@ public class WebInterface extends HttpServlet {
 			List<String> allowedCommandos = WebInterfaceConfig.getCredencials(ip, password);
 			if (!allowedCommandos.contains(this.command)) {
 				// error, no command found
-				generateAnswer(resp, 401, "command not allowed", "command " + this.command + " not allowed for your IP (" + ip + ")");
+				generateAnswer(resp, 401, "command not allowed", "command " + this.command + " is not allowed for your IP (" + ip + ") and credentials.");
 				return;
 			}
 
