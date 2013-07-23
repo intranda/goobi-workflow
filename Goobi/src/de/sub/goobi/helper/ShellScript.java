@@ -229,8 +229,11 @@ public class ShellScript {
 
             List<String> scriptingArgs = new ArrayList<String>();
             if (paramList != null && !paramList.isEmpty()) {
-                String[] params = paramList.split(" ");
+                String[] params = paramList.split("\"");
                 if (params != null) {
+                    if (params.length == 1) {
+                        params = paramList.split(" ");
+                    }
                     scriptingArgs.addAll(Arrays.asList(params));
                 }
             } else {
