@@ -968,7 +968,7 @@ public class ProcessBean extends BasicBean {
         debug("reverse: ", tempList);
 
         for (Step step : tempList) {
-            if (proz.getSchritteList().get(0) != step && step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
+            if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
                 step.setEditTypeEnum(StepEditType.ADMIN);
                 mySchritt.setBearbeitungszeitpunkt(new Date());
                 User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
