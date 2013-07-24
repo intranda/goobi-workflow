@@ -91,7 +91,7 @@ public class FilterHelper {
         if (stepOpenOnly) {
             answer.append(" Bearbeitungsstatus = 1 ");
         } else if (userAssignedStepsOnly) {
-            answer.append(" BearbeitungsBenutzer = " + userId + " AND  Bearbeitungsstatus = 2 ");
+            answer.append(" BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2 ");
         } else {
             answer.append(" (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 2) ");
 
