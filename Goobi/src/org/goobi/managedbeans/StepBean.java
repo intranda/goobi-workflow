@@ -149,32 +149,14 @@ public class StepBean extends BasicBean {
 
         StepManager m = new StepManager();
         String sql = FilterHelper.criteriaBuilder(filter, false, nurOffeneSchritte, nurEigeneSchritte, false, true);
-        // TODO automatic tasks
-        // TODO hide correction tasks
-
+        if (!showAutomaticTasks) {
+            sql = "typAutomatisch = false AND " + sql; 
+        }
+        if (hideCorrectionTasks) {
+            sql = sql + " AND Prioritaet != 10 "; 
+        }
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
-        //		try {
-        //			this.myFilteredDataSource = new UserDefinedStepFilter(true);
-        //
-        //			this.myFilteredDataSource.getObservable().addObserver(new Helper().createObserver());
-        //			((UserDefinedStepFilter) this.myFilteredDataSource).setFilterModes(this.nurOffeneSchritte, this.nurEigeneSchritte);
-        //			this.myFilteredDataSource.setFilter(this.filter);
-        //
-        //			Criteria crit = this.myFilteredDataSource.getCriteria();
-        //			if (!this.showAutomaticTasks) {
-        //				crit.add(Restrictions.eq("typAutomatisch", false));
-        //			}
-        //			if (hideCorrectionTasks) {
-        //				crit.add(Restrictions.not(Restrictions.eq("prioritaet", 10)));
-        //			}
-        //
-        //			sortList(crit);
-        //			this.page = new Page(crit, 0);
-        //		} catch (HibernateException he) {
-        //			Helper.setFehlerMeldung("error on reading database", he.getMessage());
-        //			return "";
-        //		}
         return "task_all";
     }
 
