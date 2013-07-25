@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:composite="http://java.sun.com/jsf/composite"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
-	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<composite:interface>
 	</composite:interface>
@@ -114,6 +114,16 @@
 				</td>
 			</tr>
 		</table>
+
+
+<c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
+			<div class="box themed_box">
+			<h2 class="box-header"><span class="close"></span> <h:outputText value="#{AktuelleSchritteForm.mySchritt.titel}" /></h2>
+			<div class="box-content"><ui:include src="/ui/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+			<div class="clear"></div>
+			</div>
+			</div>
+		</c:if>
 
 		<script src="js/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 

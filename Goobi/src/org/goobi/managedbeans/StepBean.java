@@ -50,6 +50,7 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -66,6 +67,7 @@ import org.goobi.production.properties.PropertyParser;
 //import org.hibernate.criterion.Restrictions;
 
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
@@ -93,6 +95,7 @@ public class StepBean extends BasicBean {
     private static final Logger myLogger = Logger.getLogger(StepBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
+    private IStepPlugin myPlugin;
     private Integer myProblemID;
     private Integer mySolutionID;
     private String problemMessage;
@@ -903,6 +906,35 @@ public class StepBean extends BasicBean {
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
+        if ( this.mySchritt.getStepPlugin() != null &&  !this.mySchritt.getStepPlugin().isEmpty()) {
+            myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
+            if (myPlugin == null) {
+                Helper.setFehlerMeldung("Plugin could not be found",this.mySchritt.getStepPlugin());
+            } else {
+                myPlugin.initialize(mySchritt, "/task_edit");
+            }
+        }
+    }
+    
+    public String runPlugin() {
+        Helper.setMeldung("Starte Plugin");
+        Helper.setMeldung(mySchritt.getStepPlugin());
+
+        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+            myLogger.debug("Plugin is full GUI");
+            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
+            myLogger.debug("open plugin GUI: " + mypath);
+            myPlugin.execute();
+            return mypath;
+        } else {
+            myPlugin.execute();
+            myPlugin.finish();
+            return "";
+        }
+    }
+    
+    public IStepPlugin getMyPlugin() {
+        return myPlugin;
     }
 
     public void setStep(Step step) {
@@ -1090,7 +1122,6 @@ public class StepBean extends BasicBean {
         }
     }
 
-    // TODO property
 
     public ProcessProperty getProcessProperty() {
         return this.processProperty;
