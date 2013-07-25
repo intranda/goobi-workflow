@@ -13,13 +13,10 @@
 				rendered="#{AktuelleSchritteForm.modusBearbeiten=='' and AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null and AktuelleSchritteForm.mySchritt.typImportFileUpload}">
 				<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
 					<tr>
-						<td class="eingabeBoxen_row1">
-							<h:outputText value="#{msgs.metadatenImportieren}" />
-						</td>
+						<td class="eingabeBoxen_row1"><h:outputText value="#{msgs.metadatenImportieren}" /></td>
 					</tr>
 					<tr>
-						<td class="eingabeBoxen_row2">
-							<h:panelGrid columns="1">
+						<td class="eingabeBoxen_row2"><h:panelGrid columns="1">
 
 								<!-- Import-Upload -->
 								<h:panelGroup>
@@ -43,8 +40,7 @@
 									</h:form>
 								</h:panelGroup>
 
-							</h:panelGrid>
-						</td>
+							</h:panelGrid></td>
 					</tr>
 
 				</table>
@@ -55,13 +51,10 @@
 				<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
 				<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
 					<tr>
-						<td class="eingabeBoxen_row1">
-							<h:outputText value="#{msgs.moeglicheAktionen}" />
-						</td>
+						<td class="eingabeBoxen_row1"><h:outputText value="#{msgs.moeglicheAktionen}" /></td>
 					</tr>
 					<tr>
-						<td class="eingabeBoxen_row2">
-							<h:panelGrid columns="1">
+						<td class="eingabeBoxen_row2"><h:panelGrid columns="1">
 
 								<!-- Sperrung der Metadaten anzeigen -->
 								<h:panelGroup style="color: red;margin-top:5px;margin-bottom:15px;display:block"
@@ -100,13 +93,20 @@
 							<h:outputText value="#{msgs.russischeMetadatenExportieren}" />
 						</h:commandLink>
 						-->
-						
-						
-									<!-- Plugin Button only for Plugins without any gui or with full gui -->
-			<h:commandLink  action="#{AktuelleSchritteForm.runPlugin}"
-				rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType != 'PART'}">
-				<h:outputText value="#{msgs.plugin}" />
-			</h:commandLink>
+
+
+								<!-- Plugin Button only for Plugins without any gui or with full gui -->
+								<h:commandLink action="#{AktuelleSchritteForm.runPlugin}"
+									rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
+									<h:graphicImage value="/ui/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.plugin}: #{AktuelleSchritteForm.myPlugin.title}" />
+								</h:commandLink>
+								<h:commandLink action="#{AktuelleSchritteForm.runPlugin}"
+									rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
+									<h:graphicImage value="images/buttons/admin4a.gif" style="margin-right:3px;vertical-align:middle" />
+									<h:outputText value="#{msgs.plugin}: #{AktuelleSchritteForm.myPlugin.title}" />
+								</h:commandLink>
+
 								<!-- Modul-Schaltknopf -->
 								<h:commandLink id="action2"
 									rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}"
@@ -262,8 +262,7 @@
 									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
 								</h:commandLink>
 
-							</h:panelGrid>
-						</td>
+							</h:panelGrid></td>
 					</tr>
 
 				</table>
