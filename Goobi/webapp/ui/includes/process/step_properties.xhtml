@@ -182,7 +182,7 @@
 					</td>
 					<td class="eingabeBoxen_row3" align="right">
 						<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.mySchritt.displayProperties.deleteProperty}"
-							onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')) return false"
+							onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 							rendered="#{ProzessverwaltungForm.mySchritt.displayProperties.currentProperty.id != null}">
 							<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 						</h:commandButton>

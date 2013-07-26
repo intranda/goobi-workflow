@@ -335,7 +335,7 @@
 
 													<!-- Löschen-Schaltknopf -->
 													<h:commandLink action="#{ProjekteForm.filegroupDelete}" title="#{msgs.filegroupLoeschen}"
-														onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')) return">
+														onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return">
 														<h:graphicImage value="images/buttons/waste1a_20px.gif" />
 														<x:updateActionListener property="#{ProjekteForm.myFilegroup}" value="#{item}" />
 													</h:commandLink>
@@ -646,7 +646,7 @@
 					</td>
 					<td class="eingabeBoxen_row3" align="right">
 						<h:commandButton id="id122" value="#{msgs.loeschen}" action="#{ProjekteForm.Loeschen}"
-							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')"
+							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')"
 							rendered="#{ProjekteForm.myProjekt.id != null and ProjekteForm.myProjekt.deleteAble}" />
 						<h:commandButton id="id123" value="#{msgs.uebernehmen}" action="#{ProjekteForm.Apply}" />
 						<h:commandButton id="id124" value="#{msgs.speichern}" action="#{ProjekteForm.Speichern}" />

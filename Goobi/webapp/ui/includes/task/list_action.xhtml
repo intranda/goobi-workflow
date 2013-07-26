@@ -24,21 +24,21 @@
 
 								<!-- Upload-Schaltknopf -->
 								<h:commandLink action="#{AktuelleSchritteForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigHochladen}"
-									onclick="if (!confirm('#{msgs.upload}?')) return false">
+									onclick="if (!confirm('#{msgs.upload}')) return false">
 									<h:graphicImage value="images/buttons/load_up1.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
 								</h:commandLink>
 
 								<!-- Download-Schaltknopf für Page-->
 								<h:commandLink action="#{AktuelleSchritteForm.DownloadToHomePage}" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
-									onclick="if (!confirm('#{msgs.download}?')) return false">
+									onclick="if (!confirm('#{msgs.download}')) return false">
 									<h:graphicImage value="images/buttons/load_down1.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
 								</h:commandLink>
 
 								<!-- Download-Schaltknopf für gesamtes Trefferset -->
 								<h:commandLink action="#{AktuelleSchritteForm.DownloadToHomeHits}" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
-									onclick="if (!confirm('#{msgs.download}?')) return false">
+									onclick="if (!confirm('#{msgs.download}')) return false">
 									<h:graphicImage value="images/buttons/load_down1.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
 								</h:commandLink>

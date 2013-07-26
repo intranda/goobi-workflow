@@ -59,7 +59,7 @@
 					</td>
 					<td class="eingabeBoxen_row3" align="right">
 						<h:commandButton id="id22" value="#{msgs.loeschen}" action="#{DocketForm.Loeschen}"
-							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')" rendered="#{DocketForm.myDocket.id != null}" />
+							onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')" rendered="#{DocketForm.myDocket.id != null}" />
 						<h:commandButton id="absenden" value="#{msgs.speichern}" action="#{DocketForm.Speichern}" />
 					</td>
 				</tr>
