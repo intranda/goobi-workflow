@@ -200,5 +200,11 @@
 	               classpathref="test.classpath">
 	        </javac>
 	    </target>
-
+	
+	<target name="jar" depends="compile" description="creates a jar file">
+		<echo>generate jar file</echo>
+		<jar destfile="${dir.build}/${dist.name}.jar">
+			<fileset dir="${dir.build.classes}" />
+		</jar>
+	</target>
 </project>
