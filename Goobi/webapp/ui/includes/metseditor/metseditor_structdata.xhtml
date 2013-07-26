@@ -141,7 +141,7 @@
 											</x:selectOneMenu>
 											<!-- Action -->
 											<h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 												<h:outputText value="#{msgs.uebernehmen}" />
 											</h:commandLink>
 										</h:panelGrid>
@@ -182,18 +182,18 @@
 											<!-- Auswahlliste -->
 											<h:inputTextarea value="#{Metadaten.additionalOpacPpns}" />
 											<!-- Action 
-								onclick="parent.oben.document.getElementById('treeReload').value='reload'; if (!confirm('#{msgs.wirklichAusfuehren}?')) return false"
+								onclick="parent.oben.document.getElementById('treeReload').value='reload'; if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
 								-->
 											<h:outputText value="" />
 
 											<h:panelGroup>
 												<h:commandLink immediate="false" style="margin-right:10px" action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}"
-													onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+													onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 													<h:outputText value="#{msgs.nurMetadaten}" />
 												</h:commandLink>
 
 												<h:commandLink immediate="false" action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}"
-													onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+													onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 													<h:outputText value="#{msgs.alsUnterelemente}" />
 												</h:commandLink>
 											</h:panelGroup>

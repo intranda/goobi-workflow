@@ -60,12 +60,12 @@
 										<h:outputText value="" />
 										<h:panelGroup>
 											<h:commandLink id="action130" action="#{AktuelleSchritteForm.batchHelper.ReportProblemForSingle}" title="#{msgs.korrekturmeldungSenden}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 												<h:outputText value="#{msgs.korrekturmeldungSendenSingle}" />
 											</h:commandLink>
 											<h:outputText value=" | " />
 											<h:commandLink id="action131" action="#{AktuelleSchritteForm.batchHelper.ReportProblemForAll}" title="#{msgs.korrekturmeldungSenden}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 												<h:outputText value="#{msgs.korrekturmeldungSendenForAll}" />
 											</h:commandLink>
 										</h:panelGroup>
@@ -99,12 +99,12 @@
 											<h:outputText value="" />
 											<h:panelGroup>
 												<h:commandLink id="action140" action="#{AktuelleSchritteForm.batchHelper.SolveProblemForSingle}"
-													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 													<h:outputText value="#{msgs.meldungUeberProblemloesungSendenSingle}" />
 												</h:commandLink>
 												<h:outputText value=" | " />
 												<h:commandLink id="action141" action="#{AktuelleSchritteForm.batchHelper.SolveProblemForAll}"
-													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}?')) return false">
+													title="#{msgs.meldungUeberProblemloesungSenden}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 													<h:outputText value="#{msgs.meldungUeberProblemloesungSendenForAll}" />
 												</h:commandLink>
 											</h:panelGroup>
