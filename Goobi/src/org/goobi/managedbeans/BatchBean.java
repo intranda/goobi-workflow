@@ -107,14 +107,6 @@ public class BatchBean extends BasicBean {
         } else {
             filter = " batchID is NULL AND istTemplate = false ";
         }
-        //		Criteria crit = session.createCriteria(Process.class);
-        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        //		if (id != null) {
-        //			crit.add(Restrictions.eq("batchID", id));
-        //		} else {
-        //			crit.add(Restrictions.isNull("batchID"));
-        //		}
-        //		crit.setProjection(Projections.rowCount());
 
         String msg1 = Helper.getTranslation("batch");
         String msg2 = Helper.getTranslation("prozesse");
@@ -130,10 +122,7 @@ public class BatchBean extends BasicBean {
     public void loadProcessData() {
 
         String filter = " istTemplate = false ";
-        //		Session session = Helper.getHibernateSession();
-        //		Criteria crit = session.createCriteria(Process.class);
-        //		crit.setMaxResults(getBatchMaxSize());
-        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+
         List<Integer> ids = new ArrayList<Integer>();
         for (String s : this.selectedBatches) {
             if (s != null && !s.equals("") && !s.equals("null")) {
@@ -282,11 +271,7 @@ public class BatchBean extends BasicBean {
             docket =
                     ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
                             getBatchMaxSize());
-            //            crit.setMaxResults(getBatchMaxSize());
-            //            crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-            //            //			List<Integer> ids = new ArrayList<Integer>();
-            //            crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
-            //            docket = crit.list();
+       
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
         }
@@ -319,11 +304,7 @@ public class BatchBean extends BasicBean {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-                //                Session session = Helper.getHibernateSession();
-                //                Criteria crit = session.createCriteria(Process.class);
-                //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-                //                //				List<Integer> ids = new ArrayList<Integer>();
-                //                crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
+              
                 List<Process> deleteList =
                         ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
                                 getBatchMaxSize());
@@ -331,21 +312,9 @@ public class BatchBean extends BasicBean {
                     for (Process p : deleteList) {
                         p.setBatchID(null);
                         ProcessManager.saveProcessInformation(p);
-                        //						try {
-                        //							session.saveOrUpdate(p);
-                        //						} catch (Exception e) {
-                        //							Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-                        //							logger.error(e);
-                        //						}
+                        
                     }
-                    //					try {
-                    //                    ProcessManager.updateBatchList(deleteList);
-                    //						session.flush();
-                    //						session.connection().commit();
-                    //					} catch (DAOException e) {
-                    //						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-                    //						logger.error(e);
-                    //					}
+                    
                 }
             } else {
                 Helper.setFehlerMeldung("noBatchSelected");
@@ -369,17 +338,10 @@ public class BatchBean extends BasicBean {
                 for (Process p : this.selectedProcesses) {
                     p.setBatchID(batchid);
                     p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + batchid));
-                    //					try {
-                    //						session.saveOrUpdate(p);
-                    //					} catch (Exception e) {
-                    //						Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-                    //						logger.error(e);
-                    //					}
+                 
                     ProcessManager.saveProcessInformation(p);
                 }
-                
-//                ProcessManager.updateBatchList(this.selectedProcesses);
-               
+                               
             } catch (Exception e) {
                 Helper.setFehlerMeldung("noBatchSelected");
             }
@@ -393,25 +355,10 @@ public class BatchBean extends BasicBean {
             p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "removed process from batch " + p.getBatchID()));
             p.setBatchID(null);
 
-            //			try {
-            //				session.saveOrUpdate(p);
-            //			} catch (Exception e) {
-            //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-            //				logger.error(e);
-            //			}
+          
             ProcessManager.saveProcessInformation(p);
         }
-        //		try {
-//        ProcessManager.updateBatchList(this.selectedProcesses);
-        //			session.flush();
-        //			session.connection().commit();
-        //		} catch (DAOException e) {
-        //			Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-        //			logger.error(e);
-        //		} catch (SQLException e) {
-        //			Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-        //			logger.error(e);
-        //		}
+      
         FilterAlleStart();
     }
 
@@ -427,25 +374,10 @@ public class BatchBean extends BasicBean {
             for (Process p : this.selectedProcesses) {
                 p.setBatchID(newBatchId);
                 p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + newBatchId));
-                //				try {
-                //					session.saveOrUpdate(p);
-                //				} catch (Exception e) {
-                //					Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-                //					logger.error(e);
-                //				}
-//                ProcessManager.saveProcessInformation(p);
-            }
-            //			try {
-//            ProcessManager.updateBatchList(this.selectedProcesses);
-            //				session.flush();
-            //				session.connection().commit();
-            //			} catch (HibernateException e) {
-            //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-            //				logger.error(e);
-            //			} catch (DAOException e) {
-            //				Helper.setFehlerMeldung("Error, could not update", e.getMessage());
-            //				logger.error(e);
-            //			}
+                ProcessManager.saveProcessInformation(p);
+		}
+            
+  
         }
         FilterAlleStart();
     }
