@@ -294,8 +294,8 @@ public class StepBean extends BasicBean {
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch =
-                    StepManager.getSteps(null, "titel = \"" + steptitle
-                            + "\"  AND batchStep = true AND prozesseID in (select prozesseID from prozesse where batchID = " + batchNumber + ")", 0,
+                    StepManager.getSteps(null, "schritte.titel = \"" + steptitle
+                            + "\" and prozesse.batchID = " + batchNumber + ")", 0,
                             Integer.MAX_VALUE);
 
         } else {
