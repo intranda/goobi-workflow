@@ -205,7 +205,7 @@
 						</td>
 						<td class="eingabeBoxen_row3" align="right">
 							<h:commandButton value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
-								onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}?')"
+								onclick="return confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')"
 								rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
 								<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 							</h:commandButton>
