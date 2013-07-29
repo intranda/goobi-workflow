@@ -76,498 +76,503 @@ import de.sub.goobi.helper.exceptions.SwapException;
  * 
  */
 public class ExportXmlLog implements IProcessDataExport {
-	private static final Logger logger = Logger.getLogger(ExportXmlLog.class);
-	
-	/**
-	 * This method exports the production metadata as xml to a given directory
-	 * 
-	 * @param p
-	 *            the process to export
-	 * @param destination
-	 *            the destination to write the file
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ExportFileException
-	 */
+    private static final Logger logger = Logger.getLogger(ExportXmlLog.class);
 
-	public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
-		startExport(p, new FileOutputStream(destination), null);
-	}
+    /**
+     * This method exports the production metadata as xml to a given directory
+     * 
+     * @param p the process to export
+     * @param destination the destination to write the file
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ExportFileException
+     */
 
-	public void startExport(Process p, File dest) throws FileNotFoundException, IOException {
-		startExport(p, new FileOutputStream(dest), null);
-	}
+    public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
+        startExport(p, new FileOutputStream(destination), null);
+    }
 
-	/**
-	 * This method exports the production metadata as xml to a given stream.
-	 * 
-	 * @param process
-	 *            the process to export
-	 * @param os
-	 *            the OutputStream to write the contents to
-	 * @throws IOException
-	 * @throws ExportFileException
-	 */
-	@Override
-	public void startExport(Process process, OutputStream os, String xslt) throws IOException {
-		try {
-			Document doc = createDocument(process, true);
+    public void startExport(Process p, File dest) throws FileNotFoundException, IOException {
+        startExport(p, new FileOutputStream(dest), null);
+    }
 
-			XMLOutputter outp = new XMLOutputter();
-			outp.setFormat(Format.getPrettyFormat());
+    /**
+     * This method exports the production metadata as xml to a given stream.
+     * 
+     * @param process the process to export
+     * @param os the OutputStream to write the contents to
+     * @throws IOException
+     * @throws ExportFileException
+     */
+    @Override
+    public void startExport(Process process, OutputStream os, String xslt) throws IOException {
+        try {
+            Document doc = createDocument(process, true);
 
-			outp.output(doc, os);
-			os.close();
+            XMLOutputter outp = new XMLOutputter();
+            outp.setFormat(Format.getPrettyFormat());
 
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-	}
+            outp.output(doc, os);
+            os.close();
 
-	/**
-	 * This method creates a new xml document with process metadata
-	 * 
-	 * @param process
-	 *            the process to export
-	 * @return a new xml document
-	 * @throws ConfigurationException
-	 */
-	public Document createDocument(Process process, boolean addNamespace) {
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
 
-		Element processElm = new Element("process");
-		Document doc = new Document(processElm);
+    /**
+     * This method creates a new xml document with process metadata
+     * 
+     * @param process the process to export
+     * @return a new xml document
+     * @throws ConfigurationException
+     */
+    public Document createDocument(Process process, boolean addNamespace) {
 
-		processElm.setAttribute("processID", String.valueOf(process.getId()));
+        Element processElm = new Element("process");
+        Document doc = new Document(processElm);
 
-		Namespace xmlns = Namespace.getNamespace("http://www.goobi.org/logfile");
-		processElm.setNamespace(xmlns);
-		// namespace declaration
-		if (addNamespace) {
+        processElm.setAttribute("processID", String.valueOf(process.getId()));
 
-			Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-			processElm.addNamespaceDeclaration(xsi);
-			Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
-			processElm.setAttribute(attSchema);
-		}
-		// process information
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.org/logfile");
+        processElm.setNamespace(xmlns);
+        // namespace declaration
+        if (addNamespace) {
 
-		ArrayList<Element> processElements = new ArrayList<Element>();
-		Element processTitle = new Element("title", xmlns);
-		processTitle.setText(process.getTitel());
-		processElements.add(processTitle);
+            Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            processElm.addNamespaceDeclaration(xsi);
+            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
+            processElm.setAttribute(attSchema);
+        }
+        // process information
 
-		Element project = new Element("project", xmlns);
-		project.setText(process.getProjekt().getTitel());
-		processElements.add(project);
+        ArrayList<Element> processElements = new ArrayList<Element>();
+        Element processTitle = new Element("title", xmlns);
+        processTitle.setText(process.getTitel());
+        processElements.add(processTitle);
 
-		Element date = new Element("time", xmlns);
-		date.setAttribute("type", "creation date");
-		date.setText(String.valueOf(process.getErstellungsdatum()));
-		processElements.add(date);
+        Element project = new Element("project", xmlns);
+        project.setText(process.getProjekt().getTitel());
+        processElements.add(project);
 
-		Element ruleset = new Element("ruleset", xmlns);
-		ruleset.setText(process.getRegelsatz().getDatei());
-		processElements.add(ruleset);
+        Element date = new Element("time", xmlns);
+        date.setAttribute("type", "creation date");
+        date.setText(String.valueOf(process.getErstellungsdatum()));
+        processElements.add(date);
 
-		Element comment = new Element("comment", xmlns);
-		comment.setText(process.getWikifield());
-		processElements.add(comment);
+        Element ruleset = new Element("ruleset", xmlns);
+        ruleset.setText(process.getRegelsatz().getDatei());
+        processElements.add(ruleset);
 
-		if (process.getBatchID() != null) {
-			Element batch = new Element("batch", xmlns);
-			batch.setText(String.valueOf(process.getBatchID()));
-			processElements.add(batch);
-		}
-	
+        Element comment = new Element("comments", xmlns);
+        String wikifield = process.getWikifield();
+        if (wikifield != null && !wikifield.isEmpty()) {
+            String[] logmessages = wikifield.split("<br/>");
+            for (String message : logmessages) {
+                if (message != null && !message.isEmpty()) {
+                    message = message.trim();
+                    if (message.startsWith("<font color=\"#FF0000")) {
 
-		ArrayList<Element> processProperties = new ArrayList<Element>();
-		for (Processproperty prop : process.getEigenschaftenList()) {
-			Element property = new Element("property", xmlns);
-			property.setAttribute("propertyIdentifier", prop.getTitel());
-			if (prop.getWert() != null) {
-				property.setAttribute("value", replacer(prop.getWert()));
-			} else {
-				property.setAttribute("value", "");
-			}
-		
-			Element label = new Element("label", xmlns);
-			
-			label.setText(prop.getTitel());
-			property.addContent(label);
-			processProperties.add(property);
-		}
-		if (processProperties.size() != 0) {
-			Element properties = new Element("properties", xmlns);
-			properties.addContent(processProperties);
-			processElements.add(properties);
-		}
+                        Element error = new Element("comment", xmlns);
+                        error.setAttribute("type", "error");
+                        error.setText(message.replace("<font color=\"#FF0000\">", "").replace("</font>", ""));
+                        comment.addContent(error);
+                    } else if (message.startsWith("<font color=\"#FF6600\">")) {
+                        Element warn = new Element("comment", xmlns);
+                        warn.setAttribute("type", "warn");
+                        warn.setText(message.replace("<font color=\"#FF6600\">", "").replace("</font>", ""));
+                        comment.addContent(warn);
+                    } else if (message.startsWith("<font color=\"#0033CC\">")) {
+                        Element info = new Element("comment", xmlns);
+                        info.setAttribute("type", "info");
+                        info.setText(message.replace("<font color=\"#0033CC\">", "").replace("</font>", ""));
+                        comment.addContent(info);
+                    } else if (message.startsWith("<font color=\"#CCCCCC\">")) {
+                        Element debug = new Element("comment", xmlns);
+                        debug.setAttribute("type", "debug");
+                        debug.setText(message.replace("<font color=\"#CCCCCC\">", "").replace("</font>", ""));
+                        comment.addContent(debug);
+                    } else if (message.startsWith("<font color=\"#006600\">")) {
+                        Element user = new Element("comment", xmlns);
+                        user.setAttribute("type", "user");
+                        user.setText(message.replace("<font color=\"#006600\">", "").replace("</font>", ""));
+                        comment.addContent(user);
+                    }
+                }
+            }
 
-		// step information
-		Element steps = new Element("steps", xmlns);
-		ArrayList<Element> stepElements = new ArrayList<Element>();
-		for (Step s : process.getSchritteList()) {
-			Element stepElement = new Element("step", xmlns);
-			stepElement.setAttribute("stepID", String.valueOf(s.getId()));
+        }
+        processElements.add(comment);
 
-			Element steptitle = new Element("title", xmlns);
-			steptitle.setText(s.getTitel());
-			stepElement.addContent(steptitle);
+        if (process.getBatchID() != null) {
+            Element batch = new Element("batch", xmlns);
+            batch.setText(String.valueOf(process.getBatchID()));
+            processElements.add(batch);
+        }
 
-			Element state = new Element("processingstatus", xmlns);
-			state.setText(s.getBearbeitungsstatusAsString());
-			stepElement.addContent(state);
+        List<Element> processProperties = new ArrayList<Element>();
+        for (Processproperty prop : process.getEigenschaftenList()) {
+            Element property = new Element("property", xmlns);
+            property.setAttribute("propertyIdentifier", prop.getTitel());
+            if (prop.getWert() != null) {
+                property.setAttribute("value", replacer(prop.getWert()));
+            } else {
+                property.setAttribute("value", "");
+            }
 
-			Element begin = new Element("time", xmlns);
-			begin.setAttribute("type", "start time");
-			begin.setText(String.valueOf(s.getBearbeitungsbeginn()));
-			stepElement.addContent(begin);
+            Element label = new Element("label", xmlns);
 
-			Element end = new Element("time", xmlns);
-			end.setAttribute("type", "end time");
-			end.setText(String.valueOf(s.getBearbeitungsendeAsFormattedString()));
-			stepElement.addContent(end);
+            label.setText(prop.getTitel());
+            property.addContent(label);
+            processProperties.add(property);
+        }
+        if (processProperties.size() != 0) {
+            Element properties = new Element("properties", xmlns);
+            properties.addContent(processProperties);
+            processElements.add(properties);
+        }
 
-			if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
-				Element user = new Element("user", xmlns);
-				user.setText(s.getBearbeitungsbenutzer().getNachVorname());
-				stepElement.addContent(user);
-			}
-			Element editType = new Element("edittype", xmlns);
-			editType.setText(s.getEditTypeEnum().getTitle());
-			stepElement.addContent(editType);
+        // step information
+        Element steps = new Element("steps", xmlns);
+        List<Element> stepElements = new ArrayList<Element>();
+        for (Step s : process.getSchritteList()) {
+            Element stepElement = new Element("step", xmlns);
+            stepElement.setAttribute("stepID", String.valueOf(s.getId()));
 
-//			ArrayList<Element> stepProperties = new ArrayList<Element>();
-//			for (Schritteigenschaft prop : s.getEigenschaftenList()) {
-//				Element property = new Element("property", xmlns);
-//				property.setAttribute("propertyIdentifier", prop.getTitel());
-//				if (prop.getWert() != null) {
-//					property.setAttribute("value", replacer(prop.getWert()));
-//				} else {
-//					property.setAttribute("value", "");
-//				}
-//			
-//				Element label = new Element("label", xmlns);
-//				
-//				label.setText(prop.getTitel());
-//				property.addContent(label);
-//				stepProperties.add(property);
-//			}
-//			if (stepProperties.size() != 0) {
-//				Element properties = new Element("properties", xmlns);
-//				properties.addContent(stepProperties);
-//				stepElement.addContent(properties);
-//			}
+            Element steptitle = new Element("title", xmlns);
+            steptitle.setText(s.getTitel());
+            stepElement.addContent(steptitle);
 
-			stepElements.add(stepElement);
-		}
-		if (stepElements != null) {
-			steps.addContent(stepElements);
-			processElements.add(steps);
-		}
+            Element state = new Element("processingstatus", xmlns);
+            state.setText(s.getBearbeitungsstatusAsString());
+            stepElement.addContent(state);
 
-		// template information
-		Element templates = new Element("originals", xmlns);
-		ArrayList<Element> templateElements = new ArrayList<Element>();
-		for (Template v : process.getVorlagenList()) {
-			Element template = new Element("original", xmlns);
-			template.setAttribute("originalID", String.valueOf(v.getId()));
+            Element begin = new Element("time", xmlns);
+            begin.setAttribute("type", "start time");
+            begin.setText(String.valueOf(s.getBearbeitungsbeginn()));
+            stepElement.addContent(begin);
 
-			ArrayList<Element> templateProperties = new ArrayList<Element>();
-			for (Templateproperty prop : v.getEigenschaftenList()) {
-				Element property = new Element("property", xmlns);
-				property.setAttribute("propertyIdentifier", prop.getTitel());
-				if (prop.getWert() != null) {
-					property.setAttribute("value", replacer(prop.getWert()));
-				} else {
-					property.setAttribute("value", "");
-				}
-				
-				Element label = new Element("label", xmlns);
-		
-				label.setText(prop.getTitel());
-				property.addContent(label);
+            Element end = new Element("time", xmlns);
+            end.setAttribute("type", "end time");
+            end.setText(String.valueOf(s.getBearbeitungsendeAsFormattedString()));
+            stepElement.addContent(end);
 
-				templateProperties.add(property);
-				if (prop.getTitel().equals("Signatur")) {
-					Element secondProperty = new Element("property", xmlns);
-					secondProperty.setAttribute("propertyIdentifier", prop.getTitel() + "Encoded");
-					if (prop.getWert() != null) {
-						secondProperty.setAttribute("value", "vorl:" + replacer(prop.getWert()));
-						Element secondLabel = new Element("label", xmlns);
-						secondLabel.setText(prop.getTitel());
-						secondProperty.addContent(secondLabel);
-						templateProperties.add(secondProperty);
-					}
-				}
-			}
-			if (templateProperties.size() != 0) {
-				Element properties = new Element("properties", xmlns);
-				properties.addContent(templateProperties);
-				template.addContent(properties);
-			}
-			templateElements.add(template);
-		}
-		if (templateElements != null) {
-			templates.addContent(templateElements);
-			processElements.add(templates);
-		}
+            if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
+                Element user = new Element("user", xmlns);
+                user.setText(s.getBearbeitungsbenutzer().getNachVorname());
+                stepElement.addContent(user);
+            }
+            Element editType = new Element("edittype", xmlns);
+            editType.setText(s.getEditTypeEnum().getTitle());
+            stepElement.addContent(editType);
 
-		// digital document information
-		Element digdoc = new Element("digitalDocuments", xmlns);
-		ArrayList<Element> docElements = new ArrayList<Element>();
-		for (Masterpiece w : process.getWerkstueckeList()) {
-			Element dd = new Element("digitalDocument", xmlns);
-			dd.setAttribute("digitalDocumentID", String.valueOf(w.getId()));
+            stepElements.add(stepElement);
+        }
+        if (stepElements != null) {
+            steps.addContent(stepElements);
+            processElements.add(steps);
+        }
 
-			ArrayList<Element> docProperties = new ArrayList<Element>();
-			for (Masterpieceproperty prop : w.getEigenschaftenList()) {
-				Element property = new Element("property", xmlns);
-				property.setAttribute("propertyIdentifier", prop.getTitel());
-				if (prop.getWert() != null) {
-					property.setAttribute("value", replacer(prop.getWert()));
-				} else {
-					property.setAttribute("value", "");
-				}
-	
-				Element label = new Element("label", xmlns);
-		
-				label.setText(prop.getTitel());
-				property.addContent(label);
-				docProperties.add(property);
-			}
-			if (docProperties.size() != 0) {
-				Element properties = new Element("properties", xmlns);
-				properties.addContent(docProperties);
-				dd.addContent(properties);
-			}
-			docElements.add(dd);
-		}
-		if (docElements != null) {
-			digdoc.addContent(docElements);
-			processElements.add(digdoc);
-		}
+        // template information
+        Element templates = new Element("originals", xmlns);
+        List<Element> templateElements = new ArrayList<Element>();
+        for (Template v : process.getVorlagenList()) {
+            Element template = new Element("original", xmlns);
+            template.setAttribute("originalID", String.valueOf(v.getId()));
 
-		// METS information
-		Element metsElement = new Element("metsInformation", xmlns);
-		ArrayList<Element> metadataElements = new ArrayList<Element>();
+            List<Element> templateProperties = new ArrayList<Element>();
+            for (Templateproperty prop : v.getEigenschaftenList()) {
+                Element property = new Element("property", xmlns);
+                property.setAttribute("propertyIdentifier", prop.getTitel());
+                if (prop.getWert() != null) {
+                    property.setAttribute("value", replacer(prop.getWert()));
+                } else {
+                    property.setAttribute("value", "");
+                }
 
-		try {
-			String filename = process.getMetadataFilePath();
-			Document metsDoc = new SAXBuilder().build(filename);
-			Document anchorDoc = null;
-			String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
-			File anchorFile = new File(anchorfilename);
-			if (anchorFile.exists() && anchorFile.canRead()) {
-				anchorDoc = new SAXBuilder().build(anchorfilename);
-			}
-			HashMap<String, Namespace> namespaces = new HashMap<String, Namespace>();
+                Element label = new Element("label", xmlns);
 
-			HashMap<String, String> names = getNamespacesFromConfig();
-			for (String key : names.keySet()) {
-				namespaces.put(key, Namespace.getNamespace(key, names.get(key)));
-			}
+                label.setText(prop.getTitel());
+                property.addContent(label);
 
-			HashMap<String, String> fields = getMetsFieldsFromConfig(false);
-			for (String key : fields.keySet()) {
-				List<Element> metsValues = getMetsValues(fields.get(key), metsDoc, namespaces);
-				for (Element element : metsValues) {
-					Element ele = new Element("property", xmlns);
-					ele.setAttribute("name", key);
-					ele.addContent(element.getTextTrim());
-					metadataElements.add(ele);
-				}
-			}
+                templateProperties.add(property);
+                if (prop.getTitel().equals("Signatur")) {
+                    Element secondProperty = new Element("property", xmlns);
+                    secondProperty.setAttribute("propertyIdentifier", prop.getTitel() + "Encoded");
+                    if (prop.getWert() != null) {
+                        secondProperty.setAttribute("value", "vorl:" + replacer(prop.getWert()));
+                        Element secondLabel = new Element("label", xmlns);
+                        secondLabel.setText(prop.getTitel());
+                        secondProperty.addContent(secondLabel);
+                        templateProperties.add(secondProperty);
+                    }
+                }
+            }
+            if (templateProperties.size() != 0) {
+                Element properties = new Element("properties", xmlns);
+                properties.addContent(templateProperties);
+                template.addContent(properties);
+            }
+            templateElements.add(template);
+        }
+        if (templateElements != null) {
+            templates.addContent(templateElements);
+            processElements.add(templates);
+        }
 
-			if (anchorDoc != null) {
-				fields = getMetsFieldsFromConfig(true);
-				for (String key : fields.keySet()) {
-					List<Element> metsValues = getMetsValues(fields.get(key), anchorDoc, namespaces);
-					for (Element element : metsValues) {
-						Element ele = new Element("property", xmlns);
-						ele.setAttribute("name", key);
-						ele.addContent(element.getTextTrim());
-						metadataElements.add(ele);
-					}
-				}
-			}
+        // digital document information
+        Element digdoc = new Element("digitalDocuments", xmlns);
+        List<Element> docElements = new ArrayList<Element>();
+        for (Masterpiece w : process.getWerkstueckeList()) {
+            Element dd = new Element("digitalDocument", xmlns);
+            dd.setAttribute("digitalDocumentID", String.valueOf(w.getId()));
 
-			if (metadataElements != null) {
-				metsElement.addContent(metadataElements);
-				processElements.add(metsElement);
-			}
+            List<Element> docProperties = new ArrayList<Element>();
+            for (Masterpieceproperty prop : w.getEigenschaftenList()) {
+                Element property = new Element("property", xmlns);
+                property.setAttribute("propertyIdentifier", prop.getTitel());
+                if (prop.getWert() != null) {
+                    property.setAttribute("value", replacer(prop.getWert()));
+                } else {
+                    property.setAttribute("value", "");
+                }
 
-		} catch (SwapException e) {
-			logger.error(e);
-		} catch (DAOException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		} catch (InterruptedException e) {
-			logger.error(e);
-		} catch (JDOMException e) {
-			logger.error(e);
-		} catch (JaxenException e) {
-			logger.error(e);
-		}
+                Element label = new Element("label", xmlns);
 
-		processElm.setContent(processElements);
-		return doc;
+                label.setText(prop.getTitel());
+                property.addContent(label);
+                docProperties.add(property);
+            }
+            if (docProperties.size() != 0) {
+                Element properties = new Element("properties", xmlns);
+                properties.addContent(docProperties);
+                dd.addContent(properties);
+            }
+            docElements.add(dd);
+        }
+        if (docElements != null) {
+            digdoc.addContent(docElements);
+            processElements.add(digdoc);
+        }
 
-	}
+        // METS information
+        Element metsElement = new Element("metsInformation", xmlns);
+        List<Element> metadataElements = new ArrayList<Element>();
 
-	@SuppressWarnings("unchecked")
-	public List<Element> getMetsValues(String expr, Object element, HashMap<String, Namespace> namespaces) throws JaxenException {
-			JDOMXPath xpath = new JDOMXPath(expr.trim().replace("\n", ""));
-			// Add all namespaces
-			for (String key : namespaces.keySet()) {
-				Namespace value = namespaces.get(key);
-				xpath.addNamespace(key, value.getURI());
-			}
-			return xpath.selectNodes(element);
-	}
+        try {
+            String filename = process.getMetadataFilePath();
+            Document metsDoc = new SAXBuilder().build(filename);
+            Document anchorDoc = null;
+            String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
+            File anchorFile = new File(anchorfilename);
+            if (anchorFile.exists() && anchorFile.canRead()) {
+                anchorDoc = new SAXBuilder().build(anchorfilename);
+            }
+            HashMap<String, Namespace> namespaces = new HashMap<String, Namespace>();
 
-	/**
-	 * This method transforms the xml log using a xslt file and opens a new window with the output file
-	 * 
-	 * @param out
-	 *            ServletOutputStream
-	 * @param doc
-	 *            the xml document to transform
-	 * @param filename
-	 *            the filename of the xslt
-	 * @throws XSLTransformException
-	 * @throws IOException
-	 */
+            HashMap<String, String> names = getNamespacesFromConfig();
+            for (String key : names.keySet()) {
+                namespaces.put(key, Namespace.getNamespace(key, names.get(key)));
+            }
 
-	public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
-		Document docTrans = new Document();
-		if (filename != null && filename.equals("")) {
-			XSLTransformer transformer;
-			transformer = new XSLTransformer(filename);
-			docTrans = transformer.transform(doc);
-		} else {
-			docTrans = doc;
-		}
-		Format format = Format.getPrettyFormat();
-		format.setEncoding("utf-8");
-		XMLOutputter xmlOut = new XMLOutputter(format);
+            HashMap<String, String> fields = getMetsFieldsFromConfig(false);
+            for (String key : fields.keySet()) {
+                List<Element> metsValues = getMetsValues(fields.get(key), metsDoc, namespaces);
+                for (Element element : metsValues) {
+                    Element ele = new Element("property", xmlns);
+                    ele.setAttribute("name", key);
+                    ele.addContent(element.getTextTrim());
+                    metadataElements.add(ele);
+                }
+            }
 
-		xmlOut.output(docTrans, out);
+            if (anchorDoc != null) {
+                fields = getMetsFieldsFromConfig(true);
+                for (String key : fields.keySet()) {
+                    List<Element> metsValues = getMetsValues(fields.get(key), anchorDoc, namespaces);
+                    for (Element element : metsValues) {
+                        Element ele = new Element("property", xmlns);
+                        ele.setAttribute("name", key);
+                        ele.addContent(element.getTextTrim());
+                        metadataElements.add(ele);
+                    }
+                }
+            }
 
-	}
+            if (metadataElements != null) {
+                metsElement.addContent(metadataElements);
+                processElements.add(metsElement);
+            }
 
-	public void startTransformation(OutputStream out, Process p, String filename) throws ConfigurationException, XSLTransformException, IOException {
-		startTransformation(p, out, filename);
-	}
+        } catch (SwapException e) {
+            logger.error(e);
+        } catch (DAOException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
+        } catch (JDOMException e) {
+            logger.error(e);
+        } catch (JaxenException e) {
+            logger.error(e);
+        }
 
-	public void startTransformation(Process p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
-		Document doc = createDocument(p, true);
-		XmlTransformation(out, doc, filename);
-	}
+        processElm.setContent(processElements);
+        return doc;
 
-	private String replacer(String in) {
-		in = in.replace("°", "?");
-		in = in.replace("^", "?");
-		in = in.replace("|", "?");
-		in = in.replace(">", "?");
-		in = in.replace("<", "?");
-		return in;
-	}
+    }
 
-	/**
-	 * This method exports the production metadata for al list of processes as a single file to a given stream.
-	 * 
-	 * @param processList
-	 * @param outputStream
-	 * @param xslt
-	 */
+    @SuppressWarnings("unchecked")
+    public List<Element> getMetsValues(String expr, Object element, HashMap<String, Namespace> namespaces) throws JaxenException {
+        JDOMXPath xpath = new JDOMXPath(expr.trim().replace("\n", ""));
+        // Add all namespaces
+        for (String key : namespaces.keySet()) {
+            Namespace value = namespaces.get(key);
+            xpath.addNamespace(key, value.getURI());
+        }
+        return xpath.selectNodes(element);
+    }
 
-	public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
-		Document answer = new Document();
-		Element root = new Element("processes");
-		answer.setRootElement(root);
-		Namespace xmlns = Namespace.getNamespace("http://www.goobi.org/logfile");
+    /**
+     * This method transforms the xml log using a xslt file and opens a new window with the output file
+     * 
+     * @param out ServletOutputStream
+     * @param doc the xml document to transform
+     * @param filename the filename of the xslt
+     * @throws XSLTransformException
+     * @throws IOException
+     */
 
-		Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		root.addNamespaceDeclaration(xsi);
-		root.setNamespace(xmlns);
-		Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
-		root.setAttribute(attSchema);
-		for (Process p : processList) {
-			Document doc = createDocument(p, false);
-			Element processRoot = doc.getRootElement();
-			processRoot.detach();
-			root.addContent(processRoot);
-		}
+    public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
+        Document docTrans = new Document();
+        if (filename != null && filename.equals("")) {
+            XSLTransformer transformer;
+            transformer = new XSLTransformer(filename);
+            docTrans = transformer.transform(doc);
+        } else {
+            docTrans = doc;
+        }
+        Format format = Format.getPrettyFormat();
+        format.setEncoding("utf-8");
+        XMLOutputter xmlOut = new XMLOutputter(format);
 
-		XMLOutputter outp = new XMLOutputter();
-		outp.setFormat(Format.getPrettyFormat());
+        xmlOut.output(docTrans, out);
 
-		try {
-		
-			outp.output(answer, outputStream);
-		} catch (IOException e) {
+    }
 
-		} finally {
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (IOException e) {
-					outputStream = null;
-				}
-			}
-		}
+    public void startTransformation(OutputStream out, Process p, String filename) throws ConfigurationException, XSLTransformException, IOException {
+        startTransformation(p, out, filename);
+    }
 
-	}
+    public void startTransformation(Process p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
+        Document doc = createDocument(p, true);
+        XmlTransformation(out, doc, filename);
+    }
 
-	private HashMap<String, String> getMetsFieldsFromConfig(boolean useAnchor) {
-		String xmlpath = "mets.property";
-		if (useAnchor) {
-			xmlpath = "anchor.property";
-		}
+    private String replacer(String in) {
+        in = in.replace("°", "?");
+        in = in.replace("^", "?");
+        in = in.replace("|", "?");
+        in = in.replace(">", "?");
+        in = in.replace("<", "?");
+        return in;
+    }
 
-		HashMap<String, String> fields = new HashMap<String, String>();
-		try {
-			File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
-			if (file.exists() && file.canRead()) {
-				XMLConfiguration config = new XMLConfiguration(file);
-				config.setListDelimiter('&');
-				config.setReloadingStrategy(new FileChangedReloadingStrategy());
+    /**
+     * This method exports the production metadata for al list of processes as a single file to a given stream.
+     * 
+     * @param processList
+     * @param outputStream
+     * @param xslt
+     */
 
-				int count = config.getMaxIndex(xmlpath);
-				for (int i = 0; i <= count; i++) {
-					String name = config.getString(xmlpath + "(" + i + ")[@name]");
-					String value = config.getString(xmlpath + "(" + i + ")[@value]");
-					fields.put(name, value);
-				}
-			}
-		} catch (Exception e) {
-			fields = new HashMap<String, String>();
-		}
-		return fields;
-	}
+    public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
+        Document answer = new Document();
+        Element root = new Element("processes");
+        answer.setRootElement(root);
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.org/logfile");
 
-	private HashMap<String, String> getNamespacesFromConfig() {
-		HashMap<String, String> nss = new HashMap<String, String>();
-		try {
-			File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
-			if (file.exists() && file.canRead()) {
-				XMLConfiguration config = new XMLConfiguration(file);
-				config.setListDelimiter('&');
-				config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        root.addNamespaceDeclaration(xsi);
+        root.setNamespace(xmlns);
+        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
+        root.setAttribute(attSchema);
+        for (Process p : processList) {
+            Document doc = createDocument(p, false);
+            Element processRoot = doc.getRootElement();
+            processRoot.detach();
+            root.addContent(processRoot);
+        }
 
-				int count = config.getMaxIndex("namespace");
-				for (int i = 0; i <= count; i++) {
-					String name = config.getString("namespace(" + i + ")[@name]");
-					String value = config.getString("namespace(" + i + ")[@value]");
-					nss.put(name, value);
-				}
-			}
-		} catch (Exception e) {
-			nss = new HashMap<String, String>();
-		}
-		return nss;
+        XMLOutputter outp = new XMLOutputter();
+        outp.setFormat(Format.getPrettyFormat());
 
-	}
+        try {
+
+            outp.output(answer, outputStream);
+        } catch (IOException e) {
+
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    outputStream = null;
+                }
+            }
+        }
+
+    }
+
+    private HashMap<String, String> getMetsFieldsFromConfig(boolean useAnchor) {
+        String xmlpath = "mets.property";
+        if (useAnchor) {
+            xmlpath = "anchor.property";
+        }
+
+        HashMap<String, String> fields = new HashMap<String, String>();
+        try {
+            File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            if (file.exists() && file.canRead()) {
+                XMLConfiguration config = new XMLConfiguration(file);
+                config.setListDelimiter('&');
+                config.setReloadingStrategy(new FileChangedReloadingStrategy());
+
+                int count = config.getMaxIndex(xmlpath);
+                for (int i = 0; i <= count; i++) {
+                    String name = config.getString(xmlpath + "(" + i + ")[@name]");
+                    String value = config.getString(xmlpath + "(" + i + ")[@value]");
+                    fields.put(name, value);
+                }
+            }
+        } catch (Exception e) {
+            fields = new HashMap<String, String>();
+        }
+        return fields;
+    }
+
+    private HashMap<String, String> getNamespacesFromConfig() {
+        HashMap<String, String> nss = new HashMap<String, String>();
+        try {
+            File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            if (file.exists() && file.canRead()) {
+                XMLConfiguration config = new XMLConfiguration(file);
+                config.setListDelimiter('&');
+                config.setReloadingStrategy(new FileChangedReloadingStrategy());
+
+                int count = config.getMaxIndex("namespace");
+                for (int i = 0; i <= count; i++) {
+                    String name = config.getString("namespace(" + i + ")[@name]");
+                    String value = config.getString("namespace(" + i + ")[@value]");
+                    nss.put(name, value);
+                }
+            }
+        } catch (Exception e) {
+            nss = new HashMap<String, String>();
+        }
+        return nss;
+
+    }
 
 }
