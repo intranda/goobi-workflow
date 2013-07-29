@@ -312,7 +312,7 @@ class ProcessMysqlHelper implements Serializable {
                     { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                             o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
                             o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
-                            o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
+                            o.getWikifield() == null || o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
                             o.getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
@@ -321,7 +321,7 @@ class ProcessMysqlHelper implements Serializable {
                     { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                             o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
                             o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
-                            o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
+                            o.getWikifield() == null || o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
                             o.getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
