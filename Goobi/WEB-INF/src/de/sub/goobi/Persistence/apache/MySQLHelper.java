@@ -265,7 +265,7 @@ public class MySQLHelper {
 			sql.append("typAutomatisch = ? ");
 			sql.append(" WHERE SchritteID = ? ");
 			Object[] param = { step.getTitle(), step.getReihenfolge(), step.getBearbeitungsstatus(), time, start, end,
-					step.getBearbeitungsbenutzer(), step.getEditType(), step.isTypAutomatisch(), step.getId() };
+					step.getBearbeitungsbenutzer() == null || step.getBearbeitungsbenutzer() == 0 ? null : step.getBearbeitungsbenutzer(), step.getEditType(), step.isTypAutomatisch(), step.getId() };
 			logger.debug("saving step: " + sql.toString() + ", " + param);
 
 			run.update(connection, sql.toString(), param);

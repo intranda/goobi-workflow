@@ -248,7 +248,13 @@ public class MySQLUtils {
 			Date bearbeitungsbeginn = rs.getTimestamp("bearbeitungsbeginn");
 			Date bearbeitungsende = rs.getTimestamp("bearbeitungsende");
 			int processId = rs.getInt("ProzesseID");
-			int bearbeitungsbenutzer = rs.getInt("BearbeitungsBenutzerID");
+			
+			Integer bearbeitungsbenutzer = null;
+			Object user = rs.getObject("BearbeitungsBenutzerID");
+			if (user != null) {
+			    bearbeitungsbenutzer = (Integer) user;
+			}
+			
 			int editType = rs.getInt("edittype");
 			boolean typExport = rs.getBoolean("typExportDMS");
 			boolean typAutomatisch = rs.getBoolean("typAutomatisch");
