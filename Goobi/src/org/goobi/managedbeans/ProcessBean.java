@@ -1006,22 +1006,22 @@ public class ProcessBean extends BasicBean {
     }
 
     public void SchrittStatusUp() {
-        //        if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
-        //            this.mySchritt.setBearbeitungsstatusUp();
-        //            this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-        //            //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
-        //            if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-        //                new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
-        //            } else {
-        //                mySchritt.setBearbeitungszeitpunkt(new Date());
-        //                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-        //                if (ben != null) {
-        //                    mySchritt.setBearbeitungsbenutzer(ben);
-        //                }
-        //            }
-        //        }
+                if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
+                    this.mySchritt.setBearbeitungsstatusUp();
+                    this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
+                    //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
+                    if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                        new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
+                    } else {
+                        mySchritt.setBearbeitungszeitpunkt(new Date());
+                        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                        if (ben != null) {
+                            mySchritt.setBearbeitungsbenutzer(ben);
+                        }
+                    }
+                }
         try {
-            stepStatusUp(myProzess);
+            StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
             logger.error(e);
         }
@@ -1030,15 +1030,15 @@ public class ProcessBean extends BasicBean {
     }
 
     public String SchrittStatusDown() {
-//        this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-//        mySchritt.setBearbeitungszeitpunkt(new Date());
-//        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-//        if (ben != null) {
-//            mySchritt.setBearbeitungsbenutzer(ben);
-//        }
-//        this.mySchritt.setBearbeitungsstatusDown();
+        this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
+        mySchritt.setBearbeitungszeitpunkt(new Date());
+        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        if (ben != null) {
+            mySchritt.setBearbeitungsbenutzer(ben);
+        }
+        this.mySchritt.setBearbeitungsstatusDown();
         try {
-            stepStatusDown(myProzess);
+            StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
             logger.error(e);
         }
