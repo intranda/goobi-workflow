@@ -351,7 +351,7 @@
 										</h:commandLink>
 
 										<!-- StatisticsRuntimeSteps -->
-										<h:commandLink id="action32" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}"
+										<h:commandLink id="action32" rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}"
 											title="#{msgs.runtimeOfSteps}">
 											<h:outputText value="- #{msgs.runtimeOfSteps}" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
