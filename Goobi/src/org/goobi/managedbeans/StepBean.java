@@ -76,6 +76,7 @@ import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.PropertyListObject;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -153,10 +154,10 @@ public class StepBean extends BasicBean {
         StepManager m = new StepManager();
         String sql = FilterHelper.criteriaBuilder(filter, false, nurOffeneSchritte, nurEigeneSchritte, false, true);
         if (!showAutomaticTasks) {
-            sql = "typAutomatisch = false AND " + sql; 
+            sql = "typAutomatisch = false AND " + sql;
         }
         if (hideCorrectionTasks) {
-            sql = sql + " AND Prioritaet != 10 "; 
+            sql = sql + " AND Prioritaet != 10 ";
         }
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
@@ -294,9 +295,7 @@ public class StepBean extends BasicBean {
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = \"" + steptitle
-                            + "\" and prozesse.batchID = " + batchNumber , 0,
-                            Integer.MAX_VALUE);
+                    StepManager.getSteps(null, "schritte.titel = \"" + steptitle + "\" and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
@@ -417,7 +416,7 @@ public class StepBean extends BasicBean {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-//            ProcessManager.saveProcess(this.mySchritt.getProzess());
+            //            ProcessManager.saveProcess(this.mySchritt.getProzess());
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
         }
@@ -691,6 +690,11 @@ public class StepBean extends BasicBean {
                     WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "info", message));
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
+
+            if (temp.isTypAutomatisch()) {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
+                myThread.start();
+            }
         } catch (DAOException e) {
         }
 
@@ -906,16 +910,17 @@ public class StepBean extends BasicBean {
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
-        if ( this.mySchritt.getStepPlugin() != null &&  !this.mySchritt.getStepPlugin().isEmpty()) {
+        if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
             if (myPlugin == null) {
-                Helper.setFehlerMeldung("Plugin could not be found",this.mySchritt.getStepPlugin());
+                Helper.setFehlerMeldung("Plugin could not be found", this.mySchritt.getStepPlugin());
             } else {
                 myPlugin.initialize(mySchritt, "/task_edit");
+                runPlugin();
             }
         }
     }
-    
+
     public String runPlugin() {
         Helper.setMeldung("Starte Plugin");
         Helper.setMeldung(mySchritt.getStepPlugin());
@@ -932,7 +937,7 @@ public class StepBean extends BasicBean {
             return "";
         }
     }
-    
+
     public IStepPlugin getMyPlugin() {
         return myPlugin;
     }
@@ -1121,7 +1126,6 @@ public class StepBean extends BasicBean {
             }
         }
     }
-
 
     public ProcessProperty getProcessProperty() {
         return this.processProperty;
