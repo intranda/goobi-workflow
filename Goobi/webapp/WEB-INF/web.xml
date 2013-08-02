@@ -53,7 +53,12 @@
 		</init-param>
 	</filter>
 
-	<!-- extension mapping for adding <script/>, <link/>, and other resource tags to JSF-pages -->
+    <mime-mapping>        
+        <extension>jsp</extension>
+        <mime-type>image/png</mime-type>
+    </mime-mapping>
+    
+    	<!-- extension mapping for adding <script/>, <link/>, and other resource tags to JSF-pages -->
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
 		<!-- servlet-name must match the name of your javax.faces.webapp.FacesServlet entry -->
