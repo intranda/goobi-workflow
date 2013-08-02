@@ -38,6 +38,7 @@ import de.sub.goobi.config.ConfigMain;
 public class NavigationForm {
 	private String aktuell = "0";
 	private boolean showHelp = false;
+	private boolean showExpertView = false;
 
 	public String getAktuell() {
 		return this.aktuell;
@@ -77,5 +78,13 @@ public class NavigationForm {
 
 	public void setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;
+	}
+	
+	public boolean isShowExpertView() {
+		return showExpertView;
+	}
+	
+	public void setShowExpertView(boolean showExpertView) {
+		this.showExpertView = showExpertView;
 	}
 }
