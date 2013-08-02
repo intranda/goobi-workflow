@@ -90,6 +90,11 @@ public class LoginBean {
 				Helper.setFehlerMeldung("could not read database", e.getMessage());
 				return "";
 			}
+
+			if (treffer == null || treffer.size() == 0) {
+				Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+				return "";
+			}			
 			if (treffer != null && treffer.size() > 0) {
 				/* Login vorhanden, nun passwort prüfen */
 				User b = treffer.get(0);
@@ -116,9 +121,6 @@ public class LoginBean {
 				} else {
 					Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
 				}
-			} else {
-				/* Login nicht vorhanden, also auch keine Passwortprüfung */
-//				Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
 			}
 		}
 		// checking if saved css stylesheet is available, if not replace it by something available
