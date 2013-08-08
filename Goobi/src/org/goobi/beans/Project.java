@@ -37,7 +37,6 @@ import org.goobi.production.flow.statistics.StepInformation;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.ProjectHelper;
-import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.persistence.managers.ProjectManager;
 
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
@@ -97,8 +96,8 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         this.dmsImportRootPath = "";
         this.dmsImportSuccessPath = "";
         this.dmsImportCreateProcessFolder = false;
-        this.fileFormatInternal = MetadataFormat.getDefaultFileFormat().getName();
-        this.fileFormatDmsExport = MetadataFormat.getDefaultFileFormat().getName();
+        this.fileFormatInternal = "Mets";
+        this.fileFormatDmsExport = "Mets";
     }
 
     public Integer getId() {

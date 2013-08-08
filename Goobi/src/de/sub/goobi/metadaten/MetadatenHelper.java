@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.faces.model.SelectItem;
@@ -46,6 +47,8 @@ import org.apache.log4j.Logger;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
+import ugh.dl.ExportFileformat;
+import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
@@ -55,9 +58,14 @@ import ugh.dl.Prefs;
 import ugh.dl.Reference;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+
 import org.goobi.beans.Process;
+import org.goobi.beans.Ruleset;
+import org.reflections.Reflections;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
@@ -159,8 +167,7 @@ public class MetadatenHelper implements Comparator<Object> {
                         newDocstruct.addMetadataGroup(mg);
                     }
                 } else {
-                    Helper.setFehlerMeldung("Person " + mg.getType().getName() + " is not allowed in new element "
-                            + newDocstruct.getType().getName());
+                    Helper.setFehlerMeldung("Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
                     return inOldDocstruct;
                 }
 
@@ -565,9 +572,10 @@ public class MetadatenHelper implements Comparator<Object> {
          */
         HashMap<String, String> types = new HashMap<String, String>();
         types.put("metsmods", "ugh.fileformats.mets.MetsModsImportExport".toLowerCase());
-        types.put("mets", "www.loc.gov/METS/".toLowerCase());
-        types.put("rdf", "<RDF:RDF ".toLowerCase());
-        types.put("xstream", "<ugh.dl.DigitalDocument>".toLowerCase());
+        types.put("Mets", "www.loc.gov/METS/".toLowerCase());
+        types.put("Rdf", "<RDF:RDF ".toLowerCase());
+        types.put("XStream", "<ugh.dl.DigitalDocument>".toLowerCase());
+        types.put("Lido", "lido:lido");
 
         FileReader input = new FileReader(file);
         BufferedReader bufRead = new BufferedReader(input);
@@ -736,4 +744,44 @@ public class MetadatenHelper implements Comparator<Object> {
         }
     }
 
+    public static Fileformat getFileformatByName(String name, Ruleset ruleset) {
+        Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
+        for (Class<? extends Fileformat> cl : formatSet) {
+            try {
+                Fileformat ff = cl.newInstance();
+                if (ff.isWritable() && ff.getDisplayName().equals(name)) {
+                    ff.setPrefs(ruleset.getPreferences());
+                    return ff;
+                }
+            } catch (InstantiationException e) {
+            } catch (IllegalAccessException e) {
+            } catch (PreferencesException e) {
+                myLogger.error(e);
+            }
+
+        }
+        return null;
+    }
+
+    
+    public static ExportFileformat getExportFileformatByName(String name, Ruleset ruleset) {
+        Set<Class<? extends ExportFileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(ExportFileformat.class);
+        for (Class<? extends ExportFileformat> cl : formatSet) {
+
+            try {
+                ExportFileformat ff = cl.newInstance();
+                if (ff.isExportable() && ff.getDisplayName().equals(name)) {
+                    ff.setPrefs(ruleset.getPreferences());
+                    return ff;
+                }
+            } catch (InstantiationException e) {
+            } catch (IllegalAccessException e) {
+            } catch (PreferencesException e) {
+                myLogger.error(e);
+            }
+
+        }
+        return null;  
+    }
+    
 }
