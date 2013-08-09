@@ -88,7 +88,7 @@ public class SessionForm {
 		map.put("user", " - ");
 		map.put("userid", Integer.valueOf(0));
 		map.put("session", insession);
-		map.put("browserIcon", "none.gif");
+		map.put("browserIcon", "none.png");
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (context != null) {
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -117,16 +117,16 @@ public class SessionForm {
 				map.put("browserIcon", "ie.png");
 			}
 			if (mybrowser.indexOf("Opera") > 0) {
-				map.put("browserIcon", "opera.gif");
+				map.put("browserIcon", "opera.png");
 			}
 			if (mybrowser.indexOf("Safari") > 0) {
-				map.put("browserIcon", "safari.gif");
+				map.put("browserIcon", "safari.png");
 			}
 			if (mybrowser.indexOf("Konqueror") > 0) {
-				map.put("browserIcon", "konqueror.gif");
+				map.put("browserIcon", "konqueror.png");
 			}
 			if (mybrowser.indexOf("Netscape") > 0) {
-				map.put("browserIcon", "netscape.gif");
+				map.put("browserIcon", "netscape.png");
 			}
 		}
 		this.alleSessions.add(map);
