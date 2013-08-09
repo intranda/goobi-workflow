@@ -159,6 +159,7 @@ public class WebInterface extends HttpServlet {
 
 			// no validation errors, so call the command
 			if (myCommandPlugin.usesHttpSession()) {
+			    myCommandPlugin.setHttpRequest(req);
 				myCommandPlugin.setHttpResponse(resp);
 			}
 			cr = myCommandPlugin.execute();
