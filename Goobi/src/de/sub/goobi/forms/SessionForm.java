@@ -122,6 +122,9 @@ public class SessionForm {
 			if (mybrowser.indexOf("Safari") > 0) {
 				map.put("browserIcon", "safari.png");
 			}
+			if (mybrowser.indexOf("Chrome") > 0) {
+				map.put("browserIcon", "chrome.png");
+			}
 			if (mybrowser.indexOf("Konqueror") > 0) {
 				map.put("browserIcon", "konqueror.png");
 			}
