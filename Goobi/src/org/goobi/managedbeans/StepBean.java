@@ -111,6 +111,7 @@ public class StepBean extends BasicBean {
     private boolean nurEigeneSchritte = false;
     private boolean showAutomaticTasks = false;
     private boolean hideCorrectionTasks = false;
+    private boolean hideStepsFromOtherUsers = true;
     private HashMap<String, Boolean> anzeigeAnpassen;
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -152,7 +153,7 @@ public class StepBean extends BasicBean {
     public String FilterAlleStart() {
 
         StepManager m = new StepManager();
-        String sql = FilterHelper.criteriaBuilder(filter, false, nurOffeneSchritte, nurEigeneSchritte, false, true);
+        String sql = FilterHelper.criteriaBuilder(filter, false, nurOffeneSchritte, nurEigeneSchritte, hideStepsFromOtherUsers, false, true);
         if (!showAutomaticTasks) {
             sql = "typAutomatisch = false AND " + sql;
         }
@@ -1407,6 +1408,14 @@ public class StepBean extends BasicBean {
     public void setHideCorrectionTasks(boolean hideCorrectionTasks) {
         this.hideCorrectionTasks = hideCorrectionTasks;
     }
+    
+    public boolean isHideStepsFromOtherUsers() {
+		return hideStepsFromOtherUsers;
+	}
+    
+    public void setHideStepsFromOtherUsers(boolean hideStepsFromOtherUsers) {
+		this.hideStepsFromOtherUsers = hideStepsFromOtherUsers;
+	}
 
     public String callStepPlugin() {
         if (mySchritt.getStepPlugin() != null && mySchritt.getStepPlugin().length() > 0) {

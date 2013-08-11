@@ -74,7 +74,7 @@ public class FilterHelper {
         return answer;
     }
 
-    public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly) {
+    public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
         /* show only open Steps or those in use by current user */
         /* identify current user */
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
@@ -90,6 +90,8 @@ public class FilterHelper {
 
         if (stepOpenOnly) {
             answer.append(" Bearbeitungsstatus = 1 ");
+        } else if (hideStepsFromOtherUsers) {
+            answer.append(" ((BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2) OR (Bearbeitungsstatus = 1)) ");
         } else if (userAssignedStepsOnly) {
             answer.append(" BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2 ");
         } else {
@@ -489,7 +491,7 @@ public class FilterHelper {
      * @param stepOpenOnly
      * @return String used to pass on error messages about errors in the filter expression
      */
-    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, boolean isProcess,
+    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers, boolean isProcess,
             boolean isStep) {
         StringBuilder filter = new StringBuilder();
         boolean flagSteps = false;
@@ -533,7 +535,7 @@ public class FilterHelper {
         // this is needed if we filter steps
         if (flagSteps) {
             filter = checkStringBuilder(filter, true);
-            filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly));
+            filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly, hideStepsFromOtherUsers));
         }
 
         // this is needed for evaluating a filter string
