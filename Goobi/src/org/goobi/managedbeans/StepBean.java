@@ -111,7 +111,7 @@ public class StepBean extends BasicBean {
     private boolean nurEigeneSchritte = false;
     private boolean showAutomaticTasks = false;
     private boolean hideCorrectionTasks = false;
-    private boolean hideStepsFromOtherUsers = true;
+    private boolean hideStepsFromOtherUsers = false;
     private HashMap<String, Boolean> anzeigeAnpassen;
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
