@@ -282,7 +282,7 @@ public class MassImportForm {
 					r.setCollections(this.digitalCollections);
 				}
 				answer = this.plugin.generateFiles(recordList);
-				this.plugin.deleteFiles(this.selectedFilenames);
+
 			}
 
 			if (answer.size() > 1) {
@@ -305,6 +305,12 @@ public class MassImportForm {
 					// HotfolderJob.generateProcess(io.getProcessTitle(),
 					// this.template, new File(tempfolder), null, "error", b);
 					if (p == null) {
+                        if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
+                                && !selectedFilenames.isEmpty()) {
+                            if (selectedFilenames.contains(io.getImportFileName())) {
+                                selectedFilenames.remove(io.getImportFileName());
+                            }
+                        }
 						Helper.setFehlerMeldung("import failed for " + io.getProcessTitle() + ", process generation failed");
 
 					} else {
@@ -317,6 +323,12 @@ public class MassImportForm {
 					param.add(io.getErrorMessage());
 					Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", param));
 					// Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
+                    if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
+                            && !selectedFilenames.isEmpty()) {
+                        if (selectedFilenames.contains(io.getImportFileName())) {
+                            selectedFilenames.remove(io.getImportFileName());
+                        }
+                    }
 				}
 			}
 			if (answer.size() != this.processList.size()) {
@@ -335,6 +347,9 @@ public class MassImportForm {
 			this.importFile.delete();
 			this.importFile = null;
 		}
+        if (selectedFilenames != null && !selectedFilenames.isEmpty()) {
+            this.plugin.deleteFiles(this.selectedFilenames);
+        }
 		this.records = "";
 		return "process_import_3";
 	}
