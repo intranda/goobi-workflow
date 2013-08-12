@@ -345,7 +345,7 @@ public class ProjectBean extends BasicBean {
 	 */
 
 	public void GenerateValuesForStatistics() {
-	    String projectFilter =  FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, true, false) + " AND prozesse.istTemplate = false ";
+	    String projectFilter =  FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, null, true, false) + " AND prozesse.istTemplate = false ";
 	    Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 	    Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
 //		ProjectionList pl = Projections.projectionList();
@@ -541,7 +541,7 @@ public class ProjectBean extends BasicBean {
 				this.projectProgressData.setCalculationUnit(CalculationUnit.volumes);
 				this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
 				this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
-				this.projectProgressData.setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, true, false) + " AND prozesse.istTemplate = false ");
+				this.projectProgressData.setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) +"\"", false, null,  null, null, true, false) + " AND prozesse.istTemplate = false ");
 
 				if (this.projectProgressImage == null) {
 					this.projectProgressImage = "";

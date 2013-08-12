@@ -223,7 +223,6 @@ public class UserBean extends BasicBean {
             Helper.setFehlerMeldung("Error on reading database", e.getMessage());
             return null;
         }
-        displayMode = "";
         return "";
     }
 
@@ -255,7 +254,6 @@ public class UserBean extends BasicBean {
             Helper.setFehlerMeldung("Error on reading database", e.getMessage());
             return null;
         }
-        displayMode = "";
         return "";
     }
 

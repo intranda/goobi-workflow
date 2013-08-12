@@ -147,19 +147,19 @@ public class StatisticsBean {
     }
 
     public int getAnzahlAktuelleSchritte() {
-        return getAnzahlAktuelleSchritte(false, false);
+        return getAnzahlAktuelleSchritte(false, false, false);
     }
 
     public int getAnzahlAktuelleSchritteOffen() {
-        return getAnzahlAktuelleSchritte(true, false);
+        return getAnzahlAktuelleSchritte(true, false, false);
     }
 
     public int getAnzahlAktuelleSchritteBearbeitung() {
-        return getAnzahlAktuelleSchritte(false, true);
+        return getAnzahlAktuelleSchritte(false, true, false);
     }
 
-    private int getAnzahlAktuelleSchritte(boolean inOffen, boolean inBearbeitet) {
-        String filter = FilterHelper.limitToUserAssignedSteps(inOffen, inBearbeitet);
+    private int getAnzahlAktuelleSchritte(boolean inOffen, boolean inBearbeitet, boolean inHideStepsFromOtherUsers) {
+        String filter = FilterHelper.limitToUserAssignedSteps(inOffen, inBearbeitet, inHideStepsFromOtherUsers);
         try {
             return StepManager.countSteps(null, filter);
         } catch (DAOException e) {

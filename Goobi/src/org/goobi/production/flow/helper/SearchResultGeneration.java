@@ -62,7 +62,7 @@ public class SearchResultGeneration {
 	public HSSFWorkbook getResult() {
 	    // TODO neu entwickeln
 	    
-	    String sql = FilterHelper.criteriaBuilder(filter, false, null, null, true, false);
+	    String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
        
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";

@@ -46,7 +46,6 @@ body {
 
 table {
 	font-size: 11px;
-	font-family: verdana, arial;
 }
 .headTable {
 	width:100%;
@@ -276,15 +275,12 @@ a.mlink:hover {
 }
 
 .standardTable {
-	font-family: verdana, geneva, arial, helvetica, sans-serif;
-	font-size: 11px;
 	background-color: #0083e2;
 	border: solid 0px #0083e2;
 	margin-bottom: 7px;
 }
 
 .standardTable_Header {
-	font-size: 11px;
 	height: 25px;
 	padding: 3px 3px 3px 3px;
 	text-align: center;
@@ -298,7 +294,6 @@ a.mlink:hover {
 	padding-bottom: 3px;
 	padding-left: 2px;
 	padding-right: 7px;
-	font-size: 11px;
 	height: 25px;
 	text-align: left;
 	color: #000000;
@@ -334,8 +329,7 @@ a.mlink:hover {
 }
 
 .eingabeTable {
-	font-family: verdana, geneva, arial, helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 11px;
 	background-color: #dfeaff;
 	padding: 0;
 	border-style: solid;
@@ -427,7 +421,7 @@ a.text_head:hover {
 
 /*---------------------------------               // Kopie von Prozess anlegen           --------------------------------------*/
 .Tabelle {
-	font-size: 12px;
+	font-size: 11px;
 	border: none;
 	empty-cells: show;
 }
@@ -446,7 +440,7 @@ a.text_head:hover {
 .TabelleSpalte {
 	height: 25px;
 	padding: 5px;
-	font-size: 12px;
+	font-size: 11px;
 	border-bottom: 1px solid #4b4b98;
 	text-align: center;
 	color: black;
@@ -456,7 +450,7 @@ a.text_head:hover {
 .TabelleSpalteLinks {
 	height: 25px;
 	padding: 5px;
-	font-size: 12px;
+	font-size: 11px;
 	border-bottom: 1px solid #4b4b98;
 	text-align: left;
 	color: black;
@@ -465,7 +459,7 @@ a.text_head:hover {
 .TabelleSpalteRechts {
 	height: 25px;
 	padding: 5px;
-	font-size: 12px;
+	font-size: 11px;
 	border-bottom: 1px solid #4b4b98;
 	text-align: right;
 	color: black;
@@ -478,7 +472,7 @@ a.text_head:hover {
 	padding-left: 15px;
 	padding-right: 15px;
 	text-align: left;
-	font-size: 12px;
+	font-size: 11px;
 	color: white;
 	font-weight: bold;
 	background: #4b4b98;
@@ -490,7 +484,7 @@ a.text_head:hover {
 	padding-left: 15px;
 	padding-right: 15px;
 	text-align: left;
-	font-size: 12px;
+	font-size: 11px;
 	background: #e5e5e5;
 }
 
@@ -518,7 +512,6 @@ a.text_head:hover {
 
 .tree {
 	line-height: 18px;
-	font-family: arial, sans-serif;
 }
 
 .treenode {
@@ -576,19 +569,16 @@ a.text_head:hover {
 */
 .nodeFolder {
 	font-size: 10px;
-	font-family: verdana, geneva, sans-serif;
 	text-decoration: none
 }
 
 a.document {
 	font-size: 11px;
-	font-family: verdana, geneva, sans-serif;
 	text-decoration: none
 }
 
 a.documentSelected {
 	font-size: 11px;
-	font-family: verdana, geneva, sans-serif;
 	text-decoration: none;
 	font-weight: bold
 }
@@ -596,7 +586,6 @@ a.documentSelected {
 .childCount {
 	color: blue;
 	font-size: 10px;
-	font-family: verdana, geneva, sans-serif;
 	text-decoration: none
 }
 
@@ -604,7 +593,6 @@ a.documentSelected {
 	border-color: silver;
 	border-style: solid;
 	border-width: 1px;
-	font-family: sans-serif;
 	font-size: 12px;
 }
 
@@ -612,7 +600,6 @@ a.documentSelected {
 	border-color: red;
 	border-style: solid;
 	border-width: 1px;
-	font-family: sans-serif;
 	font-size: 12px;
 }
 
@@ -636,7 +623,6 @@ a.documentSelected {
 
 .standardTable_Row1 {
 	background-color: #ffffff;
-	line-height: 19px;
 }
 
 .standardTable_Row2 {

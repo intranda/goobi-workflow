@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,16 +28,17 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import de.sub.goobi.config.ConfigMain;
 
-@ManagedBean(name="NavigationForm") 
+@ManagedBean(name = "NavigationForm")
 @SessionScoped
 public class NavigationForm {
 	private String aktuell = "0";
+	private boolean showHelp = false;
+	private boolean showExpertView = false;
 
 	public String getAktuell() {
 		return this.aktuell;
@@ -44,31 +46,45 @@ public class NavigationForm {
 
 	public void setAktuell(String aktuell) {
 		this.aktuell = aktuell;
-	}	
-	
-	public String Reload(){
+	}
+
+	public String Reload() {
 		return "";
 	}
-	
-	public String JeniaPopupCloseAction(){       
-       return "jeniaClosePopupFrameWithAction";
-	}    
-    
-    public String BenutzerBearbeiten(){
-        return "BenutzerBearbeiten";
-    }
-    
 
-    /**
-     * 
-     * @return true if show_taskmanager in file GoobiConfig.properties is =true
-     */
-    public Boolean getShowTaskManager(){
-    	return ConfigMain.getBooleanParameter("show_taskmanager", false);	
-    }
-    
-    public Boolean getShowModuleManager(){
-    	return ConfigMain.getBooleanParameter("show_modulmanager", false);	
-    }
-    
+	public String JeniaPopupCloseAction() {
+		return "jeniaClosePopupFrameWithAction";
+	}
+
+	public String BenutzerBearbeiten() {
+		return "BenutzerBearbeiten";
+	}
+
+	/**
+	 * 
+	 * @return true if show_taskmanager in file GoobiConfig.properties is =true
+	 */
+	public Boolean getShowTaskManager() {
+		return ConfigMain.getBooleanParameter("show_taskmanager", false);
+	}
+
+	public Boolean getShowModuleManager() {
+		return ConfigMain.getBooleanParameter("show_modulmanager", false);
+	}
+
+	public boolean isShowHelp() {
+		return showHelp;
+	}
+
+	public void setShowHelp(boolean showHelp) {
+		this.showHelp = showHelp;
+	}
+	
+	public boolean isShowExpertView() {
+		return showExpertView;
+	}
+	
+	public void setShowExpertView(boolean showExpertView) {
+		this.showExpertView = showExpertView;
+	}
 }

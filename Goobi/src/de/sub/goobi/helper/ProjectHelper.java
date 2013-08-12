@@ -65,7 +65,7 @@ public class ProjectHelper {
         Long totalNumberOfImages = 0l;
 
         String projectFilter =
-                FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(project.getTitel()) + "\"", false, null, null, true, false)
+                FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(project.getTitel()) + "\"", false, null, null, null, true, false)
                         + " AND prozesse.istTemplate = false ";
 
         totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
@@ -240,7 +240,7 @@ public class ProjectHelper {
         Long totalNumberOfImages = 0l;
 
         String projectFilter =
-                FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(inProj.getTitel()) + "\"", false, null, null, true, false)
+                FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(inProj.getTitel()) + "\"", false, null, null, null, true, false)
                         + " AND prozesse.istTemplate = false ";
 
         totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
