@@ -38,7 +38,7 @@ public class StepObject {
 	private Date bearbeitungszeitpunkt;
 	private Date bearbeitungsbeginn;
 	private Date bearbeitungsende;
-	private int bearbeitungsbenutzer;
+	private Integer bearbeitungsbenutzer;
 	private Integer editType;
 	private boolean typAutomatisch = false;
 	private boolean typExport = false;
@@ -51,7 +51,7 @@ public class StepObject {
 	private String validationPlugin;
 
 	public StepObject(int id, String title, int reihenfolge, int bearbeitungsstatus, Date bearbeitungszeitpunkt, Date bearbeitungsbeginn,
-			Date bearbeitungsende, int bearbeitungsbenutzer, Integer editType, boolean typExport, boolean typAutomatisch, int processId,
+			Date bearbeitungsende, Integer bearbeitungsbenutzer, Integer editType, boolean typExport, boolean typAutomatisch, int processId,
 			boolean readAccess, boolean writeAccess, boolean metadataAccess, boolean typeFinishImmediately, String stepPlugin, String validationPlugin) {
 		super();
 		this.id = id;
@@ -139,11 +139,11 @@ public class StepObject {
 		this.editType = editType;
 	}
 
-	public int getBearbeitungsbenutzer() {
+	public Integer getBearbeitungsbenutzer() {
 		return this.bearbeitungsbenutzer;
 	}
 
-	public void setBearbeitungsbenutzer(int bearbeitungsbenutzer) {
+	public void setBearbeitungsbenutzer(Integer bearbeitungsbenutzer) {
 		this.bearbeitungsbenutzer = bearbeitungsbenutzer;
 	}
 
