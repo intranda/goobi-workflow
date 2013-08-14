@@ -3,7 +3,7 @@
 
 	<!-- Distribution specific settings. -->
 	<property name="dist.name" value="goobi" />
-	<property name="dist.revision" value="multiple manifestations" />
+	<property name="dist.revision" value="1.9.3" />
 
 	<!-- Directory settings -->
 	<property name="dir.lib" value="./WEB-INF/lib" />
