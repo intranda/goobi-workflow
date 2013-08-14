@@ -26,6 +26,8 @@ package de.sub.goobi.metadaten;
 
 import org.goobi.pagination.IntegerSequence;
 import org.goobi.pagination.RomanNumberSequence;
+
+import de.sub.goobi.helper.Helper;
 import ugh.dl.RomanNumeral;
 
 import java.util.ArrayList;
@@ -102,7 +104,13 @@ public class Paginator {
 		// roman numbers
 		if (paginationType == Paginator.Type.ROMAN) {
 			RomanNumeral roman = new RomanNumeral();
-			roman.setValue(paginationStartValue);
+			try {
+			    roman.setValue(paginationStartValue);
+			} catch (NumberFormatException e) {
+			    List<String> param = new ArrayList<String>();
+			    param.add(paginationStartValue);
+			    Helper.setFehlerMeldung(Helper.getTranslation("NoRomanNumber", param));
+			}
 		}
 	}
 
@@ -255,8 +263,11 @@ public class Paginator {
 			paginationBaseValue = Integer.parseInt(paginationStartValue);
 		} else if (paginationType == Paginator.Type.ROMAN) {
 			RomanNumeral r = new RomanNumeral();
-			r.setValue(paginationStartValue);
-			paginationBaseValue = r.intValue();
+			try {
+                r.setValue(paginationStartValue);
+                paginationBaseValue = r.intValue();
+            } catch (NumberFormatException e) {
+            }
 		}
 
 		return paginationBaseValue;
