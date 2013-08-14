@@ -40,6 +40,7 @@ public class BasicBean implements Serializable {
 	private static final long serialVersionUID = 2950419497162710096L;
 	protected DatabasePaginator paginator;
 	protected String zurueck = "";
+	protected String temp = null;
 	protected String filter = null;
 	protected User user;
 
@@ -83,6 +84,14 @@ public class BasicBean implements Serializable {
 		this.sortierung = sortierung;
 	}
 
+	public String getTemp() {
+		return temp;
+	}
+	
+	public void setTemp(String temp) {
+		this.temp = temp;
+	}
+	
 	public void addFilterToUser(){
 		if (this.filter==null || this.filter.length()==0){
 			return;

@@ -39,6 +39,7 @@ public class NavigationForm {
 	private String aktuell = "0";
 	private boolean showHelp = false;
 	private boolean showExpertView = false;
+	private boolean showSidebar = true;
 
 	public String getAktuell() {
 		return this.aktuell;
@@ -86,5 +87,12 @@ public class NavigationForm {
 	
 	public void setShowExpertView(boolean showExpertView) {
 		this.showExpertView = showExpertView;
+	}
+	
+	public boolean isShowSidebar() {
+		return showSidebar;
+	}
+	public void setShowSidebar(boolean showSidebar) {
+		this.showSidebar = showSidebar;
 	}
 }
