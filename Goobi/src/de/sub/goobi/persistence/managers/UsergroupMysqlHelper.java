@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -144,7 +145,7 @@ class UsergroupMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
         } finally {
             if (connection != null) {

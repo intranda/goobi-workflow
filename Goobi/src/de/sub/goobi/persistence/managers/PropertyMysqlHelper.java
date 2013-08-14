@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -300,7 +301,7 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            logger.debug(sql.toString());
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 pe.setId(id);
