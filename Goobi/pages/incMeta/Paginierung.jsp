@@ -64,45 +64,55 @@
 
 					<a4j:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=1}" title="#{msgs.seitenzaehlung}"
 						reRender="PaginierungActionBox,myMessages,mygrid10">
-						<h:graphicImage value="/newpages/images/buttons/paginierung_seite_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+						<h:graphicImage value="/newpages/images/buttons/paginierung_seite_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" width="35px"/>
 						<x:updateActionListener value="1" property="#{Metadaten.paginierungSeitenProImage}" />
 					</a4j:commandLink>
 					<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==1}" value="/newpages/images/buttons/paginierung_seite.png"
-						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlung}" />
+						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlung}" width="35px" />
 
 					<a4j:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=2}" title="#{msgs.spaltenzaehlung}"
 						reRender="PaginierungActionBox,myMessages,mygrid10">
-						<h:graphicImage value="/newpages/images/buttons/paginierung_spalte_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+						<h:graphicImage value="/newpages/images/buttons/paginierung_spalte_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" width="35px" />
 						<x:updateActionListener value="2" property="#{Metadaten.paginierungSeitenProImage}" />
 					</a4j:commandLink>
 					<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==2}" value="/newpages/images/buttons/paginierung_spalte.png"
-						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.spaltenzaehlung}" />
+						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.spaltenzaehlung}" width="35px"/>
 
 					<a4j:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=3}" title="#{msgs.blattzaehlung}"
 						reRender="PaginierungActionBox,myMessages,mygrid10">
-						<h:graphicImage value="/newpages/images/buttons/paginierung_blatt_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+						<h:graphicImage value="/newpages/images/buttons/paginierung_blatt_inactive.png" style="margin-left:4px;margin-right:6px;vertical-align:middle" width="35px" />
 						<x:updateActionListener value="3" property="#{Metadaten.paginierungSeitenProImage}" />
 					</a4j:commandLink>
 					<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==3}" value="/newpages/images/buttons/paginierung_blatt.png"
-						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlung}" />
+						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlung}" width="35px" />
 
 					<a4j:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=4}" title="#{msgs.blattzaehlungrectoverso}"
 						reRender="PaginierungActionBox,myMessages,mygrid10">
-						<h:graphicImage value="/newpages/images/buttons/paginierung_blatt_rectoverso_inactive.png"
+						<h:graphicImage value="/newpages/images/buttons/paginierung_blatt_rectoverso_inactive.png" width="35px"
 							style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 						<x:updateActionListener value="4" property="#{Metadaten.paginierungSeitenProImage}" />
 					</a4j:commandLink>
 					<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==4}" value="/newpages/images/buttons/paginierung_blatt_rectoverso.png"
-						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlungrectoverso}" />
+						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlungrectoverso}" width="35px"/>
 
 					<a4j:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=5}" title="#{msgs.seitenzaehlungrectoverso}"
 						reRender="PaginierungActionBox,myMessages,mygrid10">
-						<h:graphicImage value="/newpages/images/buttons/paginierung_seite_rectoverso_inactive.png"
+						<h:graphicImage value="/newpages/images/buttons/paginierung_seite_rectoverso_inactive.png" width="35px"
 							style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 						<x:updateActionListener value="5" property="#{Metadaten.paginierungSeitenProImage}" />
 					</a4j:commandLink>
 					<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==5}" value="/newpages/images/buttons/paginierung_seite_rectoverso.png"
-						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlungrectoverso}" />
+						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlungrectoverso}" width="35px"/>
+
+					<a4j:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=6}" title="#{msgs.seitenzaehlungoriental}"
+						reRender="PaginierungActionBox,myMessages,mygrid10">
+						<h:graphicImage value="/newpages/images/buttons/paginierung_seite_oriental_inactive.png" width="35px"
+							style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+						<x:updateActionListener value="6" property="#{Metadaten.paginierungSeitenProImage}" />
+					</a4j:commandLink>
+					<h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==6}" value="/newpages/images/buttons/paginierung_seite_oriental.png"
+						style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlungoriental}" width="35px" />
+
 
 					<htm:br />
 					<htm:br />
