@@ -231,6 +231,13 @@ public class ProjectBean extends BasicBean {
 		if (!this.myProjekt.getFilegroups().contains(this.myFilegroup)) {
 			this.myProjekt.getFilegroups().add(this.myFilegroup);
 		}
+		if (myProjekt.getId() == null) {
+		    try {
+                ProjectManager.saveProject(myProjekt);
+            } catch (DAOException e) {
+                myLogger.error(e);
+            }
+		}
 		ProjectManager.saveProjectFileGroup(myFilegroup);
 		return "";
 	}
