@@ -144,7 +144,7 @@ public class BeanHelper {
 			
 			stepneu.setStepPlugin(step.getStepPlugin());
 			stepneu.setValidationPlugin(step.getValidationPlugin());
-			
+			stepneu.setDelayStep(step.isDelayStep());
 			//Fixing a bug found by Holger Busse (Berlin)
 			stepneu.setTypBeimAbschliessenVerifizieren(step.isTypBeimAbschliessenVerifizieren());
 			

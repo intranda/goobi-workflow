@@ -99,6 +99,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     private String stepPlugin;
     private String validationPlugin;
+    private boolean delayStep;
 
     public Step() {
         this.titel = "";
@@ -850,6 +851,14 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             benutzergruppen = UsergroupManager.getUserGroupsForStep(id);
         }
 
+    }
+
+    public boolean isDelayStep() {
+        return delayStep;
+    }
+
+    public void setDelayStep(boolean delayStep) {
+        this.delayStep = delayStep;
     }
 
 }

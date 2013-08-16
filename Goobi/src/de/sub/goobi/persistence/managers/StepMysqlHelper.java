@@ -196,6 +196,7 @@ class StepMysqlHelper implements Serializable {
         s.setBatchStep(rs.getBoolean("batchStep"));
         s.setStepPlugin(rs.getString("stepPlugin"));
         s.setValidationPlugin(rs.getString("validationPlugin"));
+        s.setDelayStep(rs.getBoolean("delayStep"));
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
