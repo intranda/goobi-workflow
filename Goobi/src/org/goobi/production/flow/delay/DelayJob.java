@@ -9,6 +9,7 @@ import org.goobi.production.flow.jobs.AbstractGoobiJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 
+import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.persistence.managers.StepManager;
 
 public class DelayJob extends AbstractGoobiJob {
@@ -19,22 +20,29 @@ public class DelayJob extends AbstractGoobiJob {
         return StepManager.getSteps(null, filter);
     }
 
-    
     @Override
     public String getJobName() {
         return "DelayJob";
     }
- 
+
     @Override
     public void execute() {
         List<Step> stepsWithDelay = getListOfStepsWithDelay();
-        
+
         for (Step step : stepsWithDelay) {
             IDelayPlugin plugin = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
 
-            
+            if (plugin != null) {
+                plugin.initialize(step, "");
+                if (plugin.delayIsExhausted()) {
+                    new HelperSchritte().CloseStepObjectAutomatic(step);
+                } else {
+                    logger.trace(step.getProzess().getTitel() + ": remaining delay is " + plugin.getRemainingDelay());
+                }
+            }
+
         }
 
     }
-    
+
 }
