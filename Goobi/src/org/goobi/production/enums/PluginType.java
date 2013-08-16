@@ -30,6 +30,7 @@ package org.goobi.production.enums;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IServletPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
@@ -38,7 +39,8 @@ import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 public enum PluginType {
 
     Import(1, "import", IImportPlugin.class), Step(2, "step", IStepPlugin.class), Validation(3, "validation", IValidatorPlugin.class), Command(4,
-            "command", ICommandPlugin.class), Servlet(5, "servlet", IServletPlugin.class), Delay(2, "delay", IDelayPlugin.class);
+            "command", ICommandPlugin.class), Servlet(5, "servlet", IServletPlugin.class), Opac(6, "opac", IOpacPlugin.class), Delay(7, "delay",
+            IDelayPlugin.class);
 
     private int id;
     private String name;
