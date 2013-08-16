@@ -4,11 +4,11 @@ package de.sub.goobi.forms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *          - http://www.goobi.org
+ *          - http://launchpad.net/goobi-production
+ *          - http://gdz.sub.uni-goettingen.de
+ *          - http://www.intranda.com
+ *          - http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -59,6 +59,7 @@ import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -83,7 +84,6 @@ import ugh.fileformats.mets.XStream;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.importer.IOpacPlugin;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.helper.BeanHelper;
@@ -140,7 +140,7 @@ public class ProzesskopieForm {
 
     public String Prepare() {
         atstsl = "";
-        //		Helper.getHibernateSession().refresh(this.prozessVorlage);
+        //      Helper.getHibernateSession().refresh(this.prozessVorlage);
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             if (this.prozessVorlage.getSchritteList().size() == 0) {
                 Helper.setFehlerMeldung("noStepsInWorkflow");
@@ -268,11 +268,11 @@ public class ProzesskopieForm {
 
         String filter = " istTemplate = false AND inAuswahllisteAnzeigen = true ";
 
-        //		Session session = Helper.getHibernateSession();
-        //		Criteria crit = session.createCriteria(Process.class);
-        //		crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        //		crit.add(Restrictions.eq("inAuswahllisteAnzeigen", Boolean.valueOf(true)));
-        //		crit.addOrder(Order.asc("titel"));
+        //      Session session = Helper.getHibernateSession();
+        //      Criteria crit = session.createCriteria(Process.class);
+        //      crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
+        //      crit.add(Restrictions.eq("inAuswahllisteAnzeigen", Boolean.valueOf(true)));
+        //      crit.addOrder(Order.asc("titel"));
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
         LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
@@ -290,16 +290,16 @@ public class ProzesskopieForm {
                         " prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
                                 + aktuellerNutzer.getId() + ")";
 
-                //				Hibernate.initialize(aktuellerNutzer);
-                //				Disjunction dis = Restrictions.disjunction();
-                //				for (Project proj : aktuellerNutzer.getProjekte()) {
-                //					dis.add(Restrictions.eq("projekt", proj));
-                //				}
-                //				crit.add(dis);
+                //              Hibernate.initialize(aktuellerNutzer);
+                //              Disjunction dis = Restrictions.disjunction();
+                //              for (Project proj : aktuellerNutzer.getProjekte()) {
+                //                  dis.add(Restrictions.eq("projekt", proj));
+                //              }
+                //              crit.add(dis);
             }
         }
         List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter);
-        //		for (Object proz : crit.list()) {
+        //      for (Object proz : crit.list()) {
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
         }
@@ -521,12 +521,12 @@ public class ProzesskopieForm {
         /* prüfen, ob der Processtitel schon verwendet wurde */
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
-            //			try {
+            //          try {
             anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
-            //			} catch (DAOException e) {
-            //				Helper.setFehlerMeldung("Error on reading process information", e.getMessage());
-            //				valide = false;
-            //			}
+            //          } catch (DAOException e) {
+            //              Helper.setFehlerMeldung("Error on reading process information", e.getMessage());
+            //              valide = false;
+            //          }
             if (anzahl > 0) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -616,16 +616,16 @@ public class ProzesskopieForm {
 
         }
 
-        //		try {
+        //      try {
         this.prozessKopie.setSortHelperImages(this.guessedImages);
-        //			ProzessDAO dao = new ProzessDAO();
+        //          ProzessDAO dao = new ProzessDAO();
         ProcessManager.saveProcess(this.prozessKopie);
-        //			dao.refresh(this.prozessKopie);
-        //		} catch (DAOException e) {
-        //			myLogger.error(e);
-        //			myLogger.error("error on save: ", e);
-        //			return "";
-        //		}
+        //          dao.refresh(this.prozessKopie);
+        //      } catch (DAOException e) {
+        //          myLogger.error(e);
+        //          myLogger.error("error on save: ", e);
+        //          return "";
+        //      }
 
         /*
          * wenn noch keine RDF-Datei vorhanden ist (weil keine Opac-Abfrage stattfand, dann jetzt eine anlegen
@@ -756,13 +756,13 @@ public class ProzesskopieForm {
             Helper.setFehlerMeldung("historyNotUpdated");
             return "";
         } else {
-            //			try {
+            //          try {
             ProcessManager.saveProcess(this.prozessKopie);
-            //			} catch (DAOException e) {
-            //				myLogger.error(e);
-            //				myLogger.error("error on save: ", e);
-            //				return "";
-            //			}
+            //          } catch (DAOException e) {
+            //              myLogger.error(e);
+            //              myLogger.error("error on save: ", e);
+            //              return "";
+            //          }
         }
 
         this.prozessKopie.readMetadataFile();
