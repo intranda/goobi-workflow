@@ -56,13 +56,9 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-//import org.hibernate.Criteria;
-//import org.hibernate.Hibernate;
-//import org.hibernate.Session;
-//import org.hibernate.criterion.Disjunction;
-//import org.hibernate.criterion.Order;
-//import org.hibernate.criterion.Restrictions;
+import org.goobi.production.plugin.PluginLoader;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -87,6 +83,7 @@ import ugh.fileformats.mets.XStream;
 
 import org.goobi.beans.Process;
 
+import de.sub.goobi.importer.IOpacPlugin;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.helper.BeanHelper;
@@ -98,12 +95,12 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.importer.ImportOpac;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 @ManagedBean(name = "ProzesskopieForm")
@@ -119,7 +116,7 @@ public class ProzesskopieForm {
     private String opacKatalog;
     private Process prozessVorlage = new Process();
     private Process prozessKopie = new Process();
-    private ImportOpac myImportOpac = new ImportOpac();
+    private IOpacPlugin myImportOpac = null;
     private ConfigOpac co;
     /* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
     private boolean useOpac;
@@ -155,6 +152,7 @@ public class ProzesskopieForm {
                     Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", param));
                 }
             }
+
             return "";
         }
 
@@ -317,12 +315,15 @@ public class ProzesskopieForm {
         clearValues();
         readProjectConfigs();
         try {
+            ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+            
+            myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+            
             /* den Opac abfragen und ein RDF draus bauen lassen */
-            this.myRdf =
-                    this.myImportOpac.OpacToDocStruct(this.opacSuchfeld, this.opacSuchbegriff, this.opacKatalog, this.prozessKopie.getRegelsatz()
-                            .getPreferences(), true);
-            if (this.myImportOpac.getOpacDocType(true) != null) {
-                this.docType = this.myImportOpac.getOpacDocType(true).getTitle();
+            this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie
+                    .getRegelsatz().getPreferences());
+            if (this.myImportOpac.getOpacDocType() != null) {
+                this.docType = this.myImportOpac.getOpacDocType().getTitle();
             }
             this.atstsl = this.myImportOpac.getAtstsl();
             fillFieldsFromMetadataFile();
@@ -432,7 +433,7 @@ public class ProzesskopieForm {
             return "";
         }
         Process tempProcess = ProcessManager.getProcessById(this.auswahl);
-       
+
         if (tempProcess.getWerkstueckeSize() > 0) {
             /* erstes Werkstück durchlaufen */
             Masterpiece werk = tempProcess.getWerkstueckeList().get(0);
@@ -581,7 +582,7 @@ public class ProzesskopieForm {
      */
     public String NeuenProzessAnlegen() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
             WriteException {
-//        Helper.getHibernateSession().evict(this.prozessKopie);
+        //        Helper.getHibernateSession().evict(this.prozessKopie);
 
         this.prozessKopie.setId(null);
         if (!isContentValid()) {
@@ -767,8 +768,7 @@ public class ProzesskopieForm {
         this.prozessKopie.readMetadataFile();
 
         /* damit die Sortierung stimmt nochmal einlesen */
-//        Helper.getHibernateSession().refresh(this.prozessKopie);
-       
+        //        Helper.getHibernateSession().refresh(this.prozessKopie);
 
         List<Step> steps = StepManager.getStepsForProcess(prozessKopie.getId());
         for (Step s : steps) {
@@ -1436,8 +1436,7 @@ public class ProzesskopieForm {
             this.prozessKopie.setWikifield(WikiFieldHelper.getWikiMessage(prozessKopie.getWikifield(), "info", message));
         }
     }
-    
-    
+
     public Integer getRulesetSelection() {
         if (this.prozessKopie.getRegelsatz() != null) {
             return this.prozessKopie.getRegelsatz().getId();
@@ -1458,7 +1457,7 @@ public class ProzesskopieForm {
             }
         }
     }
-    
+
     public List<SelectItem> getRulesetSelectionList() {
         List<SelectItem> rulesets = new ArrayList<SelectItem>();
         List<Ruleset> temp = RulesetManager.getAllRulesets();
