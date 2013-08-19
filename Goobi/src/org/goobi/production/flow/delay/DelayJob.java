@@ -44,7 +44,7 @@ public class DelayJob extends AbstractGoobiJob {
                     ProcessManager.addLogfile(WikiFieldHelper.getWikiMessage(step.getProzess().getWikifield(), "debug", Helper.getTranslation("blockingDelayIsExhausted")), step.getProzess().getId());
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
-                    logger.info(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
+                    logger.debug(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
                 }
             }
 
