@@ -8,6 +8,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.AbstractGoobiJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
+import org.goobi.production.plugin.interfaces.IStepPlugin;
 
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -16,7 +17,7 @@ public class DelayJob extends AbstractGoobiJob {
     private static final Logger logger = Logger.getLogger(DelayJob.class);
 
     private List<Step> getListOfStepsWithDelay() {
-        String filter = " batchStep = true AND stepPlugin is not NULL";
+        String filter = " delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";
         return StepManager.getSteps(null, filter);
     }
 
@@ -27,17 +28,19 @@ public class DelayJob extends AbstractGoobiJob {
 
     @Override
     public void execute() {
+        logger.debug("execute delay job");
         List<Step> stepsWithDelay = getListOfStepsWithDelay();
-
+        logger.debug(stepsWithDelay.size() + " steps are waiting");
         for (Step step : stepsWithDelay) {
-            IDelayPlugin plugin = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+            IStepPlugin plugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
 
-            if (plugin != null) {
-                plugin.initialize(step, "");
-                if (plugin.delayIsExhausted()) {
+            if (plugin != null && plugin instanceof IDelayPlugin) {
+                IDelayPlugin delay = (IDelayPlugin) plugin;
+                delay.initialize(step, "");
+                if (delay.delayIsExhausted()) {
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
-                    logger.trace(step.getProzess().getTitel() + ": remaining delay is " + plugin.getRemainingDelay());
+                    logger.info(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
                 }
             }
 
@@ -45,4 +48,9 @@ public class DelayJob extends AbstractGoobiJob {
 
     }
 
+    public static void main(String[] args) {
+        DelayJob dj = new DelayJob();
+        dj.execute();
+    }
+    
 }

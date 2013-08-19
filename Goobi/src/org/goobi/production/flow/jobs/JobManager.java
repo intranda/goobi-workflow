@@ -34,6 +34,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
+import org.goobi.production.flow.delay.DelayJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -78,14 +79,13 @@ public class JobManager implements ServletContextListener {
 	 * 
 	 * @throws SchedulerException
 	 **************************************************************************/
-	@SuppressWarnings("deprecation")
 	private static void startTimedJobs() throws SchedulerException {
 		SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
 		
 		initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
-		initializeJobNonConfigured(new HotfolderJob(), 5, sched);
+		initializeJobNonConfigured(new DelayJob(), 1, sched);
 	}
 
 	/***************************************************************************
