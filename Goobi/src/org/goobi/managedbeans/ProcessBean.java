@@ -1193,7 +1193,9 @@ public class ProcessBean extends BasicBean {
     }
 
     public String Reload() {
-
+        if (myProzess != null && myProzess.getId() != null) {
+            myProzess = ProcessManager.getProcessById(myProzess.getId());
+        }
         return "";
     }
 
