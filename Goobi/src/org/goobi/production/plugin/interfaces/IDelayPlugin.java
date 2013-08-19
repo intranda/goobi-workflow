@@ -4,7 +4,7 @@ public interface IDelayPlugin extends IStepPlugin {
 
     public void setDelay(long seconds);
     
-    public long getRemainingDelay();
+    public int getRemainingDelay();
     
     public boolean delayIsExhausted();
     
