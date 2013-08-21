@@ -150,7 +150,7 @@ public class BatchBean extends BasicBean {
         if (this.processfilter == null) {
             this.processfilter = "";
         }
-        String filter = FilterHelper.criteriaBuilder(processfilter, false, null, null, true, false);
+        String filter = FilterHelper.criteriaBuilder(processfilter, false, null, null, null, true, false);
         if (!filter.isEmpty()) {
             filter += " AND ";
         }

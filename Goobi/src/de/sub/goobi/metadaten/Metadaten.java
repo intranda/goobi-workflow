@@ -4,11 +4,11 @@ package de.sub.goobi.metadaten;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *          - http://www.goobi.org
+ *          - http://launchpad.net/goobi-production
+ *          - http://gdz.sub.uni-goettingen.de
+ *          - http://www.intranda.com
+ *          - http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -57,6 +57,9 @@ import org.apache.log4j.Logger;
 import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.helper.ConfigDispayRules;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -78,6 +81,7 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
@@ -90,8 +94,10 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.importer.ImportOpac;
+
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -755,9 +761,9 @@ public class Metadaten {
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
             return Helper.getRequestParameter("zurueck");
-            //		} catch (DAOException e1) {
-            //			Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
-            //			return Helper.getRequestParameter("zurueck");
+            //      } catch (DAOException e1) {
+            //          Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
+            //          return Helper.getRequestParameter("zurueck");
         }
         this.myBenutzerID = Helper.getRequestParameter("BenutzerID");
         this.alleSeitenAuswahl_ersteSeite = "";
@@ -1656,20 +1662,20 @@ public class Metadaten {
         return null;
     }
 
-    //	public String Paginierung() {
-    //		Pagination p = new Pagination(this.alleSeitenAuswahl, this.alleSeitenNeu, this.paginierungAbSeiteOderMarkierung, this.paginierungArt,
-    //				this.paginierungSeitenProImage, this.paginierungWert);
-    //		String result = p.doPagination();
-    //		/*
-    //		 * zum Schluss nochmal alle Seiten neu einlesen
-    //		 */
-    //		this.alleSeitenAuswahl = null;
-    //		retrieveAllImages();
-    //		if (!SperrungAktualisieren()) {
-    //			return "SperrungAbgelaufen";
-    //		}
-    //		return result;
-    //	}
+    //  public String Paginierung() {
+    //      Pagination p = new Pagination(this.alleSeitenAuswahl, this.alleSeitenNeu, this.paginierungAbSeiteOderMarkierung, this.paginierungArt,
+    //              this.paginierungSeitenProImage, this.paginierungWert);
+    //      String result = p.doPagination();
+    //      /*
+    //       * zum Schluss nochmal alle Seiten neu einlesen
+    //       */
+    //      this.alleSeitenAuswahl = null;
+    //      retrieveAllImages();
+    //      if (!SperrungAktualisieren()) {
+    //          return "SperrungAbgelaufen";
+    //      }
+    //      return result;
+    //  }
 
     /**
      * alle Knoten des Baums expanden oder collapsen ================================================================
@@ -1804,14 +1810,14 @@ public class Metadaten {
 
         List<String> dataList = new ArrayList<String>();
         myLogger.trace("dataList");
-        //		try {
+        //      try {
         dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
         myLogger.trace("dataList 2");
-        //		} catch (InvalidImagesException e) {
-        //			myLogger.trace("dataList error");
-        //			myLogger.error("Images could not be read", e);
-        //			Helper.setFehlerMeldung("images could not be read", e);
-        //		}
+        //      } catch (InvalidImagesException e) {
+        //          myLogger.trace("dataList error");
+        //          myLogger.error("Images could not be read", e);
+        //          Helper.setFehlerMeldung("images could not be read", e);
+        //      }
         if (dataList == null || dataList.isEmpty()) {
             try {
                 createPagination();
@@ -1857,7 +1863,7 @@ public class Metadaten {
                     if (this.currentTifFolder != null) {
                         myLogger.trace("currentTifFolder: " + this.currentTifFolder);
                         try {
-                            //						    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+                            //                          dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
                             dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
                             if (dataList == null) {
                                 return;
@@ -1869,10 +1875,10 @@ public class Metadaten {
                             Helper.setFehlerMeldung("images could not be read", e1);
                         }
                     }
-                    //					if (dataList == null) {
-                    //						myLogger.trace("dataList: null");
-                    //						return;
-                    //					}
+                    //                  if (dataList == null) {
+                    //                      myLogger.trace("dataList: null");
+                    //                      return;
+                    //                  }
                     /* das aktuelle tif erfassen */
                     if (dataList.size() > pos) {
                         this.myBild = dataList.get(pos);
@@ -2066,12 +2072,14 @@ public class Metadaten {
      * ================================================================
      */
     public String AddAdditionalOpacPpns() {
-        ImportOpac iopac = new ImportOpac();
         StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\r\n");
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                Fileformat addrdf = iopac.OpacToDocStruct(this.opacSuchfeld, tok, this.opacKatalog, this.myPrefs, false);
+                ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+
+                Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
                     MetadatenalsTree3Einlesen1();
@@ -2081,7 +2089,7 @@ public class Metadaten {
             } catch (Exception e) {
             }
         }
-        return "metseditor";
+        return "Metadaten3links";
     }
 
     /**
@@ -2089,12 +2097,13 @@ public class Metadaten {
      * ================================================================
      */
     public String AddMetadaFromOpacPpn() {
-        ImportOpac iopac = new ImportOpac();
         StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\r\n");
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                Fileformat addrdf = iopac.OpacToDocStruct(this.opacSuchfeld, tok, this.opacKatalog, this.myPrefs, false);
+                ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+                Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
 
                     /* die Liste aller erlaubten Metadatenelemente erstellen */

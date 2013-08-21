@@ -41,6 +41,8 @@
 			<var>msgs</var>
 		</resource-bundle>
 		
+		<message-bundle>messages.messages</message-bundle>
+		
 		<resource-bundle>
 			<base-name>messages.messages</base-name>
 			<var>msgsClassic</var>
@@ -90,10 +92,7 @@
             de.sub.goobi.helper.exceptions.GoobiExceptionHandlerFactory  
         </exception-handler-factory>  
     </factory>  
-    
-    <factory>
-    <render-kit-factory>org.omnifaces.renderkit.Html5RenderKitFactory</render-kit-factory>
-</factory>
+
 
 
 </faces-config>

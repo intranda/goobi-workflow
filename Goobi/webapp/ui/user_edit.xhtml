@@ -149,6 +149,7 @@
 											<h:commandLink action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}" title="#{msgs.uebernehmen}">
 												<h:graphicImage id="id14" value="images/buttons/addUser.gif" />
 												<f:param id="id15" name="ID" value="#{item.id}" />
+												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="" />
 											</h:commandLink>
 
 										</h:column>
@@ -223,6 +224,7 @@
 														<h:commandLink action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}" title="#{msgs.uebernehmen}">
 															<h:graphicImage id="id14" value="images/buttons/addUser.gif" />
 															<f:param id="id15" name="ID" value="#{item.id}" />
+															<f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="" />
 														</h:commandLink>
 
 													</h:column>

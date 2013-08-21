@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +36,7 @@ class StepMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
+            logger.debug(sql + ", " + Arrays.toString(param));
             List<Step> list = new QueryRunner().query(connection, sql, resultSetToStepListHandler, param);
             return list;
         } finally {
@@ -351,7 +353,7 @@ class StepMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                logger.debug(sql.toString());
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     property.setId(id);
@@ -418,7 +420,7 @@ class StepMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            logger.debug(sql.toString());
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
@@ -894,7 +896,7 @@ class StepMysqlHelper implements Serializable {
             // String propNames = "numericValue, stringvalue, type, date, processId";
             Object[] param = { order, value, type, datetime, processId };
             String sql = "INSERT INTO " + "history" + " (numericValue, stringvalue, type, date, processId) VALUES ( ?, ?, ?, ? ,?)";
-            logger.trace("added history event " + sql + ", " + param);
+            logger.trace("added history event " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {

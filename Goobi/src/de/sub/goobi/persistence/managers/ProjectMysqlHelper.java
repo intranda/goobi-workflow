@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -158,7 +159,7 @@ class ProjectMysqlHelper implements Serializable {
                 sql.append(propNames);
                 sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                logger.debug(sql.toString());
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
@@ -227,7 +228,7 @@ class ProjectMysqlHelper implements Serializable {
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
                                 ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
-                logger.debug(sql.toString());
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 run.update(connection, sql.toString(), param);
             }
             // TODO FileGroups speichern
@@ -263,7 +264,7 @@ class ProjectMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { projectId };
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), resultSetToProjectFilegroupListHandler, param);
             return answer;
 

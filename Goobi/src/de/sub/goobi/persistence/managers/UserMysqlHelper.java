@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -201,7 +202,7 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { userId };
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             List<String> answer = new QueryRunner().query(connection, sql.toString(), resultSetToFilterListtHandler, param);
             return answer;
         } finally {
@@ -220,7 +221,7 @@ class UserMysqlHelper implements Serializable {
             String propNames = "Titel, Wert, IstObligatorisch, DatentypenID, Auswahl, creationDate, BenutzerID";
             Object[] param = { "_filter", filterstring, false, 5, null, datetime, userId };
             String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES ( ?, ?,? ,? ,? ,?,? )";
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {
@@ -236,7 +237,7 @@ class UserMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             Object[] param = { userId, filterstring };
             String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ? AND Wert = ?";
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {
@@ -258,7 +259,7 @@ class UserMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             return run.query(connection, sql, UserManager.resultSetToUserListHandler, param);
         } finally {
             if (connection != null) {

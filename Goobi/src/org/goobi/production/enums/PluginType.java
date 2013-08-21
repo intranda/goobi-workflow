@@ -1,4 +1,5 @@
 package org.goobi.production.enums;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,6 +29,7 @@ package org.goobi.production.enums;
  */
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IServletPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
@@ -35,49 +37,50 @@ import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
 public enum PluginType {
 
-	Import(1, "import", IImportPlugin.class), Step(2, "step", IStepPlugin.class), Validation(3, "validation", IValidatorPlugin.class), Command(4, "command", ICommandPlugin.class),Servlet(5, "servlet", IServletPlugin.class);
+    Import(1, "import", IImportPlugin.class), Step(2, "step", IStepPlugin.class), Validation(3, "validation", IValidatorPlugin.class), Command(4,
+            "command", ICommandPlugin.class), Servlet(5, "servlet", IServletPlugin.class), Opac(6, "opac", IOpacPlugin.class);
 
-	private int id;
-	private String name;
-	private Class<IPlugin> interfaz;
-	
-	@SuppressWarnings("unchecked")
-	private PluginType(int id, String name, Class<? extends IPlugin> inInterfaz) {
-		this.id =id;
-		this.name = name;
-		this.interfaz = (Class<IPlugin>) inInterfaz;
-	}
-	
-	public static PluginType getTypeFromValue(String pluginType) {
-		if (pluginType != null) {
-			for (PluginType type : PluginType.values()) {
-				if (type.getName().equals(pluginType)) {
-					return type;
-				}
-			}
-		}
-		return null;
-	}
-	
-	public static PluginType getTypesFromId(int pluginType) {
-		for (PluginType type : PluginType.values()) {
-			if (type.getId()== pluginType) {
-				return type;
-			}
-		}
-		return null;
-	}
+    private int id;
+    private String name;
+    private Class<IPlugin> interfaz;
 
-	public int getId() {
-		return this.id;
-	}
-	
-	public Class<IPlugin> getInterfaz() {
-		return this.interfaz;
-	}
+    @SuppressWarnings("unchecked")
+    private PluginType(int id, String name, Class<? extends IPlugin> inInterfaz) {
+        this.id = id;
+        this.name = name;
+        this.interfaz = (Class<IPlugin>) inInterfaz;
+    }
 
-	public String getName() {
-		return this.name;
-	}
-	
+    public static PluginType getTypeFromValue(String pluginType) {
+        if (pluginType != null) {
+            for (PluginType type : PluginType.values()) {
+                if (type.getName().equals(pluginType)) {
+                    return type;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static PluginType getTypesFromId(int pluginType) {
+        for (PluginType type : PluginType.values()) {
+            if (type.getId() == pluginType) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public Class<IPlugin> getInterfaz() {
+        return this.interfaz;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
 }

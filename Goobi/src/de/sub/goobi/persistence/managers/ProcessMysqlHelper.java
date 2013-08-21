@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -259,11 +260,11 @@ class ProcessMysqlHelper implements Serializable {
     private static void insertProcess(Process o) throws SQLException {
         String sql = "INSERT INTO prozesse " + generateInsertQuery(false) + generateValueQuery(false);
         Object[] param = generateParameter(o, false, false);
-        Connection connection = null;
+                Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            logger.debug(sql.toString());
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
@@ -595,7 +596,7 @@ class ProcessMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
             Object[] param = { numberOfFiles, processId };
             sql.append("UPDATE prozesse SET sortHelperImages = ? WHERE ProzesseID = ?");
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql.toString(), param);
         } finally {
             if (connection != null) {
@@ -611,8 +612,9 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
             Object[] param = { logValue, processId };
+
             sql.append("UPDATE prozesse SET wikifield = ? WHERE ProzesseID = ?");
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql.toString(), param);
         } finally {
             if (connection != null) {
@@ -628,8 +630,9 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
             Object[] param = { value, processId };
+
             sql.append("UPDATE prozesse SET sortHelperStatus = ? WHERE ProzesseID = ?");
-            logger.debug(sql.toString() + ", " + param);
+            logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql.toString(), param);
         } finally {
             if (connection != null) {
