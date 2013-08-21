@@ -266,13 +266,6 @@ public class ExportMets {
                             v.setFileSuffix(pfg.getSuffix());
                             mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
                         }
-                    } else {
-                        VirtualFileGroup v = new VirtualFileGroup();
-                        v.setName(pfg.getName());
-                        v.setPathToFiles(vp.replace(pfg.getPath()));
-                        v.setMimetype(pfg.getMimetype());
-                        v.setFileSuffix(pfg.getSuffix());
-                        mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
                     }
                 } else {
 
