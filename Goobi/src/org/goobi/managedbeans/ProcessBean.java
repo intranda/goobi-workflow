@@ -499,11 +499,11 @@ public class ProcessBean extends BasicBean {
         } else if (this.sortierung.equals("vorgangsdatumAsc")) {
             answer = "erstellungsdatum";
         } else if (this.sortierung.equals("vorgangsdatumDesc")) {
-            answer = "erstellungsdatum";
+            answer = "erstellungsdatum desc";
         } else if (this.sortierung.equals("fortschrittAsc")) {
             answer = "sortHelperStatus";
         } else if (this.sortierung.equals("fortschrittDesc")) {
-            answer = "sortHelperStatus";
+            answer = "sortHelperStatus desc";
         }
 
         return answer;
