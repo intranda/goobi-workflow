@@ -731,6 +731,8 @@ public class Metadaten {
      */
 
     public String XMLlesen() {
+//    	myBild="";
+//    	this.myBildNummer = 1;
         String result = "";
         if (xmlReadingLock.tryLock()) {
             try {
