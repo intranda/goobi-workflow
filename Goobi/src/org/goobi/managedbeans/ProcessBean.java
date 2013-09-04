@@ -711,7 +711,7 @@ public class ProcessBean extends BasicBean {
     public String VorlageLoeschen() {
         this.myProzess.getVorlagen().remove(this.myVorlage);
         TemplateManager.deleteTemplate(myVorlage);
-        //        Speichern();
+       
         return "process_edit";
     }
 

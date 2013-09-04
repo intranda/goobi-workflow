@@ -116,4 +116,27 @@ public class Template implements Serializable {
         this.processId = processId;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Template other = (Template) obj;
+        if (herkunft == null) {
+            if (other.herkunft != null)
+                return false;
+        } else if (!herkunft.equals(other.herkunft))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    
 }

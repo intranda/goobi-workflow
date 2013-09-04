@@ -407,7 +407,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static Templateproperty saveTemplateproperty(Templateproperty property) throws SQLException {
-        if (property.getTemplateId() == 0 && property.getVorlage() != null) {
+        if (property.getTemplateId() == null && property.getVorlage() != null) {
             property.setTemplateId(property.getVorlage().getId());
         }
 
@@ -492,7 +492,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static Masterpieceproperty saveMasterpieceProperty(Masterpieceproperty property) throws SQLException {
-        if (property.getMasterpieceId() == 0 && property.getWerkstueck() != null) {
+        if (property.getMasterpieceId() == null && property.getWerkstueck() != null) {
             property.setMasterpieceId(property.getWerkstueck().getId());
         }
 

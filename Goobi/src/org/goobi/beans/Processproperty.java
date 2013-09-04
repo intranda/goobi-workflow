@@ -221,7 +221,7 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 		return this.getTitel().toLowerCase().compareTo(o.getTitel().toLowerCase());
 	}
 
-    public int getProcessId() {
+    public Integer getProcessId() {
         return processId;
     }
 
