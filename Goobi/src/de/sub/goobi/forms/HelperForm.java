@@ -195,6 +195,29 @@ public class HelperForm {
         return ffs;
     }
 
+    
+    public List<SelectItem> getStepStatusList() {
+        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        SelectItem si = new SelectItem("", Helper.getTranslation("bitteAuswaehlen"),  Helper.getTranslation("bitteAuswaehlen"), true);
+        ssl.add(si);
+        
+        SelectItem locked = new SelectItem("0", Helper.getTranslation("statusGesperrt"));
+        ssl.add(locked);
+        
+        SelectItem open = new SelectItem("1", Helper.getTranslation("statusOffen"));
+        ssl.add(open);
+        
+        SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
+        ssl.add(inWork);
+        
+        SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
+        ssl.add(finished);
+        
+        return ssl;
+    }
+    
+
+    
     public String getServletPathAsUrl() {
         FacesContext context = FacesContext.getCurrentInstance();
         return context.getExternalContext().getRequestContextPath() + "/";
