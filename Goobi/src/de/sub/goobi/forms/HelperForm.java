@@ -198,8 +198,6 @@ public class HelperForm {
     
     public List<SelectItem> getStepStatusList() {
         List<SelectItem> ssl = new ArrayList<SelectItem>();
-        SelectItem si = new SelectItem("", Helper.getTranslation("bitteAuswaehlen"),  Helper.getTranslation("bitteAuswaehlen"), true);
-        ssl.add(si);
         
         SelectItem locked = new SelectItem("0", Helper.getTranslation("statusGesperrt"));
         ssl.add(locked);
