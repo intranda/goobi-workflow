@@ -326,6 +326,15 @@ public class MassImportForm {
                     }
                 }
             }
+            this.idList = null;
+            if (this.importFile != null) {
+                this.importFile.delete();
+                this.importFile = null;
+            }
+            if (selectedFilenames != null && !selectedFilenames.isEmpty()) {
+                this.plugin.deleteFiles(this.selectedFilenames);
+            }
+            this.records = "";
             if (answer.size() != this.processList.size()) {
                 // some error on process generation, don't go to next page
                 return "";
@@ -337,15 +346,6 @@ public class MassImportForm {
             Helper.setFehlerMeldung("missingData");
             return "";
         }
-        this.idList = null;
-        if (this.importFile != null) {
-            this.importFile.delete();
-            this.importFile = null;
-        }
-        if (selectedFilenames != null && !selectedFilenames.isEmpty()) {
-            this.plugin.deleteFiles(this.selectedFilenames);
-        }
-        this.records = "";
         return "MassImportFormPage3";
     }
 
