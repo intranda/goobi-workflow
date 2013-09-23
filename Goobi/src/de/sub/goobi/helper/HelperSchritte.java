@@ -263,6 +263,7 @@ public class HelperSchritte {
         Process po = step.getProzess();
         Prefs prefs = null;
         try {
+            prefs = po.getRegelsatz().getPreferences();
             dd = po.readMetadataFile().getDigitalDocument();
         } catch (DAOException e1) {
             logger.error(e1);
