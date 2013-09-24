@@ -36,6 +36,7 @@ import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 
 import ugh.dl.DocStruct;
+import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -45,17 +46,19 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsModsImportExport;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 public class ExportDms extends ExportMets {
@@ -111,23 +114,24 @@ public class ExportDms extends ExportMets {
 		 * --------------------------------
 		 */
 		Fileformat gdzfile;
-		Fileformat newfile;
+//		Fileformat newfile;
+        ExportFileformat newfile = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
 		try {
 			gdzfile = myProzess.readMetadataFile();
-			switch (MetadataFormat.findFileFormatsHelperByName(myProzess
-					.getProjekt().getFileFormatDmsExport())) {
-			case METS:
-				newfile = new MetsModsImportExport(this.myPrefs);
-				break;
-
-			case METS_AND_RDF:
-				newfile = new RDFFile(this.myPrefs);
-				break;
-
-			default:
-				newfile = new RDFFile(this.myPrefs);
-				break;
-			}
+//			switch (MetadataFormat.findFileFormatsHelperByName(myProzess
+//					.getProjekt().getFileFormatDmsExport())) {
+//			case METS:
+//				newfile = new MetsModsImportExport(this.myPrefs);
+//				break;
+//
+//			case METS_AND_RDF:
+//				newfile = new RDFFile(this.myPrefs);
+//				break;
+//
+//			default:
+//				newfile = new RDFFile(this.myPrefs);
+//				break;
+//			}
 
 			newfile.setDigitalDocument(gdzfile.getDigitalDocument());
 			gdzfile = newfile;
@@ -242,9 +246,10 @@ public class ExportDms extends ExportMets {
 		 * Benutzerhome anschliessend den Import-Thread starten
 		 * --------------------------------
 		 */
+		boolean externalExport = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz()) != null;
 		if (myProzess.getProjekt().isUseDmsImport()) {
-			if (MetadataFormat.findFileFormatsHelperByName(myProzess
-					.getProjekt().getFileFormatDmsExport()) == MetadataFormat.METS) {
+		    if (externalExport) {
+			
 				/* Wenn METS, dann per writeMetsFile schreiben... */
 				writeMetsFile(myProzess, benutzerHome + File.separator
 						+ atsPpnBand + ".xml", gdzfile, false);
@@ -254,12 +259,12 @@ public class ExportDms extends ExportMets {
 						+ ".xml");
 			}
 
-			/* ggf. sollen im Export mets und rdf geschrieben werden */
-			if (MetadataFormat.findFileFormatsHelperByName(myProzess
-					.getProjekt().getFileFormatDmsExport()) == MetadataFormat.METS_AND_RDF) {
-				writeMetsFile(myProzess, benutzerHome + File.separator
-						+ atsPpnBand + ".mets.xml", gdzfile, false);
-			}
+//			/* ggf. sollen im Export mets und rdf geschrieben werden */
+//			if (MetadataFormat.findFileFormatsHelperByName(myProzess
+//					.getProjekt().getFileFormatDmsExport()) == MetadataFormat.METS_AND_RDF) {
+//				writeMetsFile(myProzess, benutzerHome + File.separator
+//						+ atsPpnBand + ".mets.xml", gdzfile, false);
+//			}
 
 			Helper.setMeldung(null, myProzess.getTitel() + ": ",
 					"DMS-Export started");
@@ -298,8 +303,7 @@ public class ExportDms extends ExportMets {
 			}
 		} else {
 			/* ohne Agora-Import die xml-Datei direkt ins Home schreiben */
-			if (MetadataFormat.findFileFormatsHelperByName(myProzess
-					.getProjekt().getFileFormatDmsExport()) == MetadataFormat.METS) {
+			if (externalExport) {
 				writeMetsFile(myProzess, zielVerzeichnis + atsPpnBand + ".xml",
 						gdzfile, false);
 			} else {

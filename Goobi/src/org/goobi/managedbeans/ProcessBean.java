@@ -499,11 +499,11 @@ public class ProcessBean extends BasicBean {
         } else if (this.sortierung.equals("vorgangsdatumAsc")) {
             answer = "erstellungsdatum";
         } else if (this.sortierung.equals("vorgangsdatumDesc")) {
-            answer = "erstellungsdatum";
+            answer = "erstellungsdatum desc";
         } else if (this.sortierung.equals("fortschrittAsc")) {
             answer = "sortHelperStatus";
         } else if (this.sortierung.equals("fortschrittDesc")) {
-            answer = "sortHelperStatus";
+            answer = "sortHelperStatus desc";
         }
 
         return answer;
@@ -666,21 +666,25 @@ public class ProcessBean extends BasicBean {
     }
 
     public String BenutzergruppeHinzufuegen() {
-        this.mySchritt.getBenutzergruppen().add(this.myBenutzergruppe);
-        try {
-            StepManager.saveStep(mySchritt);
-        } catch (DAOException e) {
-            logger.error(e);
+        if (!mySchritt.getBenutzergruppen().contains(myBenutzergruppe)) {
+            this.mySchritt.getBenutzergruppen().add(this.myBenutzergruppe);
+            try {
+                StepManager.saveStep(mySchritt);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
         }
         return "";
     }
 
     public String BenutzerHinzufuegen() {
-        this.mySchritt.getBenutzer().add(this.myBenutzer);
-        try {
-            StepManager.saveStep(mySchritt);
-        } catch (DAOException e) {
-            logger.error(e);
+        if (!mySchritt.getBenutzer().contains(myBenutzer)) {
+            this.mySchritt.getBenutzer().add(this.myBenutzer);
+            try {
+                StepManager.saveStep(mySchritt);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
         }
         return "";
     }
@@ -707,7 +711,7 @@ public class ProcessBean extends BasicBean {
     public String VorlageLoeschen() {
         this.myProzess.getVorlagen().remove(this.myVorlage);
         TemplateManager.deleteTemplate(myVorlage);
-        //        Speichern();
+       
         return "process_edit";
     }
 
@@ -743,7 +747,12 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            Helper.setFehlerMeldung("An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
+            List<String> param = new ArrayList<String>();
+            param.add("METS");
+            param.add(this.myProzess.getTitel());
+
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             logger.error("ExportMETS error", e);
         }
     }
@@ -753,6 +762,11 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
+            List<String> param = new ArrayList<String>();
+            param.add("PDF");
+            param.add(this.myProzess.getTitel());
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+
             Helper.setFehlerMeldung("An error occured while trying to export PDF file for: " + this.myProzess.getTitel(), e);
             logger.error("ExportPDF error", e);
         }
@@ -763,7 +777,11 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
+            List<String> param = new ArrayList<String>();
+            param.add("DMS");
+            param.add(this.myProzess.getTitel());
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
             logger.error("ExportDMS error", e);
         }
     }
@@ -1006,20 +1024,20 @@ public class ProcessBean extends BasicBean {
     }
 
     public void SchrittStatusUp() {
-                if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
-                    this.mySchritt.setBearbeitungsstatusUp();
-                    this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-                    //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
-                    if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                        new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
-                    } else {
-                        mySchritt.setBearbeitungszeitpunkt(new Date());
-                        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                        if (ben != null) {
-                            mySchritt.setBearbeitungsbenutzer(ben);
-                        }
-                    }
+        if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
+            this.mySchritt.setBearbeitungsstatusUp();
+            this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
+            //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
+            if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
+            } else {
+                mySchritt.setBearbeitungszeitpunkt(new Date());
+                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                if (ben != null) {
+                    mySchritt.setBearbeitungsbenutzer(ben);
                 }
+            }
+        }
         try {
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {

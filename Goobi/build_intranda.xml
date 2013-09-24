@@ -58,7 +58,7 @@
 					<include name="**/*.jpg" />
 					<include name="**/sRGB.icc" />
 					<include name="**/log4j.properties" />
-					<include name="**/goobi_config.properties" />
+					<exclude name="**/goobi_config.properties" />
 					<include name="**/contentServerConfig.xml" />
 					<include name="**/hibernate.cfg.xml" />
 					<exclude name="**/TODO" />
@@ -70,6 +70,7 @@
 		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
 			<fileset dir="${private.dir}" />
 		</copy>
+		<rename dest="${dir.build.classes}/goobi_config.properties" src="${dir.build.classes}/template.properties"/>
 	</target>
 
 	<!-- Copy configuration files. -->

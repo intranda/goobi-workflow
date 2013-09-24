@@ -41,6 +41,7 @@ import org.goobi.managedbeans.LoginBean;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
+import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.dl.VirtualFileGroup;
@@ -50,8 +51,9 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import ugh.fileformats.mets.MetsModsImportExport;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.export.dms.ExportDms_CorrectRusdml;
@@ -63,6 +65,7 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 
 public class ExportMets {
@@ -177,7 +180,7 @@ public class ExportMets {
             throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
             TypeNotAllowedForParentException {
 
-        MetsModsImportExport mm = new MetsModsImportExport(this.myPrefs);
+        ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         mm.setWriteLocal(writeLocalFilegroup);
         String imageFolderPath = myProzess.getImagesDirectory();
         File imageFolder = new File(imageFolderPath);
@@ -263,13 +266,6 @@ public class ExportMets {
                             v.setFileSuffix(pfg.getSuffix());
                             mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
                         }
-                    } else {
-                        VirtualFileGroup v = new VirtualFileGroup();
-                        v.setName(pfg.getName());
-                        v.setPathToFiles(vp.replace(pfg.getPath()));
-                        v.setMimetype(pfg.getMimetype());
-                        v.setFileSuffix(pfg.getSuffix());
-                        mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
                     }
                 } else {
 
@@ -296,13 +292,13 @@ public class ExportMets {
         mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
         mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
 
-        String pointer = myProzess.getProjekt().getMetsPointerPath();
-        pointer = vp.replace(pointer);
-        mm.setMptrUrl(pointer);
+//        String pointer = myProzess.getProjekt().getMetsPointerPath();
+//        pointer = vp.replace(pointer);
+//        mm.setMptrUrl(pointer);
 
-        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
-        pointer = vp.replace(anchor);
-        mm.setMptrAnchorUrl(pointer);
+//        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
+//        pointer = vp.replace(anchor);
+//        mm.setMptrAnchorUrl(pointer);
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<String>();

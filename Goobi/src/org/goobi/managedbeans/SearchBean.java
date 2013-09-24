@@ -143,7 +143,7 @@ public class SearchBean {
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
         this.processPropertyTitles.add(Helper.getTranslation("notSelected"));
-        this.processPropertyTitles.addAll(PropertyManager.getDistinctMasterpiecePropertyTitles());
+        this.processPropertyTitles.addAll(PropertyManager.getDistinctProcessPropertyTitles());
         //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
         //			String itstr = (String) it.next();
         //			if (itstr!=null){

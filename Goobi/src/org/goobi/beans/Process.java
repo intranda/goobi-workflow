@@ -53,14 +53,11 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-import ugh.fileformats.excel.RDFFile;
-import ugh.fileformats.mets.MetsMods;
-import ugh.fileformats.mets.MetsModsImportExport;
-import ugh.fileformats.mets.XStream;
+//import ugh.fileformats.mets.MetsMods;
+//import ugh.fileformats.mets.XStream;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -817,15 +814,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
         logger.debug("current meta.xml file type for id " + getId() + ": " + type);
-        Fileformat ff = null;
-        if (type.equals("metsmods")) {
-            ff = new MetsModsImportExport(this.regelsatz.getPreferences());
-        } else if (type.equals("mets")) {
-            ff = new MetsMods(this.regelsatz.getPreferences());
-        } else if (type.equals("xstream")) {
-            ff = new XStream(this.regelsatz.getPreferences());
-        } else {
-            ff = new RDFFile(this.regelsatz.getPreferences());
+        Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
+        
+        if (ff == null) {
+            List<String> param = new ArrayList<String>();
+            param.add(titel);
+            param.add(type);
+            Helper.setFehlerMeldung(Helper.getTranslation("MetadataFormatNotAvailable", param));
+            return null;
         }
         try {
             ff.read(getMetadataFilePath());
@@ -965,19 +961,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String metadataFileName;
         String temporaryMetadataFileName;
 
-        switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
-            case METS:
-                ff = new MetsMods(this.regelsatz.getPreferences());
-                break;
-
-            case RDF:
-                ff = new RDFFile(this.regelsatz.getPreferences());
-                break;
-
-            default:
-                ff = new XStream(this.regelsatz.getPreferences());
-                break;
-        }
+       ff = MetadatenHelper.getFileformatByName(this.projekt.getFileFormatInternal(), this.regelsatz);
+        
+//        switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
+//            case METS:
+//                ff = new MetsMods(this.regelsatz.getPreferences());
+//                break;
+//
+//            case RDF:
+//                ff = new RDFFile(this.regelsatz.getPreferences());
+//                break;
+//
+//            case LIDO:
+//                ff = new Lido(this.regelsatz.getPreferences());
+//                break;
+//            default:
+//                ff = new XStream(this.regelsatz.getPreferences());
+//                break;
+//        }
         // createBackupFile();
         metadataFileName = getMetadataFilePath();
         temporaryMetadataFileName = getTemporaryMetadataFileName(metadataFileName);
@@ -1005,13 +1006,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
             logger.debug("current template.xml file type: " + type);
-            if (type.equals("mets")) {
-                ff = new MetsMods(this.regelsatz.getPreferences());
-            } else if (type.equals("xstream")) {
-                ff = new XStream(this.regelsatz.getPreferences());
-            } else {
-                ff = new RDFFile(this.regelsatz.getPreferences());
-            }
+            ff = MetadatenHelper.getFileformatByName(type, regelsatz);
+//            if (type.equals("mets")) {
+//                ff = new MetsMods(this.regelsatz.getPreferences());
+//            } else if (type.equals("xstream")) {
+//                ff = new XStream(this.regelsatz.getPreferences());
+//            } else {
+//                ff = new RDFFile(this.regelsatz.getPreferences());
+//            }
             ff.read(getTemplateFilePath());
             return ff;
         } else {

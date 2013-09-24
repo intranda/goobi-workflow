@@ -31,6 +31,7 @@ package de.sub.goobi.forms;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.faces.bean.ManagedBean;
@@ -44,10 +45,11 @@ import org.goobi.beans.Ruleset;
 import org.goobi.production.GoobiVersion;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.reflections.Reflections;
 
+import ugh.dl.Fileformat;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.enums.MetadataFormat;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -60,8 +62,6 @@ public class HelperForm {
 
     private boolean showError = false;
 
-    
-    
     // TODO re-added temporary for compiling issues
     public static final String MAIN_JSF_PATH = "/newpages";
 
@@ -148,25 +148,74 @@ public class HelperForm {
 
     public List<SelectItem> getFileFormats() {
         ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
-        for (MetadataFormat ffh : MetadataFormat.values()) {
-            if (!ffh.equals(MetadataFormat.RDF)) {
-                ffs.add(new SelectItem(ffh.getName(), null));
+
+        Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
+        for (Class<? extends Fileformat> cl : formatSet) {
+            try {
+                Fileformat ff = cl.newInstance();
+                if (ff.isExportable()) {
+                    ffs.add(new SelectItem(ff.getDisplayName(), null));
+                }
+            } catch (InstantiationException e) {
+            } catch (IllegalAccessException e) {
             }
+
         }
+
+//        for (MetadataFormat ffh : MetadataFormat.values()) {
+//            if (!ffh.equals(MetadataFormat.RDF)) {
+//                ffs.add(new SelectItem(ffh.getName(), null));
+//            }
+//        }
         return ffs;
     }
 
     public List<SelectItem> getFileFormatsInternalOnly() {
         ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
-        for (MetadataFormat ffh : MetadataFormat.values()) {
-            if (ffh.isUsableForInternal())
-                if (!ffh.equals(MetadataFormat.RDF)) {
-                    ffs.add(new SelectItem(ffh.getName(), null));
+        
+        Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
+        for (Class<? extends Fileformat> cl : formatSet) {
+            try {
+                Fileformat ff = cl.newInstance();
+                if (ff.isWritable()) {
+                    ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
+            } catch (InstantiationException e) {
+            } catch (IllegalAccessException e) {
+            }
+
         }
+        
+//        for (MetadataFormat ffh : MetadataFormat.values()) {
+//            if (ffh.isUsableForInternal())
+//                if (!ffh.equals(MetadataFormat.RDF)) {
+//                    ffs.add(new SelectItem(ffh.getName(), null));
+//                }
+//        }
         return ffs;
     }
 
+    
+    public List<SelectItem> getStepStatusList() {
+        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        
+        SelectItem locked = new SelectItem("0", Helper.getTranslation("statusGesperrt"));
+        ssl.add(locked);
+        
+        SelectItem open = new SelectItem("1", Helper.getTranslation("statusOffen"));
+        ssl.add(open);
+        
+        SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
+        ssl.add(inWork);
+        
+        SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
+        ssl.add(finished);
+        
+        return ssl;
+    }
+    
+
+    
     public String getServletPathAsUrl() {
         FacesContext context = FacesContext.getCurrentInstance();
         return context.getExternalContext().getRequestContextPath() + "/";
@@ -192,7 +241,7 @@ public class HelperForm {
     }
 
     public boolean getMassImportAllowed() {
-        if (massImportAllowed == null ) {
+        if (massImportAllowed == null) {
             if (ConfigMain.getBooleanParameter("massImportAllowed", false)) {
 
                 massImportAllowed = !PluginLoader.getPluginList(PluginType.Import).isEmpty();
@@ -228,7 +277,6 @@ public class HelperForm {
         return !ConfigMain.getBooleanParameter("ldap_readonly", false);
     }
 
-    
     public boolean isShowError() {
         return showError;
     }

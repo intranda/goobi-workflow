@@ -731,6 +731,8 @@ public class Metadaten {
      */
 
     public String XMLlesen() {
+//    	myBild="";
+//    	this.myBildNummer = 1;
         String result = "";
         if (xmlReadingLock.tryLock()) {
             try {
@@ -773,7 +775,10 @@ public class Metadaten {
         this.neuesElementWohin = "1";
         this.tree3 = null;
         try {
-            XMLlesenStart();
+            String returnvalue = XMLlesenStart();
+            if (returnvalue == null) {
+                return "";
+            }
         } catch (SwapException e) {
             Helper.setFehlerMeldung(e);
             return Helper.getRequestParameter("zurueck");
@@ -831,6 +836,9 @@ public class Metadaten {
          * -------------------------------- Dokument einlesen --------------------------------
          */
         this.gdzfile = this.myProzess.readMetadataFile();
+        if (gdzfile == null) {
+            return null;
+        }
         this.mydocument = this.gdzfile.getDigitalDocument();
 
         this.mydocument.addAllContentFiles();
