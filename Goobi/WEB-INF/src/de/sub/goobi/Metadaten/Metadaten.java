@@ -637,6 +637,7 @@ public class Metadaten {
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
             WriteException {
+        currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusAnsicht = "Metadaten";
         this.modusHinzufuegen = false;
@@ -768,7 +769,7 @@ public class Metadaten {
         // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
         // return false;
         // }
-        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+        if (currentRepresentativePage != null && !currentRepresentativePage.isEmpty()) {
             boolean match = false;
             if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
                     && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
