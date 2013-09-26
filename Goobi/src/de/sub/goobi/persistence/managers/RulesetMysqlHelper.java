@@ -3,10 +3,10 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
 
@@ -102,28 +102,29 @@ class RulesetMysqlHelper implements Serializable {
 
             if (ro.getId() == null) {
                 String propNames = "Titel, Datei, orderMetadataByRuleset";
-                String propValues =
-                        "'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "','" + StringEscapeUtils.escapeSql(ro.getDatei()) + "',"
-                                + ro.isOrderMetadataByRuleset() + "";
+                String propValues = "?,? ,?";
+                Object[] param = {ro.getTitel(),ro.getDatei(), ro.isOrderMetadataByRuleset() };
+                
                 sql.append("INSERT INTO metadatenkonfigurationen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
 
-                logger.debug(sql.toString());
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
                 }
             } else {
+                Object[] param = {ro.getTitel(),ro.getDatei(), ro.isOrderMetadataByRuleset() };
                 sql.append("UPDATE metadatenkonfigurationen SET ");
-                sql.append("Titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "', ");
-                sql.append("Datei = '" + StringEscapeUtils.escapeSql(ro.getDatei()) + "', ");
-                sql.append("orderMetadataByRuleset = " + ro.isOrderMetadataByRuleset() + " ");
+                sql.append("Titel = ?, ");
+                sql.append("Datei = ?, ");
+                sql.append("orderMetadataByRuleset = ?");
                 sql.append(" WHERE MetadatenKonfigurationID = " + ro.getId() + ";");
-                logger.debug(sql.toString());
-                run.update(connection, sql.toString());
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                run.update(connection, sql.toString(), param);
             }
         } finally {
             if (connection != null) {

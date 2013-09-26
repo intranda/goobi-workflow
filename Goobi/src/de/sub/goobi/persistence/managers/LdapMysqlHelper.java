@@ -3,10 +3,10 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 
@@ -87,58 +87,71 @@ class LdapMysqlHelper implements Serializable {
             if (ro.getId() == null) {
                 String propNames =
                         "titel, homeDirectory, gidNumber, userDN, objectClasses, sambaSID, sn, uid, description, displayName, gecos, loginShell, sambaAcctFlags, sambaLogonScript, sambaPrimaryGroupSID, sambaPwdMustChange, sambaPasswordHistory, sambaLogonHours, sambaKickoffTime";
-                StringBuilder propValues = new StringBuilder();
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getHomeDirectory()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getGidNumber()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getUserDN()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getObjectClasses()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaSID()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSn()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getUid()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDescription()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getDisplayName()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getGecos()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getLoginShell()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaAcctFlags()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaLogonScript()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaPrimaryGroupSID()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaPwdMustChange()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaPasswordHistory()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaLogonHours()) + "',");
-                propValues.append("'" + StringEscapeUtils.escapeSql(ro.getSambaKickoffTime()) + "'");
-                sql.append("INSERT INTO ldapgruppen (" + propNames + ") VALUES (" + propValues.toString() + ")");
+                String values = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+                Object[] param =
+                        { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
+                                ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
+                                ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
+                                ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
+                                ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
+                                ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
+                                ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
+                                ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
+                                ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
+                                ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
+                                ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
+                                ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
+                                ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
 
-                logger.debug(sql.toString());
+                sql.append("INSERT INTO ldapgruppen (" + propNames + ") VALUES (" + values + ")");
+
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
                 if (id != null) {
                     ro.setId(id);
                 }
 
             } else {
+
                 sql.append("UPDATE ldapgruppen SET ");
-                sql.append("titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "', ");
-                sql.append("homeDirectory = '" + StringEscapeUtils.escapeSql(ro.getHomeDirectory()) + "', ");
-                sql.append("gidNumber = '" + StringEscapeUtils.escapeSql(ro.getGidNumber()) + "', ");
-                sql.append("userDN = '" + StringEscapeUtils.escapeSql(ro.getUserDN()) + "', ");
-                sql.append("objectClasses = '" + StringEscapeUtils.escapeSql(ro.getObjectClasses()) + "', ");
-                sql.append("sambaSID = '" + StringEscapeUtils.escapeSql(ro.getSambaSID()) + "', ");
-                sql.append("sn = '" + StringEscapeUtils.escapeSql(ro.getSn()) + "', ");
-                sql.append("uid = '" + StringEscapeUtils.escapeSql(ro.getUid()) + "', ");
-                sql.append("description = '" + StringEscapeUtils.escapeSql(ro.getDescription()) + "', ");
-                sql.append("displayName = '" + StringEscapeUtils.escapeSql(ro.getDisplayName()) + "', ");
-                sql.append("gecos = '" + StringEscapeUtils.escapeSql(ro.getGecos()) + "', ");
-                sql.append("loginShell = '" + StringEscapeUtils.escapeSql(ro.getLoginShell()) + "', ");
-                sql.append("sambaAcctFlags = '" + StringEscapeUtils.escapeSql(ro.getSambaAcctFlags()) + "', ");
-                sql.append("sambaLogonScript = '" + StringEscapeUtils.escapeSql(ro.getSambaLogonScript()) + "', ");
-                sql.append("sambaPrimaryGroupSID = '" + StringEscapeUtils.escapeSql(ro.getSambaPrimaryGroupSID()) + "', ");
-                sql.append("sambaPwdMustChange = '" + StringEscapeUtils.escapeSql(ro.getSambaPwdMustChange()) + "', ");
-                sql.append("sambaPasswordHistory = '" + StringEscapeUtils.escapeSql(ro.getSambaPasswordHistory()) + "', ");
-                sql.append("sambaLogonHours = '" + StringEscapeUtils.escapeSql(ro.getSambaLogonHours()) + "', ");
-                sql.append("sambaKickoffTime = '" + StringEscapeUtils.escapeSql(ro.getSambaKickoffTime()) + "' ");
+                sql.append("titel = ?, ");
+                sql.append("homeDirectory = ?, ");
+                sql.append("gidNumber = ?, ");
+                sql.append("userDN = ?, ");
+                sql.append("objectClasses = ?, ");
+                sql.append("sambaSID = ?, ");
+                sql.append("sn = ?, ");
+                sql.append("uid = ?, ");
+                sql.append("description = ?, ");
+                sql.append("displayName = ?, ");
+                sql.append("gecos = ?, ");
+                sql.append("loginShell = ?, ");
+                sql.append("sambaAcctFlags = ?, ");
+                sql.append("sambaLogonScript = ?, ");
+                sql.append("sambaPrimaryGroupSID = ?, ");
+                sql.append("sambaPwdMustChange = ?, ");
+                sql.append("sambaPasswordHistory = ?, ");
+                sql.append("sambaLogonHours = ?, ");
+                sql.append("sambaKickoffTime = ? ");
                 sql.append(" WHERE ldapgruppenID = " + ro.getId() + ";");
-                logger.debug(sql.toString());
-                run.update(connection, sql.toString());
+
+                Object[] param =
+                        { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
+                                ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
+                                ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
+                                ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
+                                ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
+                                ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
+                                ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
+                                ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
+                                ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
+                                ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
+                                ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
+                                ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
+                                ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
+
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                run.update(connection, sql.toString(), param);
             }
         } finally {
             if (connection != null) {

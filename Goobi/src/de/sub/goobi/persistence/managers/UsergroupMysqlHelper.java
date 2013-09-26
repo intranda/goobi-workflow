@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -91,27 +90,28 @@ class UsergroupMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
+                Object[] param = { ro.getTitel(), ro.getBerechtigung() };
                 String propNames = "titel, berechtigung";
-                String propValues = "'" + StringEscapeUtils.escapeSql(ro.getTitel()) + "'," + ro.getBerechtigung() + "";
+                String propValues = "? ,?";
                 sql.append("INSERT INTO benutzergruppen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
-
-                logger.debug(sql.toString());
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
                 }
-
             } else {
+                Object[] param = { ro.getTitel(), ro.getBerechtigung() };
                 sql.append("UPDATE benutzergruppen SET ");
-                sql.append("titel = '" + StringEscapeUtils.escapeSql(ro.getTitel()) + "', ");
-                sql.append("berechtigung = '" + ro.getBerechtigung() + "' ");
+                sql.append("titel = ?, ");
+                sql.append("berechtigung = ? ");
                 sql.append(" WHERE BenutzergruppenID = " + ro.getId() + ";");
-                logger.debug(sql.toString());
-                run.update(connection, sql.toString());
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+
+                run.update(connection, sql.toString(), param);
             }
         } finally {
             if (connection != null) {
