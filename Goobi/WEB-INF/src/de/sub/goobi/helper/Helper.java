@@ -710,7 +710,9 @@ public class Helper implements Serializable, Observer {
 				fileOk = true;
 			} else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
 				fileOk = true;
-			} else if (name.matches(prefix + "\\.docx")) {
+			} else if (name.matches(prefix + "\\.[mM][pP][2]")) {
+                fileOk = true;
+            }else if (name.matches(prefix + "\\.docx")) {
 				fileOk = true;
 			} else if (name.matches(prefix + "\\.doc")) {
 				fileOk = true;
