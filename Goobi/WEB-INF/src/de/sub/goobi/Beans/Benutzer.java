@@ -36,17 +36,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 
+import de.sub.goobi.Persistence.BenutzerDAO;
 import de.sub.goobi.Persistence.apache.UserManager;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.encryption.DesEncrypter;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.Ldap;
 
 public class Benutzer implements Serializable {
 	private static final long serialVersionUID = -7482853955996650586L;
+	
+	private static final Logger logger = Logger.getLogger(Benutzer.class);
 	private Integer id;
 	private String vorname;
 	private String nachname;
@@ -522,16 +527,16 @@ public class Benutzer implements Serializable {
 	 */
 
 	public List<String> getFilters() {
-//		List<String> filters = new ArrayList<String>();
-//		if (this.getEigenschaften() != null) {
-//			for (Benutzereigenschaft hgp : this.getEigenschaftenList()) {
-//				if (hgp.getTitel().equals("_filter")) {
-//					filters.add(hgp.getWert());
-//				}
-//			}
-//		}
-//		return filters;
-		return UserManager.getFilters(this.id);
+		List<String> filters = new ArrayList<String>();
+		if (this.getEigenschaften() != null) {
+			for (Benutzereigenschaft hgp : this.getEigenschaftenList()) {
+				if (hgp.getTitel().equals("_filter")) {
+					filters.add(hgp.getWert());
+				}
+			}
+		}
+		return filters;
+//		return UserManager.getFilters(this.id);
 	}
 
 	/**
@@ -542,25 +547,30 @@ public class Benutzer implements Serializable {
 	 */
 
 	public void addFilter(String inFilter) {
-//		try {
-//			Hibernate.initialize(this.eigenschaften);
-//		} catch (HibernateException e) {
-//		}
-//		if (this.eigenschaften == null) {
-//			this.eigenschaften = new HashSet<Benutzereigenschaft>();
-//		}
-//		// no double entries here
-//		for (Benutzereigenschaft be : this.eigenschaften) {
-//			if (be.getTitel().equals("_filter") && be.getWert().equals(inFilter)) {
-//				return;
-//			}
-//		}
-//		Benutzereigenschaft be = new Benutzereigenschaft();
-//		be.setBenutzer(this);
-//		be.setTitel("_filter");
-//		be.setWert(inFilter);
-//		this.eigenschaften.add(be);
-		UserManager.addFilter(this.id, inFilter);
+		try {
+			Hibernate.initialize(this.eigenschaften);
+		} catch (HibernateException e) {
+		}
+		if (this.eigenschaften == null) {
+			this.eigenschaften = new HashSet<Benutzereigenschaft>();
+		}
+		// no double entries here
+		for (Benutzereigenschaft be : this.eigenschaften) {
+			if (be.getTitel().equals("_filter") && be.getWert().equals(inFilter)) {
+				return;
+			}
+		}
+		Benutzereigenschaft be = new Benutzereigenschaft();
+		be.setBenutzer(this);
+		be.setTitel("_filter");
+		be.setWert(inFilter);
+		this.eigenschaften.add(be);
+		try {
+            new BenutzerDAO().save(this);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+//		UserManager.addFilter(this.id, inFilter);
 	}
 
 	/**
@@ -570,19 +580,24 @@ public class Benutzer implements Serializable {
 	 *            the filter to remove
 	 */
 	public void removeFilter(String inFilter) {
-//		try {
-//			Hibernate.initialize(this.eigenschaften);
-//		} catch (HibernateException e) {
-//		}
-//		if (this.eigenschaften != null) {
-//			for (Benutzereigenschaft be : this.eigenschaften) {
-//				if (be.getTitel().equals("_filter") && be.getWert().equals(inFilter)) {
-//					this.eigenschaften.remove(be);
-//					return;
-//				}
-//			}
-//		}
-		UserManager.removeFilter(this.id, inFilter);
+		try {
+			Hibernate.initialize(this.eigenschaften);
+		} catch (HibernateException e) {
+		}
+		if (this.eigenschaften != null) {
+			for (Benutzereigenschaft be : this.eigenschaften) {
+				if (be.getTitel().equals("_filter") && be.getWert().equals(inFilter)) {
+					this.eigenschaften.remove(be);
+					return;
+				}
+			}
+		}
+		try {
+            new BenutzerDAO().save(this);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+//		UserManager.removeFilter(this.id, inFilter);
 	}
 }
 
