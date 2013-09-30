@@ -66,7 +66,7 @@ public class UsergroupBean extends BasicBean {
                 Helper.setFehlerMeldung("userGroupNotEmpty");
                 return "";
             }
-            if (!this.myBenutzergruppe.getSchritte().isEmpty()) {
+            if (myBenutzergruppe.getSchritte() != null && !this.myBenutzergruppe.getSchritte().isEmpty()) {
                 Helper.setFehlerMeldung("userGroupAssignedError");
                 return "";
             }
