@@ -179,9 +179,7 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- alle Seiten hinzufügen --------------------------------
          */
         if (inOldDocstruct.getAllToReferences() != null) {
-            // TODO: get rid of Iterators, use a for Loop instead
-            for (Iterator<Reference> iterator = inOldDocstruct.getAllToReferences().iterator(); iterator.hasNext();) {
-                Reference p = iterator.next();
+            for (Reference p :inOldDocstruct.getAllToReferences()) {
                 newDocstruct.addReferenceTo(p.getTarget(), p.getType());
             }
         }
@@ -213,9 +211,8 @@ public class MetadatenHelper implements Comparator<Object> {
          */
         inOldDocstruct.getParent().addChild(newDocstruct);
         int i = 1;
-        // TODO: get rid of Iterators, use a for Loop instead
-        for (Iterator<DocStruct> iter = newDocstruct.getParent().getAllChildren().iterator(); iter.hasNext(); i++) {
-            if (iter.next() == inOldDocstruct) {
+        for (DocStruct docstruct : newDocstruct.getParent().getAllChildren()) {
+            if (docstruct == inOldDocstruct) {
                 break;
             }
         }
@@ -286,7 +283,6 @@ public class MetadatenHelper implements Comparator<Object> {
         List<DocStruct> alleDS = new ArrayList<DocStruct>();
 
         /* alle Elemente des Parents durchlaufen */
-        // TODO: get rid of Iterators, use a for Loop instead
         for (Iterator<DocStruct> iter = parent.getAllChildren().iterator(); iter.hasNext();) {
             DocStruct tempDS = iter.next();
 
@@ -387,9 +383,7 @@ public class MetadatenHelper implements Comparator<Object> {
     public void deleteAllUnusedElements(DocStruct inStruct) {
         inStruct.deleteUnusedPersonsAndMetadata();
         if (inStruct.getAllChildren() != null && inStruct.getAllChildren().size() > 0) {
-            // TODO: get rid of Iterators, use a for Loop instead
-            for (Iterator<DocStruct> it = inStruct.getAllChildren().iterator(); it.hasNext();) {
-                DocStruct ds = it.next();
+            for (DocStruct ds : inStruct.getAllChildren()) {
                 deleteAllUnusedElements(ds);
             }
         }

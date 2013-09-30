@@ -212,7 +212,6 @@ class ProjectMysqlHelper implements Serializable {
                 logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 run.update(connection, sql.toString(), param);
             }
-            // TODO FileGroups speichern
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

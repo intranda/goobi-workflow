@@ -142,7 +142,6 @@ public class PropertyParser {
 		for (Processproperty pe : plist) {
 
 			for (ProcessProperty pp : listClone) {
-				// TODO added temporarily a fix for NPE. Properties without title shouldn't exist at all
 				if (pe.getTitel() != null) {
 
 					if (pe.getTitel().equals(pp.getName())) {
@@ -239,7 +238,6 @@ public class PropertyParser {
 		List<Processproperty> plist = process.getEigenschaftenList();
 		for (Processproperty pe : plist) {
 
-			// TODO added temporarily a fix for NPE. Properties without title shouldn't exist at all
 			if (pe.getTitel() != null) {
 
 				for (ProcessProperty pp : listClone) {

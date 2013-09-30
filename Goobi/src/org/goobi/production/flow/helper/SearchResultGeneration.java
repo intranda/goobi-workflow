@@ -60,7 +60,6 @@ public class SearchResultGeneration {
 
 	@SuppressWarnings("deprecation")
 	public HSSFWorkbook getResult() {
-	    // TODO neu entwickeln
 	    
 	    String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
        

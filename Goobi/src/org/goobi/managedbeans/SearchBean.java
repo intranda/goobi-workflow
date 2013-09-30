@@ -118,7 +118,6 @@ public class SearchBean {
         } catch (DAOException e1) {
         }
 
-        // TODO
         //		crit = session.createCriteria(Werkstueckeigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
@@ -128,7 +127,6 @@ public class SearchBean {
         //			this.masterpiecePropertyTitles.add((String) it.next());
         //		}
 
-        // TODO
         //		crit = session.createCriteria(Vorlageeigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
@@ -138,7 +136,6 @@ public class SearchBean {
         //			this.templatePropertyTitles.add((String) it.next());
         //		}
 
-        // TODO
         //		crit = session.createCriteria(Prozesseigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));
@@ -151,7 +148,6 @@ public class SearchBean {
         //			}
         //		}
 
-        // TODO
         //		crit = session.createCriteria(Schritteigenschaft.class);
         //		crit.addOrder(Order.asc("titel"));
         //		crit.setProjection(Projections.distinct(Projections.property("titel")));

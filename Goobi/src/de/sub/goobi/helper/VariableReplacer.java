@@ -117,7 +117,6 @@ public class VariableReplacer {
 			String metaFile = this.process.getMetadataFilePath().replace("\\", "/");
 			String ocrBasisPath = this.process.getOcrDirectory().replace("\\", "/");
 			String ocrPlaintextPath = this.process.getTxtDirectory().replace("\\", "/");
-			// TODO name ändern?
 			String sourcePath = this.process.getSourceDirectory().replace("\\", "/");
 			String importPath = this.process.getImportDirectory().replace("\\", "/");
 			String myprefs = ConfigMain.getParameter("RegelsaetzeVerzeichnis") + this.process.getRegelsatz().getDatei();

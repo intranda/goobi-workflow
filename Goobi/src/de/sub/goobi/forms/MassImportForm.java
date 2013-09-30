@@ -73,7 +73,6 @@ import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-// TODO FIXME alle Meldungen durch  messages-Meldungen ersetzen
 @ManagedBean(name="MassImportForm") 
 @SessionScoped
 public class MassImportForm {

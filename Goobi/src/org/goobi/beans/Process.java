@@ -70,6 +70,7 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
+import de.sub.goobi.persistence.managers.UserManager;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = Logger.getLogger(Process.class);
@@ -232,16 +233,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public User getBenutzerGesperrt() {
-        // TODO: noch anpassen
         User rueckgabe = null;
-        //		if (MetadatenSperrung.isLocked(this.id.intValue())) {
-        //			String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
-        //			try {
-        //				rueckgabe = new BenutzerDAO().get(new Integer(benutzerID));
-        //			} catch (Exception e) {
-        //				Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
-        //			}
-        //		}
+        if (MetadatenSperrung.isLocked(this.id.intValue())) {
+            String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
+            try {
+                rueckgabe = UserManager.getUserById(new Integer(benutzerID));
+            } catch (Exception e) {
+                Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
+            }
+        }
         return rueckgabe;
     }
 
@@ -348,7 +348,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return false;
         }
     }
-    
+
     public Boolean getDisplayMETSButton() {
         if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
             return getTifDirectoryExists();
@@ -356,19 +356,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return true;
         }
     }
-    
-   public Boolean getDisplayPDFButton() {
+
+    public Boolean getDisplayPDFButton() {
         return getTifDirectoryExists();
     }
-   
-   public Boolean getDisplayDMSButton() {
-       if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
-           return getTifDirectoryExists();
-       } else {
-           return true;
-       }
-   }
-    
+
+    public Boolean getDisplayDMSButton() {
+        if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
+            return getTifDirectoryExists();
+        } else {
+            return true;
+        }
+    }
 
     public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
@@ -815,7 +814,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
         logger.debug("current meta.xml file type for id " + getId() + ": " + type);
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
-        
+
         if (ff == null) {
             List<String> param = new ArrayList<String>();
             param.add(titel);
@@ -961,24 +960,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String metadataFileName;
         String temporaryMetadataFileName;
 
-       ff = MetadatenHelper.getFileformatByName(this.projekt.getFileFormatInternal(), this.regelsatz);
-        
-//        switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
-//            case METS:
-//                ff = new MetsMods(this.regelsatz.getPreferences());
-//                break;
-//
-//            case RDF:
-//                ff = new RDFFile(this.regelsatz.getPreferences());
-//                break;
-//
-//            case LIDO:
-//                ff = new Lido(this.regelsatz.getPreferences());
-//                break;
-//            default:
-//                ff = new XStream(this.regelsatz.getPreferences());
-//                break;
-//        }
+        ff = MetadatenHelper.getFileformatByName(this.projekt.getFileFormatInternal(), this.regelsatz);
+
+        //        switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
+        //            case METS:
+        //                ff = new MetsMods(this.regelsatz.getPreferences());
+        //                break;
+        //
+        //            case RDF:
+        //                ff = new RDFFile(this.regelsatz.getPreferences());
+        //                break;
+        //
+        //            case LIDO:
+        //                ff = new Lido(this.regelsatz.getPreferences());
+        //                break;
+        //            default:
+        //                ff = new XStream(this.regelsatz.getPreferences());
+        //                break;
+        //        }
         // createBackupFile();
         metadataFileName = getMetadataFilePath();
         temporaryMetadataFileName = getTemporaryMetadataFileName(metadataFileName);
@@ -1007,13 +1006,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
             logger.debug("current template.xml file type: " + type);
             ff = MetadatenHelper.getFileformatByName(type, regelsatz);
-//            if (type.equals("mets")) {
-//                ff = new MetsMods(this.regelsatz.getPreferences());
-//            } else if (type.equals("xstream")) {
-//                ff = new XStream(this.regelsatz.getPreferences());
-//            } else {
-//                ff = new RDFFile(this.regelsatz.getPreferences());
-//            }
+            //            if (type.equals("mets")) {
+            //                ff = new MetsMods(this.regelsatz.getPreferences());
+            //            } else if (type.equals("xstream")) {
+            //                ff = new XStream(this.regelsatz.getPreferences());
+            //            } else {
+            //                ff = new RDFFile(this.regelsatz.getPreferences());
+            //            }
             ff.read(getTemplateFilePath());
             return ff;
         } else {
@@ -1206,9 +1205,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Override
     public void lazyLoad() {
-        // TODO Auto-generated method stub
-
-    }
+     }
 
     public Integer getMetadatenKonfigurationID() {
         return MetadatenKonfigurationID;

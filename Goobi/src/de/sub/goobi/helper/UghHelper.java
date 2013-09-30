@@ -196,9 +196,7 @@ public class UghHelper {
 			return;
 		}
 		if (inStruct != null && inStruct.getAllMetadataByType(mdt).size() > 0) {
-			// TODO: Use for loops
-			for (Iterator<? extends Metadata> iter = inStruct.getAllMetadataByType(mdt).iterator(); iter.hasNext();) {
-				Metadata md = iter.next();
+			for (Metadata md : inStruct.getAllMetadataByType(mdt)) {
 				inStruct.removeMetadata(md);
 			}
 		}

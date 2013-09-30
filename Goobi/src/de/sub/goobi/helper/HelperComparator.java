@@ -42,7 +42,6 @@ public class HelperComparator implements Comparator<Object>, Serializable {
 
     @Override
     public int compare(Object o1, Object o2) {
-        // TODO: Use a Enum or Integer conts
         int rueckgabe = 0;
         if (this.Sortierart.equals("MetadatenTypen")) {
             rueckgabe = compareMetadatenTypen(o1, o2);

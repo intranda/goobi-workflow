@@ -377,7 +377,6 @@ public class BatchProcessHelper {
 		return "";
 	}
 
-	// TODO wird nur für currentStep ausgeführt
 	public String duplicateContainerForAll() {
 		Integer currentContainer = this.processProperty.getContainer();
 		List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
