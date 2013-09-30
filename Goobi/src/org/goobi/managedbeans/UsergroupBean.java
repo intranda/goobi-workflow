@@ -30,12 +30,10 @@ package org.goobi.managedbeans;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name = "BenutzergruppenForm")
