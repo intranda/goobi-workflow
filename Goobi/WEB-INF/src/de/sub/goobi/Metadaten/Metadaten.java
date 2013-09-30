@@ -1877,7 +1877,18 @@ public class Metadaten {
                             this.myDocStruct.addMetadata(m);
                         }
                     }
-
+                    
+                    /*
+                     * wenn der Metadatentyp in der Liste der erlaubten Typen, dann hinzufügen
+                     */
+                    for (Iterator<Person> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllPersons().iterator(); it.hasNext();) {
+                        Person m = it.next();
+                        if (erlaubte.contains(m.getType().getName())) {
+                            this.myDocStruct.addPerson(m);
+                        }
+                    }
+                    
+                    
                     MetadatenalsTree3Einlesen1();
                 } else {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
