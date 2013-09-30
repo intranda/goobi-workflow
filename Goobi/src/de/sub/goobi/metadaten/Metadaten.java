@@ -2116,15 +2116,32 @@ public class Metadaten {
                         erlaubte.add(mt.getName());
                     }
 
-                    /*
-                     * wenn der Metadatentyp in der Liste der erlaubten Typen, dann hinzufügen
-                     */
-                    for (Iterator<Metadata> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadata().iterator(); it.hasNext();) {
-                        Metadata m = it.next();
+					/*
+					 * wenn der Metadatentyp in der Liste der erlaubten Typen, dann hinzufügen
+					 */
+					for (Iterator<Metadata> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadata().iterator(); it.hasNext();) {
+						Metadata m = it.next();
+						if (erlaubte.contains(m.getType().getName())) {
+							this.myDocStruct.addMetadata(m);
+						}
+					}
+					
+                    for (Iterator<Person> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllPersons().iterator(); it.hasNext();) {
+                        Person m = it.next();
                         if (erlaubte.contains(m.getType().getName())) {
-                            this.myDocStruct.addMetadata(m);
+                            this.myDocStruct.addPerson(m);
                         }
                     }
+                    
+                    for (Iterator<MetadataGroup> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups().iterator(); it.hasNext();) {
+                        MetadataGroup m = it.next();
+                        
+                        if (myDocStruct.getAddableMetadataGroupTypes().contains(m.getType())) {
+                            myDocStruct.addMetadataGroup(m);
+                        }
+                        
+                    }
+                    
 
                     MetadatenalsTree3Einlesen1();
                 } else {
