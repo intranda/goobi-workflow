@@ -817,8 +817,6 @@ public class CopyProcess extends ProzesskopieForm {
 
         this.prozessKopie.readMetadataFile();
 
-        /* damit die Sortierung stimmt nochmal einlesen */
-        // TODO Process neu laden?
         return this.prozessKopie;
 
     }

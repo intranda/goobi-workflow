@@ -173,7 +173,6 @@ public class AdministrationForm implements Serializable {
         List<Usergroup> neueGruppen = new ArrayList<Usergroup>();
         neueGruppen.add(gruppe);
 
-        //TODO: Try to avoid SQL
         List<Step> schritte = StepManager.getSteps("titel", "titel='Automatische Generierung der SICI'", 0, Integer.MAX_VALUE);
         for (Step auf : schritte) {
             auf.setBenutzergruppen(neueGruppen);

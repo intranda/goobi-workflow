@@ -219,7 +219,6 @@ public class BeanHelper {
 	}
 
 	public void EigenschaftenKopieren(Process prozessVorlage, Process prozessKopie) {
-		// TODO Reihenfolge!
 	    List<Processproperty> myEigenschaften = new ArrayList<Processproperty>();
 		for (Iterator<Processproperty> iterator = prozessVorlage.getEigenschaftenList().iterator(); iterator.hasNext();) {
 			Processproperty eig = iterator.next();
@@ -231,7 +230,6 @@ public class BeanHelper {
 			eigneu.setProzess(prozessKopie);
 			myEigenschaften.add(eigneu);
 		}
-		// TODO read property configuration
 		prozessKopie.setEigenschaften(myEigenschaften);
 	}
 

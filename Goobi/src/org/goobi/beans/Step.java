@@ -764,10 +764,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public boolean getBatchSize() {
-        // TODO
         Integer batchNumber = this.prozess.getBatchID();
         if (batchNumber != null) {
-            // only steps with same title
+            // only steps with same title and batchId
             String sql = "schritte.titel = \"" + titel + "\" and prozesse.batchID = " + batchNumber;
             try {
                int number = StepManager.countSteps(null, sql);
@@ -776,16 +775,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                }
             } catch (DAOException e) {
             }
-            //			Session session = Helper.getHibernateSession();
-            //			Criteria crit = session.createCriteria(Step.class);
-            //			crit.add(Restrictions.eq("titel", this.titel));
-            //			// only steps with same batchid
-            //			crit.createCriteria("prozess", "proc");
-            //			crit.add(Restrictions.eq("proc.batchID", batchNumber));
-            //			crit.add(Restrictions.eq("batchStep", true));
-            //			if (crit.list().size() > 1) {
-            //				return true;
-            //			}
         }
         return false;
     }

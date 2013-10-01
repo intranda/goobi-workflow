@@ -187,7 +187,8 @@ public class LdapAuthentication {
 			myLogger.debug("don't use TLS for auth");
 			if (ConfigMain.getBooleanParameter("useSimpleAuthentification", false)) {
 				env.put(Context.SECURITY_AUTHENTICATION, "none");
-				// TODO auf passwort testen
+				env.put(Context.SECURITY_PRINCIPAL, getUserDN(inBenutzer));
+                env.put(Context.SECURITY_CREDENTIALS, inPasswort);
 			} else {
 				env.put(Context.SECURITY_PRINCIPAL, getUserDN(inBenutzer));
 				env.put(Context.SECURITY_CREDENTIALS, inPasswort);

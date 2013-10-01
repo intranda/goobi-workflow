@@ -72,7 +72,6 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 //TODO: Delete me, this should be part of the Plugins...
 //TODO: Break this up into multiple classes with a common interface
 //TODO: add funny observer pattern here for more complexity
-//TODO: add some general mechanism for string-output of goobi scripts in jsp
 
 public class GoobiScript {
     HashMap<String, String> myParameters;

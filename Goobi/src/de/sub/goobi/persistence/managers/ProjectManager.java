@@ -39,6 +39,9 @@ public class ProjectManager implements IManager, Serializable {
     public static void saveProject(Project o) throws DAOException {
         try {
             ProjectMysqlHelper.saveProject(o);
+            if (o.getFilegroups() != null && !o.getFilegroups().isEmpty()) {
+                saveProjectFileGroups(o.getFilegroups());
+            }
         } catch (SQLException e) {
             logger.error("error while saving Project with id " + o.getId(), e);
             throw new DAOException(e);

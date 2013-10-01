@@ -36,68 +36,64 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name="BenutzergruppenForm") 
+@ManagedBean(name = "BenutzergruppenForm")
 @SessionScoped
 public class UsergroupBean extends BasicBean {
-	private static final long serialVersionUID = 8051160917458068675L;
-	private Usergroup myBenutzergruppe = new Usergroup();
+    private static final long serialVersionUID = 8051160917458068675L;
+    private Usergroup myBenutzergruppe = new Usergroup();
 
-	public String Neu() {
-		this.myBenutzergruppe = new Usergroup();
-		return "usergroup_edit";
-	}
+    public String Neu() {
+        this.myBenutzergruppe = new Usergroup();
+        return "usergroup_edit";
+    }
 
-	public String Speichern() {
-		try {
-			UsergroupManager.saveUsergroup(myBenutzergruppe);
-			paginator.load();
-			return "usergroup_all";
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error, could not save", e.getMessage());
-			return "";
-		}
-	}
+    public String Speichern() {
+        try {
+            UsergroupManager.saveUsergroup(myBenutzergruppe);
+            paginator.load();
+            return "usergroup_all";
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error, could not save", e.getMessage());
+            return "";
+        }
+    }
 
-	public String Loeschen() {
-		try {
-//			if (this.myBenutzergruppe.getBenutzer().size() > 0) {
-//				for (Benutzer b : this.myBenutzergruppe.getBenutzer()) {
-//					b.getBenutzergruppen().remove(this.myBenutzergruppe);
-//				}
-//				this.myBenutzergruppe.setBenutzer(new HashSet<Benutzer>());
-////				this.dao.save(this.myBenutzergruppe);
-//			}
-//			if (this.myBenutzergruppe.getSchritte().size() > 0) {
-//				Helper.setFehlerMeldung("userGroupAssignedError");
-//				return "";
-//			}
-			// TODO: alle Schritte und Benutzer mit entfernen
-			UsergroupManager.deleteUsergroup(myBenutzergruppe);
-			paginator.load();
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
-			return "";
-		}
-		return "usergroup_all";
-	}
+    public String Loeschen() {
+        try {
+            if (!this.myBenutzergruppe.getBenutzer().isEmpty()) {
+                Helper.setFehlerMeldung("userGroupNotEmpty");
+                return "";
+            }
+            if (myBenutzergruppe.getSchritte() != null && !this.myBenutzergruppe.getSchritte().isEmpty()) {
+                Helper.setFehlerMeldung("userGroupAssignedError");
+                return "";
+            }
+            UsergroupManager.deleteUsergroup(myBenutzergruppe);
+            paginator.load();
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
+            return "";
+        }
+        return "usergroup_all";
+    }
 
-	public String FilterKein() {
-		UsergroupManager m = new UsergroupManager();
-		paginator = new DatabasePaginator(sortierung, filter, m, "usergroup_all");
-		return "usergroup_all";
-	}
+    public String FilterKein() {
+        UsergroupManager m = new UsergroupManager();
+        paginator = new DatabasePaginator(sortierung, filter, m, "usergroup_all");
+        return "usergroup_all";
+    }
 
-	public String FilterKeinMitZurueck() {
-		FilterKein();
-		return this.zurueck;
-	}
+    public String FilterKeinMitZurueck() {
+        FilterKein();
+        return this.zurueck;
+    }
 
-	public Usergroup getMyBenutzergruppe() {
-		return this.myBenutzergruppe;
-	}
+    public Usergroup getMyBenutzergruppe() {
+        return this.myBenutzergruppe;
+    }
 
-	public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
-		this.myBenutzergruppe = myBenutzergruppe;
-	}
+    public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
+        this.myBenutzergruppe = myBenutzergruppe;
+    }
 
 }

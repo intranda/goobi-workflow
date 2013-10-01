@@ -205,9 +205,7 @@ public class ExtendedDataImpl extends DataImpl {
        * Prozesseigenschaften
        * --------------------------------*/
       if (type.equals("") || type.equals(isProcess)) {
-    	  //TODO: Use for loops
-         for (Iterator<Processproperty> it = p.getEigenschaftenList().iterator(); it.hasNext();) {
-            Processproperty pe = it.next();
+         for (Processproperty pe : p.getEigenschaftenList()) {
             if (!pe.getTitel().startsWith("#"))
                gpps.add(new GoobiProcessProperty(pe.getTitel(), String.valueOf(pe.getId().intValue()), pe
                      .getWert()));
@@ -222,9 +220,7 @@ public class ExtendedDataImpl extends DataImpl {
          if (p.getWerkstueckeSize() - 1 < count)
             throw new GoobiException(1500, "Workpiece does not exist");
          Masterpiece w = p.getWerkstueckeList().get(count);
-         //TODO: Use for loops
-         for (Iterator<Masterpieceproperty> it = w.getEigenschaftenList().iterator(); it.hasNext();) {
-            Masterpieceproperty we = it.next();
+         for (Masterpieceproperty we : w.getEigenschaftenList()) {
             if (!we.getTitel().startsWith("#"))
                gpps.add(new GoobiProcessProperty(we.getTitel(), String.valueOf(we.getId().intValue()), we
                      .getWert()));
@@ -239,9 +235,7 @@ public class ExtendedDataImpl extends DataImpl {
          if (p.getVorlagenSize() - 1 < count)
             throw new GoobiException(1500, "Template does not exist");
          Template v = p.getVorlagenList().get(count);
-         //TODO: Use for loops
-         for (Iterator<Templateproperty> it = v.getEigenschaftenList().iterator(); it.hasNext();) {
-            Templateproperty ve = it.next();
+         for (Templateproperty ve : v.getEigenschaftenList()) {
             if (!ve.getTitel().startsWith("#"))
                gpps.add(new GoobiProcessProperty(ve.getTitel(), String.valueOf(ve.getId().intValue()), ve
                      .getWert()));

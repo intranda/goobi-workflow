@@ -35,85 +35,93 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.enums.ImportReturnValue;
 
-
 public class ImportObject {
 
-	// TODO must end with ".xml" in current implementation
-	private String processTitle ="";
-	private Integer batchId;
-	
-	private String metsFilename ="";
+    // must end with ".xml" in current implementation
+    private String processTitle = "";
+    private Integer batchId;
+
+    private String metsFilename = "";
 
     private String importFileName = "";
 
-	// error handling
-	private ImportReturnValue importReturnValue = ImportReturnValue.ExportFinished;
-	private String errorMessage ="";
-	
-	// additional information
-	private List<Processproperty> processProperties = new ArrayList<Processproperty>();
-	private List<Masterpieceproperty> workProperties = new ArrayList<Masterpieceproperty>();
-	private List<Templateproperty> templateProperties = new ArrayList<Templateproperty>();
-	
-	
-	
-	public ImportObject() {
-		
-	
-	}
-	
-	
-	
-	
-	public String getProcessTitle() {
-		return this.processTitle;
-	}
-	public void setProcessTitle(String processTitle) {
-		this.processTitle = processTitle;
-	}
-	public String getMetsFilename() {
-		return this.metsFilename;
-	}
-	public void setMetsFilename(String metsFilename) {
-		this.metsFilename = metsFilename;
-	}
-	public ImportReturnValue getImportReturnValue() {
-		return this.importReturnValue;
-	}
-	public void setImportReturnValue(ImportReturnValue importReturnValue) {
-		this.importReturnValue = importReturnValue;
-	}
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-	public List<Processproperty> getProcessProperties() {
-		return this.processProperties;
-	}
-	public void setProcessProperties(List<Processproperty> processProperties) {
-		this.processProperties = processProperties;
-	}
-	public List<Masterpieceproperty> getWorkProperties() {
-		return this.workProperties;
-	}
-	public void setWorkProperties(List<Masterpieceproperty> workProperties) {
-		this.workProperties = workProperties;
-	}
-	public List<Templateproperty> getTemplateProperties() {
-		return this.templateProperties;
-	}
-	public void setTemplateProperties(List<Templateproperty> templateProperties) {
-		this.templateProperties = templateProperties;
-	}
-	public Integer getBatchId() {
-		return batchId;
-	}
-	public void setBatchId(Integer batchId) {
-		this.batchId = batchId;
-	}
-	
+    // error handling
+    private ImportReturnValue importReturnValue = ImportReturnValue.ExportFinished;
+    private String errorMessage = "";
+
+    // additional information
+    private List<Processproperty> processProperties = new ArrayList<Processproperty>();
+    private List<Masterpieceproperty> workProperties = new ArrayList<Masterpieceproperty>();
+    private List<Templateproperty> templateProperties = new ArrayList<Templateproperty>();
+
+    public ImportObject() {
+
+    }
+
+    public String getProcessTitle() {
+        return this.processTitle;
+    }
+
+    public void setProcessTitle(String processTitle) {
+        this.processTitle = processTitle;
+    }
+
+    public String getMetsFilename() {
+        return this.metsFilename;
+    }
+
+    public void setMetsFilename(String metsFilename) {
+        this.metsFilename = metsFilename;
+    }
+
+    public ImportReturnValue getImportReturnValue() {
+        return this.importReturnValue;
+    }
+
+    public void setImportReturnValue(ImportReturnValue importReturnValue) {
+        this.importReturnValue = importReturnValue;
+    }
+
+    public String getErrorMessage() {
+        return this.errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public List<Processproperty> getProcessProperties() {
+        return this.processProperties;
+    }
+
+    public void setProcessProperties(List<Processproperty> processProperties) {
+        this.processProperties = processProperties;
+    }
+
+    public List<Masterpieceproperty> getWorkProperties() {
+        return this.workProperties;
+    }
+
+    public void setWorkProperties(List<Masterpieceproperty> workProperties) {
+        this.workProperties = workProperties;
+    }
+
+    public List<Templateproperty> getTemplateProperties() {
+        return this.templateProperties;
+    }
+
+    public void setTemplateProperties(List<Templateproperty> templateProperties) {
+        this.templateProperties = templateProperties;
+    }
+
+    public Integer getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(Integer batchId) {
+        this.batchId = batchId;
+    }
+
     public String getImportFileName() {
         return importFileName;
     }
@@ -121,5 +129,5 @@ public class ImportObject {
     public void setImportFileName(String importFileName) {
         this.importFileName = importFileName;
     }
-	
+
 }

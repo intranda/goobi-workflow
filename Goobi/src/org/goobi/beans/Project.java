@@ -210,7 +210,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     public List<ProjectFileGroup> getFilegroups() {
         if (filegroups == null || filegroups.isEmpty() && id != null) {
             filegroups = ProjectManager.getFilegroupsForProjectId(id);
-            // TODO move this to database package
+
             for (ProjectFileGroup pfg : filegroups) {
                 pfg.setProject(this);
             }
