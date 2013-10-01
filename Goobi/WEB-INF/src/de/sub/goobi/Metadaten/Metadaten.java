@@ -1554,7 +1554,7 @@ public class Metadaten {
         if (ConfigMain.getParameter("MetsEditorDefaultSuffix", null) != null) {
             String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix");
             for (String directory : this.allTifFolders) {
-                if (directory.endsWith(suffix)) {
+                if (directory.endsWith(suffix) && !directory.startsWith(myProzess.DIRECTORY_PREFIX)) {
                     this.currentTifFolder = directory;
                     break;
                 }
