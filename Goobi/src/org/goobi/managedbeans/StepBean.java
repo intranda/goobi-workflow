@@ -597,6 +597,7 @@ public class StepBean extends BasicBean {
                 StepManager.saveStep(step);
             }
 
+            StepManager.saveStep(mySchritt);
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */

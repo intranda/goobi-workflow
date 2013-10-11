@@ -541,6 +541,7 @@ public class BatchStepHelper {
 					step.getEigenschaften().add(seg);
 				}
 			}
+            StepManager.saveStep(currentStep);
 			/*
 			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
 			 */
