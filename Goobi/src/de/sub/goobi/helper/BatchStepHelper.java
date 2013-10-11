@@ -55,7 +55,6 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
-
 import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
@@ -71,821 +70,829 @@ import de.sub.goobi.persistence.managers.StepManager;
 
 public class BatchStepHelper {
 
-	private List<Step> steps;
-	private static final Logger logger = Logger.getLogger(BatchStepHelper.class);
-	private Step currentStep;
-	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private List<ProcessProperty> processPropertyList;
-	private ProcessProperty processProperty;
-	private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
-	private Integer container;
-	private String myProblemStep;
-	private String mySolutionStep;
-	private String problemMessage;
-	private String solutionMessage;
-	private String processName = "";
-	private String addToWikiField = "";
-	private String script;
-	private WebDav myDav = new WebDav();
-	private List<String> processNameList = new ArrayList<String>();
+    private List<Step> steps;
+    private static final Logger logger = Logger.getLogger(BatchStepHelper.class);
+    private Step currentStep;
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private List<ProcessProperty> processPropertyList;
+    private ProcessProperty processProperty;
+    private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
+    private Integer container;
+    private String myProblemStep;
+    private String mySolutionStep;
+    private String problemMessage;
+    private String solutionMessage;
+    private String processName = "";
+    private String addToWikiField = "";
+    private String script;
+    private WebDav myDav = new WebDav();
+    private List<String> processNameList = new ArrayList<String>();
 
-	public BatchStepHelper(List<Step> steps) {
-		this.steps = steps;
-		for (Step s : steps) {
+    public BatchStepHelper(List<Step> steps) {
+        this.steps = steps;
+        for (Step s : steps) {
 
-			this.processNameList.add(s.getProzess().getTitel());
-		}
-		if (steps.size() > 0) {
-			this.currentStep = steps.get(0);
-			this.processName = this.currentStep.getProzess().getTitel();
-			loadProcessProperties(this.currentStep);
-		}
-	}
+            this.processNameList.add(s.getProzess().getTitel());
+        }
+        if (steps.size() > 0) {
+            this.currentStep = steps.get(0);
+            this.processName = this.currentStep.getProzess().getTitel();
+            loadProcessProperties(this.currentStep);
+        }
+    }
 
-	public List<Step> getSteps() {
-		return this.steps;
-	}
+    public List<Step> getSteps() {
+        return this.steps;
+    }
 
-	public void setSteps(List<Step> steps) {
-		this.steps = steps;
-	}
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
 
-	public Step getCurrentStep() {
-		return this.currentStep;
-	}
+    public Step getCurrentStep() {
+        return this.currentStep;
+    }
 
-	public void setCurrentStep(Step currentStep) {
-		this.currentStep = currentStep;
-	}
+    public void setCurrentStep(Step currentStep) {
+        this.currentStep = currentStep;
+    }
 
-	/*
-	 * properties
-	 */
+    /*
+     * properties
+     */
 
-	public ProcessProperty getProcessProperty() {
-		return this.processProperty;
-	}
+    public ProcessProperty getProcessProperty() {
+        return this.processProperty;
+    }
 
-	public void setProcessProperty(ProcessProperty processProperty) {
-		this.processProperty = processProperty;
-	}
+    public void setProcessProperty(ProcessProperty processProperty) {
+        this.processProperty = processProperty;
+    }
 
-	public List<ProcessProperty> getProcessProperties() {
-		return this.processPropertyList;
-	}
+    public List<ProcessProperty> getProcessProperties() {
+        return this.processPropertyList;
+    }
 
-	public int getPropertyListSize() {
-		return this.processPropertyList.size();
-	}
+    public int getPropertyListSize() {
+        return this.processPropertyList.size();
+    }
 
-	public List<String> getProcessNameList() {
-		return this.processNameList;
-	}
+    public List<String> getProcessNameList() {
+        return this.processNameList;
+    }
 
-	public void setProcessNameList(List<String> processNameList) {
-		this.processNameList = processNameList;
-	}
+    public void setProcessNameList(List<String> processNameList) {
+        this.processNameList = processNameList;
+    }
 
-	public String getProcessName() {
-		return this.processName;
-	}
+    public String getProcessName() {
+        return this.processName;
+    }
 
-	public void setProcessName(String processName) {
-		this.processName = processName;
-		for (Step s : this.steps) {
-			if (s.getProzess().getTitel().equals(processName)) {
-				this.currentStep = s;
-				loadProcessProperties(this.currentStep);
-				break;
-			}
-		}
-	}
+    public void setProcessName(String processName) {
+        this.processName = processName;
+        for (Step s : this.steps) {
+            if (s.getProzess().getTitel().equals(processName)) {
+                this.currentStep = s;
+                loadProcessProperties(this.currentStep);
+                break;
+            }
+        }
+    }
 
-	public void saveCurrentProperty() {
-		List<ProcessProperty> ppList = getContainerProperties();
-		for (ProcessProperty pp : ppList) {
-			this.processProperty = pp;
-			if (!this.processProperty.isValid()) {
-				Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
-				return;
-			}
-			if (this.processProperty.getProzesseigenschaft() == null) {
-				Processproperty pe = new Processproperty();
-				pe.setProzess(this.currentStep.getProzess());
-				this.processProperty.setProzesseigenschaft(pe);
-				this.currentStep.getProzess().getEigenschaften().add(pe);
-			}
-			this.processProperty.transfer();
+    public void saveCurrentProperty() {
+        List<ProcessProperty> ppList = getContainerProperties();
+        for (ProcessProperty pp : ppList) {
+            this.processProperty = pp;
+            if (!this.processProperty.isValid()) {
+                Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
+                return;
+            }
+            if (this.processProperty.getProzesseigenschaft() == null) {
+                Processproperty pe = new Processproperty();
+                pe.setProzess(this.currentStep.getProzess());
+                this.processProperty.setProzesseigenschaft(pe);
+                this.currentStep.getProzess().getEigenschaften().add(pe);
+            }
+            this.processProperty.transfer();
 
-			Process p = this.currentStep.getProzess();
-			List<Processproperty> props = p.getEigenschaftenList();
-			for (Processproperty pe : props) {
-				if (pe.getTitel() == null) {
-					p.getEigenschaften().remove(pe);
-				}
-			}
-			if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
-				this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
-			}
-			try {
-			    ProcessManager.saveProcess(this.currentStep.getProzess());
-				Helper.setMeldung("Property saved");
-			} catch (DAOException e) {
-				logger.error(e);
-				Helper.setFehlerMeldung("Properties could not be saved");
-			}
-		}
-	}
+            Process p = this.currentStep.getProzess();
+            List<Processproperty> props = p.getEigenschaftenList();
+            for (Processproperty pe : props) {
+                if (pe.getTitel() == null) {
+                    p.getEigenschaften().remove(pe);
+                }
+            }
+            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
+                this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
+            }
+            try {
+                ProcessManager.saveProcess(this.currentStep.getProzess());
+                Helper.setMeldung("Property saved");
+            } catch (DAOException e) {
+                logger.error(e);
+                Helper.setFehlerMeldung("Properties could not be saved");
+            }
+        }
+    }
 
-	public void saveCurrentPropertyForAll() {
-		boolean error = false;
-		List<ProcessProperty> ppList = getContainerProperties();
-		for (ProcessProperty pp : ppList) {
-			this.processProperty = pp;
-			if (!this.processProperty.isValid()) {
-				Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
-				return;
-			}
-			if (this.processProperty.getProzesseigenschaft() == null) {
-				Processproperty pe = new Processproperty();
-				pe.setProzess(this.currentStep.getProzess());
-				this.processProperty.setProzesseigenschaft(pe);
-				this.currentStep.getProzess().getEigenschaften().add(pe);
-			}
-			this.processProperty.transfer();
+    public void saveCurrentPropertyForAll() {
+        boolean error = false;
+        List<ProcessProperty> ppList = getContainerProperties();
+        for (ProcessProperty pp : ppList) {
+            this.processProperty = pp;
+            if (!this.processProperty.isValid()) {
+                Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
+                return;
+            }
+            if (this.processProperty.getProzesseigenschaft() == null) {
+                Processproperty pe = new Processproperty();
+                pe.setProzess(this.currentStep.getProzess());
+                this.processProperty.setProzesseigenschaft(pe);
+                this.currentStep.getProzess().getEigenschaften().add(pe);
+            }
+            this.processProperty.transfer();
 
-			Processproperty pe = new Processproperty();
-			pe.setTitel(this.processProperty.getName());
-			pe.setWert(this.processProperty.getValue());
-			pe.setContainer(this.processProperty.getContainer());
+            Processproperty pe = new Processproperty();
+            pe.setTitel(this.processProperty.getName());
+            pe.setWert(this.processProperty.getValue());
+            pe.setContainer(this.processProperty.getContainer());
 
-			for (Step s : this.steps) {
-			    Process process = s.getProzess();
-				if (!s.equals(this.currentStep)) {
+            for (Step s : this.steps) {
+                Process process = s.getProzess();
+                if (!s.equals(this.currentStep)) {
 
-					if (pe.getTitel() != null) {
-						boolean match = false;
+                    if (pe.getTitel() != null) {
+                        boolean match = false;
 
-						for (Processproperty processPe : process.getEigenschaftenList()) {
-							if (processPe.getTitel() != null) {
-								if (pe.getTitel().equals(processPe.getTitel()) && pe.getContainer() == processPe.getContainer()) {
-									processPe.setWert(pe.getWert());
-									match = true;
-									break;
-								}
-							}
-						}
-						if (!match) {
-							Processproperty p = new Processproperty();
-							p.setTitel(pe.getTitel());
-							p.setWert(pe.getWert());
-							p.setContainer(pe.getContainer());
-							p.setType(pe.getType());
-							p.setProzess(process);
-							process.getEigenschaften().add(p);
-						}
-					}
-				} else {
-					if (!process.getEigenschaftenList().contains(this.processProperty.getProzesseigenschaft())) {
-						process.getEigenschaften().add(this.processProperty.getProzesseigenschaft());
-					}
-				}
+                        for (Processproperty processPe : process.getEigenschaftenList()) {
+                            if (processPe.getTitel() != null) {
+                                if (pe.getTitel().equals(processPe.getTitel()) && pe.getContainer() == processPe.getContainer()) {
+                                    processPe.setWert(pe.getWert());
+                                    match = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!match) {
+                            Processproperty p = new Processproperty();
+                            p.setTitel(pe.getTitel());
+                            p.setWert(pe.getWert());
+                            p.setContainer(pe.getContainer());
+                            p.setType(pe.getType());
+                            p.setProzess(process);
+                            process.getEigenschaften().add(p);
+                        }
+                    }
+                } else {
+                    if (!process.getEigenschaftenList().contains(this.processProperty.getProzesseigenschaft())) {
+                        process.getEigenschaften().add(this.processProperty.getProzesseigenschaft());
+                    }
+                }
 
-				List<Processproperty> props = process.getEigenschaftenList();
-				for (Processproperty peig : props) {
-					if (peig.getTitel() == null) {
-						process.getEigenschaften().remove(peig);
-					}
-				}
+                List<Processproperty> props = process.getEigenschaftenList();
+                for (Processproperty peig : props) {
+                    if (peig.getTitel() == null) {
+                        process.getEigenschaften().remove(peig);
+                    }
+                }
 
-				try {
-				    ProcessManager.saveProcess(process);
-				} catch (DAOException e) {
-					error = true;
-					logger.error(e);
-					Helper.setFehlerMeldung("Properties for process " + process.getTitel() + " could not be saved");
-				}
-			}
-		}
-		if (!error) {
-			Helper.setMeldung("Properties saved");
-		}
-	}
+                try {
+                    ProcessManager.saveProcess(process);
+                } catch (DAOException e) {
+                    error = true;
+                    logger.error(e);
+                    Helper.setFehlerMeldung("Properties for process " + process.getTitel() + " could not be saved");
+                }
+            }
+        }
+        if (!error) {
+            Helper.setMeldung("Properties saved");
+        }
+    }
 
-	private void loadProcessProperties(Step s) {
-		this.containers = new TreeMap<Integer, PropertyListObject>();
-		this.processPropertyList = PropertyParser.getPropertiesForStep(s);
-		List<Process> pList = new ArrayList<Process>();
-		for (Step step : this.steps) {
-			pList.add(step.getProzess());
-		}
-		for (ProcessProperty pt : this.processPropertyList) {
-		    if (pt.getProzesseigenschaft() == null) {
+    private void loadProcessProperties(Step s) {
+        this.containers = new TreeMap<Integer, PropertyListObject>();
+        this.processPropertyList = PropertyParser.getPropertiesForStep(s);
+        List<Process> pList = new ArrayList<Process>();
+        for (Step step : this.steps) {
+            pList.add(step.getProzess());
+        }
+        for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getProzesseigenschaft() == null) {
                 Processproperty pe = new Processproperty();
                 pe.setProzess(s.getProzess());
                 pt.setProzesseigenschaft(pe);
                 s.getProzess().getEigenschaften().add(pe);
                 pt.transfer();
             }
-			if (!this.containers.keySet().contains(pt.getContainer())) {
-				PropertyListObject plo = new PropertyListObject(pt.getContainer());
-				plo.addToList(pt);
-				this.containers.put(pt.getContainer(), plo);
-			} else {
-				PropertyListObject plo = this.containers.get(pt.getContainer());
-				plo.addToList(pt);
-				this.containers.put(pt.getContainer(), plo);
-			}
-		}
+            if (!this.containers.keySet().contains(pt.getContainer())) {
+                PropertyListObject plo = new PropertyListObject(pt.getContainer());
+                plo.addToList(pt);
+                this.containers.put(pt.getContainer(), plo);
+            } else {
+                PropertyListObject plo = this.containers.get(pt.getContainer());
+                plo.addToList(pt);
+                this.containers.put(pt.getContainer(), plo);
+            }
+        }
 
-		for (Process p : pList) {
-			for (Processproperty pe : p.getEigenschaftenList()) {
-				if (!this.containers.keySet().contains(pe.getContainer())) {
-					this.containers.put(pe.getContainer(), null);
-				}
-			}
-		}
-	}
+        for (Process p : pList) {
+            for (Processproperty pe : p.getEigenschaftenList()) {
+                if (!this.containers.keySet().contains(pe.getContainer())) {
+                    this.containers.put(pe.getContainer(), null);
+                }
+            }
+        }
+    }
 
-	public Map<Integer, PropertyListObject> getContainers() {
-		return this.containers;
-	}
+    public Map<Integer, PropertyListObject> getContainers() {
+        return this.containers;
+    }
 
-	public int getContainersSize() {
-		if (this.containers == null) {
-			return 0;
-		}
-		return this.containers.size();
-	}
+    public int getContainersSize() {
+        if (this.containers == null) {
+            return 0;
+        }
+        return this.containers.size();
+    }
 
-	public List<ProcessProperty> getSortedProperties() {
-		Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
-		Collections.sort(this.processPropertyList, comp);
-		return this.processPropertyList;
-	}
+    public List<ProcessProperty> getSortedProperties() {
+        Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
+        Collections.sort(this.processPropertyList, comp);
+        return this.processPropertyList;
+    }
 
-	public List<ProcessProperty> getContainerlessProperties() {
-		List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
-		for (ProcessProperty pp : this.processPropertyList) {
-			if (pp.getContainer() == 0 && pp.getName() != null) {
-				answer.add(pp);
-			}
-		}
-		return answer;
-	}
+    public List<ProcessProperty> getContainerlessProperties() {
+        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        for (ProcessProperty pp : this.processPropertyList) {
+            if (pp.getContainer() == 0 && pp.getName() != null) {
+                answer.add(pp);
+            }
+        }
+        return answer;
+    }
 
-	public Integer getContainer() {
-		return this.container;
-	}
+    public Integer getContainer() {
+        return this.container;
+    }
 
-	public void setContainer(Integer container) {
-		this.container = container;
-		if (container != null && container > 0) {
-			this.processProperty = getContainerProperties().get(0);
-		}
-	}
+    public void setContainer(Integer container) {
+        this.container = container;
+        if (container != null && container > 0) {
+            this.processProperty = getContainerProperties().get(0);
+        }
+    }
 
-	public List<ProcessProperty> getContainerProperties() {
-		List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+    public List<ProcessProperty> getContainerProperties() {
+        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
 
-		if (this.container != null && this.container > 0) {
-			for (ProcessProperty pp : this.processPropertyList) {
-				if (pp.getContainer() == this.container && pp.getName() != null) {
-					answer.add(pp);
-				}
-			}
-		} else {
-			answer.add(this.processProperty);
-		}
+        if (this.container != null && this.container > 0) {
+            for (ProcessProperty pp : this.processPropertyList) {
+                if (pp.getContainer() == this.container && pp.getName() != null) {
+                    answer.add(pp);
+                }
+            }
+        } else {
+            answer.add(this.processProperty);
+        }
 
-		return answer;
-	}
+        return answer;
+    }
 
-	public String duplicateContainerForSingle() {
-		Integer currentContainer = this.processProperty.getContainer();
-		List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
-		// search for all properties in container
-		for (ProcessProperty pt : this.processPropertyList) {
-			if (pt.getContainer() == currentContainer) {
-				plist.add(pt);
-			}
-		}
-		int newContainerNumber = 0;
-		if (currentContainer > 0) {
-			newContainerNumber++;
-			// find new unused container number
-			boolean search = true;
-			while (search) {
-				if (!this.containers.containsKey(newContainerNumber)) {
-					search = false;
-				} else {
-					newContainerNumber++;
-				}
-			}
-		}
-		// clone properties
-		for (ProcessProperty pt : plist) {
-			ProcessProperty newProp = pt.getClone(newContainerNumber);
-			this.processPropertyList.add(newProp);
-			this.processProperty = newProp;
-			saveCurrentProperty();
-		}
-		loadProcessProperties(this.currentStep);
+    public String duplicateContainerForSingle() {
+        Integer currentContainer = this.processProperty.getContainer();
+        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        // search for all properties in container
+        for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getContainer() == currentContainer) {
+                plist.add(pt);
+            }
+        }
+        int newContainerNumber = 0;
+        if (currentContainer > 0) {
+            newContainerNumber++;
+            // find new unused container number
+            boolean search = true;
+            while (search) {
+                if (!this.containers.containsKey(newContainerNumber)) {
+                    search = false;
+                } else {
+                    newContainerNumber++;
+                }
+            }
+        }
+        // clone properties
+        for (ProcessProperty pt : plist) {
+            ProcessProperty newProp = pt.getClone(newContainerNumber);
+            this.processPropertyList.add(newProp);
+            this.processProperty = newProp;
+            saveCurrentProperty();
+        }
+        loadProcessProperties(this.currentStep);
 
-		return "";
-	}
+        return "";
+    }
 
-	private void saveStep() {
-	    Process p = this.currentStep.getProzess();
-		List<Processproperty> props = p.getEigenschaftenList();
-		for (Processproperty pe : props) {
-			if (pe.getTitel() == null) {
-				p.getEigenschaften().remove(pe);
-			}
-		}
-		try {
-		ProcessManager.saveProcess(this.currentStep.getProzess());
-		} catch (DAOException e) {
-			logger.error(e);
-		}
-	}
-
-	public String duplicateContainerForAll() {
-		Integer currentContainer = this.processProperty.getContainer();
-		List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
-		// search for all properties in container
-		for (ProcessProperty pt : this.processPropertyList) {
-			if (pt.getContainer() == currentContainer) {
-				plist.add(pt);
-			}
-		}
-
-		int newContainerNumber = 0;
-		if (currentContainer > 0) {
-			newContainerNumber++;
-			boolean search = true;
-			while (search) {
-				if (!this.containers.containsKey(newContainerNumber)) {
-					search = false;
-				} else {
-					newContainerNumber++;
-				}
-			}
-		}
-		// clone properties
-		for (ProcessProperty pt : plist) {
-			ProcessProperty newProp = pt.getClone(newContainerNumber);
-			this.processPropertyList.add(newProp);
-			this.processProperty = newProp;
-			saveCurrentPropertyForAll();
-		}
-		loadProcessProperties(this.currentStep);
-		return "";
-	}
-
-	/*
-	 * Error management
-	 */
-
-	public String ReportProblemForSingle() {
-
-		this.myDav.UploadFromHome(this.currentStep.getProzess());
-		reportProblem();
-		this.problemMessage = "";
-		this.myProblemStep = "";
-		saveStep();
-		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-		return asf.FilterAlleStart();
-	}
-
-	public String ReportProblemForAll() {
-		for (Step s : this.steps) {
-			this.currentStep = s;
-			this.myDav.UploadFromHome(this.currentStep.getProzess());
-			reportProblem();
-			saveStep();
-		}
-		this.problemMessage = "";
-		this.myProblemStep = "";
-		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-		return asf.FilterAlleStart();
-	}
-
-	private void reportProblem() {
-		Date myDate = new Date();
-		this.currentStep.setBearbeitungsstatusEnum(StepStatus.LOCKED);
-		this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
-		currentStep.setBearbeitungszeitpunkt(new Date());
-		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-		if (ben != null) {
-			currentStep.setBearbeitungsbenutzer(ben);
-		}
-		this.currentStep.setBearbeitungsbeginn(null);
-
-		try {
-			Step temp = null;
-			for (Step s : this.currentStep.getProzess().getSchritteList()) {
-				if (s.getTitel().equals(this.myProblemStep)) {
-					temp = s;
-				}
-			}
-			if (temp != null) {
-				temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
-				temp.setCorrectionStep();
-				temp.setBearbeitungsende(null);
-				ErrorProperty se = new ErrorProperty();
-
-				se.setTitel(Helper.getTranslation("Korrektur notwendig"));
-				se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
-				se.setType(PropertyType.messageError);
-				se.setCreationDate(myDate);
-				se.setSchritt(temp);
-				String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " ("
-						+ ben.getNachVorname() + ")";
-				this.currentStep.getProzess()
-						.setWikifield(
-								WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "error",
-										message));
-
-				temp.getEigenschaften().add(se);
-				StepManager.saveStep(temp);
-				this.currentStep
-						.getProzess()
-						.getHistory()
-						.add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
-								.getProzess()));
-				/*
-				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
-				 */
-				
-	             List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
-
-		
-				
-				
-//				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-//						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
-//						.add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
-//						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
-				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-					Step step = iter.next();
-					step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
-					step.setCorrectionStep();
-					step.setBearbeitungsende(null);
-					ErrorProperty seg = new ErrorProperty();
-					seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-					seg.setWert(Helper.getTranslation("KorrekturFuer") + temp.getTitel() + ": " + this.problemMessage);
-					seg.setSchritt(step);
-					seg.setType(PropertyType.messageImportant);
-					seg.setCreationDate(new Date());
-					step.getEigenschaften().add(seg);
-				}
-			}
+    private void saveStep() {
+        Process p = this.currentStep.getProzess();
+        List<Processproperty> props = p.getEigenschaftenList();
+        for (Processproperty pe : props) {
+            if (pe.getTitel() == null) {
+                p.getEigenschaften().remove(pe);
+            }
+        }
+        try {
+            ProcessManager.saveProcessInformation(this.currentStep.getProzess());
             StepManager.saveStep(currentStep);
-			/*
-			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
-			 */
-			ProcessManager.saveProcessInformation(currentStep.getProzess());
-		} catch (DAOException e) {
-		}
-	}
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+    }
 
-	public List<SelectItem> getPreviousStepsForProblemReporting() {
-		List<SelectItem> answer = new ArrayList<SelectItem>();
-	      List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge() , 0, Integer.MAX_VALUE);
+    public String duplicateContainerForAll() {
+        Integer currentContainer = this.processProperty.getContainer();
+        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        // search for all properties in container
+        for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getContainer() == currentContainer) {
+                plist.add(pt);
+            }
+        }
 
-		for (Step s : alleVorherigenSchritte) {
-			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
-		}
-		return answer;
-	}
+        int newContainerNumber = 0;
+        if (currentContainer > 0) {
+            newContainerNumber++;
+            boolean search = true;
+            while (search) {
+                if (!this.containers.containsKey(newContainerNumber)) {
+                    search = false;
+                } else {
+                    newContainerNumber++;
+                }
+            }
+        }
+        // clone properties
+        for (ProcessProperty pt : plist) {
+            ProcessProperty newProp = pt.getClone(newContainerNumber);
+            this.processPropertyList.add(newProp);
+            this.processProperty = newProp;
+            saveCurrentPropertyForAll();
+        }
+        loadProcessProperties(this.currentStep);
+        return "";
+    }
 
-	public List<SelectItem> getNextStepsForProblemSolution() {
-		List<SelectItem> answer = new ArrayList<SelectItem>();
-        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+    /*
+     * Error management
+     */
 
-		for (Step s : alleNachfolgendenSchritte) {
-			answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
-		}
-		return answer;
-	}
+    public String ReportProblemForSingle() {
 
-	public String SolveProblemForSingle() {
-		solveProblem();
-		saveStep();
-		this.solutionMessage = "";
-		this.mySolutionStep = "";
+        this.myDav.UploadFromHome(this.currentStep.getProzess());
+        reportProblem();
+        this.problemMessage = "";
+        this.myProblemStep = "";
+        saveStep();
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        return asf.FilterAlleStart();
+    }
 
-		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-		return asf.FilterAlleStart();
-	}
+    public String ReportProblemForAll() {
+        for (Step s : this.steps) {
+            this.currentStep = s;
+            this.myDav.UploadFromHome(this.currentStep.getProzess());
+            reportProblem();
+            saveStep();
+        }
+        this.problemMessage = "";
+        this.myProblemStep = "";
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        return asf.FilterAlleStart();
+    }
 
-	public String SolveProblemForAll() {
-		for (Step s : this.steps) {
-			this.currentStep = s;
-			solveProblem();
-			saveStep();
-		}
-		this.solutionMessage = "";
-		this.mySolutionStep = "";
+    private void reportProblem() {
+        Date myDate = new Date();
+        this.currentStep.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+        this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
+        currentStep.setBearbeitungszeitpunkt(new Date());
+        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        if (ben != null) {
+            currentStep.setBearbeitungsbenutzer(ben);
+        }
+        this.currentStep.setBearbeitungsbeginn(null);
 
-		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-		return asf.FilterAlleStart();
-	}
+        try {
+            Step temp = null;
+            for (Step s : this.currentStep.getProzess().getSchritteList()) {
+                if (s.getTitel().equals(this.myProblemStep)) {
+                    temp = s;
+                }
+            }
+            if (temp != null) {
+                temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                temp.setCorrectionStep();
+                temp.setBearbeitungsende(null);
+                ErrorProperty se = new ErrorProperty();
 
-	private void solveProblem() {
-		Date now = new Date();
-		this.myDav.UploadFromHome(this.currentStep.getProzess());
-		this.currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
-		this.currentStep.setBearbeitungsende(now);
-		this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
-		currentStep.setBearbeitungszeitpunkt(new Date());
-		User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-		if (ben != null) {
-			currentStep.setBearbeitungsbenutzer(ben);
-		}
+                se.setTitel(Helper.getTranslation("Korrektur notwendig"));
+                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+                se.setType(PropertyType.messageError);
+                se.setCreationDate(myDate);
+                se.setSchritt(temp);
+                String message =
+                        Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben.getNachVorname()
+                                + ")";
+                this.currentStep.getProzess()
+                        .setWikifield(
+                                WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "error",
+                                        message));
 
-		try {
-			Step temp = null;
-			for (Step s : this.currentStep.getProzess().getSchritteList()) {
-				if (s.getTitel().equals(this.mySolutionStep)) {
-					temp = s;
-				}
-			}
-			if (temp != null) {
-				/*
-				 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
-				 */
-	            List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                temp.getEigenschaften().add(se);
+                StepManager.saveStep(temp);
+                this.currentStep.getProzess().getHistory()
+                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
+                                .getProzess()));
+                /*
+                 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
+                 */
 
-				for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-					Step step = iter.next();
-					step.setBearbeitungsstatusEnum(StepStatus.DONE);
-					step.setBearbeitungsende(now);
-					step.setPrioritaet(Integer.valueOf(0));
-					if (step.getId().intValue() == temp.getId().intValue()) {
-						step.setBearbeitungsstatusEnum(StepStatus.OPEN);
-						step.setCorrectionStep();
-						step.setBearbeitungsende(null);
-						step.setBearbeitungszeitpunkt(now);
-					}
-					ErrorProperty seg = new ErrorProperty();
-					seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-					seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-							+ Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
-					seg.setSchritt(step);
-					seg.setType(PropertyType.messageImportant);
-					seg.setCreationDate(new Date());
-					step.getEigenschaften().add(seg);
-					StepManager.saveStep(step);
-				}
-			}
-			String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " ("
-					+ ben.getNachVorname() + ")";
-			this.currentStep.getProzess().setWikifield(
-					WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "info", message));
-			/*
-			 * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
-			 */
-			ProcessManager.saveProcessInformation(currentStep.getProzess());
-		} catch (DAOException e) {
-		}
-	}
+                List<Step> alleSchritteDazwischen =
+                        StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId()
+                                + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
+                                Integer.MAX_VALUE);
 
-	public String getProblemMessage() {
-		return this.problemMessage;
-	}
+                //				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
+                //						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
+                //						.add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
+                //						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
+                for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+                    Step step = iter.next();
+                    step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+                    step.setCorrectionStep();
+                    step.setBearbeitungsende(null);
+                    ErrorProperty seg = new ErrorProperty();
+                    seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
+                    seg.setWert(Helper.getTranslation("KorrekturFuer") + temp.getTitel() + ": " + this.problemMessage);
+                    seg.setSchritt(step);
+                    seg.setType(PropertyType.messageImportant);
+                    seg.setCreationDate(new Date());
+                    step.getEigenschaften().add(seg);
+                }
+            }
 
-	public void setProblemMessage(String problemMessage) {
-		this.problemMessage = problemMessage;
-	}
+            /*
+             * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
+             */
+            ProcessManager.saveProcessInformation(currentStep.getProzess());
+        } catch (DAOException e) {
+        }
+    }
 
-	public String getMyProblemStep() {
-		return this.myProblemStep;
-	}
+    public List<SelectItem> getPreviousStepsForProblemReporting() {
+        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<Step> alleVorherigenSchritte =
+                StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < "
+                        + this.currentStep.getReihenfolge(), 0, Integer.MAX_VALUE);
 
-	public void setMyProblemStep(String myProblemStep) {
-		this.myProblemStep = myProblemStep;
-	}
+        for (Step s : alleVorherigenSchritte) {
+            answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
+        }
+        return answer;
+    }
 
-	public String getSolutionMessage() {
-		return this.solutionMessage;
-	}
+    public List<SelectItem> getNextStepsForProblemSolution() {
+        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<Step> alleNachfolgendenSchritte =
+                StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge > "
+                        + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
-	public void setSolutionMessage(String solutionMessage) {
-		this.solutionMessage = solutionMessage;
-	}
+        for (Step s : alleNachfolgendenSchritte) {
+            answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
+        }
+        return answer;
+    }
 
-	public String getMySolutionStep() {
-		return this.mySolutionStep;
-	}
+    public String SolveProblemForSingle() {
+        solveProblem();
+        saveStep();
+        this.solutionMessage = "";
+        this.mySolutionStep = "";
 
-	public void setMySolutionStep(String mySolutionStep) {
-		this.mySolutionStep = mySolutionStep;
-	}
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        return asf.FilterAlleStart();
+    }
 
-	/**
-	 * sets new value for wiki field
-	 * 
-	 * @param inString
-	 */
+    public String SolveProblemForAll() {
+        for (Step s : this.steps) {
+            this.currentStep = s;
+            solveProblem();
+            saveStep();
+        }
+        this.solutionMessage = "";
+        this.mySolutionStep = "";
 
-	public void setWikiField(String inString) {
-		this.currentStep.getProzess().setWikifield(inString);
-	}
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        return asf.FilterAlleStart();
+    }
 
-	public String getWikiField() {
-		return this.currentStep.getProzess().getWikifield();
-	}
+    private void solveProblem() {
+        Date now = new Date();
+        this.myDav.UploadFromHome(this.currentStep.getProzess());
+        this.currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
+        this.currentStep.setBearbeitungsende(now);
+        this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
+        currentStep.setBearbeitungszeitpunkt(new Date());
+        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        if (ben != null) {
+            currentStep.setBearbeitungsbenutzer(ben);
+        }
 
-	public String getAddToWikiField() {
-		return this.addToWikiField;
-	}
+        try {
+            Step temp = null;
+            for (Step s : this.currentStep.getProzess().getSchritteList()) {
+                if (s.getTitel().equals(this.mySolutionStep)) {
+                    temp = s;
+                }
+            }
+            if (temp != null) {
+                /*
+                 * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
+                 */
+                List<Step> alleSchritteDazwischen =
+                        StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
+                                + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
+                                Integer.MAX_VALUE);
 
-	public void setAddToWikiField(String addToWikiField) {
-		this.addToWikiField = addToWikiField;
-	}
+                for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+                    Step step = iter.next();
+                    step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                    step.setBearbeitungsende(now);
+                    step.setPrioritaet(Integer.valueOf(0));
+                    if (step.getId().intValue() == temp.getId().intValue()) {
+                        step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                        step.setCorrectionStep();
+                        step.setBearbeitungsende(null);
+                        step.setBearbeitungszeitpunkt(now);
+                    }
+                    ErrorProperty seg = new ErrorProperty();
+                    seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
+                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
+                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                    seg.setSchritt(step);
+                    seg.setType(PropertyType.messageImportant);
+                    seg.setCreationDate(new Date());
+                    step.getEigenschaften().add(seg);
+                    StepManager.saveStep(step);
+                }
+            }
+            String message =
+                    Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben.getNachVorname()
+                            + ")";
+            this.currentStep.getProzess().setWikifield(
+                    WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "info", message));
+            /*
+             * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
+             */
+            ProcessManager.saveProcessInformation(currentStep.getProzess());
+        } catch (DAOException e) {
+        }
+    }
 
-	public void addToWikiField() {
-		if (addToWikiField != null && addToWikiField.length() > 0) {
-			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-			this.currentStep.getProzess().setWikifield(
-					WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
-			this.addToWikiField = "";
-			try {
-			    ProcessManager.saveProcess(this.currentStep.getProzess());
-			} catch (DAOException e) {
-				logger.error(e);
-			}
-		}
-	}
+    public String getProblemMessage() {
+        return this.problemMessage;
+    }
 
-	public void addToWikiFieldForAll() {
-		if (addToWikiField != null && addToWikiField.length() > 0) {
-			User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-			String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-			for (Step s : this.steps) {
-				s.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(s.getProzess(), s.getProzess().getWikifield(), "user", message));
-				try {
-				    ProcessManager.saveProcess(s.getProzess());
-				} catch (DAOException e) {
-					logger.error(e);
-				}
-			}
-			this.addToWikiField = "";
-		}
-	}
+    public void setProblemMessage(String problemMessage) {
+        this.problemMessage = problemMessage;
+    }
 
-	/*
-	 * actions
-	 */
+    public String getMyProblemStep() {
+        return this.myProblemStep;
+    }
 
-	public String getScript() {
-		return this.script;
-	}
+    public void setMyProblemStep(String myProblemStep) {
+        this.myProblemStep = myProblemStep;
+    }
 
-	public void setScript(String script) {
-		this.script = script;
-	}
+    public String getSolutionMessage() {
+        return this.solutionMessage;
+    }
 
-	public void executeScript() {
-		for (Step step : this.steps) {
+    public void setSolutionMessage(String solutionMessage) {
+        this.solutionMessage = solutionMessage;
+    }
 
-			if (step.getAllScripts().containsKey(this.script)) {
-				Step so = StepManager.getStepById(step.getId());
-				String scriptPath = step.getAllScripts().get(this.script);
+    public String getMySolutionStep() {
+        return this.mySolutionStep;
+    }
 
-				new HelperSchritte().executeScriptForStepObject(so, scriptPath, false);
+    public void setMySolutionStep(String mySolutionStep) {
+        this.mySolutionStep = mySolutionStep;
+    }
 
-			}
-		}
+    /**
+     * sets new value for wiki field
+     * 
+     * @param inString
+     */
 
-	}
+    public void setWikiField(String inString) {
+        this.currentStep.getProzess().setWikifield(inString);
+    }
 
-	public void ExportDMS() {
-		for (Step step : this.steps) {
-			ExportDms export = new ExportDms();
-			try {
-				export.startExport(step.getProzess());
-			} catch (Exception e) {
-				Helper.setFehlerMeldung("Error on export", e.getMessage());
-				logger.error(e);
-			}
-		}
-	}
+    public String getWikiField() {
+        return this.currentStep.getProzess().getWikifield();
+    }
 
-	public String BatchDurchBenutzerZurueckgeben() {
+    public String getAddToWikiField() {
+        return this.addToWikiField;
+    }
 
-		for (Step s : this.steps) {
+    public void setAddToWikiField(String addToWikiField) {
+        this.addToWikiField = addToWikiField;
+    }
 
-			this.myDav.UploadFromHome(s.getProzess());
-			s.setBearbeitungsstatusEnum(StepStatus.OPEN);
-			if (s.isCorrectionStep()) {
-				s.setBearbeitungsbeginn(null);
-			}
-			s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
-			currentStep.setBearbeitungszeitpunkt(new Date());
-			User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-			if (ben != null) {
-				currentStep.setBearbeitungsbenutzer(ben);
-			}
+    public void addToWikiField() {
+        if (addToWikiField != null && addToWikiField.length() > 0) {
+            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
+            this.currentStep.getProzess().setWikifield(
+                    WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
+            this.addToWikiField = "";
+            try {
+                ProcessManager.saveProcess(this.currentStep.getProzess());
+            } catch (DAOException e) {
+                logger.error(e);
+            }
+        }
+    }
 
-			try {
-			    ProcessManager.saveProcess(s.getProzess());
-			} catch (DAOException e) {
-			}
-		}
-		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-		return asf.FilterAlleStart();
-	}
+    public void addToWikiFieldForAll() {
+        if (addToWikiField != null && addToWikiField.length() > 0) {
+            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
+            for (Step s : this.steps) {
+                s.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(s.getProzess(), s.getProzess().getWikifield(), "user", message));
+                try {
+                    ProcessManager.saveProcess(s.getProzess());
+                } catch (DAOException e) {
+                    logger.error(e);
+                }
+            }
+            this.addToWikiField = "";
+        }
+    }
 
-	public String BatchDurchBenutzerAbschliessen() {
+    /*
+     * actions
+     */
 
-		// for (ProcessProperty pp : this.processPropertyList) {
-		// this.processProperty = pp;
-		// saveCurrentPropertyForAll();
-		// }
-		HelperSchritte helper = new HelperSchritte();
-		for (Step s : this.steps) {
-			boolean error = false;
-			if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {
-				IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, s.getValidationPlugin());
-				if (ivp != null) {
-					ivp.setStep(s);
-					if (!ivp.validate()) {
-						error = true;
-					}
-				} else {
-					Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
-				}
-			}
+    public String getScript() {
+        return this.script;
+    }
 
-			if (s.isTypImagesSchreiben()) {
-				try {
-					HistoryAnalyserJob.updateHistory(s.getProzess());
-				} catch (Exception e) {
-					Helper.setFehlerMeldung("Error while calculation of storage and images", e);
-				}
-			}
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-			if (s.isTypBeimAbschliessenVerifizieren()) {
-				if (s.isTypMetadaten() && ConfigMain.getBooleanParameter("useMetadatenvalidierung")) {
-					MetadatenVerifizierung mv = new MetadatenVerifizierung();
-					mv.setAutoSave(true);
-					if (!mv.validate(s.getProzess())) {
-						error = true;
-					}
-				}
-				if (s.isTypImagesSchreiben()) {
-					MetadatenImagesHelper mih = new MetadatenImagesHelper(null, null);
-					try {
-						if (!mih.checkIfImagesValid(s.getProzess().getTitel(), s.getProzess().getImagesOrigDirectory(false))) {
-							error = true;
-						}
-					} catch (Exception e) {
-						Helper.setFehlerMeldung("Error on image validation: ", e);
-					}
-				}
+    public void executeScript() {
+        for (Step step : this.steps) {
 
-				loadProcessProperties(s);
+            if (step.getAllScripts().containsKey(this.script)) {
+                Step so = StepManager.getStepById(step.getId());
+                String scriptPath = step.getAllScripts().get(this.script);
 
-				for (ProcessProperty prop : processPropertyList) {
+                new HelperSchritte().executeScriptForStepObject(so, scriptPath, false);
 
-					if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
-							&& (prop.getValue() == null || prop.getValue().equals(""))) {
-						List<String> parameter = new ArrayList<String>();
-						parameter.add(prop.getName());
-						parameter.add(s.getProzess().getTitel());
-						Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
-						error = true;
-					} else if (!prop.isValid()) {
-						List<String> parameter = new ArrayList<String>();
-						parameter.add(prop.getName());
-						parameter.add(s.getProzess().getTitel());
-						Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyValidation", parameter));
-						error = true;
-					}
-				}
-			}
-			if (!error) {
-				this.myDav.UploadFromHome(s.getProzess());
-				Step so = StepManager.getStepById(s.getId());
-				so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
-				helper.CloseStepObjectAutomatic(so, true);
-			}
-		}
-		StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-		return asf.FilterAlleStart();
-	}
+            }
+        }
 
-	public List<String> getScriptnames() {
-		List<String> answer = new ArrayList<String>();
-		answer.addAll(getCurrentStep().getAllScripts().keySet());
-		return answer;
-	}
+    }
 
-	public List<Integer> getContainerList() {
-		return new ArrayList<Integer>(this.containers.keySet());
-	}
+    public void ExportDMS() {
+        for (Step step : this.steps) {
+            ExportDms export = new ExportDms();
+            try {
+                export.startExport(step.getProzess());
+            } catch (Exception e) {
+                Helper.setFehlerMeldung("Error on export", e.getMessage());
+                logger.error(e);
+            }
+        }
+    }
+
+    public String BatchDurchBenutzerZurueckgeben() {
+
+        for (Step s : this.steps) {
+
+            this.myDav.UploadFromHome(s.getProzess());
+            s.setBearbeitungsstatusEnum(StepStatus.OPEN);
+            if (s.isCorrectionStep()) {
+                s.setBearbeitungsbeginn(null);
+            }
+            s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
+            currentStep.setBearbeitungszeitpunkt(new Date());
+            User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            if (ben != null) {
+                currentStep.setBearbeitungsbenutzer(ben);
+            }
+
+            try {
+                ProcessManager.saveProcess(s.getProzess());
+            } catch (DAOException e) {
+            }
+        }
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        return asf.FilterAlleStart();
+    }
+
+    public String BatchDurchBenutzerAbschliessen() {
+
+        // for (ProcessProperty pp : this.processPropertyList) {
+        // this.processProperty = pp;
+        // saveCurrentPropertyForAll();
+        // }
+        HelperSchritte helper = new HelperSchritte();
+        for (Step s : this.steps) {
+            boolean error = false;
+            if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {
+                IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, s.getValidationPlugin());
+                if (ivp != null) {
+                    ivp.setStep(s);
+                    if (!ivp.validate()) {
+                        error = true;
+                    }
+                } else {
+                    Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
+                }
+            }
+
+            if (s.isTypImagesSchreiben()) {
+                try {
+                    HistoryAnalyserJob.updateHistory(s.getProzess());
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("Error while calculation of storage and images", e);
+                }
+            }
+
+            if (s.isTypBeimAbschliessenVerifizieren()) {
+                if (s.isTypMetadaten() && ConfigMain.getBooleanParameter("useMetadatenvalidierung")) {
+                    MetadatenVerifizierung mv = new MetadatenVerifizierung();
+                    mv.setAutoSave(true);
+                    if (!mv.validate(s.getProzess())) {
+                        error = true;
+                    }
+                }
+                if (s.isTypImagesSchreiben()) {
+                    MetadatenImagesHelper mih = new MetadatenImagesHelper(null, null);
+                    try {
+                        if (!mih.checkIfImagesValid(s.getProzess().getTitel(), s.getProzess().getImagesOrigDirectory(false))) {
+                            error = true;
+                        }
+                    } catch (Exception e) {
+                        Helper.setFehlerMeldung("Error on image validation: ", e);
+                    }
+                }
+
+                loadProcessProperties(s);
+
+                for (ProcessProperty prop : processPropertyList) {
+
+                    if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
+                            && (prop.getValue() == null || prop.getValue().equals(""))) {
+                        List<String> parameter = new ArrayList<String>();
+                        parameter.add(prop.getName());
+                        parameter.add(s.getProzess().getTitel());
+                        Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
+                        error = true;
+                    } else if (!prop.isValid()) {
+                        List<String> parameter = new ArrayList<String>();
+                        parameter.add(prop.getName());
+                        parameter.add(s.getProzess().getTitel());
+                        Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyValidation", parameter));
+                        error = true;
+                    }
+                }
+            }
+            if (!error) {
+                this.myDav.UploadFromHome(s.getProzess());
+                Step so = StepManager.getStepById(s.getId());
+                so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
+                helper.CloseStepObjectAutomatic(so, true);
+            }
+        }
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        return asf.FilterAlleStart();
+    }
+
+    public List<String> getScriptnames() {
+        List<String> answer = new ArrayList<String>();
+        answer.addAll(getCurrentStep().getAllScripts().keySet());
+        return answer;
+    }
+
+    public List<Integer> getContainerList() {
+        return new ArrayList<Integer>(this.containers.keySet());
+    }
 }
