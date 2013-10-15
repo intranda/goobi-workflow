@@ -118,10 +118,6 @@ public class StatQuestCorrections implements
 
 		@SuppressWarnings("rawtypes")
 		List list = ProcessManager.runSQL(natSQL);
-
-		for (Object row : list) {
-		    System.out.println(row);
-		}
 		
 		DataTable dtbl = new DataTable(StatisticsMode.getByClassName(
 				this.getClass()).getTitle()
