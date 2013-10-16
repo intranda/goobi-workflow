@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -254,5 +255,16 @@ public class ProcessManager implements IManager, Serializable {
             logger.error("Cannot not load information about process with id " + processId, e);
         }
         return answer;
+    }
+    
+    
+    public static List<HistoryEvent> getHistoryEvents(int id) {
+
+        try {
+            return ProcessMysqlHelper.getHistoryEvents(id);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<HistoryEvent>();
     }
 }

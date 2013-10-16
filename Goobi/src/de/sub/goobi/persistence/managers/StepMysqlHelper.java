@@ -887,6 +887,25 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    public static void updateHistory(Integer id, Date date, double order, String value, int type, int processId) throws SQLException {
+        Connection connection = null;
+        Timestamp datetime = new Timestamp(date.getTime());
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            // String propNames = "numericValue, stringvalue, type, date, processId";
+            Object[] param = { order, value == null ? null : value, type, datetime, processId };
+            String sql = "Update history set numericValue = ?, stringvalue = ?,  type = ?, date = ?, processId =? WHERE historyid = " + id;
+            logger.trace("added history event " + sql + ", " + Arrays.toString(param));
+            run.update(connection, sql, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static void addHistory(Date date, double order, String value, int type, int processId) throws SQLException {
         Connection connection = null;
         Timestamp datetime = new Timestamp(date.getTime());

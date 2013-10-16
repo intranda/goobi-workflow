@@ -66,6 +66,7 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -176,8 +177,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public List<HistoryEvent> getHistory() {
 
-        if (this.history == null) {
-            this.history = new ArrayList<HistoryEvent>();
+        if (this.history == null && id != null) {
+            List<HistoryEvent> events = ProcessManager.getHistoryEvents(id);
+            for (HistoryEvent he : events) {
+                he.setProcess(this);
+            }
+            this.history = events;
         }
         return this.history;
     }
@@ -1205,7 +1210,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Override
     public void lazyLoad() {
-     }
+    }
 
     public Integer getMetadatenKonfigurationID() {
         return MetadatenKonfigurationID;
