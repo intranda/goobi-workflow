@@ -60,6 +60,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -110,7 +111,7 @@ public class HelperSchritte {
 
         logger.debug("create history events for step");
 
-        StepManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
+        HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
                 .getValue(), processId);
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
 
@@ -145,7 +146,7 @@ public class HelperSchritte {
                     myStep.setBearbeitungszeitpunkt(myDate);
                     myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
                     logger.debug("create history events for next step");
-                    StepManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
+                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
                             .getValue(), processId);
                     /* wenn es ein automatischer Schritt mit Script ist */
                     logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());

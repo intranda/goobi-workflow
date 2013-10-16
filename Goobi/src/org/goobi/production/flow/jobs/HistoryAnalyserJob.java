@@ -35,10 +35,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
+
 
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
@@ -46,6 +46,7 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.commons.util.file.FileUtils;
@@ -334,7 +335,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
         if (!getHistoryContainsEventAlready(he, inProcess)) {
-            StepManager.addHistoryEvent(he);
+            HistoryManager.addHistoryEvent(he);
             return he;
         } else {
             return null;
@@ -349,7 +350,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @return true, if {@link HistoryEvent} already exists
      ***************************************************************************/
     private static Boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Process inProcess) {
-        List<HistoryEvent> list = ProcessManager.getHistoryEvents(inProcess.getId());
+        List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent historyItem : list) {
             if (inEvent != historyItem) { // this is required, in case items
                 // from the same list are compared
@@ -368,7 +369,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      ***************************************************************************/
     private static Long getStoredValue(Process inProcess, HistoryEventType inType) {
         long storedValue = 0;
-        List<HistoryEvent> list = ProcessManager.getHistoryEvents(inProcess.getId());
+        List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent historyItem : list) {
             if (historyItem.getHistoryType() == inType) {
                 storedValue += historyItem.getNumericValue().longValue();
@@ -388,7 +389,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
         // if storedValue is different to current value - update history
         if (diff != 0) {
-            StepManager.addHistory(new Date(), diff, null, inType.getValue(), inProcess.getId());
+            HistoryManager.addHistory(new Date(), diff, null, inType.getValue(), inProcess.getId());
             return true;
         } else {
             return false;
@@ -516,10 +517,10 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      */
     private static Boolean getHistoryEventDuplicated(Process inProcess) {
         Boolean duplicateEventRemoved = false;
-        List<HistoryEvent> list = ProcessManager.getHistoryEvents(inProcess.getId());
+        List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent he : list) {
             if (getHistoryContainsEventAlready(he, inProcess)) {
-                StepManager.deleteHistoryEvent(he);
+                HistoryManager.deleteHistoryEvent(he);
 
                 duplicateEventRemoved = true;
             }

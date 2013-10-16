@@ -53,8 +53,8 @@ import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -64,6 +64,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -509,7 +510,7 @@ public class BatchStepHelper {
 
                 temp.getEigenschaften().add(se);
                 StepManager.saveStep(temp);
-                StepManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
+                HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
                         .getProzess().getId());
 //                this.currentStep.getProzess().getHistory()
 //                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp

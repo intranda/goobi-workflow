@@ -86,6 +86,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -248,7 +249,7 @@ public class StepBean extends BasicBean {
                 Date myDate = new Date();
                 this.mySchritt.setBearbeitungsbeginn(myDate);
             }
-            StepManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(), this.mySchritt.getTitel(),
+            HistoryManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(), this.mySchritt.getTitel(),
                     HistoryEventType.stepInWork.getValue(), this.mySchritt.getProzess().getId());
             
 //            this.mySchritt.getProzess().getHistory().add(
@@ -329,7 +330,7 @@ public class StepBean extends BasicBean {
                     s.setBearbeitungsbeginn(myDate);
                 }
                 
-                StepManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
+                HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
                         HistoryEventType.stepInWork.getValue(), s.getProzess().getId());
 
                 
@@ -577,7 +578,7 @@ public class StepBean extends BasicBean {
                     WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "error", message));
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
-            StepManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(),
+            HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(),
                     HistoryEventType.stepError.getValue(), temp.getProzess().getId());
             
 //            this.mySchritt.getProzess().getHistory().add(

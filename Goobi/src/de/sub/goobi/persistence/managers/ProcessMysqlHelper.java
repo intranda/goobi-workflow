@@ -14,7 +14,6 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
-import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -23,7 +22,6 @@ import org.goobi.beans.Template;
 import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 class ProcessMysqlHelper implements Serializable {
@@ -260,37 +258,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<HistoryEvent>> resultSetToHistoryListHandler = new ResultSetHandler<List<HistoryEvent>>() {
 
-        @Override
-        public List<HistoryEvent> handle(ResultSet rs) throws SQLException {
-            List<HistoryEvent> answer = new ArrayList<HistoryEvent>();
-            try {
-                while (rs.next()) {
-                    int historyId = rs.getInt("historyid");
-                    double numeric = rs.getDouble("numericvalue");
-                    String stringvalue = rs.getString("stringvalue");
-                    HistoryEventType type = HistoryEventType.getTypeFromValue(rs.getInt("type"));
-                    Timestamp time = rs.getTimestamp("date");
-                    HistoryEvent he = new HistoryEvent();
-                    he.setDate(time == null ? null : new Date(time.getTime()));
-                    he.setHistoryType(type);
-                    he.setId(historyId);
-                    he.setNumericValue(numeric);
-                    he.setStringValue(stringvalue);
-
-                    answer.add(he);
-
-                }
-
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            return answer;
-        }
-    };
 
     private static void insertProcess(Process o) throws SQLException {
         String sql = "INSERT INTO prozesse " + generateInsertQuery(false) + generateValueQuery(false);
@@ -427,20 +395,6 @@ class ProcessMysqlHelper implements Serializable {
 
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
         return p;
-    }
-
-    public static List<HistoryEvent> getHistoryEvents(int processId) throws SQLException {
-        String sql = "SELECT * FROM history WHERE processID = " + processId;
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            List<HistoryEvent> list = new QueryRunner().query(connection, sql, resultSetToHistoryListHandler);
-            return list;
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
     }
 
     public static void insertBatchProcessList(List<Process> processList) throws SQLException {
