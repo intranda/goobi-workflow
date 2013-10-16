@@ -56,7 +56,7 @@ public class RulesetBean extends BasicBean {
 			if (hasValidRulesetFilePath(myRegelsatz, ConfigMain.getParameter("RegelsaetzeVerzeichnis"))) {
 				RulesetManager.saveRuleset(myRegelsatz);
 				paginator.load();
-				return "ruleset_all";
+				return FilterKein();
 			} else {
 				Helper.setFehlerMeldung("RulesetNotFound");
 				return "";
@@ -85,7 +85,7 @@ public class RulesetBean extends BasicBean {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
 			return "";
 		}
-		return "ruleset_all";
+		return FilterKein();
 	}
 
 	private boolean hasAssignedProcesses(Ruleset r) {

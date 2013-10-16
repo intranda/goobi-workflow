@@ -134,7 +134,7 @@ public class UserBean extends BasicBean {
             if (num == 0) {
                 UserManager.saveUser(this.myClass);
                 paginator.load();
-                return "user_all";
+                return FilterKein();
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
                 return "";
@@ -192,7 +192,7 @@ public class UserBean extends BasicBean {
             Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
             return "";
         }
-        return "user_all";
+        return FilterKein();
     }
 
     public String AusGruppeLoeschen() {

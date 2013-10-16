@@ -51,7 +51,7 @@ public class LdapBean extends BasicBean {
 		try {
 			LdapManager.saveLdap(myLdapGruppe);
 			paginator.load();
-			return "ldap_all";
+			return FilterKein();
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Could not save", e.getMessage());
 			return "";
@@ -66,7 +66,7 @@ public class LdapBean extends BasicBean {
 			Helper.setFehlerMeldung("Could not delete from database", e.getMessage());
 			return "";
 		}
-		return "ldap_all";
+		return FilterKein();
 	}
 
 	public String FilterKein() {

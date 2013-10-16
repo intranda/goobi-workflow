@@ -166,7 +166,7 @@ public class ProjectBean extends BasicBean {
 			ProjectManager.saveProject(this.myProjekt);
 			paginator.load();
 			displayMode="";
-			return "project_all";
+			return FilterKein();
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("could not save", e.getMessage());
 			return "";
@@ -201,7 +201,7 @@ public class ProjectBean extends BasicBean {
 			return "";
 		}
 		}
-		return "project_all";
+		return FilterKein();
 	}
 
 	public String FilterKein() {

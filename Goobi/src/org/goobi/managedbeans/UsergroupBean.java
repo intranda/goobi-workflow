@@ -51,7 +51,7 @@ public class UsergroupBean extends BasicBean {
         try {
             UsergroupManager.saveUsergroup(myBenutzergruppe);
             paginator.load();
-            return "usergroup_all";
+            return FilterKein();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("Error, could not save", e.getMessage());
             return "";
@@ -74,7 +74,7 @@ public class UsergroupBean extends BasicBean {
             Helper.setFehlerMeldung("Error, could not delete", e.getMessage());
             return "";
         }
-        return "usergroup_all";
+        return FilterKein();
     }
 
     public String FilterKein() {

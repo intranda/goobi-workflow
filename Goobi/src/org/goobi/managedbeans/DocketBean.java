@@ -56,7 +56,7 @@ public class DocketBean extends BasicBean {
 			if (hasValidRulesetFilePath(myDocket, ConfigMain.getParameter("xsltFolder"))) {
 				DocketManager.saveDocket(myDocket);
 				paginator.load();
-				return "docket_all";
+				return FilterKein();
 			} else {
 				Helper.setFehlerMeldung("DocketNotFound");
 				return "";
@@ -85,7 +85,7 @@ public class DocketBean extends BasicBean {
 			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
 			return "";
 		}
-		return "docket_all";
+		return FilterKein();
 	}
 
 	private boolean hasAssignedProcesses(Docket d) {
