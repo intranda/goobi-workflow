@@ -81,29 +81,13 @@ class ProcessMysqlHelper implements Serializable {
             for (Template template : templates) {
                 TemplateManager.saveTemplate(template);
             }
-
-            List<HistoryEvent> events = o.getHistory();
-            for (HistoryEvent he : events) {
-                saveHistory(he);
-            }
         } catch (SQLException e) {
             //            logger.error("Error while saving process " + o.getTitel(), e);
             throw new DAOException(e);
         }
     }
 
-    private static void saveHistory(HistoryEvent he) throws SQLException {
-
-        if (he.getId() != null) {
-            StepMysqlHelper.updateHistory(he.getId(), he.getDate(), he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), he
-                    .getProcess().getId());
-
-        } else {
-            StepMysqlHelper.addHistory(he.getDate(), he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), he.getProcess()
-                    .getId());
-        }
-
-    }
+ 
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {

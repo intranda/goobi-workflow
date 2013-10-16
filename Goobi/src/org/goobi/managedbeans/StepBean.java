@@ -248,9 +248,12 @@ public class StepBean extends BasicBean {
                 Date myDate = new Date();
                 this.mySchritt.setBearbeitungsbeginn(myDate);
             }
-            this.mySchritt.getProzess().getHistory().add(
-                    new HistoryEvent(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
-                            this.mySchritt.getTitel(), HistoryEventType.stepInWork, this.mySchritt.getProzess()));
+            StepManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(), this.mySchritt.getTitel(),
+                    HistoryEventType.stepInWork.getValue(), this.mySchritt.getProzess().getId());
+            
+//            this.mySchritt.getProzess().getHistory().add(
+//                    new HistoryEvent(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
+//                            this.mySchritt.getTitel(), HistoryEventType.stepInWork, this.mySchritt.getProzess()));
             try {
                 /*
                  * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
@@ -325,9 +328,14 @@ public class StepBean extends BasicBean {
                     Date myDate = new Date();
                     s.setBearbeitungsbeginn(myDate);
                 }
-                s.getProzess().getHistory().add(
-                        new HistoryEvent(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork, s
-                                .getProzess()));
+                
+                StepManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
+                        HistoryEventType.stepInWork.getValue(), s.getProzess().getId());
+
+                
+//                s.getProzess().getHistory().add(
+//                        new HistoryEvent(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork, s
+//                                .getProzess()));
 
                 if (s.isTypImagesLesen() || s.isTypImagesSchreiben()) {
                     try {
@@ -569,8 +577,11 @@ public class StepBean extends BasicBean {
                     WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "error", message));
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
-            this.mySchritt.getProzess().getHistory().add(
-                    new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp.getProzess()));
+            StepManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(),
+                    HistoryEventType.stepError.getValue(), temp.getProzess().getId());
+            
+//            this.mySchritt.getProzess().getHistory().add(
+//                    new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp.getProzess()));
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */

@@ -41,7 +41,6 @@ import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -510,9 +509,11 @@ public class BatchStepHelper {
 
                 temp.getEigenschaften().add(se);
                 StepManager.saveStep(temp);
-                this.currentStep.getProzess().getHistory()
-                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
-                                .getProzess()));
+                StepManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
+                        .getProzess().getId());
+//                this.currentStep.getProzess().getHistory()
+//                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
+//                                .getProzess()));
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */

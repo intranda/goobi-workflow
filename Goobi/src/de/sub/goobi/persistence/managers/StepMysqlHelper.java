@@ -14,6 +14,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -924,6 +925,42 @@ class StepMysqlHelper implements Serializable {
             }
         }
     }
+    
+    
+    public static void updateHistoryEvent(HistoryEvent he) throws SQLException {
+        Connection connection = null;
+        Timestamp datetime = new Timestamp(he.getDate().getTime());
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            // String propNames = "numericValue, stringvalue, type, date, processId";
+            Object[] param = { he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), datetime, he.getProcess().getId() };
+            String sql = "UPDATE history set numericValue = ?, stringvalue = ?, type = ?, date = ?, processId = ? WHERE historyid =" + he.getId();
+            logger.trace("added history event " + sql + ", " + Arrays.toString(param));
+            run.update(connection, sql, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+            
+    }
+    
+    public static void deleteHistoryEvent(HistoryEvent he) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            String sql = "DELETE from history  WHERE historyid =" + he.getId();
+            run.update(connection, sql);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+            
+    }
 
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
         Connection connection = null;
@@ -1050,4 +1087,6 @@ class StepMysqlHelper implements Serializable {
             }
         }
     }
+
+   
 }

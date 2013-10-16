@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -188,6 +189,26 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
+    public static void addHistoryEvent(HistoryEvent he) {
+        addHistory(he.getDate(), he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), he.getProcess().getId());
+    }
+
+    public static void updateHistoryEvent(HistoryEvent he) {
+        try {
+            StepMysqlHelper.updateHistoryEvent(he);
+        } catch (SQLException e) {
+            logger.error("Cannot not save history event", e);
+        }
+    }
+    
+    public static void deleteHistoryEvent(HistoryEvent he) {
+        try {
+            StepMysqlHelper.deleteHistoryEvent(he);
+        } catch (SQLException e) {
+            logger.error("Cannot not save history event", e);
+        }
+    }
+    
     public static long getCountOfFieldValue(String columnname, String filter, String order, String group) {
         try {
             return StepMysqlHelper.getCountOfFieldValue(columnname, filter, order, group);
@@ -214,4 +235,5 @@ public class StepManager implements IManager, Serializable {
         }
         return 0.0;
     }
+
 }
