@@ -289,16 +289,18 @@ public class ExportMets {
         mm.setDigiprovPresentationAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentationAnchor()));
         mm.setDigiprovReferenceAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovReferenceAnchor()));
 
+        
+        
         mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
         mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
 
-//        String pointer = myProzess.getProjekt().getMetsPointerPath();
-//        pointer = vp.replace(pointer);
-//        mm.setMptrUrl(pointer);
+        String pointer = myProzess.getProjekt().getMetsPointerPath();
+        pointer = vp.replace(pointer);
+        mm.setMptrUrl(pointer);
 
-//        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
-//        pointer = vp.replace(anchor);
-//        mm.setMptrAnchorUrl(pointer);
+        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
+        pointer = vp.replace(anchor);
+        mm.setMptrAnchorUrl(pointer);
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<String>();
