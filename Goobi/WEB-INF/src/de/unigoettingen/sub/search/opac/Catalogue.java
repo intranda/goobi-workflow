@@ -194,8 +194,14 @@ public class Catalogue {
         } //we didn't succeed retrieving the search item list from the local file
         //so lets get it from the server
         catch(Exception e) {
-    	String requestUrl = "http://"+ this.serverAddress + ":" + this.port + "/" + 
-    		this.dataBase + IKTLIST;
+            String requestUrl = "";
+            if (port == 80) {
+                requestUrl = "http://"+ this.serverAddress + "/" + 
+                        this.dataBase + IKTLIST;
+            } else {
+                requestUrl = "http://"+ this.serverAddress + ":" + this.port + "/" + 
+                        this.dataBase + IKTLIST;
+            }
             if (this.verbose){
 //                System.err.println("Loading the IKTLIST failed, requesting it from opac");            
                 logger.info("Retrieving IKTLIST for opac " + 
