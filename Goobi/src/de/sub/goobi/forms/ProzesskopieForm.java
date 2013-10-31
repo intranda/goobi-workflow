@@ -952,7 +952,9 @@ public class ProzesskopieForm {
     }
 
     public void setDocType(String docType) {
-        this.docType = docType;
+               if (this.docType.equals(docType)) {
+            this.docType = docType;
+        } else {
 
 	        if (myRdf != null) {
 
@@ -995,7 +997,7 @@ public class ProzesskopieForm {
 	                myLogger.error(e);
 	            }
 	        }
-
+}
 	    }
 
 	    private void copyMetadata(DocStruct oldDocStruct, DocStruct newDocStruct) {
