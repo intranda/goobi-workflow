@@ -964,7 +964,7 @@ public class ProzesskopieForm {
                         // new has a child, bot old not
                         else if (oldLogicalDocstruct.getAllChildren() == null && newLogicalDocstruct.getAllChildren() != null) {
                             copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
-                            copyMetadata(oldLogicalDocstruct, newLogicalDocstruct.getAllChildren().get(0));
+                            copyMetadata(oldLogicalDocstruct.copy(true, false), newLogicalDocstruct.getAllChildren().get(0));
                         }
 
                         // both have childen
@@ -990,6 +990,8 @@ public class ProzesskopieForm {
         if (oldDocStruct.getAllMetadata() != null) {
             for (Metadata md : oldDocStruct.getAllMetadata()) {
                 try {
+//                    Metadata newMetadata = new Metadata(md.getType());
+//                    newMetadata.setValue(md.getValue());
                     newDocStruct.addMetadata(md);
                 } catch (MetadataTypeNotAllowedException e) {
                 } catch (DocStructHasNoTypeException e) {
@@ -999,6 +1001,19 @@ public class ProzesskopieForm {
         if (oldDocStruct.getAllPersons() != null) {
             for (Person p : oldDocStruct.getAllPersons()) {
                 try {
+//                    Person newPerson = new Person(p.getType());
+//                    newPerson.setAffiliation(p.getAffiliation());
+//                    newPerson.setAutorityFileID(p.getAuthorityFileID());
+//                    newPerson.setCorporation(p.isCorporation());
+//                    newPerson.setDisplayname(p.getDisplayname());
+//                    newPerson.setFirstname(p.getFirstname());
+//                    newPerson.setIdentifier(p.getIdentifier());
+//                    newPerson.setIdentifierType(p.getIdentifierType());
+//                    newPerson.setInstitution(p.getInstitution());
+//                    newPerson.setLastname(p.getLastname());
+//                    newPerson.setPersontype(p.getPersontype());
+//                    newPerson.setRole(p.getRole());
+//                    newPerson.setValue(p.getValue());
                     newDocStruct.addPerson(p);
                 } catch (MetadataTypeNotAllowedException e) {
                 } catch (DocStructHasNoTypeException e) {
