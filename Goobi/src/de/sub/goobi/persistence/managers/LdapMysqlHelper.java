@@ -106,7 +106,7 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("INSERT INTO ldapgruppen (" + propNames + ") VALUES (" + values + ")");
 
                 logger.debug(sql.toString() + ", " + Arrays.toString(param));
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
                 }
