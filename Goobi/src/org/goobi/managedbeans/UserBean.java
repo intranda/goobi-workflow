@@ -130,7 +130,11 @@ public class UserBean extends BasicBean {
         Integer blub = this.myClass.getId();
         try {
             /* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
-            int num = new UserManager().getHitSize(null, "login='" + bla + "'AND BenutzerID<>" + blub);
+            String query = "login='" + bla + "'AND BenutzerID !=" + blub;
+            if (blub == null) {
+                query = "login='" + bla + "'AND BenutzerID is not null";
+            }
+            int num = new UserManager().getHitSize(null, query);
             if (num == 0) {
                 UserManager.saveUser(this.myClass);
                 paginator.load();
@@ -154,7 +158,7 @@ public class UserBean extends BasicBean {
         if (!valide) {
             Helper.setFehlerMeldung("", Helper.getTranslation("loginNotValid"));
         }
-
+        
         /* Pfad zur Datei ermitteln */
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);

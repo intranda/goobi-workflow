@@ -117,7 +117,7 @@ class UserMysqlHelper implements Serializable {
                         ro.isConfVorgangsdatumAnzeigen(),
                         ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(), 
                         ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(), 
-                        ro.getLdapGruppe().getId(), 
+                        ro.getLdapGruppe() == null ?  null : ro.getLdapGruppe().getId(), 
                         visible, 
                         ro.getLdaplogin()  == null ? null : ro.getLdaplogin()};
                 sql.append("INSERT INTO benutzer (");
@@ -164,7 +164,7 @@ class UserMysqlHelper implements Serializable {
                     ro.isConfVorgangsdatumAnzeigen(),
                     ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(), 
                     ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(), 
-                    ro.getLdapGruppe().getId(), 
+                    ro.getLdapGruppe() == null ?  null : ro.getLdapGruppe().getId(), 
                     visible, 
                     ro.getLdaplogin()  == null ? null : ro.getLdaplogin()};
                 logger.debug(sql.toString() + ", " + Arrays.toString(param));
