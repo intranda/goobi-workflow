@@ -30,6 +30,7 @@ public class ConfigMainTest {
 
     @Test
     public void testGetParameterString() {
+        ConfigMain.setParameter("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
         String fixture = ConfigMain.getParameter("KonfigurationVerzeichnis");
         assertNotNull(fixture);
         assertEquals("/opt/digiverso/goobi/config/", fixture);
