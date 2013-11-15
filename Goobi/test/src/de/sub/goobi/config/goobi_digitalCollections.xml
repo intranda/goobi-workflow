@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DigitalCollections>
+  <default>
+    <DigitalCollection>Collection1</DigitalCollection>
+    <DigitalCollection>Collection2</DigitalCollection>
+    
+
+  </default>
+  
+  <project>
+    <name>Project</name>
+    <DigitalCollection>Collection</DigitalCollection>    
+  </project>
+
+  
+</DigitalCollections>

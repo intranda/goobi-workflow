@@ -42,142 +42,149 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 
 public class ConfigMain implements Serializable {
-	private static final long serialVersionUID = -7167854300981799440L;
+    private static final long serialVersionUID = -7167854300981799440L;
 
-	private static final Logger myLogger = Logger.getLogger(ConfigMain.class);
+    private static final Logger myLogger = Logger.getLogger(ConfigMain.class);
 
-	static ConfigMain configMain = new ConfigMain();
-	private static PropertiesConfiguration config;
-	private static String configPfad;
-	private static String imagesPath = null;
+    static ConfigMain configMain = new ConfigMain();
+    private static PropertiesConfiguration config;
+    public static String configPfad;
+    private static String imagesPath = null;
 
-	/**
-	 * @throws ConfigurationException
-	 */
-	private ConfigMain() {
-		PropertiesConfiguration.setDefaultListDelimiter('&');
-		if (configPfad == null) {
-			configPfad = "goobi_config.properties";
-		}
-		try {
-			config = new PropertiesConfiguration(configPfad);
-		} catch (ConfigurationException e) {
-			config = new PropertiesConfiguration();
-		}
-		// config.setDelimiterParsingDisabled(true);
-		config.setListDelimiter('|');
+    /**
+     * @throws ConfigurationException
+     */
+    private ConfigMain() {
+        PropertiesConfiguration.setDefaultListDelimiter('&');
+        if (configPfad == null) {
+            configPfad = "goobi_config.properties";
+        }
+        try {
+            config = new PropertiesConfiguration(configPfad);
+        } catch (ConfigurationException e) {
+            config = new PropertiesConfiguration();
+        }
+        // config.setDelimiterParsingDisabled(true);
+        config.setListDelimiter('|');
 
-		config.setReloadingStrategy(new FileChangedReloadingStrategy());
-	}
+        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+    }
 
-	/**
-	 * den Pfad für die temporären Images zur Darstellung zurückgeben ================================================================
-	 */
-	public static String getTempImagesPath() {
-		return "/imagesTemp/";
-	}
+    /**
+     * den Pfad für die temporären Images zur Darstellung zurückgeben ================================================================
+     */
+    public static String getTempImagesPath() {
+        return "/imagesTemp/";
+    }
 
-	/**
-	 * den absoluten Pfad für die temporären Images zurückgeben ================================================================
-	 */
-	public static String getTempImagesPathAsCompleteDirectory() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		String filename;
-		if (imagesPath != null) {
-			filename = imagesPath;
-		} else {
-			HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-			filename = session.getServletContext().getRealPath("/imagesTemp") + File.separator;
+    /**
+     * den absoluten Pfad für die temporären Images zurückgeben ================================================================
+     */
+    public static String getTempImagesPathAsCompleteDirectory() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String filename;
+        if (imagesPath != null) {
+            filename = imagesPath;
+        } else {
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            filename = session.getServletContext().getRealPath("/imagesTemp") + File.separator;
 
-			/* den Ordner neu anlegen, wenn er nicht existiert */
-			try {
-				FilesystemHelper.createDirectory(filename);
-			} catch (Exception ioe) {
-				myLogger.error("IO error: " + ioe);
-				Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
-			}
-		}
-		return filename;
-	}
+            /* den Ordner neu anlegen, wenn er nicht existiert */
+            try {
+                FilesystemHelper.createDirectory(filename);
+            } catch (Exception ioe) {
+                myLogger.error("IO error: " + ioe);
+                Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
+            }
+        }
+        return filename;
+    }
 
-	public static void setImagesPath(String path) {
-		imagesPath = path;
-	}
+    public static void setImagesPath(String path) {
+        imagesPath = path;
+    }
 
-	/**
-	 * Ermitteln eines bestimmten Paramters der Konfiguration
-	 * 
-	 * @return Paramter als String
-	 */
-	public static String getParameter(String inParameter) {
-		try {
-			return config.getString(inParameter);
-		} catch (RuntimeException e) {
-			myLogger.error(e);
-			return "- keine Konfiguration gefunden -";
-		}
-	}
+    /**
+     * Ermitteln eines bestimmten Paramters der Konfiguration
+     * 
+     * @return Paramter als String
+     */
+    public static String getParameter(String inParameter) {
+        try {
+            return config.getString(inParameter);
+        } catch (RuntimeException e) {
+            myLogger.error(e);
+            return "- keine Konfiguration gefunden -";
+        }
+    }
 
-	/**
-	 * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
-	 * 
-	 * @return Paramter als String
-	 */
-	public static String getParameter(String inParameter, String inDefaultIfNull) {
-		try {
-			return config.getString(inParameter, inDefaultIfNull);
-			// return config.getProperty(inParameter).toString();
-		} catch (RuntimeException e) {
-			return inDefaultIfNull;
-		}
-	}
+    /**
+     * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
+     * 
+     * @return Paramter als String
+     */
+    public static String getParameter(String inParameter, String inDefaultIfNull) {
+        try {
+            return config.getString(inParameter, inDefaultIfNull);
+            // return config.getProperty(inParameter).toString();
+        } catch (RuntimeException e) {
+            return inDefaultIfNull;
+        }
+    }
 
-	/**
-	 * Ermitteln eines boolean-Paramters der Konfiguration, default if missing: false
-	 * 
-	 * @return Paramter als String
-	 */
-	public static boolean getBooleanParameter(String inParameter) {
-		return getBooleanParameter(inParameter, false);
-	}
+    /**
+     * Ermitteln eines boolean-Paramters der Konfiguration, default if missing: false
+     * 
+     * @return Paramter als String
+     */
+    public static boolean getBooleanParameter(String inParameter) {
+        return getBooleanParameter(inParameter, false);
+    }
 
-	/**
-	 * Ermitteln eines boolean-Paramters der Konfiguration
-	 * 
-	 * @return Paramter als String
-	 */
-	public static boolean getBooleanParameter(String inParameter, boolean inDefault) {
-		return config.getBoolean(inParameter, inDefault);
-	}
+    /**
+     * Ermitteln eines boolean-Paramters der Konfiguration
+     * 
+     * @return Paramter als String
+     */
+    public static boolean getBooleanParameter(String inParameter, boolean inDefault) {
+        return config.getBoolean(inParameter, inDefault);
+    }
 
-	/**
-	 * Ermitteln eines long-Paramters der Konfiguration
-	 * 
-	 * @return Paramter als Long
-	 */
-	public static long getLongParameter(String inParameter, long inDefault) {
-		return config.getLong(inParameter, inDefault);
-	}
+    /**
+     * Ermitteln eines long-Paramters der Konfiguration
+     * 
+     * @return Paramter als Long
+     */
+    public static long getLongParameter(String inParameter, long inDefault) {
+        return config.getLong(inParameter, inDefault);
+    }
 
-	/**
-	 * Request int-parameter from Configuration
-	 * 
-	 * @return Paramter as Int
-	 */
-	public static int getIntParameter(String inParameter) {
-		return getIntParameter(inParameter, 0);
-	}
+    /**
+     * Request int-parameter from Configuration
+     * 
+     * @return Paramter as Int
+     */
+    public static int getIntParameter(String inParameter) {
+        return getIntParameter(inParameter, 0);
+    }
 
-	/**
-	 * Request int-parameter from Configuration with default-value
-	 * 
-	 * @return Paramter as Int
-	 */
-	public static int getIntParameter(String inParameter, int inDefault) {
-		try {
-			return config.getInt(inParameter, inDefault);
-		} catch (Exception e) {
-			return 0;
-		}
-	}
+    /**
+     * Request int-parameter from Configuration with default-value
+     * 
+     * @return Paramter as Int
+     */
+    public static int getIntParameter(String inParameter, int inDefault) {
+        try {
+            return config.getInt(inParameter, inDefault);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    // needed for junit tests
+
+    public static void setParameter(String inParameter, String value) {
+        config.setProperty(inParameter, value);
+    }
+
 }
