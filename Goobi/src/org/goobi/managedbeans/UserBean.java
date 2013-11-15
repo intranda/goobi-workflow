@@ -158,7 +158,7 @@ public class UserBean extends BasicBean {
         if (!valide) {
             Helper.setFehlerMeldung("", Helper.getTranslation("loginNotValid"));
         }
-        
+
         /* Pfad zur Datei ermitteln */
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
@@ -294,6 +294,13 @@ public class UserBean extends BasicBean {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
         }
         return myLdapGruppen;
+    }
+
+    public String createUser() {
+        if (!Speichern().equals("") && getLdapUsage()) {
+            LdapKonfigurationSchreiben();
+        }
+        return "";
     }
 
     public String LdapKonfigurationSchreiben() {
