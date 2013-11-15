@@ -316,12 +316,11 @@ public class ProzesskopieForm {
         readProjectConfigs();
         try {
             ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
-            
+
             myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-            
+
             /* den Opac abfragen und ein RDF draus bauen lassen */
-            this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie
-                    .getRegelsatz().getPreferences());
+            this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
             if (this.myImportOpac.getOpacDocType() != null) {
                 this.docType = this.myImportOpac.getOpacDocType().getTitle();
             }
@@ -952,74 +951,74 @@ public class ProzesskopieForm {
     }
 
     public void setDocType(String docType) {
-               if (this.docType.equals(docType)) {
-            this.docType = docType;
+        if (this.docType.equals(docType)) {
+           return;
         } else {
+            this.docType = docType;
+            if (myRdf != null) {
 
-	        if (myRdf != null) {
+                Fileformat tmp = myRdf;
 
-	            Fileformat tmp = myRdf;
-
-	            createNewFileformat();
-	            try {
-	                if (myRdf.getDigitalDocument().getLogicalDocStruct().equals(tmp.getDigitalDocument().getLogicalDocStruct())) {
-	                    myRdf = tmp;
-	                } else {
-	                    DocStruct oldLogicalDocstruct = tmp.getDigitalDocument().getLogicalDocStruct();
-	                    DocStruct newLogicalDocstruct = myRdf.getDigitalDocument().getLogicalDocStruct();
-	                    // both have no childen
-	                    if (oldLogicalDocstruct.getAllChildren() == null && newLogicalDocstruct.getAllChildren() == null) {
-	                        copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
-	    }
-	                    // old has a child, new has no child
-	                    else if (oldLogicalDocstruct.getAllChildren() != null && newLogicalDocstruct.getAllChildren() == null) {
-	                        copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
-	                        copyMetadata(oldLogicalDocstruct.getAllChildren().get(0), newLogicalDocstruct);
-	                    }
-	                    // new has a child, bot old not
-	                    else if (oldLogicalDocstruct.getAllChildren() == null && newLogicalDocstruct.getAllChildren() != null) {
-	                        copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
+                createNewFileformat();
+                try {
+                    if (myRdf.getDigitalDocument().getLogicalDocStruct().equals(tmp.getDigitalDocument().getLogicalDocStruct())) {
+                        myRdf = tmp;
+                    } else {
+                        DocStruct oldLogicalDocstruct = tmp.getDigitalDocument().getLogicalDocStruct();
+                        DocStruct newLogicalDocstruct = myRdf.getDigitalDocument().getLogicalDocStruct();
+                        // both have no childen
+                        if (oldLogicalDocstruct.getAllChildren() == null && newLogicalDocstruct.getAllChildren() == null) {
+                            copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
+                        }
+                        // old has a child, new has no child
+                        else if (oldLogicalDocstruct.getAllChildren() != null && newLogicalDocstruct.getAllChildren() == null) {
+                            copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
+                            copyMetadata(oldLogicalDocstruct.getAllChildren().get(0), newLogicalDocstruct);
+                        }
+                        // new has a child, bot old not
+                        else if (oldLogicalDocstruct.getAllChildren() == null && newLogicalDocstruct.getAllChildren() != null) {
+                            copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
                             copyMetadata(oldLogicalDocstruct.copy(true, false), newLogicalDocstruct.getAllChildren().get(0));
-	                    }
+                        }
 
-	                    // both have childen
-	                    else if (oldLogicalDocstruct.getAllChildren() != null && newLogicalDocstruct.getAllChildren() != null) {
-	                        copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
-	                        copyMetadata(oldLogicalDocstruct.getAllChildren().get(0), newLogicalDocstruct.getAllChildren().get(0));
-	                    }
-	                }
-	            } catch (PreferencesException e) {
-	                myLogger.error(e);
-	            }
-	            try {
-	                fillFieldsFromMetadataFile();
-	            } catch (PreferencesException e) {
-	                myLogger.error(e);
-	            }
-	        }
-}
-	    }
+                        // both have childen
+                        else if (oldLogicalDocstruct.getAllChildren() != null && newLogicalDocstruct.getAllChildren() != null) {
+                            copyMetadata(oldLogicalDocstruct, newLogicalDocstruct);
+                            copyMetadata(oldLogicalDocstruct.getAllChildren().get(0), newLogicalDocstruct.getAllChildren().get(0));
+                        }
+                    }
+                } catch (PreferencesException e) {
+                    myLogger.error(e);
+                }
+                try {
+                    fillFieldsFromMetadataFile();
+                } catch (PreferencesException e) {
+                    myLogger.error(e);
+                }
+            }
+        }
+    }
 
-	    private void copyMetadata(DocStruct oldDocStruct, DocStruct newDocStruct) {
-	   
-	        if (oldDocStruct.getAllMetadata() != null) {
-	            for (Metadata md : oldDocStruct.getAllMetadata()) {
-	                try {
-	                    newDocStruct.addMetadata(md);
-	                } catch (MetadataTypeNotAllowedException e) {
-	                } catch (DocStructHasNoTypeException e) {
-	                }
-	            }
-	        }
-	        if (oldDocStruct.getAllPersons() != null) {
-	            for (Person p : oldDocStruct.getAllPersons()) {
-	                try {
-	                    newDocStruct.addPerson(p);
-	                } catch (MetadataTypeNotAllowedException e) {
-	                } catch (DocStructHasNoTypeException e) {
-	                }
-	            }
-	        }
+    private void copyMetadata(DocStruct oldDocStruct, DocStruct newDocStruct) {
+
+        if (oldDocStruct.getAllMetadata() != null) {
+            for (Metadata md : oldDocStruct.getAllMetadata()) {
+                try {
+                    newDocStruct.addMetadata(md);
+                } catch (MetadataTypeNotAllowedException e) {
+                } catch (DocStructHasNoTypeException e) {
+                }
+            }
+        }
+        if (oldDocStruct.getAllPersons() != null) {
+            for (Person p : oldDocStruct.getAllPersons()) {
+                try {
+                    newDocStruct.addPerson(p);
+                } catch (MetadataTypeNotAllowedException e) {
+                } catch (DocStructHasNoTypeException e) {
+                }
+            }
+        }
     }
 
     public Collection<SelectItem> getArtists() {
