@@ -44,8 +44,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import ugh.fileformats.excel.RDFFile;
-import ugh.fileformats.mets.MetsModsImportExport;
 
 import org.goobi.beans.Process;
 

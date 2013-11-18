@@ -188,7 +188,7 @@ public class ExportMets {
          * before creating mets file, change relative path to absolute -
          */
         DigitalDocument dd = gdzfile.getDigitalDocument();
-        if (dd.getFileSet() == null) {
+        if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
             Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
 
             MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
