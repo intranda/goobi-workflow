@@ -628,7 +628,7 @@ public class ProcessBean extends BasicBean {
 
     public String SchrittLoeschen() {
         this.myProzess.getSchritte().remove(this.mySchritt);
-        Speichern();
+        StepManager.deleteStep(mySchritt);
         deleteSymlinksFromUserHomes();
         return "process_edit";
     }
