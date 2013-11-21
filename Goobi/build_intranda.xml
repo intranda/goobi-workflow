@@ -212,7 +212,7 @@
         <copy file="${dir.tests}/de/sub/goobi/export/dms/metadata.xml" tofile="${dir.build}/de/sub/goobi/export/dms/metadata.xml" />
 
 
-        <junit haltonerror="true" haltonfailure="true" tempdir="/tmp">
+        <junit haltonerror="false" haltonfailure="false" tempdir="/tmp">
             <classpath refid="test.classpath" />
             <formatter type="xml" usefile="true" />
             <test name="de.sub.goobi.TestAll" todir="${test.report.dir}" />
