@@ -191,7 +191,7 @@
 	<target name="all" depends="junit, clean, dist" description="Build all, not really needed yet." />
 
 	<!-- JUnit tests -->
-	<target name="junit" depends="copySources, git.revision" description="Run JUnit tests">
+	<target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
 
 
 		<javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6" >
