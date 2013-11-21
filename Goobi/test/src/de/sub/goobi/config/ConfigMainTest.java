@@ -83,15 +83,15 @@ public class ConfigMainTest {
     @Test
     public void testGetIntParameterString() {
         int fixture = ConfigMain.getIntParameter("numberOfMetaBackups");
-        assertEquals(9, fixture);
+        assertEquals(8, fixture);
         fixture = ConfigMain.getIntParameter("wrongParameter");
         assertEquals(0, fixture);
     }
 
     @Test
     public void testGetIntParameterStringInt() {
-        int fixture = ConfigMain.getIntParameter("numberOfMetaBackups", 9);
-        assertEquals(9, fixture);
+        int fixture = ConfigMain.getIntParameter("numberOfMetaBackups", 8);
+        assertEquals(8, fixture);
         fixture = ConfigMain.getIntParameter("wrongParameter", 9);
         assertEquals(9, fixture);
 

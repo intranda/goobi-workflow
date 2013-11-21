@@ -7,29 +7,30 @@
 
 	<!-- Directory settings -->
 	<property name="dir.lib" value="./webapp/WEB-INF/lib" />
+	<property name="dir.lib.test" value="./lib-test" />
 	<property name="dir.build" location="./build" />
 	<property name="dir.build.src" location="${dir.build}/src" />
-    <property name="build.classes.test" value="${dir.build}/test-classes"/>
+	<property name="build.classes.test" value="${dir.build}/test-classes" />
 	<property name="dir.config" location="./config" />
 	<property name="dir.tests" location="./test/src" />
 	<property name="dir.src" location="./src" />
 	<property name="dir.src-dubious" location="./src-dubious" />
 	<property name="dir.build.classes" value="${dir.build}/WEB-INF/classes" />
-	<property name="test.report.dir" value="${dir.build}/test-reports/"/>
-	
+	<property name="test.report.dir" value="./testreports" />
 	<available file=".git" type="dir" property="git.present" />
 
 	<path id="classpath">
 		<fileset dir="${dir.lib}" />
 		<fileset dir="/opt/digiverso/libs" />
 	</path>
-	
-	 <!-- Testing classpath -->
-	    <path id="test.classpath">
-	        <path refid="classpath"/>
-	        <pathelement location="${dir.build.classes}"/>
-	        <pathelement location="${build.classes.test}"/>
-	    </path>
+
+	<!-- Testing classpath -->
+	<path id="test.classpath">
+		<fileset dir="/opt/digiverso/libs" />
+		<fileset dir="${dir.lib}" includes="**/*.jar" />
+		<fileset dir="${dir.lib.test}" includes="**/*.jar" />
+		<pathelement location="${dir.build}" />
+	</path>
 
 	<!-- Clean up generated and compiled files. -->
 	<target name="clean" description="Clean up generated and compiled files.">
@@ -43,7 +44,7 @@
 		<mkdir dir="${dir.build.src}" />
 		<mkdir dir="${build.classes.test}" />
 		<mkdir dir="${test.report.dir}" />
-		
+
 	</target>
 
 
@@ -70,7 +71,7 @@
 		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
 			<fileset dir="${private.dir}" />
 		</copy>
-		<rename dest="${dir.build.classes}/goobi_config.properties" src="${dir.build.classes}/template.properties"/>
+		<rename dest="${dir.build.classes}/goobi_config.properties" src="${dir.build.classes}/template.properties" />
 	</target>
 
 	<!-- Copy configuration files. -->
@@ -109,6 +110,15 @@
 			<fileset file="webapp/index.html" />
 		</copy>
 	</target>
+
+	<target name="copyTestSources" depends="createDirs" description="Copy the sources to the build directory">
+		<copy todir="${dir.build.src}">
+			<fileset dir="${dir.tests}" />
+		</copy>
+
+
+	</target>
+
 
 	<!-- Normal build of application. -->
 	<target name="compile" depends="copySources, git.revision" description="Normal build of application.">
@@ -178,30 +188,39 @@
 	</target>
 
 	<!-- Build all, not really needed yet. -->
-	<target name="all" depends="dist" description="Build all, not really needed yet." />
+	<target name="all" depends="junit, clean, dist" description="Build all, not really needed yet." />
 
-	   <!-- JUnit tests -->
-	    <target name="junit" depends="compile-tests" description="Run JUnit tests">
-	        <junit printsummary="on">
-	            <classpath refid="test.classpath"/>
-	            <formatter type="xml" usefile="true"/>
-	            <batchtest todir="${test.report.dir}">
-	                <fileset dir="${build.classes.test}" includes="**/*Test.class"/>
-	            </batchtest>
-	        </junit>
-	    </target>
-	
-	 <!-- Compile unit tests -->
-	    <target name="compile-tests" depends="compile">
-	        <javac includeAntRuntime="false" srcdir="${dir.tests}" destdir="${build.classes.test}"
-	               source="1.5"
-	               target="1.5"
-	               encoding="UTF8"
-	               debug="true"
-	               classpathref="test.classpath">
-	        </javac>
-	    </target>
-	
+	<!-- JUnit tests -->
+	<target name="junit" depends="copySources, git.revision" description="Run JUnit tests">
+
+
+		<javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6" >
+
+			<classpath refid="test.classpath" />
+			<compilerarg value="-Xlint" />
+			<src path="${dir.build.src}" />
+			<src path="${dir.tests}" />
+		</javac>
+
+		<copy file="${dir.src}/goobi_config.properties" tofile="${dir.build}/goobi_config.properties" />
+
+		<copy file="${dir.tests}/de/sub/goobi/config/goobi_digitalCollections.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_digitalCollections.xml" />
+		<copy file="${dir.tests}/de/sub/goobi/config/goobi_projects.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_projects.xml" />
+
+
+		<junit haltonerror="true" haltonfailure="true" tempdir="/tmp">
+			<classpath refid="test.classpath" />
+			<formatter type="xml" usefile="true" />
+			<test name="de.sub.goobi.TestAll" todir="${test.report.dir}" />
+		</junit>
+
+	</target>
+
+
+
+
+
+
 	<target name="jar" depends="compile" description="creates a jar file">
 		<echo>generate jar file</echo>
 		<jar destfile="${dir.build}/${dist.name}.jar">
