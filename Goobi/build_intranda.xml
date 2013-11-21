@@ -2,229 +2,233 @@
 <project name="Goobi" default="dist" xmlns:artifact="urn:maven-artifact-ant">
 
 	<!-- Distribution specific settings. -->
-	<property name="dist.name" value="goobi" />
-	<property name="dist.revision" value="multiple manifestations" />
+    <property name="dist.name" value="goobi" />
+    <property name="dist.revision" value="multiple manifestations" />
 
 	<!-- Directory settings -->
-	<property name="dir.lib" value="./webapp/WEB-INF/lib" />
-	<property name="dir.lib.test" value="./lib-test" />
-	<property name="dir.build" location="./build" />
-	<property name="dir.build.src" location="${dir.build}/src" />
-	<property name="build.classes.test" value="${dir.build}/test-classes" />
-	<property name="dir.config" location="./config" />
-	<property name="dir.tests" location="./test/src" />
-	<property name="dir.src" location="./src" />
-	<property name="dir.src-dubious" location="./src-dubious" />
-	<property name="dir.build.classes" value="${dir.build}/WEB-INF/classes" />
-	<property name="test.report.dir" value="./testreports" />
-	<available file=".git" type="dir" property="git.present" />
+    <property name="dir.lib" value="./webapp/WEB-INF/lib" />
+    <property name="dir.lib.test" value="./lib-test" />
+    <property name="dir.build" location="./build" />
+    <property name="dir.build.src" location="${dir.build}/src" />
+    <property name="build.classes.test" value="${dir.build}/test-classes" />
+    <property name="dir.config" location="./config" />
+    <property name="dir.tests" location="./test/src" />
+    <property name="dir.src" location="./src" />
+    <property name="dir.src-dubious" location="./src-dubious" />
+    <property name="dir.build.classes" value="${dir.build}/WEB-INF/classes" />
+    <property name="test.report.dir" value="./testreports" />
+    <available file=".git" type="dir" property="git.present" />
 
-	<path id="classpath">
-		<fileset dir="${dir.lib}" />
-		<fileset dir="/opt/digiverso/libs" />
-	</path>
+    <path id="classpath">
+        <fileset dir="${dir.lib}" />
+        <fileset dir="/opt/digiverso/libs" />
+    </path>
 
 	<!-- Testing classpath -->
-	<path id="test.classpath">
-		<fileset dir="/opt/digiverso/libs" />
-		<fileset dir="${dir.lib}" includes="**/*.jar" />
-		<fileset dir="${dir.lib.test}" includes="**/*.jar" />
-		<pathelement location="${dir.build}" />
-	</path>
+    <path id="test.classpath">
+        <fileset dir="/opt/digiverso/libs" />
+        <fileset dir="${dir.lib}" includes="**/*.jar" />
+        <fileset dir="${dir.lib.test}" includes="**/*.jar" />
+        <pathelement location="${dir.build}" />
+    </path>
 
 	<!-- Clean up generated and compiled files. -->
-	<target name="clean" description="Clean up generated and compiled files.">
-		<delete dir="${dir.build}" />
-	</target>
+    <target name="clean" description="Clean up generated and compiled files.">
+        <delete dir="${dir.build}" />
+    </target>
 
 	<!-- Create needed directories -->
-	<target name="createDirs" description="Create needed directories">
-		<mkdir dir="${dir.build}" />
-		<mkdir dir="${dir.build.classes}" />
-		<mkdir dir="${dir.build.src}" />
-		<mkdir dir="${build.classes.test}" />
-		<mkdir dir="${test.report.dir}" />
+    <target name="createDirs" description="Create needed directories">
+        <mkdir dir="${dir.build}" />
+        <mkdir dir="${dir.build.classes}" />
+        <mkdir dir="${dir.build.src}" />
+        <mkdir dir="${build.classes.test}" />
+        <mkdir dir="${test.report.dir}" />
 
-	</target>
+    </target>
 
 
 	<!-- Copy any resource or configuration files. -->
-	<target name="resources" depends="createDirs" description="Copy any resource or configuration files.">
-		<copy todir="${dir.build.classes}" includeEmptyDirs="no">
-			<fileset dir="${dir.src}">
-				<patternset>
-					<include name="**/*.txt" />
-					<include name="**/*.conf" />
-					<include name="**/*.properties" />
-					<include name="**/*.jpg" />
-					<include name="**/sRGB.icc" />
-					<include name="**/log4j.properties" />
-					<exclude name="**/goobi_config.properties" />
-					<include name="**/contentServerConfig.xml" />
-					<include name="**/hibernate.cfg.xml" />
-					<exclude name="**/TODO" />
-					<include name="**/*.xml" />
-					<exclude name="build.xml" />
-				</patternset>
-			</fileset>
-		</copy>
-		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
-			<fileset dir="${private.dir}" />
-		</copy>
-		<rename dest="${dir.build.classes}/goobi_config.properties" src="${dir.build.classes}/template.properties" />
-	</target>
+    <target name="resources" depends="createDirs" description="Copy any resource or configuration files.">
+        <copy todir="${dir.build.classes}" includeEmptyDirs="no">
+            <fileset dir="${dir.src}">
+                <patternset>
+                    <include name="**/*.txt" />
+                    <include name="**/*.conf" />
+                    <include name="**/*.properties" />
+                    <include name="**/*.jpg" />
+                    <include name="**/sRGB.icc" />
+                    <include name="**/log4j.properties" />
+                    <exclude name="**/goobi_config.properties" />
+                    <include name="**/contentServerConfig.xml" />
+                    <include name="**/hibernate.cfg.xml" />
+                    <exclude name="**/TODO" />
+                    <include name="**/*.xml" />
+                    <exclude name="build.xml" />
+                </patternset>
+            </fileset>
+        </copy>
+        <copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
+            <fileset dir="${private.dir}" />
+        </copy>
+        <rename dest="${dir.build.classes}/goobi_config.properties" src="${dir.build.classes}/template.properties" />
+    </target>
 
 	<!-- Copy configuration files. -->
-	<target name="copyConfig" description="Copy configuration files.">
-		<fixcrlf srcdir="${dir.build.classes}" includes="**/*.properties" />
-		<fixcrlf srcdir="${dir.build.classes}" includes="**/*.xml" />
-	</target>
+    <target name="copyConfig" description="Copy configuration files.">
+        <fixcrlf srcdir="${dir.build.classes}" includes="**/*.properties" />
+        <fixcrlf srcdir="${dir.build.classes}" includes="**/*.xml" />
+    </target>
 
 	<!-- Warn if Servlet API isn't found -->
-	<target name="warnServletAPI" depends="checkServletAPI" if="servletAPI.warn">
-		<echo>Servlet API not found on classpath!</echo>
-		<echo>run this build file via "ant -lib /path/to/servlet-api.jar"</echo>
-		<echo>CLASSPATH = ${java.class.path}</echo>
-		<fail message="Servlet API not found!" />
-	</target>
+    <target name="warnServletAPI" depends="checkServletAPI" if="servletAPI.warn">
+        <echo>Servlet API not found on classpath!</echo>
+        <echo>run this build file via "ant -lib /path/to/servlet-api.jar"</echo>
+        <echo>CLASSPATH = ${java.class.path}</echo>
+        <fail message="Servlet API not found!" />
+    </target>
 
 	<!-- Check if serlet API is present. -->
-	<target name="checkServletAPI" description="Check if serlet API is present.">
-		<condition property="servletAPI.warn">
-			<not>
-				<available classname="javax.servlet.http.HttpServlet" property="servletAPI.present" classpathref="classpath" />
-			</not>
-		</condition>
-	</target>
+    <target name="checkServletAPI" description="Check if serlet API is present.">
+        <condition property="servletAPI.warn">
+            <not>
+                <available classname="javax.servlet.http.HttpServlet" property="servletAPI.present" classpathref="classpath" />
+            </not>
+        </condition>
+    </target>
 
 	<!-- copy sources to build directory -->
-	<target name="copySources" depends="createDirs" description="Copy the sources to the build directory">
-		<copy todir="${dir.build.src}">
-			<fileset dir="${dir.src}" />
-			<fileset dir="${dir.src-dubious}" />
-		</copy>
-		<copy todir="${dir.build}/WEB-INF">
-			<fileset file="webapp/WEB-INF/faces-config.xml" />
-		</copy>
-		<copy todir="${dir.build}">
-			<fileset file="webapp/index.html" />
-		</copy>
-	</target>
+    <target name="copySources" depends="createDirs" description="Copy the sources to the build directory">
+        <copy todir="${dir.build.src}">
+            <fileset dir="${dir.src}" />
+            <fileset dir="${dir.src-dubious}" />
+        </copy>
+        <copy todir="${dir.build}/WEB-INF">
+            <fileset file="webapp/WEB-INF/faces-config.xml" />
+        </copy>
+        <copy todir="${dir.build}">
+            <fileset file="webapp/index.html" />
+        </copy>
+    </target>
 
-	<target name="copyTestSources" depends="createDirs" description="Copy the sources to the build directory">
-		<copy todir="${dir.build.src}">
-			<fileset dir="${dir.tests}" />
-		</copy>
+    <target name="copyTestSources" depends="createDirs" description="Copy the sources to the build directory">
+        <copy todir="${dir.build.src}">
+            <fileset dir="${dir.tests}" />
+        </copy>
 
 
-	</target>
+    </target>
 
 
 	<!-- Normal build of application. -->
-	<target name="compile" depends="copySources, git.revision" description="Normal build of application.">
+    <target name="compile" depends="copySources, git.revision" description="Normal build of application.">
 
-		<javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="1.5" encoding="UTF8" source="1.5" debug="true" debuglevel="lines,vars,source">
-			<compilerarg value="-Xlint" />
-			<classpath refid="classpath" />
-		</javac>
-	</target>
+        <javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="1.5" encoding="UTF8" source="1.5" debug="true"
+            debuglevel="lines,vars,source">
+            <compilerarg value="-Xlint" />
+            <classpath refid="classpath" />
+        </javac>
+    </target>
 
 	<!-- Build of war file. -->
-	<target name="war" depends="compile, resources, copyConfig" description="Build of war file.">
-		<tstamp>
-			<format property="date" pattern="dd−MMMM−yyyy" locale="en" />
-		</tstamp>
+    <target name="war" depends="compile, resources, copyConfig" description="Build of war file.">
+        <tstamp>
+            <format property="date" pattern="dd−MMMM−yyyy" locale="en" />
+        </tstamp>
 
-		<war destfile="${dir.build}/${dist.name}.war" webxml="webapp/WEB-INF/web.xml">
-			<classes dir="${dir.build.classes}" />
-			<lib dir="webapp/WEB-INF/lib" />
-			<fileset file="${dir.build}/index.html" />
-			<fileset dir="." includes="WEB-INF/*.*, index.html" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
-			<fileset dir="." includes="js/**/*.*" />
-			<zipfileset dir="WEB-INF" file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
-			<zipfileset dir="webapp/ui" prefix="ui">
-				<patternset>
-					<include name="**/*.*" />
-				</patternset>
-			</zipfileset>
-
-
+        <war destfile="${dir.build}/${dist.name}.war" webxml="webapp/WEB-INF/web.xml">
+            <classes dir="${dir.build.classes}" />
+            <lib dir="webapp/WEB-INF/lib" />
+            <fileset file="${dir.build}/index.html" />
+            <fileset dir="." includes="WEB-INF/*.*, index.html" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
+            <fileset dir="." includes="js/**/*.*" />
+            <zipfileset dir="WEB-INF" file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
+            <zipfileset dir="webapp/ui" prefix="ui">
+                <patternset>
+                    <include name="**/*.*" />
+                </patternset>
+            </zipfileset>
 
 
-			<manifest>
-				<attribute name="Implementation-Title" value="${dist.name}" />
-				<attribute name="Implementation-Version" value="${git.revision}" />
-				<attribute name="Implementation-Vendor" value="intranda GmbH" />
-				<attribute name="Implementation-URL" value="http://www.digiverso.com" />
-				<attribute name="Implementation-Build-Date" value="${date}" />
-			</manifest>
 
 
-		</war>
-	</target>
+            <manifest>
+                <attribute name="Implementation-Title" value="${dist.name}" />
+                <attribute name="Implementation-Version" value="${git.revision}" />
+                <attribute name="Implementation-Vendor" value="intranda GmbH" />
+                <attribute name="Implementation-URL" value="http://www.digiverso.com" />
+                <attribute name="Implementation-Build-Date" value="${date}" />
+            </manifest>
 
-	<target name="git.revision" description="Store git revision in ${repository.version}">
-		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
-			<arg value="describe" />
-			<arg value="--tags" />
-			<arg value="--always" />
-			<arg value="HEAD" />
-		</exec>
-		<condition property="repository.version" value="${git.revision}" else="unknown">
-			<and>
-				<isset property="git.revision" />
-				<length string="${git.revision}" trim="yes" length="0" when="greater" />
-			</and>
-		</condition>
-	</target>
+
+        </war>
+    </target>
+
+    <target name="git.revision" description="Store git revision in ${repository.version}">
+        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe" />
+            <arg value="--tags" />
+            <arg value="--always" />
+            <arg value="HEAD" />
+        </exec>
+        <condition property="repository.version" value="${git.revision}" else="unknown">
+            <and>
+                <isset property="git.revision" />
+                <length string="${git.revision}" trim="yes" length="0" when="greater" />
+            </and>
+        </condition>
+    </target>
 
 
 	<!-- Build single war file. -->
-	<target name="dist" depends="clean, war, copyConfig" description="Build single war file.">
-		<delete dir="${dir.build.src}" />
-		<delete dir="${dir.build}/WEB-INF" />
-		<echo>Alles ist gut</echo>
-		<echo>building revision ${dist.name}-${git.revision}</echo>
-	</target>
+    <target name="dist" depends="clean, war, copyConfig" description="Build single war file.">
+        <delete dir="${dir.build.src}" />
+        <delete dir="${dir.build}/WEB-INF" />
+        <echo>Alles ist gut</echo>
+        <echo>building revision ${dist.name}-${git.revision}</echo>
+    </target>
 
 	<!-- Build all, not really needed yet. -->
-	<target name="all" depends="junit, clean, dist" description="Build all, not really needed yet." />
+    <target name="all" depends="junit, dist" description="Build all, not really needed yet." />
 
 	<!-- JUnit tests -->
-	<target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
+    <target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
 
 
-		<javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6" >
+        <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6">
 
-			<classpath refid="test.classpath" />
-			<compilerarg value="-Xlint" />
-			<src path="${dir.build.src}" />
-			<src path="${dir.tests}" />
-		</javac>
+            <classpath refid="test.classpath" />
+            <compilerarg value="-Xlint" />
+            <src path="${dir.build.src}" />
+            <src path="${dir.tests}" />
+        </javac>
 
-		<copy file="${dir.src}/goobi_config.properties" tofile="${dir.build}/goobi_config.properties" />
+        <copy file="${dir.src}/goobi_config.properties" tofile="${dir.build}/goobi_config.properties" />
 
-		<copy file="${dir.tests}/de/sub/goobi/config/goobi_digitalCollections.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_digitalCollections.xml" />
-		<copy file="${dir.tests}/de/sub/goobi/config/goobi_projects.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_projects.xml" />
+        <copy file="${dir.tests}/de/sub/goobi/config/goobi_digitalCollections.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_digitalCollections.xml" />
+        <copy file="${dir.tests}/de/sub/goobi/config/goobi_projects.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_projects.xml" />
 
-
-		<junit haltonerror="true" haltonfailure="true" tempdir="/tmp">
-			<classpath refid="test.classpath" />
-			<formatter type="xml" usefile="true" />
-			<test name="de.sub.goobi.TestAll" todir="${test.report.dir}" />
-		</junit>
-
-	</target>
+        <copy file="${dir.tests}/de/sub/goobi/export/dms/ruleset.xml" tofile="${dir.build}/de/sub/goobi/export/dms/ruleset.xml" />
+        <copy file="${dir.tests}/de/sub/goobi/export/dms/metadata.xml" tofile="${dir.build}/de/sub/goobi/export/dms/metadata.xml" />
 
 
+        <junit haltonerror="true" haltonfailure="true" tempdir="/tmp">
+            <classpath refid="test.classpath" />
+            <formatter type="xml" usefile="true" />
+            <test name="de.sub.goobi.TestAll" todir="${test.report.dir}" />
+        </junit>
+
+    </target>
 
 
 
 
-	<target name="jar" depends="compile" description="creates a jar file">
-		<echo>generate jar file</echo>
-		<jar destfile="${dir.build}/${dist.name}.jar">
-			<fileset dir="${dir.build.classes}" />
-		</jar>
-	</target>
+
+
+    <target name="jar" depends="compile" description="creates a jar file">
+        <echo>generate jar file</echo>
+        <jar destfile="${dir.build}/${dist.name}.jar">
+            <fileset dir="${dir.build.classes}" />
+        </jar>
+    </target>
 </project>
