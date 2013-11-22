@@ -90,6 +90,8 @@ public class AutomaticDmsExportTest {
         project.setDmsImportSuccessPath(exportFolder.getAbsolutePath() + File.separator);
         project.setDmsImportRootPath(exportFolder.getAbsolutePath() + File.separator);
         project.setUseDmsImport(true);
+        project.setDmsImportCreateProcessFolder(true);
+        
         
         ProjectFileGroup presentation = new ProjectFileGroup();
         presentation.setMimetype("image/jp2");
@@ -136,8 +138,10 @@ public class AutomaticDmsExportTest {
         File images = new File (processFolder, "images");
         File masterfolder = new File (images, "master_testprocess_media");
         File mediafolder = new File (images, "testprocess_media");
+        File sourceFolder = new File(images, "testprocess_source");
         masterfolder.mkdirs();
         mediafolder.mkdirs();
+        sourceFolder.mkdirs();
         File ocr = new File (processFolder, "ocr");
         File altofolder = new File(ocr, "testprocess_alto");
         altofolder.mkdirs();
@@ -146,12 +150,15 @@ public class AutomaticDmsExportTest {
         File metsFile = new File(processFolder, "meta.xml");
         FileUtils.copyFile(metsTemplate, metsFile);
         
+        
         File masterfile = new File(masterfolder, "00000001.jp2");
         masterfile.createNewFile();
         File mediafile = new File(mediafolder, "00000001.jp2");
         mediafile.createNewFile();
         File altofile = new File(altofolder, "00000001.jp2");
         altofile.createNewFile();
+        File sourcefile = new File(sourceFolder, "source");
+        sourcefile.createNewFile();
     }
 
     @Test
