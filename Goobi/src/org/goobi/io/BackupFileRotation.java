@@ -116,7 +116,7 @@ public class BackupFileRotation {
 		try {
 			FilesystemHelper.renameFile(oldFileName, newFileName);
 		} catch (IOException ioe) {
-			myLogger.warn("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
+			myLogger.trace("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
 		}
 
 	}

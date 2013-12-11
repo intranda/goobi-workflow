@@ -45,7 +45,7 @@ public class ConfigMainTest {
     public void testGetParameterStringString() {
         String fixture = ConfigMain.getParameter("MetadatenVerzeichnis", "different default");
         assertNotNull(fixture);
-        assertEquals("/opt/digiverso/goobi/metadata/", fixture);
+        assertEquals("different default", fixture);
 
         fixture = ConfigMain.getParameter("wrongParameter", "intranda");
         assertNotNull(fixture);
@@ -55,6 +55,7 @@ public class ConfigMainTest {
 
     @Test
     public void testGetBooleanParameterString() {
+        ConfigMain.setParameter("automaticExportWithOcr", "true");
         boolean fixture = ConfigMain.getBooleanParameter("automaticExportWithOcr");
         assertTrue(fixture);
     }
@@ -67,6 +68,7 @@ public class ConfigMainTest {
 
     @Test
     public void testGetBooleanParameterStringBoolean() {
+        ConfigMain.setParameter("automaticExportWithOcr", "true");
         boolean fixture = ConfigMain.getBooleanParameter("automaticExportWithOcr", false);
         assertTrue(fixture);
 
@@ -82,6 +84,7 @@ public class ConfigMainTest {
 
     @Test
     public void testGetIntParameterString() {
+        ConfigMain.setParameter("numberOfMetaBackups", "8");
         int fixture = ConfigMain.getIntParameter("numberOfMetaBackups");
         assertEquals(8, fixture);
         fixture = ConfigMain.getIntParameter("wrongParameter");
