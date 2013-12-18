@@ -832,6 +832,7 @@ public class Metadaten {
         this.myImageRotation = 0;
         this.currentTifFolder = null;
         readAllTifFolders();
+        this.bildZuStrukturelement = false;
 
         /*
          * -------------------------------- Dokument einlesen --------------------------------
