@@ -1,31 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- -->
 <config>
  
  	<!--########################################################## 
@@ -36,11 +9,60 @@
     *#############################################################
     *###########################################################-->
   
+	   <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
+    Path to local config file
+        /> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <localConfigPath value="/opt/digiverso/goobi/config/contentServerConfig.xml" />
+
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     * default resulution for results of image processing
     * sample: <defaultResolution value="600" />
     *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
     <defaultResolution value="600" />
+
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
+        Set quality with which to scale images. Possible settings are SPEED, QUALITY, ULTRAQUALITY
+        Higher qualities require more processing time
+        MaxStepSize may range from 0 to 99; higher values increase both image quality and loading times for QUALITY and ULTRAQUALITY.
+        Recommended values lie between 10 and 50
+        useScalrForJpeg activates a different scaling method for jpeg-images which generally operates
+        much slower, so it is recommended to set this option to "false"
+         *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <scaling quality="QUALITY" maxStepSize="25" thumbnailQuality="SPEED"></scaling>
+    
+       <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
+        General rendering options.
+         *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <imageTypeSettings>
+        <type format="jpg2000">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="true" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+        <type colorType="bitonal">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="true" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+        <type format="jpeg" colorType="grayscale">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+    	<type compression="jpeg" colorType="grayscale">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+        <type colorType="grayscale">
+    		<settings allowRenderWithJAI="true" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+
+    	<type compression="jpeg">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+    	<type format="jpeg">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+        <type embeddedColorProfile="true">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+    	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
+    		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="true" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    	</type>
+    </imageTypeSettings>
 	
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     * default file names for pdf or image (file extension will be automatically added); 
@@ -95,7 +117,7 @@
     * configuration if watermark should be used and url for watermark content configuration file
     * sample: <watermark use="true" configFile="file:/home/goobi/config/watermarkconfig.xml" />
     *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-	<watermark use="false" configFile="file:/Applications/Eclipse/workspace/ContentServer/watermarkconfig.xml" />
+	<watermark use="false" configFile="file:/C:/Eclipse/workspace/ContentServer/watermarkconfig.xml" />
   
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     * configuration for the error watermark if message should not be shown on jsp echo page 
