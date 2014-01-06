@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -51,6 +52,12 @@ public class UserManager implements IManager, Serializable {
 
     public static void hideUser(User o) throws DAOException {
         try {
+            for (Usergroup ug : o.getBenutzergruppen()) {
+                UserMysqlHelper.deleteUsergroupAssignment(o, ug.getId());
+            }
+            for (Project p : o.getProjekte()) {
+                UserMysqlHelper.deleteProjectAssignment(o, p.getId());
+            }
             UserMysqlHelper.hideUser(o);
         } catch (SQLException e) {
             logger.error("error while deleting User with id " + o.getId(), e);
