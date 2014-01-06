@@ -94,10 +94,15 @@ public class LoginBean {
 			if (treffer == null || treffer.size() == 0) {
 				Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
 				return "";
-			}			
+			}		
+			
 			if (treffer != null && treffer.size() > 0) {
 				/* Login vorhanden, nun passwort prüfen */
 				User b = treffer.get(0);
+				if (b.getIsVisible() != null) {
+				    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginDeleted"));
+				    return "";
+				}
 				/* wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier) wurde, jetzt Meldung anzeigen */
 				if (!b.isIstAktiv()) {
 					Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
