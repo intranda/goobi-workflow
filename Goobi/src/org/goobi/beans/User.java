@@ -249,9 +249,14 @@ public class User implements DatabaseObject {
 	}
 	
 	public List<Project> getProjekte() {
-		if (this.projekte == null) {
-			return new ArrayList<Project>();
-		} 
+	    if (projekte == null || projekte.size() == 0 ) {
+            try {
+                this.projekte = ProjectManager.getProjectsForUser(this);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
+        }
+		
 		return this.projekte;
 	}
 
