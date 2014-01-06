@@ -558,7 +558,7 @@ public class StepBean extends BasicBean {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
         this.mySchritt.setBearbeitungsbeginn(null);
-
+        mySchritt.setPrioritaet(10);
         try {
             Step temp = StepManager.getStepById(myProblemID);
             temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
