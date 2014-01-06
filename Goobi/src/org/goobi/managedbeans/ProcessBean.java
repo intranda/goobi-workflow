@@ -2041,12 +2041,6 @@ public class ProcessBean extends BasicBean {
             }
             this.processProperty.transfer();
 
-            List<Processproperty> props = this.myProzess.getEigenschaftenList();
-            //            for (Prozesseigenschaft pe : props) {
-            //                if (pe.getTitel() == null) {
-            //                    this.myProzess.getEigenschaften().remove(pe);
-            //                }
-            //            }
             if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
@@ -2096,20 +2090,6 @@ public class ProcessBean extends BasicBean {
             this.myProzess.getEigenschaften().remove(pp.getProzesseigenschaft());
             PropertyManager.deleteProcessProperty(pp.getProzesseigenschaft());
         }
-
-        //        List<Processproperty> props = this.myProzess.getEigenschaftenList();
-        //        for (Processproperty pe : props) {
-        //            if (pe.getTitel() == null) {
-        //                this.myProzess.getEigenschaften().remove(pe);
-        //            }
-        //        }
-        //        try {
-        //            ProcessManager.saveProcess(this.myProzess);
-        //        } catch (DAOException e) {
-        //            logger.error(e);
-        //            Helper.setFehlerMeldung("propertiesNotDeleted");
-        //        }
-        // saveWithoutValidation();
         loadProcessProperties();
     }
 
@@ -2211,7 +2191,6 @@ public class ProcessBean extends BasicBean {
         ProcessProperty pp = new ProcessProperty();
         pp.setType(Type.TEXT);
         pp.setContainer(0);
-        this.processPropertyList.add(pp);
         this.processProperty = pp;
     }
 
