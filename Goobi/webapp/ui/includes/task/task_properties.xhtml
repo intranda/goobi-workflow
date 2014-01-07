@@ -27,7 +27,7 @@
 					<x:dataList var="container" value="#{AktuelleSchritteForm.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex">
 						<x:dataList var="proc" value="#{AktuelleSchritteForm.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd">
 
-							<h:panelGroup rendered="#{container!=0 }">
+							<h:panelGroup rendered="#{container==0 }">
 								<tr class="standardTable_Row1">
 									<td>
 										<h:outputText value="#{proc.name}" />
