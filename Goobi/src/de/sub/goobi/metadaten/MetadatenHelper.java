@@ -209,16 +209,15 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- neues Docstruct zum Parent hinzufügen und an die gleiche Stelle schieben, wie den Vorg?nger
          * --------------------------------
          */
-        inOldDocstruct.getParent().addChild(newDocstruct);
-        int i = 1;
-        for (DocStruct docstruct : newDocstruct.getParent().getAllChildren()) {
-            if (docstruct == inOldDocstruct) {
-                break;
-            }
-        }
-        for (int j = newDocstruct.getParent().getAllChildren().size() - i; j > 0; j--) {
-            KnotenUp(newDocstruct);
-        }
+//        int index = 0;
+//        for (DocStruct ds : inOldDocstruct.getParent().getAllChildren()) {
+//            index++;
+//            if (ds.equals(inOldDocstruct)) {
+//                break;
+//            }
+//        }
+        int index = inOldDocstruct.getParent().getAllChildren().indexOf(inOldDocstruct);
+        inOldDocstruct.getParent().getAllChildren().add(index, newDocstruct);
 
         /*
          * -------------------------------- altes Docstruct vom Parent entfernen und neues als aktuelles nehmen --------------------------------
@@ -234,43 +233,16 @@ public class MetadatenHelper implements Comparator<Object> {
         if (parent == null) {
             return;
         }
-        List<DocStruct> alleDS = null;
-
-        /* das erste Element kann man nicht nach oben schieben */
-        if (parent.getAllChildren().get(0) == inStruct) {
+        
+        int index = parent.getAllChildren().indexOf(inStruct);
+        if (index == 0) {
             return;
-        }
+        } else {
+            parent.getAllChildren().remove(inStruct);
+            parent.getAllChildren().add(index -1, inStruct);
 
-        /* alle Elemente des Parents durchlaufen */
-        for (DocStruct tempDS : parent.getAllChildren()) {
-            /*
-             * wenn das folgende Element das zu verschiebende ist dabei die Exception auffangen, falls es kein nächstes Kind gibt
-             */
-            try {
-                if (parent.getNextChild(tempDS) == inStruct) {
-                    alleDS = new ArrayList<DocStruct>();
-                }
-            } catch (Exception e) {
-            }
-
-            /*
-             * nachdem der Vorg?nger gefunden wurde, werden alle anderen Elemente aus der Child-Liste entfernt und separat gesammelt
-             */
-            if (alleDS != null && tempDS != inStruct) {
-                alleDS.add(tempDS);
-            }
         }
-
-        /* anschliessend die Childs entfernen */
-        for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-            parent.removeChild(iter.next());
-        }
-
-        /* anschliessend die Childliste korrigieren */
-        // parent.addChild(myStrukturelement);
-        for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-            parent.addChild(iter.next());
-        }
+        
     }
 
     /* =============================================================== */
@@ -280,32 +252,16 @@ public class MetadatenHelper implements Comparator<Object> {
         if (parent == null) {
             return;
         }
-        List<DocStruct> alleDS = new ArrayList<DocStruct>();
-
-        /* alle Elemente des Parents durchlaufen */
-        for (Iterator<DocStruct> iter = parent.getAllChildren().iterator(); iter.hasNext();) {
-            DocStruct tempDS = iter.next();
-
-            /* wenn das aktuelle Element das zu verschiebende ist */
-            if (tempDS != inStruct) {
-                alleDS.add(tempDS);
-            } else {
-                if (iter.hasNext()) {
-                    alleDS.add(iter.next());
-                }
-                alleDS.add(inStruct);
-            }
+        int max = parent.getAllChildren().size();
+        int index = parent.getAllChildren().indexOf(inStruct);
+        
+        if (max == index) {
+            return;
+        } else {
+            parent.getAllChildren().remove(inStruct);
+            parent.getAllChildren().add(index +1, inStruct);
         }
-
-        /* anschliessend alle Children entfernen */
-        for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-            parent.removeChild(iter.next());
-        }
-
-        /* anschliessend die neue Childliste anlegen */
-        for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-            parent.addChild(iter.next());
-        }
+        
     }
 
     /* =============================================================== */

@@ -63,14 +63,18 @@ public class SessionCounterFilter implements Filter {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
         FacesContext context = getFacesContext(request, response);
-        Application application = context.getApplication();
-        if (application != null) {
-            ValueBinding binding = application.createValueBinding("#{SessionForm}");
-            if (binding != null && context != null) {
+        try {
+            Application application = context.getApplication();
+            if (application != null) {
+                ValueBinding binding = application.createValueBinding("#{SessionForm}");
+                if (binding != null && context != null) {
 
-                SessionForm sf = (SessionForm) binding.getValue(context);
-                sf.sessionAktualisieren(httpReq.getSession());
+                    SessionForm sf = (SessionForm) binding.getValue(context);
+                    sf.sessionAktualisieren(httpReq.getSession());
+                }
             }
+        } catch (Exception e) {
+            
         }
         chain.doFilter(request, response);
     }
