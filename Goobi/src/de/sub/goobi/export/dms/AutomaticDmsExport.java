@@ -108,22 +108,10 @@ public class AutomaticDmsExport extends ExportMets {
          * -------------------------------- Dokument einlesen --------------------------------
          */
         Fileformat gdzfile;
-        ExportFileformat newfile = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
+        ExportFileformat newfile =
+                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         try {
             gdzfile = myProzess.readMetadataFile();
-//            switch (MetadataFormat.findFileFormatsHelperByName(myProzess.getProjekt().getFileFormatDmsExport())) {
-//                case METS:
-//                    newfile = new MetsModsImportExport(this.myPrefs);
-//                    break;
-//
-//                case METS_AND_RDF:
-//                    newfile = new RDFFile(this.myPrefs);
-//                    break;
-//
-//                default:
-//                    newfile = new RDFFile(this.myPrefs);
-//                    break;
-//            }
 
             newfile.setDigitalDocument(gdzfile.getDigitalDocument());
             gdzfile = newfile;
@@ -202,7 +190,8 @@ public class AutomaticDmsExport extends ExportMets {
          * -------------------------------- zum Schluss Datei an gewünschten Ort exportieren entweder direkt in den Import-Ordner oder ins
          * Benutzerhome anschliessend den Import-Thread starten --------------------------------
          */
-        boolean externalExport = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz()) != null;
+        boolean externalExport =
+                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz()) != null;
 
         if (myProzess.getProjekt().isUseDmsImport()) {
             if (externalExport) {
@@ -212,59 +201,20 @@ public class AutomaticDmsExport extends ExportMets {
                 /* ...wenn nicht, nur ein Fileformat schreiben. */
                 gdzfile.write(benutzerHome + File.separator + atsPpnBand + ".xml");
             }
-
-//            /* ggf. sollen im Export mets und rdf geschrieben werden */
-//            if (MetadataFormat.findFileFormatsHelperByName(myProzess.getProjekt().getFileFormatDmsExport()) == MetadataFormat.METS_AND_RDF) {
-//                writeMetsFile(myProzess, benutzerHome + File.separator + atsPpnBand + ".mets.xml", gdzfile, false);
-//            }
-
+            
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "DMS-Export started");
 
-            // DmsImportThread agoraThread = new DmsImportThread(myProzess,
-            // atsPpnBand);
-            // agoraThread.start();
+     
             if (!ConfigMain.getBooleanParameter("exportWithoutTimeLimit")) {
-                // try {
-                // /* 30 Sekunden auf den Thread warten, evtl. killen */
-                // agoraThread.join(myProzess.getProjekt()
-                // .getDmsImportTimeOut().longValue());
-                // if (agoraThread.isAlive()) {
-                // agoraThread.stopThread();
-                // }
-                // } catch (InterruptedException e) {
-                // Helper.setFehlerMeldung(myProzess.getTitel()
-                // + ": error on export - ", e.getMessage());
-                // myLogger.error(myProzess.getTitel() + ": error on export",
-                // e);
-                // }
-                // if (agoraThread.rueckgabe.length() > 0) {
-                // Helper.setFehlerMeldung(myProzess.getTitel() + ": ",
-                // agoraThread.rueckgabe);
-                // } else {
-                // Helper.setMeldung(null, myProzess.getTitel() + ": ",
-                // "Export finished");
+               
                 /* Success-Ordner wieder löschen */
                 if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {
                     File successFile = new File(myProzess.getProjekt().getDmsImportSuccessPath() + File.separator + myProzess.getTitel());
                     Helper.deleteDir(successFile);
                 }
             }
-            // return ;
         }
-        // return ;
-        // } else {
-        // /* ohne Agora-Import die xml-Datei direkt ins Home schreiben */
-        // if (MetadataFormat.findFileFormatsHelperByName(myProzess
-        // .getProjekt().getFileFormatDmsExport()) == MetadataFormat.METS) {
-        // writeMetsFile(myProzess, zielVerzeichnis + atsPpnBand + ".xml",
-        // gdzfile);
-        // } else {
-        // gdzfile.write(zielVerzeichnis + atsPpnBand + ".xml");
-        // }
-        //
-        // Helper.setMeldung(null, myProzess.getTitel() + ": ",
-        // "Export finished");
-        // }
+      
         return true;
     }
 
@@ -331,14 +281,7 @@ public class AutomaticDmsExport extends ExportMets {
 
     public void imageDownload(Process myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
             InterruptedException, SwapException, DAOException {
-        /*
-         * -------------------------------- erstmal alle Filter --------------------------------
-         */
-        // FilenameFilter filterTifDateien = new FilenameFilter() {
-        // public boolean accept(File dir, String name) {
-        // return name.endsWith(".tif");
-        // }
-        // };
+
 
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
@@ -397,6 +340,25 @@ public class AutomaticDmsExport extends ExportMets {
                 }
             }
         }
-
+        File exportFolder = new File(myProzess.getExportDirectory());
+        if (exportFolder.exists() && exportFolder.isDirectory()) {
+            File[] subdir = exportFolder.listFiles();
+            for (File dir : subdir) {
+                if (dir.isDirectory() && dir.list().length > 0) {
+                    if (!dir.getName().matches(".+\\.\\d+")) {
+                        String suffix = dir.getName().substring(dir.getName().lastIndexOf("_"));
+                        File destination = new File(benutzerHome + File.separator + atsPpnBand + suffix);
+                        if (!destination.exists()) {
+                            destination.mkdir();
+                        }
+                        File[] files = dir.listFiles();
+                        for (int i = 0; i < files.length; i++) {
+                            File target = new File(destination + File.separator + files[i].getName());
+                            Helper.copyFile(files[i], target);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

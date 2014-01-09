@@ -506,6 +506,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getProcessDataDirectory() + "import" + File.separator;
     }
 
+    public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+        return getProcessDataDirectory() + "export" + File.separator;
+    }
+    
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + File.separator;
         pfad = pfad.replaceAll(" ", "__");
