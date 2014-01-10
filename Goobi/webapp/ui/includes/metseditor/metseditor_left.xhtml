@@ -6,9 +6,28 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<table id="myTree" class="layoutTreeView2" style="width: 100%; height: 100%;">
-			<tr>
-				<td valign="top" height="100%">
+
+<script type="text/javascript">
+
+var $ = jQuery;
+$(document).ready(function() {
+	var winH = $(window).height();
+	console.log(winH);
+	
+	$("#myTree").css({ height : winH - 170 });
+});
+
+</script>
+
+<style>
+#myTree {
+    min-width: 200px;
+    max-width: 300px;
+    overflow: auto;
+}
+</style>
+    
+		<div id="myTree" class="layoutTreeView2">
 					<h:form rendered="true" id="treeform">
 
 						<h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action"
@@ -88,9 +107,7 @@
 					<h:form id="formWarn" style="display:none">
 						<h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" />
 					</h:form>
-				</td>
-			</tr>
-		</table>
+		</div>
 	</composite:implementation>
 
 </ui:composition>

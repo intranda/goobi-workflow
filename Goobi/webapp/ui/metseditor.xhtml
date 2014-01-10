@@ -73,6 +73,18 @@
 	</ui:define>
 
 	<ui:define name="content">
+    
+<script type="text/javascript">
+
+var $ = jQuery;
+$(document).ready(function() {
+	var winH = $(window).height();	
+	$("#metadatenRechtsWrapp").css({ height : winH - 170 });
+});
+
+</script>    
+    
+    <div id="metadatenRechtsWrapp" style="overflow: auto;"> 
 		<table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
 
 			<tr valign="top" style="width: 100%; height: 100%">
@@ -94,6 +106,7 @@
 				</h:panelGroup>
 			</tr>
 		</table>
+        </div>
 
 
 		<script type="text/javascript">
