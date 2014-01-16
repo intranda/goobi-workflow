@@ -1057,6 +1057,7 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setBearbeitungsstatusDown();
         try {
             StepManager.saveStep(mySchritt);
+            new HelperSchritte().updateProcessStatus(myProzess.getId());
         } catch (DAOException e) {
             logger.error(e);
         }
