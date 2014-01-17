@@ -362,6 +362,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
         //		@SuppressWarnings("rawtypes")
         //		List list = query.list();
         //
+        @SuppressWarnings("rawtypes")
         List list = ProcessManager.runSQL(natSQL);
         DataTable dtbl = new DataTable("");
 

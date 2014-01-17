@@ -14,7 +14,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;

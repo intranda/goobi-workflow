@@ -44,7 +44,6 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.forms.AdditionalField;
 import de.sub.goobi.forms.ProzesskopieForm;
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 

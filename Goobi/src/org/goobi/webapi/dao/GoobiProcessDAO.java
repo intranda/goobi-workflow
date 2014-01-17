@@ -27,11 +27,7 @@
  */
 package org.goobi.webapi.dao;
 
-import org.goobi.beans.Process;
-import org.goobi.beans.Step;
 
-import de.sub.goobi.helper.Helper;
-import org.apache.log4j.Logger;
 import org.goobi.webapi.beans.GoobiProcess;
 import org.goobi.webapi.beans.GoobiProcessStep;
 import org.goobi.webapi.beans.IdentifierPPN;
@@ -41,7 +37,7 @@ import java.util.List;
 
 public class GoobiProcessDAO {
 
-    private static final Logger myLogger = Logger.getLogger(GoobiProcessDAO.class);
+//    private static final Logger myLogger = Logger.getLogger(GoobiProcessDAO.class);
 
     public static GoobiProcess getProcessByPPN(IdentifierPPN PPN) {
         GoobiProcess result = null;

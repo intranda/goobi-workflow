@@ -109,7 +109,8 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
 //		@SuppressWarnings("rawtypes")
 //		List list = query.list();
 //
-		List list = ProcessManager.runSQL(natSQL);
+		@SuppressWarnings("rawtypes")
+        List list = ProcessManager.runSQL(natSQL);
 		DataTable dtbl = new DataTable(StatisticsMode.getByClassName(
 				this.getClass()).getTitle() + " "
 				+ Helper.getTranslation("_inGB"));

@@ -48,7 +48,6 @@ import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
 
 /*****************************************************************************
  * Imlpementation of {@link IStatisticalQuestion}. Statistical Request with
@@ -364,7 +363,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 //			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
 //			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
 //			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
-			List headerList = ProcessManager.runSQL(headerFromSQL);
+			@SuppressWarnings("rawtypes")
+            List headerList = ProcessManager.runSQL(headerFromSQL);
 //			List headerList = headerQuery.list();
 			for (Object obj : headerList) {
 				Object[] objArr = (Object[]) obj;		

@@ -90,6 +90,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
 
         // use a clone on the filter and apply the projection on the clone
         //		crit.setProjection(proj);
+        @SuppressWarnings("rawtypes")
         List rawData = ProcessManager.runSQL(sql);
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 

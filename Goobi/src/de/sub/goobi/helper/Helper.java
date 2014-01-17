@@ -258,7 +258,8 @@ public class Helper implements Serializable, Observer {
 		}
 	}
 
-	public static Object getManagedBeanValue(String expr) {
+	@SuppressWarnings("deprecation")
+    public static Object getManagedBeanValue(String expr) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (context == null) {
 			return null;
@@ -287,7 +288,6 @@ public class Helper implements Serializable, Observer {
 		commonMessages = new HashMap<Locale, ResourceBundle>();
 		localMessages = new HashMap<Locale, ResourceBundle>();
 		if (FacesContext.getCurrentInstance() != null) {
-			@SuppressWarnings("unchecked")
 			Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
 			while (polyglot.hasNext()) {
 				Locale language = polyglot.next();

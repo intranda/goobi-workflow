@@ -45,7 +45,6 @@ import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;

@@ -71,7 +71,8 @@ public class Paginator {
 	 * @throws IllegalArgumentException
 	 *             Thrown if invalid config parameters have been set.
 	 */
-	public void run() throws IllegalArgumentException {
+	@SuppressWarnings("rawtypes")
+    public void run() throws IllegalArgumentException {
 
 		assertSelectionIsNotNull();
 		assertValidPaginationStartValue();
@@ -82,7 +83,8 @@ public class Paginator {
 
 	}
 
-	private void applyPaginationSequence(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private void applyPaginationSequence(List sequence) {
 		if (paginationScope == Scope.SELECTED) {
 			applyToSelected(sequence);
 		} else if (paginationScope == Scope.FROMFIRST) {
@@ -114,7 +116,8 @@ public class Paginator {
 		}
 	}
 
-	private List createPaginationSequence() {
+	@SuppressWarnings("rawtypes")
+    private List createPaginationSequence() {
 
 		int increment = determineIncrementFromPaginationMode();
 		int start = determinePaginationBaseValue();
@@ -147,7 +150,8 @@ public class Paginator {
 		return sequence;
 	}
 
-	private List addSquareBracketsToEachInSequence(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private List addSquareBracketsToEachInSequence(List sequence) {
 		List<Object> fictitiousSequence = new ArrayList<Object>(sequence.size());
 		for (Object o : sequence) {
 			String newLabel = o.toString();
@@ -156,7 +160,8 @@ public class Paginator {
 		return fictitiousSequence;
 	}
 
-	private List addAlternatingRectoVersoSuffixToEachInSequence(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private List addAlternatingRectoVersoSuffixToEachInSequence(List sequence) {
 		List<Object> rectoversoSequence = new ArrayList<Object>(sequence.size());
 		Boolean toggle = false;
 		for (Object o : sequence) {
@@ -169,7 +174,8 @@ public class Paginator {
 		return sequence;
 	}
 
-	private List scrunchSequence(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private List scrunchSequence(List sequence) {
 		List<Object> scrunchedSequence = new ArrayList<Object>((sequence.size() / 2));
 		String prev = "";
 		boolean scrunch = false;
@@ -184,7 +190,8 @@ public class Paginator {
 		return scrunchedSequence;
 	}
 
-	private List cloneEachInSequence(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private List cloneEachInSequence(List sequence) {
 		List<Object> foliationSequence = new ArrayList<Object>(sequence.size() * 2);
 		for (Object o : sequence) {
 			foliationSequence.add(o);
@@ -195,7 +202,8 @@ public class Paginator {
 		return sequence;
 	}
 
-	private List determineSequenceFromPaginationType(int increment, int start, int end) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    private List determineSequenceFromPaginationType(int increment, int start, int end) {
 		List sequence = null;
 
 		switch (paginationType) {
@@ -234,7 +242,8 @@ public class Paginator {
 		return start + (numSelectedPages * increment);
 	}
 
-	private void applyFromFirstSelected(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private void applyFromFirstSelected(List sequence) {
 		int first = selectedPages[0];
 		Iterator seqit = sequence.iterator();
 		for (int pageNum = first; pageNum < pagesToPaginate.length; pageNum++) {
@@ -245,7 +254,8 @@ public class Paginator {
 		}
 	}
 
-	private void applyToSelected(List sequence) {
+	@SuppressWarnings("rawtypes")
+    private void applyToSelected(List sequence) {
 		Iterator seqit = sequence.iterator();
 		for (int num : selectedPages) {
 			if (!seqit.hasNext()) {

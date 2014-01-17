@@ -30,7 +30,6 @@ package de.sub.goobi.modul;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -81,7 +80,8 @@ public class ExtendedDataImpl extends DataImpl {
     * @return Status (Fehler)
     * @throws GoobiException: 1, 2, 6, 7, 254, 1500, 1501, 1502
     * ================================================================*/
-   public int add(String sessionId, String type, int count, HashMap pp) throws GoobiException {
+   @SuppressWarnings("rawtypes")
+public int add(String sessionId, String type, int count, HashMap pp) throws GoobiException {
       super.add(sessionId, type, count, pp);
       Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
       GoobiProcessProperty gpp = new GoobiProcessProperty(pp);
@@ -250,7 +250,8 @@ public class ExtendedDataImpl extends DataImpl {
     * @return Status (Fehler)
     * @throws GoobiException: 1, 2, 6, 7, 254, 1501, 1502
     * ================================================================*/
-   public int set(String sessionId, String type, int count, HashMap pp) throws GoobiException {
+   @SuppressWarnings("rawtypes")
+public int set(String sessionId, String type, int count, HashMap pp) throws GoobiException {
        // TODO wird das noch benutzt?
        
 //      super.set(sessionId, type, count, pp);

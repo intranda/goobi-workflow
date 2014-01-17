@@ -340,6 +340,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
      */
     public List<StepInformation> getWorkFlow() {
         if (this.commonWorkFlow == null) {
+            logger.trace("create common workflow");
             if (this.id != null) {
                 this.commonWorkFlow = ProjectHelper.getProjectWorkFlowOverview(this);
             } else {

@@ -212,7 +212,6 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "created date");
     }
 
-    @SuppressWarnings("unchecked")
     public void ImagepfadKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
     
@@ -272,7 +271,6 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "Image paths set");
     }
 
-    @SuppressWarnings("unchecked")
     public void PPNsKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
 
@@ -387,7 +385,6 @@ public class AdministrationForm implements Serializable {
     }
 
     //TODO: Remove this
-    @SuppressWarnings("unchecked")
     public static void PPNsFuerStatistischesJahrbuchKorrigieren2() {
         UghHelper ughhelp = new UghHelper();
         List<Process> pl = ProcessManager.getProcesses(null, " titel like 'statjafud%'", 0, Integer.MAX_VALUE);
@@ -447,7 +444,6 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung("PPNs adjusted");
     }
 
-    @SuppressWarnings("unchecked")
     public void PPNsFuerStatistischesJahrbuchKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
         BeanHelper bhelp = new BeanHelper();

@@ -41,7 +41,6 @@ import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
-import org.goobi.beans.Process;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -123,7 +122,8 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 //		@SuppressWarnings("rawtypes")
 //		List list = query.list();
 		
-		List list = ProcessManager.runSQL(natSQL);
+		@SuppressWarnings("rawtypes")
+        List list = ProcessManager.runSQL(natSQL);
 
 		StringBuilder title = new StringBuilder(StatisticsMode.PRODUCTION.getTitle());
 		 title.append(" (");

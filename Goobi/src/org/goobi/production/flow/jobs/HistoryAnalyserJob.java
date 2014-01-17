@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -43,12 +42,10 @@ import org.goobi.beans.Step;
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
-import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.commons.util.file.FileUtils;
 
 /**

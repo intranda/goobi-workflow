@@ -83,7 +83,6 @@ public class SearchResultGeneration {
         
 		
 	
-		@SuppressWarnings("unchecked")
 		List<Process> pl = ProcessManager.getProcesses("prozesse.titel", sql);
 
 		HSSFWorkbook wb = new HSSFWorkbook();

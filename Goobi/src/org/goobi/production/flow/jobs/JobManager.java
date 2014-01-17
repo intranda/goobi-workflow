@@ -126,7 +126,8 @@ public class JobManager implements ServletContextListener {
 	 * 
 	 * @throws SchedulerException
 	 **************************************************************************/
-	private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime,Scheduler sched) throws SchedulerException{
+	@SuppressWarnings("unused")
+    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime,Scheduler sched) throws SchedulerException{
 		logger.debug(goobiJob.getJobName());
 		JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 

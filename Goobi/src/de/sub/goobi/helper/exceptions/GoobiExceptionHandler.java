@@ -80,7 +80,6 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 	                logger.error("CLASS: " + t.getClass().getName());
 	            }
 	            FacesContext fc = FacesContext.getCurrentInstance();
-	            @SuppressWarnings("unchecked")
                 Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
 	            NavigationHandler nav = fc.getApplication().getNavigationHandler();
 

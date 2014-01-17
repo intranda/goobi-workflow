@@ -59,6 +59,7 @@ public class SessionCounterFilter implements Filter {
 
     /**
     */
+    @SuppressWarnings("deprecation")
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;

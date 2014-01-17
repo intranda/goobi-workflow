@@ -58,7 +58,6 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
-import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
