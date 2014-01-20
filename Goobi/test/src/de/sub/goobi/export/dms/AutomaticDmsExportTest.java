@@ -98,8 +98,7 @@ public class AutomaticDmsExportTest {
         presentation.setPath("/opt/digiverso/viewer/media/1/");
         presentation.setSuffix("jp2");
         presentation.setProject(project);
-        
-        
+
         ProjectFileGroup alto = new ProjectFileGroup();
         alto.setFolder("getAltoDirectory");
         alto.setMimetype("text/xml");
@@ -112,6 +111,20 @@ public class AutomaticDmsExportTest {
         list.add(presentation);
         list.add(alto);
         project.setFilegroups(list);
+
+        File configFolder = folder.newFolder("config");
+        configFolder.mkdir();
+        String folder = System.getenv("junitdata");
+        File digitalCollectionTemplate = new File(folder + "goobi_digitalCollections.xml");
+        File digitalCollection = new File (configFolder, "goobi_digitalCollections.xml");
+        FileUtils.copyFile(digitalCollectionTemplate, digitalCollection);
+        
+        
+        File projectsTemplate = new File(folder + "goobi_projects.xml");
+        File projects = new File (configFolder, "goobi_projects.xml");
+        FileUtils.copyFile(projectsTemplate, projects);
+        
+        ConfigMain.setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
         
     }
 
