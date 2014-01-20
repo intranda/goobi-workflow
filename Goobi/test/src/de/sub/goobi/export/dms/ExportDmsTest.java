@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
@@ -34,17 +35,18 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
+import de.sub.goobi.persistence.managers.ConnectionManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MetadatenHelper.class)
 public class ExportDmsTest {
 
-   private static final String RULESET_NAME = "ruleset.xml";
-    
+    private static final String RULESET_NAME = "ruleset.xml";
+
     private Process testProcess = null;
     private File processFolder = null;
-    
-    
+    private static final Logger logger = Logger.getLogger(ExportDmsTest.class);
+
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -56,15 +58,16 @@ public class ExportDmsTest {
 
         // set temporary ruleset
         setUpRuleset();
-       
+
         // set temporary process infrastructure
         setUpProcessFolder();
-        
+
         setUpProject();
-        
+
         setUpConfig();
-        
+
     }
+
     private void setUpConfig() {
 
         ConfigMain.setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
@@ -87,16 +90,14 @@ public class ExportDmsTest {
         project.setDmsImportRootPath(exportFolder.getAbsolutePath() + File.separator);
         project.setUseDmsImport(true);
         project.setDmsImportCreateProcessFolder(true);
-        
-        
+
         ProjectFileGroup presentation = new ProjectFileGroup();
         presentation.setMimetype("image/jp2");
         presentation.setName("PRESENTATION");
         presentation.setPath("/opt/digiverso/viewer/media/1/");
         presentation.setSuffix("jp2");
         presentation.setProject(project);
-        
-        
+
         ProjectFileGroup alto = new ProjectFileGroup();
         alto.setFolder("getAltoDirectory");
         alto.setMimetype("text/xml");
@@ -104,18 +105,19 @@ public class ExportDmsTest {
         alto.setPath("/opt/digiverso/viewer/alto/1/");
         alto.setSuffix("xml");
         alto.setProject(project);
-        
+
         List<ProjectFileGroup> list = new ArrayList<ProjectFileGroup>();
         list.add(presentation);
         list.add(alto);
         project.setFilegroups(list);
-        
+
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
         File rulesetFolder = folder.newFolder("rulesets");
-        rulesetFolder.mkdir();        
-        URL ruleseturl = AutomaticDmsExportTest.class.getResource(RULESET_NAME);
+        rulesetFolder.mkdir();
+        String folder = System.getenv("junitdata");
+        URL ruleseturl = new URL("file://" + folder + RULESET_NAME);
         File rulesetTemplate = new File(ruleseturl.toURI());
         File rulesetFile = new File(rulesetFolder, RULESET_NAME);
         FileUtils.copyFile(rulesetTemplate, rulesetFile);
@@ -131,22 +133,23 @@ public class ExportDmsTest {
     private void setUpProcessFolder() throws IOException, URISyntaxException {
         processFolder = folder.newFolder("1");
         processFolder.mkdir();
-        File images = new File (processFolder, "images");
-        File masterfolder = new File (images, "master_testprocess_media");
-        File mediafolder = new File (images, "testprocess_media");
+        File images = new File(processFolder, "images");
+        File masterfolder = new File(images, "master_testprocess_media");
+        File mediafolder = new File(images, "testprocess_media");
         File sourceFolder = new File(images, "testprocess_source");
         masterfolder.mkdirs();
         mediafolder.mkdirs();
         sourceFolder.mkdirs();
-        File ocr = new File (processFolder, "ocr");
+        File ocr = new File(processFolder, "ocr");
         File altofolder = new File(ocr, "testprocess_alto");
         altofolder.mkdirs();
-        URL metsurl = AutomaticDmsExportTest.class.getResource("metadata.xml");
+        String folder = System.getenv("junitdata");
+        URL metsurl = new URL("file://" + folder + "metadata.xml");
+        //        URL metsurl = ExportDmsTest.class.getResource("metadata.xml");
         File metsTemplate = new File(metsurl.toURI());
         File metsFile = new File(processFolder, "meta.xml");
         FileUtils.copyFile(metsTemplate, metsFile);
-        
-        
+
         File masterfile = new File(masterfolder, "00000001.jp2");
         masterfile.createNewFile();
         File mediafile = new File(mediafolder, "00000001.jp2");
@@ -155,18 +158,17 @@ public class ExportDmsTest {
         altofile.createNewFile();
         File sourcefile = new File(sourceFolder, "source");
         sourcefile.createNewFile();
-        
-        File exportFolder = new File (processFolder, "export");
-        File export1 = new File(exportFolder,"testprocess_extension");
-        File export2 =  new File(exportFolder,"testprocess_extension.1");
-        
+
+        File exportFolder = new File(processFolder, "export");
+        File export1 = new File(exportFolder, "testprocess_extension");
+        File export2 = new File(exportFolder, "testprocess_extension.1");
+
         export1.mkdirs();
         export2.mkdirs();
-        File data = new File (export1, "file.ext");
+        File data = new File(export1, "file.ext");
         data.createNewFile();
-        
+
     }
-  
 
     @Test
     public void testExportDms() {
@@ -196,7 +198,7 @@ public class ExportDmsTest {
         dms.fulltextDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
 
         assertNotNull(dest.list());
-        assertTrue(dest.list().length >0);
+        assertTrue(dest.list().length > 0);
 
     }
 
@@ -209,12 +211,13 @@ public class ExportDmsTest {
         dms.imageDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
 
         assertNotNull(dest.list());
-        assertTrue(dest.list().length >0);
+        assertTrue(dest.list().length > 0);
     }
 
-    
     @Test
-    public void testStartExportProcessString() throws DocStructHasNoTypeException, PreferencesException, WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException, IOException, InterruptedException {
+    public void testStartExportProcessString() throws DocStructHasNoTypeException, PreferencesException, WriteException,
+            MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException, IOException, InterruptedException {
         ExportDms dms = new ExportDms();
         dms.setExportFulltext(true);
         dms.startExport(testProcess);
