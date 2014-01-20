@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -18,8 +17,8 @@ public class DigitalCollectionsTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        URL url = ConfigProjectsTest.class.getResource("goobi_projects.xml");
-        File template = new File(url.toURI());
+        String folder = System.getenv("junitdata");
+        File template = new File(folder + "goobi_projects.xml");
         ConfigMain.setParameter("KonfigurationVerzeichnis", template.getParent() + File.separator);
     }
 

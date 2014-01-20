@@ -5,12 +5,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
@@ -35,7 +33,6 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
-import de.sub.goobi.persistence.managers.ConnectionManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MetadatenHelper.class)
@@ -45,7 +42,6 @@ public class ExportDmsTest {
 
     private Process testProcess = null;
     private File processFolder = null;
-    private static final Logger logger = Logger.getLogger(ExportDmsTest.class);
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -117,8 +113,7 @@ public class ExportDmsTest {
         File rulesetFolder = folder.newFolder("rulesets");
         rulesetFolder.mkdir();
         String folder = System.getenv("junitdata");
-        URL ruleseturl = new URL("file://" + folder + RULESET_NAME);
-        File rulesetTemplate = new File(ruleseturl.toURI());
+        File rulesetTemplate = new File(folder + RULESET_NAME);
         File rulesetFile = new File(rulesetFolder, RULESET_NAME);
         FileUtils.copyFile(rulesetTemplate, rulesetFile);
         Ruleset ruleset = new Ruleset();
@@ -144,9 +139,7 @@ public class ExportDmsTest {
         File altofolder = new File(ocr, "testprocess_alto");
         altofolder.mkdirs();
         String folder = System.getenv("junitdata");
-        URL metsurl = new URL("file://" + folder + "metadata.xml");
-        //        URL metsurl = ExportDmsTest.class.getResource("metadata.xml");
-        File metsTemplate = new File(metsurl.toURI());
+        File metsTemplate = new File(folder + "metadata.xml");
         File metsFile = new File(processFolder, "meta.xml");
         FileUtils.copyFile(metsTemplate, metsFile);
 

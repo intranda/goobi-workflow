@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,10 +117,9 @@ public class AutomaticDmsExportTest {
 
     private void setUpRuleset() throws IOException, URISyntaxException {
         File rulesetFolder = folder.newFolder("rulesets");
-        rulesetFolder.mkdir();        
-//        URL ruleseturl = AutomaticDmsExportTest.class.getResource(RULESET_NAME);
-        URL ruleseturl = new URL("file:///opt/digiverso/junit/data/ruleset.xml");
-        File rulesetTemplate = new File(ruleseturl.toURI());
+        rulesetFolder.mkdir();   
+        String folder = System.getenv("junitdata");
+        File rulesetTemplate = new File(folder + RULESET_NAME);
         File rulesetFile = new File(rulesetFolder, RULESET_NAME);
         FileUtils.copyFile(rulesetTemplate, rulesetFile);
         Ruleset ruleset = new Ruleset();
@@ -146,10 +144,10 @@ public class AutomaticDmsExportTest {
         File ocr = new File (processFolder, "ocr");
         File altofolder = new File(ocr, "testprocess_alto");
         altofolder.mkdirs();
-//        URL metsurl = AutomaticDmsExportTest.class.getResource("metadata.xml");
-      URL metsurl = new URL("file:///opt/digiverso/junit/data/metadata.xml");
         
-        File metsTemplate = new File(metsurl.toURI());
+        String folder = System.getenv("junitdata");
+        File metsTemplate = new File(folder + "metadata.xml");
+
         File metsFile = new File(processFolder, "meta.xml");
         FileUtils.copyFile(metsTemplate, metsFile);
         
