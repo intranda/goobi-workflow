@@ -80,6 +80,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
+
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
@@ -94,7 +95,6 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
-
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
@@ -857,17 +857,21 @@ public class Metadaten {
         if (this.logicalTopstruct == null) {
             throw new ReadException(Helper.getTranslation("metaDataError"));
         }
+        
 
+//        if (this.mydocument.getPhysicalDocStruct() == null || this.mydocument.getPhysicalDocStruct().getAllChildren() == null
+//                || this.mydocument.getPhysicalDocStruct().getAllChildren().size() == 0) {
+//            try {
+//                createPagination();
+//            } catch (TypeNotAllowedForParentException e) {
+//                
+//            }
+//        }
+
+        // TODO check filenames, correct them
+        checkImageNames();
         BildErmitteln(0);
         retrieveAllImages();
-        if (this.mydocument.getPhysicalDocStruct() == null || this.mydocument.getPhysicalDocStruct().getAllChildren() == null
-                || this.mydocument.getPhysicalDocStruct().getAllChildren().size() == 0) {
-            try {
-                createPagination();
-            } catch (TypeNotAllowedForParentException e) {
-
-            }
-        }
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
@@ -1416,6 +1420,24 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
+    
+    private void checkImageNames() {
+        try {
+            imagehelper.checkImageNames(this.myProzess);
+        } catch (TypeNotAllowedForParentException e) {
+            myLogger.error(e);
+        } catch (SwapException e) {
+            myLogger.error(e);
+        } catch (DAOException e) {
+            myLogger.error(e);
+        } catch (IOException e) {
+            myLogger.error(e);
+        } catch (InterruptedException e) {
+            myLogger.error(e);
+        }
+    }
+    
+    
     /**
      * Markus baut eine Seitenstruktur aus den vorhandenen Images ================================================================
      * 
@@ -1838,7 +1860,7 @@ public class Metadaten {
                 myLogger.error(e);
             }
         }
-        if (dataList != null && dataList.size() > 0) {
+        if (dataList != null && dataList.size() > 0) {            
             myLogger.trace("dataList not null");
             this.myBildLetztes = dataList.size();
             myLogger.trace("myBildLetztes");

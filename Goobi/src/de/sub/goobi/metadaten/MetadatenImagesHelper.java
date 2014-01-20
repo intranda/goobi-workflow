@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,9 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -83,6 +86,111 @@ public class MetadatenImagesHelper {
     public MetadatenImagesHelper(Prefs inPrefs, DigitalDocument inDocument) {
         this.myPrefs = inPrefs;
         this.mydocument = inDocument;
+    }
+
+    public void checkImageNames(Process myProzess) throws TypeNotAllowedForParentException, SwapException, DAOException, IOException,
+            InterruptedException {
+        DocStruct physical = this.mydocument.getPhysicalDocStruct();
+
+        DocStruct log = this.mydocument.getLogicalDocStruct();
+        if (log.getType().isAnchor()) {
+            if (log.getAllChildren() != null && log.getAllChildren().size() > 0) {
+                log = log.getAllChildren().get(0);
+            }
+        }
+        if (physical == null) {
+            createPagination(myProzess, null);
+            return;
+        }
+
+        // get image names in directory
+        File folder = new File(myProzess.getImagesTifDirectory(true));
+
+        String[] imagenames = folder.list(Helper.imageNameFilter);
+        if (imagenames == null || imagenames.length == 0) {
+            // no images found, return
+            return;
+        }
+
+        List<String> imageNamesInDirectory = Arrays.asList(imagenames);
+        Collections.sort(imageNamesInDirectory);
+
+        // get image names in nets file
+
+        Map<String, DocStruct> imageNamesInMetsFile = new HashMap<String, DocStruct>();
+
+        List<DocStruct> pages = physical.getAllChildren();
+        if (pages != null && pages.size() > 0) {
+            for (DocStruct page : pages) {
+                String filename = page.getImageName();
+                if (filename != null) {
+                    if (filename.contains(File.separator)) {
+                        filename = filename.substring(filename.lastIndexOf(File.separator));
+                    }
+                    imageNamesInMetsFile.put(filename, page);
+                } else {
+                    logger.error("cannot find image");
+                }
+            }
+        }
+
+        // if size differs, create new pagination
+        if (imageNamesInDirectory.size() != imageNamesInMetsFile.size()) {
+            createPagination(myProzess, null);
+            return;
+        }
+
+        List<String> imagesWithoutDocstruct = new LinkedList<String>();
+        List<DocStruct> pagesWithoutFiles = new LinkedList<DocStruct>();
+
+        // search for page objects with invalid image names
+        for (String imageNameInMets : imageNamesInMetsFile.keySet()) {
+            String currentImagePrefix = imageNameInMets.replace(Metadaten.getFileExtension(imageNameInMets), "");
+            boolean match = false;
+            for (String imageNameInDirectory : imageNamesInDirectory) {
+                if (currentImagePrefix.equals(imageNameInDirectory.replace(Metadaten.getFileExtension(imageNameInDirectory), ""))) {
+                    match = true;
+                    break;
+                }
+            }
+            if (!match) {
+                logger.debug("adding docstruct with missing file " +imageNameInMets + " to abandoned list.");
+                pagesWithoutFiles.add(imageNamesInMetsFile.get(imageNameInMets));
+            }
+        }
+
+        // find abandoned image names in directory
+        if (!pagesWithoutFiles.isEmpty()) {
+            for (String imagename : imageNamesInDirectory) {
+                String currentImagePrefix = imagename.replace(Metadaten.getFileExtension(imagename), "");
+                boolean match = false;
+                for (String key : imageNamesInMetsFile.keySet()) {
+                    if (currentImagePrefix.equals(key.replace(Metadaten.getFileExtension(key), ""))) {
+                        match = true;
+                        break;
+                    }
+                }
+                if (!match) {
+                    logger.debug("adding " + imagename + " to list of images without docstructs");
+                    imagesWithoutDocstruct.add(imagename);
+                }
+            }
+        }
+
+        // both lists should have the same size
+        if (pagesWithoutFiles.size() != imagesWithoutDocstruct.size()) {
+            return;
+        }
+
+        int counter = pagesWithoutFiles.size();
+        for (int i = 0; i < counter; i++) {
+            String currentFile = imagesWithoutDocstruct.get(i);
+            DocStruct currentPage = pagesWithoutFiles.get(i);
+            currentPage.setImageName(folder.getAbsolutePath() + File.separator + currentFile);
+            logger.debug("set image " + currentFile + " to docstruct " + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+               
+        }
+
     }
 
     /**
@@ -626,5 +734,4 @@ public class MetadatenImagesHelper {
         }
         return orderedFileList;
     }
-
 }

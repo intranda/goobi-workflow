@@ -188,11 +188,14 @@ public class ExportMets {
          * before creating mets file, change relative path to absolute -
          */
         DigitalDocument dd = gdzfile.getDigitalDocument();
+        
+        MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
+        
         if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
             Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
-
-            MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
             mih.createPagination(myProzess, null);
+        } else {
+            mih.checkImageNames(myProzess);
         }
 
         /*
