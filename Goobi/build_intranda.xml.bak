@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Goobi" default="dist" xmlns:artifact="urn:maven-artifact-ant"  xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="Goobi" default="dist" xmlns:artifact="urn:maven-artifact-ant">
 
 	<!-- Distribution specific settings. -->
     <property name="dist.name" value="goobi" />
@@ -189,7 +189,7 @@
     </target>
 
 	<!-- Build all, not really needed yet. -->
-    <target name="all" depends="junit-withcoverage, dist" description="Build all, not really needed yet." />
+    <target name="all" depends="junit, dist" description="Build all, not really needed yet." />
 
 	<!-- JUnit tests -->
     <target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
@@ -220,37 +220,6 @@
 
     </target>
 
-
-	<!-- JUnit tests -->
-    <target name="junit-withcoverage" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
-
-        <!--copy file="${dir.src}/goobi_config.properties" tofile="${dir.build}/goobi_config.properties" /-->
-
-        <copy file="${dir.tests}/de/sub/goobi/config/goobi_digitalCollections.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_digitalCollections.xml" />
-        <copy file="${dir.tests}/de/sub/goobi/config/goobi_projects.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_projects.xml" />
-
-        <copy file="${dir.tests}/de/sub/goobi/export/dms/ruleset.xml" tofile="${dir.build}/de/sub/goobi/export/dms/ruleset.xml" />
-        <copy file="${dir.tests}/de/sub/goobi/export/dms/metadata.xml" tofile="${dir.build}/de/sub/goobi/export/dms/metadata.xml" />
-
-        <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6">
-
-            <classpath refid="test.classpath" />
-            <compilerarg value="-Xlint" />
-            <src path="${dir.build.src}" />
-            <src path="${dir.tests}" />
-        </javac>
-
-
-                <jacoco:coverage>
-
-<junit haltonerror="false" haltonfailure="false" tempdir="/tmp" logfailedtests="true" fork="true" forkmode="once">
-    <classpath refid="test.classpath" />
-            <formatter type="xml" usefile="true" />
-            <test name="de.sub.goobi.TestAll" todir="${test.report.dir}" />
-        </junit>
-                </jacoco:coverage>
-
-    </target>
 
 
 
