@@ -1892,6 +1892,8 @@ public class Metadaten {
                             //                          dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
                             dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
                             if (dataList == null) {
+                                myBild = null;
+                                myBildNummer = -1;
                                 return;
                             }
                             //
