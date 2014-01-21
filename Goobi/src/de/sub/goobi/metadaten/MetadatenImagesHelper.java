@@ -161,6 +161,23 @@ public class MetadatenImagesHelper {
 
         // find abandoned image names in directory
         if (!pagesWithoutFiles.isEmpty()) {
+            
+            Collections.sort(pagesWithoutFiles, new Comparator<DocStruct>() {
+                   
+
+                        @Override
+                        public int compare(DocStruct o1, DocStruct o2) {
+                            MetadataType mdt =  myPrefs.getMetadataTypeByName("physPageNumber");
+                            String value1 = o1.getAllMetadataByType(mdt).get(0).getValue();
+                            String value2 = o2.getAllMetadataByType(mdt).get(0).getValue();
+                            Integer order1 = Integer.parseInt(value1);
+                            Integer order2 = Integer.parseInt(value2);
+                            return order1.compareTo(order2);
+                        }
+                    }
+                    );
+                  
+            
             for (String imagename : imageNamesInDirectory) {
                 String currentImagePrefix = imagename.replace(Metadaten.getFileExtension(imagename), "");
                 boolean match = false;
