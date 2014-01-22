@@ -107,7 +107,7 @@ public class Paginator {
 		if (paginationType == Paginator.Type.ROMAN) {
 			RomanNumeral roman = new RomanNumeral();
 			try {
-			    roman.setValue(paginationStartValue);
+			    roman.setValue(paginationStartValue.toUpperCase());
 			} catch (NumberFormatException e) {
 			    List<String> param = new ArrayList<String>();
 			    param.add(paginationStartValue);
@@ -274,7 +274,7 @@ public class Paginator {
 		} else if (paginationType == Paginator.Type.ROMAN) {
 			RomanNumeral r = new RomanNumeral();
 			try {
-                r.setValue(paginationStartValue);
+                r.setValue(paginationStartValue.toUpperCase());
                 paginationBaseValue = r.intValue();
             } catch (NumberFormatException e) {
             }
