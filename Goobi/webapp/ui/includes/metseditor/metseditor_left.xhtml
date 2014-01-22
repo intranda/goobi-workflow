@@ -72,6 +72,14 @@ $(document).ready(function() {
 													<h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}"
 														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
 													<h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
+													
+													<h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.DateIssued != ''}" />
+													
+													<h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}"
+														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+													<h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumberl != ''}" />
 												</h:panelGrid>
 											</h:panelGrid>
 										</div>
