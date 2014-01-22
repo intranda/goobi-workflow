@@ -43,6 +43,9 @@ public class TreeNodeStruct3 extends TreeNode {
 	private String ppnDigital;
 	private String identifier;
 	private String zblSeiten;
+	private String partNumber;
+	private String dateIssued;
+	
 	private boolean einfuegenErlaubt;
 
 	/**
@@ -155,4 +158,19 @@ public class TreeNodeStruct3 extends TreeNode {
 		this.zblSeiten = zblSeiten;
 	}
 
+	public String getDateIssued() {
+		return dateIssued;
+	}
+	public void setDateIssued(String dateIssued) {
+		this.dateIssued = dateIssued;
+	}
+	
+	public String getPartNumber() {
+		return partNumber;
+	}
+	
+	public void setPartNumber(String partNumber) {
+		this.partNumber = partNumber;
+	}
+	
 }

@@ -1137,6 +1137,8 @@ public class Metadaten {
         OberKnoten.setZblNummer(MetadatenErmitteln(inStrukturelement, "ZBLIdentifier"));
         OberKnoten.setZblSeiten(MetadatenErmitteln(inStrukturelement, "ZBLPageNumber"));
         OberKnoten.setPpnDigital(MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
+        OberKnoten.setDateIssued(MetadatenErmitteln(inStrukturelement, "DateIssued"));
+        OberKnoten.setPartNumber(MetadatenErmitteln(inStrukturelement, "PartNumber"));
         OberKnoten.setFirstImage(this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST));
         OberKnoten.setLastImage(this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST));
         // wenn es ein Heft ist, die Issue-Number mit anzeigen
