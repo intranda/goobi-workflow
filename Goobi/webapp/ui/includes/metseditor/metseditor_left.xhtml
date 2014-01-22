@@ -49,7 +49,7 @@ $(document).ready(function() {
 
 									<f:facet name="popup">
 										<div>
-											<h:panelGrid columns="1" style="background-color:white; font-size:11px; border: 1px solid #e3c240; padding: 1px;"
+											<h:panelGrid columns="1" styleClass="metadatapopup" 
 												rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
 												<h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
 
@@ -75,11 +75,11 @@ $(document).ready(function() {
 													
 													<h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}"
 														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.DateIssued != ''}" />
+													<h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
 													
 													<h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}"
 														style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-													<h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumberl != ''}" />
+													<h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
 												</h:panelGrid>
 											</h:panelGrid>
 										</div>

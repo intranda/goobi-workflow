@@ -280,6 +280,11 @@ a.mlink:hover {
 	margin-bottom: 7px;
 }
 
+.metadatapopup {
+	background-color: #ffffff;
+	border: solid 1px #0083e2;
+}
+
 .standardTable_Header {
 	height: 25px;
 	padding: 3px 3px 3px 3px;
