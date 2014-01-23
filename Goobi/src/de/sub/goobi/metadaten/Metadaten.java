@@ -1257,9 +1257,14 @@ public class Metadaten {
      */
     public String KnotenDelete() throws IOException {
         if (this.myDocStruct != null && this.myDocStruct.getParent() != null) {
-            DocStruct tempParent = this.myDocStruct.getParent();
-            this.myDocStruct.getParent().removeChild(this.myDocStruct);
+        	DocStruct tempParent = this.myDocStruct.getParent().getPreviousChild(this.myDocStruct);
+        	 if (tempParent==null){
+             	tempParent = this.myDocStruct;
+             }
+        	
+        	this.myDocStruct.getParent().removeChild(this.myDocStruct);
             this.myDocStruct = tempParent;
+            
         }
         // den Tree neu einlesen
         return MetadatenalsTree3Einlesen1();
