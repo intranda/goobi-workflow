@@ -28,7 +28,7 @@ $(document).ready(function() {
 </style>
     
 		<div id="myTree" class="layoutTreeView2">
-					<h:form rendered="true" id="treeform">
+					<h:form rendered="true" id="treeform" prependId="false">
 
 						<h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action"
 							style="position:absolute;left:165px"></h:graphicImage>
@@ -94,11 +94,12 @@ $(document).ready(function() {
 								<h:outputText value="#{item.niveau}" style="color:grey;margin-right:4px" rendered="#{Metadaten.treeProperties.showtreelevel}" />
 
 								<h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}"
-									action="#{Metadaten.loadRightFrame}">
+									action="#{Metadaten.loadRightFrame}" >
 									<h:outputText value="#{item.node.description}"
 										rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
 									<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
 									<x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
+                                    <f:ajax  render="@form :formular1 :BildArea2"/>
 								</h:commandLink>
 
 								<h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px"
