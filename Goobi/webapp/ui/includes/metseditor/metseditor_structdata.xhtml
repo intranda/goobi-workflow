@@ -6,7 +6,7 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<h:form>
+		<h:form id="formular3">
 
 			<h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben}">
 
@@ -107,12 +107,14 @@
 								<h:commandLink action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
 									<h:graphicImage value="images/buttons/sort_up_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 									<h:outputText value="#{msgs.docstructNachObenSchieben}" />
+									<f:ajax  render="@form :treeform "/>
 								</h:commandLink>
 
 								<!-- Knoten nach unten -->
 								<h:commandLink action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
 									<h:graphicImage value="images/buttons/sort_down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
 									<h:outputText value="#{msgs.docstructNachUntenSchieben}" />
+									<f:ajax  render="@form :treeform "/>
 								</h:commandLink>
 
 								<!-- Knoten an andere Stelle schieben -->
@@ -228,6 +230,7 @@
 								<h:commandLink rendered="#{Metadaten.isNotRootElement}" action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
 									<h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:4px;margin-right:7px;vertical-align:middle" />
 									<h:outputText value="#{msgs.strukturelementLoeschen}" />
+									<f:ajax  render="@form :treeform "/>
 								</h:commandLink>
 
 							</h:panelGrid>

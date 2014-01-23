@@ -11,21 +11,27 @@
         <h:form id="formularBild">
             <h:commandButton id="imageBack" style="display:none" action="#{Metadaten.BildBlaettern}" value="&lt;" immediate="true">
                 <f:param name="Anzahl" value="-1" />
+                <f:ajax execute="@form" render="@form :BildArea2" />
             </h:commandButton>
             <h:commandButton id="imageNext" style="display:none" action="#{Metadaten.BildBlaettern}" value=">" immediate="true">
                 <f:param name="Anzahl" value="1" />
+                <f:ajax execute="@form" render="@form :BildArea2" />
             </h:commandButton>
             <h:commandButton id="imageBack20" style="display:none" action="#{Metadaten.BildBlaettern}" value="&lt;&lt;" immediate="true">
                 <f:param name="Anzahl" value="-20" />
+                <f:ajax execute="@form" render="@form :BildArea2" />
             </h:commandButton>
             <h:commandButton id="imageNext20" style="display:none" action="#{Metadaten.BildBlaettern}" value=">>" immediate="true">
                 <f:param name="Anzahl" value="20" />
+                <f:ajax execute="@form" render="@form :BildArea2" />
             </h:commandButton>
             <h:commandButton id="imageFirst" style="display:none" action="#{Metadaten.BildBlaettern}" value="|&lt;" immediate="true">
                 <f:param name="Anzahl" value="-#{Metadaten.bildNummer}" />
+                <f:ajax execute="@form" render="@form :BildArea2" />
             </h:commandButton>
             <h:commandButton id="imageLast" style="display:none" action="#{Metadaten.BildBlaettern}" value=">|" immediate="true">
                 <f:param name="Anzahl" value="#{Metadaten.bildLetztes}" />
+                <f:ajax execute="@form" render="@form :BildArea2" />
             </h:commandButton>
 
             <x:panelGrid id="BildArea" forceId="true" columns="1" rendered="#{Metadaten.bildNummer != '-1'}">
