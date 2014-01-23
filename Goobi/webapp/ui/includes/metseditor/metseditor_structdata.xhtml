@@ -85,7 +85,9 @@
 					</tr>
 					<tr>
 						<td class="eingabeBoxen_row3" align="right">
-							<h:commandLink action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}" />
+							<h:commandLink action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}">
+							    <f:ajax execute="@form" render="@form :treeform" />
+							</h:commandLink>
 						</td>
 					</tr>
 				</table>
