@@ -892,9 +892,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // }
             format = ConfigMain.getParameter("formatOfMetaBackups");
         }
-        if (format != null) {
-            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
-        }
+
         if (numberOfBackups != 0) {
             BackupFileRotation bfr = new BackupFileRotation();
             bfr.setNumberOfBackups(numberOfBackups);

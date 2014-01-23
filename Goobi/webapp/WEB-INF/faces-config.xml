@@ -86,6 +86,12 @@
 		<converter-id>ProcessConverter</converter-id>
 		<converter-class>de.sub.goobi.converter.ProcessConverter</converter-class>
 	</converter>
+    
+        <converter>
+        <converter-id>NormDatabaseConverter</converter-id>
+        <converter-class>de.sub.goobi.converter.NormDatabaseConverter</converter-class>
+    </converter>
+    
 
 	<factory>  
         <exception-handler-factory>  

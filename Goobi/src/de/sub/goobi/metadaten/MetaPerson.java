@@ -28,117 +28,182 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.goobi.api.display.enums.NormDatabase;
+
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 
 /**
- * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt 
- * mit dessen Eigenschaften und erlaubt die Bearbeitung 
- * der Schrittdetails
+ * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
  * 
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
 public class MetaPerson {
-   private Person p;
-   private int identifier;
-   private Prefs myPrefs;
-   private DocStruct myDocStruct;
-   private MetadatenHelper mdh;
+    private Person p;
+    private int identifier;
+    private Prefs myPrefs;
+    private DocStruct myDocStruct;
+    private MetadatenHelper mdh;
+    private boolean additionalParts = true;
+    private boolean normdata = true;
 
-   
+    /**
+     * Allgemeiner Konstruktor ()
+     */
+    public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct) {
+        this.myPrefs = inPrefs;
+        this.p = p;
+        this.identifier = inID;
+        this.myDocStruct = inStruct;
+        this.mdh = new MetadatenHelper(inPrefs, null);
+    }
 
-   /**
-    * Allgemeiner Konstruktor ()
-    */
-   public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct) {
-      this.myPrefs = inPrefs;
-      this.p = p;
-      this.identifier = inID;
-      this.myDocStruct = inStruct;
-      this.mdh = new MetadatenHelper(inPrefs, null);
-   }
+    /*#####################################################
+     #####################################################
+     ##																															 
+     ##																Getter und Setter									
+     ##                                                   															    
+     #####################################################
+     ####################################################*/
 
-   /*#####################################################
-    #####################################################
-    ##																															 
-    ##																Getter und Setter									
-    ##                                                   															    
-    #####################################################
-    ####################################################*/
+    public int getIdentifier() {
+        return this.identifier;
+    }
 
-   public int getIdentifier() {
-      return this.identifier;
-   }
+    public void setIdentifier(int identifier) {
+        this.identifier = identifier;
+    }
 
-   public void setIdentifier(int identifier) {
-      this.identifier = identifier;
-   }
+    public Person getP() {
+        return this.p;
+    }
 
-   public Person getP() {
-      return this.p;
-   }
+    public void setP(Person p) {
+        this.p = p;
+    }
 
-   public void setP(Person p) {
-      this.p = p;
-   }
+    public String getVorname() {
+        if (this.p.getFirstname() == null) {
+            return "";
+        }
+        return this.p.getFirstname();
+    }
 
-   
+    public void setVorname(String inVorname) {
+        if (inVorname == null) {
+            inVorname = "";
+        }
+        this.p.setFirstname(inVorname);
+        this.p.setDisplayname(getNachname() + ", " + getVorname());
+    }
 
-   public String getVorname() {
-	   if (this.p.getFirstname()==null) {
-		   return "";
-	   }
-      return this.p.getFirstname();
-   }
+    public String getNachname() {
+        if (this.p.getLastname() == null) {
+            return "";
+        }
+        return this.p.getLastname();
+    }
 
-   public void setVorname(String inVorname) {
-	   if (inVorname == null) {
-		   inVorname = "";
-	   }
-      this.p.setFirstname(inVorname);
-      this.p.setDisplayname(getNachname() + ", " + getVorname());
-   }
+    public void setNachname(String inNachname) {
+        if (inNachname == null) {
+            inNachname = "";
+        }
+        this.p.setLastname(inNachname);
+        this.p.setDisplayname(getNachname() + ", " + getVorname());
+    }
 
-   
+    public String getRolle() {
+        return this.p.getRole();
+    }
 
-   public String getNachname() {
-	   if (this.p.getLastname()==null) {
-		   return "";
-	   }
-      return this.p.getLastname();
-   }
+    public void setRolle(String inRolle) {
+        this.p.setRole(inRolle);
+        MetadataType mdt = this.myPrefs.getMetadataTypeByName(this.p.getRole());
+        this.p.setType(mdt);
 
-   public void setNachname(String inNachname) {
-	   if (inNachname == null) {
-		   inNachname = "";
-	   }
-      this.p.setLastname(inNachname);
-      this.p.setDisplayname(getNachname() + ", " + getVorname());
-   }
+    }
 
-   
+    public ArrayList<SelectItem> getAddableRollen() {
+        return this.mdh.getAddablePersonRoles(this.myDocStruct, this.p.getRole());
+    }
 
-   public String getRolle() {
-      return this.p.getRole();
-   }
+    public List<NamePart> getAdditionalNameParts() {
+        return p.getAdditionalNameParts();
+    }
 
-   public void setRolle(String inRolle) {
-      this.p.setRole(inRolle);
-      MetadataType mdt = this.myPrefs.getMetadataTypeByName(this.p.getRole());
-      this.p.setType(mdt);
+    public void setAdditionalNameParts(List<NamePart> nameParts) {
+        p.setAdditionalNameParts(nameParts);
+    }
 
-   }
+    public void addNamePart() {
+        List<NamePart> parts = p.getAdditionalNameParts();
+        if (parts == null) {
+            parts = new ArrayList<NamePart>();
+        }
+        NamePart part = new NamePart();
+        parts.add(part);
+        p.setAdditionalNameParts(parts);
+    }
 
-   public ArrayList<SelectItem> getAddableRollen() {
-      return this.mdh.getAddablePersonRoles(this.myDocStruct, this.p.getRole());
-   }
+    public List<NormDatabase> getPossibleDatabases() {
+        List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
+        return databaseList;
+    }
 
-   
+    public List<String> getPossibleNamePartTypes() {
+        // TODO configurable?
+        List<String> possibleNamePartTypes = new ArrayList<String>();
+        possibleNamePartTypes.add("date");
+        possibleNamePartTypes.add("termsOfAddress");
+        return possibleNamePartTypes;
+    }
+
+    public String getNormdataValue() {
+        return p.getAuthorityValue();
+    }
+
+    public void setNormdataValue(String normdata) {
+        p.setAuthorityValue(normdata);
+    }
+
+    public void setNormDatabase(NormDatabase database) {
+        p.setAuthorityID(database.getAbbreviation());
+        p.setAuthorityURI(database.getPath());
+    }
+
+    public NormDatabase getNormDatabase() {
+        if (p.getAuthorityURI() != null && p.getAuthorityID() != null) {
+            NormDatabase ndb = NormDatabase.getByAbbreviation(p.getAuthorityID());
+            return ndb;
+        } else {
+            return null;
+        }
+    }
+
+    // TODO get from ruleset?
+    public boolean isAdditionalParts() {
+        return additionalParts;
+    }
+
+    public void setAdditionalParts(boolean additionalParts) {
+        this.additionalParts = additionalParts;
+    }
+
+    // TODO get from ruleset?
+    public boolean isNormdata() {
+        return normdata;
+    }
+
+    public void setNormdata(boolean normdata) {
+        this.normdata = normdata;
+    }
 
 }
