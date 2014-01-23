@@ -968,7 +968,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String metadataFileName;
         String temporaryMetadataFileName;
 
-        ff = MetadatenHelper.getFileformatByName(this.projekt.getFileFormatInternal(), this.regelsatz);
+        ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         //        switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
         //            case METS:
