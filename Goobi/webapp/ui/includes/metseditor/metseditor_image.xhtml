@@ -45,7 +45,7 @@
                                     <!-- zurueck-Schaltknopf-->
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{msgs.previous}" immediate="true">
                                         <f:param name="Anzahl" value="-1" />
-                                        <f:ajax execute="@form" render="@form" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <!-- Trennzeichen -->
                                     <h:outputText value=" | " />
@@ -56,7 +56,7 @@
                                     <!-- erstes-Schaltknopf -->
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="1" immediate="true">
                                         <f:param name="Anzahl" value="-#{Metadaten.bildNummer}" />
-                                         <f:ajax execute="@form" render="@form" />
+                                         <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <!-- Trennzeichen -->
                                     <h:outputText value=" | " />
@@ -72,7 +72,7 @@
                                             <!-- vorvorheriges Bild -->
                                             <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer -2}" immediate="true">
                                                 <f:param name="Anzahl" value="-2" />
-                                                 <f:ajax execute="@form" render="@form" />
+                                                 <f:ajax execute="@form" render="@form :BildArea2" />
                                             </h:commandLink>
                                             <!-- Trennzeichen -->
                                             <h:outputText value=" | " />
@@ -81,7 +81,7 @@
                                         <!-- vorheriges Bild -->
                                         <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer -1}" immediate="true">
                                             <f:param name="Anzahl" value="-1" />
-                                             <f:ajax execute="@form" render="@form" />
+                                             <f:ajax execute="@form" render="@form :BildArea2" />
                                         </h:commandLink>
                                         <!-- Trennzeichen -->
                                         <h:outputText value=" | " />
@@ -98,7 +98,7 @@
                                         <!-- naechste Seite -->
                                         <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer + 1}" immediate="true">
                                             <f:param name="Anzahl" value="1" />
-                                             <f:ajax execute="@form" render="@form" />
+                                             <f:ajax execute="@form" render="@form :BildArea2" />
                                         </h:commandLink>
                                         <!-- wenn es mindestens das vorvorvorletzte Bild ist -->
                                         <h:panelGroup rendered="#{Metadaten.bildNummer lt (Metadaten.bildLetztes - 2)}">
@@ -107,7 +107,7 @@
                                             <!-- Uebernaechste Seite -->
                                             <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer + 2}" immediate="true">
                                                 <f:param name="Anzahl" value="2" />
-                                                 <f:ajax execute="@form" render="@form" />
+                                                 <f:ajax execute="@form" render="@form :BildArea2" />
                                             </h:commandLink>
                                         </h:panelGroup>
                                         <!-- wenn noch mehr als drei Seiten folgen, dann ein grosses Trennzeichen -->
@@ -118,7 +118,7 @@
                                     <!-- letztes-Schaltknopf -->
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildLetztes}" immediate="true">
                                         <f:param name="Anzahl" value="#{Metadaten.bildLetztes}" />
-                                         <f:ajax execute="@form" render="@form" />
+                                         <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                 </h:panelGroup>
                             </td>
@@ -130,7 +130,7 @@
                                     <h:outputText value=" | " />
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{msgs.seiteVor}" immediate="true">
                                         <f:param name="Anzahl" value="1" />
-                                         <f:ajax execute="@form" render="@form" />
+                                         <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                 </td>
                             </h:panelGroup>
