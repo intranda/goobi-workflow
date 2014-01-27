@@ -1392,6 +1392,15 @@ public class ProzessverwaltungForm extends BasisForm {
 //		if (this.myAnzahlList != null && this.myAnzahlList.size() > 0) {
 //			faktor = this.myAnzahlList.size();
 //		}
+		if (countOfProcessesWithImages == 0) {
+		    countOfProcessesWithImages = 1;
+		}
+		if (countOfProcessesWithMetadata == 0) {
+		    countOfProcessesWithMetadata = 1;
+        }
+		if (countOfProcessesWithDocstructs == 0) {
+		    countOfProcessesWithDocstructs = 1;
+        }
 		this.myAnzahlSummary = new HashMap<String, Integer>();
 		this.myAnzahlSummary.put("sumProcesses", this.myAnzahlList.size());
 		this.myAnzahlSummary.put("sumMetadata", allMetadata);
