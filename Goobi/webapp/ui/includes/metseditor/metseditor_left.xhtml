@@ -99,7 +99,7 @@ $(document).ready(function() {
 										rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
 									<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
 									<x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                                    <f:ajax  render="@form :formular1 :BildArea2"/>
+                                    <f:ajax  render="@form :formular1 :formular2 :formular3 :BildArea2 "/>
 								</h:commandLink>
 
 								<h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px"

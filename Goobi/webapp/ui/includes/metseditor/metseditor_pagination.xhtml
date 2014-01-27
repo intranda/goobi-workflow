@@ -6,7 +6,7 @@
     </composite:interface>
 
     <composite:implementation>
-        <h:form id="myform" prependId="false">
+        <h:form id="formular2" prependId="false">
 
             <h3 style="margin-top: 0px">
                 <h:outputText value="#{msgs.paginierung}" />
@@ -19,7 +19,7 @@
 
                 <!-- ++++++++++++++++     Auswahl der Seiten      ++++++++++++++++ -->
                 <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
-                    <table cellpadding="3" cellspacing="0" width="200px" class="eingabeBoxen" style="margin-top: 20px">
+                    <table cellpadding="3" cellspacing="0" width="200px" class="eingabeBoxen" style="margin-top: 3px">
                         <tr>
                             <td class="eingabeBoxen_row1">
                                 <h:outputText value="#{msgs.auswahlDerSeiten}" />
