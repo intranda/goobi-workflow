@@ -80,7 +80,7 @@
                                     </h:panelGrid>
                                 </ui:repeat>
                             </h:panelGroup>
-                            <h:commandButton action="#{Item.addNamePart}" value="#{msg.addNamePart}"></h:commandButton>
+                            <h:commandButton action="#{Item.addNamePart}" value="#{msg.addNamePart}" rendered="#{Item.additionalParts}"></h:commandButton>
 
                             <h:panelGroup rendered="#{Item.normdata}">
                                 <h:panelGrid columns="2">

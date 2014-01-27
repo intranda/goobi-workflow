@@ -252,4 +252,7 @@ public class MetadatumImpl implements Metadatum {
         return this.md.getValue();
     }
 
+    public boolean isNormdata() {
+        return md.getType().isAllowNormdata();
+    }
 }

@@ -52,8 +52,6 @@ public class MetaPerson {
     private Prefs myPrefs;
     private DocStruct myDocStruct;
     private MetadatenHelper mdh;
-    private boolean additionalParts = true;
-    private boolean normdata = true;
 
     /**
      * Allgemeiner Konstruktor ()
@@ -188,22 +186,12 @@ public class MetaPerson {
         }
     }
 
-    // TODO get from ruleset?
     public boolean isAdditionalParts() {
-        return additionalParts;
+        return p.getType().isAllowNameParts();
     }
 
-    public void setAdditionalParts(boolean additionalParts) {
-        this.additionalParts = additionalParts;
-    }
-
-    // TODO get from ruleset?
     public boolean isNormdata() {
-        return normdata;
-    }
-
-    public void setNormdata(boolean normdata) {
-        this.normdata = normdata;
+        return p.getType().isAllowNormdata();
     }
 
 }
