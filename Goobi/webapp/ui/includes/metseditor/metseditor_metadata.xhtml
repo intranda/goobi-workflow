@@ -5,7 +5,7 @@
     <composite:interface>
     </composite:interface>
 
-    <composite:implementation>    
+    <composite:implementation>
 
         <h:form id="formular1" prependId="false">
             <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
@@ -180,8 +180,23 @@
                             </h:selectOneMenu>
                             <h:outputText id="myOutput" value="#{Item.value}" rendered="#{(Item.outputType == 'readonly')}"
                                 styleClass="metadatenInput" style="width: 350px; border: 0 none;" />
-                        </h:column>
 
+
+                            <h:panelGroup rendered="#{Item.normdata}">
+                                <h:panelGrid columns="2">
+                                    <h:selectOneMenu value="#{Item.normDatabase}" readonly="#{Metadaten.nurLesenModus}">
+                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                        <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database.abbreviation}"
+                                            itemValue="#{database}" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{Item.normdataValue}" styleClass="metadatenInput" style="width: 350px;"
+                                        readonly="#{Metadaten.nurLesenModus}">
+                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    </h:inputText>
+
+                                </h:panelGrid>
+                            </h:panelGroup>
+                        </h:column>
                         <!-- Link für Details -->
                         <h:column rendered="#{not Metadaten.nurLesenModus}">
                             <!-- Kopieren-Schaltknopf -->

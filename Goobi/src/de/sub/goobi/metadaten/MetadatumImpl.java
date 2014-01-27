@@ -37,11 +37,14 @@ import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
+import org.goobi.api.display.enums.NormDatabase;
 
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.Helper;
 
 /**
@@ -252,6 +255,33 @@ public class MetadatumImpl implements Metadatum {
         return this.md.getValue();
     }
 
+    public List<NormDatabase> getPossibleDatabases() {
+        List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
+        return databaseList;
+    }
+    
+    public String getNormdataValue() {
+        return md.getAuthorityValue();
+    }
+
+    public void setNormdataValue(String normdata) {
+        md.setAuthorityValue(normdata);
+    }
+
+    public void setNormDatabase(NormDatabase database) {
+        md.setAuthorityID(database.getAbbreviation());
+        md.setAuthorityURI(database.getPath());
+    }
+
+    public NormDatabase getNormDatabase() {
+        if (md.getAuthorityURI() != null && md.getAuthorityID() != null) {
+            NormDatabase ndb = NormDatabase.getByAbbreviation(md.getAuthorityID());
+            return ndb;
+        } else {
+            return null;
+        }
+    }
+    
     public boolean isNormdata() {
         return md.getType().isAllowNormdata();
     }
