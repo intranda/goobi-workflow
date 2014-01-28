@@ -69,6 +69,7 @@ import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.dl.Reference;
@@ -315,6 +316,13 @@ public class Metadaten {
             md = new Metadata(this.curMetadatum.getMd().getType());
 
             md.setValue(this.curMetadatum.getMd().getValue());
+
+            if (curMetadatum.getMd().getAuthorityID() != null && curMetadatum.getMd().getAuthorityURI() != null
+                    && curMetadatum.getMd().getAuthorityValue() != null) {
+                md.setAutorityFile(curMetadatum.getMd().getAuthorityID(), curMetadatum.getMd().getAuthorityURI(), curMetadatum.getMd()
+                        .getAuthorityValue());
+            }
+
             this.myDocStruct.addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
             myLogger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
@@ -333,6 +341,17 @@ public class Metadaten {
             per.setFirstname(this.curPerson.getP().getFirstname());
             per.setLastname(this.curPerson.getP().getLastname());
             per.setRole(this.curPerson.getP().getRole());
+
+            if (curPerson.getAdditionalNameParts() != null && !curPerson.getAdditionalNameParts().isEmpty()) {
+                for (NamePart np : curPerson.getAdditionalNameParts()) {
+                    NamePart newNamePart = new NamePart(np.getType(), np.getValue());
+                    per.addNamePart(newNamePart);
+                }
+            }
+            if (curPerson.getP().getAuthorityID() != null && curPerson.getP().getAuthorityURI() != null
+                    && curPerson.getP().getAuthorityValue() != null) {
+                per.setAutorityFile(curPerson.getP().getAuthorityID(), curPerson.getP().getAuthorityURI(), curPerson.getP().getAuthorityValue());
+            }
 
             this.myDocStruct.addPerson(per);
         } catch (IncompletePersonObjectException e) {
@@ -731,8 +750,8 @@ public class Metadaten {
      */
 
     public String XMLlesen() {
-//    	myBild="";
-//    	this.myBildNummer = 1;
+        //    	myBild="";
+        //    	this.myBildNummer = 1;
         String result = "";
         if (xmlReadingLock.tryLock()) {
             try {
@@ -821,7 +840,7 @@ public class Metadaten {
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
             WriteException {
-	    currentRepresentativePage = "";
+        currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusAnsicht = "Metadaten";
         this.modusHinzufuegen = false;
@@ -857,16 +876,15 @@ public class Metadaten {
         if (this.logicalTopstruct == null) {
             throw new ReadException(Helper.getTranslation("metaDataError"));
         }
-        
 
-//        if (this.mydocument.getPhysicalDocStruct() == null || this.mydocument.getPhysicalDocStruct().getAllChildren() == null
-//                || this.mydocument.getPhysicalDocStruct().getAllChildren().size() == 0) {
-//            try {
-//                createPagination();
-//            } catch (TypeNotAllowedForParentException e) {
-//                
-//            }
-//        }
+        //        if (this.mydocument.getPhysicalDocStruct() == null || this.mydocument.getPhysicalDocStruct().getAllChildren() == null
+        //                || this.mydocument.getPhysicalDocStruct().getAllChildren().size() == 0) {
+        //            try {
+        //                createPagination();
+        //            } catch (TypeNotAllowedForParentException e) {
+        //                
+        //            }
+        //        }
 
         // TODO check filenames, correct them
         checkImageNames();
@@ -1257,14 +1275,14 @@ public class Metadaten {
      */
     public String KnotenDelete() throws IOException {
         if (this.myDocStruct != null && this.myDocStruct.getParent() != null) {
-        	DocStruct tempParent = this.myDocStruct.getParent().getPreviousChild(this.myDocStruct);
-        	 if (tempParent==null){
-             	tempParent = this.myDocStruct;
-             }
-        	
-        	this.myDocStruct.getParent().removeChild(this.myDocStruct);
+            DocStruct tempParent = this.myDocStruct.getParent().getPreviousChild(this.myDocStruct);
+            if (tempParent == null) {
+                tempParent = this.myDocStruct;
+            }
+
+            this.myDocStruct.getParent().removeChild(this.myDocStruct);
             this.myDocStruct = tempParent;
-            
+
         }
         // den Tree neu einlesen
         return MetadatenalsTree3Einlesen1();
@@ -1427,7 +1445,6 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
-    
     private void checkImageNames() {
         try {
             imagehelper.checkImageNames(this.myProzess);
@@ -1443,8 +1460,7 @@ public class Metadaten {
             myLogger.error(e);
         }
     }
-    
-    
+
     /**
      * Markus baut eine Seitenstruktur aus den vorhandenen Images ================================================================
      * 
@@ -1867,7 +1883,7 @@ public class Metadaten {
                 myLogger.error(e);
             }
         }
-        if (dataList != null && dataList.size() > 0) {            
+        if (dataList != null && dataList.size() > 0) {
             myLogger.trace("dataList not null");
             this.myBildLetztes = dataList.size();
             myLogger.trace("myBildLetztes");
@@ -2148,32 +2164,32 @@ public class Metadaten {
                         erlaubte.add(mt.getName());
                     }
 
-					/*
-					 * wenn der Metadatentyp in der Liste der erlaubten Typen, dann hinzufügen
-					 */
-					for (Iterator<Metadata> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadata().iterator(); it.hasNext();) {
-						Metadata m = it.next();
-						if (erlaubte.contains(m.getType().getName())) {
-							this.myDocStruct.addMetadata(m);
-						}
-					}
-					
+                    /*
+                     * wenn der Metadatentyp in der Liste der erlaubten Typen, dann hinzufügen
+                     */
+                    for (Iterator<Metadata> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadata().iterator(); it.hasNext();) {
+                        Metadata m = it.next();
+                        if (erlaubte.contains(m.getType().getName())) {
+                            this.myDocStruct.addMetadata(m);
+                        }
+                    }
+
                     for (Iterator<Person> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllPersons().iterator(); it.hasNext();) {
                         Person m = it.next();
                         if (erlaubte.contains(m.getType().getName())) {
                             this.myDocStruct.addPerson(m);
                         }
                     }
-                    
-                    for (Iterator<MetadataGroup> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups().iterator(); it.hasNext();) {
+
+                    for (Iterator<MetadataGroup> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups().iterator(); it
+                            .hasNext();) {
                         MetadataGroup m = it.next();
-                        
+
                         if (myDocStruct.getAddableMetadataGroupTypes().contains(m.getType())) {
                             myDocStruct.addMetadataGroup(m);
                         }
-                        
+
                     }
-                    
 
                     MetadatenalsTree3Einlesen1();
                 } else {
@@ -3336,7 +3352,6 @@ public class Metadaten {
         int dotIndex = afterLastSlash.indexOf('.', afterLastBackslash);
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
     }
-
 
     public List<MetadataGroupImpl> getGroups() {
         return groups;
