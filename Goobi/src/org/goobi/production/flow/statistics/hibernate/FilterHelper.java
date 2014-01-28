@@ -39,6 +39,7 @@ import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 
 /**
  * class provides methods used by implementations of IEvaluableFilter
@@ -493,6 +494,9 @@ public class FilterHelper {
      */
     public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers, boolean isProcess,
             boolean isStep) {
+        
+        inFilter=  MySQLHelper.escapeString(inFilter);
+        
         StringBuilder filter = new StringBuilder();
         boolean flagSteps = false;
         boolean flagProcesses = false;

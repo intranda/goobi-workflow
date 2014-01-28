@@ -28,6 +28,7 @@ class UserMysqlHelper implements Serializable {
     private static final Logger logger = Logger.getLogger(UserMysqlHelper.class);
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws SQLException {
+        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzer");
@@ -53,6 +54,7 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static int getUserCount(String order, String filter) throws SQLException {
+        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(BenutzerID) FROM benutzer");
@@ -229,14 +231,15 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
-    public static void addFilterToUser(int userId, String filterstring) throws SQLException {
+    public static void addFilterToUser(int userId, String filter) throws SQLException {
+        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         Timestamp datetime = new Timestamp(new Date().getTime());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             String propNames = "Titel, Wert, IstObligatorisch, DatentypenID, Auswahl, creationDate, BenutzerID";
-            Object[] param = { "_filter", filterstring, false, 5, null, datetime, userId };
+            Object[] param = { "_filter", filter, false, 5, null, datetime, userId };
             String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES ( ?, ?,? ,? ,? ,?,? )";
             logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
@@ -247,12 +250,13 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
-    public static void removeFilterFromUser(int userId, String filterstring) throws SQLException {
+    public static void removeFilterFromUser(int userId, String filter) throws SQLException {
+        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            Object[] param = { userId, filterstring };
+            Object[] param = { userId, filter };
             String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ? AND Wert = ?";
             logger.debug(sql.toString() + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
