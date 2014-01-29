@@ -438,6 +438,9 @@ class StepMysqlHelper implements Serializable {
             o.setProcessId(o.getProzess().getId());
         }
 
+        if (o.getUserId() == null && o.getBearbeitungsbenutzer() != null) {
+            o.setUserId(o.getBearbeitungsbenutzer().getId());
+        }
         if (includeID) {
             Object[] param =
                     {
@@ -511,7 +514,7 @@ class StepMysqlHelper implements Serializable {
                                     .getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
                             o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
                             (o.getTypModulName() == null || o.getTypModulName().equals("")) ? null : o.getTypModulName(), // typModulName
-                            o.getBearbeitungsbenutzer() == null ? null : o.getBearbeitungsbenutzer().getId(), //BearbeitungsBenutzerID
+                            o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
                             o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
                             o.getEditTypeEnum().getValue(), //edittype
                             o.getTypScriptStep(), //typScriptStep
@@ -887,8 +890,6 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
- 
-
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -1015,5 +1016,4 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-   
 }

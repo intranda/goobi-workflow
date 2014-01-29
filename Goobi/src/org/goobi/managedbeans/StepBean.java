@@ -315,7 +315,6 @@ public class StepBean extends BasicBean {
         }
 
         for (Step s : currentStepsOfBatch) {
-
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
                 s.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
@@ -323,6 +322,7 @@ public class StepBean extends BasicBean {
                 User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 if (ben != null) {
                     s.setBearbeitungsbenutzer(ben);
+                    s.setUserId(ben.getId());
                 }
                 if (s.getBearbeitungsbeginn() == null) {
                     Date myDate = new Date();
@@ -331,11 +331,6 @@ public class StepBean extends BasicBean {
                 
                 HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
                         HistoryEventType.stepInWork.getValue(), s.getProzess().getId());
-
-                
-//                s.getProzess().getHistory().add(
-//                        new HistoryEvent(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork, s
-//                                .getProzess()));
 
                 if (s.isTypImagesLesen() || s.isTypImagesSchreiben()) {
                     try {
@@ -355,7 +350,7 @@ public class StepBean extends BasicBean {
 
             try {
                 ProcessManager.saveProcess(s.getProzess());
-
+//                StepManager.saveStep(s);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
                 myLogger.error("step couldn't get saved", e);

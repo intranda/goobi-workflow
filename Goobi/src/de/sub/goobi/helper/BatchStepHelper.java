@@ -801,7 +801,8 @@ public class BatchStepHelper {
             }
 
             try {
-                ProcessManager.saveProcess(s.getProzess());
+//                ProcessManager.saveProcess(s.getProzess());
+                StepManager.saveStep(s);
             } catch (DAOException e) {
             }
         }
