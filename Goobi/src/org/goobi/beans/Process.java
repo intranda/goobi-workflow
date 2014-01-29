@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,15 +49,15 @@ import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
+import org.goobi.io.FileListFilter;
 import org.goobi.production.export.ExportDocket;
 
 import ugh.dl.Fileformat;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-//import ugh.fileformats.mets.MetsMods;
-//import ugh.fileformats.mets.XStream;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -83,7 +85,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Project projekt;
     private Date erstellungsdatum;
     private List<Step> schritte;
-//    private List<HistoryEvent> history;
+    //    private List<HistoryEvent> history;
     private List<Masterpiece> werkstuecke;
     private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
@@ -174,22 +176,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.schritte = schritte;
     }
 
-//    public List<HistoryEvent> getHistory() {
+    //    public List<HistoryEvent> getHistory() {
 
-//        if (this.history == null && id != null) {
-//            List<HistoryEvent> events = ProcessManager.getHistoryEvents(id);
-//            for (HistoryEvent he : events) {
-//                he.setProcess(this);
-//            }
-//            this.history = events;
-//        }
-//        return this.history;
-//    }
+    //        if (this.history == null && id != null) {
+    //            List<HistoryEvent> events = ProcessManager.getHistoryEvents(id);
+    //            for (HistoryEvent he : events) {
+    //                he.setProcess(this);
+    //            }
+    //            this.history = events;
+    //        }
+    //        return this.history;
+    //    }
 
-//    public void setHistory(List<HistoryEvent> history) {
-//
-//        this.history = history;
-//    }
+    //    public void setHistory(List<HistoryEvent> history) {
+    //
+    //        this.history = history;
+    //    }
 
     public List<Template> getVorlagen() {
         if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
@@ -509,7 +511,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + "export" + File.separator;
     }
-    
+
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + File.separator;
         pfad = pfad.replaceAll(" ", "__");
@@ -563,23 +565,23 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getSchritte();
     }
 
-//    public int getHistorySize() {
-//
-//        if (this.history == null) {
-//            return 0;
-//        } else {
-//            return this.history.size();
-//        }
-//    }
-//
-//    public List<HistoryEvent> getHistoryList() {
-//
-//        List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
-//        if (this.history != null) {
-//            temp.addAll(this.history);
-//        }
-//        return temp;
-//    }
+    //    public int getHistorySize() {
+    //
+    //        if (this.history == null) {
+    //            return 0;
+    //        } else {
+    //            return this.history.size();
+    //        }
+    //    }
+    //
+    //    public List<HistoryEvent> getHistoryList() {
+    //
+    //        List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
+    //        if (this.history != null) {
+    //            temp.addAll(this.history);
+    //        }
+    //        return temp;
+    //    }
 
     public int getEigenschaftenSize() {
         return getEigenschaften().size();
@@ -846,63 +848,72 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
         int numberOfBackups = 0;
-        String format = "";
+        String FORMAT = "";
         if (ConfigMain.getIntParameter("numberOfMetaBackups") != 0) {
             numberOfBackups = ConfigMain.getIntParameter("numberOfMetaBackups");
-            // FORMAT = ConfigMain.getParameter("formatOfMetaBackups");
-            // }
-            // if (numberOfBackups != 0 && FORMAT != null) {
-            // FilenameFilter filter = new FileUtils.FileListFilter(FORMAT);
-            // File metaFilePath = new File(getProcessDataDirectory());
-            // File[] meta = metaFilePath.listFiles(filter);
-            // if (meta != null) {
-            // List<File> files = Arrays.asList(meta);
-            // Collections.reverse(files);
-            //
-            // int count;
-            // if (meta != null) {
-            // if (files.size() > numberOfBackups) {
-            // count = numberOfBackups;
-            // } else {
-            // count = meta.length;
-            // }
-            // while (count > 0) {
-            // for (File data : files) {
-            // if (data.length() != 0) {
-            // if (data.getName().endsWith("xml." + (count - 1))) {
-            // Long lastModified = data.lastModified();
-            // File newFile = new File(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
-            // data.renameTo(newFile);
-            // if (lastModified > 0L) {
-            // newFile.setLastModified(lastModified);
-            // }
-            // }
-            // if (data.getName().endsWith(".xml") && count == 1) {
-            // Long lastModified = data.lastModified();
-            // File newFile = new File(data.toString() + ".1");
-            // data.renameTo(newFile);
-            // if (lastModified > 0L) {
-            // newFile.setLastModified(lastModified);
-            // }
-            // }
-            // }
-            // }
-            // count--;
-            // }
-            // }
-            format = ConfigMain.getParameter("formatOfMetaBackups");
-        }
-        if (format != null) {
-            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
+            FORMAT = ConfigMain.getParameter("formatOfMetaBackups");
         }
         if (numberOfBackups != 0) {
-            BackupFileRotation bfr = new BackupFileRotation();
-            bfr.setNumberOfBackups(numberOfBackups);
-            bfr.setFormat("meta.*\\.xml");
-            bfr.setProcessDataDirectory(getProcessDataDirectory());
-            bfr.performBackup();
+            String typeOfBackup = ConfigMain.getParameter("typeOfBackup", "renameFile");
+            if (typeOfBackup.equals("renameFile") && FORMAT != null) {
+                createBackup(numberOfBackups, FORMAT);
+            } else if (typeOfBackup.equals("")) {
+                BackupFileRotation bfr = new BackupFileRotation();
+                bfr.setNumberOfBackups(numberOfBackups);
+                bfr.setFormat("meta.*\\.xml");
+                bfr.setProcessDataDirectory(getProcessDataDirectory());
+                bfr.performBackup();
+            }
         } else {
-            logger.warn("No backup configured for meta data files.");
+            logger.debug("No backup configured for meta data files.");
+        }
+        //            format = ConfigMain.getParameter("formatOfMetaBackups");
+        //        }
+        //        if (format != null) {
+        //            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
+        //        }
+
+    }
+
+    private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
+        FilenameFilter filter = new FileListFilter(FORMAT);
+        File metaFilePath = new File(getProcessDataDirectory());
+        File[] meta = metaFilePath.listFiles(filter);
+        if (meta != null) {
+            List<File> files = Arrays.asList(meta);
+            Collections.reverse(files);
+
+            int count;
+            if (meta != null) {
+                if (files.size() > numberOfBackups) {
+                    count = numberOfBackups;
+                } else {
+                    count = meta.length;
+                }
+                while (count > 0) {
+                    for (File data : files) {
+                        if (data.length() != 0) {
+                            if (data.getName().endsWith("xml." + (count - 1))) {
+                                Long lastModified = data.lastModified();
+                                File newFile = new File(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
+                                data.renameTo(newFile);
+                                if (lastModified > 0L) {
+                                    newFile.setLastModified(lastModified);
+                                }
+                            }
+                            if (data.getName().endsWith(".xml") && count == 1) {
+                                Long lastModified = data.lastModified();
+                                File newFile = new File(data.toString() + ".1");
+                                data.renameTo(newFile);
+                                if (lastModified > 0L) {
+                                    newFile.setLastModified(lastModified);
+                                }
+                            }
+                        }
+                    }
+                    count--;
+                }
+            }
         }
     }
 
