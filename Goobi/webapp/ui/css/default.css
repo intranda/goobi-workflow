@@ -452,8 +452,9 @@ a.text_head:hover {
 	background: white;
 }
 
-.TabelleSpalteLinks {
+.TabelleSpalteLinks, .TabelleSpalteLinks table {
 	height: 25px;
+	width: 100%;
 	padding: 5px;
 	font-size: 11px;
 	border-bottom: 1px solid #4b4b98;
@@ -594,11 +595,22 @@ a.documentSelected {
 	text-decoration: none
 }
 
+.first-column {
+	width: 25%;
+}
+
+.second-column {
+	width: 75%;			
+				
+}
+
 .metadatenInput {
 	border-color: silver;
 	border-style: solid;
 	border-width: 1px;
 	font-size: 12px;
+	background: #ffffff;
+	width: 100%;
 }
 
 .metadatenInputChange {
