@@ -438,9 +438,16 @@ class StepMysqlHelper implements Serializable {
             o.setProcessId(o.getProzess().getId());
         }
 
-        if (o.getUserId() == null && o.getBearbeitungsbenutzer() != null) {
+//        if (o.getUserId() == null && o.getBearbeitungsbenutzer() != null) {
+//            o.setUserId(o.getBearbeitungsbenutzer().getId());
+//        }
+
+        if (o.getBearbeitungsbenutzer() != null) {
             o.setUserId(o.getBearbeitungsbenutzer().getId());
         }
+        
+        System.out.println("user id " + o.getUserId() + " - " + o.getBearbeitungsbenutzer().getId());
+        
         if (includeID) {
             Object[] param =
                     {
