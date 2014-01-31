@@ -37,12 +37,11 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.ProcessManager;
+
+import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class BatchProcessHelper {
 
@@ -161,13 +160,15 @@ public class BatchProcessHelper {
 			if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
 				this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
 			}
-			try {
-				ProcessManager.saveProcess(this.currentProcess);
+//			try {
+	            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+
+//				ProcessManager.saveProcess(this.currentProcess);
 				Helper.setMeldung("propertySaved");
-			} catch (DAOException e) {
-				logger.error(e);
-				Helper.setFehlerMeldung("propertyNotSaved");
-			}
+//			} catch (DAOException e) {
+//				logger.error(e);
+//				Helper.setFehlerMeldung("propertyNotSaved");
+//			}
 		}
 	}
 
@@ -235,16 +236,16 @@ public class BatchProcessHelper {
 					}
 				}
 
-				try {
-				    ProcessManager.saveProcess(process);
-				} catch (DAOException e) {
-					error = true;
-					logger.error(e);
-					List<String> param = new ArrayList<String>();
-					param.add(process.getTitel());
-					String value = Helper.getTranslation("propertiesForProcessNotSaved", param);
-					Helper.setFehlerMeldung(value);
-				}
+//				try {
+		            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+//				} catch (DAOException e) {
+//					error = true;
+//					logger.error(e);
+//					List<String> param = new ArrayList<String>();
+//					param.add(process.getTitel());
+//					String value = Helper.getTranslation("propertiesForProcessNotSaved", param);
+//					Helper.setFehlerMeldung(value);
+//				}
 			}
 		}
 		if (!error) {

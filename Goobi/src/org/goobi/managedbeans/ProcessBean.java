@@ -711,7 +711,7 @@ public class ProcessBean extends BasicBean {
     public String VorlageLoeschen() {
         this.myProzess.getVorlagen().remove(this.myVorlage);
         TemplateManager.deleteTemplate(myVorlage);
-       
+
         return "process_edit";
     }
 
@@ -2013,13 +2013,8 @@ public class ProcessBean extends BasicBean {
                 }
             }
 
-            try {
-                ProcessManager.saveProcess(this.myProzess);
-                Helper.setMeldung("Properties saved");
-            } catch (DAOException e) {
-                logger.error(e);
-                Helper.setFehlerMeldung("Properties could not be saved");
-            }
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            Helper.setMeldung("Properties saved");
         }
     }
 
@@ -2045,13 +2040,11 @@ public class ProcessBean extends BasicBean {
             if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
-            try {
-                ProcessManager.saveProcess(this.myProzess);
-                Helper.setMeldung("propertiesSaved");
-            } catch (DAOException e) {
-                logger.error(e);
-                Helper.setFehlerMeldung("propertiesNotSaved");
-            }
+
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            //                ProcessManager.saveProcess(this.myProzess);
+            Helper.setMeldung("propertiesSaved");
+
         }
         loadProcessProperties();
     }

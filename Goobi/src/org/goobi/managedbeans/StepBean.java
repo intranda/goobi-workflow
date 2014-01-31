@@ -87,6 +87,7 @@ import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
 @ManagedBean(name = "AktuelleSchritteForm")
@@ -248,12 +249,12 @@ public class StepBean extends BasicBean {
                 Date myDate = new Date();
                 this.mySchritt.setBearbeitungsbeginn(myDate);
             }
-            HistoryManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(), this.mySchritt.getTitel(),
-                    HistoryEventType.stepInWork.getValue(), this.mySchritt.getProzess().getId());
-            
-//            this.mySchritt.getProzess().getHistory().add(
-//                    new HistoryEvent(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
-//                            this.mySchritt.getTitel(), HistoryEventType.stepInWork, this.mySchritt.getProzess()));
+            HistoryManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(), this.mySchritt
+                    .getTitel(), HistoryEventType.stepInWork.getValue(), this.mySchritt.getProzess().getId());
+
+            //            this.mySchritt.getProzess().getHistory().add(
+            //                    new HistoryEvent(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
+            //                            this.mySchritt.getTitel(), HistoryEventType.stepInWork, this.mySchritt.getProzess()));
             try {
                 /*
                  * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
@@ -328,9 +329,9 @@ public class StepBean extends BasicBean {
                     Date myDate = new Date();
                     s.setBearbeitungsbeginn(myDate);
                 }
-                
-                HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
-                        HistoryEventType.stepInWork.getValue(), s.getProzess().getId());
+
+                HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork
+                        .getValue(), s.getProzess().getId());
 
                 if (s.isTypImagesLesen() || s.isTypImagesSchreiben()) {
                     try {
@@ -350,7 +351,7 @@ public class StepBean extends BasicBean {
 
             try {
                 ProcessManager.saveProcess(s.getProzess());
-//                StepManager.saveStep(s);
+                //                StepManager.saveStep(s);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
                 myLogger.error("step couldn't get saved", e);
@@ -371,8 +372,8 @@ public class StepBean extends BasicBean {
             // only steps with same title
             currentStepsOfBatch =
                     StepManager.getSteps(null, "schritte.titel = \"" + steptitle
-                            + "\"  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = " + batchNumber + ")", 0,
-                            Integer.MAX_VALUE);
+                            + "\"  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")", 0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
             //			Criteria crit = session.createCriteria(Step.class);
@@ -572,11 +573,11 @@ public class StepBean extends BasicBean {
                     WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "error", message));
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
-            HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(),
-                    HistoryEventType.stepError.getValue(), temp.getProzess().getId());
-            
-//            this.mySchritt.getProzess().getHistory().add(
-//                    new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp.getProzess()));
+            HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
+                    .getProzess().getId());
+
+            //            this.mySchritt.getProzess().getHistory().add(
+            //                    new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp.getProzess()));
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
@@ -1204,13 +1205,13 @@ public class StepBean extends BasicBean {
                 }
             }
 
-            try {
-                ProcessManager.saveProcess(p);
+//            try {
+                PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
                 Helper.setMeldung("propertiesSaved");
-            } catch (DAOException e) {
-                myLogger.error(e);
-                Helper.setFehlerMeldung("propertiesNotSaved");
-            }
+            //            } catch (DAOException e) {
+            //                myLogger.error(e);
+            //                Helper.setFehlerMeldung("propertiesNotSaved");
+            //            }
         }
     }
 
@@ -1244,13 +1245,14 @@ public class StepBean extends BasicBean {
                 this.mySchritt.getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
                 this.processProperty.getProzesseigenschaft().setProzess(this.mySchritt.getProzess());
             }
-            try {
-                ProcessManager.saveProcess(this.mySchritt.getProzess());
+//            try {
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+//                ProcessManager.saveProcess(this.mySchritt.getProzess());
                 Helper.setMeldung("propertySaved");
-            } catch (DAOException e) {
-                myLogger.error(e);
-                Helper.setFehlerMeldung("propertyNotSaved");
-            }
+//            } catch (DAOException e) {
+//                myLogger.error(e);
+//                Helper.setFehlerMeldung("propertyNotSaved");
+//            }
         }
         loadProcessProperties();
     }
@@ -1289,12 +1291,13 @@ public class StepBean extends BasicBean {
                 this.mySchritt.getProzess().getEigenschaften().remove(pe);
             }
         }
-        try {
-            ProcessManager.saveProcess(this.mySchritt.getProzess());
-        } catch (DAOException e) {
-            myLogger.error(e);
-            Helper.setFehlerMeldung("propertiesNotDeleted");
-        }
+//        try {
+//            ProcessManager.saveProcess(this.mySchritt.getProzess());
+            PropertyManager.deleteProcessProperty(processProperty.getProzesseigenschaft());
+//        } catch (DAOException e) {
+//            myLogger.error(e);
+//            Helper.setFehlerMeldung("propertiesNotDeleted");
+//        }
         // saveWithoutValidation();
         loadProcessProperties();
     }
@@ -1389,13 +1392,8 @@ public class StepBean extends BasicBean {
             this.processProperty.transfer();
 
         }
-        try {
-            ProcessManager.saveProcess(this.mySchritt.getProzess());
-            Helper.setMeldung("propertySaved");
-        } catch (DAOException e) {
-            myLogger.error(e);
-            Helper.setFehlerMeldung("propertiesNotSaved");
-        }
+        PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+        Helper.setMeldung("propertySaved");
         loadProcessProperties();
         return "";
     }
@@ -1415,14 +1413,14 @@ public class StepBean extends BasicBean {
     public void setHideCorrectionTasks(boolean hideCorrectionTasks) {
         this.hideCorrectionTasks = hideCorrectionTasks;
     }
-    
+
     public boolean isHideStepsFromOtherUsers() {
-		return hideStepsFromOtherUsers;
-	}
-    
+        return hideStepsFromOtherUsers;
+    }
+
     public void setHideStepsFromOtherUsers(boolean hideStepsFromOtherUsers) {
-		this.hideStepsFromOtherUsers = hideStepsFromOtherUsers;
-	}
+        this.hideStepsFromOtherUsers = hideStepsFromOtherUsers;
+    }
 
     public String callStepPlugin() {
         if (mySchritt.getStepPlugin() != null && mySchritt.getStepPlugin().length() > 0) {
