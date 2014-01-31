@@ -71,6 +71,7 @@ import org.goobi.mq.WebServiceResult;
 import org.jdom.Element;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.enums.ReportLevel;
 
@@ -120,14 +121,14 @@ public class Helper implements Serializable, Observer {
 
 	public String getGoobiDataDirectory() {
 		if (this.myMetadatenVerzeichnis == null) {
-			this.myMetadatenVerzeichnis = ConfigMain.getParameter("MetadatenVerzeichnis");
+			this.myMetadatenVerzeichnis = ConfigurationHelper.getInstance().getMetadataFolder();
 		}
 		return this.myMetadatenVerzeichnis;
 	}
 
 	public String getGoobiConfigDirectory() {
 		if (this.myConfigVerzeichnis == null) {
-			this.myConfigVerzeichnis = ConfigMain.getParameter("KonfigurationVerzeichnis");
+			this.myConfigVerzeichnis = ConfigurationHelper.getInstance().getConfigurationFolder();
 		}
 		return this.myConfigVerzeichnis;
 	}

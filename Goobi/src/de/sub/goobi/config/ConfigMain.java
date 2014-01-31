@@ -100,23 +100,23 @@ public class ConfigMain implements Serializable {
 //        return filename;
 //    }
 
-    public static void setImagesPath(String path) {
-        imagesPath = path;
-    }
+//    public static void setImagesPath(String path) {
+//        imagesPath = path;
+//    }
 
-    /**
-     * Ermitteln eines bestimmten Paramters der Konfiguration
-     * 
-     * @return Paramter als String
-     */
-    public static String getParameter(String inParameter) {
-        try {
-            return config.getString(inParameter);
-        } catch (RuntimeException e) {
-            myLogger.error(e);
-            return "- keine Konfiguration gefunden -";
-        }
-    }
+//    /**
+//     * Ermitteln eines bestimmten Paramters der Konfiguration
+//     * 
+//     * @return Paramter als String
+//     */
+//    public static String getParameter(String inParameter) {
+//        try {
+//            return config.getString(inParameter);
+//        } catch (RuntimeException e) {
+//            myLogger.error(e);
+//            return "- keine Konfiguration gefunden -";
+//        }
+//    }
 
     /**
      * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes

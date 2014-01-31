@@ -48,7 +48,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
@@ -57,6 +56,7 @@ import de.sub.goobi.modul.ExtendedProzessImpl;
 import de.sub.goobi.persistence.managers.ProcessManager;
 //import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.unigoettingen.goobi.module.api.exception.GoobiException;
 import de.unigoettingen.goobi.module.api.exception.GoobiModuleException;
@@ -285,7 +285,7 @@ public class ModuleServerForm {
 		myRunningShortSessions.put(tempID, processId);
 		GoobiModuleParameter gmp = new GoobiModuleParameter(processId, tempID, myModule.getModuleClient().longsessionID, null);
 
-		String applicationUrl = ConfigMain.getParameter("ApplicationWebsiteUrl");
+		String applicationUrl = ConfigurationHelper.getInstance().getApplicationURL();
 
 		gmp.put("return_url", applicationUrl + HelperForm.MAIN_JSF_PATH + "/aktiveModule.jsf?sessionId=" + tempID);
 		gmp.put("type", "PRODUCE");

@@ -34,6 +34,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -320,7 +321,7 @@ public class User implements DatabaseObject {
 			LdapAuthentication myldap = new LdapAuthentication();
 			rueckgabe = myldap.getUserHomeDirectory(this);
 		} else {
-			rueckgabe = ConfigMain.getParameter("dir_Users") + this.login;
+			rueckgabe = ConfigurationHelper.getInstance().getUserFolder() + this.login;
 		}
 
 		if (rueckgabe.equals("")) {

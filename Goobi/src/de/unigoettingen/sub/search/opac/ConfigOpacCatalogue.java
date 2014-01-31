@@ -44,6 +44,7 @@ import org.jdom.output.XMLOutputter;
 import org.w3c.dom.Node;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class ConfigOpacCatalogue {
 	private static final Logger myLogger = Logger.getLogger(ConfigOpacCatalogue.class);
@@ -111,8 +112,8 @@ public class ConfigOpacCatalogue {
 	public Node executeBeautifier(Node myHitlist) {
 		/* Ausgabe des Opac-Ergebnissen in Datei */
 
-		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigMain.getParameter("debugFolder")).canWrite()) {
-			debugMyNode(myHitlist, ConfigMain.getParameter("debugFolder") + "/opacBeautifyBefore.xml");
+		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+			debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
 		}
 
 		/*
@@ -143,8 +144,8 @@ public class ConfigOpacCatalogue {
 		}
 
 		/* Ausgabe des überarbeiteten Opac-Ergebnisses */
-		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigMain.getParameter("debugFolder")).canWrite()) {
-			debugMyNode(myHitlist, ConfigMain.getParameter("debugFolder") + "/opacBeautifyAfter.xml");
+		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+			debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
 		}
 		return myHitlist;
 	}

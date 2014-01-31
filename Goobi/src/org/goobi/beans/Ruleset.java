@@ -34,7 +34,7 @@ import org.goobi.beans.DatabaseObject;
 
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class Ruleset implements Serializable, DatabaseObject {
 	private static final long serialVersionUID = -6663371963274685060L;
@@ -76,7 +76,7 @@ public class Ruleset implements Serializable, DatabaseObject {
 	public Prefs getPreferences() {
 		this.mypreferences = new Prefs();
 		try {
-			this.mypreferences.loadPrefs(ConfigMain.getParameter("RegelsaetzeVerzeichnis")
+			this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder()
 					+ this.datei);
 		} catch (PreferencesException e) {
 			logger.error(e);

@@ -1858,7 +1858,7 @@ public class Metadaten {
         }
 
         if (ConfigMain.getParameter("MetsEditorDefaultSuffix", null) != null) {
-            String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix");
+            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             for (String directory : this.allTifFolders) {
                 if (directory.endsWith(suffix)) {
                     this.currentTifFolder = directory;
@@ -2558,7 +2558,7 @@ public class Metadaten {
     }
 
     private String getOcrBasisUrl(int... seiten) {
-        String url = ConfigMain.getParameter("ocrUrl");
+        String url = ConfigurationHelper.getInstance().getOcrUrl();
         VariableReplacer replacer = new VariableReplacer(this.mydocument, this.myPrefs, this.myProzess, null);
         url = replacer.replace(url);
         url += "/&imgrange=" + seiten[0];

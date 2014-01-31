@@ -34,7 +34,7 @@ import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Ruleset;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -53,7 +53,7 @@ public class RulesetBean extends BasicBean {
 
 	public String Speichern() {
 		try {
-			if (hasValidRulesetFilePath(myRegelsatz, ConfigMain.getParameter("RegelsaetzeVerzeichnis"))) {
+			if (hasValidRulesetFilePath(myRegelsatz, ConfigurationHelper.getInstance().getRulesetFolder())) {
 				RulesetManager.saveRuleset(myRegelsatz);
 				paginator.load();
 				return FilterKein();

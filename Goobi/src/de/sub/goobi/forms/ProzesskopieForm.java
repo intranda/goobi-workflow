@@ -86,6 +86,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
@@ -1035,7 +1036,7 @@ public class ProzesskopieForm {
 
     public Collection<SelectItem> getArtists() {
         ArrayList<SelectItem> artisten = new ArrayList<SelectItem>();
-        StringTokenizer tokenizer = new StringTokenizer(ConfigMain.getParameter("TiffHeaderArtists"), "|");
+        StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
         boolean tempBol = true;
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();

@@ -43,9 +43,10 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
-
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -88,7 +89,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
 			 * define path for mets and pdfs
 			 * --------------------------------*/
 			URL goobiContentServerUrl = null;
-			String contentServerUrl = ConfigMain.getParameter("goobiContentServerUrl");
+			String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
 			new File("");
 			File tempPdf = File.createTempFile(this.getProzess().getTitel(), ".pdf");
 			File finalPdf = new File(this.targetFolder, this.getProzess().getTitel() + ".pdf");

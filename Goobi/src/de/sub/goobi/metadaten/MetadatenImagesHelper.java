@@ -68,6 +68,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
@@ -495,7 +496,7 @@ public class MetadatenImagesHelper {
             tmpSize = 1;
         }
         logger.trace("tmpSize: " + tmpSize);
-        if (ConfigMain.getParameter("ContentServerUrl") == null) {
+        if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
             ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
             logger.trace("im");
@@ -510,7 +511,7 @@ public class MetadatenImagesHelper {
             outputFileStream.close();
             logger.trace("close stream");
         } else {
-            String cs = ConfigMain.getParameter("ContentServerUrl") + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
+            String cs = ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);

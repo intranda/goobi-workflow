@@ -59,6 +59,7 @@ import ugh.exceptions.WriteException;
 //import ugh.fileformats.mets.MetsMods;
 //import ugh.fileformats.mets.XStream;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -852,7 +853,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String FORMAT = "";
         if (ConfigMain.getIntParameter("numberOfMetaBackups") != 0) {
             numberOfBackups = ConfigMain.getIntParameter("numberOfMetaBackups");
-            FORMAT = ConfigMain.getParameter("formatOfMetaBackups");
+            FORMAT = ConfigurationHelper.getInstance().getFormatOfMetsBackup();
         }
         if (numberOfBackups != 0) {
             String typeOfBackup = ConfigMain.getParameter("typeOfBackup", "renameFile");
@@ -1115,7 +1116,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String downloadDocket() {
 
         logger.debug("generate docket for process " + this.id);
-        String rootpath = ConfigMain.getParameter("xsltFolder");
+        String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         File xsltfile = new File(rootpath, "docket.xsl");
         if (docket != null) {
             xsltfile = new File(rootpath, docket.getFile());

@@ -45,8 +45,11 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public class UghHelper {
@@ -218,7 +221,7 @@ public class UghHelper {
 				filename = session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator
 						+ "goobi_opacLanguages.txt";
 			} else {
-				filename = ConfigMain.getParameter("KonfigurationVerzeichnis") + "goobi_opacLanguages.txt";
+				filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacLanguages.txt";
 			}
 			FileInputStream fis = new FileInputStream(filename);
 			InputStreamReader isr = new InputStreamReader(fis, "UTF8");
@@ -251,7 +254,7 @@ public class UghHelper {
 			HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
 			filename = session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator + "goobi_opacUmlaut.txt";
 		} else {
-			filename = ConfigMain.getParameter("KonfigurationVerzeichnis") + "goobi_opacUmlaut.txt";
+			filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
 		}
 		/* Datei zeilenweise durchlaufen und die Sprache vergleichen */
 		try {

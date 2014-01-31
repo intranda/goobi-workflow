@@ -39,7 +39,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 
 /**
@@ -55,7 +55,8 @@ public class SpracheForm {
 	 * The constructor of this class loads the required MessageBundle
 	 */
 	public SpracheForm() {
-		String p = ConfigMain.getParameter("language.force-default");
+	    // TODO get languages from web.xml
+		String p = ConfigurationHelper.getInstance().getDefaultLanguage();
 		if (p != null && p.length() > 0) {
 			FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(p));
 		}

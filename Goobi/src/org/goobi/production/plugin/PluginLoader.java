@@ -39,6 +39,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class PluginLoader {
 	
@@ -79,7 +80,7 @@ public class PluginLoader {
 	
 	private static PluginManagerUtil initialize(PluginType inType) {
 		PluginManager pm = PluginManagerFactory.createPluginManager();
-		String path = ConfigMain.getParameter("pluginFolder") + inType.getName() + "/";
+		String path = ConfigurationHelper.getInstance().getPluginFolder() + inType.getName() + "/";
 		// switch here to development path for development of special plugin
 		if (useDevelopmentPath){
 			path = developmentPath;

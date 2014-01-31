@@ -15,30 +15,20 @@ public class ConfigMainTest {
 
     @Test
     public void testGetTempImagesPathAsCompleteDirectory() {
-        ConfigMain.setImagesPath("test");
+        ConfigurationHelper.setImagesPath("test");
         String fixture = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
         assertEquals("test", fixture);
     }
 
     @Test
     public void testSetImagesPath() {
-        ConfigMain.setImagesPath("test");
+        ConfigurationHelper.setImagesPath("test");
         String fixture = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
         assertEquals("test", fixture);
     }
     
 
-    @Test
-    public void testGetParameterString() {
-        ConfigMain.setParameter("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
-        String fixture = ConfigMain.getParameter("KonfigurationVerzeichnis");
-        assertNotNull(fixture);
-        assertEquals("/opt/digiverso/goobi/config/", fixture);
-        
-        fixture = ConfigMain.getParameter("wrongParameter");
-        assertNull(fixture);
-
-    }
+  
     
 
     @Test

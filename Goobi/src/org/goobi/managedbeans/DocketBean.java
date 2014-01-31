@@ -34,7 +34,7 @@ import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Docket;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -53,7 +53,7 @@ public class DocketBean extends BasicBean {
 
 	public String Speichern() {
 		try {
-			if (hasValidRulesetFilePath(myDocket, ConfigMain.getParameter("xsltFolder"))) {
+			if (hasValidRulesetFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
 				DocketManager.saveDocket(myDocket);
 				paginator.load();
 				return FilterKein();

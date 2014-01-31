@@ -52,8 +52,11 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -114,7 +117,7 @@ public class ExportPdf extends ExportMets {
 				 * -------------------------------- define path for mets and pdfs --------------------------------
 				 */
 				URL goobiContentServerUrl = null;
-				String contentServerUrl = ConfigMain.getParameter("goobiContentServerUrl");
+				String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
 				Integer contentServerTimeOut = ConfigMain.getIntParameter("goobiContentServerTimeOut", 60000);
 
 				/*

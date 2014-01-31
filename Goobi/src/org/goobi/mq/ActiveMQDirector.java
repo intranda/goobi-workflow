@@ -86,7 +86,7 @@ public class ActiveMQDirector implements ServletContextListener, ExceptionListen
 			if (session != null) {
 				registerListeners(services);
 				if (ConfigMain.getParameter("activeMQ.results.topic", null) != null) {
-					resultsTopic = setUpReportChannel(ConfigMain.getParameter("activeMQ.results.topic"));
+					resultsTopic = setUpReportChannel(ConfigMain.getParameter("activeMQ.results.topic", null));
 				}
 			}
 		}

@@ -66,10 +66,12 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import ugh.dl.Prefs;
+
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -235,7 +237,7 @@ public class MassImportForm {
 
 			// found list with ids
 			Prefs prefs = this.template.getRegelsatz().getPreferences();
-			String tempfolder = ConfigMain.getParameter("tempfolder");
+			String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
 			this.plugin.setImportFolder(tempfolder);
 			this.plugin.setPrefs(prefs);
 
@@ -772,7 +774,7 @@ public class MassImportForm {
 
 	public String downloadDocket() {
 		logger.debug("generate docket for process list");
-		String rootpath = ConfigMain.getParameter("xsltFolder");
+		String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
 		File xsltfile = new File(rootpath, "docket_multipage.xsl");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		if (!facesContext.getResponseComplete()) {

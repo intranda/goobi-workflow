@@ -1,6 +1,7 @@
 package de.sub.goobi.config;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class ConfigurationHelper implements Serializable {
         return configLocalPath;
     }
 
+    
     public boolean reloadingRequired() {
         boolean ret = false;
         if (configLocal != null) {
@@ -118,8 +120,15 @@ public class ConfigurationHelper implements Serializable {
     /**
      * den Pfad für die temporären Images zur Darstellung zurückgeben
      */
+    // TODO remove statuc
     public static String getTempImagesPath() {
         return "/imagesTemp/";
+    }
+
+    // needed for junit tests
+
+    public static void setImagesPath(String path) {
+        imagesPath = path;
     }
 
     /**
@@ -145,4 +154,142 @@ public class ConfigurationHelper implements Serializable {
         return filename;
     }
 
+    // folder
+
+    public String getConfigurationFolder() {
+        return getLocalString("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
+    }
+
+    public String getTemporaryFolder() {
+        return getLocalString("tempfolder", "/opt/digiverso/goobi/tmp/");
+    }
+
+    public String getXsltFolder() {
+        return getLocalString("xsltFolder", "/opt/digiverso/goobi/xslt/");
+    }
+
+    public String getMetadataFolder() {
+        return getLocalString("MetadatenVerzeichnis", "/opt/digiverso/goobi/metadata/");
+    }
+
+    public String getRulesetFolder() {
+        return getLocalString("RegelsaetzeVerzeichnis", "/opt/digiverso/goobi/rulesets/");
+    }
+
+    public String getUserFolder() {
+        return getLocalString("dir_Users", "/home/");
+    }
+    
+    public String getDebugFolder() {
+        return getLocalString("debugFolder", "");
+    }
+    
+    public String getPluginFolder() {
+        return getLocalString("pluginFolder", "/opt/digiverso/goobi/plugins/");
+    }
+    
+
+    // URLs
+
+    public String getGoobiContentServerUrl() {
+        return getLocalString("goobiContentServerUrl");
+    }
+    
+    public String getContentServerUrl() {
+        return getLocalString("ContentServerUrl");
+    }
+
+    public String getApplicationURL() {
+        return getLocalString("ApplicationWebsiteUrl");
+    }
+
+    public String getOcrUrl() {
+        return getLocalString("ocrUrl");
+    }
+    
+    public String getAdminPassword() {
+        return getLocalString("superadminpassword");
+    }
+
+    public String getDefaultLanguage() {
+        return getLocalString("language.force-default");
+    }
+
+    // process creation
+
+    public String getTiffHeaderArtists() {
+        return getLocalString("TiffHeaderArtists");
+    }
+
+    public String getScriptCreateDirMeta() {
+        return getLocalString("script_createDirMeta");
+    }
+
+    public String getScriptCreateDirUserHome() {
+        return getLocalString("script_createDirUserHome");
+    }
+
+    public String getScriptDeleteSymLink() {
+        return getLocalString("script_deleteSymLink");
+    }
+
+    public String getScriptCreateSymLink() {
+        return getLocalString("script_createSymLink");
+    }
+
+    // authentication
+
+    public String getLdapAdminLogin() {
+        return getLocalString("ldap_adminLogin");
+    }
+
+    public String getLdapAdminPassword() {
+        return getLocalString("ldap_adminPassword");
+    }
+
+    public String getLdapUrl() {
+        return getLocalString("ldap_url");
+    }
+
+    public String getLdapAttribute() {
+        return getLocalString("ldap_AttributeToTest", null);
+    }
+
+    public String getLdapAttributeValue() {
+        return getLocalString("ldap_ValueOfAttribute");
+    }
+
+    public String getLdapNextId() {
+        return getLocalString("ldap_nextFreeUnixId");
+    }
+
+    public String getLdapKeystore() {
+        return getLocalString("ldap_keystore");
+    }
+
+    public String getLdapKeystoreToken() {
+        return getLocalString("ldap_keystore_password");
+    }
+
+    public String getLdapRootCert() {
+        return getLocalString("ldap_cert_root");
+    }
+
+    public String getLdapPdcCert() {
+        return getLocalString("ldap_cert_pdc");
+    }
+
+    
+    // mets editor
+    
+    public String getMetsEditorDefaultSuffix() {
+        return getLocalString("MetsEditorDefaultSuffix");
+    }
+    
+    public String getFormatOfMetsBackup() {
+        return getLocalString("formatOfMetaBackups");
+    }
+    
+   
+    
 }

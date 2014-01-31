@@ -44,10 +44,10 @@ import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
-
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Batch;
 import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.Helper;
@@ -258,7 +258,7 @@ public class BatchBean extends BasicBean {
 
     public String downloadDocket() {
         logger.debug("generate docket for process list");
-        String rootpath = ConfigMain.getParameter("xsltFolder");
+        String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         File xsltfile = new File(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         List<Process> docket = new ArrayList<Process>();

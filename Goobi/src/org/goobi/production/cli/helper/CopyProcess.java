@@ -75,6 +75,7 @@ import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.AdditionalField;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.BeanHelper;
@@ -1052,7 +1053,7 @@ public class CopyProcess extends ProzesskopieForm {
     @Override
     public Collection<SelectItem> getArtists() {
         ArrayList<SelectItem> artisten = new ArrayList<SelectItem>();
-        StringTokenizer tokenizer = new StringTokenizer(ConfigMain.getParameter("TiffHeaderArtists"), "|");
+        StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
         boolean tempBol = true;
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();

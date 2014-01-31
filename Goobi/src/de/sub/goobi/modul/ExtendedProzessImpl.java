@@ -32,8 +32,10 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.goobi.beans.Process;
+
 import de.sub.goobi.forms.ModuleServerForm;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -137,7 +139,7 @@ public class ExtendedProzessImpl extends ProcessImpl {
       super.getParams(sessionId);
       HashMap<String, String> myMap = new HashMap<String, String>();
       Process p = ModuleServerForm.getProcessFromShortSession(sessionId);
-      myMap.put("ruleset", ConfigMain.getParameter("RegelsaetzeVerzeichnis") + p.getRegelsatz().getDatei());
+      myMap.put("ruleset", ConfigurationHelper.getInstance().getRulesetFolder() + p.getRegelsatz().getDatei());
       try {
 		myMap.put("tifdirectory", p.getImagesTifDirectory(false));
 		} catch (IOException e) {

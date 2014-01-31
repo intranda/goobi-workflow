@@ -40,9 +40,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
-
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.TiffHeader;
 
 public class WebDav implements Serializable {
@@ -219,7 +220,7 @@ public class WebDav implements Serializable {
 			return;
 		}
 
-		String command = ConfigMain.getParameter("script_createSymLink") + " ";
+		String command = ConfigurationHelper.getInstance().getScriptCreateSymLink()+ " "; 
 		command += imagePfad + " " + benutzerHome + " ";
 		if (inNurLesen) {
 			command += ConfigMain.getParameter("UserForImageReading", "root");
