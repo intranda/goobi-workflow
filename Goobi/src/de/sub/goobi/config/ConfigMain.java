@@ -73,32 +73,32 @@ public class ConfigMain implements Serializable {
     /**
      * den Pfad für die temporären Images zur Darstellung zurückgeben ================================================================
      */
-    public static String getTempImagesPath() {
-        return "/imagesTemp/";
-    }
+//    public static String getTempImagesPath() {
+//        return "/imagesTemp/";
+//    }
 
-    /**
-     * den absoluten Pfad für die temporären Images zurückgeben ================================================================
-     */
-    public static String getTempImagesPathAsCompleteDirectory() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        String filename;
-        if (imagesPath != null) {
-            filename = imagesPath;
-        } else {
-            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-            filename = session.getServletContext().getRealPath("/imagesTemp") + File.separator;
-
-            /* den Ordner neu anlegen, wenn er nicht existiert */
-            try {
-                FilesystemHelper.createDirectory(filename);
-            } catch (Exception ioe) {
-                myLogger.error("IO error: " + ioe);
-                Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
-            }
-        }
-        return filename;
-    }
+//    /**
+//     * den absoluten Pfad für die temporären Images zurückgeben ================================================================
+//     */
+//    public static String getTempImagesPathAsCompleteDirectory() {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        String filename;
+//        if (imagesPath != null) {
+//            filename = imagesPath;
+//        } else {
+//            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+//            filename = session.getServletContext().getRealPath("/imagesTemp") + File.separator;
+//
+//            /* den Ordner neu anlegen, wenn er nicht existiert */
+//            try {
+//                FilesystemHelper.createDirectory(filename);
+//            } catch (Exception ioe) {
+//                myLogger.error("IO error: " + ioe);
+//                Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
+//            }
+//        }
+//        return filename;
+//    }
 
     public static void setImagesPath(String path) {
         imagesPath = path;

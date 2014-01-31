@@ -8,7 +8,7 @@ public class ConfigMainTest {
 
     @Test
     public void testGetTempImagesPath() {
-        String fixture = ConfigMain.getTempImagesPath();
+        String fixture = ConfigurationHelper.getTempImagesPath();
         assertNotNull(fixture);
         assertEquals("/imagesTemp/", fixture);
     }
@@ -16,14 +16,14 @@ public class ConfigMainTest {
     @Test
     public void testGetTempImagesPathAsCompleteDirectory() {
         ConfigMain.setImagesPath("test");
-        String fixture = ConfigMain.getTempImagesPathAsCompleteDirectory();
+        String fixture = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
         assertEquals("test", fixture);
     }
 
     @Test
     public void testSetImagesPath() {
         ConfigMain.setImagesPath("test");
-        String fixture = ConfigMain.getTempImagesPathAsCompleteDirectory();
+        String fixture = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
         assertEquals("test", fixture);
     }
     

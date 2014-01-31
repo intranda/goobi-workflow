@@ -41,6 +41,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -223,7 +224,7 @@ public class LoginBean {
 
 	private void AlteBilderAufraeumen() {
 		/* Pages-Verzeichnis mit den temporären Images ermitteln */
-		String myPfad = ConfigMain.getTempImagesPathAsCompleteDirectory();
+		String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
 		/* Verzeichnis einlesen */
 		FilenameFilter filter = new FilenameFilter() {

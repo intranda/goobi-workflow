@@ -43,6 +43,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -103,7 +104,7 @@ public class StatistikLaufzeitSchritte {
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		plot.setBackgroundPaint(Color.white);
 		plot.setForegroundAlpha(0.6f);
-		ChartUtilities.saveChartAsPNG(new File(ConfigMain.getTempImagesPathAsCompleteDirectory() + imageUrl), chart, 800, inProzesse.size() * 50);
+		ChartUtilities.saveChartAsPNG(new File(ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + imageUrl), chart, 800, inProzesse.size() * 50);
 
 		return imageUrl;
 	}

@@ -85,6 +85,7 @@ import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
@@ -1833,7 +1834,7 @@ public class Metadaten {
         /* Session ermitteln */
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        return ConfigMain.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
+        return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
     }
 
     public List<String> getAllTifFolders() {
@@ -1967,7 +1968,7 @@ public class Metadaten {
                     this.myBildNummer = pos + 1;
                     myLogger.trace("myBildNummer: " + this.myBildNummer);
                     /* Pages-Verzeichnis ermitteln */
-                    String myPfad = ConfigMain.getTempImagesPathAsCompleteDirectory();
+                    String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
                     myLogger.trace("myPfad: " + myPfad);
                     /*
                      * den Counter für die Bild-ID auf einen neuen Wert setzen, damit nichts gecacht wird

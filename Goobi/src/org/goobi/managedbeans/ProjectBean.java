@@ -58,7 +58,6 @@ import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.flow.statistics.hibernate.StatQuestProjectProgressData;
-
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
@@ -67,6 +66,7 @@ import org.joda.time.Years;
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -595,7 +595,7 @@ public class ProjectBean extends BasicBean {
 			cr.setDataTable(this.projectProgressData.getSelectedTable());
 			BufferedImage bi = (BufferedImage) cr.getRendering();
 			this.projectProgressImage = System.currentTimeMillis() + ".png";
-			String localImagePath = ConfigMain.getTempImagesPathAsCompleteDirectory();
+			String localImagePath = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
 			File outputfile = new File(localImagePath + this.projectProgressImage);
 			try {
@@ -665,7 +665,7 @@ public class ProjectBean extends BasicBean {
 		projectStatusDraw.paint();
 
 		// write image to temporary file
-		String localImagePath = ConfigMain.getTempImagesPathAsCompleteDirectory();
+		String localImagePath = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 		File outputfile = new File(localImagePath + inName);
 		ImageIO.write(image, "png", outputfile);
 	}
