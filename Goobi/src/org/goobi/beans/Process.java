@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +49,7 @@ import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
+import org.goobi.io.FileListFilter;
 import org.goobi.production.export.ExportDocket;
 
 import ugh.dl.Fileformat;
@@ -844,63 +847,74 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     // backup of meta.xml
 
-    private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
+   private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
         int numberOfBackups = 0;
-        String format = "";
+        String FORMAT = "";
         if (ConfigMain.getIntParameter("numberOfMetaBackups") != 0) {
             numberOfBackups = ConfigMain.getIntParameter("numberOfMetaBackups");
-            // FORMAT = ConfigMain.getParameter("formatOfMetaBackups");
-            // }
-            // if (numberOfBackups != 0 && FORMAT != null) {
-            // FilenameFilter filter = new FileUtils.FileListFilter(FORMAT);
-            // File metaFilePath = new File(getProcessDataDirectory());
-            // File[] meta = metaFilePath.listFiles(filter);
-            // if (meta != null) {
-            // List<File> files = Arrays.asList(meta);
-            // Collections.reverse(files);
-            //
-            // int count;
-            // if (meta != null) {
-            // if (files.size() > numberOfBackups) {
-            // count = numberOfBackups;
-            // } else {
-            // count = meta.length;
-            // }
-            // while (count > 0) {
-            // for (File data : files) {
-            // if (data.length() != 0) {
-            // if (data.getName().endsWith("xml." + (count - 1))) {
-            // Long lastModified = data.lastModified();
-            // File newFile = new File(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
-            // data.renameTo(newFile);
-            // if (lastModified > 0L) {
-            // newFile.setLastModified(lastModified);
-            // }
-            // }
-            // if (data.getName().endsWith(".xml") && count == 1) {
-            // Long lastModified = data.lastModified();
-            // File newFile = new File(data.toString() + ".1");
-            // data.renameTo(newFile);
-            // if (lastModified > 0L) {
-            // newFile.setLastModified(lastModified);
-            // }
-            // }
-            // }
-            // }
-            // count--;
-            // }
-            // }
-            format = ConfigMain.getParameter("formatOfMetaBackups");
+            FORMAT = ConfigMain.getParameter("formatOfMetaBackups");
         }
-
         if (numberOfBackups != 0) {
-            BackupFileRotation bfr = new BackupFileRotation();
-            bfr.setNumberOfBackups(numberOfBackups);
-            bfr.setFormat("meta.*\\.xml");
-            bfr.setProcessDataDirectory(getProcessDataDirectory());
-            bfr.performBackup();
+            String typeOfBackup = ConfigMain.getParameter("typeOfBackup", "renameFile");
+            if (typeOfBackup.equals("renameFile") && FORMAT != null) {
+                createBackup(numberOfBackups, FORMAT);
+            } else if (typeOfBackup.equals("")) {
+                BackupFileRotation bfr = new BackupFileRotation();
+                bfr.setNumberOfBackups(numberOfBackups);
+                bfr.setFormat("meta.*\\.xml");
+                bfr.setProcessDataDirectory(getProcessDataDirectory());
+                bfr.performBackup();
+            }
         } else {
-            logger.warn("No backup configured for meta data files.");
+            logger.debug("No backup configured for meta data files.");
+        }
+        //            format = ConfigMain.getParameter("formatOfMetaBackups");
+        //        }
+        //        if (format != null) {
+        //            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
+        //        }
+
+    }
+
+    private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
+        FilenameFilter filter = new FileListFilter(FORMAT);
+        File metaFilePath = new File(getProcessDataDirectory());
+        File[] meta = metaFilePath.listFiles(filter);
+        if (meta != null) {
+            List<File> files = Arrays.asList(meta);
+            Collections.reverse(files);
+
+            int count;
+            if (meta != null) {
+                if (files.size() > numberOfBackups) {
+                    count = numberOfBackups;
+                } else {
+                    count = meta.length;
+                }
+                while (count > 0) {
+                    for (File data : files) {
+                        if (data.length() != 0) {
+                            if (data.getName().endsWith("xml." + (count - 1))) {
+                                Long lastModified = data.lastModified();
+                                File newFile = new File(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
+                                data.renameTo(newFile);
+                                if (lastModified > 0L) {
+                                    newFile.setLastModified(lastModified);
+                                }
+                            }
+                            if (data.getName().endsWith(".xml") && count == 1) {
+                                Long lastModified = data.lastModified();
+                                File newFile = new File(data.toString() + ".1");
+                                data.renameTo(newFile);
+                                if (lastModified > 0L) {
+                                    newFile.setLastModified(lastModified);
+                                }
+                            }
+                        }
+                    }
+                    count--;
+                }
+            }
         }
     }
 

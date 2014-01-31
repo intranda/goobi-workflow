@@ -55,6 +55,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.LdapManager;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -105,6 +106,7 @@ public class UserBean extends BasicBean {
         UserManager m = new UserManager();
         String myfilter = getBasicFilter();
         if (this.filter != null || this.filter.length() != 0) {
+            filter = MySQLHelper.escapeString(filter);
             myfilter +=
                     " AND (vorname like '%"
                             + StringEscapeUtils.escapeSql(this.filter)
@@ -115,7 +117,6 @@ public class UserBean extends BasicBean {
                             + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
                             + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
-
         paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
     }

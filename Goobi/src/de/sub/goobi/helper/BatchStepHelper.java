@@ -66,6 +66,7 @@ import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
 public class BatchStepHelper {
@@ -186,13 +187,15 @@ public class BatchStepHelper {
             if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
-            try {
-                ProcessManager.saveProcess(this.currentStep.getProzess());
+//            try {
+                PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+
+//                ProcessManager.saveProcess(this.currentStep.getProzess());
                 Helper.setMeldung("Property saved");
-            } catch (DAOException e) {
-                logger.error(e);
-                Helper.setFehlerMeldung("Properties could not be saved");
-            }
+//            } catch (DAOException e) {
+//                logger.error(e);
+//                Helper.setFehlerMeldung("Properties could not be saved");
+//            }
         }
     }
 
@@ -257,13 +260,15 @@ public class BatchStepHelper {
                     }
                 }
 
-                try {
-                    ProcessManager.saveProcess(process);
-                } catch (DAOException e) {
-                    error = true;
-                    logger.error(e);
-                    Helper.setFehlerMeldung("Properties for process " + process.getTitel() + " could not be saved");
-                }
+//                try {
+                    PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+
+//                    ProcessManager.saveProcess(process);
+//                } catch (DAOException e) {
+//                    error = true;
+//                    logger.error(e);
+//                    Helper.setFehlerMeldung("Properties for process " + process.getTitel() + " could not be saved");
+//                }
             }
         }
         if (!error) {
@@ -801,7 +806,8 @@ public class BatchStepHelper {
             }
 
             try {
-                ProcessManager.saveProcess(s.getProzess());
+//                ProcessManager.saveProcess(s.getProzess());
+                StepManager.saveStep(s);
             } catch (DAOException e) {
             }
         }

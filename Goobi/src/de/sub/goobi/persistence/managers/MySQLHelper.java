@@ -208,4 +208,19 @@ public class MySQLHelper implements Serializable {
             return answer;
         }
     };
+    
+    
+    
+    
+    public static String escapeString(String inputString) {
+        if (inputString != null) {
+            inputString = inputString.replace("\\", "\\\\");
+            inputString = inputString.replace("%", "\\%");
+            inputString = inputString.replace("_", "\\_");
+            inputString = inputString.replace("?", "_");
+            inputString = inputString.replace("*", "%");
+        }
+        return inputString;
+    }
+    
 }

@@ -1288,6 +1288,32 @@ public class Metadaten {
         return MetadatenalsTree3Einlesen1();
     }
 
+    public String duplicateNode() {
+        if (myDocStruct != null && myDocStruct.getParent() != null) {
+            List<DocStruct> siblings = myDocStruct.getParent().getAllChildren();
+            int index = siblings.indexOf(myDocStruct);
+            try {
+                DocStruct ds = mydocument.createDocStruct(myDocStruct.getType());
+
+                List<Reference> references = myDocStruct.getAllToReferences();
+                if (!references.isEmpty()) {
+                    Reference last = references.get(references.size() - 1);
+                    Integer pageNo =
+                            Integer.parseInt(last.getTarget().getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+                    if (alleSeitenNeu.length > pageNo)
+                        ds.addReferenceTo(this.alleSeitenNeu[pageNo].getMd().getDocStruct(), "logical_physical");
+
+                }
+                siblings.add(index + 1, ds);
+
+            } catch (TypeNotAllowedForParentException e) {
+                myLogger.error(e);
+            }
+        }
+
+        return MetadatenalsTree3Einlesen1();
+    }
+
     /**
      * Knoten hinzufügen
      * 
