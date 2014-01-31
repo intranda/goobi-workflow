@@ -28,7 +28,6 @@ class UserMysqlHelper implements Serializable {
     private static final Logger logger = Logger.getLogger(UserMysqlHelper.class);
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws SQLException {
-        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzer");
@@ -54,7 +53,6 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static int getUserCount(String order, String filter) throws SQLException {
-        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(BenutzerID) FROM benutzer");
@@ -232,7 +230,6 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static void addFilterToUser(int userId, String filter) throws SQLException {
-        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         Timestamp datetime = new Timestamp(new Date().getTime());
         try {
@@ -251,7 +248,6 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static void removeFilterFromUser(int userId, String filter) throws SQLException {
-        filter = MySQLHelper.escapeString(filter);
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
