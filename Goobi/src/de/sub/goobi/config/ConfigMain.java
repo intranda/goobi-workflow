@@ -173,13 +173,13 @@ public class ConfigMain implements Serializable {
      * 
      * @return Paramter as Int
      */
-    public static int getIntParameter(String inParameter, int inDefault) {
-        try {
-            return config.getInt(inParameter, inDefault);
-        } catch (Exception e) {
-            return 0;
-        }
-    }
+//    public static int getIntParameter(String inParameter, int inDefault) {
+//        try {
+//            return config.getInt(inParameter, inDefault);
+//        } catch (Exception e) {
+//            return 0;
+//        }
+//    }
 
     // needed for junit tests
 

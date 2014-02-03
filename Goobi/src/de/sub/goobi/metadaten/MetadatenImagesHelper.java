@@ -518,7 +518,7 @@ public class MetadatenImagesHelper {
             HttpClient httpclient = new HttpClient();
             GetMethod method = new GetMethod(csUrl.toString());
             logger.trace("get");
-            Integer contentServerTimeOut = ConfigMain.getIntParameter("goobiContentServerTimeOut", 60000);
+            Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
             method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
             int statusCode = httpclient.executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {

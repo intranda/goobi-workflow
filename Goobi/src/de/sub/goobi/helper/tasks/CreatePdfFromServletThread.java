@@ -93,7 +93,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
 			new File("");
 			File tempPdf = File.createTempFile(this.getProzess().getTitel(), ".pdf");
 			File finalPdf = new File(this.targetFolder, this.getProzess().getTitel() + ".pdf");
-			Integer contentServerTimeOut = ConfigMain.getIntParameter("goobiContentServerTimeOut", 60000);
+			Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 			
 			/* --------------------------------
 			 * using mets file

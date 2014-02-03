@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 import ugh.dl.DocStruct;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.TreeNode;
 
 public class TreeNodeStruct3 extends TreeNode {
@@ -82,7 +83,7 @@ public class TreeNodeStruct3 extends TreeNode {
 
 	public String getMainTitle() {
 		
-		int maxSize = ConfigMain.getIntParameter("MetsEditorMaxTitleLength", 0);
+		int maxSize = ConfigurationHelper.getInstance().getMetsEditorMaxTitleLength();
 		if (maxSize > 0 && this.mainTitle!=null && this.mainTitle.length() > maxSize){
 			return this.mainTitle.substring(0, maxSize -1);
 		}

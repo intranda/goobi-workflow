@@ -252,6 +252,10 @@ public class ConfigurationHelper implements Serializable {
     public String getContentServerUrl() {
         return getLocalString("ContentServerUrl");
     }
+    
+    public int getGoobiContentServerTimeOut() {
+        return getLocalInt("goobiContentServerTimeOut", 60000);
+    }
 
     public String getApplicationURL() {
         return getLocalString("ApplicationWebsiteUrl");
@@ -315,7 +319,12 @@ public class ConfigurationHelper implements Serializable {
     public boolean isEnableWebApi() {
         return getLocalBoolean("useWebApi", false);
     }
+    
+    public int getBatchMaxSize() {
+        return getLocalInt("batchMaxSize", 100);
+    }
 
+    
     // process creation
 
     public String getTiffHeaderArtists() {
@@ -442,6 +451,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
 
+    public int getMetsEditorMaxTitleLength() {
+        return getLocalInt("MetsEditorMaxTitleLength", 0);
+    }
+    
     public boolean isMetsEditorShowOCRButton() {
         return getLocalBoolean("showOcrButton");
     }

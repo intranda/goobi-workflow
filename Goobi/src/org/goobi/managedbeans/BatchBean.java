@@ -46,7 +46,6 @@ import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Batch;
 import de.sub.goobi.helper.BatchProcessHelper;
@@ -77,7 +76,7 @@ public class BatchBean extends BasicBean {
     private BatchProcessHelper batchHelper;
 
     private int getBatchMaxSize() {
-        int batchsize = ConfigMain.getIntParameter("batchMaxSize", 100);
+        int batchsize = ConfigurationHelper.getInstance().getBatchMaxSize();
         return batchsize;
     }
 
