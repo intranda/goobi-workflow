@@ -78,6 +78,15 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
+    private int getLocalInt(String inPath) {
+        try {
+            return configLocal.getInt(inPath, config.getInt(inPath));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0;
+        }
+    }
+    
     private long getLocalLong(String inPath, int inDefault) {
         try {
             return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
@@ -229,6 +238,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("createSourceFolder", false);
     }
 
+    public int getNumberOfMetaBackups() {
+        return getLocalInt("numberOfMetaBackups", 0);
+    }
+    
+    
     // URLs
 
     public String getGoobiContentServerUrl() {
@@ -535,4 +549,7 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("importUseOldConfiguration", false);
     }
 
+    public int getGoobiModuleServerPort() {
+        return getLocalInt("goobiModuleServerPort");
+    }
 }

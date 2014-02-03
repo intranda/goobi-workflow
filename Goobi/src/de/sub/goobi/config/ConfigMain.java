@@ -164,9 +164,9 @@ public class ConfigMain implements Serializable {
      * 
      * @return Paramter as Int
      */
-    public static int getIntParameter(String inParameter) {
-        return getIntParameter(inParameter, 0);
-    }
+//    public static int getIntParameter(String inParameter) {
+//        return getIntParameter(inParameter, 0);
+//    }
 
     /**
      * Request int-parameter from Configuration with default-value

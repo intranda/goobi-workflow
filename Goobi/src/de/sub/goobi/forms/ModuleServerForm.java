@@ -55,7 +55,6 @@ import de.sub.goobi.modul.ExtendedDataImpl;
 import de.sub.goobi.modul.ExtendedProzessImpl;
 import de.sub.goobi.persistence.managers.ProcessManager;
 //import de.sub.goobi.persistence.ProzessDAO;
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.unigoettingen.goobi.module.api.exception.GoobiException;
@@ -108,7 +107,7 @@ public class ModuleServerForm {
 	 */
 	public void readAllModulesFromConfiguraion() {
 		if (modulmanager == null) {
-			int port = ConfigMain.getIntParameter("goobiModuleServerPort");
+			int port = ConfigurationHelper.getInstance().getGoobiModuleServerPort();
 			modulmanager = new GoobiModuleManager(port, new ExtendedProzessImpl(), new ExtendedDataImpl());
 
 			/*

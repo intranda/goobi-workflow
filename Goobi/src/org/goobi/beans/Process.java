@@ -56,9 +56,6 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
-//import ugh.fileformats.mets.MetsMods;
-//import ugh.fileformats.mets.XStream;
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -851,8 +848,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
    private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
         int numberOfBackups = 0;
         String FORMAT = "";
-        if (ConfigMain.getIntParameter("numberOfMetaBackups") != 0) {
-            numberOfBackups = ConfigMain.getIntParameter("numberOfMetaBackups");
+        if (ConfigurationHelper.getInstance().getNumberOfMetaBackups() != 0) {
+            numberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
             FORMAT = ConfigurationHelper.getInstance().getFormatOfMetsBackup();
         }
         if (numberOfBackups != 0) {
