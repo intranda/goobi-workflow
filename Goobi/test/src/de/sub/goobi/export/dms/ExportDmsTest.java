@@ -27,7 +27,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -66,10 +66,10 @@ public class ExportDmsTest {
 
     private void setUpConfig() {
 
-        ConfigMain.setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
-        ConfigMain.setParameter("DIRECTORY_SUFFIX", "media");
-        ConfigMain.setParameter("DIRECTORY_PREFIX", "master");
-        ConfigMain.setParameter("ExportFilesFromOptionalMetsFileGroups", "true");
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
+        ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
+        ConfigurationHelper.getInstance().setParameter("ExportFilesFromOptionalMetsFileGroups", "true");
     }
 
     private void setUpProject() throws IOException {
@@ -119,7 +119,7 @@ public class ExportDmsTest {
         File projects = new File (configFolder, "goobi_projects.xml");
         FileUtils.copyFile(projectsTemplate, projects);
         
-        ConfigMain.setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
         
     }
 
@@ -135,7 +135,7 @@ public class ExportDmsTest {
         ruleset.setOrderMetadataByRuleset(true);
         ruleset.setTitel(RULESET_NAME);
         ruleset.setDatei(RULESET_NAME);
-        ConfigMain.setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
         testProcess.setRegelsatz(ruleset);
     }
 

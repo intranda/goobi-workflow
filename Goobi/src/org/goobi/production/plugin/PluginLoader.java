@@ -38,7 +38,6 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class PluginLoader {

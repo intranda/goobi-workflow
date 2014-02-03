@@ -43,7 +43,6 @@ import org.jdom.output.DOMOutputter;
 import org.jdom.output.XMLOutputter;
 import org.w3c.dom.Node;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class ConfigOpacCatalogue {

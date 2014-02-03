@@ -37,7 +37,6 @@ import javax.faces.bean.ManagedBean;
 import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;

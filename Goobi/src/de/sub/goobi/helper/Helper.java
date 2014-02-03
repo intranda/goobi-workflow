@@ -70,12 +70,12 @@ import org.goobi.mq.WebServiceResult;
 //import org.hibernate.Session;
 import org.jdom.Element;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.enums.ReportLevel;
 
 
+@SuppressWarnings("deprecation")
 public class Helper implements Serializable, Observer {
 
 	/**
@@ -259,7 +259,6 @@ public class Helper implements Serializable, Observer {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
     public static Object getManagedBeanValue(String expr) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (context == null) {

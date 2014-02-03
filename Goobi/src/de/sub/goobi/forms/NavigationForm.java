@@ -31,7 +31,6 @@ package de.sub.goobi.forms;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 
 @ManagedBean(name = "NavigationForm")

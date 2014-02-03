@@ -30,7 +30,6 @@ package de.sub.goobi.metadaten;
 import java.util.ArrayList;
 
 import ugh.dl.DocStruct;
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.TreeNode;
 

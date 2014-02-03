@@ -19,7 +19,7 @@ public class DigitalCollectionsTest {
     public void setUp() throws URISyntaxException {
         String folder = System.getenv("junitdata");
         File template = new File(folder + "goobi_projects.xml");
-        ConfigMain.setParameter("KonfigurationVerzeichnis", template.getParent() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + File.separator);
     }
 
     @Test

@@ -86,7 +86,7 @@ public class ConfigurationHelper implements Serializable {
             return 0;
         }
     }
-    
+
     private long getLocalLong(String inPath, int inDefault) {
         try {
             return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
@@ -241,8 +241,7 @@ public class ConfigurationHelper implements Serializable {
     public int getNumberOfMetaBackups() {
         return getLocalInt("numberOfMetaBackups", 0);
     }
-    
-    
+
     // URLs
 
     public String getGoobiContentServerUrl() {
@@ -252,7 +251,7 @@ public class ConfigurationHelper implements Serializable {
     public String getContentServerUrl() {
         return getLocalString("ContentServerUrl");
     }
-    
+
     public int getGoobiContentServerTimeOut() {
         return getLocalInt("goobiContentServerTimeOut", 60000);
     }
@@ -319,12 +318,11 @@ public class ConfigurationHelper implements Serializable {
     public boolean isEnableWebApi() {
         return getLocalBoolean("useWebApi", false);
     }
-    
+
     public int getBatchMaxSize() {
         return getLocalInt("batchMaxSize", 100);
     }
 
-    
     // process creation
 
     public String getTiffHeaderArtists() {
@@ -446,7 +444,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorValidateImages() {
         return getLocalBoolean("MetsEditorValidateImages", true);
     }
-    
+
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
@@ -454,7 +452,7 @@ public class ConfigurationHelper implements Serializable {
     public int getMetsEditorMaxTitleLength() {
         return getLocalInt("MetsEditorMaxTitleLength", 0);
     }
-    
+
     public boolean isMetsEditorShowOCRButton() {
         return getLocalBoolean("showOcrButton");
     }
@@ -518,7 +516,7 @@ public class ConfigurationHelper implements Serializable {
     public long getJobStartTime(String jobname) {
         return getLocalLong(jobname, -1);
     }
-    
+
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -565,4 +563,10 @@ public class ConfigurationHelper implements Serializable {
     public int getGoobiModuleServerPort() {
         return getLocalInt("goobiModuleServerPort");
     }
+
+    // for junit tests    
+    public void setParameter(String inParameter, String value) {
+        config.setProperty(inParameter, value);
+    }
+
 }
