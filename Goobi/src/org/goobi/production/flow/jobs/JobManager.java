@@ -43,6 +43,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerUtils;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 /**
  * JobManager organizes all scheduled jobs
@@ -101,8 +102,8 @@ public class JobManager implements ServletContextListener {
 		JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 		
 		
-		if (ConfigMain.getLongParameter(configuredStartTimeProperty, -1) != -1) {
-			long msOfToday = ConfigMain.getLongParameter(configuredStartTimeProperty, -1);
+		if (ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty) != -1) {
+			long msOfToday = ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty);
 			Calendar cal = Calendar.getInstance();
 			cal.set(1984, 8, 11, 0, 0);
 			cal.set(Calendar.SECOND, 0);

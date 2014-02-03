@@ -150,7 +150,7 @@ public class ActiveMQDirector implements ServletContextListener, ExceptionListen
 			Destination channel = session.createTopic(topic);
 			result = session.createProducer(channel);
 			result.setDeliveryMode(DeliveryMode.PERSISTENT);
-			result.setTimeToLive(ConfigMain.getLongParameter("activeMQ.results.timeToLive", 604800000));
+			result.setTimeToLive(ConfigurationHelper.getInstance().getActiveMQTTL());
 			return result;
 		} catch (Exception e) {
 			logger.fatal("Error setting up report channel \"" + topic + "\": Giving up.", e);

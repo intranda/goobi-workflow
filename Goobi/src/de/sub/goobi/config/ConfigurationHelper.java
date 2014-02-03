@@ -78,6 +78,15 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
+    private long getLocalLong(String inPath, int inDefault) {
+        try {
+            return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
     @SuppressWarnings("unused")
     private float getLocalFloat(String inPath) {
         return configLocal.getFloat(inPath, config.getFloat(inPath));
@@ -414,6 +423,10 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorValidateImages() {
         return getLocalBoolean("MetsEditorValidateImages", true);
     }
+    
+    public long getMetsEditorLockingTime() {
+        return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
+    }
 
     public boolean isMetsEditorShowOCRButton() {
         return getLocalBoolean("showOcrButton");
@@ -475,6 +488,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportValidateImages", true);
     }
 
+    public long getJobStartTime(String jobname) {
+        return getLocalLong(jobname, -1);
+    }
+    
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -492,11 +509,15 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("activeMQ.finaliseStep.queue", null);
     }
 
-    public boolean isUseSwapping() {
-        return getLocalBoolean("useSwapping");
+    public long getActiveMQTTL() {
+        return getLocalLong("activeMQ.results.timeToLive", 604800000);
     }
 
     // old parameter, romve them
+
+    public boolean isUseSwapping() {
+        return getLocalBoolean("useSwapping");
+    }
 
     public boolean isShowTaskmanager() {
         return getLocalBoolean("show_taskmanager", false);

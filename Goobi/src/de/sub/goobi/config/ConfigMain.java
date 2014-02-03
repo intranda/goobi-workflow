@@ -155,9 +155,9 @@ public class ConfigMain implements Serializable {
      * 
      * @return Paramter als Long
      */
-    public static long getLongParameter(String inParameter, long inDefault) {
-        return config.getLong(inParameter, inDefault);
-    }
+//    public static long getLongParameter(String inParameter, long inDefault) {
+//        return config.getLong(inParameter, inDefault);
+//    }
 
     /**
      * Request int-parameter from Configuration

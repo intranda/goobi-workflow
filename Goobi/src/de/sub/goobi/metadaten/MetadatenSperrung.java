@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 /**
  * Bean für die Sperrung der Metadaten
@@ -42,7 +43,7 @@ public class MetadatenSperrung implements Serializable {
 	 * Zeit, innerhalb der der Benutzer handeln muss, um seine Sperrung zu
 	 * behalten (30 min)
 	 */
-	private static final long sperrzeit = ConfigMain.getLongParameter("MetsEditorLockingTime", 30 * 60 * 1000);
+	private static final long sperrzeit = ConfigurationHelper.getInstance().getMetsEditorLockingTime(); 
 
 	/* =============================================================== */
 
