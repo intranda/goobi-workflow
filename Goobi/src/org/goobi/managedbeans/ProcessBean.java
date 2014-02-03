@@ -76,7 +76,6 @@ import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
-
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
@@ -92,8 +91,9 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
+
 //import de.sub.goobi.beans.Schritteigenschaft;
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.export.download.ExportPdf;
@@ -173,7 +173,7 @@ public class ProcessBean extends BasicBean {
         } else {
             this.anzeigeAnpassen.put("processDate", false);
         }
-        DONEDIRECTORYNAME = ConfigMain.getParameter("doneDirectoryName", "fertig/");
+        DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
     }
 
@@ -213,7 +213,7 @@ public class ProcessBean extends BasicBean {
          */
         if (this.myProzess != null && this.myProzess.getTitel() != null) {
             if (!this.myProzess.getTitel().equals(this.myNewProcessTitle)) {
-                String validateRegEx = ConfigMain.getParameter("validateProzessTitelRegex", "[\\w-]*");
+                String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
                 if (!this.myNewProcessTitle.matches(validateRegEx)) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));

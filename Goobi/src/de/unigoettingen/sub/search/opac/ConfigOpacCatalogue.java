@@ -112,7 +112,7 @@ public class ConfigOpacCatalogue {
 	public Node executeBeautifier(Node myHitlist) {
 		/* Ausgabe des Opac-Ergebnissen in Datei */
 
-		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+		if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
 			debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
 		}
 
@@ -144,7 +144,7 @@ public class ConfigOpacCatalogue {
 		}
 
 		/* Ausgabe des überarbeiteten Opac-Ergebnisses */
-		if (!ConfigMain.getParameter("debugFolder", "").equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+		if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
 			debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
 		}
 		return myHitlist;

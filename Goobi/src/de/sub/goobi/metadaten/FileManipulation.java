@@ -56,9 +56,11 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import de.schlichtherle.io.FileInputStream;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+
 import org.goobi.beans.Process;
 
 public class FileManipulation {
@@ -414,7 +416,7 @@ public class FileManipulation {
 
             }
         }
-        String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
+        String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
         File fileuploadFolder = new File(tempDirectory + "fileupload");
         if (!fileuploadFolder.exists()) {
             fileuploadFolder.mkdir();
@@ -508,7 +510,7 @@ public class FileManipulation {
 
     public List<String> getAllImportFolder() {
 
-        String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
+        String tempDirectory =  ConfigurationHelper.getInstance().getTemporaryFolder();
         File fileuploadFolder = new File(tempDirectory + "fileupload");
 
         allImportFolder = new ArrayList<String>();
@@ -536,13 +538,13 @@ public class FileManipulation {
             Helper.setFehlerMeldung("noFileSelected");
             return;
         }
-        String tempDirectory = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/");
+        String tempDirectory =  ConfigurationHelper.getInstance().getTemporaryFolder();
 
         String masterPrefix = "";
         boolean useMasterFolder = false;
         if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
             useMasterFolder = true;
-            masterPrefix = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
+            masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         }
         Process currentProcess = metadataBean.getMyProzess();
         List<String> importedFilenames = new ArrayList<String>();
@@ -695,7 +697,7 @@ public class FileManipulation {
         String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
         String afterLastBackslash = afterLastSlash.substring(afterLastSlash.lastIndexOf('\\') + 1);
 
-        String prefix = ConfigMain.getParameter("ImagePrefix", "\\d{8}");
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
         if (!afterLastBackslash.matches(prefix + "\\..+")) {
             return false;
         }

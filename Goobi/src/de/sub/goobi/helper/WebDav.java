@@ -42,7 +42,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.TiffHeader;
 
@@ -57,7 +56,7 @@ public class WebDav implements Serializable {
 
 	private static String DONEDIRECTORYNAME = "fertig/";
 	public WebDav(){
-		DONEDIRECTORYNAME =ConfigMain.getParameter("doneDirectoryName", "fertig/");
+		DONEDIRECTORYNAME =ConfigurationHelper.getInstance().getDoneDirectoryName();
 	}
 	
 	
@@ -223,7 +222,7 @@ public class WebDav implements Serializable {
 		String command = ConfigurationHelper.getInstance().getScriptCreateSymLink()+ " "; 
 		command += imagePfad + " " + benutzerHome + " ";
 		if (inNurLesen) {
-			command += ConfigMain.getParameter("UserForImageReading", "root");
+			command += ConfigurationHelper.getInstance().getUserForImageReading();
 		} else {
 			command += aktuellerBenutzer.getLogin();
 		}

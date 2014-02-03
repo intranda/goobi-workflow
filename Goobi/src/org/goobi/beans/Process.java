@@ -267,8 +267,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         File dir = new File(getImagesDirectory());
-        DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
-        DIRECTORY_PREFIX = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
+        DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
+        DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         /* nur die _tif-Ordner anzeigen, die nicht mir orig_ anfangen */
         FilenameFilter filterVerz = new FilenameFilter() {
             @Override
@@ -287,7 +287,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         if (tifOrdner.equals("") && useFallBack) {
-            String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             if (!suffix.equals("")) {
                 String[] folderList = dir.list();
                 for (String folder : folderList) {
@@ -300,7 +300,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         if (!tifOrdner.equals("") && useFallBack) {
-            String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             if (!suffix.equals("")) {
                 File tif = new File(tifOrdner);
                 String[] files = tif.list();
@@ -380,8 +380,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
             File dir = new File(getImagesDirectory());
-            DIRECTORY_SUFFIX = ConfigMain.getParameter("DIRECTORY_SUFFIX", "tif");
-            DIRECTORY_PREFIX = ConfigMain.getParameter("DIRECTORY_PREFIX", "orig");
+            DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
+            DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
             /* nur die _tif-Ordner anzeigen, die mit orig_ anfangen */
             FilenameFilter filterVerz = new FilenameFilter() {
                 @Override
@@ -397,7 +397,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
             if (origOrdner.equals("") && useFallBack) {
-                String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+                String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
                     String[] folderList = dir.list();
                     for (String folder : folderList) {
@@ -410,7 +410,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
             if (!origOrdner.equals("") && useFallBack) {
-                String suffix = ConfigMain.getParameter("MetsEditorDefaultSuffix", "");
+                String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
                     File tif = new File(origOrdner);
                     String[] files = tif.list();
@@ -856,7 +856,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             FORMAT = ConfigurationHelper.getInstance().getFormatOfMetsBackup();
         }
         if (numberOfBackups != 0) {
-            String typeOfBackup = ConfigMain.getParameter("typeOfBackup", "renameFile");
+            String typeOfBackup = ConfigurationHelper.getInstance().getTypeOfBackup();
             if (typeOfBackup.equals("renameFile") && FORMAT != null) {
                 createBackup(numberOfBackups, FORMAT);
             } else if (typeOfBackup.equals("")) {

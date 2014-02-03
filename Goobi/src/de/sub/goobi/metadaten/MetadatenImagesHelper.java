@@ -286,7 +286,7 @@ public class MetadatenImagesHelper {
             return;
         }
 
-        String defaultPagination = ConfigMain.getParameter("MetsEditorDefaultPagination", "uncounted");
+        String defaultPagination = ConfigurationHelper.getInstance().getMetsEditorDefaultPagination();
         Map<String, DocStruct> assignedImages = new HashMap<String, DocStruct>();
         List<DocStruct> pageElementsWithoutImages = new ArrayList<DocStruct>();
         List<String> imagesWithoutPageElements = new ArrayList<String>();
@@ -572,7 +572,7 @@ public class MetadatenImagesHelper {
             }
 
             this.myLastImage = dateien.length;
-            if (ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
+            if (ConfigurationHelper.getInstance().getImagePrefix().equals("\\d{8}")) {
                 List<String> filesDirs = Arrays.asList(dateien);
                 Collections.sort(filesDirs);
                 int counter = 1;
@@ -604,7 +604,7 @@ public class MetadatenImagesHelper {
 
         @Override
         public int compare(String s1, String s2) {
-            String imageSorting = ConfigMain.getParameter("ImageSorting", "number");
+            String imageSorting = ConfigurationHelper.getInstance().getImageSorting();
             s1 = s1.substring(0, s1.lastIndexOf("."));
             s2 = s2.substring(0, s2.lastIndexOf("."));
 

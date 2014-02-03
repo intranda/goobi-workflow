@@ -61,6 +61,7 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import dubious.sub.goobi.helper.encryption.MD4;
 
 /**
@@ -149,10 +150,10 @@ public class LdapUser implements DirContext {
 			 * -------------------------------- Encryption of password und Base64-Enconding --------------------------------
 			 */
 
-			MessageDigest md = MessageDigest.getInstance(ConfigMain.getParameter("ldap_encryption", "SHA"));
+			MessageDigest md = MessageDigest.getInstance(ConfigurationHelper.getInstance().getLdapEncryption());
 			md.update(inPassword.getBytes());
 			String digestBase64 = new String(Base64.encodeBase64(md.digest()));
-			this.myAttrs.put("userPassword", "{" + ConfigMain.getParameter("ldap_encryption", "SHA") + "}" + digestBase64);
+			this.myAttrs.put("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}" + digestBase64);
 		}
 	}
 	

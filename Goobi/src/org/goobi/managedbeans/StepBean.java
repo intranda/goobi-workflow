@@ -68,6 +68,7 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.helper.BatchStepHelper;
@@ -141,7 +142,7 @@ public class StepBean extends BasicBean {
         } else {
             this.anzeigeAnpassen.put("processDate", false);
         }
-        DONEDIRECTORYNAME = ConfigMain.getParameter("doneDirectoryName", "fertig/");
+        DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
     }
 
     /*

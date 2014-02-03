@@ -512,7 +512,7 @@ public class ProzesskopieForm {
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
         }
 
-        String validateRegEx = ConfigMain.getParameter("validateProcessTitelRegex", "[\\w-]*");
+        String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
         if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
             valide = false;
             Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));

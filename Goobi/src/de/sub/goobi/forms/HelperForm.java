@@ -49,6 +49,7 @@ import org.reflections.Reflections;
 
 import ugh.dl.Fileformat;
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -75,17 +76,18 @@ public class HelperForm {
 
     // TODO: Change the defaults
     public String getApplicationHeaderTitle() {
-        String rueck = ConfigMain.getParameter("ApplicationHeaderTitle", "Goobi - Universitätsbibliothek Göttingen");
+        
+        String rueck = ConfigurationHelper.getInstance().getApplicationHeaderTitle();
         return rueck;
     }
 
     public String getApplicationTitle() {
-        String rueck = ConfigMain.getParameter("ApplicationTitle", "http://goobi.gdz.uni-goettingen.de");
+        String rueck = ConfigurationHelper.getInstance().getApplicationTitle();
         return rueck;
     }
 
     public String getApplicationTitlexe() {
-        String rueck = ConfigMain.getParameter("ApplicationTitleStyle", "font-size:17; font-family:verdana; color: black;");
+        String rueck = ConfigurationHelper.getInstance().getApplicationTitleStyle();
         return rueck;
     }
 
@@ -94,27 +96,27 @@ public class HelperForm {
     }
 
     public String getApplicationWebsiteMsg() {
-        String rueck = ConfigMain.getParameter("ApplicationWebsiteMsg", getApplicationWebsiteUrl());
+        String rueck = ConfigurationHelper.getInstance().getApplicationWebsiteMsg();
         return Helper.getTranslation(rueck);
     }
 
     public String getApplicationHomepageMsg() {
-        String rueck = ConfigMain.getParameter("ApplicationHomepageMsg", getApplicationWebsiteUrl());
+        String rueck = ConfigurationHelper.getInstance().getApplicationHomepageMsg();
         return Helper.getTranslation(rueck);
     }
 
     public String getApplicationTechnicalBackgroundMsg() {
-        String rueck = ConfigMain.getParameter("ApplicationTechnicalBackgroundMsg", getApplicationWebsiteUrl());
+        String rueck = ConfigurationHelper.getInstance().getApplicationTechnicalBackgroundMsg();
         return Helper.getTranslation(rueck);
     }
 
     public String getApplicationImpressumMsg() {
-        String rueck = ConfigMain.getParameter("ApplicationImpressumMsg", getApplicationWebsiteUrl());
+        String rueck = ConfigurationHelper.getInstance().getApplicationImpressumMsg();
         return Helper.getTranslation(rueck);
     }
 
     public String getApplicationIndividualHeader() {
-        String rueck = ConfigMain.getParameter("ApplicationIndividualHeader", "");
+        String rueck = ConfigurationHelper.getInstance().getApplicationIndividualHeader();
         return rueck;
     }
 

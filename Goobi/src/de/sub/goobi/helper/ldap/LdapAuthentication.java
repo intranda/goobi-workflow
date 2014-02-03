@@ -459,7 +459,7 @@ public class LdapAuthentication {
 				/*
 				 * -------------------------------- Encryption of password and Base64-Encoding --------------------------------
 				 */
-				MessageDigest md = MessageDigest.getInstance(ConfigMain.getParameter("ldap_encryption", "SHA"));
+				MessageDigest md = MessageDigest.getInstance(ConfigurationHelper.getInstance().getLdapEncryption());
 				md.update(inNewPassword.getBytes());
 				String digestBase64 = new String(Base64.encodeBase64(md.digest()));
 				ModificationItem[] mods = new ModificationItem[3];
@@ -467,7 +467,7 @@ public class LdapAuthentication {
 				/*
 				 * -------------------------------- UserPasswort-Attribut ändern --------------------------------
 				 */
-				BasicAttribute userpassword = new BasicAttribute("userPassword", "{" + ConfigMain.getParameter("ldap_encryption", "SHA") + "}"
+				BasicAttribute userpassword = new BasicAttribute("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}"
 						+ digestBase64);
 
 				/*

@@ -31,7 +31,6 @@ package de.sub.goobi.helper;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 
 import java.io.File;

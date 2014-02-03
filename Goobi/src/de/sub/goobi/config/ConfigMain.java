@@ -118,19 +118,19 @@ public class ConfigMain implements Serializable {
 //        }
 //    }
 
-    /**
-     * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
-     * 
-     * @return Paramter als String
-     */
-    public static String getParameter(String inParameter, String inDefaultIfNull) {
-        try {
-            return config.getString(inParameter, inDefaultIfNull);
-            // return config.getProperty(inParameter).toString();
-        } catch (RuntimeException e) {
-            return inDefaultIfNull;
-        }
-    }
+//    /**
+//     * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
+//     * 
+//     * @return Paramter als String
+//     */
+//    public static String getParameter(String inParameter, String inDefaultIfNull) {
+//        try {
+//            return config.getString(inParameter, inDefaultIfNull);
+//            // return config.getProperty(inParameter).toString();
+//        } catch (RuntimeException e) {
+//            return inDefaultIfNull;
+//        }
+//    }
 
     /**
      * Ermitteln eines boolean-Paramters der Konfiguration, default if missing: false

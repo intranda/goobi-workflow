@@ -34,9 +34,10 @@ import java.util.Iterator;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-
 import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -61,7 +62,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 		String processDirectory = "";
 
 		if (ConfigMain.getBooleanParameter("useSwapping")) {
-			swapPath = ConfigMain.getParameter("swapPath", "");
+			swapPath = ConfigurationHelper.getInstance().getSwapPath();
 		} else {
 			setStatusMessage("swapping not activated");
 			setStatusProgress(-1);

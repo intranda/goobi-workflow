@@ -1857,7 +1857,7 @@ public class Metadaten {
             this.allTifFolders.add(verzeichnisse[i]);
         }
 
-        if (ConfigMain.getParameter("MetsEditorDefaultSuffix", null) != null) {
+        if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             for (String directory : this.allTifFolders) {
                 if (directory.endsWith(suffix)) {

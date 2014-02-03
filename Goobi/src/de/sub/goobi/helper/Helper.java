@@ -293,7 +293,7 @@ public class Helper implements Serializable, Observer {
 			while (polyglot.hasNext()) {
 				Locale language = polyglot.next();
 				commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
-				File file = new File(ConfigMain.getParameter("localMessages", "/opt/digiverso/goobi/messages/"));
+				File file = new File(ConfigurationHelper.getInstance().getPathForLocalMessages());
 				if (file.exists()) {
 					// Load local message bundle from file system only if file exists;
 					// if value not exists in bundle, use default bundle from classpath
@@ -497,7 +497,7 @@ public class Helper implements Serializable, Observer {
 		@Override
 		public boolean accept(File dir, String name) {
 			boolean fileOk = false;
-			String prefix = ConfigMain.getParameter("ImagePrefix", "\\d{8}");
+			String prefix = ConfigurationHelper.getInstance().getImagePrefix();
 
 			if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
 				fileOk = true;
@@ -519,7 +519,7 @@ public class Helper implements Serializable, Observer {
 		@Override
 		public boolean accept(File dir, String name) {
 			boolean fileOk = false;
-			String prefix = ConfigMain.getParameter("ImagePrefix", "\\d{8}");
+			String prefix = ConfigurationHelper.getInstance().getImagePrefix();
 			if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
 				fileOk = true;
 			} else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {

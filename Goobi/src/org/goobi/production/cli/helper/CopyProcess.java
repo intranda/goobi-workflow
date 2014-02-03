@@ -506,7 +506,7 @@ public class CopyProcess extends ProzesskopieForm {
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
         }
 
-        String validateRegEx = ConfigMain.getParameter("validateProzessTitelRegex", "[\\w-]*");
+        String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
         if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
             valide = false;
             Helper.setFehlerMeldung("UngueltigerTitelFuerVorgang");
@@ -580,7 +580,7 @@ public class CopyProcess extends ProzesskopieForm {
                 Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
             }
 
-            String validateRegEx = ConfigMain.getParameter("validateProzessTitelRegex", "[\\w-]*");
+            String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
             if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
                 valide = false;
                 Helper.setFehlerMeldung("UngueltigerTitelFuerVorgang");

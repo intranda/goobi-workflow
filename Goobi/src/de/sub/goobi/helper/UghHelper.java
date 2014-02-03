@@ -48,7 +48,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 

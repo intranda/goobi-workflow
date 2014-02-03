@@ -60,7 +60,6 @@ public class ConfigurationHelper implements Serializable {
         return configLocalPath;
     }
 
-    
     public boolean reloadingRequired() {
         boolean ret = false;
         if (configLocal != null) {
@@ -154,6 +153,11 @@ public class ConfigurationHelper implements Serializable {
         return filename;
     }
 
+    public String getServletPathAsUrl() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        return context.getExternalContext().getRequestContextPath() + "/";
+    }
+
     // folder
 
     public String getConfigurationFolder() {
@@ -179,22 +183,33 @@ public class ConfigurationHelper implements Serializable {
     public String getUserFolder() {
         return getLocalString("dir_Users", "/home/");
     }
-    
+
     public String getDebugFolder() {
         return getLocalString("debugFolder", "");
     }
-    
+
     public String getPluginFolder() {
         return getLocalString("pluginFolder", "/opt/digiverso/goobi/plugins/");
     }
-    
+
+    public String getPathForLocalMessages() {
+        return getLocalString("localMessages", "/opt/digiverso/goobi/messages/");
+    }
+
+    public String getDoneDirectoryName() {
+        return getLocalString("doneDirectoryName", "fertig/");
+    }
+
+    public String getSwapPath() {
+        return getLocalString("swapPath", "");
+    }
 
     // URLs
 
     public String getGoobiContentServerUrl() {
         return getLocalString("goobiContentServerUrl");
     }
-    
+
     public String getContentServerUrl() {
         return getLocalString("ContentServerUrl");
     }
@@ -203,10 +218,45 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ApplicationWebsiteUrl");
     }
 
+    public String getApplicationHeaderTitle() {
+        return getLocalString("ApplicationHeaderTitle", "Goobi - Universitätsbibliothek Göttingen");
+    }
+
+    public String getApplicationTitle() {
+        return getLocalString("ApplicationTitle", "http://goobi.gdz.uni-goettingen.de");
+    }
+
+    public String getApplicationTitleStyle() {
+        return getLocalString("ApplicationTitleStyle", "font-size:17; font-family:verdana; color: black;");
+    }
+
+    public String getApplicationWebsiteMsg() {
+        return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
+    }
+
+    public String getApplicationHomepageMsg() {
+        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
+
+    }
+
+    public String getApplicationTechnicalBackgroundMsg() {
+        return getLocalString("ApplicationTechnicalBackgroundMsg", getServletPathAsUrl());
+
+    }
+
+    public String getApplicationImpressumMsg() {
+        return getLocalString("ApplicationImpressumMsg", getServletPathAsUrl());
+
+    }
+
+    public String getApplicationIndividualHeader() {
+        return getLocalString("ApplicationIndividualHeader", "");
+    }
+
     public String getOcrUrl() {
         return getLocalString("ocrUrl");
     }
-    
+
     public String getAdminPassword() {
         return getLocalString("superadminpassword");
     }
@@ -279,17 +329,67 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_cert_pdc");
     }
 
-    
-    // mets editor
-    
-    public String getMetsEditorDefaultSuffix() {
-        return getLocalString("MetsEditorDefaultSuffix");
+    public String getLdapEncryption() {
+        return getLocalString("ldap_encryption", "SHA");
     }
-    
+
+    // mets editor
+
+    public String getMetsEditorDefaultSuffix() {
+        return getLocalString("MetsEditorDefaultSuffix", "");
+    }
+
+    public String getMetsEditorDefaultPagination() {
+        return getLocalString("MetsEditorDefaultPagination", "uncounted");
+    }
+
     public String getFormatOfMetsBackup() {
         return getLocalString("formatOfMetaBackups");
     }
-    
-   
-    
+
+    public String getProcessTiteValidationlRegex() {
+        return getLocalString("validateProcessTitelRegex", "[\\w-]*");
+    }
+
+    public String getImagePrefix() {
+        return getLocalString("ImagePrefix", "\\d{8}");
+    }
+
+    public String getImageSorting() {
+        return getLocalString("ImageSorting", "number");
+    }
+
+    public String getUserForImageReading() {
+        return getLocalString("UserForImageReading", "root");
+    }
+
+    public String getMasterDirectoryPrefix() {
+        return getLocalString("DIRECTORY_PREFIX", "master");
+    }
+
+    public String getMediaDirectorySuffix() {
+        return getLocalString("DIRECTORY_SUFFIX", "media");
+    }
+
+    public String getTypeOfBackup() {
+        return getLocalString("typeOfBackup", "renameFile");
+    }
+
+    // active mq
+    public String getActiveMQHostURL() {
+        return getLocalString("activeMQ.hostURL", null);
+    }
+
+    public String getActiveMQResultsTopic() {
+        return getLocalString("activeMQ.results.topic", null);
+    }
+
+    public String getActiveMQNewProcessQueue() {
+        return getLocalString("activeMQ.createNewProcess.queue", null);
+    }
+
+    public String getActiveMQFinalizeProcessQueue() {
+        return getLocalString("activeMQ.finaliseStep.queue", null);
+    }
+
 }

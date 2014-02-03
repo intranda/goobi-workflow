@@ -70,7 +70,6 @@ import ugh.dl.Prefs;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -378,7 +377,7 @@ public class MassImportForm {
 				basename = basename.substring(basename.lastIndexOf("\\") + 1);
 			}
 
-			String filename = ConfigMain.getParameter("tempfolder", "/opt/digiverso/goobi/tmp/") + basename;
+			String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
 
 			inputStream = new ByteArrayInputStream(this.uploadedFile.getBytes());
 			outputStream = new FileOutputStream(filename);

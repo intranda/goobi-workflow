@@ -38,10 +38,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.goobi.mq.ActiveMQProcessor;
 import org.goobi.mq.MapMessageObjectReader;
-
-
 import org.goobi.beans.Process;
-import de.sub.goobi.config.ConfigMain;
+
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.AdditionalField;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -84,7 +83,7 @@ public class CreateNewProcessProcessor extends ActiveMQProcessor {
 	private static final Logger logger = Logger.getLogger(CreateNewProcessProcessor.class);
 
 	public CreateNewProcessProcessor() {
-		super(ConfigMain.getParameter("activeMQ.createNewProcess.queue", null));
+		super(ConfigurationHelper.getInstance().getActiveMQNewProcessQueue());
 	}
 
 	@Override

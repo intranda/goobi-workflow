@@ -33,7 +33,7 @@ import org.goobi.managedbeans.StepBean;
 import org.goobi.mq.ActiveMQProcessor;
 import org.goobi.mq.MapMessageObjectReader;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.StepManager;
 
 /**
@@ -52,7 +52,7 @@ public class FinaliseStepProcessor extends ActiveMQProcessor {
 	 * ActiveMQDirector.registerListeners() from starting this service.
 	 */
 	public FinaliseStepProcessor() {
-		super(ConfigMain.getParameter("activeMQ.finaliseStep.queue", null));
+		super(ConfigurationHelper.getInstance().getActiveMQFinalizeProcessQueue());
 	}
 
 	/**

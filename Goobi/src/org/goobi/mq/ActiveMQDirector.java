@@ -44,6 +44,7 @@ import org.goobi.mq.processors.CreateNewProcessProcessor;
 import org.goobi.mq.processors.FinaliseStepProcessor;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 /**
  * The class ActiveMQDirector is the head of all Active MQ processors. It implements the ServletContextListener interface and is − if configured in
@@ -80,13 +81,13 @@ public class ActiveMQDirector implements ServletContextListener, ExceptionListen
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent initialisation) {
-		String activeMQHost = ConfigMain.getParameter("activeMQ.hostURL", null);
+		String activeMQHost = ConfigurationHelper.getInstance().getActiveMQHostURL();
 		if (activeMQHost != null) {
 			session = connectToServer(activeMQHost);
 			if (session != null) {
 				registerListeners(services);
-				if (ConfigMain.getParameter("activeMQ.results.topic", null) != null) {
-					resultsTopic = setUpReportChannel(ConfigMain.getParameter("activeMQ.results.topic", null));
+				if (ConfigurationHelper.getInstance().getActiveMQResultsTopic() != null) {
+					resultsTopic = setUpReportChannel(ConfigurationHelper.getInstance().getActiveMQResultsTopic());
 				}
 			}
 		}
