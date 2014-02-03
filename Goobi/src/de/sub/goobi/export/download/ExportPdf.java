@@ -97,7 +97,7 @@ public class ExportPdf extends ExportMets {
 		String servletpath = context.getExternalContext().getRequestServletPath();
 		String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
-		if (!ConfigMain.getBooleanParameter("pdfAsDownload")) {
+		if (!ConfigurationHelper.getInstance().isPdfAsDownload()) {
 			/*
 			 * -------------------------------- use contentserver api for creation of pdf-file --------------------------------
 			 */

@@ -49,6 +49,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -148,7 +149,7 @@ public class ExportDms extends ExportMets {
 		 * --------------------------------
 		 */
 
-		if (ConfigMain.getBooleanParameter("useMetadatenvalidierung")) {
+		if (ConfigurationHelper.getInstance().isUseMetadataValidation()) {
 			MetadatenVerifizierung mv = new MetadatenVerifizierung();
 			if (!mv.validate(gdzfile, this.myPrefs, myProzess)) {
 				return false;
@@ -269,7 +270,7 @@ public class ExportDms extends ExportMets {
 			DmsImportThread agoraThread = new DmsImportThread(myProzess,
 					atsPpnBand);
 			agoraThread.start();
-			if (!ConfigMain.getBooleanParameter("exportWithoutTimeLimit")) {
+			if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
 				try {
 					/* 30 Sekunden auf den Thread warten, evtl. killen */
 					agoraThread.join(myProzess.getProjekt()

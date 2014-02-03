@@ -2512,7 +2512,7 @@ public class Metadaten {
      */
 
     public boolean isShowOcrButton() {
-        return ConfigMain.getBooleanParameter("showOcrButton");
+        return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
     }
 
     public void showOcrResult() {

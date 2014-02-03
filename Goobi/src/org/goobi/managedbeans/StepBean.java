@@ -67,7 +67,6 @@ import org.goobi.production.properties.PropertyParser;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
@@ -463,7 +462,7 @@ public class StepBean extends BasicBean {
          */
         if (this.mySchritt.isTypBeimAbschliessenVerifizieren()) {
             /* Metadatenvalidierung */
-            if (this.mySchritt.isTypMetadaten() && ConfigMain.getBooleanParameter("useMetadatenvalidierung")) {
+            if (this.mySchritt.isTypMetadaten() && ConfigurationHelper.getInstance().isUseMetadataValidation()) {
                 MetadatenVerifizierung mv = new MetadatenVerifizierung();
                 mv.setAutoSave(true);
                 if (!mv.validate(this.mySchritt.getProzess())) {

@@ -37,7 +37,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -62,7 +61,7 @@ public void run() {
 //      ProzessDAO dao = new ProzessDAO();
       String processDirectory = "";
 
-      if (ConfigMain.getBooleanParameter("useSwapping")) {
+      if (ConfigurationHelper.getInstance().isUseSwapping()) {
 		swapPath = ConfigurationHelper.getInstance().getSwapPath();
 	} else {
          setStatusMessage("swapping not activated");

@@ -36,7 +36,6 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -61,7 +60,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 //		ProzessDAO dao = new ProzessDAO();
 		String processDirectory = "";
 
-		if (ConfigMain.getBooleanParameter("useSwapping")) {
+		if (ConfigurationHelper.getInstance().isUseSwapping()) {
 			swapPath = ConfigurationHelper.getInstance().getSwapPath();
 		} else {
 			setStatusMessage("swapping not activated");

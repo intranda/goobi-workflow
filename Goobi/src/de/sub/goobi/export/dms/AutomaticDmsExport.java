@@ -49,6 +49,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -128,7 +129,7 @@ public class AutomaticDmsExport extends ExportMets {
          * -------------------------------- Metadaten validieren --------------------------------
          */
 
-        if (ConfigMain.getBooleanParameter("useMetadatenvalidierung")) {
+        if (ConfigurationHelper.getInstance().isUseMetadataValidation()) {
             MetadatenVerifizierung mv = new MetadatenVerifizierung();
             if (!mv.validate(gdzfile, this.myPrefs, myProzess)) {
                 return false;
@@ -205,7 +206,7 @@ public class AutomaticDmsExport extends ExportMets {
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "DMS-Export started");
 
      
-            if (!ConfigMain.getBooleanParameter("exportWithoutTimeLimit")) {
+            if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
                
                 /* Success-Ordner wieder löschen */
                 if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {

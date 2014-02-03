@@ -121,7 +121,7 @@ public class HelperForm {
     }
 
     public boolean getAnonymized() {
-        return ConfigMain.getBooleanParameter("anonymize");
+        return ConfigurationHelper.getInstance().isAnonymizeData();
     }
 
     public List<SelectItem> getRegelsaetze() throws DAOException {

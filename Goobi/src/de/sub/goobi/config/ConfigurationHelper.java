@@ -264,6 +264,10 @@ public class ConfigurationHelper implements Serializable {
     public String getDefaultLanguage() {
         return getLocalString("language.force-default");
     }
+    
+    public boolean isAnonymizeData() {
+        return getLocalBoolean("anonymize");
+    }
 
     // process creation
 
@@ -333,6 +337,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_encryption", "SHA");
     }
 
+    public boolean isUseLdapSSLConnection() {
+        return getLocalBoolean("ldap_sslconnection");
+    }
+    
+    public boolean isUseLdap() {
+        return getLocalBoolean("ldap_use");
+    }
+    
     // mets editor
 
     public String getMetsEditorDefaultSuffix() {
@@ -343,6 +355,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
     }
 
+    public boolean isMetsEditorShowOCRButton() {
+        return getLocalBoolean("showOcrButton");
+    }
+    
     public String getFormatOfMetsBackup() {
         return getLocalString("formatOfMetaBackups");
     }
@@ -375,6 +391,18 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("typeOfBackup", "renameFile");
     }
 
+    public boolean isUseMetadataValidation() {
+        return getLocalBoolean("useMetadatenvalidierung");
+    }
+
+    public boolean isExportWithoutTimeLimit() {
+        return getLocalBoolean("exportWithoutTimeLimit");
+    }
+
+    public boolean isPdfAsDownload() {
+        return getLocalBoolean("pdfAsDownload");
+    }
+
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -392,4 +420,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("activeMQ.finaliseStep.queue", null);
     }
 
+    public boolean isUseSwapping() {
+        return getLocalBoolean("useSwapping");
+    }
+    
 }

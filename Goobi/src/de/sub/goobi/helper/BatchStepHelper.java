@@ -56,6 +56,7 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -845,7 +846,7 @@ public class BatchStepHelper {
             }
 
             if (s.isTypBeimAbschliessenVerifizieren()) {
-                if (s.isTypMetadaten() && ConfigMain.getBooleanParameter("useMetadatenvalidierung")) {
+                if (s.isTypMetadaten() && ConfigurationHelper.getInstance().isUseMetadataValidation()) {
                     MetadatenVerifizierung mv = new MetadatenVerifizierung();
                     mv.setAutoSave(true);
                     if (!mv.validate(s.getProzess())) {

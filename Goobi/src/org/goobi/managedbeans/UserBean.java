@@ -50,7 +50,7 @@ import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -332,6 +332,6 @@ public class UserBean extends BasicBean {
     }
 
     public boolean getLdapUsage() {
-        return ConfigMain.getBooleanParameter("ldap_use");
+        return ConfigurationHelper.getInstance().isUseLdap();
     }
 }

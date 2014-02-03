@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -291,7 +290,7 @@ public class User implements DatabaseObject {
 
 			/* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
 
-			if (ConfigMain.getBooleanParameter("ldap_use")) {
+			if (ConfigurationHelper.getInstance().isUseLdap()) {
 			 LdapAuthentication myldap = new LdapAuthentication();
 				return myldap.isUserPasswordCorrect(this, inPasswort);
 			} else {
@@ -317,7 +316,7 @@ public class User implements DatabaseObject {
 		String rueckgabe = "";
 		/* wenn LDAP genutzt wird, HomeDir aus LDAP ermitteln, ansonsten aus der Konfiguration */
 
-		if (ConfigMain.getBooleanParameter("ldap_use")) {
+		if (ConfigurationHelper.getInstance().isUseLdap()) {
 			LdapAuthentication myldap = new LdapAuthentication();
 			rueckgabe = myldap.getUserHomeDirectory(this);
 		} else {

@@ -516,7 +516,7 @@ public class LdapAuthentication {
 		env.put(Context.PROVIDER_URL,  ConfigurationHelper.getInstance().getLdapUrl());
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
 		/* wenn die Verbindung über ssl laufen soll */
-		if (ConfigMain.getBooleanParameter("ldap_sslconnection")) {
+		if (ConfigurationHelper.getInstance().isUseLdapSSLConnection()) {
 			String keystorepath =  ConfigurationHelper.getInstance().getLdapKeystore();
 			String keystorepasswd = ConfigurationHelper.getInstance().getLdapKeystoreToken();
 			        

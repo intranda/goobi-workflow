@@ -32,9 +32,9 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.apache.log4j.Logger;
-
 import org.goobi.beans.Process;
-import de.sub.goobi.config.ConfigMain;
+
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 
 public class DmsImportThread extends Thread {
@@ -105,7 +105,7 @@ public class DmsImportThread extends Thread {
 				myLogger.error("Unexception exception", t);
 			}
 		}
-		if (!ConfigMain.getBooleanParameter("exportWithoutTimeLimit")) {
+		if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
 			/* Images wieder löschen */
 			Helper.deleteDir(this.folderImages);
 		}

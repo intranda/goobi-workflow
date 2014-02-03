@@ -132,14 +132,14 @@ public class ConfigMain implements Serializable {
 //        }
 //    }
 
-    /**
-     * Ermitteln eines boolean-Paramters der Konfiguration, default if missing: false
-     * 
-     * @return Paramter als String
-     */
-    public static boolean getBooleanParameter(String inParameter) {
-        return getBooleanParameter(inParameter, false);
-    }
+//    /**
+//     * Ermitteln eines boolean-Paramters der Konfiguration, default if missing: false
+//     * 
+//     * @return Paramter als String
+//     */
+//    public static boolean getBooleanParameter(String inParameter) {
+//        return getBooleanParameter(inParameter, false);
+//    }
 
     /**
      * Ermitteln eines boolean-Paramters der Konfiguration
