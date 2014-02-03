@@ -56,6 +56,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms_CorrectRusdml;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -215,7 +216,7 @@ public class ExportMets {
          * -------------------------------- if the top element does not have any image related, set them all --------------------------------
          */
 
-        if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
+        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
 
             if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
                 if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
@@ -307,7 +308,7 @@ public class ExportMets {
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<String>();
-        if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
+        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
             try {
                 // TODO andere Dateigruppen nicht mit image Namen ersetzen
                 images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess);

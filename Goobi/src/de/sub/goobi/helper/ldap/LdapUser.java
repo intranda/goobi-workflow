@@ -60,7 +60,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import dubious.sub.goobi.helper.encryption.MD4;
 
@@ -91,7 +90,7 @@ public class LdapUser implements DirContext {
 	 */
 	public void configure(User inUser, String inPassword, String inUidNumber) throws NamingException, NoSuchAlgorithmException, IOException,
 			InterruptedException {
-		if (!ConfigMain.getBooleanParameter("ldap_readonly", false)) {
+		if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
 
 			this.type = inUser.getLogin();
 			Ldap lp = inUser.getLdapGruppe();

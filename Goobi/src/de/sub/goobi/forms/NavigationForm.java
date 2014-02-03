@@ -32,6 +32,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 @ManagedBean(name = "NavigationForm")
 @SessionScoped
@@ -66,11 +67,11 @@ public class NavigationForm {
 	 * @return true if show_taskmanager in file GoobiConfig.properties is =true
 	 */
 	public Boolean getShowTaskManager() {
-		return ConfigMain.getBooleanParameter("show_taskmanager", false);
+		return ConfigurationHelper.getInstance().isShowTaskmanager();
 	}
 
 	public Boolean getShowModuleManager() {
-		return ConfigMain.getBooleanParameter("show_modulmanager", false);
+		return ConfigurationHelper.getInstance().isShowModulmanager();
 	}
 
 	public boolean isShowHelp() {

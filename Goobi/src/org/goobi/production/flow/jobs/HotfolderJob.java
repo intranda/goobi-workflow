@@ -43,10 +43,11 @@ import org.goobi.production.importer.ImportObject;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
+
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -83,7 +84,7 @@ public class HotfolderJob extends AbstractGoobiJob {
     @Override
     public void execute() {
         // logger.error("TEST123");
-        if (ConfigMain.getBooleanParameter("runHotfolder", false)) {
+        if (ConfigurationHelper.getInstance().isRunHotfolder()) {
             logger.trace("1");
             List<GoobiHotfolder> hotlist = GoobiHotfolder.getInstances();
             logger.trace("2");

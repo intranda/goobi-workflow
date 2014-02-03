@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.Configuration;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.CopyProcess;
@@ -40,10 +42,12 @@ import org.goobi.production.importer.ImportObject;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
+
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -156,7 +160,7 @@ public class JobCreation {
 
     @SuppressWarnings("static-access")
     public static void moveFiles(File metsfile, String basepath, Process p) throws SwapException, DAOException, IOException, InterruptedException {
-        if (ConfigMain.getBooleanParameter("importUseOldConfiguration", false)) {
+        if (ConfigurationHelper.getInstance().isImportUseOldConfiguration()) {
             File imagesFolder = new File(basepath);
             if (!imagesFolder.exists()) {
                 imagesFolder = new File(basepath + "_" + p.DIRECTORY_SUFFIX);

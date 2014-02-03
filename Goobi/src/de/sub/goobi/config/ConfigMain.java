@@ -146,9 +146,9 @@ public class ConfigMain implements Serializable {
      * 
      * @return Paramter als String
      */
-    public static boolean getBooleanParameter(String inParameter, boolean inDefault) {
-        return config.getBoolean(inParameter, inDefault);
-    }
+//    public static boolean getBooleanParameter(String inParameter, boolean inDefault) {
+//        return config.getBoolean(inParameter, inDefault);
+//    }
 
     /**
      * Ermitteln eines long-Paramters der Konfiguration

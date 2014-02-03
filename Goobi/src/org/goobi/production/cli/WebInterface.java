@@ -48,7 +48,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class WebInterface extends HttpServlet {
 	private static final Logger logger = Logger.getLogger(WebInterface.class);
@@ -59,7 +59,7 @@ public class WebInterface extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html");
-		if (ConfigMain.getBooleanParameter("useWebApi", false)) {
+		if (ConfigurationHelper.getInstance().isEnableWebApi()) {
 			String ip = "";
 			String password = "";
 			try {

@@ -48,7 +48,6 @@ import org.goobi.production.plugin.PluginLoader;
 import org.reflections.Reflections;
 
 import ugh.dl.Fileformat;
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -76,7 +75,7 @@ public class HelperForm {
 
     // TODO: Change the defaults
     public String getApplicationHeaderTitle() {
-        
+
         String rueck = ConfigurationHelper.getInstance().getApplicationHeaderTitle();
         return rueck;
     }
@@ -164,17 +163,17 @@ public class HelperForm {
 
         }
 
-//        for (MetadataFormat ffh : MetadataFormat.values()) {
-//            if (!ffh.equals(MetadataFormat.RDF)) {
-//                ffs.add(new SelectItem(ffh.getName(), null));
-//            }
-//        }
+        //        for (MetadataFormat ffh : MetadataFormat.values()) {
+        //            if (!ffh.equals(MetadataFormat.RDF)) {
+        //                ffs.add(new SelectItem(ffh.getName(), null));
+        //            }
+        //        }
         return ffs;
     }
 
     public List<SelectItem> getFileFormatsInternalOnly() {
         ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
-        
+
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
@@ -187,37 +186,34 @@ public class HelperForm {
             }
 
         }
-        
-//        for (MetadataFormat ffh : MetadataFormat.values()) {
-//            if (ffh.isUsableForInternal())
-//                if (!ffh.equals(MetadataFormat.RDF)) {
-//                    ffs.add(new SelectItem(ffh.getName(), null));
-//                }
-//        }
+
+        //        for (MetadataFormat ffh : MetadataFormat.values()) {
+        //            if (ffh.isUsableForInternal())
+        //                if (!ffh.equals(MetadataFormat.RDF)) {
+        //                    ffs.add(new SelectItem(ffh.getName(), null));
+        //                }
+        //        }
         return ffs;
     }
 
-    
     public List<SelectItem> getStepStatusList() {
         List<SelectItem> ssl = new ArrayList<SelectItem>();
-        
+
         SelectItem locked = new SelectItem("0", Helper.getTranslation("statusGesperrt"));
         ssl.add(locked);
-        
+
         SelectItem open = new SelectItem("1", Helper.getTranslation("statusOffen"));
         ssl.add(open);
-        
+
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
-        
+
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
-        
+
         return ssl;
     }
-    
 
-    
     public String getServletPathAsUrl() {
         FacesContext context = FacesContext.getCurrentInstance();
         return context.getExternalContext().getRequestContextPath() + "/";
@@ -244,7 +240,7 @@ public class HelperForm {
 
     public boolean getMassImportAllowed() {
         if (massImportAllowed == null) {
-            if (ConfigMain.getBooleanParameter("massImportAllowed", false)) {
+            if (ConfigurationHelper.getInstance().isMassImportAllowed()) {
 
                 massImportAllowed = !PluginLoader.getPluginList(PluginType.Import).isEmpty();
             } else {
@@ -272,11 +268,11 @@ public class HelperForm {
     }
 
     public boolean isLdapIsWritable() {
-        return ConfigMain.getBooleanParameter("ldap_use", true) && !ConfigMain.getBooleanParameter("ldap_readonly", false);
+        return ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly();
     }
 
     public boolean isPasswordIsChangable() {
-        return !ConfigMain.getBooleanParameter("ldap_readonly", false);
+        return !ConfigurationHelper.getInstance().isLdapReadOnly();
     }
 
     public boolean isShowError() {

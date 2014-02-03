@@ -542,7 +542,7 @@ public class FileManipulation {
 
         String masterPrefix = "";
         boolean useMasterFolder = false;
-        if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
+        if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             useMasterFolder = true;
             masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         }

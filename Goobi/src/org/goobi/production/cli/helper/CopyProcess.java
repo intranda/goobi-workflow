@@ -73,7 +73,6 @@ import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.AdditionalField;
@@ -570,7 +569,7 @@ public class CopyProcess extends ProzesskopieForm {
     public boolean testTitle() {
         boolean valide = true;
 
-        if (ConfigMain.getBooleanParameter("MassImportUniqueTitle", true)) {
+        if (ConfigurationHelper.getInstance().isMassImportUniqueTitle()) {
             /*
              * -------------------------------- grundsätzlich den Vorgangstitel prüfen --------------------------------
              */

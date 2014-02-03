@@ -47,7 +47,6 @@ import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
@@ -322,7 +321,7 @@ public class AutomaticDmsExport extends ExportMets {
             }
         }
 
-        if (ConfigMain.getBooleanParameter("ExportFilesFromOptionalMetsFileGroups", false)) {
+        if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {
 
             List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
             if (myFilegroups != null && myFilegroups.size() > 0) {

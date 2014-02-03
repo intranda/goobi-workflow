@@ -917,7 +917,7 @@ public class Metadaten {
     }
 
     private void createDefaultValues(DocStruct element) {
-        if (ConfigMain.getBooleanParameter("MetsEditorEnableDefaultInitialisation", true)) {
+        if (ConfigurationHelper.getInstance().isMetsEditorEnableDefaultInitialisation()) {
             MetadatenalsBeanSpeichern(element);
             if (element.getAllChildren() != null && element.getAllChildren().size() > 0) {
                 for (DocStruct ds : element.getAllChildren()) {
@@ -3405,6 +3405,6 @@ public class Metadaten {
     }
 
     public Boolean getDisplayFileManipulation() {
-        return ConfigMain.getBooleanParameter("MetsEditorDisplayFileManipulation", false);
+        return ConfigurationHelper.getInstance().isMetsEditorDisplayFileManipulation();
     }
 }

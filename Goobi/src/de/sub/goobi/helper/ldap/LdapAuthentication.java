@@ -60,7 +60,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -97,7 +96,7 @@ public class LdapAuthentication {
 	public void createNewUser(User inBenutzer, String inPasswort) throws NamingException, NoSuchAlgorithmException, IOException,
 			InterruptedException {
 
-		if (!ConfigMain.getBooleanParameter("ldap_readonly", false)) {
+		if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
 			Hashtable<String, String> env = LdapConnectionSettings();
 			env.put(Context.SECURITY_PRINCIPAL, ConfigurationHelper.getInstance().getLdapAdminLogin());
 			env.put(Context.SECURITY_CREDENTIALS, ConfigurationHelper.getInstance().getLdapAdminPassword());
@@ -138,7 +137,7 @@ public class LdapAuthentication {
 		Hashtable<String, String> env = LdapConnectionSettings();
 
 		// Start TLS
-		if (ConfigMain.getBooleanParameter("ldap_useTLS", false)) {
+		if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
 			myLogger.debug("use TLS for auth");
 			env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -186,7 +185,7 @@ public class LdapAuthentication {
 			}
 		} else {
 			myLogger.debug("don't use TLS for auth");
-			if (ConfigMain.getBooleanParameter("useSimpleAuthentification", false)) {
+			if (ConfigurationHelper.getInstance().isLdapUseSimpleAuthentification()) {
 				env.put(Context.SECURITY_AUTHENTICATION, "none");
 				env.put(Context.SECURITY_PRINCIPAL, getUserDN(inBenutzer));
                 env.put(Context.SECURITY_CREDENTIALS, inPasswort);
@@ -236,11 +235,11 @@ public class LdapAuthentication {
 	 * @return path as string
 	 */
 	public String getUserHomeDirectory(User inBenutzer) {
-		if (ConfigMain.getBooleanParameter("useLocalDirectory", false)) {
+		if (ConfigurationHelper.getInstance().isLdapUseLocalDirectory()) {
 			return ConfigurationHelper.getInstance().getUserFolder();
 		}
 		Hashtable<String, String> env = LdapConnectionSettings();
-		if (ConfigMain.getBooleanParameter("ldap_useTLS", false)) {
+		if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
 
 			env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -294,7 +293,7 @@ public class LdapAuthentication {
 					}
 				}
 			}
-		} else if (ConfigMain.getBooleanParameter("useSimpleAuthentification", false)) {
+		} else if (ConfigurationHelper.getInstance().isLdapUseSimpleAuthentification()) {
 			env.put(Context.SECURITY_AUTHENTICATION, "none");
 		} else {
 			env.put(Context.SECURITY_PRINCIPAL, ConfigurationHelper.getInstance().getLdapAdminLogin());
@@ -448,7 +447,7 @@ public class LdapAuthentication {
 	 */
 	public boolean changeUserPassword(User inBenutzer, String inOldPassword, String inNewPassword) throws NoSuchAlgorithmException {
 		Hashtable<String, String> env = LdapConnectionSettings();
-		if (!ConfigMain.getBooleanParameter("ldap_readonly", false)) {
+		if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
 			env.put(Context.SECURITY_PRINCIPAL,  ConfigurationHelper.getInstance().getLdapAdminLogin());
 			env.put(Context.SECURITY_CREDENTIALS,  ConfigurationHelper.getInstance().getLdapAdminPassword());
 

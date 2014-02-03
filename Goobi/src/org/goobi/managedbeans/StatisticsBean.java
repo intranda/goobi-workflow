@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -170,6 +171,6 @@ public class StatisticsBean {
     }
 
     public boolean getShowStatistics() {
-        return ConfigMain.getBooleanParameter("showStatisticsOnStartPage", true);
+        return ConfigurationHelper.getInstance().isShowStatisticsOnStartPage();
     }
 }

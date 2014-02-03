@@ -204,6 +204,22 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("swapPath", "");
     }
 
+    public String getMasterDirectoryPrefix() {
+        return getLocalString("DIRECTORY_PREFIX", "master");
+    }
+
+    public String getMediaDirectorySuffix() {
+        return getLocalString("DIRECTORY_SUFFIX", "media");
+    }
+
+    public boolean isCreateMasterDirectory() {
+        return getLocalBoolean("createOrigFolderIfNotExists", true);
+    }
+
+    public boolean isCreateSourceFolder() {
+        return getLocalBoolean("createSourceFolder", false);
+    }
+
     // URLs
 
     public String getGoobiContentServerUrl() {
@@ -264,9 +280,17 @@ public class ConfigurationHelper implements Serializable {
     public String getDefaultLanguage() {
         return getLocalString("language.force-default");
     }
-    
+
     public boolean isAnonymizeData() {
         return getLocalBoolean("anonymize");
+    }
+
+    public boolean isShowStatisticsOnStartPage() {
+        return getLocalBoolean("showStatisticsOnStartPage", true);
+    }
+
+    public boolean isEnableWebApi() {
+        return getLocalBoolean("useWebApi", false);
     }
 
     // process creation
@@ -289,6 +313,14 @@ public class ConfigurationHelper implements Serializable {
 
     public String getScriptCreateSymLink() {
         return getLocalString("script_createSymLink");
+    }
+
+    public boolean isMassImportAllowed() {
+        return getLocalBoolean("massImportAllowed", false);
+    }
+
+    public boolean isMassImportUniqueTitle() {
+        return getLocalBoolean("MassImportUniqueTitle", true);
     }
 
     // authentication
@@ -340,11 +372,27 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseLdapSSLConnection() {
         return getLocalBoolean("ldap_sslconnection");
     }
-    
+
     public boolean isUseLdap() {
         return getLocalBoolean("ldap_use");
     }
-    
+
+    public boolean isLdapReadOnly() {
+        return getLocalBoolean("ldap_readonly", false);
+    }
+
+    public boolean isLdapUseSimpleAuthentification() {
+        return getLocalBoolean("useSimpleAuthentification", false);
+    }
+
+    public boolean isLdapUseLocalDirectory() {
+        return getLocalBoolean("useLocalDirectory", false);
+    }
+
+    public boolean isLdapUseTLS() {
+        return getLocalBoolean("ldap_useTLS", false);
+    }
+
     // mets editor
 
     public String getMetsEditorDefaultSuffix() {
@@ -355,10 +403,22 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
     }
 
+    public boolean isMetsEditorEnableDefaultInitialisation() {
+        return getLocalBoolean("MetsEditorEnableDefaultInitialisation", true);
+    }
+
+    public boolean isMetsEditorDisplayFileManipulation() {
+        return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
+    }
+
+    public boolean isMetsEditorValidateImages() {
+        return getLocalBoolean("MetsEditorValidateImages", true);
+    }
+
     public boolean isMetsEditorShowOCRButton() {
         return getLocalBoolean("showOcrButton");
     }
-    
+
     public String getFormatOfMetsBackup() {
         return getLocalString("formatOfMetaBackups");
     }
@@ -379,14 +439,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("UserForImageReading", "root");
     }
 
-    public String getMasterDirectoryPrefix() {
-        return getLocalString("DIRECTORY_PREFIX", "master");
-    }
-
-    public String getMediaDirectorySuffix() {
-        return getLocalString("DIRECTORY_SUFFIX", "media");
-    }
-
     public String getTypeOfBackup() {
         return getLocalString("typeOfBackup", "renameFile");
     }
@@ -399,8 +451,28 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("exportWithoutTimeLimit");
     }
 
+    public boolean isAutomaticExportWithImages() {
+        return getLocalBoolean("automaticExportWithImages", true);
+    }
+
+    public boolean isAutomaticExportWithOcr() {
+        return getLocalBoolean("automaticExportWithOcr", true);
+    }
+
+    public boolean isUseMasterDirectory() {
+        return getLocalBoolean("useOrigFolder", true);
+    }
+
     public boolean isPdfAsDownload() {
         return getLocalBoolean("pdfAsDownload");
+    }
+
+    public boolean isExportFilesFromOptionalMetsFileGroups() {
+        return getLocalBoolean("ExportFilesFromOptionalMetsFileGroups", false);
+    }
+
+    public boolean isExportValidateImages() {
+        return getLocalBoolean("ExportValidateImages", true);
     }
 
     // active mq
@@ -423,5 +495,23 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseSwapping() {
         return getLocalBoolean("useSwapping");
     }
-    
+
+    // old parameter, romve them
+
+    public boolean isShowTaskmanager() {
+        return getLocalBoolean("show_taskmanager", false);
+    }
+
+    public boolean isShowModulmanager() {
+        return getLocalBoolean("show_modulmanager", false);
+    }
+
+    public boolean isRunHotfolder() {
+        return getLocalBoolean("runHotfolder", false);
+    }
+
+    public boolean isImportUseOldConfiguration() {
+        return getLocalBoolean("importUseOldConfiguration", false);
+    }
+
 }

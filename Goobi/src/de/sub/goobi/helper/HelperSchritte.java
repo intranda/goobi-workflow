@@ -51,7 +51,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.config.ConfigMain;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.AutomaticDmsExport;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -323,8 +323,8 @@ public class HelperSchritte {
 
     public void executeDmsExport(Step step, boolean automatic) {
         AutomaticDmsExport dms =
-                new AutomaticDmsExport(ConfigMain.getBooleanParameter("automaticExportWithImages", true));
-        if (!ConfigMain.getBooleanParameter("automaticExportWithOcr", true)) {
+                new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+        if (!ConfigurationHelper.getInstance().isAutomaticExportWithOcr()) {
             dms.setExportFulltext(false);
         }
 //        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());

@@ -325,7 +325,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (!rueckgabe.endsWith(File.separator)) {
             rueckgabe += File.separator;
         }
-        if (!ConfigMain.getBooleanParameter("useOrigFolder", true) && ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false)) {
+        if (!ConfigurationHelper.getInstance().isUseMasterDirectory() && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
             FilesystemHelper.createDirectory(rueckgabe);
         }
         return rueckgabe;
@@ -358,7 +358,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Boolean getDisplayMETSButton() {
-        if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
+        if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
             return getTifDirectoryExists();
         } else {
             return true;
@@ -370,7 +370,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Boolean getDisplayDMSButton() {
-        if (ConfigMain.getBooleanParameter("ExportValidateImages", true)) {
+        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
             return getTifDirectoryExists();
         } else {
             return true;
@@ -378,7 +378,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
-        if (ConfigMain.getBooleanParameter("useOrigFolder", true)) {
+        if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             File dir = new File(getImagesDirectory());
             DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
             DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
@@ -430,7 +430,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
             }
             String rueckgabe = getImagesDirectory() + origOrdner + File.separator;
-            if (ConfigMain.getBooleanParameter("createOrigFolderIfNotExists", false) && this.getSortHelperStatus() != "100000000") {
+            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000") {
                 FilesystemHelper.createDirectory(rueckgabe);
             }
             return rueckgabe;
@@ -457,7 +457,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String[] verzeichnisse = dir.list(filterVerz);
         if (verzeichnisse == null || verzeichnisse.length == 0) {
             sourceFolder = new File(dir, titel + "_source");
-            if (ConfigMain.getBooleanParameter("createSourceFolder", false)) {
+            if (ConfigurationHelper.getInstance().isCreateSourceFolder()) {
                 sourceFolder.mkdir();
             }
         } else {

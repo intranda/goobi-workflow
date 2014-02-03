@@ -47,10 +47,11 @@ import ugh.dl.Reference;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
+
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigMain;
 import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
@@ -144,7 +145,7 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
+        if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
 
             this.docStructsOhneSeiten = new ArrayList<DocStruct>();
             this.checkDocStructsOhneSeiten(logicalTop);
@@ -200,7 +201,7 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        if (ConfigMain.getBooleanParameter("MetsEditorValidateImages", true)) {
+        if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
             MetadatenImagesHelper mih = new MetadatenImagesHelper(inPrefs, dd);
             try {
                 if (!mih.checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true))) {
