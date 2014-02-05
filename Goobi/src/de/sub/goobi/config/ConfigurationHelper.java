@@ -1,7 +1,6 @@
 package de.sub.goobi.config;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -114,7 +113,7 @@ public class ConfigurationHelper implements Serializable {
         return configLocal.getString(inPath, config.getString(inPath));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "unused" })
     private List<String> getLocalList(String inPath) {
         return configLocal.getList(inPath, config.getList(inPath));
     }
