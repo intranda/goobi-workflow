@@ -314,11 +314,13 @@ public class ProcessBean extends BasicBean {
         //            Helper.setFehlerMeldung("could not delete ", e);
         //            return "";
         //        }
+        Helper.setMeldung("Process deleted");
         if (this.modusAnzeige == "vorlagen") {
             return FilterVorlagen();
         } else {
             return FilterAlleStart();
         }
+
     }
 
     public String ContentLoeschen() {
