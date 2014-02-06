@@ -112,7 +112,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public static String DIRECTORY_SUFFIX = "images";
 
     private String wikifield = "";
-    private static final String TEMPORARY_FILENAME_PREFIX = "temporary_";
+//    private static final String TEMPORARY_FILENAME_PREFIX = "temporary_";
 
     public Process() {
         this.swappedOut = false;
@@ -916,18 +916,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-    // private void renameMetadataFile(String oldFileName, String newFileName) {
-    // File oldFile;
-    // File newFile;
-    // // Long lastModified;
-    // if (oldFileName != null && newFileName != null) {
-    // oldFile = new File(oldFileName);
-    // // lastModified = oldFile.lastModified();
-    // newFile = new File(newFileName);
-    // oldFile.renameTo(newFile);
-    // // newFile.setLastModified(lastModified);
-    // }
-    // }
 
     private boolean checkForMetadataFile() throws IOException, InterruptedException, SwapException, DAOException, WriteException,
             PreferencesException {
@@ -940,76 +928,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    private String getTemporaryMetadataFileName(String fileName) {
-
-        File temporaryFile = new File(fileName);
-        String directoryPath = temporaryFile.getParentFile().getPath();
-        String temporaryFileName = TEMPORARY_FILENAME_PREFIX + temporaryFile.getName();
-
-        return directoryPath + File.separator + temporaryFileName;
-    }
-
-    private void removePrefixFromRelatedMetsAnchorFileFor(String temporaryMetadataFilename) throws IOException {
-        File temporaryFile = new File(temporaryMetadataFilename);
-        File temporaryAnchorFile;
-
-        String directoryPath = temporaryFile.getParentFile().getPath();
-        String temporaryAnchorFileName = temporaryFile.getName().replace("meta.xml", "meta_anchor.xml");
-
-        temporaryAnchorFile = new File(directoryPath + File.separator + temporaryAnchorFileName);
-
-        if (temporaryAnchorFile.exists()) {
-            String anchorFileName = temporaryAnchorFileName.replace(TEMPORARY_FILENAME_PREFIX, "");
-
-            temporaryAnchorFileName = directoryPath + File.separator + temporaryAnchorFileName;
-            anchorFileName = directoryPath + File.separator + anchorFileName;
-
-            FilesystemHelper.renameFile(temporaryAnchorFileName, anchorFileName);
-        }
-    }
 
     public void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
             PreferencesException {
-        boolean backupCondition;
-        boolean writeResult;
-        File temporaryMetadataFile;
+  
 
         Fileformat ff;
         String metadataFileName;
-        String temporaryMetadataFileName;
+        createBackupFile();
 
         ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
-        //        switch (MetadataFormat.findFileFormatsHelperByName(this.projekt.getFileFormatInternal())) {
-        //            case METS:
-        //                ff = new MetsMods(this.regelsatz.getPreferences());
-        //                break;
-        //
-        //            case RDF:
-        //                ff = new RDFFile(this.regelsatz.getPreferences());
-        //                break;
-        //
-        //            case LIDO:
-        //                ff = new Lido(this.regelsatz.getPreferences());
-        //                break;
-        //            default:
-        //                ff = new XStream(this.regelsatz.getPreferences());
-        //                break;
-        //        }
-        // createBackupFile();
         metadataFileName = getMetadataFilePath();
-        temporaryMetadataFileName = getTemporaryMetadataFileName(metadataFileName);
 
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
-        // ff.write(getMetadataFilePath());
-        writeResult = ff.write(temporaryMetadataFileName);
-        temporaryMetadataFile = new File(temporaryMetadataFileName);
-        backupCondition = writeResult && temporaryMetadataFile.exists() && (temporaryMetadataFile.length() > 0);
-        if (backupCondition) {
-            createBackupFile();
-            FilesystemHelper.renameFile(temporaryMetadataFileName, metadataFileName);
-            removePrefixFromRelatedMetsAnchorFileFor(temporaryMetadataFileName);
-        }
+        ff.write(metadataFileName);
+
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
