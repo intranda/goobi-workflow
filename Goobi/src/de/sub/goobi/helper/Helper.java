@@ -74,493 +74,492 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.enums.ReportLevel;
 
-
 @SuppressWarnings("deprecation")
 public class Helper implements Serializable, Observer {
 
-	/**
-	 * Always treat de-serialization as a full-blown constructor, by validating the final state of the de-serialized object.
-	 */
-	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+    /**
+     * Always treat de-serialization as a full-blown constructor, by validating the final state of the de-serialized object.
+     */
+    private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
 
-	}
+    }
 
-	/**
-	 * This is the default implementation of writeObject. Customise if necessary.
-	 */
-	private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+    /**
+     * This is the default implementation of writeObject. Customise if necessary.
+     */
+    private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
 
-	}
+    }
 
-	private static final Logger myLogger = Logger.getLogger(Helper.class);
-	private static final long serialVersionUID = -7449236652821237059L;
+    private static final Logger myLogger = Logger.getLogger(Helper.class);
+    private static final long serialVersionUID = -7449236652821237059L;
 
-	private String myMetadatenVerzeichnis;
-	private String myConfigVerzeichnis;
-	private static Map<Locale, ResourceBundle> commonMessages = null;
-	private static Map<Locale, ResourceBundle> localMessages = null;
+    private String myMetadatenVerzeichnis;
+    private String myConfigVerzeichnis;
+    private static Map<Locale, ResourceBundle> commonMessages = null;
+    private static Map<Locale, ResourceBundle> localMessages = null;
 
-	public static Map<String, String> activeMQReporting = null;
+    public static Map<String, String> activeMQReporting = null;
 
-	/**
-	 * Ermitteln eines bestimmten Paramters des Requests
-	 * 
-	 * @return Paramter als String
-	 */
-	@SuppressWarnings("rawtypes")
-	public static String getRequestParameter(String Parameter) {
-		/* einen bestimmten übergebenen Parameter ermitteln */
-		FacesContext context = FacesContext.getCurrentInstance();
-		Map requestParams = context.getExternalContext().getRequestParameterMap();
-		String myParameter = (String) requestParams.get(Parameter);
-		if (myParameter == null) {
-			myParameter = "";
-		}
-		return myParameter;
-	}
+    /**
+     * Ermitteln eines bestimmten Paramters des Requests
+     * 
+     * @return Paramter als String
+     */
+    @SuppressWarnings("rawtypes")
+    public static String getRequestParameter(String Parameter) {
+        /* einen bestimmten übergebenen Parameter ermitteln */
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map requestParams = context.getExternalContext().getRequestParameterMap();
+        String myParameter = (String) requestParams.get(Parameter);
+        if (myParameter == null) {
+            myParameter = "";
+        }
+        return myParameter;
+    }
 
-	public String getGoobiDataDirectory() {
-		if (this.myMetadatenVerzeichnis == null) {
-			this.myMetadatenVerzeichnis = ConfigurationHelper.getInstance().getMetadataFolder();
-		}
-		return this.myMetadatenVerzeichnis;
-	}
+    public String getGoobiDataDirectory() {
+        if (this.myMetadatenVerzeichnis == null) {
+            this.myMetadatenVerzeichnis = ConfigurationHelper.getInstance().getMetadataFolder();
+        }
+        return this.myMetadatenVerzeichnis;
+    }
 
-	public String getGoobiConfigDirectory() {
-		if (this.myConfigVerzeichnis == null) {
-			this.myConfigVerzeichnis = ConfigurationHelper.getInstance().getConfigurationFolder();
-		}
-		return this.myConfigVerzeichnis;
-	}
+    public String getGoobiConfigDirectory() {
+        if (this.myConfigVerzeichnis == null) {
+            this.myConfigVerzeichnis = ConfigurationHelper.getInstance().getConfigurationFolder();
+        }
+        return this.myConfigVerzeichnis;
+    }
 
-	public static String getStacktraceAsString(Exception inException) {
-		StringWriter sw = new StringWriter();
-		inException.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
-	}
+    public static String getStacktraceAsString(Exception inException) {
+        StringWriter sw = new StringWriter();
+        inException.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
 
-	public static void setFehlerMeldung(String meldung) {
-		setMeldung(null, meldung, "", false);
-	}
+    public static void setFehlerMeldung(String meldung) {
+        setMeldung(null, meldung, "", false);
+    }
 
-	public static void setFehlerMeldung(String meldung, String beschreibung) {
-		setMeldung(null, meldung, beschreibung, false);
-	}
+    public static void setFehlerMeldung(String meldung, String beschreibung) {
+        setMeldung(null, meldung, beschreibung, false);
+    }
 
-	public static void setFehlerMeldung(String control, String meldung, String beschreibung) {
-		setMeldung(control, meldung, beschreibung, false);
-	}
+    public static void setFehlerMeldung(String control, String meldung, String beschreibung) {
+        setMeldung(control, meldung, beschreibung, false);
+    }
 
-	public static void setFehlerMeldung(Exception e) {
-		setFehlerMeldung("Error (" + e.getClass().getName() + "): ", getExceptionMessage(e));
-	}
+    public static void setFehlerMeldung(Exception e) {
+        setFehlerMeldung("Error (" + e.getClass().getName() + "): ", getExceptionMessage(e));
+    }
 
-	public static void setFehlerMeldung(String meldung, Exception e) {
-		setFehlerMeldung(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
-	}
+    public static void setFehlerMeldung(String meldung, Exception e) {
+        setFehlerMeldung(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+    }
 
-	public static void setFehlerMeldung(String control, String meldung, Exception e) {
-		setFehlerMeldung(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
-	}
+    public static void setFehlerMeldung(String control, String meldung, Exception e) {
+        setFehlerMeldung(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+    }
 
-	private static String getExceptionMessage(Throwable e) {
-		String message = e.getMessage();
-		if (message == null) {
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));
-			message = sw.toString();
-		}
-		return message;
-	}
+    private static String getExceptionMessage(Throwable e) {
+        String message = e.getMessage();
+        if (message == null) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            message = sw.toString();
+        }
+        return message;
+    }
 
-	public static void setMeldung(String meldung) {
-		setMeldung(null, meldung, "", true);
-	}
+    public static void setMeldung(String meldung) {
+        setMeldung(null, meldung, "", true);
+    }
 
-	public static void setMeldung(String meldung, String beschreibung) {
-		setMeldung(null, meldung, beschreibung, true);
-	}
+    public static void setMeldung(String meldung, String beschreibung) {
+        setMeldung(null, meldung, beschreibung, true);
+    }
 
-	public static void setMeldung(String control, String meldung, String beschreibung) {
-		setMeldung(control, meldung, beschreibung, true);
-	}
+    public static void setMeldung(String control, String meldung, String beschreibung) {
+        setMeldung(control, meldung, beschreibung, true);
+    }
 
-	/**
-	 * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
-	 */
-	private static void setMeldung(String control, String meldung, String beschreibung, boolean nurInfo) {
-		FacesContext context = FacesContext.getCurrentInstance();
+    /**
+     * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
+     */
+    private static void setMeldung(String control, String meldung, String beschreibung, boolean nurInfo) {
+        FacesContext context = FacesContext.getCurrentInstance();
 
-		// Never forget: Strings are immutable
-		meldung = meldung.replaceAll("<", "&lt;");
-		meldung = meldung.replaceAll(">", "&gt;");
-		beschreibung = beschreibung.replaceAll("<", "&lt;");
-		beschreibung = beschreibung.replaceAll(">", "&gt;");
-		
-		String msg = "";
-		String beschr = "";
-		Locale language = Locale.ENGLISH;
-		SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
-		if (sf != null) {
-			language = sf.getLocale();
-		}
+        // Never forget: Strings are immutable
+        meldung = meldung.replaceAll("<", "&lt;");
+        meldung = meldung.replaceAll(">", "&gt;");
+        beschreibung = beschreibung.replaceAll("<", "&lt;");
+        beschreibung = beschreibung.replaceAll(">", "&gt;");
 
-		try {
-			msg = getString(language, meldung);
-		} catch (RuntimeException e) {
-			msg = meldung;
-		}
-		try {
-			beschr = getString(language, beschreibung);
-		} catch (RuntimeException e) {
-			beschr = beschreibung;
-		}
+        String msg = "";
+        String beschr = "";
+        Locale language = Locale.ENGLISH;
+        SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
+        if (sf != null) {
+            language = sf.getLocale();
+        }
 
-		String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
-		if (activeMQReporting != null) {
-			new WebServiceResult(activeMQReporting.get("queueName"), activeMQReporting.get("id"), nurInfo ? ReportLevel.INFO : ReportLevel.ERROR,
-					compoundMessage).send();
-		}
-		if (context != null) {
-			context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
-		} else { 
-			// wenn kein Kontext da ist, dann die Meldungen in Log
-			myLogger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
+        try {
+            msg = getString(language, meldung);
+        } catch (RuntimeException e) {
+            msg = meldung;
+        }
+        try {
+            beschr = getString(language, beschreibung);
+        } catch (RuntimeException e) {
+            beschr = beschreibung;
+        }
 
-		}
-	}
+        String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
+        if (activeMQReporting != null) {
+            new WebServiceResult(activeMQReporting.get("queueName"), activeMQReporting.get("id"), nurInfo ? ReportLevel.INFO : ReportLevel.ERROR,
+                    compoundMessage).send();
+        }
+        if (context != null) {
+            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
+        } else {
+            // wenn kein Kontext da ist, dann die Meldungen in Log
+            myLogger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
 
-	public static String getString(Locale language, String key) {
-		if (commonMessages == null || commonMessages.size() <= 1) {
-			loadMsgs();
-		}
+        }
+    }
 
-		if (localMessages.containsKey(language)) {
-			ResourceBundle languageLocal = localMessages.get(language);
-			if (languageLocal.containsKey(key))
-				return languageLocal.getString(key);
-			String lowKey = key.toLowerCase();
-			if (languageLocal.containsKey(lowKey))
-				return languageLocal.getString(lowKey);
-		}
-		try {
+    public static String getString(Locale language, String key) {
+        if (commonMessages == null || commonMessages.size() <= 1) {
+            loadMsgs();
+        }
 
-			return commonMessages.get(language).getString(key);
-		} catch (RuntimeException irrelevant) {
-			return key;
-		}
-	}
+        if (localMessages.containsKey(language)) {
+            ResourceBundle languageLocal = localMessages.get(language);
+            if (languageLocal.containsKey(key))
+                return languageLocal.getString(key);
+            String lowKey = key.toLowerCase();
+            if (languageLocal.containsKey(lowKey))
+                return languageLocal.getString(lowKey);
+        }
+        try {
 
-	public static String getDateAsFormattedString(Date inDate) {
-		if (inDate == null) {
-			return "-";
-		} else {
-			return DateFormat.getDateInstance().format(inDate) + " " + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(inDate);
-		}
-	}
+            return commonMessages.get(language).getString(key);
+        } catch (RuntimeException irrelevant) {
+            return key;
+        }
+    }
+
+    public static String getDateAsFormattedString(Date inDate) {
+        if (inDate == null) {
+            return "-";
+        } else {
+            return DateFormat.getDateInstance().format(inDate) + " " + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(inDate);
+        }
+    }
 
     public static Object getManagedBeanValue(String expr) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context == null) {
-			return null;
-		} else {
-			Object value = null;
-			Application application = context.getApplication();
-			if (application != null) {
-				ValueBinding vb = application.createValueBinding(expr);
-				if (vb != null) {
-					try {
-						value = vb.getValue(context);
-					} catch (PropertyNotFoundException e) {
-						myLogger.error(e);
-					} catch (EvaluationException e) {
-						myLogger.error(e);
-					}
-				}
-			}
-			return value;
-		}
-	}
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context == null) {
+            return null;
+        } else {
+            Object value = null;
+            Application application = context.getApplication();
+            if (application != null) {
+                ValueBinding vb = application.createValueBinding(expr);
+                if (vb != null) {
+                    try {
+                        value = vb.getValue(context);
+                    } catch (PropertyNotFoundException e) {
+                        myLogger.error(e);
+                    } catch (EvaluationException e) {
+                        myLogger.error(e);
+                    }
+                }
+            }
+            return value;
+        }
+    }
 
+    private static void loadMsgs() {
+        commonMessages = new HashMap<Locale, ResourceBundle>();
+        localMessages = new HashMap<Locale, ResourceBundle>();
+        if (FacesContext.getCurrentInstance() != null) {
+            Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
+            while (polyglot.hasNext()) {
+                Locale language = polyglot.next();
+                commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                File file = new File(ConfigurationHelper.getInstance().getPathForLocalMessages());
+                if (file.exists()) {
+                    // Load local message bundle from file system only if file exists;
+                    // if value not exists in bundle, use default bundle from classpath
 
+                    try {
+                        final URL resourceURL = file.toURI().toURL();
+                        URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+                            @Override
+                            public URLClassLoader run() {
+                                return new URLClassLoader(new URL[] { resourceURL });
+                            }
+                        });
+                        ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
+                        if (localBundle != null) {
+                            localMessages.put(language, localBundle);
+                        }
 
-	private static void loadMsgs() {
-		commonMessages = new HashMap<Locale, ResourceBundle>();
-		localMessages = new HashMap<Locale, ResourceBundle>();
-		if (FacesContext.getCurrentInstance() != null) {
-			Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
-			while (polyglot.hasNext()) {
-				Locale language = polyglot.next();
-				commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
-				File file = new File(ConfigurationHelper.getInstance().getPathForLocalMessages());
-				if (file.exists()) {
-					// Load local message bundle from file system only if file exists;
-					// if value not exists in bundle, use default bundle from classpath
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        } else {
+            Locale defaullLocale = new Locale("EN");
+            commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
+        }
+    }
 
-					try {
-						final URL resourceURL = file.toURI().toURL();
-						URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
-							@Override
-							public URLClassLoader run() {
-								return new URLClassLoader(new URL[] { resourceURL });
-							}
-						});
-						ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
-						if (localBundle != null) {
-							localMessages.put(language, localBundle);
-						}
+    public static String getTranslation(String dbTitel) {
+        // running instance of ResourceBundle doesn't respond on user language
+        // changes, workaround by instanciating it every time
 
-					} catch (Exception e) {
-					}
-				}
-			}
-		} else {
-			Locale defaullLocale = new Locale("EN");
-			commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
-		}
-	}
+        Locale desiredLanguage = null;
+        try {
+            desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+        } catch (NullPointerException skip) {
+        }
+        if (desiredLanguage != null) {
+            return getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+        } else {
+            return getString(Locale.ENGLISH, dbTitel);
+        }
+    }
 
-	public static String getTranslation(String dbTitel) {
-		// running instance of ResourceBundle doesn't respond on user language
-		// changes, workaround by instanciating it every time
+    public static String getTranslation(String dbTitel, List<String> parameterList) {
+        String value = "";
+        Locale desiredLanguage = null;
+        try {
+            desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+        } catch (NullPointerException skip) {
+        }
+        if (desiredLanguage != null) {
+            value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+        } else {
+            value = getString(Locale.ENGLISH, dbTitel);
+        }
+        if (value != null && parameterList != null && parameterList.size() > 0) {
+            int parameterCount = 0;
+            for (String parameter : parameterList) {
+                if (value != null && parameter != null) {
+                    value = value.replace("{" + parameterCount + "}", parameter);
+                }
+                parameterCount++;
+            }
+        }
 
-		Locale desiredLanguage = null;
-		try {
-			desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-		} catch (NullPointerException skip) {
-		}
-		if (desiredLanguage != null) {
-			return getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
-		} else {
-			return getString(Locale.ENGLISH, dbTitel);
-		}
-	}
+        return value;
+    }
 
-	public static String getTranslation(String dbTitel, List<String> parameterList) {
-		String value = "";
-		Locale desiredLanguage = null;
-		try {
-			desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-		} catch (NullPointerException skip) {
-		}
-		if (desiredLanguage != null) {
-			value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
-		} else {
-			value = getString(Locale.ENGLISH, dbTitel);
-		}
-		if (value != null && parameterList != null && parameterList.size() > 0) {
-			int parameterCount = 0;
-			for (String parameter : parameterList) {
-				value = value.replace("{" + parameterCount + "}", parameter);
-				parameterCount++;
-			}
-		}
+    /**
+     * for easy access of the implemented Interface Observer
+     * 
+     * @return Observer -> can be added to an Observable
+     */
+    public Observer createObserver() {
+        return this;
+    }
 
-		return value;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if (!(arg instanceof String)) {
+            Helper.setFehlerMeldung("Usernotification failed by object: '" + arg.toString()
+                    + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
+        } else {
+            Helper.setFehlerMeldung((String) arg);
+        }
+    }
 
-	/**
-	 * for easy access of the implemented Interface Observer
-	 * 
-	 * @return Observer -> can be added to an Observable
-	 */
-	public Observer createObserver() {
-		return this;
-	}
+    public static String getBaseUrl() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
+        String fullpath = req.getRequestURL().toString();
+        String servletpath = context.getExternalContext().getRequestServletPath();
+        return fullpath.substring(0, fullpath.indexOf(servletpath));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		if (!(arg instanceof String)) {
-			Helper.setFehlerMeldung("Usernotification failed by object: '" + arg.toString()
-					+ "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
-		} else {
-			Helper.setFehlerMeldung((String) arg);
-		}
-	}
+    public static User getCurrentUser() {
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        return login.getMyBenutzer();
+    }
 
-	public static String getBaseUrl() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
-		String fullpath = req.getRequestURL().toString();
-		String servletpath = context.getExternalContext().getRequestServletPath();
-		return fullpath.substring(0, fullpath.indexOf(servletpath));
-	}
+    /**
+     * Copies src file to dst file. If the dst file does not exist, it is created
+     */
+    public static void copyFile(File src, File dst) throws IOException {
+        myLogger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
 
-	public static User getCurrentUser() {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		return login.getMyBenutzer();
-	}
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
 
-	/**
-	 * Copies src file to dst file. If the dst file does not exist, it is created
-	 */
-	public static void copyFile(File src, File dst) throws IOException {
-		myLogger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
-		InputStream in = new FileInputStream(src);
-		OutputStream out = new FileOutputStream(dst);
+    /**
+     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
+     * to delete and returns false.
+     */
+    public static boolean deleteDir(File dir) {
+        if (!dir.exists()) {
+            return true;
+        }
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 
-		// Transfer bytes from in to out
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		in.close();
-		out.close();
-	}
+    /**
+     * Deletes all files and subdirectories under dir. But not the dir itself
+     */
+    public static boolean deleteInDir(File dir) {
+        if (dir.exists() && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
-	 * to delete and returns false.
-	 */
-	public static boolean deleteDir(File dir) {
-		if (!dir.exists()) {
-			return true;
-		}
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		// The directory is now empty so delete it
-		return dir.delete();
-	}
+    /**
+     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
+     */
+    public static boolean deleteDataInDir(File dir) {
+        if (dir.exists() && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                if (!children[i].endsWith(".xml")) {
+                    boolean success = deleteDir(new File(dir, children[i]));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Deletes all files and subdirectories under dir. But not the dir itself
-	 */
-	public static boolean deleteInDir(File dir) {
-		if (dir.exists() && dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+    /**
+     * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
+     */
 
-	/**
-	 * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
-	 */
-	public static boolean deleteDataInDir(File dir) {
-		if (dir.exists() && dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				if (!children[i].endsWith(".xml")) {
-					boolean success = deleteDir(new File(dir, children[i]));
-					if (!success) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
+    public static void copyDirectoryWithCrc32Check(File srcDir, File dstDir, int goobipathlength, Element inRoot) throws IOException {
+        if (srcDir.isDirectory()) {
+            if (!dstDir.exists()) {
+                dstDir.mkdir();
+                dstDir.setLastModified(srcDir.lastModified());
+            }
+            String[] children = srcDir.list();
+            for (int i = 0; i < children.length; i++) {
+                copyDirectoryWithCrc32Check(new File(srcDir, children[i]), new File(dstDir, children[i]), goobipathlength, inRoot);
+            }
+        } else {
+            Long crc = CopyFile.start(srcDir, dstDir);
+            Element file = new Element("file");
+            file.setAttribute("path", srcDir.getAbsolutePath().substring(goobipathlength));
+            file.setAttribute("crc32", String.valueOf(crc));
+            inRoot.addContent(file);
+        }
+    }
 
-	/**
-	 * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
-	 */
+    public static FilenameFilter imageNameFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+            boolean fileOk = false;
+            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
 
-	public static void copyDirectoryWithCrc32Check(File srcDir, File dstDir, int goobipathlength, Element inRoot) throws IOException {
-		if (srcDir.isDirectory()) {
-			if (!dstDir.exists()) {
-				dstDir.mkdir();
-				dstDir.setLastModified(srcDir.lastModified());
-			}
-			String[] children = srcDir.list();
-			for (int i = 0; i < children.length; i++) {
-				copyDirectoryWithCrc32Check(new File(srcDir, children[i]), new File(dstDir, children[i]), goobipathlength, inRoot);
-			}
-		} else {
-			Long crc = CopyFile.start(srcDir, dstDir);
-			Element file = new Element("file");
-			file.setAttribute("path", srcDir.getAbsolutePath().substring(goobipathlength));
-			file.setAttribute("crc32", String.valueOf(crc));
-			inRoot.addContent(file);
-		}
-	}
+            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
+                fileOk = true;
+            }
+            return fileOk;
+        }
+    };
 
-	public static FilenameFilter imageNameFilter = new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String name) {
-			boolean fileOk = false;
-			String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+    public static FilenameFilter dataFilter = new FilenameFilter() {
 
-			if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-				fileOk = true;
-			}
-			return fileOk;
-		}
-	};
-
-	public static FilenameFilter dataFilter = new FilenameFilter() {
-
-		@Override
-		public boolean accept(File dir, String name) {
-			boolean fileOk = false;
-			String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-			if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[mM][pP][gG]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[mM][pP]4")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[mM][pP]3")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.docx")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.doc")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.xls")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.xlsx")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.pptx")) {
-				fileOk = true;
-			} else if (name.matches(prefix + "\\.ppt")) {
-				fileOk = true;
-			}
-			return fileOk;
-		}
-	};
+        @Override
+        public boolean accept(File dir, String name) {
+            boolean fileOk = false;
+            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[mM][pP][gG]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[mM][pP]4")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[mM][pP]3")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.docx")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.doc")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.xls")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.xlsx")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.pptx")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.ppt")) {
+                fileOk = true;
+            }
+            return fileOk;
+        }
+    };
 }
