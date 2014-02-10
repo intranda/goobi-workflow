@@ -43,6 +43,7 @@ public class ConfigurationHelper implements Serializable {
             }
         } catch (ConfigurationException e) {
             logger.error(e);
+            config = new PropertiesConfiguration();
         }
 
     }
@@ -399,11 +400,11 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isUseLdapSSLConnection() {
-        return getLocalBoolean("ldap_sslconnection");
+        return getLocalBoolean("ldap_sslconnection", false);
     }
 
     public boolean isUseLdap() {
-        return getLocalBoolean("ldap_use");
+        return getLocalBoolean("ldap_use", false);
     }
 
     public boolean isLdapReadOnly() {
