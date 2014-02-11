@@ -129,7 +129,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     private boolean getLocalBoolean(String inPath) {
-        return configLocal.getBoolean(inPath, config.getBoolean(inPath));
+        return configLocal.getBoolean(inPath, config.getBoolean(inPath, false));
     }
 
     /*********************************** direct config results ***************************************/
