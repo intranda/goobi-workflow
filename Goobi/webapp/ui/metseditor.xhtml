@@ -1,80 +1,92 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template_metadata.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template_metadata.html" xmlns:x="http://myfaces.apache.org/tomahawk">
 
-	<ui:define name="top_title">
-		<h:outputText style="font-size:17px; font-family:verdana; color: white;"
-							value="#{Metadaten.myProzess.titel}" />
-	</ui:define>
+    <ui:define name="top_title">
+        <h:outputText style="font-size:17px; font-family:verdana; color: white;" value="#{Metadaten.myProzess.titel}" />
+    </ui:define>
 
-	<ui:define name="top_individual">
-		<ui:include src="includes/metseditor/metseditor_top.xhtml" />
-	</ui:define>
+    <ui:define name="top_individual">
+        <ui:include src="includes/metseditor/metseditor_top.xhtml" />
+    </ui:define>
 
-	<ui:define name="sidebar_top">
-		<ui:include src="includes/metseditor/metseditor_left.xhtml" />
-	</ui:define>
+    <ui:define name="sidebar_top">
+        <ui:include src="includes/metseditor/metseditor_left.xhtml" />
+    </ui:define>
 
-	<ui:define name="breadcrumb">
+    <ui:define name="breadcrumb">
 
-		<table id="bla" width="100%" cellspacing="0" cellpadding="0">
-			<tr>
-				<td><h:panelGroup id="vdid3" rendered="#{not Metadaten.nurLesenModus}">
+        <table id="bla" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <h:panelGroup id="vdid3" rendered="#{not Metadaten.nurLesenModus}">
 
-						<h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
-							<f:param id="vdid5" name="Ansicht" value="Paginierung" />
-						</h:commandLink>
-						<h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px"
-							rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
-						<h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
+                        <h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
+                            <f:param id="vdid5" name="Ansicht" value="Paginierung" />
+                        </h:commandLink>
+                        <h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px"
+                            rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
+                        <h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
 
-						<h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
-							<f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
-						</h:commandLink>
+                        <h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
+                            <f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
+                        </h:commandLink>
 
-						<h:outputText id="vdid10" value="#{msgs.strukturdaten}" style="font-weight:bold;font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
-						<h:outputText id="vdid11" value=" | " style="font-size: 11px;" />
+                        <h:outputText id="vdid10" value="#{msgs.strukturdaten}" style="font-weight:bold;font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
+                        <h:outputText id="vdid11" value=" | " style="font-size: 11px;" />
 
-						<h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}" value="#{msgs.metadaten}" style="font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
-							<f:param id="vdid13" name="Ansicht" value="Metadaten" />
-						</h:commandLink>
+                        <h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}" value="#{msgs.metadaten}" style="font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
+                            <f:param id="vdid13" name="Ansicht" value="Metadaten" />
+                        </h:commandLink>
 
-						<h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
+                        <h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
 
-						<h:outputText id="vdid15" value=" | " style="font-size: 11px;" rendered="#{Metadaten.displayFileManipulation}"  />
+                        <h:outputText id="vdid15" value=" | " style="font-size: 11px;" rendered="#{Metadaten.displayFileManipulation}" />
 
-						<h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;"
-							rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
-							<f:param id="vdid17" name="Ansicht" value="File" />
-						</h:commandLink>
+                        <h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
+                            <f:param id="vdid17" name="Ansicht" value="File" />
+                        </h:commandLink>
 
-						<h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File' and Metadaten.displayFileManipulation}" />
+                        <h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;"
+                            rendered="#{Metadaten.modusAnsicht == 'File' and Metadaten.displayFileManipulation}" />
 
-					</h:panelGroup></td>
+                    </h:panelGroup>
+                </td>
 
-				<td align="right"><h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}"
-						value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" /> <h:commandLink
-						action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==false}" value="#{msgs.metadatenBildAnzeigen}"
-						style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" /> <h:outputText value=" | " style="font-size: 11px;" /> <!-- Metadaten validieren -->
-					<h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}" rendered="#{not Metadaten.nurLesenModus}" /> <h:outputText
-						value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten nicht schreiben, nur zurück gehen--> <h:commandLink
-						style="font-size:11px" action="#{Metadaten.goZurueck}" value="#{msgs.goBack}" target="_parent" immediate="true" id="returnButton" /> <h:outputText
-						value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten schreiben --> <h:commandLink
-						style="font-size:11px" action="#{Metadaten.Reload}" value="#{msgs.speichern}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" /> <h:outputText
-						value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" /> <!-- Metadaten schreiben und zurück gehen--> <h:commandLink
-						style="font-size:11px" target="_parent" action="#{Metadaten.XMLschreiben}" value="#{msgs.speichernZurueck}"
-						rendered="#{not Metadaten.nurLesenModus}" immediate="false" /></td>
-			</tr>
-		</table>
-	</ui:define>
+                <td align="right">
+                    <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}"
+                        value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" />
+                    <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==false}"
+                        value="#{msgs.metadatenBildAnzeigen}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" />
+                    <h:outputText value=" | " style="font-size: 11px;" />
+                    <!-- Metadaten validieren -->
+                    <h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}"
+                        rendered="#{not Metadaten.nurLesenModus}" />
+                    <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
+                    <!-- Metadaten nicht schreiben, nur zurück gehen-->
+                    <h:commandLink style="font-size:11px" action="#{Metadaten.goZurueck}" value="#{msgs.goBack}" target="_parent" immediate="true"
+                        id="returnButton" />
+                    <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
+                    <!-- Metadaten schreiben -->
+                    <h:commandLink style="font-size:11px" action="#{Metadaten.Reload}" value="#{msgs.speichern}"
+                        rendered="#{not Metadaten.nurLesenModus}" immediate="false" />
+                    <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
+                    <!-- Metadaten schreiben und zurück gehen-->
+                    <h:commandLink style="font-size:11px" target="_parent" action="#{Metadaten.XMLschreiben}" value="#{msgs.speichernZurueck}"
+                        rendered="#{not Metadaten.nurLesenModus}" immediate="false" />
+                </td>
+            </tr>
+        </table>
+    </ui:define>
 
-	<ui:define name="content">
-    
-<script type="text/javascript">
+    <ui:define name="content">
+
+        <script type="text/javascript">
 
 var $ = jQuery;
 $(document).ready(function() {
@@ -82,53 +94,71 @@ $(document).ready(function() {
 	$("#metadatenRechtsWrapp").css({ height : winH - 170 });
 });
 
-</script>    
-    
-    <div id="metadatenRechtsWrapp" style="overflow: auto;"> 
-		<table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
+</script>
 
-			<tr valign="top" style="width: 100%; height: 100%">
-				<td><h:panelGroup rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
-						<ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
-					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Strukturdaten'}">
-						<ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
-					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
-						<ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
-					</h:panelGroup> <h:panelGroup rendered="#{Metadaten.modusAnsicht =='File'}">
-						<ui:include src="includes/metseditor/metseditor_file.xhtml" />
-					</h:panelGroup></td>
+        <div id="metadatenRechtsWrapp" style="overflow: auto;">
+            <table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
 
-				<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
-					<td style="top: 10px;"><h:panelGroup id="BildArea2"
-							style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
-							<ui:include src="includes/metseditor/metseditor_image.xhtml" />
-						</h:panelGroup></td>
-				</h:panelGroup>
-			</tr>
-		</table>
+                <tr valign="top" style="width: 100%; height: 100%">
+                    <td>
+                        <h:panelGroup rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
+                            <ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Strukturdaten'}">
+                            <ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
+                            <ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{Metadaten.modusAnsicht =='File'}">
+                            <ui:include src="includes/metseditor/metseditor_file.xhtml" />
+                        </h:panelGroup>
+                    </td>
+
+                    <h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
+                        <td style="top: 10px;">
+                            <h:panelGroup id="BildArea2" style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
+                                <ui:include src="includes/metseditor/metseditor_image.xhtml" />
+                            </h:panelGroup>
+                        </td>
+                    </h:panelGroup>
+                </tr>
+            </table>
         </div>
 
 
-		<script type="text/javascript">
-			function focusForPicture() {
-				
-				 //alert(document.getElementById("hiddenBildNummer").value);
-				 //alert(document.getElementsByName("myform:myCheckboxes").length);
-				  
-				for (i = 0; i &lt; document
-						.getElementsByName("myform:myCheckboxes").length; i++) {
-					if (i == document.getElementById("hiddenBildNummer").value - 1) {
-						if (i + 1 &lt; document
-								.getElementsByName("myform:myCheckboxes").length) {
-							document
-									.getElementsByName("myform:myCheckboxes")[i + 1]
-									.focus();
+        <script type="text/javascript">
+		function isIE() {
+			var agent = navigator.userAgent.toLowerCase();
+			var name = 'MSIE';
+			if (agent.indexOf(name.toLowerCase()) > -1) {
+				return true;
+			}
+
+			return false;
+		}
+		
+		function focusForPicture() {
+			if (isIE()) {
+				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
+					if (i == document.getElementById("hiddenBildNummer").value) {
+						if (i+1 &lt; document.getElementsByName("myCheckboxes").length) {
+							document.getElementsByName("myCheckboxes")[i + 1].focus();
 						}
-						document.getElementsByName("myform:myCheckboxes")[i]
-								.focus();
+						document.getElementsByName("myCheckboxes")[i].focus();
+					}
+				}
+			} else {
+				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
+					if (i == document.getElementById("hiddenBildNummer").value - 1) {
+						if (i + 1 &lt; document.getElementsByName("myCheckboxes").length) {
+							document.getElementsByName("myCheckboxes")[i + 1].focus();
+						}
+						document.getElementsByName("myCheckboxes")[i].focus();
 					}
 				}
 			}
+		}
 
 			document.documentElement.onkeypress = function (event) {
 				//alert("Sie haben die Taste mit dem Wert " + event.which + " gedrueckt");
@@ -233,7 +263,7 @@ $(document).ready(function() {
 				}
 			}
 				</script>
-	</ui:define>
+    </ui:define>
 
 </ui:composition>
 
