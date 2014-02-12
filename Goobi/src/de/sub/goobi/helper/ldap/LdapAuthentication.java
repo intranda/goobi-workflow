@@ -236,7 +236,7 @@ public class LdapAuthentication {
 	 */
 	public String getUserHomeDirectory(User inBenutzer) {
 		if (ConfigurationHelper.getInstance().isLdapUseLocalDirectory()) {
-			return ConfigurationHelper.getInstance().getUserFolder();
+			return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
 		}
 		Hashtable<String, String> env = LdapConnectionSettings();
 		if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
