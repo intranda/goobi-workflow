@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ DocketConverterTest.class, ProcessConverterTest.class, StatisticsCalculationUnitConverterTest.class,
+@SuiteClasses({ DocketConverterTest.class, NormDatabaseConverterTest.class, ProcessConverterTest.class, StatisticsCalculationUnitConverterTest.class,
         StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class })
 public class TestAll {
 
