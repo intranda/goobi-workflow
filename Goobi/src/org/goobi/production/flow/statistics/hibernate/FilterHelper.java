@@ -418,7 +418,7 @@ public class FilterHelper {
             }
         }
         if (listIds.size() > 0) {
-            answer = " prozesseId in (";
+            answer = " prozesse.prozesseId in (";
             for (int id : listIds) {
                 answer += id + ", ";
             }
@@ -439,19 +439,19 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
                         + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
                         + "%'))";
             } else {
 
-                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
             }
         } else {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
                         + StringEscapeUtils.escapeSql(ts[1])
                         + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
                         + StringEscapeUtils.escapeSql(ts[0])
@@ -508,7 +508,7 @@ public class FilterHelper {
         if (isStep) {
             flagSteps = true;
             filter = checkStringBuilder(filter, true);
-            filter.append(" prozesse.prozesseId not in (select prozesseID from prozesse where prozesse.istTemplate = true) ");
+            filter.append(" prozesse.prozesseId not in (select prozesse.prozesseID from prozesse where prozesse.istTemplate = true) ");
         }
 
         // to collect and return feedback about erroneous use of filter
