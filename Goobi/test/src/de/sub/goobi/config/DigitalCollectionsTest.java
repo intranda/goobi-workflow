@@ -22,6 +22,7 @@ public class DigitalCollectionsTest {
             folder = "/opt/digiverso/junit/data/";
         }
         File template = new File(folder + "goobi_projects.xml");
+        ConfigurationHelper.CONFIG_FILE_NAME =folder + "goobi_config.properties";
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + File.separator);
     }
 

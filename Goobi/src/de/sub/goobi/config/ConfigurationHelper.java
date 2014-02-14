@@ -22,7 +22,7 @@ public class ConfigurationHelper implements Serializable {
     private static final Logger logger = Logger.getLogger(ConfigurationHelper.class);
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
-    private static final String CONFIG_FILE_NAME = "goobi_config.properties";
+    public static String CONFIG_FILE_NAME = "goobi_config.properties";
     private PropertiesConfiguration config;
     private PropertiesConfiguration configLocal;
 

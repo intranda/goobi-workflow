@@ -69,6 +69,7 @@ public class AutomaticDmsExportTest {
     }
 
     private void setUpConfig() {
+        ConfigurationHelper.CONFIG_FILE_NAME =folder + "goobi_config.properties";
 
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
