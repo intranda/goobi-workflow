@@ -15,6 +15,9 @@ public class ConfigProjectsTest {
     @Before
     public void setUp() throws URISyntaxException {
         String folder = System.getenv("junitdata");
+        if (folder == null) {
+            folder = "/opt/digiverso/junit/data/";
+        }
         File template = new File(folder + "goobi_projects.xml");
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + File.separator);
     }

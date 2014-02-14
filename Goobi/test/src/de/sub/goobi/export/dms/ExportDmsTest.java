@@ -110,23 +110,28 @@ public class ExportDmsTest {
         File configFolder = folder.newFolder("config");
         configFolder.mkdir();
         String folder = System.getenv("junitdata");
+        if (folder == null) {
+            folder = "/opt/digiverso/junit/data/";
+        }
         File digitalCollectionTemplate = new File(folder + "goobi_digitalCollections.xml");
-        File digitalCollection = new File (configFolder, "goobi_digitalCollections.xml");
+        File digitalCollection = new File(configFolder, "goobi_digitalCollections.xml");
         FileUtils.copyFile(digitalCollectionTemplate, digitalCollection);
-        
-        
+
         File projectsTemplate = new File(folder + "goobi_projects.xml");
-        File projects = new File (configFolder, "goobi_projects.xml");
+        File projects = new File(configFolder, "goobi_projects.xml");
         FileUtils.copyFile(projectsTemplate, projects);
-        
+
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
-        
+
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
         File rulesetFolder = folder.newFolder("rulesets");
         rulesetFolder.mkdir();
         String folder = System.getenv("junitdata");
+        if (folder == null) {
+            folder = "/opt/digiverso/junit/data/";
+        }
         File rulesetTemplate = new File(folder + RULESET_NAME);
         File rulesetFile = new File(rulesetFolder, RULESET_NAME);
         FileUtils.copyFile(rulesetTemplate, rulesetFile);
@@ -153,6 +158,9 @@ public class ExportDmsTest {
         File altofolder = new File(ocr, "testprocess_alto");
         altofolder.mkdirs();
         String folder = System.getenv("junitdata");
+        if (folder == null) {
+            folder = "/opt/digiverso/junit/data/";
+        }
         File metsTemplate = new File(folder + "metadata.xml");
         File metsFile = new File(processFolder, "meta.xml");
         FileUtils.copyFile(metsTemplate, metsFile);
@@ -174,7 +182,11 @@ public class ExportDmsTest {
         export2.mkdirs();
         File data = new File(export1, "file.ext");
         data.createNewFile();
-
+        String metadataFolder = processFolder.getParent();
+        if (!metadataFolder.endsWith("/")) {
+            metadataFolder = metadataFolder + "/";
+        }
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", metadataFolder);
     }
 
     @Test
