@@ -963,7 +963,7 @@ public class ProzesskopieForm {
     }
 
     public void setDocType(String docType) {
-        if (this.docType.equals(docType)) {
+        if (this.docType != null && this.docType.equals(docType)) {
            return;
         } else {
             this.docType = docType;
