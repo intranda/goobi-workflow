@@ -448,12 +448,9 @@ public class GoobiScript {
                     Step s = iterator.next();
                     if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
                         proz.getSchritte().remove(s);
-                        try {
-                            ProcessManager.saveProcess(proz);
-                        } catch (DAOException e) {
-                            Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
-                            logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
-                        }
+
+                        StepManager.deleteStep(s);
+
                         Helper.setMeldung("goobiScriptfield", "Removed step from process: ", proz.getTitel());
                         break;
                     }
