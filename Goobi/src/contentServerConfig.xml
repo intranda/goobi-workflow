@@ -36,7 +36,7 @@
     		<settings allowRenderWithJAI="false" scaleWithScalr="true" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
     	</type>
         <type colorType="bitonal">
-    		<settings allowRenderWithJAI="true" scaleWithScalr="false" mergeWithJAI="true" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
+    		<settings allowRenderWithJAI="true" scaleWithScalr="true" mergeWithJAI="true" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
     	</type>
         <type format="jpeg" colorType="grayscale">
     		<settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
