@@ -38,6 +38,7 @@ import javax.faces.model.SelectItem;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.production.flow.statistics.hibernate.FilterString;
+import org.goobi.production.search.api.ExtendedSearchRow;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -89,9 +90,8 @@ public class SearchBean {
     private String templatePropertyOperand = "";
     private String stepPropertyOperand = "";
     private String stepOperand = "";
-    
+
     private String batchid = "";
-    
 
     public SearchBean() {
         for (StepStatus s : StepStatus.values()) {
@@ -175,6 +175,8 @@ public class SearchBean {
         //		crit.addOrder(Order.asc("nachname"));
         //		crit.addOrder(Order.asc("vorname"));
         //		this.user.addAll(crit.list());
+
+        createValues();
     }
 
     public List<String> getProjects() {
@@ -370,11 +372,11 @@ public class SearchBean {
         if (!this.idin.isEmpty()) {
             search += "\"" + FilterString.ID + this.idin + "\" ";
         }
-        
+
         if (!this.batchid.isEmpty()) {
             search += "\"" + FilterString.BATCH + this.batchid + "\" ";
         }
-        
+
         if (!this.project.isEmpty() && !this.project.equals(Helper.getTranslation("notSelected"))) {
             search += "\"" + this.projectOperand + FilterString.PROJECT + this.project + "\" ";
         }
@@ -501,4 +503,30 @@ public class SearchBean {
         this.batchid = batchid;
     }
 
+    /** new search gui */
+
+    List<ExtendedSearchRow> rowList = new ArrayList<ExtendedSearchRow>();
+
+    List<SelectItem> fieldnameList = new ArrayList<SelectItem>();
+    
+    private void createValues() {
+        rowList.add(new ExtendedSearchRow());
+        
+        fieldnameList.add(new SelectItem("step", "step title"));
+        fieldnameList.add(new SelectItem("process", "process title"));
+    }
+    
+    public List<SelectItem> getFieldnameList() {
+        return fieldnameList;
+    }
+    
+    public List<ExtendedSearchRow> getRowList() {
+        return rowList;
+    }
+
+    public void addRow() {
+        rowList.add(new ExtendedSearchRow());
+    }
+    
+    
 }

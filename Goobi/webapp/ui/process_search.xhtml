@@ -1,124 +1,127 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:f="http://java.sun.com/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
 
-	<ui:define name="breadcrumb">
-		<h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
-		<f:verbatim> &#8250;&#8250; </f:verbatim>
-		<h:outputText value="#{msgs.nachEinemBandSuchen}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
+        <f:verbatim> &#8250;&#8250; </f:verbatim>
+        <h:outputText value="#{msgs.nachEinemBandSuchen}" />
+    </ui:define>
 
-	<ui:define name="title">
-		<h:outputText value="#{msgs.nachEinemBandSuchen}" />
-	</ui:define>
+    <ui:define name="title">
+        <h:outputText value="#{msgs.nachEinemBandSuchen}" />
+    </ui:define>
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');">
+        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');">
 
-			<table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
+            <table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 
-				<tr>
-					<td class="eingabeBoxen_row1" colspan="2">
-						<h:outputText value="#{msgs.suche}" />
-					</td>
-				</tr>
+                <tr>
+                    <td class="eingabeBoxen_row1" colspan="2">
+                        <h:outputText value="#{msgs.suche}" />
+                    </td>
+                </tr>
 
-				<tr>
-					<td class="eingabeBoxen_row2" colspan="2">
-						<h:panelGrid id="extended" columns="2" rendered="#{ProzessverwaltungForm.initialize}">
+                <tr>
+                    <td class="eingabeBoxen_row2" colspan="2">
+                        <h:panelGrid id="extended" columns="2" rendered="#{ProzessverwaltungForm.initialize}">
 
-							<!-- process title -->
-							<h:outputText value="#{msgs.title}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.processOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
-								<h:inputText value="#{SearchForm.processTitle}" style="width:570px" />
+                            <!-- process title -->
+                            <h:outputText value="#{msgs.title}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.processOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
+                                <h:inputText value="#{SearchForm.processTitle}" style="width:570px" />
 
-							</h:panelGroup>
+                            </h:panelGroup>
 
-							<!--projects -->
-							<h:outputText value="#{msgs.projects}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.projectOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
+                            <!--projects -->
+                            <h:outputText value="#{msgs.projects}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.projectOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
 
-								<h:selectOneMenu value="#{SearchForm.project}" style="width:570px">
-									<f:selectItems id="pcid11" value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
-								</h:selectOneMenu>
-							</h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.project}" style="width:570px">
+                                    <f:selectItems id="pcid11" value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
+                                </h:selectOneMenu>
+                            </h:panelGroup>
 
-							<!-- process property -->
-							<h:outputText value="#{msgs.processProperties}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.processPropertyOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
-								<h:panelGroup>
-									<h:selectOneMenu value="#{SearchForm.processPropertyTitle}" style="width:175px; margin-right:3px">
-										<f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-									</h:selectOneMenu>
-									<h:inputText value="#{SearchForm.processPropertyValue}" style="width:394px" />
-								</h:panelGroup>
-							</h:panelGroup>
+                            <!-- process property -->
+                            <h:outputText value="#{msgs.processProperties}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.processPropertyOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
+                                <h:panelGroup>
+                                    <h:selectOneMenu value="#{SearchForm.processPropertyTitle}" style="width:175px; margin-right:3px">
+                                        <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{SearchForm.processPropertyValue}" style="width:394px" />
+                                </h:panelGroup>
+                            </h:panelGroup>
 
-							<!-- masterpiece property -->
-							<h:outputText value="#{msgs.masterpieceProperties}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.masterpiecePropertyOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
-								<h:panelGroup>
-									<h:selectOneMenu value="#{SearchForm.masterpiecePropertyTitle}" style="width:175px; margin-right:3px">
-										<f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="work" itemLabel="#{work}" itemValue="#{work}" />
-									</h:selectOneMenu>
-									<h:inputText value="#{SearchForm.masterpiecePropertyValue}" style="width:394px" />
-								</h:panelGroup>
-							</h:panelGroup>
-							<!-- template property -->
-							<h:outputText value="#{msgs.templateProperties}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.templatePropertyOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
-								<h:panelGroup>
-									<h:selectOneMenu value="#{SearchForm.templatePropertyTitle}" style="width:175px; margin-right:3px">
-										<f:selectItems value="#{SearchForm.templatePropertyTitles}" var="temp" itemLabel="#{temp}" itemValue="#{temp}" />
-									</h:selectOneMenu>
-									<h:inputText value="#{SearchForm.templatePropertyValue}" style="width:394px" />
-								</h:panelGroup>
-							</h:panelGroup>
-							<!-- step property -->
-							<h:outputText value="#{msgs.stepProperties}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.stepPropertyOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
-								<h:panelGroup>
-									<h:selectOneMenu value="#{SearchForm.stepPropertyTitle}" style="width:175px; margin-right:3px">
-										<f:selectItems value="#{SearchForm.stepPropertyTitles}" var="step" itemLabel="#{step}" itemValue="#{step}" />
-									</h:selectOneMenu>
-									<h:inputText value="#{SearchForm.stepPropertyValue}" style="width:394px" />
-								</h:panelGroup>
-							</h:panelGroup>
-							<!--steps -->
-							<h:outputText value="#{msgs.step}: " />
-							<h:panelGroup>
-								<h:selectOneMenu value="#{SearchForm.stepOperand}" style="width:115px; margin-right:3px">
-									<f:selectItems value="#{SearchForm.operands}" />
-								</h:selectOneMenu>
-								<h:panelGroup>
-									<h:selectOneMenu value="#{SearchForm.status}" style="width:175px; margin-right:3px">
-										<f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}" itemValue="#{stepstatus.searchString}" />
-									</h:selectOneMenu>
-									<h:selectOneMenu value="#{SearchForm.stepname}" style="width:394px">
-										<f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}" itemValue="#{stepTitles}" />
-									</h:selectOneMenu>
-								</h:panelGroup>
-							</h:panelGroup>
-							<!-- user -->
-							<!-- 
+                            <!-- masterpiece property -->
+                            <h:outputText value="#{msgs.masterpieceProperties}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.masterpiecePropertyOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
+                                <h:panelGroup>
+                                    <h:selectOneMenu value="#{SearchForm.masterpiecePropertyTitle}" style="width:175px; margin-right:3px">
+                                        <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="work" itemLabel="#{work}"
+                                            itemValue="#{work}" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{SearchForm.masterpiecePropertyValue}" style="width:394px" />
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <!-- template property -->
+                            <h:outputText value="#{msgs.templateProperties}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.templatePropertyOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
+                                <h:panelGroup>
+                                    <h:selectOneMenu value="#{SearchForm.templatePropertyTitle}" style="width:175px; margin-right:3px">
+                                        <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="temp" itemLabel="#{temp}" itemValue="#{temp}" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{SearchForm.templatePropertyValue}" style="width:394px" />
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <!-- step property -->
+                            <h:outputText value="#{msgs.stepProperties}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.stepPropertyOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
+                                <h:panelGroup>
+                                    <h:selectOneMenu value="#{SearchForm.stepPropertyTitle}" style="width:175px; margin-right:3px">
+                                        <f:selectItems value="#{SearchForm.stepPropertyTitles}" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{SearchForm.stepPropertyValue}" style="width:394px" />
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <!--steps -->
+                            <h:outputText value="#{msgs.step}: " />
+                            <h:panelGroup>
+                                <h:selectOneMenu value="#{SearchForm.stepOperand}" style="width:115px; margin-right:3px">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
+                                <h:panelGroup>
+                                    <h:selectOneMenu value="#{SearchForm.status}" style="width:175px; margin-right:3px">
+                                        <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
+                                            itemValue="#{stepstatus.searchString}" />
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu value="#{SearchForm.stepname}" style="width:394px">
+                                        <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}"
+                                            itemValue="#{stepTitles}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <!-- user -->
+                            <!-- 
 							<h:outputText value="#{msgs.user}: " />
 							<h:panelGroup>
 								<h:selectOneMenu value="#{SearchForm.stepdoneuser}">
@@ -132,38 +135,65 @@
 								</h:selectOneMenu>
 							</h:panelGroup>
 							-->
-							<!-- process id -->
-							<h:outputText value="#{msgs.id}: " />
-							<h:inputText value="#{SearchForm.idin}" style="width:690px" />
+                            <!-- process id -->
+                            <h:outputText value="#{msgs.id}: " />
+                            <h:inputText value="#{SearchForm.idin}" style="width:690px" />
 
-							<!-- batch id -->
-							<h:outputText value="#{msgs.batch}: " />
-							<h:inputText value="#{SearchForm.batchid}" style="width:690px" />
+                            <!-- batch id -->
+                            <h:outputText value="#{msgs.batch}: " />
+                            <h:inputText value="#{SearchForm.batchid}" style="width:690px" />
 
 
-							<h:outputText value="#{msgs.showArchivedProjects}:" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
-							<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
+                            <h:outputText value="#{msgs.showArchivedProjects}:" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
+                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}"
+                                rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
 
-							<h:outputText value="#{msgs.showClosedProcesses}:" />
-							<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
+                            <h:outputText value="#{msgs.showClosedProcesses}:" />
+                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
 
-						</h:panelGrid>
-					</td>
-				</tr>
-				<tr>
-					<td class="eingabeBoxen_row3" align="left">
-						<h:commandButton value="#{msgs.clear}" action="process_search" immediate="true">
-						</h:commandButton>
-					</td>
+                        </h:panelGrid>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="eingabeBoxen_row3" align="left">
+                        <h:commandButton value="#{msgs.clear}" action="process_search" immediate="true">
+                        </h:commandButton>
+                    </td>
 
-					<td class="eingabeBoxen_row3" align="right">
-						<h:commandButton id="absenden" action="#{SearchForm.filter}" title="#{msgs.filterAnwenden}" value="#{msgs.filterAnwenden}">
-						</h:commandButton>
-					</td>
-				</tr>
-			</table>
+                    <td class="eingabeBoxen_row3" align="right">
+                        <h:commandButton id="absenden" action="#{SearchForm.filter}" title="#{msgs.filterAnwenden}" value="#{msgs.filterAnwenden}">
+                        </h:commandButton>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
 
-		</h:form>
-	</ui:define>
+        <h:form>
+            <h:dataTable value="#{SearchForm.rowList}" var="row">
+                <h:column>
+
+                    <h:selectOneMenu value="#{row.firstFieldName}">
+                        <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
+                            itemLabel="#{fieldname.label}" />
+                    </h:selectOneMenu>
+                </h:column>
+
+                <h:column>
+                    <h:selectOneMenu value="#{row.firstFieldOperand}">
+                        <f:selectItem itemLabel="enthält" itemValue=" IS " />
+                        <f:selectItem itemLabel="enthält nicht" itemValue=" IS NOT " />
+                    </h:selectOneMenu>
+
+                </h:column>
+
+
+
+
+            </h:dataTable>
+
+
+        </h:form>
+
+    </ui:define>
 
 </ui:composition>
