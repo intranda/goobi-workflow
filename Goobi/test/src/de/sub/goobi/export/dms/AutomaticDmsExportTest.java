@@ -133,7 +133,7 @@ public class AutomaticDmsExportTest {
         FileUtils.copyFile(projectsTemplate, projects);
         
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
-        
+        ConfigurationHelper.getInstance().setParameter("localMessages", "/opt/digiverso/junit/data/");
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
