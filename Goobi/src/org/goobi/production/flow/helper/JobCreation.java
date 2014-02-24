@@ -221,7 +221,7 @@ public class JobCreation {
                 for (File directory : folderList) {
                     File destination = new File(p.getProcessDataDirectory(), directory.getName());
                     if (directory.isDirectory()) {
-                        if (destination.exists()) {
+                        if (!destination.exists()) {
                             FileUtils.moveDirectory(directory, destination);
                         } else {
                             FileUtils.copyDirectory(directory, destination);
