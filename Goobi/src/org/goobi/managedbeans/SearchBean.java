@@ -508,25 +508,45 @@ public class SearchBean {
     List<ExtendedSearchRow> rowList = new ArrayList<ExtendedSearchRow>();
 
     List<SelectItem> fieldnameList = new ArrayList<SelectItem>();
-    
+
+    private ExtendedSearchRow currentRow;
+
     private void createValues() {
         rowList.add(new ExtendedSearchRow());
-        
+
         fieldnameList.add(new SelectItem("step", "step title"));
         fieldnameList.add(new SelectItem("process", "process title"));
     }
-    
+
     public List<SelectItem> getFieldnameList() {
         return fieldnameList;
     }
-    
+
     public List<ExtendedSearchRow> getRowList() {
         return rowList;
     }
 
     public void addRow() {
         rowList.add(new ExtendedSearchRow());
+        System.out.println(rowList);
     }
-    
-    
+
+    public void deleteRow() {
+        if (rowList.contains(currentRow)) {
+            rowList.remove(currentRow);
+        }
+    }
+
+    public ExtendedSearchRow getCurrentRow() {
+        return currentRow;
+    }
+
+    public void setCurrentRow(ExtendedSearchRow currentRow) {
+        this.currentRow = currentRow;
+    }
+
+    public int getSizeOfRowList() {
+        return rowList.size();
+    }
+
 }

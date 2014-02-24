@@ -13,7 +13,7 @@
 
     <ui:define name="content">
 
-        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');">
+        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');" rendered="false">
 
             <table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 
@@ -186,7 +186,55 @@
 
                 </h:column>
 
+                <h:column>
+                    <h:inputText value="#{row.firstFieldValue}" />
+                </h:column>
 
+
+                <h:column>
+                    <h:selectOneMenu value="#{row.fieldOperand}">
+                        <f:selectItem itemLabel="und" itemValue=" AND " />
+                        <f:selectItem itemLabel="oder" itemValue=" OR " />
+                    </h:selectOneMenu>
+                </h:column>
+
+
+                <h:column>
+
+                    <h:selectOneMenu value="#{row.secondFieldName}">
+                        <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
+                            itemLabel="#{fieldname.label}" />
+                    </h:selectOneMenu>
+                </h:column>
+
+                <h:column>
+                    <h:selectOneMenu value="#{row.secondFieldOperand}">
+                        <f:selectItem itemLabel="enthält" itemValue=" IS " />
+                        <f:selectItem itemLabel="enthält nicht" itemValue=" IS NOT " />
+                    </h:selectOneMenu>
+
+                </h:column>
+
+                <h:column>
+                    <h:inputText value="#{row.secondFieldValue}" />
+                </h:column>
+
+                
+                <h:column>
+                <h:commandLink action="#{SearchForm.addRow}">
+                    <h:graphicImage value="images/plus.gif"
+                        style="margin-right:4px" />
+                </h:commandLink>
+                
+              <h:commandLink action="#{SearchForm.deleteRow}"
+                    rendered="#{SearchForm.sizeOfRowList > 1}">
+                    <h:graphicImage value="images/minus.gif"
+                        style="margin-right:4px" />
+                    <x:updateActionListener
+                        property="#{SearchForm.currentRow}" value="#{row}" />
+                </h:commandLink>
+                
+                </h:column>
 
 
             </h:dataTable>

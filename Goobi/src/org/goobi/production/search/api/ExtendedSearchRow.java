@@ -71,4 +71,13 @@ public class ExtendedSearchRow {
     public void setSecondFieldValue(String secondFieldValue) {
         this.secondFieldValue = secondFieldValue;
     }
+
+    @Override
+    public String toString() {
+        return "ExtendedSearchRow [firstFieldName=" + firstFieldName + ", firstFieldOperand=" + firstFieldOperand + ", firstFieldValue="
+                + firstFieldValue + ", fieldOperand=" + fieldOperand + ", secondFieldName=" + secondFieldName + ", secondFieldOperand="
+                + secondFieldOperand + ", secondFieldValue=" + secondFieldValue + "]";
+    }
+    
+
 }
