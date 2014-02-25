@@ -119,9 +119,10 @@
 							<h:outputText value="#{msgs.metadaten}" />
 							<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.mySchritt.typMetadaten}" />
 
+						<!-- 
 							<h:outputText value="#{msgs.importMittelsFileUpload}" />
 							<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.mySchritt.typImportFileUpload}" />
-
+ 						-->
 							<h:outputText value="#{msgs.imagesLesen}" />
 							<x:selectBooleanCheckbox forceId="true" id="chkLesen" onclick="if(!this.checked) document.getElementById('chkSchreiben').checked=false;"
 								value="#{ProzessverwaltungForm.mySchritt.typImagesLesen}" />
@@ -140,9 +141,11 @@
 							<h:outputText value="#{msgs.exportDMS}" />
 							<h:selectBooleanCheckbox value="#{ProzessverwaltungForm.mySchritt.typExportDMS}" />
 
+<!-- 
 							<h:outputText value="#{msgs.schrittBeimAnnehmenAbschliessen}" />
 							<x:selectBooleanCheckbox forceId="true" id="chkmanuell1" onclick="chkManuellAutomatischSetzen(this)"
 								value="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" />
+ -->
 
 
 							<h:outputText value="#{msgs.beimAnnehmenModulStarten}" rendered="#{NavigationForm.showModuleManager}" />

@@ -47,7 +47,7 @@
 
                         <!-- Metadaten -->
                         <h:column>
-                            <h:panelGrid columns="2" columnClasses="first-column, second-column">
+                            <h:panelGrid  style="border-bottom: 0px;" columns="2" columnClasses="first-column, second-column">
                                 <h:outputText value="#{msgs.vorname}" style="font-size: 11px" />
                                 <h:inputText value="#{Item.vorname}" styleClass="metadatenInput" 
                                     readonly="#{Metadaten.nurLesenModus}">
@@ -73,7 +73,7 @@
                                 </h:commandLink>
 
                                 <ui:repeat var="part" value="#{Item.additionalNameParts}">
-                                    <h:panelGrid columns="2" width="100%" columnClasses="first-column, second-column">
+                                    <h:panelGrid style="border-bottom: 0px;" columns="2" width="100%" columnClasses="first-column, second-column">
                                         <h:selectOneMenu value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput">
                                             <f:ajax execute="@form" event="valueChange" render="@form" />
                                             <f:selectItems value="#{Item.possibleNamePartTypes}" />
@@ -87,13 +87,10 @@
                             </h:panelGroup>
                             <br />
 
-
-
-
                             <h:panelGroup rendered="#{Item.normdata}">
                                 <h:outputText value="#{msgs.editNormdata}" />
 
-                                <h:panelGrid columns="2" width="100%" columnClasses="first-column, second-column">
+                                <h:panelGrid columns="2" style="border-bottom: 0px;" width="100%" columnClasses="first-column, second-column">
                                     <h:selectOneMenu value="#{Item.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput">
                                         <f:ajax execute="@form" event="valueChange" render="@form" />
                                         <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database.abbreviation}"
@@ -142,10 +139,10 @@
 
                     <!-- öffnen der Tabelle -->
                     <x:dataTable value="#{Metadaten.myMetadaten}" var="Item" styleClass="Tabelle" headerClass="TabelleHeader"
-                        columnClasses="first-colum, second-column,TabelleSpalteLinks" width="88%">
+                        columnClasses="first-colum, second-column" width="88%">
 
                         <!-- Metadaten -->
-                        <x:column styleClass="first-column">
+                        <x:column styleClass="first-column" >
                             <h:outputText value="#{Item.typ}" style="font-size: 11px" />
                         </x:column>
 
@@ -198,7 +195,7 @@
 
                         </h:column>
                         <!-- Link für Details -->
-                        <h:column rendered="#{not Metadaten.nurLesenModus}" > 
+                        <h:column rendered="#{not Metadaten.nurLesenModus}"> 
                             <!-- Kopieren-Schaltknopf -->
                             <h:commandLink id="l5" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}">
                                 <h:graphicImage value="images/buttons/copy.gif" />
@@ -234,38 +231,34 @@
 
                     <!-- öffnen der Tabelle -->
                     <x:dataTable value="#{Metadaten.groups}" var="Item" styleClass="Tabelle" headerClass="TabelleHeader"
-                        columnClasses="TabelleSpalteLinks,TabelleSpalteLinks,TabelleSpalteLinks">
-
-
+                        columnClasses="">
 
                         <!-- Metadaten -->
-                        <x:column width="70px" style="vertical-align:top;">
+                        <x:column style="vertical-align:top;width:70px;" >
                             <h3>
                                 <h:outputText value="#{Item.name}" style="font-size: 11px" />
                             </h3>
                         </x:column>
 
-                        <x:column>
-                            <h:dataTable value="#{Item.metadataList}" var="metadata">
-                                <h:column>
+                        <x:column columnClasses="first-column,metadatenInput" >
+                            <h:dataTable value="#{Item.metadataList}" var="metadata" style="border-bottom: 0px;">
+                                <x:column style="vertical-align:top;border-bottom: 0px;width:40px;">
                                     <h:outputText value="#{metadata.typ}" style="font-size: 11px" />
-                                </h:column>
+                                </x:column>
 
-                                <h:column>
-                                    <h:panelGrid columns="1" rendered="#{(metadata.outputType == 'textarea')}">
+                                <x:column style="vertical-align:top;border-bottom: 0px;">
+                                    <h:panelGrid columns="1" rendered="#{(metadata.outputType == 'textarea')}" style="vertical-align:top;border-bottom: 0px;">
                                         <h:inputTextarea value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}"
-                                            styleClass="metadatenInput" style="height: 45px;">
+                                            styleClass="metadatenInput" style="height: 45px;width:350px;">
                                             <f:ajax execute="@form" event="valueChange" render="@form" />
                                         </h:inputTextarea>
                                     </h:panelGrid>
 
-                                    <h:panelGrid columns="1" rendered="#{(metadata.outputType == 'input')}">
-                                        <h:inputText value="#{metadata.value}" styleClass="metadatenInput" 
+                                         <h:inputText value="#{metadata.value}" styleClass="metadatenInput" style="width:350px;" rendered="#{(metadata.outputType == 'input')}"
                                             readonly="#{Metadaten.nurLesenModus}">
                                             <f:ajax execute="@form" event="valueChange" render="@form" />
                                         </h:inputText>
-                                    </h:panelGrid>
-
+                                   
                                     <h:selectManyListbox value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}"
                                         readonly="#{Metadaten.nurLesenModus}">
                                         <f:ajax execute="@form" event="valueChange" render="@form" />
@@ -280,13 +273,13 @@
                                     </h:selectOneMenu>
                                     <h:outputText value="#{metadata.value}" rendered="#{(metadata.outputType == 'readonly')}"
                                         styleClass="metadatenInput" style="border: 0 none;" />
-                                </h:column>
+                                </x:column>
 
 
 
                             </h:dataTable>
 
-                            <h:dataTable value="#{Item.personList}" var="currentPerson">
+                            <h:dataTable value="#{Item.personList}" var="currentPerson" style="vertical-align:top;border-bottom: 0px;">
                                 <h:column>
                                     <h:panelGrid columns="2">
                                         <h:outputText value="#{msgs.vorname}" style="font-size: 11px" />

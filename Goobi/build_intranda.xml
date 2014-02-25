@@ -191,15 +191,6 @@
 
 	<!-- JUnit tests -->
 	<target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
-
-		<!--copy file="${dir.src}/goobi_config.properties" tofile="${dir.build}/goobi_config.properties" /-->
-
-		<copy file="${dir.tests}/de/sub/goobi/config/goobi_digitalCollections.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_digitalCollections.xml" />
-		<copy file="${dir.tests}/de/sub/goobi/config/goobi_projects.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_projects.xml" />
-
-		<copy file="${dir.tests}/de/sub/goobi/export/dms/ruleset.xml" tofile="${dir.build}/de/sub/goobi/export/dms/ruleset.xml" />
-		<copy file="${dir.tests}/de/sub/goobi/export/dms/metadata.xml" tofile="${dir.build}/de/sub/goobi/export/dms/metadata.xml" />
-
 		<javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6">
 
 			<classpath refid="test.classpath" />
@@ -221,14 +212,6 @@
 
 	<!-- JUnit tests -->
 	<target name="junit-withcoverage" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
-
-		<!--copy file="${dir.src}/goobi_config.properties" tofile="${dir.build}/goobi_config.properties" /-->
-
-		<copy file="${dir.tests}/de/sub/goobi/config/goobi_digitalCollections.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_digitalCollections.xml" />
-		<copy file="${dir.tests}/de/sub/goobi/config/goobi_projects.xml" tofile="${dir.build}/de/sub/goobi/config/goobi_projects.xml" />
-
-		<copy file="${dir.tests}/de/sub/goobi/export/dms/ruleset.xml" tofile="${dir.build}/de/sub/goobi/export/dms/ruleset.xml" />
-		<copy file="${dir.tests}/de/sub/goobi/export/dms/metadata.xml" tofile="${dir.build}/de/sub/goobi/export/dms/metadata.xml" />
 
 		<javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.6" encoding="UTF8" source="1.6">
 

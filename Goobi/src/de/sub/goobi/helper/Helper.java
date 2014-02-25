@@ -312,8 +312,11 @@ public class Helper implements Serializable, Observer {
                 }
             }
         } else {
-            Locale defaullLocale = new Locale("EN");
-            commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
+            String data = System.getenv("junitdata");
+            if (data == null || data.isEmpty()) {
+                Locale defaullLocale = new Locale("EN");
+                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));                
+            }
         }
     }
 

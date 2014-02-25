@@ -52,6 +52,11 @@ public class AutomaticDmsExportTest {
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
+        String configFolder = System.getenv("junitdata");;
+        if (configFolder == null) {
+            configFolder = "/opt/digiverso/junit/data/";
+        }
+        ConfigurationHelper.CONFIG_FILE_NAME =configFolder + "goobi_config.properties";
         testProcess = new Process();
         testProcess.setTitel("testprocess");
         testProcess.setId(1);
@@ -65,15 +70,10 @@ public class AutomaticDmsExportTest {
         setUpProject();
         
         setUpConfig();
-        
     }
 
     private void setUpConfig() {
-        String configFolder = System.getenv("junitdata");;
-        if (configFolder == null) {
-            configFolder = "/opt/digiverso/junit/data/";
-        }
-        ConfigurationHelper.CONFIG_FILE_NAME =configFolder + "goobi_config.properties";
+
 
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
@@ -133,7 +133,7 @@ public class AutomaticDmsExportTest {
         FileUtils.copyFile(projectsTemplate, projects);
         
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
-        
+        ConfigurationHelper.getInstance().setParameter("localMessages", "/opt/digiverso/junit/data/");
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
@@ -211,7 +211,7 @@ public class AutomaticDmsExportTest {
     @Test
     public void testExport() throws WriteException, PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException, IOException, InterruptedException {
         
-        prepareMocking();
+//        prepareMocking();
         
         AutomaticDmsExport exp = new AutomaticDmsExport(true);
         exp.setExportFulltext(true);

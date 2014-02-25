@@ -308,7 +308,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isAnonymizeData() {
-        return getLocalBoolean("anonymize");
+        return getLocalBoolean("anonymize", false);
     }
 
     public boolean isShowStatisticsOnStartPage() {
@@ -330,19 +330,19 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirMeta() {
-        return getLocalString("script_createDirMeta");
+        return getLocalString("script_createDirMeta", "/opt/digiverso/goobi/scripts/script_createDirMeta.sh");
     }
 
     public String getScriptCreateDirUserHome() {
-        return getLocalString("script_createDirUserHome");
+        return getLocalString("script_createDirUserHome", "/opt/digiverso/goobi/scripts/script_createDirUserHome.sh");
     }
 
     public String getScriptDeleteSymLink() {
-        return getLocalString("script_deleteSymLink");
+        return getLocalString("script_deleteSymLink", "/opt/digiverso/goobi/scripts/script_deleteSymLink.sh");
     }
 
     public String getScriptCreateSymLink() {
-        return getLocalString("script_createSymLink");
+        return getLocalString("script_createSymLink", "/opt/digiverso/goobi/scripts/script_createSymLink.sh");
     }
 
     public boolean isMassImportAllowed() {
@@ -454,7 +454,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isMetsEditorShowOCRButton() {
-        return getLocalBoolean("showOcrButton");
+        return getLocalBoolean("showOcrButton", false);
     }
 
     public String getFormatOfMetsBackup() {
@@ -482,11 +482,11 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isUseMetadataValidation() {
-        return getLocalBoolean("useMetadatenvalidierung");
+        return getLocalBoolean("useMetadatenvalidierung", true);
     }
 
     public boolean isExportWithoutTimeLimit() {
-        return getLocalBoolean("exportWithoutTimeLimit");
+        return getLocalBoolean("exportWithoutTimeLimit", true);
     }
 
     public boolean isAutomaticExportWithImages() {
@@ -502,7 +502,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isPdfAsDownload() {
-        return getLocalBoolean("pdfAsDownload");
+        return getLocalBoolean("pdfAsDownload", true);
     }
 
     public boolean isExportFilesFromOptionalMetsFileGroups() {
@@ -541,7 +541,7 @@ public class ConfigurationHelper implements Serializable {
     // old parameter, romve them
 
     public boolean isUseSwapping() {
-        return getLocalBoolean("useSwapping");
+        return getLocalBoolean("useSwapping", false);
     }
 
     public boolean isShowTaskmanager() {

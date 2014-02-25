@@ -219,9 +219,14 @@ public class JobCreation {
             if (importFolder.exists() && importFolder.isDirectory()) {
                 File[] folderList = importFolder.listFiles();
                 for (File directory : folderList) {
+                    File destination = new File(p.getProcessDataDirectory(), directory.getName());
                     if (directory.isDirectory()) {
-
-                        FileUtils.moveDirectory(directory, new File(p.getProcessDataDirectory(), directory.getName()));
+                        if (!destination.exists()) {
+                            FileUtils.moveDirectory(directory, destination);
+                        } else {
+                            FileUtils.copyDirectory(directory, destination);
+                            FileUtils.deleteDirectory(directory);
+                        }
 
                     } else {
                         FileUtils.moveFile(directory, new File(p.getProcessDataDirectory(), directory.getName()));
