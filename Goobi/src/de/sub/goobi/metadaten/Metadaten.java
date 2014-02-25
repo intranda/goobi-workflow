@@ -1294,7 +1294,7 @@ public class Metadaten {
             int index = siblings.indexOf(myDocStruct);
             try {
                 DocStruct ds = mydocument.createDocStruct(myDocStruct.getType());
-
+                ds.setParent(myDocStruct.getParent());
                 List<Reference> references = myDocStruct.getAllToReferences();
                 if (!references.isEmpty()) {
                     Reference last = references.get(references.size() - 1);
@@ -1305,7 +1305,7 @@ public class Metadaten {
 
                 }
                 siblings.add(index + 1, ds);
-
+                myDocStruct = ds;
             } catch (TypeNotAllowedForParentException e) {
                 myLogger.error(e);
             }
