@@ -218,7 +218,7 @@ public class AutomaticDmsExportTest {
         exp.startExport(testProcess);
     }
 
-    private void prepareMocking() throws IOException, PreferencesException {
+    public void prepareMocking() throws IOException, PreferencesException {
         PowerMock.mockStatic(MetadatenHelper.class);
         EasyMock.expect(MetadatenHelper.getMetaFileType(processFolder.getAbsolutePath() + File.separator + "meta.xml")).andReturn("metsmods");
         EasyMock.expect(MetadatenHelper.getFileformatByName("metsmods", testProcess.getRegelsatz())).andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences()));

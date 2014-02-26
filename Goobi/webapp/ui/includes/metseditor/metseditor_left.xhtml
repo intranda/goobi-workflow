@@ -11,16 +11,12 @@
 
 var $ = jQuery;
 $(document).ready(function() {
-	var winH = $(window).height();
-	console.log(winH);
-	
+	var winH = $(window).height();	
 	$("#myTree").css({ height : winH - 120 });
 });
 
 $(window).resize(function() {
-	var winH = $(window).height();
-	console.log(winH);
-	
+	var winH = $(window).height();	
 	$("#myTree").css({ height : winH - 120 });
 });
 

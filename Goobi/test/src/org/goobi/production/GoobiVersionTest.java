@@ -44,6 +44,7 @@ public class GoobiVersionTest {
         GoobiVersion.setupFromManifest(new Manifest());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void attributeVersionShouldBeEqualToImplementationVersion() {
         Manifest manifest = createManifestWithValues();
@@ -54,6 +55,7 @@ public class GoobiVersionTest {
                 VERSION, GoobiVersion.getVersion());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void attributeBuildversionShouldBeEqualToImplementationVersion() {
         Manifest manifest = createManifestWithValues();
@@ -64,6 +66,7 @@ public class GoobiVersionTest {
                 VERSION, GoobiVersion.getBuildversion());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void attributeBuilddateShouldBeEqualToImplementationBuildDate() {
         Manifest manifest = createManifestWithValues();

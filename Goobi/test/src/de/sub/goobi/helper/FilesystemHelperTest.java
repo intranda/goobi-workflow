@@ -31,7 +31,6 @@ package de.sub.goobi.helper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-
 import org.junit.Test;
 
 import static junit.framework.Assert.fail;
@@ -91,14 +90,16 @@ public class FilesystemHelperTest {
 		assertFileNotExists("new.xml");
 	}
 
-	private void assertFileExists(String fileName) {
+	@SuppressWarnings("deprecation")
+    private void assertFileExists(String fileName) {
 		File newFile = new File(fileName);
 		if (!newFile.exists()) {
 			fail("File " + fileName + " does not exist.");
 		}
 	}
 
-	private void assertFileNotExists(String fileName) {
+	@SuppressWarnings("deprecation")
+    private void assertFileNotExists(String fileName) {
 		File newFile = new File(fileName);
 		if (newFile.exists()) {
 			fail("File " + fileName + " should not exist.");

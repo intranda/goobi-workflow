@@ -50,6 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import de.sub.goobi.forms.SessionForm;
 
+@SuppressWarnings("deprecation")
 public class SessionCounterFilter implements Filter {
     ServletContext servletContext;
 
@@ -57,9 +58,6 @@ public class SessionCounterFilter implements Filter {
         servletContext = filterConfig.getServletContext();
     }
 
-    /**
-    */
-    @SuppressWarnings("deprecation")
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
