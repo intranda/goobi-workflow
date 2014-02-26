@@ -28,9 +28,6 @@
 package de.sub.goobi.helper.importer;
 
 import org.junit.Ignore;
-import ugh.dl.Fileformat;
-import ugh.dl.Prefs;
-import de.sub.goobi.helper.Helper;
 
 @Ignore("Test defintion incorrect.")
 public class ImportOpacTest {

@@ -59,6 +59,7 @@ public class BatchProcessHelper {
 
 			this.processNameList.add(p.getTitel());
 		}
+		logger.debug("loaded batch with " + this.processes.size() + " processes.");
 		this.currentProcess = processes.get(0);
 		this.processName = this.currentProcess.getTitel();
 		loadProcessProperties(this.currentProcess);

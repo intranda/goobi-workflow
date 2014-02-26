@@ -27,7 +27,6 @@
  */
 package de.sub.goobi.helper.archive;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -38,8 +37,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import org.goobi.beans.Process;
-//import de.sub.goobi.persistence.ProzessDAO;
-import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -76,13 +73,6 @@ public class ProcessSwapOutTaskTest {
       psot.initialize(proz);
       psot.execute();
       assertTrue(proz.isSwappedOutGui());
-   }
-
-   private void swapIn() {
-      ProcessSwapInTask psot = new ProcessSwapInTask();
-      psot.initialize(proz);
-      psot.execute();
-      assertFalse(proz.isSwappedOutGui());
    }
 
 }
