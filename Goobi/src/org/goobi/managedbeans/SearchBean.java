@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
@@ -49,7 +49,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 
 @ManagedBean(name = "SearchForm")
-@RequestScoped
+@SessionScoped
 public class SearchBean {
 
     private List<String> projects = new ArrayList<String>(); // proj:
@@ -513,9 +513,23 @@ public class SearchBean {
 
     private void createValues() {
         rowList.add(new ExtendedSearchRow());
+        fieldnameList.add(new SelectItem(FilterString.ID, "PROCESSID"));
+        fieldnameList.add(new SelectItem(FilterString.PROCESS, "PROCESSTITLE"));
 
-        fieldnameList.add(new SelectItem("step", "step title"));
-        fieldnameList.add(new SelectItem("process", "process title"));
+        fieldnameList.add(new SelectItem(FilterString.PROCESSPROPERTY, "PROCESSPROPERTY"));
+        fieldnameList.add(new SelectItem(FilterString.STEPPROPERTY, "STEPPROPERTY"));
+        fieldnameList.add(new SelectItem(FilterString.STEP, "STEPTITLE"));
+        //        fieldnameList.add(new SelectItem(FilterString.STEPINWORK, "STEPINWORK"));
+        //        fieldnameList.add(new SelectItem(FilterString.STEPLOCKED, "STEPLOCKED"));
+        //        fieldnameList.add(new SelectItem(FilterString.STEPOPEN, "STEPOPEN"));
+        //        fieldnameList.add(new SelectItem(FilterString.STEPDONE, "STEPDONE"));
+        fieldnameList.add(new SelectItem(FilterString.STEPDONETITLE, "STEPDONETITLE"));
+        fieldnameList.add(new SelectItem(FilterString.PROJECT, "PROJECTTITLE"));
+        fieldnameList.add(new SelectItem(FilterString.TEMPLATE, "TEMPLATE"));
+
+        fieldnameList.add(new SelectItem(FilterString.WORKPIECE, "WORKPIECE"));
+        fieldnameList.add(new SelectItem(FilterString.BATCH, "BATCHID"));
+
     }
 
     public List<SelectItem> getFieldnameList() {
@@ -528,7 +542,6 @@ public class SearchBean {
 
     public void addRow() {
         rowList.add(new ExtendedSearchRow());
-        System.out.println(rowList);
     }
 
     public void deleteRow() {
@@ -547,6 +560,22 @@ public class SearchBean {
 
     public int getSizeOfRowList() {
         return rowList.size();
+    }
+
+    public String createFilter() {
+        String search = "";
+
+        for (ExtendedSearchRow row : rowList) {
+            search += row.createSearchString();
+        }
+
+        ProcessBean form = (ProcessBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
+        if (form != null) {
+            form.filter = search;
+            form.setModusAnzeige("aktuell");
+            return form.FilterAlleStart();
+        }
+        return "";
     }
 
 }

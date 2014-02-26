@@ -78,6 +78,11 @@ public class ExtendedSearchRow {
                 + firstFieldValue + ", fieldOperand=" + fieldOperand + ", secondFieldName=" + secondFieldName + ", secondFieldOperand="
                 + secondFieldOperand + ", secondFieldValue=" + secondFieldValue + "]";
     }
+
+    public String createSearchString() {
+        // TODO Auto-generated method stub
+        return "";
+    }
     
 
 }

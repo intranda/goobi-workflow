@@ -13,7 +13,7 @@
 
     <ui:define name="content">
 
-        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');" rendered="false">
+        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');">
 
             <table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 
@@ -175,6 +175,7 @@
                     <h:selectOneMenu value="#{row.firstFieldName}">
                         <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
                             itemLabel="#{fieldname.label}" />
+                        <f:ajax render="@form" />
                     </h:selectOneMenu>
                 </h:column>
 
@@ -187,8 +188,22 @@
                 </h:column>
 
                 <h:column>
-                    <h:inputText value="#{row.firstFieldValue}" />
+                    <h:inputText value="#{row.firstFieldValue}" rendered="#{row.firstFieldName == 'id:'}" />
+
+                    <h:panelGroup rendered="#{row.firstFieldName == 'step:'}" layout="block">
+                        <h:selectOneMenu value="#{SearchForm.status}">
+                            <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
+                                itemValue="#{stepstatus.searchString}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu value="#{SearchForm.stepname}">
+                            <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}" itemValue="#{stepTitles}" />
+                        </h:selectOneMenu>
+                    </h:panelGroup>
+                    
+                    
+
                 </h:column>
+
 
 
                 <h:column>
@@ -219,26 +234,30 @@
                     <h:inputText value="#{row.secondFieldValue}" />
                 </h:column>
 
-                
+
                 <h:column>
-                <h:commandLink action="#{SearchForm.addRow}">
-                    <h:graphicImage value="images/plus.gif"
-                        style="margin-right:4px" />
-                </h:commandLink>
-                
-              <h:commandLink action="#{SearchForm.deleteRow}"
-                    rendered="#{SearchForm.sizeOfRowList > 1}">
-                    <h:graphicImage value="images/minus.gif"
-                        style="margin-right:4px" />
-                    <x:updateActionListener
-                        property="#{SearchForm.currentRow}" value="#{row}" />
-                </h:commandLink>
-                
+                    <h:commandLink action="#{SearchForm.addRow}">
+                        <h:graphicImage value="images/plus.gif" style="margin-right:4px" />
+                    </h:commandLink>
+
+                    <h:commandLink action="#{SearchForm.deleteRow}" rendered="#{SearchForm.sizeOfRowList > 1}">
+                        <h:graphicImage value="images/minus.gif" style="margin-right:4px" />
+                        <x:updateActionListener property="#{SearchForm.currentRow}" value="#{row}" />
+                    </h:commandLink>
+
                 </h:column>
 
 
             </h:dataTable>
 
+            <h:outputText value="#{msgs.showArchivedProjects}:" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
+            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
+
+            <h:outputText value="#{msgs.showClosedProcesses}:" />
+            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
+
+            <h:commandButton id="absenden" action="#{SearchForm.createFilter}" title="#{msgs.filterAnwenden}" value="#{msgs.filterAnwenden}">
+            </h:commandButton>
 
         </h:form>
 
