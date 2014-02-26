@@ -94,6 +94,13 @@ $(document).ready(function() {
 	$("#metadatenRechtsWrapp").css({ height : winH - 170 });
 });
 
+$(window).resize(function() {
+	
+	var winH = $(window).height();
+	console.log(winH);
+	$("#metadatenRechtsWrapp").css({ height : winH - 170 });
+});
+
 </script>
 
         <div id="metadatenRechtsWrapp" style="overflow: auto;">
