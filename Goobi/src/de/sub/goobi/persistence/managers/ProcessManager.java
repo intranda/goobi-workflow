@@ -67,6 +67,17 @@ public class ProcessManager implements IManager, Serializable {
 
         return p;
     }
+    
+    public static Process getProcessByTitle(String inTitle) {
+        Process p = null;
+        try {
+            p = ProcessMysqlHelper.getProcessByTitle(inTitle);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+
+        return p;
+    }
 
     public static long getSumOfFieldValue(String columnname, String filter) {
         try {

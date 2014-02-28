@@ -46,6 +46,21 @@ class ProcessMysqlHelper implements Serializable {
             }
         }
     }
+    
+    public static Process getProcessByTitle(String inTitle) throws SQLException {
+        Connection connection = null;
+        String sql = "SELECT * FROM prozesse WHERE Titel LIKE ?";
+        Object[] param = { inTitle };
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Process p = new QueryRunner().query(connection, sql, resultSetToProcessHandler, param);
+            return p;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 
     public static void saveProcess(Process o, boolean processOnly) throws DAOException {
         try {
