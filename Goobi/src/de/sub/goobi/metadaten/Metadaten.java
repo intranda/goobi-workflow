@@ -305,7 +305,7 @@ public class Metadaten {
 
 			this.myDocStruct.addMetadataGroup(newMetadataGroup);
 		} catch (MetadataTypeNotAllowedException e) {
-			myLogger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
+			myLogger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
 		}
 		MetadatenalsBeanSpeichern(this.myDocStruct);
 		if (!SperrungAktualisieren()) {
@@ -3466,9 +3466,27 @@ public class Metadaten {
 				treeOfFilteredProcess = buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument()
 						.getLogicalDocStruct());
 
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (PreferencesException e) {
+				myLogger.error("Error loading the tree for filtered processes (PreferencesException): " , e);
+				
+			} catch (ReadException e) {
+				myLogger.error("Error loading the tree for filtered processes (ReadException): " , e);
+				
+			} catch (SwapException e) {
+				myLogger.error("Error loading the tree for filtered processes (SwapException): " , e);
+				
+			} catch (DAOException e) {
+				myLogger.error("Error loading the tree for filtered processes (DAOException): " , e);
+				
+			} catch (WriteException e) {
+				myLogger.error("Error loading the tree for filtered processes (WriteException): " , e);
+				
+			} catch (IOException e) {
+				myLogger.error("Error loading the tree for filtered processes (IOException): " , e);
+				
+			} catch (InterruptedException e) {
+				myLogger.error("Error loading the tree for filtered processes (InterruptedException): " , e);
+				
 			}
 			activateAllTreeElements(treeOfFilteredProcess);
 		}
