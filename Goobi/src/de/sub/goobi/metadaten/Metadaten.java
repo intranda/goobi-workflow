@@ -116,7 +116,7 @@ public class Metadaten {
 	String ocrResult = "";
 	private Fileformat gdzfile;
 	private DocStruct myDocStruct;
-	private DocStruct docStructFromFilteredProcess;
+	// private DocStruct docStructFromFilteredProcess;
 	private DocStruct tempStrukturelement;
 	private List<MetadatumImpl> myMetadaten = new LinkedList<MetadatumImpl>();
 	private List<MetaPerson> myPersonen = new LinkedList<MetaPerson>();
@@ -2906,31 +2906,40 @@ public class Metadaten {
 		// DocStructs prüfen
 		// ob das aktuelle Strukturelement dort eingefügt werden darf
 		if (this.modusStrukturelementVerschieben) {
-			TreeDurchlaufen(this.tree3, myDocStruct);
+			List<DocStruct> list = new ArrayList<DocStruct>();
+			list.add(myDocStruct);
+			TreeDurchlaufen(this.tree3, list);
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void TreeDurchlaufen(TreeNodeStruct3 inTreeStruct, DocStruct inDocStruct) {
-		DocStruct temp = inTreeStruct.getStruct();
-		if (inTreeStruct.getStruct() == inDocStruct) {
-			inTreeStruct.setSelected(true);
-		} else {
-			inTreeStruct.setSelected(false);
-		}
+	private void TreeDurchlaufen(TreeNodeStruct3 inTreeStruct, List<DocStruct> inDocStructList) {
+		for (DocStruct docStruct : inDocStructList) {
 
-		// alle erlaubten Typen durchlaufen
-		for (Iterator<String> iter = temp.getType().getAllAllowedDocStructTypes().iterator(); iter.hasNext();) {
-			String dst = iter.next();
-			if (inDocStruct.getType().getName().equals(dst)) {
-				inTreeStruct.setEinfuegenErlaubt(true);
-				break;
+			DocStruct temp = inTreeStruct.getStruct();
+			if (inTreeStruct.getStruct() == docStruct) {
+				inTreeStruct.setSelected(true);
+			} else {
+				inTreeStruct.setSelected(false);
 			}
-		}
 
-		for (Iterator iter = inTreeStruct.getChildren().iterator(); iter.hasNext();) {
-			TreeNodeStruct3 kind = (TreeNodeStruct3) iter.next();
-			TreeDurchlaufen(kind, inDocStruct);
+			// alle erlaubten Typen durchlaufen
+			// for (Iterator<String> iter = temp.getType().getAllAllowedDocStructTypes().iterator(); iter.hasNext();) {
+			// String dst = iter.next();
+			// if (docStruct.getType().getName().equals(dst)) {
+			// inTreeStruct.setEinfuegenErlaubt(false);
+			// break;
+			// }
+			// }
+			if (!temp.getType().getAllAllowedDocStructTypes().contains(docStruct.getType().getName())) {
+				inTreeStruct.setEinfuegenErlaubt(false);
+			}
+			for (Iterator iter = inTreeStruct.getChildren().iterator(); iter.hasNext();) {
+				TreeNodeStruct3 kind = (TreeNodeStruct3) iter.next();
+				List<DocStruct> list = new ArrayList<DocStruct>();
+				list.add(docStruct);
+				TreeDurchlaufen(kind, list);
+			}
 		}
 	}
 
@@ -3418,10 +3427,13 @@ public class Metadaten {
 		return modusCopyDocstructFromOtherProcess;
 	}
 
+	private boolean displayInsertion = false;
+
 	public void setModusCopyDocstructFromOtherProcess(boolean modusCopyDocstructFromOtherProcess) {
 		if (modusCopyDocstructFromOtherProcess) {
-
-			docStructFromFilteredProcess = null;
+			treeOfFilteredProcess = null;
+			setDisplayInsertion(false);
+			filteredProcess = null;
 		}
 		this.modusCopyDocstructFromOtherProcess = modusCopyDocstructFromOtherProcess;
 	}
@@ -3467,26 +3479,26 @@ public class Metadaten {
 						.getLogicalDocStruct());
 
 			} catch (PreferencesException e) {
-				myLogger.error("Error loading the tree for filtered processes (PreferencesException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (PreferencesException): ", e);
+
 			} catch (ReadException e) {
-				myLogger.error("Error loading the tree for filtered processes (ReadException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (ReadException): ", e);
+
 			} catch (SwapException e) {
-				myLogger.error("Error loading the tree for filtered processes (SwapException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (SwapException): ", e);
+
 			} catch (DAOException e) {
-				myLogger.error("Error loading the tree for filtered processes (DAOException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (DAOException): ", e);
+
 			} catch (WriteException e) {
-				myLogger.error("Error loading the tree for filtered processes (WriteException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (WriteException): ", e);
+
 			} catch (IOException e) {
-				myLogger.error("Error loading the tree for filtered processes (IOException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (IOException): ", e);
+
 			} catch (InterruptedException e) {
-				myLogger.error("Error loading the tree for filtered processes (InterruptedException): " , e);
-				
+				myLogger.error("Error loading the tree for filtered processes (InterruptedException): ", e);
+
 			}
 			activateAllTreeElements(treeOfFilteredProcess);
 		}
@@ -3511,27 +3523,75 @@ public class Metadaten {
 	}
 
 	public void rememberFilteredProcessStruct() {
-		TreeDurchlaufen(this.tree3, docStructFromFilteredProcess);
+		activateAllTreeElements(tree3);
+		List<DocStruct> selectdElements = new ArrayList<DocStruct>();
+		// List<TreeNodeStruct3> structList = (( List<TreeNodeStruct3>) treeOfFilteredProcess.getChildren());
+		for (TreeNode node : treeOfFilteredProcess.getChildren()) {
+			TreeNodeStruct3 tns = (TreeNodeStruct3) node;
+			if (node.isSelected()) {
+				selectdElements.add(tns.getStruct());
+			}
+		}
+		TreeDurchlaufen(this.tree3, selectdElements);
 
 	}
 
 	public void importFilteredProcessStruct() throws TypeNotAllowedAsChildException {
 
-		List<Reference> refs = docStructFromFilteredProcess.getAllToReferences();
-		List<Reference> clone = new ArrayList<Reference>(refs);
-		for (Reference ref : clone) {
-			docStructFromFilteredProcess.removeReferenceTo(ref.getTarget());
+		List<DocStruct> selectdElements = new ArrayList<DocStruct>();
+		// List<TreeNodeStruct3> structList = (( List<TreeNodeStruct3>) treeOfFilteredProcess.getChildren());
+		for (TreeNode node : treeOfFilteredProcess.getChildren()) {
+			TreeNodeStruct3 tns = (TreeNodeStruct3) node;
+			if (node.isSelected()) {
+				selectdElements.add(tns.getStruct());
+			}
 		}
-		this.tempStrukturelement.addChild(this.docStructFromFilteredProcess);
+		for (DocStruct docStructFromFilteredProcess : selectdElements) {
+			List<Reference> refs = docStructFromFilteredProcess.getAllToReferences();
+			List<Reference> clone = new ArrayList<Reference>(refs);
+			for (Reference ref : clone) {
+				docStructFromFilteredProcess.removeReferenceTo(ref.getTarget());
+			}
+			this.tempStrukturelement.addChild(docStructFromFilteredProcess);
+		}
 		MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
 		this.neuesElementWohin = "1";
 	}
 
-	public DocStruct getDocStructFromFilteredProcess() {
-		return docStructFromFilteredProcess;
+	public boolean isDisplayInsertion() {
+		return displayInsertion;
 	}
 
-	public void setDocStructFromFilteredProcess(DocStruct docStructFromFilteredProcess) {
-		this.docStructFromFilteredProcess = docStructFromFilteredProcess;
+	public void setDisplayInsertion(boolean displayInsertion) {
+		this.displayInsertion = displayInsertion;
 	}
+
+	public void updateAllSubNodes() {
+activateAllTreeElements(treeOfFilteredProcess);
+		updateAllSubNodes(treeOfFilteredProcess);
+	}
+
+	private void updateAllSubNodes(TreeNodeStruct3 papi) {
+		for (TreeNode node : papi.getChildren()) {
+			TreeNodeStruct3 tns = (TreeNodeStruct3) node;
+			if (papi.isSelected()) {
+				tns.setEinfuegenErlaubt(false);
+				disableSubelements(tns);
+			} else {
+				updateAllSubNodes(tns);
+			}
+		}
+
+	}
+
+	private void disableSubelements(TreeNodeStruct3 element) {
+		for (TreeNode node : element.getChildren()) {
+			TreeNodeStruct3 tns = (TreeNodeStruct3) node;
+			tns.setEinfuegenErlaubt(false);
+			tns.setSelected(false);
+
+			disableSubelements(tns);
+		}
+	}
+
 }

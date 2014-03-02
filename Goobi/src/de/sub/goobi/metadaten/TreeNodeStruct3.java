@@ -46,7 +46,7 @@ public class TreeNodeStruct3 extends TreeNode {
 	private String partNumber;
 	private String dateIssued;
 	
-	private boolean einfuegenErlaubt;
+	private boolean einfuegenErlaubt = true;
 
 	/**
 	 * Konstruktoren
