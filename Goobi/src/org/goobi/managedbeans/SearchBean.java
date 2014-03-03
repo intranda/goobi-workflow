@@ -513,22 +513,19 @@ public class SearchBean {
 
     private void createValues() {
         rowList.add(new ExtendedSearchRow());
-        fieldnameList.add(new SelectItem(FilterString.ID, "PROCESSID"));
-        fieldnameList.add(new SelectItem(FilterString.PROCESS, "PROCESSTITLE"));
+        fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
+        fieldnameList.add(new SelectItem("PROCESSID", Helper.getTranslation("id")));
+        fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
 
-        fieldnameList.add(new SelectItem(FilterString.PROCESSPROPERTY, "PROCESSPROPERTY"));
-        fieldnameList.add(new SelectItem(FilterString.STEPPROPERTY, "STEPPROPERTY"));
-        fieldnameList.add(new SelectItem(FilterString.STEP, "STEPTITLE"));
-        //        fieldnameList.add(new SelectItem(FilterString.STEPINWORK, "STEPINWORK"));
-        //        fieldnameList.add(new SelectItem(FilterString.STEPLOCKED, "STEPLOCKED"));
-        //        fieldnameList.add(new SelectItem(FilterString.STEPOPEN, "STEPOPEN"));
-        //        fieldnameList.add(new SelectItem(FilterString.STEPDONE, "STEPDONE"));
-        fieldnameList.add(new SelectItem(FilterString.STEPDONETITLE, "STEPDONETITLE"));
-        fieldnameList.add(new SelectItem(FilterString.PROJECT, "PROJECTTITLE"));
-        fieldnameList.add(new SelectItem(FilterString.TEMPLATE, "TEMPLATE"));
+        fieldnameList.add(new SelectItem("PROCESSPROPERTY", Helper.getTranslation("processProperties")));
+        
+        fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
 
-        fieldnameList.add(new SelectItem(FilterString.WORKPIECE, "WORKPIECE"));
-        fieldnameList.add(new SelectItem(FilterString.BATCH, "BATCHID"));
+        fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
+        fieldnameList.add(new SelectItem("TEMPLATE", Helper.getTranslation("templateProperties")));
+
+        fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
+        fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
 
     }
 
@@ -571,7 +568,7 @@ public class SearchBean {
 
         ProcessBean form = (ProcessBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
         if (form != null) {
-            form.filter = search;
+            form.filter = "";
             form.setModusAnzeige("aktuell");
             return form.FilterAlleStart();
         }

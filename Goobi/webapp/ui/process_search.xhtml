@@ -174,7 +174,7 @@
 
                     <h:selectOneMenu value="#{row.firstFieldName}">
                         <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
-                            itemLabel="#{fieldname.label}" />
+                            itemLabel="#{msgs[fieldname.label]}" />
                         <f:ajax render="@form" />
                     </h:selectOneMenu>
                 </h:column>
@@ -188,19 +188,59 @@
                 </h:column>
 
                 <h:column>
-                    <h:inputText value="#{row.firstFieldValue}" rendered="#{row.firstFieldName == 'id:'}" />
+                    <h:inputText value="#{row.firstFieldValue}"
+                        rendered="#{row.firstFieldName == 'PROCESSID' or row.firstFieldName == 'PROCESSTITLE' or row.firstFieldName == 'BATCH'}">
+                        <f:ajax render="@form" />
+                    </h:inputText>
 
-                    <h:panelGroup rendered="#{row.firstFieldName == 'step:'}" layout="block">
+                    <h:panelGroup rendered="#{row.firstFieldName == 'STEP'}" layout="block">
                         <h:selectOneMenu value="#{SearchForm.status}">
                             <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
                                 itemValue="#{stepstatus.searchString}" />
+                            <f:ajax render="@form" />
                         </h:selectOneMenu>
                         <h:selectOneMenu value="#{SearchForm.stepname}">
                             <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}" itemValue="#{stepTitles}" />
+                            <f:ajax render="@form" />
                         </h:selectOneMenu>
                     </h:panelGroup>
-                    
-                    
+
+
+                    <h:selectOneMenu value="#{row.firstProjectName}" rendered="#{row.firstFieldName == 'PROJECT'}">
+                        <f:selectItems value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
+                        <f:ajax render="@form" />
+                    </h:selectOneMenu>
+
+                    <h:panelGroup rendered="#{row.firstFieldName == 'PROCESSPROPERTY'}" layout="block">
+                        <h:selectOneMenu value="#{row.firstProcessPropertyName}">
+                            <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.firstProcessPropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{row.firstFieldName == 'TEMPLATE'}" layout="block">
+                        <h:selectOneMenu value="#{row.firstTemplatePropertyName}">
+                            <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.firstTemplatePropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{row.firstFieldName == 'WORKPIECE'}" layout="block">
+                        <h:selectOneMenu value="#{row.firstMasterpiecePropertyName}">
+                            <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.firstMasterpiecePropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+
+                    </h:panelGroup>
 
                 </h:column>
 
@@ -219,6 +259,7 @@
                     <h:selectOneMenu value="#{row.secondFieldName}">
                         <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
                             itemLabel="#{fieldname.label}" />
+                        <f:ajax render="@form" />
                     </h:selectOneMenu>
                 </h:column>
 
@@ -231,7 +272,59 @@
                 </h:column>
 
                 <h:column>
-                    <h:inputText value="#{row.secondFieldValue}" />
+                    <h:inputText value="#{row.secondFieldValue}"
+                        rendered="#{row.secondFieldName == 'PROCESSID' or row.secondFieldName == 'PROCESSTITLE' or row.secondFieldName == 'BATCH'}">
+                        <f:ajax render="@form" />
+                    </h:inputText>
+
+                    <h:panelGroup rendered="#{row.secondFieldName == 'STEP'}" layout="block">
+                        <h:selectOneMenu value="#{SearchForm.status}">
+                            <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
+                                itemValue="#{stepstatus.searchString}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu value="#{SearchForm.stepname}">
+                            <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}" itemValue="#{stepTitles}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                    </h:panelGroup>
+
+
+                    <h:selectOneMenu value="#{row.secondProjectName}" rendered="#{row.secondFieldName == 'PROJECT'}">
+                        <f:selectItems value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
+                        <f:ajax render="@form" />
+                    </h:selectOneMenu>
+
+                    <h:panelGroup rendered="#{row.secondFieldName == 'PROCESSPROPERTY'}" layout="block">
+                        <h:selectOneMenu value="#{row.secondProcessPropertyName}">
+                            <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.secondProcessPropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{row.secondFieldName == 'TEMPLATE'}" layout="block">
+                        <h:selectOneMenu value="#{row.secondTemplatePropertyName}">
+                            <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.secondTemplatePropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{row.secondFieldName == 'WORKPIECE'}" layout="block">
+                        <h:selectOneMenu value="#{row.secondMasterpiecePropertyName}">
+                            <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.secondMasterpiecePropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
                 </h:column>
 
 
