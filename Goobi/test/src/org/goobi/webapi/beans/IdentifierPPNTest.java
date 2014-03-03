@@ -28,8 +28,10 @@
 package org.goobi.webapi.beans;
 
 import junit.framework.Assert;
+
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class IdentifierPPNTest {
 
 	@Test

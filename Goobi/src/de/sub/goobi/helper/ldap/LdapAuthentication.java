@@ -461,7 +461,7 @@ public class LdapAuthentication {
 				MessageDigest md = MessageDigest.getInstance(ConfigurationHelper.getInstance().getLdapEncryption());
 				md.update(inNewPassword.getBytes());
 				String digestBase64 = new String(Base64.encodeBase64(md.digest()));
-				ModificationItem[] mods = new ModificationItem[3];
+				ModificationItem[] mods = new ModificationItem[4];
 
 				/*
 				 * -------------------------------- UserPasswort-Attribut ändern --------------------------------
@@ -491,10 +491,11 @@ public class LdapAuthentication {
 					// TODO: Make sure that the password isn't logged here
 					myLogger.error(e);
 				}
-
+				BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000l));
 				mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userpassword);
 				mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, lanmgrpassword);
 				mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ntlmpassword);
+				mods[3] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, sambaPwdLastSet);
 				ctx.modifyAttributes(getUserDN(inBenutzer), mods);
 
 				// Close the context when we're done

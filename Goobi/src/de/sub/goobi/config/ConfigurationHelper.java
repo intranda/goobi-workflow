@@ -128,16 +128,13 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    private boolean getLocalBoolean(String inPath) {
-        return configLocal.getBoolean(inPath, config.getBoolean(inPath, false));
-    }
+   
 
     /*********************************** direct config results ***************************************/
 
     /**
      * den Pfad für die temporären Images zur Darstellung zurückgeben
      */
-    // TODO remove statuc
     public static String getTempImagesPath() {
         return "/imagesTemp/";
     }
