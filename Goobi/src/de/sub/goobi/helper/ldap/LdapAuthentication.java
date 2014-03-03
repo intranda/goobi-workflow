@@ -296,6 +296,7 @@ public class LdapAuthentication {
 		} else if (ConfigurationHelper.getInstance().isLdapUseSimpleAuthentification()) {
 			env.put(Context.SECURITY_AUTHENTICATION, "none");
 		} else {
+		    env.put(Context.SECURITY_AUTHENTICATION, "simple");
 			env.put(Context.SECURITY_PRINCIPAL, ConfigurationHelper.getInstance().getLdapAdminLogin());
 			env.put(Context.SECURITY_CREDENTIALS, ConfigurationHelper.getInstance().getLdapAdminPassword());
 
