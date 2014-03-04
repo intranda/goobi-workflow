@@ -68,6 +68,8 @@ public class UserBean extends BasicBean {
     private boolean hideInactiveUsers = true;
     private static final Logger logger = Logger.getLogger(UserBean.class);
     private String displayMode = "";
+    private DatabasePaginator usergroupPaginator;
+    private DatabasePaginator projectPaginator;
 
     public String Neu() {
         this.myClass = new User();
@@ -210,6 +212,7 @@ public class UserBean extends BasicBean {
         }
         this.myClass.setBenutzergruppen(neu);
         UserManager.deleteUsergroupAssignment(myClass, gruppenID);
+        updateUsergroupPaginator();
         return "";
     }
 
@@ -228,6 +231,7 @@ public class UserBean extends BasicBean {
             Helper.setFehlerMeldung("Error on reading database", e.getMessage());
             return null;
         }
+        updateUsergroupPaginator();
         return "";
     }
 
@@ -241,6 +245,7 @@ public class UserBean extends BasicBean {
         }
         this.myClass.setProjekte(neu);
         UserManager.deleteProjectAssignment(myClass, projektID);
+        updateProjectPaginator();
         return "";
     }
 
@@ -259,6 +264,7 @@ public class UserBean extends BasicBean {
             Helper.setFehlerMeldung("Error on reading database", e.getMessage());
             return null;
         }
+        updateProjectPaginator();
         return "";
     }
 
@@ -268,6 +274,10 @@ public class UserBean extends BasicBean {
 
     public void setMyClass(User inMyClass) {
         this.myClass = inMyClass;
+        if (myClass.getId() != null) {
+            updateUsergroupPaginator();
+            updateProjectPaginator();
+        }
     }
 
     public Integer getLdapGruppeAuswahl() {
@@ -334,4 +344,29 @@ public class UserBean extends BasicBean {
     public boolean getLdapUsage() {
         return ConfigurationHelper.getInstance().isUseLdap();
     }
+
+    public DatabasePaginator getUsergroupPaginator() {
+        return usergroupPaginator;
+    }
+
+    public DatabasePaginator getProjectPaginator() {
+        return projectPaginator;
+    }
+
+    private void updateUsergroupPaginator() {
+        String filter =
+                " benutzergruppen.BenutzergruppenID not in (select benutzergruppenmitgliedschaft.BenutzerGruppenID from "
+                + "benutzergruppenmitgliedschaft where benutzergruppenmitgliedschaft.BenutzerID = " + myClass.getId() + ")";
+        UsergroupManager m = new UsergroupManager();
+        usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+    }
+
+    private void updateProjectPaginator() {
+        String filter =
+                " projekte.ProjekteID not in (select projektbenutzer.ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                        + myClass.getId() + ")";
+        ProjectManager m = new ProjectManager();
+        projectPaginator = new DatabasePaginator("titel", filter, m, "");
+    }
+
 }
