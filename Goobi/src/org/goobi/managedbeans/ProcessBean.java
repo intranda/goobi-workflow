@@ -1263,7 +1263,15 @@ public class ProcessBean extends BasicBean {
 
     public List<SelectItem> getProjektAuswahlListe() throws DAOException {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
-        List<Project> temp = ProjectManager.getAllProjects();
+        List<Project> temp = null;
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (login != null && login.getMaximaleBerechtigung() > 1) {
+            temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
+        } else {
+            temp = ProjectManager.getAllProjects();
+            
+        }
+       
         for (Project proj : temp) {
             myProjekte.add(new SelectItem(proj.getId(), proj.getTitel(), null));
         }
