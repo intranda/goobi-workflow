@@ -970,6 +970,7 @@ public class GoobiScript {
             dms.setExportFulltext(exportFulltext);
         } else {
             dms = new ExportDms(true);
+            dms.setExportFulltext(exportFulltext);
         }
         for (Process prozess : processes) {
             try {
