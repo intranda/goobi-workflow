@@ -925,14 +925,16 @@ public class StepBean extends BasicBean {
                 Helper.setFehlerMeldung("Plugin could not be found", this.mySchritt.getStepPlugin());
             } else {
                 myPlugin.initialize(mySchritt, "/task_edit");
-                runPlugin();
+                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
+                    runPlugin();
+                }
             }
         }
     }
 
     public String runPlugin() {
-        Helper.setMeldung("Starte Plugin");
-        Helper.setMeldung(mySchritt.getStepPlugin());
+        //        Helper.setMeldung("Starte Plugin");
+        //        Helper.setMeldung(mySchritt.getStepPlugin());
 
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
             myLogger.debug("Plugin is full GUI");
@@ -1205,9 +1207,9 @@ public class StepBean extends BasicBean {
                 }
             }
 
-//            try {
-                PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-                Helper.setMeldung("propertiesSaved");
+            //            try {
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            Helper.setMeldung("propertiesSaved");
             //            } catch (DAOException e) {
             //                myLogger.error(e);
             //                Helper.setFehlerMeldung("propertiesNotSaved");
@@ -1245,14 +1247,14 @@ public class StepBean extends BasicBean {
                 this.mySchritt.getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
                 this.processProperty.getProzesseigenschaft().setProzess(this.mySchritt.getProzess());
             }
-//            try {
+            //            try {
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-//                ProcessManager.saveProcess(this.mySchritt.getProzess());
-                Helper.setMeldung("propertySaved");
-//            } catch (DAOException e) {
-//                myLogger.error(e);
-//                Helper.setFehlerMeldung("propertyNotSaved");
-//            }
+            //                ProcessManager.saveProcess(this.mySchritt.getProzess());
+            Helper.setMeldung("propertySaved");
+            //            } catch (DAOException e) {
+            //                myLogger.error(e);
+            //                Helper.setFehlerMeldung("propertyNotSaved");
+            //            }
         }
         loadProcessProperties();
     }
@@ -1291,13 +1293,13 @@ public class StepBean extends BasicBean {
                 this.mySchritt.getProzess().getEigenschaften().remove(pe);
             }
         }
-//        try {
-//            ProcessManager.saveProcess(this.mySchritt.getProzess());
-            PropertyManager.deleteProcessProperty(processProperty.getProzesseigenschaft());
-//        } catch (DAOException e) {
-//            myLogger.error(e);
-//            Helper.setFehlerMeldung("propertiesNotDeleted");
-//        }
+        //        try {
+        //            ProcessManager.saveProcess(this.mySchritt.getProzess());
+        PropertyManager.deleteProcessProperty(processProperty.getProzesseigenschaft());
+        //        } catch (DAOException e) {
+        //            myLogger.error(e);
+        //            Helper.setFehlerMeldung("propertiesNotDeleted");
+        //        }
         // saveWithoutValidation();
         loadProcessProperties();
     }
