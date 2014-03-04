@@ -127,18 +127,29 @@ public class StepBean extends BasicBean {
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
-        this.anzeigeAnpassen.put("lockings", false);
-        this.anzeigeAnpassen.put("selectionBoxes", false);
-        this.anzeigeAnpassen.put("processId", false);
-        this.anzeigeAnpassen.put("modules", false);
-        this.anzeigeAnpassen.put("batchId", false);
+
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
          */
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && login.getMyBenutzer() != null) {
-            this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isConfVorgangsdatumAnzeigen());
+            this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
+            this.anzeigeAnpassen.put("selectionBoxes", login.getMyBenutzer().isDisplaySelectBoxes());
+            this.anzeigeAnpassen.put("processId", login.getMyBenutzer().isDisplayIdColumn());
+            this.anzeigeAnpassen.put("batchId", login.getMyBenutzer().isDisplayBatchColumn());
+            this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isDisplayProcessDateColumn());
+            this.anzeigeAnpassen.put("modules", login.getMyBenutzer().isDisplayModulesColumn());
+            nurOffeneSchritte = login.getMyBenutzer().isDisplayOnlyOpenTasks();
+            nurEigeneSchritte = login.getMyBenutzer().isDisplayOnlySelectedTasks();
+            showAutomaticTasks = login.getMyBenutzer().isDisplayAutomaticTasks();
+            hideCorrectionTasks = login.getMyBenutzer().isHideCorrectionTasks();
+
         } else {
+            this.anzeigeAnpassen.put("lockings", false);
+            this.anzeigeAnpassen.put("selectionBoxes", false);
+            this.anzeigeAnpassen.put("processId", false);
+            this.anzeigeAnpassen.put("modules", false);
+            this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();

@@ -101,9 +101,11 @@ class UserMysqlHelper implements Serializable {
             if (ro.getId() == null) {
 
                 String propNames =
-                        "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, confVorgangsdatumAnzeigen, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin";
+                        "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
+                        + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
+                        + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks";
 
-                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
                 Object[] param =
                         {ro.getVorname() == null ? null : ro.getVorname(), 
                         ro.getNachname() == null ? null : ro.getNachname(), 
@@ -114,12 +116,25 @@ class UserMysqlHelper implements Serializable {
                         ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), 
                         ro.getCss() == null ? null : ro.getCss(), 
                         ro.isMitMassendownload(), 
-                        ro.isConfVorgangsdatumAnzeigen(),
                         ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(), 
                         ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(), 
                         ro.getLdapGruppe() == null ?  null : ro.getLdapGruppe().getId(), 
                         visible, 
-                        ro.getLdaplogin()  == null ? null : ro.getLdaplogin()};
+                        ro.getLdaplogin()  == null ? null : ro.getLdaplogin(),
+                        ro.isDisplayAutomaticTasks(),
+                        ro.isDisplayBatchColumn(),
+                        ro.isDisplayDeactivatedProjects(),
+                        ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(),
+                        ro.isDisplayLocksColumn(),
+                        ro.isDisplayModulesColumn(),
+                        ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(),
+                        ro.isDisplayProcessDateColumn(),
+                        ro.isDisplaySelectBoxes(),
+                        ro.isDisplaySwappingColumn(),
+                        ro.isHideCorrectionTasks()
+                        };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -144,12 +159,24 @@ class UserMysqlHelper implements Serializable {
                 sql.append("metadatensprache =  ?, ");
                 sql.append("css =  ?, ");
                 sql.append("mitMassendownload =  ?, ");
-                sql.append("confVorgangsdatumAnzeigen =  ?, ");
                 sql.append("Tabellengroesse =  ?, ");
                 sql.append("sessiontimeout =  ?, ");
                 sql.append("ldapgruppenID =  ?, ");
                 sql.append("isVisible =  ?, ");
-                sql.append("ldaplogin =  ? ");
+                sql.append("ldaplogin =  ?, ");
+                sql.append("displayAutomaticTasks =  ?, ");
+                sql.append("displayBatchColumn =  ?, ");
+                sql.append("displayDeactivatedProjects =  ?, ");
+                sql.append("displayFinishedProcesses =  ?, ");
+                sql.append("displayIdColumn =  ?, ");
+                sql.append("displayLocksColumn =  ?, ");
+                sql.append("displayModulesColumn =  ?, ");
+                sql.append("displayOnlyOpenTasks =  ?, ");
+                sql.append("displayOnlySelectedTasks =  ?, ");
+                sql.append("displayProcessDateColumn =  ?, ");
+                sql.append("displaySelectBoxes =  ?, ");
+                sql.append("displaySwappingColumn =  ?, ");
+                sql.append("hideCorrectionTasks =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
                 Object[] param =
                     {ro.getVorname() == null ? null : ro.getVorname(), 
@@ -161,12 +188,24 @@ class UserMysqlHelper implements Serializable {
                     ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), 
                     ro.getCss() == null ? null : ro.getCss(), 
                     ro.isMitMassendownload(), 
-                    ro.isConfVorgangsdatumAnzeigen(),
                     ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(), 
                     ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(), 
                     ro.getLdapGruppe() == null ?  null : ro.getLdapGruppe().getId(), 
                     visible, 
-                    ro.getLdaplogin()  == null ? null : ro.getLdaplogin()};
+                    ro.getLdaplogin()  == null ? null : ro.getLdaplogin(),
+                    ro.isDisplayAutomaticTasks(),
+                    ro.isDisplayBatchColumn(),
+                    ro.isDisplayDeactivatedProjects(),
+                    ro.isDisplayFinishedProcesses(),
+                    ro.isDisplayIdColumn(),
+                    ro.isDisplayLocksColumn(),
+                    ro.isDisplayModulesColumn(),
+                    ro.isDisplayOnlyOpenTasks(),
+                    ro.isDisplayOnlySelectedTasks(),
+                    ro.isDisplayProcessDateColumn(),
+                    ro.isDisplaySelectBoxes(),
+                    ro.isDisplaySwappingColumn(),
+                    ro.isHideCorrectionTasks()};
                 logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 run.update(connection, sql.toString(), param);
             }
