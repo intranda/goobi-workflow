@@ -110,6 +110,10 @@
 		<listener-class>org.goobi.production.ImageIOInitializer</listener-class>
 	</listener>
 
+    <listener>
+        <listener-class>org.goobi.production.GoobiDatabaseVersionListener</listener-class>
+    </listener>
+
 	<!-- <listener> -->
 	<!-- <listener-class>org.goobi.mq.ActiveMQDirector</listener-class> -->
 	<!-- </listener> -->
