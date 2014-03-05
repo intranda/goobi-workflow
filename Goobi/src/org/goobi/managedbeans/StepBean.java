@@ -936,9 +936,9 @@ public class StepBean extends BasicBean {
                 Helper.setFehlerMeldung("Plugin could not be found", this.mySchritt.getStepPlugin());
             } else {
                 myPlugin.initialize(mySchritt, "/task_edit");
-                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
-                    runPlugin();
-                }
+//                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
+//                    runPlugin();
+//                }
             }
         }
     }
