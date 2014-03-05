@@ -71,7 +71,8 @@ import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportXmlLog;
-import org.goobi.production.flow.helper.SearchResultGeneration;
+import org.goobi.production.flow.helper.ExtendedSearchResultGeneration;
+import org.goobi.production.flow.helper.SearchColumnName;
 import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -91,6 +92,8 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
+
+
 
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -1824,9 +1827,19 @@ public class ProcessBean extends BasicBean {
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
-
-                SearchResultGeneration sr = new SearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                HSSFWorkbook wb = sr.getResult();
+                List<String> selectedColums = new ArrayList<String>();
+                selectedColums.add(SearchColumnName.COLUMN_NAME_TITLE);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_ID);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_DATE);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_IMAGES);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_METADATA);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_PROJECT);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_STATUS);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_ALTREFNO);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_BNUMBER);
+                
+                ExtendedSearchResultGeneration sr = new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sr.getResult(selectedColums);
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
                 Iterator<Row> rowIter = mySheet.rowIterator();
@@ -1884,13 +1897,24 @@ public class ProcessBean extends BasicBean {
              */
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
+                List<String> selectedColums = new ArrayList<String>();
+                selectedColums.add(SearchColumnName.COLUMN_NAME_TITLE);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_ID);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_DATE);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_IMAGES);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_METADATA);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_PROJECT);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_STATUS);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_ALTREFNO);
+                selectedColums.add(SearchColumnName.COLUMN_NAME_BNUMBER);
+                
                 ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
                 String contentType = servletContext.getMimeType("search.xls");
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
-                SearchResultGeneration sr = new SearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                HSSFWorkbook wb = sr.getResult();
+                ExtendedSearchResultGeneration sr = new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sr.getResult(selectedColums);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
