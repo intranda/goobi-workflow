@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
@@ -155,13 +157,15 @@ public class ProcessBean extends BasicBean {
     private String addToWikiField = "";
     private String userDisplayMode = "";
 
+    private Map<String, Boolean> availableColumns;
+
     private boolean showStatistics = false;
 
     private static String DONEDIRECTORYNAME = "fertig/";
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
-        
+
         this.sortierung = "titel";
         /*
          * Vorgangsdatum generell anzeigen?
@@ -186,6 +190,17 @@ public class ProcessBean extends BasicBean {
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
+        availableColumns = new HashMap<>();
+        availableColumns.put(SearchColumnName.COLUMN_NAME_TITLE, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_TITLE, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_ID, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_DATE, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_COUNT_IMAGES, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_COUNT_METADATA, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_PROJECT, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_STATUS, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_ALTREFNO, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_BNUMBER, true);
     }
 
     /**
@@ -1280,9 +1295,9 @@ public class ProcessBean extends BasicBean {
             temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
         } else {
             temp = ProjectManager.getAllProjects();
-            
+
         }
-       
+
         for (Project proj : temp) {
             myProjekte.add(new SelectItem(proj.getId(), proj.getTitel(), null));
         }
@@ -1813,6 +1828,15 @@ public class ProcessBean extends BasicBean {
         }
     }
 
+    
+    public Map<String, Boolean> getAvailableColumns() {
+        return availableColumns;
+    }
+    
+    public void setAvailableColumns(Map<String, Boolean> availableColumns) {
+        this.availableColumns = availableColumns;
+    }
+    
     public void generateResultAsPdf() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (!facesContext.getResponseComplete()) {
@@ -1828,17 +1852,14 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
                 List<String> selectedColums = new ArrayList<String>();
-                selectedColums.add(SearchColumnName.COLUMN_NAME_TITLE);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_ID);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_DATE);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_IMAGES);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_METADATA);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_PROJECT);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_STATUS);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_ALTREFNO);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_BNUMBER);
-                
-                ExtendedSearchResultGeneration sr = new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                for (Entry<String, Boolean> entry : availableColumns.entrySet()){
+                    if (entry.getValue()) {
+                        selectedColums.add(entry.getKey());
+                    }
+                }
+
+                ExtendedSearchResultGeneration sr =
+                        new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
                 HSSFWorkbook wb = sr.getResult(selectedColums);
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
@@ -1898,22 +1919,19 @@ public class ProcessBean extends BasicBean {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
                 List<String> selectedColums = new ArrayList<String>();
-                selectedColums.add(SearchColumnName.COLUMN_NAME_TITLE);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_ID);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_DATE);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_IMAGES);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_COUNT_METADATA);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_PROJECT);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_STATUS);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_ALTREFNO);
-                selectedColums.add(SearchColumnName.COLUMN_NAME_BNUMBER);
-                
+                for (Entry<String, Boolean> entry : availableColumns.entrySet()){
+                    if (entry.getValue()) {
+                        selectedColums.add(entry.getKey());
+                    }
+                }
+
                 ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
                 String contentType = servletContext.getMimeType("search.xls");
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
-                ExtendedSearchResultGeneration sr = new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                ExtendedSearchResultGeneration sr =
+                        new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
                 HSSFWorkbook wb = sr.getResult(selectedColums);
                 wb.write(out);
                 out.flush();
