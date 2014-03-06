@@ -584,6 +584,10 @@ public class ProzesskopieForm {
         //        Helper.getHibernateSession().evict(this.prozessKopie);
 
         this.prozessKopie.setId(null);
+
+        if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+            CalcProzesstitel();
+        }
         if (!isContentValid()) {
             return this.naviFirstPage;
         }
