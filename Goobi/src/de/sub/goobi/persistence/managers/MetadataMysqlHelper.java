@@ -29,10 +29,10 @@ class MetadataMysqlHelper implements Serializable {
 
     public static void insertMetadata(int processid, List<StringPair> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO metadata (processid, namae, value) VALUES ");
+        sql.append("INSERT INTO metadata (processid, name, value) VALUES ");
 
         for (StringPair pair : metadata) {
-            sql.append("(" + processid + ", " + pair.getOne() + ", " + pair.getTwo() + "),");
+            sql.append("(" + processid + ", '" + pair.getOne() + "', '" + pair.getTwo() + "'),");
         }
         String sqlString = sql.toString().substring(0, sql.toString().length() - 1);
 

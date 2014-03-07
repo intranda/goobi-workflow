@@ -64,6 +64,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
+import org.goobi.production.cli.helper.StringPair;
 import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -732,6 +733,38 @@ public class MetadatenHelper implements Comparator<Object> {
 
         }
         return null;  
+    }
+    
+    
+    public static List<StringPair> getMetadataOfFileformat(Fileformat gdzfile) {
+        List<StringPair> metadataList = new ArrayList<>();
+
+        try {
+            DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
+
+            for (Metadata md : ds.getAllMetadata()) {
+                if (md.getType().getIsPerson()) {
+                    Person p = (Person) md;
+                    metadataList.add(new StringPair(md.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                } else {
+                    metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                }
+            }
+            if (ds.getType().isAnchor()) {
+                ds = ds.getAllChildren().get(0);
+                for (Metadata md : ds.getAllMetadata()) {
+                    if (md.getType().getIsPerson()) {
+                        Person p = (Person) md;
+                        metadataList.add(new StringPair(md.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                    } else {
+                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                    }
+                }
+            }
+        } catch (PreferencesException e) {
+            myLogger.error(e);
+        }
+        return metadataList;
     }
     
 }
