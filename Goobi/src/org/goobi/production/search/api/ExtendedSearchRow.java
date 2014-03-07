@@ -29,6 +29,10 @@ public class ExtendedSearchRow {
     private String firstMasterpiecePropertyName;
     
     private String firstMasterpiecePropertyValue;
+    
+    private String firstMetadataName;
+    
+    private String firstMetadataValue;  
 
     private String fieldOperand;
 
@@ -60,6 +64,10 @@ public class ExtendedSearchRow {
     
     private String secondMasterpiecePropertyValue;
 
+    private String secondMetadataName;
+    
+    private String secondMetadataValue;  
+    
     public String getFirstFieldName() {
         return firstFieldName;
     }
@@ -264,5 +272,37 @@ public class ExtendedSearchRow {
     public String createSearchString() {
         // TODO Auto-generated method stub
         return toString();
+    }
+
+    public String getFirstMetadataName() {
+        return firstMetadataName;
+    }
+
+    public void setFirstMetadataName(String firstMetadataName) {
+        this.firstMetadataName = firstMetadataName;
+    }
+
+    public String getFirstMetadataValue() {
+        return firstMetadataValue;
+    }
+
+    public void setFirstMetadataValue(String firstMetadataValue) {
+        this.firstMetadataValue = firstMetadataValue;
+    }
+
+    public String getSecondMetadataName() {
+        return secondMetadataName;
+    }
+
+    public void setSecondMetadataName(String secondMetadataName) {
+        this.secondMetadataName = secondMetadataName;
+    }
+
+    public String getSecondMetadataValue() {
+        return secondMetadataValue;
+    }
+
+    public void setSecondMetadataValue(String secondMetadataValue) {
+        this.secondMetadataValue = secondMetadataValue;
     }
 }

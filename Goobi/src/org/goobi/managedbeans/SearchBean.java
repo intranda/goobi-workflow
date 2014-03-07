@@ -574,6 +574,7 @@ public class SearchBean {
 
         fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
         fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
+        fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
     }
 

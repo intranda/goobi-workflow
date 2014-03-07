@@ -257,6 +257,16 @@
 
                     </h:panelGroup>
 
+                    <h:panelGroup rendered="#{row.firstFieldName == 'METADATA'}" layout="block">
+                        <h:selectOneMenu value="#{row.firstMetadataName}">
+                            <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.firstMetadataValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
                 </h:column>
 
 
@@ -336,6 +346,17 @@
                             <f:ajax render="@form" />
                         </h:selectOneMenu>
                         <h:inputText value="#{row.secondMasterpiecePropertyValue}">
+                            <f:ajax render="@form" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+
+                    <h:panelGroup rendered="#{row.secondFieldName == 'METADATA'}" layout="block">
+                        <h:selectOneMenu value="#{row.secondMetadataName}">
+                            <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                            <f:ajax render="@form" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{row.secondMetadataValue}">
                             <f:ajax render="@form" />
                         </h:inputText>
                     </h:panelGroup>
