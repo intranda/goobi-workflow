@@ -180,7 +180,12 @@ public class FilterHelper {
      * This enum represents the result of parsing the step<modifier>: filter Restrictions
      ****************************************************************************/
     protected static enum StepFilter {
-        exact, range, min, max, name, unknown
+        exact,
+        range,
+        min,
+        max,
+        name,
+        unknown
     }
 
     /**
@@ -396,6 +401,22 @@ public class FilterHelper {
         }
     }
 
+    protected static String filterMetadataValue(String tok, boolean negate) {
+
+        String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
+        if (!negate) {
+
+            return "prozesse.ProzesseID in (select processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
+                    + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+
+        } else {
+
+            return "prozesse.ProzesseID not in (select processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
+                    + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+
+        }
+    }
+
     /**
      * Filter processes by Ids
      * 
@@ -492,11 +513,11 @@ public class FilterHelper {
      * @param stepOpenOnly
      * @return String used to pass on error messages about errors in the filter expression
      */
-    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers, boolean isProcess,
-            boolean isStep) {
-        
-        inFilter=  MySQLHelper.escapeString(inFilter);
-        
+    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly,
+            Boolean hideStepsFromOtherUsers, boolean isProcess, boolean isStep) {
+
+        inFilter = MySQLHelper.escapeString(inFilter);
+
         StringBuilder filter = new StringBuilder();
         boolean flagSteps = false;
         boolean flagProcesses = false;
@@ -551,6 +572,11 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.STEPPROPERTY) || tok.toLowerCase().startsWith(FilterString.SCHRITTEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterStepProperty(tok, false));
+            }
+
+            else if (tok.toLowerCase().startsWith(FilterString.METADATA)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(FilterHelper.filterMetadataValue(tok, false));
             }
 
             // search over steps
@@ -634,6 +660,10 @@ public class FilterHelper {
                     || tok.toLowerCase().startsWith("-" + FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProcessProperty(tok, true));
+
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.METADATA)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(FilterHelper.filterMetadataValue(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPPROPERTY)
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);

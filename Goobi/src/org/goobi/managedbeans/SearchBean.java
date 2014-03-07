@@ -405,11 +405,8 @@ public class SearchBean {
 
     public String filter() {
         
-        if (!metadataTitle.isEmpty() && !metadataValue.isEmpty()) {
-         // TODO
-        } 
-        
         String search = "";
+       
         if (!this.processTitle.isEmpty()) {
 
             search += "\"" + this.processOperand + this.processTitle + "\" ";
@@ -425,6 +422,11 @@ public class SearchBean {
         if (!this.project.isEmpty() && !this.project.equals(Helper.getTranslation("notSelected"))) {
             search += "\"" + this.projectOperand + FilterString.PROJECT + this.project + "\" ";
         }
+        
+        if (!metadataTitle.isEmpty() && !metadataValue.isEmpty() && !metadataTitle.equals(Helper.getTranslation("notSelected"))) {
+            search += "\"" + metadataOperand + FilterString.METADATA + metadataTitle + ":" + metadataValue + "\" ";
+        } 
+        
         if (!this.processPropertyValue.isEmpty()) {
             if (!this.processPropertyTitle.isEmpty() && !this.processPropertyTitle.equals(Helper.getTranslation("notSelected"))) {
                 search +=
