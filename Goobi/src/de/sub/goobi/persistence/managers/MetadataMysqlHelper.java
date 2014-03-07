@@ -47,4 +47,21 @@ class MetadataMysqlHelper implements Serializable {
             }
         }
     }
+
+    public static List<String> getDistinctMetadataNames() throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select distinct name from metadata");
+
+        sql.append(" ORDER BY name");
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

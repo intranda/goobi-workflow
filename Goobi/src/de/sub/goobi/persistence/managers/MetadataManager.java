@@ -2,6 +2,8 @@ package de.sub.goobi.persistence.managers;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -39,5 +41,14 @@ public class MetadataManager implements Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
+    }
+
+    public static List<String> getDistinctMetadataNames() {
+        try {
+          return MetadataMysqlHelper.getDistinctMetadataNames();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<>();
     }
 }

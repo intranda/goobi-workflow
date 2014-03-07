@@ -42,6 +42,7 @@ import org.goobi.production.flow.statistics.hibernate.FilterString;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -62,6 +63,10 @@ public class SearchBean {
     private String masterpiecePropertyTitle = "";
     private String masterpiecePropertyValue = "";
 
+    private List<String> metadataTitles = new ArrayList<>();
+    private String metadataTitle = "";
+    private String metadataValue = "";
+    
     private List<String> templatePropertyTitles = new ArrayList<String>();// vorl:
     private String templatePropertyTitle = "";
     private String templatePropertyValue = "";
@@ -84,6 +89,7 @@ public class SearchBean {
 
     private String projectOperand = "";
     private String processOperand = "";
+    private String metadataOperand = "";
     private String processPropertyOperand = "";
     private String masterpiecePropertyOperand = "";
     private String templatePropertyOperand = "";
@@ -175,6 +181,10 @@ public class SearchBean {
         //		crit.addOrder(Order.asc("nachname"));
         //		crit.addOrder(Order.asc("vorname"));
         //		this.user.addAll(crit.list());
+        
+        metadataTitles.add(Helper.getTranslation("notSelected"));
+        metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
+        
     }
 
     public List<String> getProjects() {
@@ -193,6 +203,38 @@ public class SearchBean {
         this.masterpiecePropertyTitles = masterpiecePropertyTitles;
     }
 
+    public List<String> getMetadataTitles() {
+        return metadataTitles;
+    }
+    
+    public void setMetadataTitles(List<String> metadataTitles) {
+        this.metadataTitles = metadataTitles;
+    }
+    
+    public String getMetadataTitle() {
+        return metadataTitle;
+    }
+    
+    public void setMetadataTitle(String metadataTitle) {
+        this.metadataTitle = metadataTitle;
+    }
+    
+    public String getMetadataValue() {
+        return metadataValue;
+    }
+    
+    public String getMetadataOperand() {
+        return metadataOperand;
+    }
+    
+    public void setMetadataOperand(String metadataOperand) {
+        this.metadataOperand = metadataOperand;
+    }
+    
+    public void setMetadataValue(String metadataValue) {
+        this.metadataValue = metadataValue;
+    }
+    
     public List<String> getTemplatePropertyTitles() {
         return this.templatePropertyTitles;
     }
@@ -362,6 +404,11 @@ public class SearchBean {
     }
 
     public String filter() {
+        
+        if (!metadataTitle.isEmpty() && !metadataValue.isEmpty()) {
+         // TODO
+        } 
+        
         String search = "";
         if (!this.processTitle.isEmpty()) {
 
