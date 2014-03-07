@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 2;
+    public static final int EXPECTED_VERSION = 3;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     public static int getCurrentVersion() {
@@ -39,11 +39,14 @@ public class DatabaseVersion {
         switch (currentVersion) {
             case 0:
                 logger.debug("Update database to version 1.");
-                createTableDatabaseVersion();
+                updateToVersion1();
                 currentVersion = 1;
             case 1:
                 logger.debug("Update database to version 2.");
-                alterTableSteps();
+                updateToVersion2();
+            case 2:
+                logger.debug("Update database to version 3.");
+                updateToVersion3();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -71,27 +74,27 @@ public class DatabaseVersion {
                 }
             }
         }
-        
+
     }
 
-    private static void alterTableSteps() {
+    private static void updateToVersion2() {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            runner.update(connection,"alter table benutzer change confVorgangsdatumAnzeigen displayProcessDateColumn boolean default false;"); 
-            runner.update(connection,"alter table benutzer add column displayDeactivatedProjects boolean default false;");       
-            runner.update(connection,"alter table benutzer add column displayFinishedProcesses boolean default false;"); 
-            runner.update(connection,"alter table benutzer add column displaySelectBoxes boolean default false;");    
-            runner.update(connection,"alter table benutzer add column displayIdColumn boolean default false;"); 
-            runner.update(connection,"alter table benutzer add column displayBatchColumn boolean default false;");       
-            runner.update(connection,"alter table benutzer add column displayLocksColumn boolean default false;"); 
-            runner.update(connection,"alter table benutzer add column displaySwappingColumn boolean default false;");      
-            runner.update(connection,"alter table benutzer add column displayAutomaticTasks boolean default false;"); 
-            runner.update(connection,"alter table benutzer add column hideCorrectionTasks boolean default false;");       
-            runner.update(connection,"alter table benutzer add column displayOnlySelectedTasks boolean default false;"); 
-            runner.update(connection,"alter table benutzer add column displayOnlyOpenTasks boolean default false;");      
-            runner.update(connection,"alter table benutzer add column displayModulesColumn boolean default false;"); 
+            runner.update(connection, "alter table benutzer change confVorgangsdatumAnzeigen displayProcessDateColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayDeactivatedProjects boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayFinishedProcesses boolean default false;");
+            runner.update(connection, "alter table benutzer add column displaySelectBoxes boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayIdColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayBatchColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayLocksColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displaySwappingColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayAutomaticTasks boolean default false;");
+            runner.update(connection, "alter table benutzer add column hideCorrectionTasks boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayOnlySelectedTasks boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayOnlyOpenTasks boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayModulesColumn boolean default false;");
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -102,10 +105,10 @@ public class DatabaseVersion {
                     logger.error(e);
                 }
             }
-        } 
+        }
     }
 
-    private static void createTableDatabaseVersion() {
+    private static void updateToVersion1() {
 
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -127,6 +130,29 @@ public class DatabaseVersion {
                 }
             }
         }
+    }
+
+    private static void updateToVersion3() {
+        String tableMetadata = "CREATE TABLE metadata (processid int(11), name varchar(255), value text)";
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            logger.debug(tableMetadata);
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, tableMetadata);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+
     }
 
 }
