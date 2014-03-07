@@ -57,7 +57,7 @@
                                 </h:selectOneMenu>
                                 <h:panelGroup>
                                     <h:selectOneMenu value="#{SearchForm.metadataTitle}" style="width:175px; margin-right:3px">
-                                        <f:selectItems value="#{SearchForm.metadataTitles}" var="meta" itemLabel="#{meta}" itemValue="#{meta}" />
+                                        <f:selectItems value="#{SearchForm.metadataTitles}" var="meta" itemLabel="#{msgs[meta]}" itemValue="#{meta}" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{SearchForm.metadataValue}" style="width:394px" />
                                 </h:panelGroup>
