@@ -942,6 +942,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         metadataFileName = getMetadataFilePath();
 
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
+        // TODO update database
+        
         ff.write(metadataFileName);
 
     }

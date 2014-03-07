@@ -104,6 +104,9 @@ class ProcessMysqlHelper implements Serializable {
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
+            
+            // delete metadata
+            MetadataManager.deleteMetadata(o.getId());
 
             // delete properties
 
