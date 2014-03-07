@@ -169,6 +169,27 @@ public class MySQLHelper implements Serializable {
         }
     };
 
+    public static ResultSetHandler<Boolean> resultSetToBooleanHandler = new ResultSetHandler<Boolean>() {
+        @Override
+        public Boolean handle(ResultSet rs) throws SQLException {
+            Boolean answer = null;
+            try {
+                if (rs.next()) {
+                    Boolean id = rs.getBoolean(1);
+                    if (rs.wasNull()) {
+                        id = false;
+                    }
+                    return id;
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
+    
     public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<Long>() {
         @Override
         public Long handle(ResultSet rs) throws SQLException {

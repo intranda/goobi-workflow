@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 3;
+    public static final int EXPECTED_VERSION = 4;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     public static int getCurrentVersion() {
@@ -119,6 +119,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "CREATE TABLE databaseversion (version int(11))");
             runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            // check for column delayStep
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -130,6 +131,39 @@ public class DatabaseVersion {
                 }
             }
         }
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.query(connection, "Select delayStep from schritte limit 1", MySQLHelper.resultSetToBooleanHandler);
+        } catch (SQLException e) {
+            logger.error(e);
+            if (e.getMessage().startsWith("Unknown column")) {
+                QueryRunner runner = new QueryRunner();
+                try {
+                    runner.update(connection, "ALTER TABLE schritte " + "ALTER column Prioritaet SET DEFAULT 0, "
+                            + "ALTER column Bearbeitungsstatus SET DEFAULT 0," + "ALTER column homeverzeichnisNutzen SET DEFAULT 0,"
+                            + "ALTER column typMetadaten SET DEFAULT false," + "ALTER column typAutomatisch SET DEFAULT false,"
+                            + "ALTER column typImportFileUpload SET DEFAULT false," + "ALTER column typExportRus SET DEFAULT false,"
+                            + "ALTER column typImagesLesen SET DEFAULT false," + "ALTER column typImagesSchreiben SET DEFAULT false,"
+                            + "ALTER column typExportDMS SET DEFAULT false," + "ALTER column typBeimAnnehmenModul SET DEFAULT false,"
+                            + "ALTER column typBeimAnnehmenAbschliessen SET DEFAULT false,"
+                            + "ALTER column typBeimAnnehmenModulUndAbschliessen SET DEFAULT false," + "ALTER column typScriptStep SET DEFAULT false,"
+                            + "ALTER column batchStep SET DEFAULT false," + "ADD delayStep  boolean default false;");
+                } catch (SQLException e1) {
+                    logger.error(e1);
+                }
+            }
+
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+
     }
 
     private static void updateToVersion3() {
