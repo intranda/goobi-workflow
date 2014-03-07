@@ -408,8 +408,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ldap_readonly", false);
     }
 
-    public boolean isLdapUseSimpleAuthentification() {
-        return getLocalBoolean("useSimpleAuthentification", false);
+    public boolean isLdapReadDirectoryAnonymous() {
+        return getLocalBoolean("ldap_readDirectoryAnonymous", false);
     }
 
     public boolean isLdapUseLocalDirectory() {

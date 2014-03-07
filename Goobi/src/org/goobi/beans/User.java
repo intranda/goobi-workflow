@@ -56,7 +56,7 @@ public class User implements DatabaseObject {
 	private String standort;
 	private Integer tabellengroesse = Integer.valueOf(10);
 	private Integer sessiontimeout = 7200;
-	private boolean confVorgangsdatumAnzeigen = false;
+//	private boolean confVorgangsdatumAnzeigen = false;
 	private String metadatenSprache;
 	private List<Usergroup> benutzergruppen;
 	private List<Step> schritte;
@@ -66,6 +66,25 @@ public class User implements DatabaseObject {
 	private boolean mitMassendownload = false;
 	private Ldap ldapGruppe;
 	private String css;
+	
+	
+	private boolean displayDeactivatedProjects = false;
+	private boolean displayFinishedProcesses = false;
+	private boolean displaySelectBoxes = false;
+	private boolean displayIdColumn = false;
+	private boolean displayBatchColumn = false;
+	private boolean displayProcessDateColumn = false;
+	private boolean displayLocksColumn = false;
+	private boolean displaySwappingColumn = false;
+	private boolean displayModulesColumn = false;
+	
+	private boolean displayAutomaticTasks = false;
+	private boolean hideCorrectionTasks = false;
+	private boolean displayOnlySelectedTasks = false;
+	private boolean displayOnlyOpenTasks = false;
+	
+	
+	
 
 	public void lazyLoad(){
 		try {
@@ -259,13 +278,13 @@ public class User implements DatabaseObject {
 		return this.projekte;
 	}
 
-	public boolean isConfVorgangsdatumAnzeigen() {
-		return this.confVorgangsdatumAnzeigen;
-	}
-
-	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
-		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
-	}
+//	public boolean isConfVorgangsdatumAnzeigen() {
+//		return this.confVorgangsdatumAnzeigen;
+//	}
+//
+//	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
+//		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
+//	}
 
 	public String getMetadatenSprache() {
 		return this.metadatenSprache;
@@ -489,7 +508,109 @@ public class User implements DatabaseObject {
         return true;
     }
 
+    public boolean isDisplayDeactivatedProjects() {
+        return displayDeactivatedProjects;
+    }
 
+    public boolean isDisplayFinishedProcesses() {
+        return displayFinishedProcesses;
+    }
+
+    public boolean isDisplaySelectBoxes() {
+        return displaySelectBoxes;
+    }
+
+    public boolean isDisplayIdColumn() {
+        return displayIdColumn;
+    }
+
+    public boolean isDisplayBatchColumn() {
+        return displayBatchColumn;
+    }
+
+    public boolean isDisplayProcessDateColumn() {
+        return displayProcessDateColumn;
+    }
+
+    public boolean isDisplayLocksColumn() {
+        return displayLocksColumn;
+    }
+
+    public boolean isDisplaySwappingColumn() {
+        return displaySwappingColumn;
+    }
+
+    public boolean isDisplayAutomaticTasks() {
+        return displayAutomaticTasks;
+    }
+
+    public boolean isHideCorrectionTasks() {
+        return hideCorrectionTasks;
+    }
+
+    public boolean isDisplayOnlySelectedTasks() {
+        return displayOnlySelectedTasks;
+    }
+
+    public boolean isDisplayOnlyOpenTasks() {
+        return displayOnlyOpenTasks;
+    }
+
+    public void setDisplayDeactivatedProjects(boolean displayDeactivatedProjects) {
+        this.displayDeactivatedProjects = displayDeactivatedProjects;
+    }
+
+    public void setDisplayFinishedProcesses(boolean displayFinishedProcesses) {
+        this.displayFinishedProcesses = displayFinishedProcesses;
+    }
+
+    public void setDisplaySelectBoxes(boolean displaySelectBoxes) {
+        this.displaySelectBoxes = displaySelectBoxes;
+    }
+
+    public void setDisplayIdColumn(boolean displayIdColumn) {
+        this.displayIdColumn = displayIdColumn;
+    }
+
+    public void setDisplayBatchColumn(boolean displayBatchColumn) {
+        this.displayBatchColumn = displayBatchColumn;
+    }
+
+    public void setDisplayProcessDateColumn(boolean displayProcessDateColumn) {
+        this.displayProcessDateColumn = displayProcessDateColumn;
+    }
+
+    public void setDisplayLocksColumn(boolean displayLocksColumn) {
+        this.displayLocksColumn = displayLocksColumn;
+    }
+
+    public void setDisplaySwappingColumn(boolean displaySwappingColumn) {
+        this.displaySwappingColumn = displaySwappingColumn;
+    }
+
+    public void setDisplayAutomaticTasks(boolean displayAutomaticTasks) {
+        this.displayAutomaticTasks = displayAutomaticTasks;
+    }
+
+    public void setHideCorrectionTasks(boolean hideCorrectionTasks) {
+        this.hideCorrectionTasks = hideCorrectionTasks;
+    }
+
+    public void setDisplayOnlySelectedTasks(boolean displayOnlySelectedTasks) {
+        this.displayOnlySelectedTasks = displayOnlySelectedTasks;
+    }
+
+    public void setDisplayOnlyOpenTasks(boolean displayOnlyOpenTasks) {
+        this.displayOnlyOpenTasks = displayOnlyOpenTasks;
+    }
+
+    public boolean isDisplayModulesColumn() {
+        return displayModulesColumn;
+    }
+
+    public void setDisplayModulesColumn(boolean displayModulesColumn) {
+        this.displayModulesColumn = displayModulesColumn;
+    }
 }
 
 

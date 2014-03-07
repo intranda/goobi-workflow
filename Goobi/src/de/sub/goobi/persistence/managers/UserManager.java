@@ -162,9 +162,22 @@ public class UserManager implements IManager, Serializable {
         r.setMetadatenSprache(rs.getString("metadatensprache"));
         r.setCss(rs.getString("css"));
         r.setMitMassendownload(rs.getBoolean("mitMassendownload"));
-        r.setConfVorgangsdatumAnzeigen(rs.getBoolean("confVorgangsdatumAnzeigen"));
         r.setTabellengroesse(rs.getInt("Tabellengroesse"));
         r.setSessiontimeout(rs.getInt("sessiontimeout"));
+        r.setDisplayAutomaticTasks(rs.getBoolean("displayAutomaticTasks"));
+        r.setDisplayBatchColumn(rs.getBoolean("displayBatchColumn"));
+        r.setDisplayDeactivatedProjects(rs.getBoolean("displayDeactivatedProjects"));
+        r.setDisplayFinishedProcesses(rs.getBoolean("displayFinishedProcesses"));
+        r.setDisplayIdColumn(rs.getBoolean("displayIdColumn"));
+        r.setDisplayLocksColumn(rs.getBoolean("displayLocksColumn"));
+        r.setDisplayModulesColumn(rs.getBoolean("displayModulesColumn"));
+        r.setDisplayOnlyOpenTasks(rs.getBoolean("displayOnlyOpenTasks"));
+        r.setDisplayOnlySelectedTasks(rs.getBoolean("displayOnlySelectedTasks"));
+        r.setDisplayProcessDateColumn(rs.getBoolean("displayProcessDateColumn"));
+        r.setDisplaySelectBoxes(rs.getBoolean("displaySelectBoxes"));
+        r.setDisplaySwappingColumn(rs.getBoolean("displaySwappingColumn"));
+        r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));
+        
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {

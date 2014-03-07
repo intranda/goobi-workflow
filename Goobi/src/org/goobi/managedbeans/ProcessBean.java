@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
@@ -71,7 +73,8 @@ import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportXmlLog;
-import org.goobi.production.flow.helper.SearchResultGeneration;
+import org.goobi.production.flow.helper.ExtendedSearchResultGeneration;
+import org.goobi.production.flow.helper.SearchColumnName;
 import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -91,6 +94,8 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
+
+
 
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -152,29 +157,50 @@ public class ProcessBean extends BasicBean {
     private String addToWikiField = "";
     private String userDisplayMode = "";
 
+    private Map<String, Boolean> availableColumns;
+
     private boolean showStatistics = false;
 
     private static String DONEDIRECTORYNAME = "fertig/";
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
-        this.anzeigeAnpassen.put("lockings", false);
-        this.anzeigeAnpassen.put("swappedOut", false);
-        this.anzeigeAnpassen.put("selectionBoxes", false);
-        this.anzeigeAnpassen.put("processId", false);
-        this.anzeigeAnpassen.put("batchId", false);
+
         this.sortierung = "titel";
         /*
          * Vorgangsdatum generell anzeigen?
          */
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login.getMyBenutzer() != null) {
-            this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isConfVorgangsdatumAnzeigen());
+            this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
+            this.anzeigeAnpassen.put("swappedOut", login.getMyBenutzer().isDisplaySwappingColumn());
+            this.anzeigeAnpassen.put("selectionBoxes", login.getMyBenutzer().isDisplaySelectBoxes());
+            this.anzeigeAnpassen.put("processId", login.getMyBenutzer().isDisplayIdColumn());
+            this.anzeigeAnpassen.put("batchId", login.getMyBenutzer().isDisplayBatchColumn());
+            this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isDisplayProcessDateColumn());
+            showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
+            showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
         } else {
+            this.anzeigeAnpassen.put("lockings", false);
+            this.anzeigeAnpassen.put("swappedOut", false);
+            this.anzeigeAnpassen.put("selectionBoxes", false);
+            this.anzeigeAnpassen.put("processId", false);
+            this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
+        availableColumns = new HashMap<>();
+        availableColumns.put(SearchColumnName.COLUMN_NAME_TITLE, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_TITLE, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_ID, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_DATE, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_COUNT_IMAGES, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_COUNT_METADATA, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_PROJECT, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_STATUS, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_ALTREFNO, true);
+        availableColumns.put(SearchColumnName.COLUMN_NAME_BNUMBER, true);
     }
 
     /**
@@ -1263,7 +1289,15 @@ public class ProcessBean extends BasicBean {
 
     public List<SelectItem> getProjektAuswahlListe() throws DAOException {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
-        List<Project> temp = ProjectManager.getAllProjects();
+        List<Project> temp = null;
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (login != null && login.getMaximaleBerechtigung() > 1) {
+            temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
+        } else {
+            temp = ProjectManager.getAllProjects();
+
+        }
+
         for (Project proj : temp) {
             myProjekte.add(new SelectItem(proj.getId(), proj.getTitel(), null));
         }
@@ -1794,6 +1828,15 @@ public class ProcessBean extends BasicBean {
         }
     }
 
+    
+    public Map<String, Boolean> getAvailableColumns() {
+        return availableColumns;
+    }
+    
+    public void setAvailableColumns(Map<String, Boolean> availableColumns) {
+        this.availableColumns = availableColumns;
+    }
+    
     public void generateResultAsPdf() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (!facesContext.getResponseComplete()) {
@@ -1808,9 +1851,16 @@ public class ProcessBean extends BasicBean {
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
+                List<String> selectedColums = new ArrayList<String>();
+                for (Entry<String, Boolean> entry : availableColumns.entrySet()){
+                    if (entry.getValue()) {
+                        selectedColums.add(entry.getKey());
+                    }
+                }
 
-                SearchResultGeneration sr = new SearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                HSSFWorkbook wb = sr.getResult();
+                ExtendedSearchResultGeneration sr =
+                        new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sr.getResult(selectedColums);
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
                 Iterator<Row> rowIter = mySheet.rowIterator();
@@ -1868,13 +1918,21 @@ public class ProcessBean extends BasicBean {
              */
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
+                List<String> selectedColums = new ArrayList<String>();
+                for (Entry<String, Boolean> entry : availableColumns.entrySet()){
+                    if (entry.getValue()) {
+                        selectedColums.add(entry.getKey());
+                    }
+                }
+
                 ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
                 String contentType = servletContext.getMimeType("search.xls");
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
-                SearchResultGeneration sr = new SearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                HSSFWorkbook wb = sr.getResult();
+                ExtendedSearchResultGeneration sr =
+                        new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sr.getResult(selectedColums);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();

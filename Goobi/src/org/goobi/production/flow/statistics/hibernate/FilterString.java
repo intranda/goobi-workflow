@@ -45,6 +45,7 @@ public class FilterString {
 	public static final String WORKPIECE = "workpiece:";
 	public static final String BATCH = "batch:";
 	public static final String STEPAUTOMATIC = "stepautomatic:";
+	public static final String METADATA = "meta:";
 	
 	// german
 	public static final String PROZESSEIGENSCHAFT = "prozesseigenschaft:";

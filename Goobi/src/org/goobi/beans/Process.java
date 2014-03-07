@@ -50,6 +50,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.export.ExportDocket;
 
 import ugh.dl.Fileformat;
@@ -67,6 +68,7 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -84,7 +86,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Project projekt;
     private Date erstellungsdatum;
     private List<Step> schritte;
-//    private List<HistoryEvent> history;
+    //    private List<HistoryEvent> history;
     private List<Masterpiece> werkstuecke;
     private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
@@ -112,7 +114,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public static String DIRECTORY_SUFFIX = "images";
 
     private String wikifield = "";
-//    private static final String TEMPORARY_FILENAME_PREFIX = "temporary_";
+
+    //    private static final String TEMPORARY_FILENAME_PREFIX = "temporary_";
 
     public Process() {
         this.swappedOut = false;
@@ -175,22 +178,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.schritte = schritte;
     }
 
-//    public List<HistoryEvent> getHistory() {
+    //    public List<HistoryEvent> getHistory() {
 
-//        if (this.history == null && id != null) {
-//            List<HistoryEvent> events = ProcessManager.getHistoryEvents(id);
-//            for (HistoryEvent he : events) {
-//                he.setProcess(this);
-//            }
-//            this.history = events;
-//        }
-//        return this.history;
-//    }
+    //        if (this.history == null && id != null) {
+    //            List<HistoryEvent> events = ProcessManager.getHistoryEvents(id);
+    //            for (HistoryEvent he : events) {
+    //                he.setProcess(this);
+    //            }
+    //            this.history = events;
+    //        }
+    //        return this.history;
+    //    }
 
-//    public void setHistory(List<HistoryEvent> history) {
-//
-//        this.history = history;
-//    }
+    //    public void setHistory(List<HistoryEvent> history) {
+    //
+    //        this.history = history;
+    //    }
 
     public List<Template> getVorlagen() {
         if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
@@ -510,7 +513,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + "export" + File.separator;
     }
-    
+
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + File.separator;
         pfad = pfad.replaceAll(" ", "__");
@@ -564,23 +567,23 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getSchritte();
     }
 
-//    public int getHistorySize() {
-//
-//        if (this.history == null) {
-//            return 0;
-//        } else {
-//            return this.history.size();
-//        }
-//    }
-//
-//    public List<HistoryEvent> getHistoryList() {
-//
-//        List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
-//        if (this.history != null) {
-//            temp.addAll(this.history);
-//        }
-//        return temp;
-//    }
+    //    public int getHistorySize() {
+    //
+    //        if (this.history == null) {
+    //            return 0;
+    //        } else {
+    //            return this.history.size();
+    //        }
+    //    }
+    //
+    //    public List<HistoryEvent> getHistoryList() {
+    //
+    //        List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
+    //        if (this.history != null) {
+    //            temp.addAll(this.history);
+    //        }
+    //        return temp;
+    //    }
 
     public int getEigenschaftenSize() {
         return getEigenschaften().size();
@@ -845,7 +848,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     // backup of meta.xml
 
-   private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
+    private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
         int numberOfBackups = 0;
         String FORMAT = "";
         if (ConfigurationHelper.getInstance().getNumberOfMetaBackups() != 0) {
@@ -916,7 +919,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-
     private boolean checkForMetadataFile() throws IOException, InterruptedException, SwapException, DAOException, WriteException,
             PreferencesException {
         boolean result = true;
@@ -928,10 +930,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-
     public void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
             PreferencesException {
-  
 
         Fileformat ff;
         String metadataFileName;
@@ -942,9 +942,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         metadataFileName = getMetadataFilePath();
 
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
+
+        List<StringPair> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+
+        MetadataManager.updateMetadata(id, metadata);
+
         ff.write(metadataFileName);
 
     }
+
+
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
             PreferencesException {
