@@ -180,7 +180,7 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- alle Seiten hinzufügen --------------------------------
          */
         if (inOldDocstruct.getAllToReferences() != null) {
-            for (Reference p :inOldDocstruct.getAllToReferences()) {
+            for (Reference p : inOldDocstruct.getAllToReferences()) {
                 newDocstruct.addReferenceTo(p.getTarget(), p.getType());
             }
         }
@@ -210,13 +210,13 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- neues Docstruct zum Parent hinzufügen und an die gleiche Stelle schieben, wie den Vorg?nger
          * --------------------------------
          */
-//        int index = 0;
-//        for (DocStruct ds : inOldDocstruct.getParent().getAllChildren()) {
-//            index++;
-//            if (ds.equals(inOldDocstruct)) {
-//                break;
-//            }
-//        }
+        //        int index = 0;
+        //        for (DocStruct ds : inOldDocstruct.getParent().getAllChildren()) {
+        //            index++;
+        //            if (ds.equals(inOldDocstruct)) {
+        //                break;
+        //            }
+        //        }
         int index = inOldDocstruct.getParent().getAllChildren().indexOf(inOldDocstruct);
         inOldDocstruct.getParent().getAllChildren().add(index, newDocstruct);
 
@@ -234,16 +234,16 @@ public class MetadatenHelper implements Comparator<Object> {
         if (parent == null) {
             return;
         }
-        
+
         int index = parent.getAllChildren().indexOf(inStruct);
         if (index == 0) {
             return;
         } else {
             parent.getAllChildren().remove(inStruct);
-            parent.getAllChildren().add(index -1, inStruct);
+            parent.getAllChildren().add(index - 1, inStruct);
 
         }
-        
+
     }
 
     /* =============================================================== */
@@ -255,14 +255,14 @@ public class MetadatenHelper implements Comparator<Object> {
         }
         int max = parent.getAllChildren().size();
         int index = parent.getAllChildren().indexOf(inStruct);
-        
+
         if (max == index) {
             return;
         } else {
             parent.getAllChildren().remove(inStruct);
-            parent.getAllChildren().add(index +1, inStruct);
+            parent.getAllChildren().add(index + 1, inStruct);
         }
-        
+
     }
 
     /* =============================================================== */
@@ -714,7 +714,6 @@ public class MetadatenHelper implements Comparator<Object> {
         return null;
     }
 
-    
     public static ExportFileformat getExportFileformatByName(String name, Ruleset ruleset) {
         Set<Class<? extends ExportFileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(ExportFileformat.class);
         for (Class<? extends ExportFileformat> cl : formatSet) {
@@ -732,10 +731,9 @@ public class MetadatenHelper implements Comparator<Object> {
             }
 
         }
-        return null;  
+        return null;
     }
-    
-    
+
     public static List<StringPair> getMetadataOfFileformat(Fileformat gdzfile) {
         List<StringPair> metadataList = new ArrayList<>();
 
@@ -743,22 +741,19 @@ public class MetadatenHelper implements Comparator<Object> {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
 
             for (Metadata md : ds.getAllMetadata()) {
-                if (md.getType().getIsPerson()) {
-                    Person p = (Person) md;
-                    metadataList.add(new StringPair(md.getType().getName(), p.getFirstname() + " " + p.getLastname()));
-                } else {
-                    metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
-                }
+                metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
             }
+            for (Person p : ds.getAllPersons()) {
+                metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+            }
+
             if (ds.getType().isAnchor()) {
                 ds = ds.getAllChildren().get(0);
                 for (Metadata md : ds.getAllMetadata()) {
-                    if (md.getType().getIsPerson()) {
-                        Person p = (Person) md;
-                        metadataList.add(new StringPair(md.getType().getName(), p.getFirstname() + " " + p.getLastname()));
-                    } else {
-                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
-                    }
+                    metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                }
+                for (Person p : ds.getAllPersons()) {
+                    metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
                 }
             }
         } catch (PreferencesException e) {
@@ -766,5 +761,5 @@ public class MetadatenHelper implements Comparator<Object> {
         }
         return metadataList;
     }
-    
+
 }
