@@ -104,8 +104,8 @@ $(window).resize(function() {
         <div id="metadatenRechtsWrapp" style="">
             <table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
 
-                <tr valign="top" style="width: 100%; height: 100%">
-                    <td>
+                <tr valign="top" style="width: 100%; height: 100% ">
+                    <td style="#{Metadaten.treeProperties.imageSticky?'width:600px;':''}">
                         <h:panelGroup rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
                             <ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
                         </h:panelGroup>
@@ -120,13 +120,12 @@ $(window).resize(function() {
                         </h:panelGroup>
                     </td>
 
-                    <h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
-                        <td style="top: 10px;">
-                            <h:panelGroup id="BildArea2" style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
+                        <td style="top: 10px;" id="BildArea2">
+                    		<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}" style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
+                            
                                 <ui:include src="includes/metseditor/metseditor_image.xhtml" />
                             </h:panelGroup>
                         </td>
-                    </h:panelGroup>
                 </tr>
             </table>
         </div>
