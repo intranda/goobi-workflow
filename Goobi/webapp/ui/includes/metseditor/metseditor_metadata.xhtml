@@ -112,6 +112,7 @@
                                 <h:graphicImage value="images/buttons/copy.gif" />
                                 <f:param name="ID" value="#{Item.identifier}" />
                                 <x:updateActionListener property="#{Metadaten.curPerson}" value="#{Item}" />
+                                <f:ajax execute="@form" render="@form" />
                             </h:commandLink>
 
                             <!-- Löschen-Schaltknopf -->
@@ -119,6 +120,7 @@
                                 <h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:3px" />
                                 <f:param name="ID" value="#{Item.identifier}" />
                                 <x:updateActionListener property="#{Metadaten.curPerson}" value="#{Item}" />
+                                <f:ajax execute="@form" render="@form" />
                             </h:commandLink>
 
 
@@ -152,14 +154,14 @@
 
                                 <h:inputTextarea value="#{Item.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}"
                                     styleClass="metadatenInput" style="height: 45px;">
-                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    <f:ajax execute="@form" event="valueChange" />
                                 </h:inputTextarea>
 
                             </h:panelGrid>
                             <h:panelGrid columns="1" rendered="#{(Item.outputType == 'input')}" width="100%">
                                 <h:inputText value="#{Item.value}" styleClass="metadatenInput" 
                                     readonly="#{Metadaten.nurLesenModus}">
-                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    <f:ajax execute="@form" event="valueChange" />
                                 </h:inputText>
 
                             </h:panelGrid>
@@ -167,12 +169,12 @@
 
                             <h:selectManyListbox value="#{Item.selectedItems}" rendered="#{(Item.outputType == 'select')}" 
                                 readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput">
-                                <f:ajax execute="@form" event="valueChange" render="@form" />
+                                <f:ajax execute="@form" event="valueChange" />
                                 <f:selectItems value="#{Item.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                             </h:selectManyListbox>
                             <h:selectOneMenu value="#{Item.selectedItem}" rendered="#{(Item.outputType == 'select1')}"
                                 readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput" >
-                                <f:ajax execute="@form" event="valueChange" render="@form" />
+                                <f:ajax execute="@form" event="valueChange" />
                                 <f:selectItems value="#{Item.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                             </h:selectOneMenu>
                             <h:outputText id="myOutput" value="#{Item.value}" rendered="#{(Item.outputType == 'readonly')}"
@@ -181,13 +183,13 @@
                             <h:panelGroup rendered="#{Item.normdata}" >
                                 <h:panelGrid columns="2" width="100%" columnClasses="first-column, second-column">
                                     <h:selectOneMenu value="#{Item.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput">
-                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                        <f:ajax execute="@form" event="valueChange" />
                                         <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database.abbreviation}"
                                             itemValue="#{database}" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{Item.normdataValue}" styleClass="metadatenInput" style="width:100%"
                                         readonly="#{Metadaten.nurLesenModus}">
-                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                        <f:ajax execute="@form" event="valueChange" />
                                     </h:inputText>
                                 </h:panelGrid>
                             </h:panelGroup>
@@ -250,24 +252,24 @@
                                     <h:panelGrid columns="1" rendered="#{(metadata.outputType == 'textarea')}" style="vertical-align:top;border-bottom: 0px;">
                                         <h:inputTextarea value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}"
                                             styleClass="metadatenInput" style="height: 45px;width:350px;">
-                                            <f:ajax execute="@form" event="valueChange" render="@form" />
+                                            <f:ajax execute="@form" event="valueChange" />
                                         </h:inputTextarea>
                                     </h:panelGrid>
 
                                          <h:inputText value="#{metadata.value}" styleClass="metadatenInput" style="width:350px;" rendered="#{(metadata.outputType == 'input')}"
                                             readonly="#{Metadaten.nurLesenModus}">
-                                            <f:ajax execute="@form" event="valueChange" render="@form" />
+                                            <f:ajax execute="@form" event="valueChange" />
                                         </h:inputText>
                                    
                                     <h:selectManyListbox value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}"
                                         readonly="#{Metadaten.nurLesenModus}">
-                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                        <f:ajax execute="@form" event="valueChange" />
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element"
                                             itemLabel="#{element.label}" />
                                     </h:selectManyListbox>
                                     <h:selectOneMenu value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}"
                                         readonly="#{Metadaten.nurLesenModus}">
-                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                        <f:ajax execute="@form" event="valueChange" />
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element"
                                             itemLabel="#{element.label}" />
                                     </h:selectOneMenu>
@@ -307,12 +309,14 @@
                             <h:commandLink action="#{Metadaten.CopyGroup}" title="#{msgs.metadatenKopieren}">
                                 <h:graphicImage value="images/buttons/copy.gif" />
                                 <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
+                                <f:ajax execute="@form" render="@form" />
                             </h:commandLink>
 
                             <!-- Löschen-Schaltknopf -->
                             <h:commandLink action="#{Metadaten.deleteGroup}" title="#{msgs.metadatenLoeschen}">
                                 <h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:3px" />
                                 <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
+                                <f:ajax execute="@form" render="@form" />
                             </h:commandLink>
 
                         </h:column>
@@ -339,6 +343,7 @@
 
                                     <h:graphicImage value="images/buttons/new.gif" style="border: 0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.neuePersonHinzufuegen}" />
+                                	<f:ajax render="@form" />
                                 </h:commandLink>
                                 <br />
                                 <!-- Hinzufuegen-Schaltknopf für Metadaten -->
@@ -346,6 +351,7 @@
                                     rendered="#{Metadaten.sizeOfMetadata!=0}">
                                     <h:graphicImage value="images/buttons/new.gif" style="border: 0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.neueMetadatenHinzufuegen}" />
+                                    <f:ajax render="@form" />
                                 </h:commandLink>
                                 <br />
                                 <!-- add group -->
@@ -353,6 +359,7 @@
                                     rendered="#{Metadaten.sizeOfMetadataGroups!=0}">
                                     <h:graphicImage value="images/buttons/new.gif" style="border: 0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.AddNewGroup}" />
+                                    <f:ajax render="@form" />
                                 </h:commandLink>
 
 
@@ -449,9 +456,12 @@
                         <td class="eingabeBoxen_row3">
                             <h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
                                 <x:updateActionListener value="huhu" property="#{Metadaten.metadatum.value}"></x:updateActionListener>
+                            	<f:ajax execute="@form" render="@form" />
                             </h:commandButton>
                             <x:commandButton id="absenden" forceId="true" type="submit" action="#{Metadaten.Speichern}"
-                                value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
+                                value="#{msgs.dieAenderungenSpeichern}">
+                                <f:ajax execute="@form" render="@form" />
+                            </x:commandButton>
                         </td>
                     </tr>
 
@@ -507,9 +517,13 @@
 
                     <tr>
                         <td class="eingabeBoxen_row3">
-                            <h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true"></h:commandButton>
+                            <h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true">
+                            	<f:ajax execute="@form" render="@form" />
+                            </h:commandButton>
                             <x:commandButton id="absenden2" forceId="true" type="submit" action="#{Metadaten.SpeichernPerson}"
-                                value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
+                                value="#{msgs.dieAenderungenSpeichern}">
+                                <f:ajax execute="@form" render="@form" />
+                            </x:commandButton>
                         </td>
                     </tr>
 
@@ -537,7 +551,7 @@
                                 <h:panelGroup>
                                     <h:selectOneMenu id="groups" value="#{Metadaten.tempMetadataGroupType}" style="width: 400px;margin-right:15px">
                                         <f:selectItems value="#{Metadaten.addableMetadataGroupTypes}" />
-                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                        <f:ajax execute="@form" event="valueChange" />
                                     </h:selectOneMenu>
                                     <x:message for="groups" style="color: red" replaceIdWithLabel="true" />
                                 </h:panelGroup>
@@ -617,9 +631,12 @@
                     <tr>
                         <td class="eingabeBoxen_row3">
                             <h:commandButton action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true">
+                            	<f:ajax execute="@form" render="@form" />
                             </h:commandButton>
                             <x:commandButton id="absenden3" forceId="true" type="submit" action="#{Metadaten.saveGroup}"
-                                value="#{msgs.dieAenderungenSpeichern}"></x:commandButton>
+                                value="#{msgs.dieAenderungenSpeichern}">
+ 	                           <f:ajax execute="@form" render="@form" />
+                            </x:commandButton>
                         </td>
                     </tr>
 
