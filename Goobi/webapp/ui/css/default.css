@@ -611,6 +611,7 @@ a.documentSelected {
 	font-size: 12px;
 	background: #ffffff;
 	width: 100%;
+	font-family: verdana,​arial;
 }
 
 .metadatenInputChange {
