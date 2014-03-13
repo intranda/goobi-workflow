@@ -6,6 +6,7 @@
     </composite:interface>
 
     <composite:implementation>
+                
         <h:form id="formular3">
 
             <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
@@ -32,7 +33,7 @@
                                     <f:selectItem itemValue="2" itemLabel="#{msgs.hinterDasAktuelleElement}" />
                                     <f:selectItem itemValue="3" itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
                                     <f:selectItem itemValue="4" itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
-                                    <f:ajax render="@all" event="change" />
+                                    <f:ajax render="@form :treeform" event="change" />
                                     <!-- 
 						     -->
                                 </h:selectOneRadio>
@@ -297,6 +298,7 @@
 
                                     <h:commandLink action="#{Metadaten.BildErsteSeiteAnzeigen}">
                                         <h:outputText value="#{msgs.ersteSeite}" />
+                                        
                                     </h:commandLink>
                                     <!-- 									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
                                     <!-- 										<x:inputText id="pagestart" forceId="true" value="#{Metadaten.ajaxSeiteStart}" /> -->
@@ -310,7 +312,7 @@
 
                                     <h:commandLink action="#{Metadaten.BildLetzteSeiteAnzeigen}">
                                         <h:outputText value="#{msgs.letzteSeite}" />
-                                    </h:commandLink>
+                                     </h:commandLink>
                                     <!-- 									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
                                     <!-- 										<x:inputText id="pageend" forceId="true" value="#{Metadaten.ajaxSeiteEnde}" /> -->
                                     <!-- 									</h:panelGroup> -->
@@ -327,14 +329,17 @@
                                 <h:panelGrid id="mygrid6" columns="2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight">
                                     <h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}">
                                         <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
+                                        <f:ajax render="@all" />
                                     </h:commandLink>
                                     <h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}"
                                         rendered="#{Metadaten.treeProperties.showpagesasajax==false}">
                                         <h:outputText value="#{msgs.seitenZuweisen}" />
+                                        <f:ajax render="@all" />
                                     </h:commandLink>
                                     <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
                                         rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
                                         <h:outputText value="#{msgs.seitenZuweisen}" />
+                                        <f:ajax render="@all" />
                                     </h:commandLink>
                                 </h:panelGrid>
                             </td>
@@ -362,11 +367,13 @@
                             <h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}"
                                 style="margin-top:175px;margin-left:10px;margin-right:10px;display:block">
                                 <h:graphicImage value="images/buttons/order_right.gif" />
+                                <f:ajax render="@form :treeform" execute="@form" />
                             </h:commandLink>
                             <!-- nach links -->
                             <h:commandLink id="s2" action="#{Metadaten.SeitenWeg}"
                                 style="margin-top:7px;margin-left:10px;margin-right:10px;display:block">
                                 <h:graphicImage value="images/buttons/order_left.gif" />
+                                <f:ajax render="@form :treeform" execute="@form" />
                             </h:commandLink>
                         </h:panelGroup>
 
