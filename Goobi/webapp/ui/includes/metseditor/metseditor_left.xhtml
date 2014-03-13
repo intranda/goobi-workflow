@@ -102,7 +102,7 @@ $(window).resize(function() {
 										rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
 									<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
 									<x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                                    <f:ajax  render="@form :formular1 :formular2 :formular3 :BildArea2 "/>
+                                    <f:ajax  render="@form :formular1 :formular2 :formular3 :formularBild :myBild "/>
 								</h:commandLink>
 
 								<h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px"
@@ -118,7 +118,14 @@ $(window).resize(function() {
 					</h:form>
 					<h:form id="formWarn" style="display:none">
 						<h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" />
+					
+					
+					
 					</h:form>
+		
+		
+
+		
 		</div>
 	</composite:implementation>
 
