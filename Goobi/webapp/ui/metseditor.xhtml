@@ -23,6 +23,7 @@
                         <h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;"
                             rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
                             <f:param id="vdid5" name="Ansicht" value="Paginierung" />
+                             <f:ajax render="@form :metadatenRechtsWrapp" />
                         </h:commandLink>
                         <h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px"
                             rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
@@ -31,6 +32,7 @@
                         <h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;"
                             rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
                             <f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
+                            <f:ajax render="@form :metadatenRechtsWrapp" />
                         </h:commandLink>
 
                         <h:outputText id="vdid10" value="#{msgs.strukturdaten}" style="font-weight:bold;font-size: 11px;"
@@ -40,6 +42,7 @@
                         <h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}" value="#{msgs.metadaten}" style="font-size: 11px;"
                             rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
                             <f:param id="vdid13" name="Ansicht" value="Metadaten" />
+                            <f:ajax render="@form :metadatenRechtsWrapp" />
                         </h:commandLink>
 
                         <h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;"
@@ -50,6 +53,7 @@
                         <h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;"
                             rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
                             <f:param id="vdid17" name="Ansicht" value="File" />
+                            <f:ajax render="@form :metadatenRechtsWrapp" />
                         </h:commandLink>
 
                         <h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;"
@@ -60,13 +64,20 @@
 
                 <td align="right">
                     <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}"
-                        value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" />
+                        value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" >
+                       	<f:ajax render="@form :metadatenRechtsWrapp" />
+                    </h:commandLink>
                     <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==false}"
-                        value="#{msgs.metadatenBildAnzeigen}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}" />
+                        value="#{msgs.metadatenBildAnzeigen}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
+                        <f:ajax render="@form :metadatenRechtsWrapp" />
+                    </h:commandLink>
+                        
                     <h:outputText value=" | " style="font-size: 11px;" />
                     <!-- Metadaten validieren -->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}"
-                        rendered="#{not Metadaten.nurLesenModus}" />
+                        rendered="#{not Metadaten.nurLesenModus}" >
+                        <f:ajax render="@form :metadatenRechtsWrapp" />
+                    </h:commandLink>
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten nicht schreiben, nur zurück gehen-->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.goZurueck}" value="#{msgs.goBack}" target="_parent" immediate="true"
@@ -101,7 +112,7 @@ $(window).resize(function() {
 
 </script>
  -->
-        <div id="metadatenRechtsWrapp" style="">
+        <h:panelGroup id="metadatenRechtsWrapp" >
             <table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
 
                 <tr valign="top" style="width: 100%; height: 100% ">
@@ -128,7 +139,7 @@ $(window).resize(function() {
                         </td>
                 </tr>
             </table>
-        </div>
+        </h:panelGroup>
 
 
         <script type="text/javascript">
