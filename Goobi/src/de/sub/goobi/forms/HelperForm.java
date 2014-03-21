@@ -70,7 +70,7 @@ public class HelperForm {
     }
 
     public String getVersion() {
-        return GoobiVersion.getBuildversion();
+        return "2.0";
     }
 
     // TODO: Change the defaults
