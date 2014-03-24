@@ -880,6 +880,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
         FilenameFilter filter = new FileListFilter(FORMAT);
         File metaFilePath = new File(getProcessDataDirectory());
+        File metadataFile = new File (getMetadataFilePath());
+        if (!metadataFile.exists()) {
+            return;
+        }
         File[] meta = metaFilePath.listFiles(filter);
         if (meta != null) {
             List<File> files = Arrays.asList(meta);
@@ -943,12 +947,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
 
+        ff.write(metadataFileName);
+
         List<StringPair> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
-
-        ff.write(metadataFileName);
-
     }
 
 
