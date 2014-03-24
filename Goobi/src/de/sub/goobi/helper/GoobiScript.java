@@ -337,7 +337,7 @@ public class GoobiScript {
 
             List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + this.myParameters.get("ruleset") + "'", null, null);
             if (rulesets == null || rulesets.size() == 0) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Could not found ruleset: ", "ruleset");
+                Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", "ruleset");
                 return;
             }
             Ruleset regelsatz = rulesets.get(0);

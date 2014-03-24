@@ -2002,7 +2002,7 @@ public class Metadaten {
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, this.myImageRotation);
                         myLogger.trace("scaleFile");
                     } catch (Exception e) {
-                        Helper.setFehlerMeldung("could not found image folder", e);
+                        Helper.setFehlerMeldung("could not find image folder", e);
                         myLogger.error(e);
                     }
                     break;
