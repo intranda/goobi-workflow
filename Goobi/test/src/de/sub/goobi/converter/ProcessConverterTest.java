@@ -21,7 +21,7 @@ public class ProcessConverterTest {
     @Test
     public void testGetAsObject() {
         Process process = new Process();
-        process.setId(1);
+        process.setId(new Integer(1));
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process);
         EasyMock.expectLastCall();
