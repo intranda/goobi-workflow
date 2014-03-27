@@ -202,7 +202,7 @@ public class Metadaten {
     private String pagesEnd = "";
     private HashMap<String, Boolean> treeProperties;
     private ReentrantLock xmlReadingLock = new ReentrantLock();
-
+    private int treeWidth = 180;
     private FileManipulation fileManipulation;
 
     /**
@@ -857,7 +857,8 @@ public class Metadaten {
         this.currentTifFolder = null;
         readAllTifFolders();
         this.bildZuStrukturelement = false;
-
+        resetTreeWidth();
+        
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
@@ -3594,4 +3595,15 @@ public class Metadaten {
         }
     }
 
+    public int getTreeWidth() {
+		return treeWidth;
+	}
+    
+    public void setTreeWidth(int treeWidth) {
+		this.treeWidth = treeWidth;
+	}
+    
+    public void resetTreeWidth(){
+    	this.treeWidth = 180;
+    }
 }
