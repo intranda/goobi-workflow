@@ -857,7 +857,6 @@ public class Metadaten {
         this.currentTifFolder = null;
         readAllTifFolders();
         this.bildZuStrukturelement = false;
-        resetTreeWidth();
         
         /*
          * -------------------------------- Dokument einlesen --------------------------------
@@ -3602,8 +3601,5 @@ public class Metadaten {
     public void setTreeWidth(int treeWidth) {
 		this.treeWidth = treeWidth;
 	}
-    
-    public void resetTreeWidth(){
-    	this.treeWidth = 180;
-    }
+   
 }
