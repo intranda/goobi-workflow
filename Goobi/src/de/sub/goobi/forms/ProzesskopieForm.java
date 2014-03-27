@@ -287,7 +287,7 @@ public class ProzesskopieForm {
             if (loginForm.getMaximaleBerechtigung() > 1) {
 
                 filter +=
-                        " prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                        " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
                                 + aktuellerNutzer.getId() + ")";
 
                 //              Hibernate.initialize(aktuellerNutzer);
