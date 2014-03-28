@@ -147,9 +147,6 @@
 				</patternset>
 			</zipfileset>
 
-
-
-
 			<manifest>
 				<attribute name="Implementation-Title" value="${dist.name}" />
 				<attribute name="Implementation-Version" value="${git.revision}" />
@@ -158,7 +155,7 @@
 				<attribute name="Implementation-Build-Date" value="${date}" />
 			</manifest>
 
-
+			<metainf file="${dir.config}/context.xml" />
 		</war>
 	</target>
 
