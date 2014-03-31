@@ -21,6 +21,7 @@
 								<h:outputText value=" | #{msgs.toolentwicklung} | " />
 
 								<h:commandLink action="imprint" value="#{msgs.impressum}" id="impr" />
+								<img id="ajaxloader" src="#{HelperForm.servletPathWithHostAsUrl}/ui/images/ajaxload_small.gif" style="display: none;position: fixed;top: 90px;right: 15px;" />
 								<script language="javascript">
 									function submitEnter(commandId, e) {
 										var keycode;
@@ -86,9 +87,28 @@
 													targetElement).click();
 										}
 									}
-								</script>
 
+									 jsf.ajax.addOnEvent(function(data) {
+								        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+								        var ajaxloader = document.getElementById("ajaxloader");
+								
+								        switch (ajaxstatus) {
+								            case "begin": // This is called right before ajax request is been sent.
+								                ajaxloader.style.display = 'block';
+								                break;
+								
+								            case "complete": // This is called right after ajax response is received.
+								                ajaxloader.style.display = 'none';
+								                break;
+								
+								            case "success": // This is called when ajax response is successfully processed.
+								                // NOOP.
+								                break;
+								        }
+								    });
+								</script>
 							</td>
+							
 						</tr>
 					</table>
 				</h:form>

@@ -78,6 +78,8 @@ public class UserBean extends BasicBean {
         this.myClass.setLogin("");
         this.myClass.setLdaplogin("");
         this.myClass.setPasswortCrypt("Passwort");
+        updateUsergroupPaginator();
+        updateProjectPaginator();
         return "user_edit";
     }
 
@@ -274,10 +276,10 @@ public class UserBean extends BasicBean {
 
     public void setMyClass(User inMyClass) {
         this.myClass = inMyClass;
-        if (myClass.getId() != null) {
+        
             updateUsergroupPaginator();
             updateProjectPaginator();
-        }
+        
     }
 
     public Integer getLdapGruppeAuswahl() {
@@ -354,18 +356,23 @@ public class UserBean extends BasicBean {
     }
 
     private void updateUsergroupPaginator() {
-        String filter =
+    	String filter = "";
+    	if (myClass!=null && myClass.getId()!=null){
+    		 filter =
                 " benutzergruppen.BenutzergruppenID not in (select benutzergruppenmitgliedschaft.BenutzerGruppenID from "
                 + "benutzergruppenmitgliedschaft where benutzergruppenmitgliedschaft.BenutzerID = " + myClass.getId() + ")";
+    	}
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
     }
 
     private void updateProjectPaginator() {
-        String filter =
-                " projekte.ProjekteID not in (select projektbenutzer.ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+    	String filter = "";
+    	if (myClass!=null && myClass.getId()!=null){
+    		filter =      " projekte.ProjekteID not in (select projektbenutzer.ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
                         + myClass.getId() + ")";
-        ProjectManager m = new ProjectManager();
+        }
+    	ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
     }
 

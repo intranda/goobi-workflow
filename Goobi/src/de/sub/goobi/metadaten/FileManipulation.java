@@ -121,7 +121,7 @@ public class FileManipulation {
                     uploadedFileName = uploadedFileName + fileExtension;
                 }
                 basename = uploadedFileName;
-                
+
             }
             logger.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator + basename;
@@ -264,14 +264,15 @@ public class FileManipulation {
                     DocStruct currentPage = pageList.get(index);
                     // check if element is last element
                     currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 2));
-                    if (index + 1 == pageList.size()) {
-                        currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
-                    } else {
-                        DocStruct followingPage = pageList.get(index + 1);
-                        currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(
-                                followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
+                    if (!insertMode.equalsIgnoreCase("uncounted")) {
+                        if (index + 1 == pageList.size()) {
+                            currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
+                        } else {
+                            DocStruct followingPage = pageList.get(index + 1);
+                            currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(
+                                    followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
+                        }
                     }
-
                 }
             }
             pageList.add(indexToImport, newPage);
@@ -509,7 +510,7 @@ public class FileManipulation {
 
     public List<String> getAllImportFolder() {
 
-        String tempDirectory =  ConfigurationHelper.getInstance().getTemporaryFolder();
+        String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
         File fileuploadFolder = new File(tempDirectory + "fileupload");
 
         allImportFolder = new ArrayList<String>();
@@ -537,7 +538,7 @@ public class FileManipulation {
             Helper.setFehlerMeldung("noFileSelected");
             return;
         }
-        String tempDirectory =  ConfigurationHelper.getInstance().getTemporaryFolder();
+        String tempDirectory =ConfigurationHelper.getInstance().getTemporaryFolder();
 
         String masterPrefix = "";
         boolean useMasterFolder = false;
@@ -564,7 +565,7 @@ public class FileManipulation {
                             File[] objectInFolder = subfolder.listFiles();
                             List<File> sortedList = Arrays.asList(objectInFolder);
                             Collections.sort(sortedList);
-                           for (File object : sortedList) {
+                            for (File object : sortedList) {
                                 FileUtils.copyFileToDirectory(object, masterDirectory);
                             }
                         } catch (SwapException e) {

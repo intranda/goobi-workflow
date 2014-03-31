@@ -4,7 +4,7 @@
 
     <composite:interface>
     </composite:interface>
-
+@
     <composite:implementation>
         <h:form id="formular2" prependId="false">
 
@@ -44,7 +44,7 @@
 
                 <h:panelGrid id="mygrid11" columns="1" width="270px" style="margin:0px;">
                     <!-- ++++++++++++++++     Paginierung festlegen      ++++++++++++++++ -->
-                    <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}" style="position: fixed; top: 180px; left: 450px;">
+                    <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}" style="position: fixed; top: 157px; left: #{Metadaten.treeWidth+270}px;">
                         <table cellpadding="3" cellspacing="0" id="PaginierungActionBox" class="eingabeBoxen" style="width: 320px;">
                             <tr>
                                 <td class="eingabeBoxen_row1">

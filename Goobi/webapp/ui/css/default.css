@@ -87,12 +87,10 @@ table {
 	border-width: 1px;
 	border-color: #0083e2;
 	background-color: #cbe5fc;
-	width: 180px;
 }
 .layoutTreeView2 {
 	color: #434387;	
-	border-width: 0px;	
-	width: 180px;
+	border-width: 0px;
 }
 .layoutInhalt {
 	border-style: solid;
@@ -611,6 +609,7 @@ a.documentSelected {
 	font-size: 12px;
 	background: #ffffff;
 	width: 100%;
+	font-family: verdana,​arial;
 }
 
 .metadatenInputChange {

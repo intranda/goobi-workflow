@@ -9,14 +9,15 @@
 	<meta http-equiv="pragma" content="no-cache" />
 	<meta http-equiv="cache-control" content="no-cache" />
 	<meta name="date" content="1970-01-01T00:00:00+01:00" />
-	<link rel="shortcut icon" href="favicon.ico" />
+	<meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
+	<link rel="shortcut icon" href="#{HelperForm.servletPathWithHostAsUrl}/ui/favicon.ico" />
 
 	<x:stylesheet media="screen" path="/ui/css/default.css" />
 	<x:stylesheet media="print" path="/ui/css/print.css" />
 
-	<title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
+	<title><h:outputText value="Goobi #{HelperForm.version}" /></title>
     
-    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="#{HelperForm.servletPathWithHostAsUrl}/ui/js/jquery-1.10.2.min.js"></script>
 
 </h:head>
 
@@ -33,7 +34,7 @@
 
 			<tr>
 
-				<td valign="top" height="100%" class="layoutNavigation">
+				<td valign="top" height="100%" style="color: #434387; border-style: solid; border-width: 1px; border-color: #0083e2; background-color: #cbe5fc; width:180px">
 
 					<table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0">
 						<tr>

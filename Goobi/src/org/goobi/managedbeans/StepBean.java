@@ -927,6 +927,7 @@ public class StepBean extends BasicBean {
     }
 
     public void setMySchritt(Step mySchritt) {
+        myPlugin = null;
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();

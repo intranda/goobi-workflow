@@ -202,7 +202,7 @@ public class Metadaten {
     private String pagesEnd = "";
     private HashMap<String, Boolean> treeProperties;
     private ReentrantLock xmlReadingLock = new ReentrantLock();
-
+    private int treeWidth = 180;
     private FileManipulation fileManipulation;
 
     /**
@@ -857,7 +857,7 @@ public class Metadaten {
         this.currentTifFolder = null;
         readAllTifFolders();
         this.bildZuStrukturelement = false;
-
+        
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
@@ -2002,7 +2002,7 @@ public class Metadaten {
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, this.myImageRotation);
                         myLogger.trace("scaleFile");
                     } catch (Exception e) {
-                        Helper.setFehlerMeldung("could not found image folder", e);
+                        Helper.setFehlerMeldung("could not find image folder", e);
                         myLogger.error(e);
                     }
                     break;
@@ -3393,7 +3393,7 @@ public class Metadaten {
         }
         String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
         int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
-        int dotIndex = afterLastSlash.indexOf('.', afterLastBackslash);
+        int dotIndex = afterLastSlash.lastIndexOf('.', afterLastBackslash);
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
     }
 
@@ -3594,4 +3594,12 @@ public class Metadaten {
         }
     }
 
+    public int getTreeWidth() {
+		return treeWidth;
+	}
+    
+    public void setTreeWidth(int treeWidth) {
+		this.treeWidth = treeWidth;
+	}
+   
 }

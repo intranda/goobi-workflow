@@ -535,7 +535,7 @@ public class Helper implements Serializable, Observer {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP][gG]")) {
+            } else if (name.matches(prefix + "\\.[mM][pP][eE]?[gG]")) {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[mM][pP]4")) {
                 fileOk = true;
@@ -549,17 +549,11 @@ public class Helper implements Serializable, Observer {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.docx")) {
+            } else if (name.matches(prefix + "\\.[dD][oO][cC][xX]?")) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.doc")) {
+            } else if (name.matches(prefix + "\\.[xX][lL][sS][xX]?")) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.xls")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.xlsx")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.pptx")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.ppt")) {
+            } else if (name.matches(prefix + "\\.[pP][pP][tT][xX]?")) {
                 fileOk = true;
             }
             return fileOk;

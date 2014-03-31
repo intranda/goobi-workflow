@@ -46,186 +46,207 @@ import org.w3c.dom.Node;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class ConfigOpacCatalogue {
-	private static final Logger myLogger = Logger.getLogger(ConfigOpacCatalogue.class);
-	private String title = "";
-	private String description = "";
-	private String address = "";
-	private String database = "";
-	private String iktlist = "";
-	private int port = 80;
-	private String cbs;
-	private String charset = "iso-8859-1";
-	private ArrayList<ConfigOpacCatalogueBeautifier> beautifySetList;
-	private String opacType;
+    private static final Logger myLogger = Logger.getLogger(ConfigOpacCatalogue.class);
+    private String title = "";
+    private String description = "";
+    private String address = "";
+    private String database = "";
+    private String iktlist = "";
+    private int port = 80;
+    private String cbs;
+    private String charset = "iso-8859-1";
+    private ArrayList<ConfigOpacCatalogueBeautifier> beautifySetList;
+    private String opacType;
 
-	public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
-			ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType) {
-		this.title = title;
-		this.description = desciption;
-		this.address = address;
-		this.database = database;
-		this.iktlist = iktlist;
-		this.port = port;
-		this.beautifySetList = inBeautifySetList;
-		this.opacType = opacType;
-	}
+    public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
+            ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType) {
+        this.title = title;
+        this.description = desciption;
+        this.address = address;
+        this.database = database;
+        this.iktlist = iktlist;
+        this.port = port;
+        this.beautifySetList = inBeautifySetList;
+        this.opacType = opacType;
+    }
 
-	// Constructor that also takes a charset, a quick hack for DPD-81
-	public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port, String charset,
-			String cbs, ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType) {
-		// Call the contructor above
-		this(title, desciption, address, database, iktlist, port, inBeautifySetList, opacType);
-		this.charset = charset;
-		this.setCbs(cbs);
-	}
+    // Constructor that also takes a charset, a quick hack for DPD-81
+    public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port, String charset,
+            String cbs, ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType) {
+        // Call the contructor above
+        this(title, desciption, address, database, iktlist, port, inBeautifySetList, opacType);
+        this.charset = charset;
+        this.setCbs(cbs);
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getTitle() {
+        return this.title;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getAddress() {
-		return this.address;
-	}
+    public String getAddress() {
+        return this.address;
+    }
 
-	public String getDatabase() {
-		return this.database;
-	}
+    public String getDatabase() {
+        return this.database;
+    }
 
-	public String getIktlist() {
-		return this.iktlist;
-	}
+    public String getIktlist() {
+        return this.iktlist;
+    }
 
-	public int getPort() {
-		return this.port;
-	}
+    public int getPort() {
+        return this.port;
+    }
 
-	public String getCharset() {
-		return this.charset;
-	}
+    public String getCharset() {
+        return this.charset;
+    }
 
-	@SuppressWarnings("unchecked")
-	public Node executeBeautifier(Node myHitlist) {
-		/* Ausgabe des Opac-Ergebnissen in Datei */
+    @SuppressWarnings("unchecked")
+    public Node executeBeautifier(Node myHitlist) {
+        /* Ausgabe des Opac-Ergebnissen in Datei */
 
-		if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
-			debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
-		}
+        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
+        }
 
-		/*
-		 * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
-		 */
-		Document doc = new DOMBuilder().build(myHitlist.getOwnerDocument());
-	
-		/*
-		 * --------------------- Im JDom-Object alle Felder durchlaufen und die notwendigen Ersetzungen vornehmen -------------------
-		 */
-		/* alle Records durchlaufen */
-		List<Element> elements = doc.getRootElement().getChildren();
-		for (Element el : elements) {
-			// Element el = (Element) it.next();
-			/* in jedem Record den Beautifier anwenden */
-			executeBeautifierForElement(el);
-		}
+        /*
+         * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
+         */
+        Document doc = new DOMBuilder().build(myHitlist.getOwnerDocument());
 
-		/*
-		 * --------------------- aus dem JDom-Object wieder ein Dom-Node machen -------------------
-		 */
-		DOMOutputter doutputter = new DOMOutputter();
-		try {
-			myHitlist = doutputter.output(doc);
-			myHitlist = myHitlist.getFirstChild();
-		} catch (JDOMException e) {
-			myLogger.error("JDOMException in executeBeautifier(Node)", e);
-		}
+        /*
+         * --------------------- Im JDom-Object alle Felder durchlaufen und die notwendigen Ersetzungen vornehmen -------------------
+         */
+        /* alle Records durchlaufen */
+        List<Element> elements = doc.getRootElement().getChildren();
+        for (Element el : elements) {
+            // Element el = (Element) it.next();
+            /* in jedem Record den Beautifier anwenden */
+            executeBeautifierForElement(el);
+        }
 
-		/* Ausgabe des überarbeiteten Opac-Ergebnisses */
-		if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
-			debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
-		}
-		return myHitlist;
-	}
+        /*
+         * --------------------- aus dem JDom-Object wieder ein Dom-Node machen -------------------
+         */
+        DOMOutputter doutputter = new DOMOutputter();
+        try {
+            myHitlist = doutputter.output(doc);
+            myHitlist = myHitlist.getFirstChild();
+        } catch (JDOMException e) {
+            myLogger.error("JDOMException in executeBeautifier(Node)", e);
+        }
 
-	/**
-	 * Beautifier für ein JDom-Object durchführen ================================================================
-	 */
-	@SuppressWarnings("unchecked")
-	private void executeBeautifierForElement(Element el) {
-		for (ConfigOpacCatalogueBeautifier beautifier : this.beautifySetList) {
-			Element elementToChange = null;
-			/* eine Kopie der zu prüfenden Elemente anlegen (damit man darin löschen kann */
-			ArrayList<ConfigOpacCatalogueBeautifierElement> prooflist = new ArrayList<ConfigOpacCatalogueBeautifierElement>(beautifier
-					.getTagElementsToProof());
-			/* von jedem Record jedes Field durchlaufen */
-			List<Element> elements = el.getChildren("field");
-			for (Element field : elements) {
-				String tag = field.getAttributeValue("tag");
-				/* von jedem Field alle Subfelder durchlaufen */
-				List<Element> subelements = field.getChildren("subfield");
-				for (Element subfield : subelements) {
-					String subtag = subfield.getAttributeValue("code");
-					String value = subfield.getText();
+        /* Ausgabe des überarbeiteten Opac-Ergebnisses */
+        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
+        }
+        return myHitlist;
+    }
 
-					if (beautifier.getTagElementToChange().getTag().equals(tag) && beautifier.getTagElementToChange().getSubtag().equals(subtag)) {
-						elementToChange = subfield;
-					}
-					/*
-					 * wenn die Werte des Subfeldes in der Liste der zu prüfenden Beutifier-Felder stehen, dieses aus der Liste der Beautifier
-					 * entfernen
-					 */
-					for (ConfigOpacCatalogueBeautifierElement cocbe : beautifier.getTagElementsToProof()) {
-						if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag) && value.matches(cocbe.getValue())) {
-							prooflist.remove(cocbe);
-						}
-					}
-				}
-			}
-			/*
-			 * --------------------- wenn in der Kopie der zu prüfenden Elemente keine Elemente mehr enthalten sind, kann der zu ändernde Wert
-			 * wirklich geändert werden -------------------
-			 */
-			if (prooflist.size() == 0 && elementToChange != null) {
-				elementToChange.setText(beautifier.getTagElementToChange().getValue());
-			}
+    /**
+     * Beautifier für ein JDom-Object durchführen ================================================================
+     */
+    @SuppressWarnings("unchecked")
+    private void executeBeautifierForElement(Element el) {
+        String matchedValue = "";
+        for (ConfigOpacCatalogueBeautifier beautifier : this.beautifySetList) {
+            Element elementToChange = null;
+            /* eine Kopie der zu prüfenden Elemente anlegen (damit man darin löschen kann */
+            ArrayList<ConfigOpacCatalogueBeautifierElement> prooflist =
+                    new ArrayList<ConfigOpacCatalogueBeautifierElement>(beautifier.getTagElementsToProof());
+            /* von jedem Record jedes Field durchlaufen */
+            List<Element> elements = el.getChildren("field");
 
-		}
+            for (Element field : elements) {
+                String tag = field.getAttributeValue("tag");
+                /* von jedem Field alle Subfelder durchlaufen */
+                List<Element> subelements = field.getChildren("subfield");
+                for (Element subfield : subelements) {
+                    String subtag = subfield.getAttributeValue("code");
+                    String value = subfield.getText();
 
-	}
+                    if (beautifier.getTagElementToChange().getTag().equals(tag) && beautifier.getTagElementToChange().getSubtag().equals(subtag)) {
+                        elementToChange = subfield;
+                    }
+                    /*
+                     * wenn die Werte des Subfeldes in der Liste der zu prüfenden Beutifier-Felder stehen, dieses aus der Liste der Beautifier
+                     * entfernen
+                     */
+                    for (ConfigOpacCatalogueBeautifierElement cocbe : beautifier.getTagElementsToProof()) {
+                        if (cocbe.getValue().equals("*")) {
+                            if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag)) {
+                                matchedValue = value;
+                                prooflist.remove(cocbe);
+                            }
+                        } else if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag) && value.matches(cocbe.getValue())) {
+                            matchedValue = value;
+                            prooflist.remove(cocbe);
+                        }
+                    }
+                }
+            }
+            /*
+             * --------------------- wenn in der Kopie der zu prüfenden Elemente keine Elemente mehr enthalten sind, kann der zu ändernde Wert
+             * wirklich geändert werden -------------------
+             */
 
-	/**
-	 * Print given DomNode to defined File ================================================================
-	 */
-	private void debugMyNode(Node inNode, String fileName) {
-		try {
-			XMLOutputter outputter = new XMLOutputter();
-			Document tempDoc = new DOMBuilder().build(inNode.getOwnerDocument());
-			FileOutputStream output = new FileOutputStream(fileName);
-			outputter.output(tempDoc.getRootElement(), output);
-		} catch (FileNotFoundException e) {
-			myLogger.error("debugMyNode(Node, String)", e);
-		} catch (IOException e) {
-			myLogger.error("debugMyNode(Node, String)", e);
-		}
+            if (prooflist.size() == 0 && elementToChange == null) {
+                Element field = new Element("field");
+                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
+                elementToChange = new Element("subfield");
+                elementToChange.setAttribute("code", beautifier.getTagElementToChange().getSubtag());
+                field.addContent(elementToChange);
+                elements.add(field);
+            }
 
-	}
+            if (prooflist.size() == 0) {
+                if (beautifier.getTagElementToChange().getValue().equals("*")) {
+                    elementToChange.setText(matchedValue);
+                } else {
+                    elementToChange.setText(beautifier.getTagElementToChange().getValue());
+                }
+            }
 
-	/**
-	 * @param cbs
-	 *            the cbs to set
-	 */
-	public void setCbs(String cbs) {
-		this.cbs = cbs;
-	}
+        }
 
-	/**
-	 * @return the cbs
-	 */
-	public String getCbs() {
-		return this.cbs;
-	}
+    }
+
+    /**
+     * Print given DomNode to defined File ================================================================
+     */
+    private void debugMyNode(Node inNode, String fileName) {
+        try {
+            XMLOutputter outputter = new XMLOutputter();
+            Document tempDoc = new DOMBuilder().build(inNode.getOwnerDocument());
+            FileOutputStream output = new FileOutputStream(fileName);
+            outputter.output(tempDoc.getRootElement(), output);
+        } catch (FileNotFoundException e) {
+            myLogger.error("debugMyNode(Node, String)", e);
+        } catch (IOException e) {
+            myLogger.error("debugMyNode(Node, String)", e);
+        }
+
+    }
+
+    /**
+     * @param cbs the cbs to set
+     */
+    public void setCbs(String cbs) {
+        this.cbs = cbs;
+    }
+
+    /**
+     * @return the cbs
+     */
+    public String getCbs() {
+        return this.cbs;
+    }
 
     public String getOpacType() {
         return opacType;

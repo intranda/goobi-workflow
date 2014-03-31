@@ -9,33 +9,44 @@
 
 <script type="text/javascript">
 
-var $ = jQuery;
-$(document).ready(function() {
-	var winH = $(window).height();	
-	$("#myTree").css({ height : winH - 120 });
+jQuery(document).ready(function() {
+	var winH = jQuery(window).height();	
+	jQuery("#myTree").css({ height : winH - 70 });
 });
 
-$(window).resize(function() {
-	var winH = $(window).height();	
-	$("#myTree").css({ height : winH - 120 });
+jQuery(window).resize(function() {
+	var winH = jQuery(window).height();	
+	jQuery("#myTree").css({ height : winH - 70 });
 });
 
 </script>
 
 <style>
 #myTree {
-    min-width: 200px;
-    max-width: 300px;
+    min-width: #{Metadaten.treeWidth}px !important;
+    max-width: #{Metadaten.treeWidth}px !important;
     overflow: auto;
 }
 </style>
     
-		<div id="myTree" class="layoutTreeView2">
+		<div id="myTree" class="layoutTreeView2" style="width: #{Metadaten.treeWidth}px !important;">
 					<h:form rendered="true" id="treeform" prependId="false">
 
 						<h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action"
-							style="position:absolute;left:165px"></h:graphicImage>
+							style="position:absolute;left:#{Metadaten.treeWidth-25}px"></h:graphicImage>
 
+								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:100px;padding:0px 15px;">
+									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 20}" />
+									<h:graphicImage value="images/datascroller/arrow-previous1.gif" />
+									 
+								</h:commandLink>
+
+								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:120px;padding:0px 15px;">
+									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 20}" />
+									<h:graphicImage value="images/datascroller/arrow-next1.gif" />
+									 
+								</h:commandLink>
+								
 						<x:dataTable id="tabelle" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" cellpadding="0" cellspacing="0">
 
 							<h:column>
@@ -102,7 +113,7 @@ $(window).resize(function() {
 										rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
 									<h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
 									<x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                                    <f:ajax  render="@form :formular1 :formular2 :formular3 :BildArea2 "/>
+                                    <f:ajax  render="@form :formular1 :formular2 :formular3 :formularBild :myBild "/>
 								</h:commandLink>
 
 								<h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px"
@@ -118,7 +129,14 @@ $(window).resize(function() {
 					</h:form>
 					<h:form id="formWarn" style="display:none">
 						<h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" />
+					
+					
+					
 					</h:form>
+		
+		
+
+		
 		</div>
 	</composite:implementation>
 
