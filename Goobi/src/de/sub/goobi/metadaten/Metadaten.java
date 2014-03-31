@@ -3393,7 +3393,7 @@ public class Metadaten {
         }
         String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
         int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
-        int dotIndex = afterLastSlash.indexOf('.', afterLastBackslash);
+        int dotIndex = afterLastSlash.lastIndexOf('.', afterLastBackslash);
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
     }
 
