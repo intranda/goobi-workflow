@@ -329,17 +329,17 @@
                                 <h:panelGrid id="mygrid6" columns="2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight">
                                     <h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}">
                                         <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
-                                        <f:ajax render="@all" />
+                                        
                                     </h:commandLink>
                                     <h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}"
                                         rendered="#{Metadaten.treeProperties.showpagesasajax==false}">
                                         <h:outputText value="#{msgs.seitenZuweisen}" />
-                                        <f:ajax render="@all" />
+                                       
                                     </h:commandLink>
                                     <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
                                         rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
                                         <h:outputText value="#{msgs.seitenZuweisen}" />
-                                        <f:ajax render="@all" />
+                                       
                                     </h:commandLink>
                                 </h:panelGrid>
                             </td>
