@@ -23,13 +23,12 @@ jQuery(window).resize(function() {
 
 <style>
 #myTree {
-    min-width: #{Metadaten.treeWidth}px !important;
-    max-width: #{Metadaten.treeWidth}px !important;
+    width: #{Metadaten.treeWidth}px;
     overflow: auto;
 }
 </style>
     
-		<div id="myTree" class="layoutTreeView2" style="width: #{Metadaten.treeWidth}px !important;">
+        <div id="myTree" class="layoutTreeView2">
 					<h:form rendered="true" id="treeform" prependId="false">
 
 						<h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action"
@@ -37,13 +36,13 @@ jQuery(window).resize(function() {
 
 								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:100px;padding:0px 15px;">
 									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 20}" />
-									<h:graphicImage value="images/datascroller/arrow-previous1.gif" />
+									<h:graphicImage id="arrowleft" value="images/datascroller/arrow-previous1.gif" />
 									 
 								</h:commandLink>
 
 								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:120px;padding:0px 15px;">
 									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 20}" />
-									<h:graphicImage value="images/datascroller/arrow-next1.gif" />
+									<h:graphicImage id="arrowright" value="images/datascroller/arrow-next1.gif" />
 									 
 								</h:commandLink>
 								
