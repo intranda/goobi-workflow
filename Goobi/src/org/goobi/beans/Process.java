@@ -321,13 +321,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         String rueckgabe = getImagesDirectory() + tifOrdner;
-
         if (!rueckgabe.endsWith(File.separator)) {
             rueckgabe += File.separator;
         }
         if (!ConfigurationHelper.getInstance().isUseMasterDirectory() && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
             FilesystemHelper.createDirectory(rueckgabe);
         }
+        logger.debug("use folder " + rueckgabe);
         return rueckgabe;
     }
 
