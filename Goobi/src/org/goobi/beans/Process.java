@@ -327,7 +327,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (!ConfigurationHelper.getInstance().isUseMasterDirectory() && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
             FilesystemHelper.createDirectory(rueckgabe);
         }
-        logger.debug("use folder " + rueckgabe);
         return rueckgabe;
     }
 

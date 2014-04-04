@@ -311,6 +311,9 @@ public class ExportMets {
             try {
                 // TODO andere Dateigruppen nicht mit image Namen ersetzen
                 images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess);
+                myLogger.debug("found " + images.size() + " images");
+                myLogger.debug("first image name : " + images.get(0));
+               
                 int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                 if (images != null) {
                     int sizeOfImages = images.size();
