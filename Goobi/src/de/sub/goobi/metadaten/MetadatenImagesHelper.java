@@ -27,6 +27,7 @@ package de.sub.goobi.metadaten;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.awt.Dimension;
 import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -500,7 +501,10 @@ public class MetadatenImagesHelper {
             logger.trace("api");
             ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
             logger.trace("im");
-            RenderedImage ri = im.scaleImageByPixel(tmpSize, tmpSize, ImageManager.SCALE_BY_PERCENT, intRotation);
+            Dimension dim = new Dimension();
+            dim.height = tmpSize;
+            dim.width = tmpSize;
+            RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
             logger.trace("ri");
             JpegInterpreter pi = new JpegInterpreter(ri);
             logger.trace("pi");
