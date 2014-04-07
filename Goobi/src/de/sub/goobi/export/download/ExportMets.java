@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -188,9 +189,9 @@ public class ExportMets {
          * before creating mets file, change relative path to absolute -
          */
         DigitalDocument dd = gdzfile.getDigitalDocument();
-        
+
         MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
-        
+
         if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
             Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
             mih.createPagination(myProzess, null);
@@ -236,10 +237,16 @@ public class ExportMets {
                 // If the file's location string shoes no sign of any protocol,
                 // use the file protocol.
                 if (!location.contains("://")) {
-                    location = "file://" + location;
+                    if (SystemUtils.IS_OS_WINDOWS) {
+                        location = "file://" + location;
+                    } else {
+                        location = "file:///" + location;
+                    }
                 }
                 URL url = new URL(location);
+                System.out.println("url : " + url.toString());
                 File f = new File(imageFolder, url.getFile());
+                System.out.println("file : " + f.getAbsolutePath());
                 cf.setLocation(f.toURI().toString());
             }
         }
@@ -292,8 +299,6 @@ public class ExportMets {
         mm.setDigiprovPresentationAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentationAnchor()));
         mm.setDigiprovReferenceAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovReferenceAnchor()));
 
-        
-        
         mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
         mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
 
@@ -311,9 +316,7 @@ public class ExportMets {
             try {
                 // TODO andere Dateigruppen nicht mit image Namen ersetzen
                 images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess);
-                myLogger.debug("found " + images.size() + " images");
-                myLogger.debug("first image name : " + images.get(0));
-               
+
                 int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                 if (images != null) {
                     int sizeOfImages = images.size();
