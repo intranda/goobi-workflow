@@ -244,9 +244,7 @@ public class ExportMets {
                     }
                 }
                 URL url = new URL(location);
-                System.out.println("url : " + url.toString());
                 File f = new File(imageFolder, url.getFile());
-                System.out.println("file : " + f.getAbsolutePath());
                 cf.setLocation(f.toURI().toString());
             }
         }
