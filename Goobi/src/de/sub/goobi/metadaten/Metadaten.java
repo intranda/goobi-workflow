@@ -3392,11 +3392,11 @@ public class Metadaten {
             return "";
         }
         String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
-        int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
-        int dotIndex = afterLastSlash.lastIndexOf('.', afterLastBackslash);
+//        int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
+        int dotIndex = afterLastSlash.lastIndexOf('.');
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
-    }
-
+    }    
+    
     public List<MetadataGroupImpl> getGroups() {
         return groups;
     }
