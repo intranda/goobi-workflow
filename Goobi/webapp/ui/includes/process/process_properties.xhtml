@@ -45,14 +45,14 @@
 									<h:outputText value="#{proc.value}" />
 								</td>
 								<td class="standardTable_ColumnCentered">
-									<h:commandLink action="process_edit" title="#{msgs.bearbeiten}">
+									<h:commandLink action="process_edit" title="#{msgs.bearbeiten}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 										<h:graphicImage value="images/buttons/edit.gif" />
 										<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
 										<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
 										<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 										<!-- <a4j:support event="onchange" reRender="editBatch" />-->
 									</h:commandLink>
-									<h:commandLink action="#{ProzessverwaltungForm.duplicateProperty}" title="#{msgs.duplicate}">
+									<h:commandLink action="#{ProzessverwaltungForm.duplicateProperty}" title="#{msgs.duplicate}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 										<h:graphicImage value="images/buttons/copy.gif" />
 										<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
 										<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
@@ -85,14 +85,14 @@
 								<h:panelGroup rendered="#{propInd == 0}">
 									<td class="standardTable_ColumnCentered" rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
 										<!-- edit container -->
-										<h:commandLink action="process_edit" title="#{msgs.bearbeiten}">
+										<h:commandLink action="process_edit" title="#{msgs.bearbeiten}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 											<h:graphicImage value="images/buttons/edit.gif" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
 											<!-- 	<a4j:support event="onchange" reRender="editBatch" /> -->
 										</h:commandLink>
 										<!-- duplicate container -->
-										<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
+										<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 											<h:graphicImage value="images/buttons/copy.gif" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
 										</h:commandLink>
@@ -104,98 +104,9 @@
 					</x:dataList>
 
 
-					<!-- 
-		<x:dataList var="process_item" value="#{ProzessverwaltungForm.sortedProperties}" rowCountVar="propCount" rowIndexVar="propInd">
-
-			<tr rendered="#{container != 0 and process_item.container==container}" class="standardTable_Row1">
-
-				<td>
-					<h:outputText value="#{process_item.name}" />
-				</td>
-				<td>
-					<h:outputText value="#{process_item.value}" />
-				</td>
-
-				<td class="standardTable_ColumnCentered" rowspan="''+#{ProzessverwaltungForm.containers[container]}" rendered="#{cont != container }">
-					
-					<h:commandLink action="ProzessverwaltungBearbeiten" title="#{msgs.bearbeiten}">
-						<h:graphicImage value="images/buttons/edit.gif" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
-						
-					</h:commandLink>
-					
-					<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
-						<h:graphicImage value="images/buttons/copy.gif" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
-					</h:commandLink>
-				</td>
-
-			</tr>
-		</x:dataList>
--->
-
 				</x:dataList>
 
 
-				<!-- 
-
-	<x:dataList var="container" value="#{ProzessverwaltungForm.containers}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-		<x:dataList var="proc" value="#{ProzessverwaltungForm.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd">
-			<tr rendered="#{container == 0}" class="standardTable_Row1">
-				<td>
-					<h:outputText value="#{proc.name}" />
-				</td>
-				<td>
-					<h:outputText value="#{proc.value}" />
-				</td>
-				<td class="standardTable_ColumnCentered">
-					<h:commandLink action="ProzessverwaltungBearbeiten" title="#{msgs.bearbeiten}">
-						<h:graphicImage value="images/buttons/edit.gif" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
-					</h:commandLink>
-					<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
-						<h:graphicImage value="images/buttons/copy.gif" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
-					</h:commandLink>
-				</td>
-			</tr>
-		</x:dataList>
-
-		<x:dataList var="process_item" value="#{ProzessverwaltungForm.sortedProperties}" rowCountVar="propCount" rowIndexVar="propInd">
-			<tr rendered="#{container != 0 and process_item.container==container}" class="standardTable_Row1">
-
-				<td>
-					<h:outputText value="#{process_item.name}" />
-				</td>
-				<td>
-					<h:outputText value="#{process_item.value}" />
-				</td>
-
-				<td class="standardTable_ColumnCentered">
-					<h:commandLink action="ProzessverwaltungBearbeiten" title="#{msgs.bearbeiten}" rendered="#{propInd + 1 == propCount}">
-						<h:graphicImage value="images/buttons/edit.gif" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
-					</h:commandLink>
-					<h:commandLink action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}" rendered="#{propInd + 1 == propCount}">
-						<h:graphicImage value="images/buttons/copy.gif" />
-						<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
-					</h:commandLink>
-				</td>
-
-			</tr>
-		</x:dataList>
-		<tr rendered="#{rowIndex + 1 < rowCount}">
-			<td colspan="3" class="standardTable_Row1">
-				<h:outputText value="&amp;nbsp;" escape="false" />
-			</td>
-		</tr>
-	</x:dataList>
-	-->
 			</table>
 
 			<!-- Neu-Schaltknopf -->
