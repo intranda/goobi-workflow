@@ -406,7 +406,7 @@ class StepMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, resultSetToErrorPropertyListHandler);
+            run.update(connection, sql);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
