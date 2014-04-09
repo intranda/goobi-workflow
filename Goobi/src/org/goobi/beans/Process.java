@@ -321,7 +321,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         String rueckgabe = getImagesDirectory() + tifOrdner;
-
         if (!rueckgabe.endsWith(File.separator)) {
             rueckgabe += File.separator;
         }

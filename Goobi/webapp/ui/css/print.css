@@ -54,6 +54,15 @@ table {
 	height: 600px;
 }
 
+div#myTree,
+.layoutTable tr:first-child td:first-child {
+				width: 100% !important;
+}
+
+#arrowleft, #arrowright {
+				display: none;
+}
+
 .layoutKopf {
 	display:none;
 }
@@ -75,6 +84,7 @@ table {
 }
 
 .layoutInhalt {
+	display: none;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #e3c240;
