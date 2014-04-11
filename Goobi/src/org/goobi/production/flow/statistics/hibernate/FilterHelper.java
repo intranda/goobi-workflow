@@ -489,6 +489,10 @@ public class FilterHelper {
     }
 
     private static StringBuilder checkStringBuilder(StringBuilder filter, boolean conjunction) {
+        if (filter.toString().endsWith("(")) {
+            return filter;
+        }
+        
         if (filter.length() > 0) {
             if (conjunction) {
                 filter.append(" AND ");
@@ -562,11 +566,23 @@ public class FilterHelper {
             filter = checkStringBuilder(filter, true);
             filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly, hideStepsFromOtherUsers));
         }
-
+        
+        
+        if (!inFilter.isEmpty()) {
+            inFilter = inFilter.replace("(", " ( ");
+            inFilter = inFilter.replace(")", " ) ");
+            filter.append("(");
+        }
         // this is needed for evaluating a filter string
         while (tokenizer.hasNext()) {
             String tok = tokenizer.nextToken().trim();
-            if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
+            if (tok.equals("(")) {
+                filter.append("(");
+            } else if (tok.equals(")")){
+                filter.append(")");
+            }
+            
+            else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProcessProperty(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPPROPERTY) || tok.toLowerCase().startsWith(FilterString.SCHRITTEIGENSCHAFT)) {
@@ -715,13 +731,76 @@ public class FilterHelper {
 
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+            }
+            // USE OR
+            
+            else if (tok.toLowerCase().startsWith("|" + FilterString.ID)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterIds(tok));
+            }
+            else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSPROPERTY)
+                    || tok.toLowerCase().startsWith("|" + FilterString.PROZESSEIGENSCHAFT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterProcessProperty(tok, false));
+
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.METADATA)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterMetadataValue(tok, true));
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPPROPERTY)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTEIGENSCHAFT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterStepProperty(tok, false));
+            }
+
+            else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINWORK) || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTINARBEIT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.INWORK, false));
+
+                // new keyword stepLocked implemented
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPLOCKED)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTGESPERRT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.LOCKED, false));
+
+                // new keyword stepOpen implemented
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPOPEN) || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTOFFEN)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.OPEN, false));
+
+                // new keyword stepDone implemented
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONE)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTABGESCHLOSSEN)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.DONE, false));
+
+                // new keyword stepDoneTitle implemented, replacing so far
+                // undocumented
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONETITLE)
+                    || tok.toLowerCase().startsWith("|" + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
+                String stepTitel = tok.substring(tok.indexOf(":") + 1);
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true));
+
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROJECT) || tok.toLowerCase().startsWith("|" + FilterString.PROJEKT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterProject(tok, false));
+
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.TEMPLATE) || tok.toLowerCase().startsWith("|" + FilterString.VORLAGE)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterScanTemplate(tok, false));
+
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.WORKPIECE) || tok.toLowerCase().startsWith("|" + FilterString.WERKSTUECK)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(FilterHelper.filterWorkpiece(tok, false));
 
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             }
         }
-
+        if (!inFilter.isEmpty()) {
+            filter.append(")");
+        }
         return filter.toString();
     }
 
