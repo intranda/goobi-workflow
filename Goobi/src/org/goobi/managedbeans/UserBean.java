@@ -196,6 +196,9 @@ public class UserBean extends BasicBean {
     public String Loeschen() {
         try {
             UserManager.hideUser(myClass);
+            if (ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly()){
+                new LdapAuthentication().deleteUser(myClass);
+            }
             paginator.load();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());

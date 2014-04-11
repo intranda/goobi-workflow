@@ -427,7 +427,72 @@ public class LdapAuthentication {
         } catch (NamingException e) {
             myLogger.error(e);
         }
+    }
 
+    public void deleteUser(User inBenutzer) {
+
+        Hashtable<String, String> env = LdapConnectionSettings();
+        if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
+            env = new Hashtable<String, String>();
+            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.PROVIDER_URL, ConfigurationHelper.getInstance().getLdapUrl());
+            env.put("java.naming.ldap.version", "3");
+            LdapContext ctx = null;
+            StartTlsResponse tls = null;
+            try {
+                ctx = new InitialLdapContext(env, null);
+
+                // Authentication must be performed over a secure channel
+                tls = (StartTlsResponse) ctx.extendedOperation(new StartTlsRequest());
+                tls.negotiate();
+
+                // Authenticate via SASL EXTERNAL mechanism using client X.509
+                // certificate contained in JVM keystore
+                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
+                ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, ConfigurationHelper.getInstance().getLdapAdminLogin());
+                ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, ConfigurationHelper.getInstance().getLdapAdminPassword());
+                ctx.reconnect(null);
+                ctx.unbind(getUserDN(inBenutzer));
+            } catch (IOException e) {
+                myLogger.error("TLS negotiation error:", e);
+
+            } catch (NamingException e) {
+
+                myLogger.error("JNDI error:", e);
+
+            } finally {
+                if (tls != null) {
+                    try {
+                        // Tear down TLS connection
+                        tls.close();
+                    } catch (IOException e) {
+                    }
+                }
+                if (ctx != null) {
+                    try {
+                        // Close LDAP connection
+                        ctx.close();
+                    } catch (NamingException e) {
+                    }
+                }
+            }
+        } else if (ConfigurationHelper.getInstance().isLdapReadDirectoryAnonymous()) {
+            env.put(Context.SECURITY_AUTHENTICATION, "none");
+        } else {
+            env.put(Context.SECURITY_AUTHENTICATION, "simple");
+            env.put(Context.SECURITY_PRINCIPAL, ConfigurationHelper.getInstance().getLdapAdminLogin());
+            env.put(Context.SECURITY_CREDENTIALS, ConfigurationHelper.getInstance().getLdapAdminPassword());
+
+        }
+        DirContext ctx;
+        try {
+            ctx = new InitialDirContext(env);
+            ctx.unbind(getUserDN(inBenutzer));
+
+            ctx.close();
+        } catch (NamingException e) {
+            myLogger.error(e);
+        }
     }
 
     /**
