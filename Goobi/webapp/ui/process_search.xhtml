@@ -25,110 +25,114 @@
 
                 <tr>
                     <td class="eingabeBoxen_row2" colspan="2">
-                    
-                     <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2">
 
-                <h:column>
-                    <h:selectOneMenu value="#{row.fieldName}">
-                        <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
-                            itemLabel="#{msgs[fieldname.label]}" />
-                        <f:ajax render="@form" />
-                    </h:selectOneMenu>
-                </h:column>
+                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2">
 
-                <h:column>
-                    <h:selectOneMenu value="#{row.fieldOperand}">
-                        <f:selectItems value="#{SearchForm.operands}" />
-                    </h:selectOneMenu>
+                            <h:column>
+                                <h:selectOneMenu value="#{row.fieldName}">
+                                    <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
+                                        itemLabel="#{msgs[fieldname.label]}" />
+                                    <f:ajax render="@form" />
+                                </h:selectOneMenu>
+                            </h:column>
 
-                </h:column>
+                            <h:column>
 
-                <h:column>
-                    <h:inputText value="#{row.fieldValue}"
-                        rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH'}">
-                        <f:ajax render="@form" />
-                    </h:inputText>
+                                <h:selectOneMenu value="#{row.fieldOperand}">
+                                    <f:selectItems value="#{SearchForm.operands}" />
+                                </h:selectOneMenu>
 
-                    <h:panelGroup rendered="#{row.fieldName == 'STEP'}" layout="block">
-                        <h:selectOneMenu value="#{row.stepStatus}">
-                            <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
-                                itemValue="#{stepstatus.searchString}" />
-                            <f:ajax render="@form" />
-                        </h:selectOneMenu>
-                        <h:selectOneMenu value="#{row.stepName}">
-                            <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}" itemValue="#{stepTitles}" />
-                            <f:ajax render="@form" />
-                        </h:selectOneMenu>
-                    </h:panelGroup>
+                            </h:column>
 
+                            <h:column>
 
-                    <h:selectOneMenu value="#{row.projectName}" rendered="#{row.fieldName == 'PROJECT'}">
-                        <f:selectItems value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
-                        <f:ajax render="@form" />
-                    </h:selectOneMenu>
+                                <h:inputText value="#{row.fieldValue}" style="width:100%"
+                                    rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH'}">
+                                    <f:ajax render="@form" />
+                                </h:inputText>
 
-                    <h:panelGroup rendered="#{row.fieldName == 'PROCESSPROPERTY'}" layout="block">
-                        <h:selectOneMenu value="#{row.processPropertyName}">
-                            <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                            <f:ajax render="@form" />
-                        </h:selectOneMenu>
-                        <h:inputText value="#{row.processPropertyValue}">
-                            <f:ajax render="@form" />
-                        </h:inputText>
-                    </h:panelGroup>
-
-                    <h:panelGroup rendered="#{row.fieldName == 'TEMPLATE'}" layout="block">
-                        <h:selectOneMenu value="#{row.zemplatePropertyName}">
-                            <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                            <f:ajax render="@form" />
-                        </h:selectOneMenu>
-                        <h:inputText value="#{row.zemplatePropertyValue}">
-                            <f:ajax render="@form" />
-                        </h:inputText>
-                    </h:panelGroup>
-
-                    <h:panelGroup rendered="#{row.fieldName == 'WORKPIECE'}" layout="block">
-                        <h:selectOneMenu value="#{row.masterpiecePropertyName}">
-                            <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                            <f:ajax render="@form" />
-                        </h:selectOneMenu>
-                        <h:inputText value="#{row.masterpiecePropertyValue}">
-                            <f:ajax render="@form" />
-                        </h:inputText>
-
-                    </h:panelGroup>
-
-                    <h:panelGroup rendered="#{row.fieldName == 'METADATA'}" layout="block">
-                        <h:selectOneMenu value="#{row.metadataName}">
-                            <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                            <f:ajax render="@form" />
-                        </h:selectOneMenu>
-                        <h:inputText value="#{row.metadataValue}">
-                            <f:ajax render="@form" />
-                        </h:inputText>
-                    </h:panelGroup>
-
-                </h:column>
-
-                <h:column>
-                    <h:commandLink action="#{SearchForm.addRow}">
-                        <h:graphicImage value="images/plus.gif" style="margin-right:4px" />
-                    </h:commandLink>
-
-                    <h:commandLink action="#{SearchForm.deleteRow}" rendered="#{SearchForm.sizeOfRowList > 1}">
-                        <h:graphicImage value="images/minus.gif" style="margin-right:4px" />
-                        <x:updateActionListener property="#{SearchForm.currentRow}" value="#{row}" />
-                    </h:commandLink>
-
-                </h:column>
+                                <h:panelGroup rendered="#{row.fieldName == 'STEP'}" layout="block" style="width:100%">
+                                    <h:selectOneMenu value="#{row.stepStatus}" style="width:30%" >
+                                        <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
+                                            itemValue="#{stepstatus.searchString}" />
+                                        <f:ajax render="@form" />
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu value="#{row.stepName}" style="width:70%">
+                                        <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}"
+                                            itemValue="#{stepTitles}" />
+                                        <f:ajax render="@form" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
 
 
-            </h:dataTable>
-                  
-                  
+                                <h:selectOneMenu value="#{row.projectName}" rendered="#{row.fieldName == 'PROJECT'}" style="width:100%">
+                                    <f:selectItems value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
+                                    <f:ajax render="@form" />
+                                </h:selectOneMenu>
+
+                                <h:panelGroup rendered="#{row.fieldName == 'PROCESSPROPERTY'}" layout="block" style="width:100%">
+                                    <h:selectOneMenu value="#{row.processPropertyName}">
+                                        <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                                        <f:ajax render="@form" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{row.processPropertyValue}">
+                                        <f:ajax render="@form" />
+                                    </h:inputText>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{row.fieldName == 'TEMPLATE'}" layout="block" style="width:100%">
+                                    <h:selectOneMenu value="#{row.zemplatePropertyName}">
+                                        <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                                        <f:ajax render="@form" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{row.zemplatePropertyValue}">
+                                        <f:ajax render="@form" />
+                                    </h:inputText>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{row.fieldName == 'WORKPIECE'}" layout="block" style="width:100%">
+                                    <h:selectOneMenu value="#{row.masterpiecePropertyName}">
+                                        <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}"
+                                            itemValue="#{proc}" />
+                                        <f:ajax render="@form" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{row.masterpiecePropertyValue}">
+                                        <f:ajax render="@form" />
+                                    </h:inputText>
+
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{row.fieldName == 'METADATA'}" layout="block" style="width:100%">
+                                    <h:selectOneMenu value="#{row.metadataName}">
+                                        <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                                        <f:ajax render="@form" />
+                                    </h:selectOneMenu>
+                                    <h:inputText value="#{row.metadataValue}">
+                                        <f:ajax render="@form" />
+                                    </h:inputText>
+                                </h:panelGroup>
+
+                            </h:column>
+
+                            <h:column>
+                                <h:commandLink action="#{SearchForm.addRow}">
+                                    <h:graphicImage value="images/plus.gif" style="margin-right:4px" />
+                                </h:commandLink>
+
+                                <h:commandLink action="#{SearchForm.deleteRow}" rendered="#{SearchForm.sizeOfRowList > 1}">
+                                    <h:graphicImage value="images/minus.gif" style="margin-right:4px" />
+                                    <x:updateActionListener property="#{SearchForm.currentRow}" value="#{row}" />
+                                </h:commandLink>
+
+                            </h:column>
 
 
-                            
+                        </h:dataTable>
+
+
+
+
+
                     </td>
                 </tr>
                 <tr>
@@ -138,14 +142,15 @@
                     </td>
 
                     <td class="eingabeBoxen_row3" align="right">
-                        <h:commandButton id="absenden" action="#{SearchForm.createFilter}" title="#{msgs.filterAnwenden}" value="#{msgs.filterAnwenden}">
+                        <h:commandButton id="absenden" action="#{SearchForm.createFilter}" title="#{msgs.filterAnwenden}"
+                            value="#{msgs.filterAnwenden}">
                         </h:commandButton>
                     </td>
                 </tr>
             </table>
         </h:form>
 
-     
+
 
     </ui:define>
 
