@@ -137,7 +137,7 @@ public class StepManager implements IManager, Serializable {
     public static List<String> getDistinctStepTitles() {
 
         try {
-            return StepMysqlHelper.getDistinctStepTitles(null, null);
+            return StepMysqlHelper.getDistinctStepTitles("Titel", null);
         } catch (SQLException e) {
             logger.error(e);
         }

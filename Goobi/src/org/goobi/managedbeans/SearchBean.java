@@ -54,50 +54,31 @@ import de.sub.goobi.persistence.managers.UserManager;
 public class SearchBean {
 
     private List<String> projects = new ArrayList<String>(); // proj:
-    private String project = "";
 
     private List<String> processPropertyTitles = new ArrayList<String>(); // processeig:
-    private String processPropertyTitle = "";
-    private String processPropertyValue = "";
+ 
 
     private List<String> masterpiecePropertyTitles = new ArrayList<String>(); // werk:
-    private String masterpiecePropertyTitle = "";
-    private String masterpiecePropertyValue = "";
+
 
     private List<String> metadataTitles = new ArrayList<>();
-    private String metadataTitle = "";
-    private String metadataValue = "";
+
     
     private List<String> templatePropertyTitles = new ArrayList<String>();// vorl:
-    private String templatePropertyTitle = "";
-    private String templatePropertyValue = "";
+
 
     private List<String> stepPropertyTitles = new ArrayList<String>(); // stepeig:
-    private String stepPropertyTitle = "";
-    private String stepPropertyValue = "";
 
     private List<String> stepTitles = new ArrayList<String>(); // step:
     private List<StepStatus> stepstatus = new ArrayList<StepStatus>();
-    private String status = "";
-    private String stepname = "";
 
-    private List<User> user = new ArrayList<User>();
-    private String stepdonetitle = "";
-    private String stepdoneuser = "";
 
-    private String idin = "";
-    private String processTitle = ""; // proc:
+    List<ExtendedSearchRow> rowList = new ArrayList<ExtendedSearchRow>();
 
-    private String projectOperand = "";
-    private String processOperand = "";
-    private String metadataOperand = "";
-    private String processPropertyOperand = "";
-    private String masterpiecePropertyOperand = "";
-    private String templatePropertyOperand = "";
-    private String stepPropertyOperand = "";
-    private String stepOperand = "";
+    List<SelectItem> fieldnameList = new ArrayList<SelectItem>();
 
-    private String batchid = "";
+    private ExtendedSearchRow currentRow;
+
 
     public SearchBean() {
         for (StepStatus s : StepStatus.values()) {
@@ -171,17 +152,23 @@ public class SearchBean {
         //			this.stepTitles.add((String) it.next());
         //		}
 
-        try {
-            user = UserManager.getUsers("nachname", " isVisible = null AND istAktiv = true ", 0, Integer.MAX_VALUE);
-        } catch (DAOException e) {
-        }
-        //		crit = session.createCriteria(User.class);
-        //		crit.add(Restrictions.isNull("isVisible"));
-        //		crit.add(Restrictions.eq("istAktiv", true));
-        //		crit.addOrder(Order.asc("nachname"));
-        //		crit.addOrder(Order.asc("vorname"));
-        //		this.user.addAll(crit.list());
-        createValues();
+        rowList.add(new ExtendedSearchRow());
+        fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
+        fieldnameList.add(new SelectItem("PROCESSID", Helper.getTranslation("id")));
+        fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
+
+        fieldnameList.add(new SelectItem("PROCESSPROPERTY", Helper.getTranslation("processProperties")));
+        
+        fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
+
+        fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
+        fieldnameList.add(new SelectItem("TEMPLATE", Helper.getTranslation("templateProperties")));
+
+        fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
+        fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
+        fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
+
+        
        
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
@@ -210,30 +197,6 @@ public class SearchBean {
     
     public void setMetadataTitles(List<String> metadataTitles) {
         this.metadataTitles = metadataTitles;
-    }
-    
-    public String getMetadataTitle() {
-        return metadataTitle;
-    }
-    
-    public void setMetadataTitle(String metadataTitle) {
-        this.metadataTitle = metadataTitle;
-    }
-    
-    public String getMetadataValue() {
-        return metadataValue;
-    }
-    
-    public String getMetadataOperand() {
-        return metadataOperand;
-    }
-    
-    public void setMetadataOperand(String metadataOperand) {
-        this.metadataOperand = metadataOperand;
-    }
-    
-    public void setMetadataValue(String metadataValue) {
-        this.metadataValue = metadataValue;
     }
     
     public List<String> getTemplatePropertyTitles() {
@@ -276,207 +239,8 @@ public class SearchBean {
         this.stepstatus = stepstatus;
     }
 
-    public String getStepdonetitle() {
-        return this.stepdonetitle;
-    }
 
-    public void setStepdonetitle(String stepdonetitle) {
-        this.stepdonetitle = stepdonetitle;
-    }
-
-    public String getStepdoneuser() {
-        return this.stepdoneuser;
-    }
-
-    public void setStepdoneuser(String stepdoneuser) {
-        this.stepdoneuser = stepdoneuser;
-    }
-
-    public String getIdin() {
-        return this.idin;
-    }
-
-    public void setIdin(String idin) {
-        this.idin = idin;
-    }
-
-    public String getProject() {
-        return this.project;
-    }
-
-    public void setProject(String project) {
-        this.project = project;
-    }
-
-    public String getProcessTitle() {
-        return this.processTitle;
-    }
-
-    public void setProcessTitle(String processTitle) {
-        this.processTitle = processTitle;
-    }
-
-    public String getProcessPropertyTitle() {
-        return this.processPropertyTitle;
-    }
-
-    public void setProcessPropertyTitle(String processPropertyTitle) {
-        this.processPropertyTitle = processPropertyTitle;
-    }
-
-    public String getProcessPropertyValue() {
-        return this.processPropertyValue;
-    }
-
-    public void setProcessPropertyValue(String processPropertyValue) {
-        this.processPropertyValue = processPropertyValue;
-    }
-
-    public String getMasterpiecePropertyTitle() {
-        return this.masterpiecePropertyTitle;
-    }
-
-    public void setMasterpiecePropertyTitle(String masterpiecePropertyTitle) {
-        this.masterpiecePropertyTitle = masterpiecePropertyTitle;
-    }
-
-    public String getMasterpiecePropertyValue() {
-        return this.masterpiecePropertyValue;
-    }
-
-    public void setMasterpiecePropertyValue(String masterpiecePropertyValue) {
-        this.masterpiecePropertyValue = masterpiecePropertyValue;
-    }
-
-    public String getTemplatePropertyTitle() {
-        return this.templatePropertyTitle;
-    }
-
-    public void setTemplatePropertyTitle(String templatePropertyTitle) {
-        this.templatePropertyTitle = templatePropertyTitle;
-    }
-
-    public String getTemplatePropertyValue() {
-        return this.templatePropertyValue;
-    }
-
-    public void setTemplatePropertyValue(String templatePropertyValue) {
-        this.templatePropertyValue = templatePropertyValue;
-    }
-
-    public String getStepPropertyTitle() {
-        return this.stepPropertyTitle;
-    }
-
-    public void setStepPropertyTitle(String stepPropertyTitle) {
-        this.stepPropertyTitle = stepPropertyTitle;
-    }
-
-    public String getStepPropertyValue() {
-        return this.stepPropertyValue;
-    }
-
-    public void setStepPropertyValue(String stepPropertyValue) {
-        this.stepPropertyValue = stepPropertyValue;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStepname() {
-        return this.stepname;
-    }
-
-    public void setStepname(String stepname) {
-        this.stepname = stepname;
-    }
-
-    public List<User> getUser() {
-        return this.user;
-    }
-
-    public void setUser(List<User> user) {
-        this.user = user;
-    }
-
-    public String filter() {
-        
-        String search = "";
-       
-        if (!this.processTitle.isEmpty()) {
-
-            search += "\"" + this.processOperand + this.processTitle + "\" ";
-        }
-        if (!this.idin.isEmpty()) {
-            search += "\"" + FilterString.ID + this.idin + "\" ";
-        }
-
-        if (!this.batchid.isEmpty()) {
-            search += "\"" + FilterString.BATCH + this.batchid + "\" ";
-        }
-
-        if (!this.project.isEmpty() && !this.project.equals(Helper.getTranslation("notSelected"))) {
-            search += "\"" + this.projectOperand + FilterString.PROJECT + this.project + "\" ";
-        }
-        
-        if (!metadataTitle.isEmpty() && !metadataValue.isEmpty() && !metadataTitle.equals(Helper.getTranslation("notSelected"))) {
-            search += "\"" + metadataOperand + FilterString.METADATA + metadataTitle + ":" + metadataValue + "\" ";
-        } 
-        
-        if (!this.processPropertyValue.isEmpty()) {
-            if (!this.processPropertyTitle.isEmpty() && !this.processPropertyTitle.equals(Helper.getTranslation("notSelected"))) {
-                search +=
-                        "\"" + this.processPropertyOperand + FilterString.PROCESSPROPERTY + this.processPropertyTitle + ":"
-                                + this.processPropertyValue + "\" ";
-            } else {
-                search += "\"" + this.masterpiecePropertyOperand + FilterString.PROCESSPROPERTY + this.processPropertyValue + "\" ";
-            }
-        }
-        if (!this.masterpiecePropertyValue.isEmpty()) {
-            if (!this.masterpiecePropertyTitle.isEmpty() && !this.masterpiecePropertyTitle.equals(Helper.getTranslation("notSelected"))) {
-                search +=
-                        "\"" + this.masterpiecePropertyOperand + FilterString.WORKPIECE + this.masterpiecePropertyTitle + ":"
-                                + this.masterpiecePropertyValue + "\" ";
-            } else {
-                search += "\"" + this.masterpiecePropertyOperand + FilterString.WORKPIECE + this.masterpiecePropertyValue + "\" ";
-            }
-        }
-        if (!this.templatePropertyValue.isEmpty()) {
-            if (!this.templatePropertyTitle.isEmpty() && !this.templatePropertyTitle.equals(Helper.getTranslation("notSelected"))) {
-                search +=
-                        "\"" + this.templatePropertyOperand + FilterString.TEMPLATE + this.templatePropertyTitle + ":" + this.templatePropertyValue
-                                + "\" ";
-            } else {
-                search += "\"" + this.templatePropertyOperand + FilterString.TEMPLATE + this.templatePropertyValue + "\" ";
-            }
-        }
-        if (!this.stepPropertyValue.isEmpty() && !this.stepname.isEmpty()) {
-            if (!this.stepPropertyTitle.isEmpty() && !this.stepPropertyTitle.equals(Helper.getTranslation("notSelected"))) {
-                search += "\"" + this.stepPropertyOperand + FilterString.STEPPROPERTY + this.stepPropertyTitle + ":" + this.stepPropertyValue + "\" ";
-            } else {
-                search += "\"" + this.stepPropertyOperand + FilterString.STEPPROPERTY + this.stepPropertyValue + "\" ";
-            }
-        }
-
-        if (!this.stepname.isEmpty() && !this.stepname.equals(Helper.getTranslation("notSelected"))) {
-            search += "\"" + this.stepOperand + this.status + ":" + this.stepname + "\" ";
-        }
-        if (!this.stepdonetitle.isEmpty() && !this.stepdoneuser.isEmpty() && !this.stepdonetitle.equals(Helper.getTranslation("notSelected"))) {
-            search += "\"" + FilterString.STEPDONEUSER + this.stepdoneuser + "\" \"" + FilterString.STEPDONETITLE + this.stepdonetitle + "\" ";
-        }
-        ProcessBean form = (ProcessBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
-        if (form != null) {
-            form.filter = search;
-            form.setModusAnzeige("aktuell");
-            return form.FilterAlleStart();
-        }
-        return "";
-    }
+   
 
     public List<SelectItem> getOperands() {
         List<SelectItem> answer = new ArrayList<SelectItem>();
@@ -487,96 +251,7 @@ public class SearchBean {
         return answer;
     }
 
-    public String getProjectOperand() {
-        return this.projectOperand;
-    }
 
-    public void setProjectOperand(String projectOperand) {
-        this.projectOperand = projectOperand;
-    }
-
-    public String getProcessPropertyOperand() {
-        return this.processPropertyOperand;
-    }
-
-    public void setProcessPropertyOperand(String processPropertyOperand) {
-        this.processPropertyOperand = processPropertyOperand;
-    }
-
-    public String getMasterpiecePropertyOperand() {
-        return this.masterpiecePropertyOperand;
-    }
-
-    public void setMasterpiecePropertyOperand(String masterpiecePropertyOperand) {
-        this.masterpiecePropertyOperand = masterpiecePropertyOperand;
-    }
-
-    public String getTemplatePropertyOperand() {
-        return this.templatePropertyOperand;
-    }
-
-    public void setTemplatePropertyOperand(String templatePropertyOperand) {
-        this.templatePropertyOperand = templatePropertyOperand;
-    }
-
-    public String getStepPropertyOperand() {
-        return this.stepPropertyOperand;
-    }
-
-    public void setStepPropertyOperand(String stepPropertyOperand) {
-        this.stepPropertyOperand = stepPropertyOperand;
-    }
-
-    public String getStepOperand() {
-        return this.stepOperand;
-    }
-
-    public void setStepOperand(String stepOperand) {
-        this.stepOperand = stepOperand;
-    }
-
-    public String getProcessOperand() {
-        return this.processOperand;
-    }
-
-    public void setProcessOperand(String processOperand) {
-        this.processOperand = processOperand;
-    }
-
-    public String getBatchid() {
-        return batchid;
-    }
-
-    public void setBatchid(String batchid) {
-        this.batchid = batchid;
-    }
-
-    /** new search gui */
-
-    List<ExtendedSearchRow> rowList = new ArrayList<ExtendedSearchRow>();
-
-    List<SelectItem> fieldnameList = new ArrayList<SelectItem>();
-
-    private ExtendedSearchRow currentRow;
-
-    private void createValues() {
-        rowList.add(new ExtendedSearchRow());
-        fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
-        fieldnameList.add(new SelectItem("PROCESSID", Helper.getTranslation("id")));
-        fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
-
-        fieldnameList.add(new SelectItem("PROCESSPROPERTY", Helper.getTranslation("processProperties")));
-        
-        fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
-
-        fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
-        fieldnameList.add(new SelectItem("TEMPLATE", Helper.getTranslation("templateProperties")));
-
-        fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
-        fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
-        fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
-
-    }
 
     public List<SelectItem> getFieldnameList() {
         return fieldnameList;
@@ -614,10 +289,10 @@ public class SearchBean {
         for (ExtendedSearchRow row : rowList) {
             search += row.createSearchString();
         }
-
+     
         ProcessBean form = (ProcessBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
         if (form != null) {
-            form.filter = "";
+            form.filter = search;
             form.setModusAnzeige("aktuell");
             return form.FilterAlleStart();
         }

@@ -1,308 +1,194 @@
 package org.goobi.production.search.api;
 
+import org.goobi.production.flow.statistics.hibernate.FilterString;
+
+import de.sub.goobi.helper.Helper;
+
 public class ExtendedSearchRow {
 
-    private String firstFieldName;
-
-    private String firstFieldOperand;
-
-    // process title, id, batch
-    private String firstFieldValue;
-
-    // step
-    private String firstStepStatus;
-
-    private String firstStepName;
-
-    // project
-    private String firstProjectName;
-
-    // properties
-    private String firstProcessPropertyName;
-    
-    private String firstProcessPropertyValue;
-
-    private String firstTemplatePropertyName;
-    
-    private String firstTemplatePropertyValue;
-
-    private String firstMasterpiecePropertyName;
-    
-    private String firstMasterpiecePropertyValue;
-    
-    private String firstMetadataName;
-    
-    private String firstMetadataValue;  
+    private String fieldName;
 
     private String fieldOperand;
 
-    private String secondFieldName;
-
-    private String secondFieldOperand;
-
     // process title, id, batch
-    private String secondFieldValue;
+    private String fieldValue;
 
     // step
-    private String secondStepStatus;
+    private String stepStatus;
 
-    private String secondStepName;
+    private String stepName;
 
     // project
-    private String secondProjectName;
+    private String projectName;
 
     // properties
-    private String secondProcessPropertyName;
-    
-    private String secondProcessPropertyValue;
+    private String processPropertyName;
 
-    private String secondTemplatePropertyName;
-    
-    private String secondTemplatePropertyValue;
+    private String processPropertyValue;
 
-    private String secondMasterpiecePropertyName;
-    
-    private String secondMasterpiecePropertyValue;
+    private String templatePropertyName;
 
-    private String secondMetadataName;
-    
-    private String secondMetadataValue;  
-    
-    public String getFirstFieldName() {
-        return firstFieldName;
+    private String templatePropertyValue;
+
+    private String masterpiecePropertyName;
+
+    private String masterpiecePropertyValue;
+
+    private String metadataName;
+
+    private String metadataValue;
+
+    public String createSearchString() {
+        String value = "";
+        if (fieldName.equals("PROCESSTITLE") && !fieldValue.isEmpty()) {
+            value = "\"" + this.fieldOperand + this.fieldValue + "\" ";
+        } else if (fieldName.equals("PROCESSID") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.ID + this.fieldValue + "\" ";
+        }
+
+        else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.BATCH + this.fieldValue + "\" ";
+        }
+
+        else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
+            value = "\"" + this.fieldOperand + FilterString.PROJECT + this.projectName + "\" ";
+        } else if (fieldName.equals("PROJECT") && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !fieldValue.isEmpty()) {
+            value = "\"" + this.fieldOperand + FilterString.METADATA + metadataName + ":" + fieldValue + "\" ";
+
+        }
+
+        else if (fieldName.equals("PROCESSPROPERTY") && !processPropertyName.equals(Helper.getTranslation("notSelected"))
+                && !processPropertyValue.isEmpty()) {
+            value = "\"" + ":" + this.fieldOperand + FilterString.PROCESSPROPERTY + this.processPropertyName + ":" + processPropertyValue + "\" ";
+        }
+
+        else if (fieldName.equals("WORKPIECE") && !masterpiecePropertyName.equals(Helper.getTranslation("notSelected"))
+                && !masterpiecePropertyValue.isEmpty()) {
+            value = "\"" + ":" + this.fieldOperand + FilterString.WORKPIECE + this.masterpiecePropertyName + ":" + masterpiecePropertyValue + "\" ";
+        }
+
+        else if (fieldName.equals("TEMPLATE") && !templatePropertyName.equals(Helper.getTranslation("notSelected"))
+                && !templatePropertyValue.isEmpty()) {
+            value = "\"" + ":" + this.fieldOperand + FilterString.TEMPLATE + this.templatePropertyName + ":" + templatePropertyValue + "\" ";
+        }
+
+        else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty()) {
+            value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
+        }
+
+        return value;
     }
 
-    public String getFirstFieldOperand() {
-        return firstFieldOperand;
-    }
-
-    public String getFirstFieldValue() {
-        return firstFieldValue;
+    public String getFieldName() {
+        return fieldName;
     }
 
     public String getFieldOperand() {
         return fieldOperand;
     }
 
-    public String getSecondFieldName() {
-        return secondFieldName;
+    public String getFieldValue() {
+        return fieldValue;
     }
 
-    public String getSecondFieldOperand() {
-        return secondFieldOperand;
+    public String getStepStatus() {
+        return stepStatus;
     }
 
-    public String getSecondFieldValue() {
-        return secondFieldValue;
+    public String getStepName() {
+        return stepName;
     }
 
-    public void setFirstFieldName(String firstFieldName) {
-        this.firstFieldName = firstFieldName;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setFirstFieldOperand(String firstFieldOperand) {
-        this.firstFieldOperand = firstFieldOperand;
+    public String getProcessPropertyName() {
+        return processPropertyName;
     }
 
-    public void setFirstFieldValue(String firstFieldValue) {
-        this.firstFieldValue = firstFieldValue;
+    public String getProcessPropertyValue() {
+        return processPropertyValue;
+    }
+
+    public String getTemplatePropertyName() {
+        return templatePropertyName;
+    }
+
+    public String getTemplatePropertyValue() {
+        return templatePropertyValue;
+    }
+
+    public String getMasterpiecePropertyName() {
+        return masterpiecePropertyName;
+    }
+
+    public String getMasterpiecePropertyValue() {
+        return masterpiecePropertyValue;
+    }
+
+    public String getMetadataName() {
+        return metadataName;
+    }
+
+    public String getMetadataValue() {
+        return metadataValue;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public void setFieldOperand(String fieldOperand) {
         this.fieldOperand = fieldOperand;
     }
 
-    public void setSecondFieldName(String secondFieldName) {
-        this.secondFieldName = secondFieldName;
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
     }
 
-    public void setSecondFieldOperand(String secondFieldOperand) {
-        this.secondFieldOperand = secondFieldOperand;
+    public void setStepStatus(String stepStatus) {
+        this.stepStatus = stepStatus;
     }
 
-    public void setSecondFieldValue(String secondFieldValue) {
-        this.secondFieldValue = secondFieldValue;
+    public void setStepName(String stepName) {
+        this.stepName = stepName;
     }
 
-    public String getFirstStepStatus() {
-        return firstStepStatus;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
-    public String getFirstStepName() {
-        return firstStepName;
+    public void setProcessPropertyName(String processPropertyName) {
+        this.processPropertyName = processPropertyName;
     }
 
-    public String getFirstProjectName() {
-        return firstProjectName;
+    public void setProcessPropertyValue(String processPropertyValue) {
+        this.processPropertyValue = processPropertyValue;
     }
 
-    public String getFirstProcessPropertyName() {
-        return firstProcessPropertyName;
+    public void setTemplatePropertyName(String templatePropertyName) {
+        this.templatePropertyName = templatePropertyName;
     }
 
-    public String getFirstTemplatePropertyName() {
-        return firstTemplatePropertyName;
+    public void setTemplatePropertyValue(String templatePropertyValue) {
+        this.templatePropertyValue = templatePropertyValue;
     }
 
-    public String getFirstMasterpiecePropertyName() {
-        return firstMasterpiecePropertyName;
+    public void setMasterpiecePropertyName(String masterpiecePropertyName) {
+        this.masterpiecePropertyName = masterpiecePropertyName;
     }
 
-    public void setFirstStepStatus(String firstStepStatus) {
-        this.firstStepStatus = firstStepStatus;
+    public void setMasterpiecePropertyValue(String masterpiecePropertyValue) {
+        this.masterpiecePropertyValue = masterpiecePropertyValue;
     }
 
-    public void setFirstStepName(String firstStepName) {
-        this.firstStepName = firstStepName;
+    public void setMetadataName(String metadataName) {
+        this.metadataName = metadataName;
     }
 
-    public void setFirstProjectName(String firstProjectName) {
-        this.firstProjectName = firstProjectName;
+    public void setMetadataValue(String metadataValue) {
+        this.metadataValue = metadataValue;
     }
 
-    public void setFirstProcessPropertyName(String firstProcessPropertyName) {
-        this.firstProcessPropertyName = firstProcessPropertyName;
-    }
-
-    public void setFirstTemplatePropertyName(String firstTemplatePropertyName) {
-        this.firstTemplatePropertyName = firstTemplatePropertyName;
-    }
-
-    public void setFirstMasterpiecePropertyName(String firstMasterpiecePropertyName) {
-        this.firstMasterpiecePropertyName = firstMasterpiecePropertyName;
-    }
-
-    public String getFirstMasterpiecePropertyValue() {
-        return firstMasterpiecePropertyValue;
-    }
-
-    public String getFirstProcessPropertyValue() {
-        return firstProcessPropertyValue;
-    }
-
-    public String getFirstTemplatePropertyValue() {
-        return firstTemplatePropertyValue;
-    }
-
-    public void setFirstMasterpiecePropertyValue(String firstMasterpiecePropertyValue) {
-        this.firstMasterpiecePropertyValue = firstMasterpiecePropertyValue;
-    }
-
-    public void setFirstProcessPropertyValue(String firstProcessPropertyValue) {
-        this.firstProcessPropertyValue = firstProcessPropertyValue;
-    }
-
-    public void setFirstTemplatePropertyValue(String firstTemplatePropertyValue) {
-        this.firstTemplatePropertyValue = firstTemplatePropertyValue;
-    }
-    
-
-    public String getSecondStepStatus() {
-        return secondStepStatus;
-    }
-
-    public String getSecondStepName() {
-        return secondStepName;
-    }
-
-    public String getSecondProjectName() {
-        return secondProjectName;
-    }
-
-    public String getSecondProcessPropertyName() {
-        return secondProcessPropertyName;
-    }
-
-    public String getSecondProcessPropertyValue() {
-        return secondProcessPropertyValue;
-    }
-
-    public String getSecondTemplatePropertyName() {
-        return secondTemplatePropertyName;
-    }
-
-    public String getSecondTemplatePropertyValue() {
-        return secondTemplatePropertyValue;
-    }
-
-    public String getSecondMasterpiecePropertyName() {
-        return secondMasterpiecePropertyName;
-    }
-
-    public String getSecondMasterpiecePropertyValue() {
-        return secondMasterpiecePropertyValue;
-    }
-
-    public void setSecondStepStatus(String secondStepStatus) {
-        this.secondStepStatus = secondStepStatus;
-    }
-
-    public void setSecondStepName(String secondStepName) {
-        this.secondStepName = secondStepName;
-    }
-
-    public void setSecondProjectName(String secondProjectName) {
-        this.secondProjectName = secondProjectName;
-    }
-
-    public void setSecondProcessPropertyName(String secondProcessPropertyName) {
-        this.secondProcessPropertyName = secondProcessPropertyName;
-    }
-
-    public void setSecondProcessPropertyValue(String secondProcessPropertyValue) {
-        this.secondProcessPropertyValue = secondProcessPropertyValue;
-    }
-
-    public void setSecondTemplatePropertyName(String secondTemplatePropertyName) {
-        this.secondTemplatePropertyName = secondTemplatePropertyName;
-    }
-
-    public void setSecondTemplatePropertyValue(String secondTemplatePropertyValue) {
-        this.secondTemplatePropertyValue = secondTemplatePropertyValue;
-    }
-
-    public void setSecondMasterpiecePropertyName(String secondMasterpiecePropertyName) {
-        this.secondMasterpiecePropertyName = secondMasterpiecePropertyName;
-    }
-
-    public void setSecondMasterpiecePropertyValue(String secondMasterpiecePropertyValue) {
-        this.secondMasterpiecePropertyValue = secondMasterpiecePropertyValue;
-    }
-
-    public String createSearchString() {
-        // TODO Auto-generated method stub
-        return toString();
-    }
-
-    public String getFirstMetadataName() {
-        return firstMetadataName;
-    }
-
-    public void setFirstMetadataName(String firstMetadataName) {
-        this.firstMetadataName = firstMetadataName;
-    }
-
-    public String getFirstMetadataValue() {
-        return firstMetadataValue;
-    }
-
-    public void setFirstMetadataValue(String firstMetadataValue) {
-        this.firstMetadataValue = firstMetadataValue;
-    }
-
-    public String getSecondMetadataName() {
-        return secondMetadataName;
-    }
-
-    public void setSecondMetadataName(String secondMetadataName) {
-        this.secondMetadataName = secondMetadataName;
-    }
-
-    public String getSecondMetadataValue() {
-        return secondMetadataValue;
-    }
-
-    public void setSecondMetadataValue(String secondMetadataValue) {
-        this.secondMetadataValue = secondMetadataValue;
-    }
 }

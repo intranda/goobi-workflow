@@ -364,7 +364,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<String> getDistinctTemplatePropertyTitles() throws SQLException {
-        String sql = "select distinct titel from vorlageneigenschaften";
+        String sql = "select distinct titel from vorlageneigenschaften order by Titel";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -378,7 +378,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<String> getDistinctMasterpiecePropertyTitles() throws SQLException {
-        String sql = "select distinct titel from werkstueckeeigenschaften";
+        String sql = "select distinct titel from werkstueckeeigenschaften order by Titel";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -392,7 +392,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<Templateproperty> getTemplateProperties(int templateId) throws SQLException {
-        String sql = "SELECT * FROM vorlageneigenschaften WHERE vorlagenID = ? ORDER BY container, Titel";
+        String sql = "SELECT * FROM vorlageneigenschaften WHERE vorlagenID = ? ORDER BY Titel";
         Connection connection = null;
         Object[] param = { templateId };
         try {
