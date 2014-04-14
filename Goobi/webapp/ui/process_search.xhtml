@@ -81,11 +81,11 @@
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'TEMPLATE'}" layout="block" style="width:100%">
-                                    <h:selectOneMenu value="#{row.zemplatePropertyName}">
+                                    <h:selectOneMenu value="#{row.templatePropertyName}">
                                         <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
                                         <f:ajax render="@form" />
                                     </h:selectOneMenu>
-                                    <h:inputText value="#{row.zemplatePropertyValue}">
+                                    <h:inputText value="#{row.templatePropertyValue}">
                                         <f:ajax render="@form" />
                                     </h:inputText>
                                 </h:panelGroup>
