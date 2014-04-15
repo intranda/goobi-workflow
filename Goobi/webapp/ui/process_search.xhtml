@@ -13,7 +13,7 @@
 
     <ui:define name="content">
 
-        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');">
+        <h:form id="searchform" onkeypress="ifEnterClick(event, 'searchform:absenden');" prependId="false">
 
             <table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen">
 
@@ -26,10 +26,10 @@
                 <tr>
                     <td class="eingabeBoxen_row2" colspan="2">
 
-                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2">
+                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2" id="rowList" width="100%" columnClasses="column1, column2, column3, column4" >
 
                             <h:column>
-                                <h:selectOneMenu value="#{row.fieldName}">
+                                <h:selectOneMenu value="#{row.fieldName}" style="width: 100%">
                                     <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
                                         itemLabel="#{msgs[fieldname.label]}" />
                                     <f:ajax render="@form" />
@@ -38,7 +38,7 @@
 
                             <h:column>
 
-                                <h:selectOneMenu value="#{row.fieldOperand}">
+                                <h:selectOneMenu value="#{row.fieldOperand}" style="width: 100%">
                                     <f:selectItems value="#{SearchForm.operands}" />
                                 </h:selectOneMenu>
 
@@ -46,7 +46,7 @@
 
                             <h:column>
 
-                                <h:inputText value="#{row.fieldValue}" style="width:100%"
+                                <h:inputText value="#{row.fieldValue}" style="width:99%"
                                     rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH'}">
                                     <f:ajax render="@form" />
                                 </h:inputText>
@@ -57,7 +57,7 @@
                                             itemValue="#{stepstatus.searchString}" />
                                         <f:ajax render="@form" />
                                     </h:selectOneMenu>
-                                    <h:selectOneMenu value="#{row.stepName}" style="width:70%">
+                                    <h:selectOneMenu value="#{row.stepName}" style="width:69%; float:right">
                                         <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}"
                                             itemValue="#{stepTitles}" />
                                         <f:ajax render="@form" />
@@ -103,11 +103,11 @@
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'METADATA'}" layout="block" style="width:100%">
-                                    <h:selectOneMenu value="#{row.metadataName}">
+                                    <h:selectOneMenu value="#{row.metadataName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
                                         <f:ajax render="@form" />
                                     </h:selectOneMenu>
-                                    <h:inputText value="#{row.metadataValue}">
+                                    <h:inputText value="#{row.metadataValue}" style="width: 68%; float:right">
                                         <f:ajax render="@form" />
                                     </h:inputText>
                                 </h:panelGroup>

@@ -241,6 +241,19 @@ a.mlink:hover {
 	border-color: #0083e2;
 }
 
+#rowList .column1 {
+    width: 20%;
+}
+#rowList .column2 {
+    width: 20%;
+}
+#rowList .column3 {
+    width: 55%;
+}
+#rowList .column4 {
+    width: 5%;
+}
+
 .randInhalt {
 	margin-left: 15px;
 	margin-right: 15px;
