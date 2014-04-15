@@ -52,7 +52,7 @@
                                 </h:inputText>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'STEP'}" layout="block" style="width:100%">
-                                    <h:selectOneMenu value="#{row.stepStatus}" style="width:30%" >
+                                    <h:selectOneMenu value="#{row.stepStatus}" style="width:30%">
                                         <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
                                             itemValue="#{stepstatus.searchString}" />
                                         <f:ajax render="@form" />
@@ -128,16 +128,20 @@
 
 
                         </h:dataTable>
+                        <h:panelGrid columns="2" rendered="#{(LoginForm.maximaleBerechtigung == 1)}">
 
+                            <h:outputText value="#{msgs.showArchivedProjects}:" />
+                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" />
 
-
-
+                            <h:outputText value="#{msgs.showClosedProcesses}:" />
+                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
+                        </h:panelGrid>
 
                     </td>
                 </tr>
                 <tr>
                     <td class="eingabeBoxen_row3" align="left">
-                        <h:commandButton value="#{msgs.clear}" action="process_search" immediate="true">
+                        <h:commandButton value="#{msgs.clear}" action="#{SearchForm.resetFilter}" immediate="true">
                         </h:commandButton>
                     </td>
 

@@ -52,24 +52,25 @@ public class ExtendedSearchRow {
 
         else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
             value = "\"" + this.fieldOperand + FilterString.PROJECT + this.projectName + "\" ";
-        } else if (fieldName.equals("PROJECT") && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.METADATA + metadataName + ":" + fieldValue + "\" ";
+            
+        } else if (fieldName.equals("METADATA") && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !metadataValue.isEmpty()) {
+            value = "\"" + this.fieldOperand + FilterString.METADATA + metadataName + ":" + metadataValue + "\" ";
 
         }
 
         else if (fieldName.equals("PROCESSPROPERTY") && !processPropertyName.equals(Helper.getTranslation("notSelected"))
                 && !processPropertyValue.isEmpty()) {
-            value = "\"" + ":" + this.fieldOperand + FilterString.PROCESSPROPERTY + this.processPropertyName + ":" + processPropertyValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.PROCESSPROPERTY + this.processPropertyName + ":" + processPropertyValue + "\" ";
         }
 
         else if (fieldName.equals("WORKPIECE") && !masterpiecePropertyName.equals(Helper.getTranslation("notSelected"))
                 && !masterpiecePropertyValue.isEmpty()) {
-            value = "\"" + ":" + this.fieldOperand + FilterString.WORKPIECE + this.masterpiecePropertyName + ":" + masterpiecePropertyValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.WORKPIECE + this.masterpiecePropertyName + ":" + masterpiecePropertyValue + "\" ";
         }
 
         else if (fieldName.equals("TEMPLATE") && !templatePropertyName.equals(Helper.getTranslation("notSelected"))
                 && !templatePropertyValue.isEmpty()) {
-            value = "\"" + ":" + this.fieldOperand + FilterString.TEMPLATE + this.templatePropertyName + ":" + templatePropertyValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.TEMPLATE + this.templatePropertyName + ":" + templatePropertyValue + "\" ";
         }
 
         else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty()) {

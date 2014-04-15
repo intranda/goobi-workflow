@@ -36,8 +36,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import org.goobi.beans.Project;
-import org.goobi.beans.User;
-import org.goobi.production.flow.statistics.hibernate.FilterString;
+
 import org.goobi.production.search.api.ExtendedSearchRow;
 
 import de.sub.goobi.helper.Helper;
@@ -47,7 +46,6 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.UserManager;
 
 @ManagedBean(name = "SearchForm")
 @SessionScoped
@@ -152,6 +150,10 @@ public class SearchBean {
         //			this.stepTitles.add((String) it.next());
         //		}
 
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
         rowList.add(new ExtendedSearchRow());
         fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
         fieldnameList.add(new SelectItem("PROCESSID", Helper.getTranslation("id")));
@@ -283,6 +285,18 @@ public class SearchBean {
         return rowList.size();
     }
 
+    
+    public String resetFilter() {
+        rowList = new ArrayList<>();
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
+        rowList.add(new ExtendedSearchRow());
+        
+        return "";
+    }
+    
     public String createFilter() {
         String search = "";
 
