@@ -114,7 +114,7 @@ public class ConfigurationHelper implements Serializable {
         return configLocal.getString(inPath, config.getString(inPath));
     }
 
-    @SuppressWarnings({ "unchecked", "unused" })
+    @SuppressWarnings({ "unchecked" })
     private List<String> getLocalList(String inPath) {
         return configLocal.getList(inPath, config.getList(inPath));
     }
@@ -514,6 +514,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalLong(jobname, -1);
     }
 
+  
+
+    
+    public List<String> getDownloadColumnWhitelist() {
+        return getLocalList("downloadAvailableColumn");
+    }
+    
+    
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -535,7 +543,7 @@ public class ConfigurationHelper implements Serializable {
         return getLocalLong("activeMQ.results.timeToLive", 604800000);
     }
 
-    // old parameter, romve them
+    // old parameter, remove them
 
     public boolean isUseSwapping() {
         return getLocalBoolean("useSwapping", false);

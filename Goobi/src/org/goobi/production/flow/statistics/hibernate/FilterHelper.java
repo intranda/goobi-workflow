@@ -567,8 +567,10 @@ public class FilterHelper {
             filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly, hideStepsFromOtherUsers));
         }
         
+       
         
         if (!inFilter.isEmpty()) {
+            filter = checkStringBuilder(filter, true);
             inFilter = inFilter.replace("(", " ( ");
             inFilter = inFilter.replace(")", " ) ");
             filter.append("(");

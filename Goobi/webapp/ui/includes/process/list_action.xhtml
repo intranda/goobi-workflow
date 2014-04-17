@@ -298,6 +298,11 @@
 
                             <h:panelGroup
                                 rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+
+
+
+
+
                                 <h:commandLink id="expandbutton10">
                                     <h:graphicImage value="images/buttons/view3.gif" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.saveSearchResult}" />
@@ -306,39 +311,76 @@
                                     <f:ajax render="expandbutton10" />
                                 </h:commandLink>
                                 <x:div id="possibleActions10" style="display:none">
-                                    <h:outputText value="#{msgs.selectColumns}" />
 
-                                    <h:panelGrid columns="4">
+                                    <x:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['title']}" />
-                                        <h:outputText value="#{msgs.title}" />
+                                        <h:column>
+                                            <h:outputText value="#{msgs.column} #{id +1}" />
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['ID']}" />
-                                        <h:outputText value="#{msgs.id}" />
+                                        </h:column>
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['Datum']}" />
-                                        <h:outputText value="#{msgs.vorgangsdatum}" />
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['CountImages']}" />
-                                        <h:outputText value="#{msgs.countImages}" />
+                                        <h:column>
+                                            <h:selectOneMenu value="#{field.value}">
+                                                <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item"
+                                                    itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
+                                            </h:selectOneMenu>
+                                        </h:column>
+                                        <h:column>
+                                            <h:commandLink action="#{ProzessverwaltungForm.addField}">
+                                                <h:graphicImage value="images/plus.gif" style="margin-right:4px" />
+                                                <f:ajax render="@form" />
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['CountMetadata']}" />
-                                        <h:outputText value="#{msgs.countMetadata}" />
+                                            </h:commandLink>
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['Project']}" />
-                                        <h:outputText value="#{msgs.project}" />
+                                            <h:commandLink action="#{ProzessverwaltungForm.deleteField}"
+                                                rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                                <h:graphicImage value="images/minus.gif" style="margin-right:4px" />
+                                                <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
+                                                <f:ajax render="@form" />
+                                            </h:commandLink>
+                                        </h:column>
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['Status']}" />
-                                        <h:outputText value="#{msgs.status}" />
+                                    </x:dataTable>
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['AltRefNo']}" />
-                                        <h:outputText value="#{msgs.AltRefNo}" />
 
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['b-number']}" />
-                                        <h:outputText value="#{msgs.bnumber}" />
 
-                                    </h:panelGrid>
-                                    <br />
+
+
+
+<!--                                     <h:outputText value="#{msgs.selectColumns}" /> -->
+
+<!--                                     <h:panelGrid columns="4"> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['title']}" /> -->
+<!--                                         <h:outputText value="#{msgs.title}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['ID']}" /> -->
+<!--                                         <h:outputText value="#{msgs.id}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['Datum']}" /> -->
+<!--                                         <h:outputText value="#{msgs.vorgangsdatum}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['CountImages']}" /> -->
+<!--                                         <h:outputText value="#{msgs.countImages}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['CountMetadata']}" /> -->
+<!--                                         <h:outputText value="#{msgs.countMetadata}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['Project']}" /> -->
+<!--                                         <h:outputText value="#{msgs.project}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['Status']}" /> -->
+<!--                                         <h:outputText value="#{msgs.status}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['AltRefNo']}" /> -->
+<!--                                         <h:outputText value="#{msgs.AltRefNo}" /> -->
+
+<!--                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.availableColumns['b-number']}" /> -->
+<!--                                         <h:outputText value="#{msgs.bnumber}" /> -->
+
+<!--                                     </h:panelGrid> -->
+<!--                                     <br /> -->
 
                                     <h:panelGroup
                                         rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">

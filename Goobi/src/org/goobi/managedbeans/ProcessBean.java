@@ -40,7 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
@@ -74,7 +73,8 @@ import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.ExtendedSearchResultGeneration;
-import org.goobi.production.flow.helper.SearchColumnName;
+import org.goobi.production.flow.helper.SearchColumn;
+import org.goobi.production.flow.helper.SearchColumnHelper;
 import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -94,8 +94,6 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
-
-
 
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -190,17 +188,19 @@ public class ProcessBean extends BasicBean {
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
+        searchField.add(new SearchColumn(order++));
+
         availableColumns = new HashMap<>();
-        availableColumns.put(SearchColumnName.COLUMN_NAME_TITLE, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_TITLE, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_ID, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_DATE, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_COUNT_IMAGES, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_COUNT_METADATA, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_PROJECT, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_STATUS, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_ALTREFNO, true);
-        availableColumns.put(SearchColumnName.COLUMN_NAME_BNUMBER, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_TITLE, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_TITLE, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_ID, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_DATE, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_COUNT_IMAGES, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_COUNT_METADATA, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_PROJECT, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_STATUS, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_ALTREFNO, true);
+        availableColumns.put(SearchColumnHelper.COLUMN_NAME_BNUMBER, true);
     }
 
     /**
@@ -1828,15 +1828,14 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    
     public Map<String, Boolean> getAvailableColumns() {
         return availableColumns;
     }
-    
+
     public void setAvailableColumns(Map<String, Boolean> availableColumns) {
         this.availableColumns = availableColumns;
     }
-    
+
     public void generateResultAsPdf() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (!facesContext.getResponseComplete()) {
@@ -1852,7 +1851,7 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
                 List<String> selectedColums = new ArrayList<String>();
-                for (Entry<String, Boolean> entry : availableColumns.entrySet()){
+                for (Entry<String, Boolean> entry : availableColumns.entrySet()) {
                     if (entry.getValue()) {
                         selectedColums.add(entry.getKey());
                     }
@@ -1919,7 +1918,7 @@ public class ProcessBean extends BasicBean {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
                 List<String> selectedColums = new ArrayList<String>();
-                for (Entry<String, Boolean> entry : availableColumns.entrySet()){
+                for (Entry<String, Boolean> entry : availableColumns.entrySet()) {
                     if (entry.getValue()) {
                         selectedColums.add(entry.getKey());
                     }
@@ -2254,6 +2253,52 @@ public class ProcessBean extends BasicBean {
 
     public void setUserDisplayMode(String userDisplayMode) {
         this.userDisplayMode = userDisplayMode;
+    }
+
+    private List<SearchColumn> searchField = new ArrayList<SearchColumn>();
+    private List<SelectItem> possibleItems = null;
+
+    public List<SearchColumn> getSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(List<SearchColumn> searchField) {
+        this.searchField = searchField;
+    }
+
+    private SearchColumn currentField = null;
+    private int order = 0;
+    
+    
+    public int getSizeOfFieldList() {
+        return searchField.size();
+    }
+
+    public SearchColumn getCurrentField() {
+        return currentField;
+    }
+
+    public void setCurrentField(SearchColumn currentField) {
+        this.currentField = currentField;
+    }
+
+    public void addField() {
+        searchField.add(new SearchColumn(order++));
+    }
+
+    public void deleteField() {
+        searchField.remove(currentField);
+    }
+
+    public List<SelectItem> getPossibleItems() {
+        if (possibleItems == null) {
+            possibleItems = new SearchColumnHelper().getPossibleColumns();
+        }
+        return possibleItems;
+    }
+
+    public void setPossibleItems(List<SelectItem> possibleItems) {
+        this.possibleItems = possibleItems;
     }
 
 }
