@@ -22,7 +22,7 @@ public class SearchColumn {
         if (value == null || value.isEmpty()) {
             return "";
         } else if (value.startsWith("prozesse.")) {
-            return "prozesse" + order;
+            return "prozesse";
         } else if (value.startsWith("projekte.")) {
             return "projekte" + order;
         } else if (value.startsWith("prozesseeigenschaften.")) {
@@ -37,11 +37,70 @@ public class SearchColumn {
         return "";
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public String getTableType() {
+        if (value == null || value.isEmpty() || value.startsWith("prozesse.")) {
+            return "";
+        } else if (value.startsWith("projekte.")) {
+            return "projekte ";
+        } else if (value.startsWith("prozesseeigenschaften.")) {
+            return "prozesseeigenschaften ";
+        } else if (value.startsWith("vorlageneigenschaften.")) {
+
+            return "vorlageneigenschaften ";
+        } else if (value.startsWith("werkstueckeeigenschaften.")) {
+            return "werkstueckeeigenschaften ";
+        } else if (value.startsWith("metadata.")) {
+            return "metadata ";
+        }
+        return "";
+    }
+
     public String getColumnName() {
         if (value == null || value.isEmpty() || !value.contains(".")) {
             return "";
-        } else {
+        } else if (value.startsWith("prozesse.") || value.startsWith("projekte.")) {
             return value.substring(value.indexOf(".") + 1);
+        } else if (value.startsWith("metadata.")) {
+            return "value";
+        } else {
+            return "Wert";
         }
+    }
+
+    public String getWhereClause() {
+
+        if (getTableName().isEmpty()) {
+            return "";
+        }
+        if (value.startsWith("prozesseeigenschaften.")) {
+            return " prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName() + ".Titel = \""
+                    + value.substring(value.indexOf(".") + 1) + "\"";
+        } else if (value.startsWith("metadata.")) {
+            return " prozesse.ProzesseID = " + getTableName() + ".processID AND " + getTableName() + ".name = \""
+                    + value.substring(value.indexOf(".") + 1) + "\"";
+        } else if (value.startsWith("projekte.")) {
+            return " prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
+        } else if (value.startsWith("vorlageneigenschaften.")) {
+            return " prozesse.ProzesseID = vorlagen" + order + ".ProzesseID AND vorlagen" + order + ".VorlagenID = " + getTableName()
+                    + ".vorlagenID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
+        } else if (value.startsWith("werkstueckeeigenschaften.")) {
+            return " prozesse.ProzesseID = werkstuecke" + order + ".ProzesseID AND werkstuecke" + order + ".WerkstueckeID = " + getTableName()
+                    + ".werkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
+        }
+
+        return "";
+    }
+
+    public String getAdditionalTable() {
+        if (value.startsWith("werkstueckeeigenschaften.")) {
+            return " werkstuecke werkstuecke" + order;
+        } else if (value.startsWith("vorlageneigenschaften.")) {
+            return " vorlagen vorlagen" + order;
+        }
+        return "";
     }
 }

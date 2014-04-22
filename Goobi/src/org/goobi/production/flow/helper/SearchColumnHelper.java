@@ -5,22 +5,15 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class SearchColumnHelper {
-
-    public static final String COLUMN_NAME_TITLE = "title";
-    public static final String COLUMN_NAME_ID = "ID";
-    public static final String COLUMN_NAME_DATE = "Datum";
-    public static final String COLUMN_NAME_COUNT_IMAGES = "CountImages";
-    public static final String COLUMN_NAME_COUNT_METADATA = "CountMetadata";
-    public static final String COLUMN_NAME_PROJECT = "Project";
-    public static final String COLUMN_NAME_STATUS = "Status";
-    public static final String COLUMN_NAME_ALTREFNO = "AltRefNo";
-    public static final String COLUMN_NAME_BNUMBER = "b-number";
 
     private List<SelectItem> possibleColumns = new ArrayList<SelectItem>();
 
@@ -131,6 +124,66 @@ public class SearchColumnHelper {
                 possibleColumns.addAll(subList);
             }
         }
+    }
 
+    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT ");
+
+        // add column labels to query
+        for (SearchColumn sc : columnList) {
+            sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
+        }
+        int length = sb.length();
+        sb = sb.replace(length - 2, length, "");
+
+        sb.append(" FROM prozesse ");
+
+        // add table names
+        for (SearchColumn sc : columnList) {
+            String table = sc.getTableType();
+            if (!table.isEmpty()) {
+                sb.append(", ");
+                sb.append(table);
+                sb.append(" ");
+                sb.append(sc.getTableName());
+                String additional = sc.getAdditionalTable();
+                if (!additional.isEmpty()) {
+                    sb.append(", ");
+                    sb.append(additional);
+                    sb.append(" ");
+                }
+            }
+        }
+
+        sb.append(" WHERE ");
+        // add 
+
+        for (SearchColumn sc : columnList) {
+            String clause = sc.getWhereClause();
+            if (!clause.isEmpty()) {
+                sb.append(clause + " AND ");
+            }
+        }
+
+        String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+        if (!sql.isEmpty()) {
+            sql = sql + " AND ";
+        }
+        sql = sql + " prozesse.istTemplate = false ";
+
+        if (!showClosedProcesses) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!showArchivedProjects) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        }
+        return null;
     }
 }

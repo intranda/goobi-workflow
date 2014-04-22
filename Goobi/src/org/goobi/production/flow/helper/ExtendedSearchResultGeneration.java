@@ -46,8 +46,20 @@ import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
+@Deprecated
 public class ExtendedSearchResultGeneration {
 
+  private static final String COLUMN_NAME_TITLE = "title";
+  private static final String COLUMN_NAME_ID = "ID";
+  private static final String COLUMN_NAME_DATE = "Datum";
+  private static final String COLUMN_NAME_COUNT_IMAGES = "CountImages";
+  private static final String COLUMN_NAME_COUNT_METADATA = "CountMetadata";
+  private static final String COLUMN_NAME_PROJECT = "Project";
+  private static final String COLUMN_NAME_STATUS = "Status";
+  private static final String COLUMN_NAME_ALTREFNO = "AltRefNo";
+  private static final String COLUMN_NAME_BNUMBER = "b-number";
+    
+    
     private String filter = "";
     private boolean showClosedProcesses = false;
     private boolean showArchivedProjects = false;
@@ -60,7 +72,6 @@ public class ExtendedSearchResultGeneration {
 
     }
 
-    @SuppressWarnings("deprecation")
     public HSSFWorkbook getResult(List<String> selectedColumnList) {
 
         boolean renderColumnTitle = false;
@@ -85,31 +96,31 @@ public class ExtendedSearchResultGeneration {
 
         int columnCounter = 0;
         for (String selectedColumn : selectedColumnList) {
-            if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_TITLE)) {
+            if (selectedColumn.equals(COLUMN_NAME_TITLE)) {
                 columnTitle = columnCounter++;
                 renderColumnTitle = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_ID)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_ID)) {
                 columnId = columnCounter++;
                 renderColumnId = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_DATE)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_DATE)) {
                 columnDate = columnCounter++;
                 renderColumnDate = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_COUNT_IMAGES)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_COUNT_IMAGES)) {
                 columnCountImages = columnCounter++;
                 renderColumnCountImages = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_COUNT_METADATA)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_COUNT_METADATA)) {
                 columnCountMetadata = columnCounter++;
                 renderColumnCountMetadata = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_PROJECT)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_PROJECT)) {
                 columnProject = columnCounter++;
                 renderColumnProject = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_STATUS)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_STATUS)) {
                 columnStatus = columnCounter++;
                 renderColumnStatus = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_ALTREFNO)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_ALTREFNO)) {
                 columnAltRefNo = columnCounter++;
                 renderColumnAltRefNo = true;
-            } else if (selectedColumn.equals(SearchColumnHelper.COLUMN_NAME_BNUMBER)) {
+            } else if (selectedColumn.equals(COLUMN_NAME_BNUMBER)) {
                 columnBnumber = columnCounter++;
                 renderColumnBnumber = true;
             }
@@ -167,39 +178,39 @@ public class ExtendedSearchResultGeneration {
 
         if (renderColumnTitle) {
             HSSFCell headercell0 = row0.createCell(columnTitle);
-            headercell0.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_TITLE));
+            headercell0.setCellValue(Helper.getTranslation(COLUMN_NAME_TITLE));
         }
         if (renderColumnId) {
             HSSFCell headercell1 = row0.createCell(columnId);
-            headercell1.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_ID));
+            headercell1.setCellValue(Helper.getTranslation(COLUMN_NAME_ID));
         }
         if (renderColumnDate) {
             HSSFCell headercell2 = row0.createCell(columnDate);
-            headercell2.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_DATE));
+            headercell2.setCellValue(Helper.getTranslation(COLUMN_NAME_DATE));
         }
         if (renderColumnCountImages) {
             HSSFCell headercell3 = row0.createCell(columnCountImages);
-            headercell3.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_COUNT_IMAGES));
+            headercell3.setCellValue(Helper.getTranslation(COLUMN_NAME_COUNT_IMAGES));
         }
         if (renderColumnCountMetadata) {
             HSSFCell headercell4 = row0.createCell(columnCountMetadata);
-            headercell4.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_COUNT_METADATA));
+            headercell4.setCellValue(Helper.getTranslation(COLUMN_NAME_COUNT_METADATA));
         }
         if (renderColumnProject) {
             HSSFCell headercell5 = row0.createCell(columnProject);
-            headercell5.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_PROJECT));
+            headercell5.setCellValue(Helper.getTranslation(COLUMN_NAME_PROJECT));
         }
         if (renderColumnStatus) {
             HSSFCell headercell6 = row0.createCell(columnStatus);
-            headercell6.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_STATUS));
+            headercell6.setCellValue(Helper.getTranslation(COLUMN_NAME_STATUS));
         }
         if (renderColumnAltRefNo) {
             HSSFCell headercell7 = row0.createCell(columnAltRefNo);
-            headercell7.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_ALTREFNO));
+            headercell7.setCellValue(Helper.getTranslation(COLUMN_NAME_ALTREFNO));
         }
         if (renderColumnBnumber) {
             HSSFCell headercell8 = row0.createCell(columnBnumber);
-            headercell8.setCellValue(Helper.getTranslation(SearchColumnHelper.COLUMN_NAME_BNUMBER));
+            headercell8.setCellValue(Helper.getTranslation(COLUMN_NAME_BNUMBER));
         }
         int rowcounter = 2;
         for (Process p : pl) {

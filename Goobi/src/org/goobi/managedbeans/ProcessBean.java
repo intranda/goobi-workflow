@@ -95,6 +95,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
 
+
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -190,17 +191,7 @@ public class ProcessBean extends BasicBean {
 
         searchField.add(new SearchColumn(order++));
 
-        availableColumns = new HashMap<>();
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_TITLE, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_TITLE, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_ID, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_DATE, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_COUNT_IMAGES, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_COUNT_METADATA, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_PROJECT, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_STATUS, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_ALTREFNO, true);
-        availableColumns.put(SearchColumnHelper.COLUMN_NAME_BNUMBER, true);
+       
     }
 
     /**
