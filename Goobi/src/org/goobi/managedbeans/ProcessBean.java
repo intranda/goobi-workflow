@@ -74,7 +74,7 @@ import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.ExtendedSearchResultGeneration;
 import org.goobi.production.flow.helper.SearchColumn;
-import org.goobi.production.flow.helper.SearchColumnHelper;
+import org.goobi.production.flow.helper.SearchResultHelper;
 import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -1841,7 +1841,7 @@ public class ProcessBean extends BasicBean {
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
-                SearchColumnHelper sch = new SearchColumnHelper();
+                SearchResultHelper sch = new SearchResultHelper();
                 HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
 
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
@@ -1906,7 +1906,7 @@ public class ProcessBean extends BasicBean {
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
-                SearchColumnHelper sch = new SearchColumnHelper();
+                SearchResultHelper sch = new SearchResultHelper();
                 HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
                 
                 wb.write(out);
@@ -2269,7 +2269,7 @@ public class ProcessBean extends BasicBean {
 
     public List<SelectItem> getPossibleItems() {
         if (possibleItems == null) {
-            possibleItems = new SearchColumnHelper().getPossibleColumns();
+            possibleItems = new SearchResultHelper().getPossibleColumns();
         }
         return possibleItems;
     }

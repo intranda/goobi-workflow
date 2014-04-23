@@ -17,7 +17,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-public class SearchColumnHelper {
+public class SearchResultHelper {
 
     private List<SelectItem> possibleColumns = new ArrayList<SelectItem>();
 
@@ -25,7 +25,7 @@ public class SearchColumnHelper {
         return possibleColumns;
     }
 
-    public SearchColumnHelper() {
+    public SearchResultHelper() {
         List<String> columnWhiteList = ConfigurationHelper.getInstance().getDownloadColumnWhitelist();
 
         SelectItem processData = new SelectItem("processData", Helper.getTranslation("processData"), Helper.getTranslation("processData"), true);
