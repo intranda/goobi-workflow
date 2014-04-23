@@ -71,32 +71,32 @@
                                 </h:selectOneMenu>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'PROCESSPROPERTY'}" layout="block" style="width:100%">
-                                    <h:selectOneMenu value="#{row.processPropertyName}">
+                                    <h:selectOneMenu value="#{row.processPropertyName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
                                         <f:ajax render="@form" />
                                     </h:selectOneMenu>
-                                    <h:inputText value="#{row.processPropertyValue}">
+                                    <h:inputText value="#{row.processPropertyValue}" style="width: 68%; float:right">
                                         <f:ajax render="@form" />
                                     </h:inputText>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'TEMPLATE'}" layout="block" style="width:100%">
-                                    <h:selectOneMenu value="#{row.templatePropertyName}">
+                                    <h:selectOneMenu value="#{row.templatePropertyName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
                                         <f:ajax render="@form" />
                                     </h:selectOneMenu>
-                                    <h:inputText value="#{row.templatePropertyValue}">
+                                    <h:inputText value="#{row.templatePropertyValue}" style="width: 68%; float:right">
                                         <f:ajax render="@form" />
                                     </h:inputText>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'WORKPIECE'}" layout="block" style="width:100%">
-                                    <h:selectOneMenu value="#{row.masterpiecePropertyName}">
+                                    <h:selectOneMenu value="#{row.masterpiecePropertyName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}"
                                             itemValue="#{proc}" />
                                         <f:ajax render="@form" />
                                     </h:selectOneMenu>
-                                    <h:inputText value="#{row.masterpiecePropertyValue}">
+                                    <h:inputText value="#{row.masterpiecePropertyValue}" style="width: 68%; float:right">
                                         <f:ajax render="@form" />
                                     </h:inputText>
 
