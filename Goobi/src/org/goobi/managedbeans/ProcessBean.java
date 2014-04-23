@@ -156,7 +156,7 @@ public class ProcessBean extends BasicBean {
     private String addToWikiField = "";
     private String userDisplayMode = "";
 
-    private Map<String, Boolean> availableColumns;
+//    private Map<String, Boolean> availableColumns;
 
     private boolean showStatistics = false;
 
@@ -1819,13 +1819,13 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    public Map<String, Boolean> getAvailableColumns() {
-        return availableColumns;
-    }
-
-    public void setAvailableColumns(Map<String, Boolean> availableColumns) {
-        this.availableColumns = availableColumns;
-    }
+//    public Map<String, Boolean> getAvailableColumns() {
+//        return availableColumns;
+//    }
+//
+//    public void setAvailableColumns(Map<String, Boolean> availableColumns) {
+//        this.availableColumns = availableColumns;
+//    }
 
     public void generateResultAsPdf() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -1841,16 +1841,9 @@ public class ProcessBean extends BasicBean {
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
-                List<String> selectedColums = new ArrayList<String>();
-                for (Entry<String, Boolean> entry : availableColumns.entrySet()) {
-                    if (entry.getValue()) {
-                        selectedColums.add(entry.getKey());
-                    }
-                }
+                SearchColumnHelper sch = new SearchColumnHelper();
+                HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
 
-                ExtendedSearchResultGeneration sr =
-                        new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                HSSFWorkbook wb = sr.getResult(selectedColums);
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
                 Iterator<Row> rowIter = mySheet.rowIterator();
@@ -1908,21 +1901,14 @@ public class ProcessBean extends BasicBean {
              */
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
-                List<String> selectedColums = new ArrayList<String>();
-                for (Entry<String, Boolean> entry : availableColumns.entrySet()) {
-                    if (entry.getValue()) {
-                        selectedColums.add(entry.getKey());
-                    }
-                }
-
                 ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
                 String contentType = servletContext.getMimeType("search.xls");
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
-                ExtendedSearchResultGeneration sr =
-                        new ExtendedSearchResultGeneration(this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                HSSFWorkbook wb = sr.getResult(selectedColums);
+                SearchColumnHelper sch = new SearchColumnHelper();
+                HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
