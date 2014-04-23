@@ -83,15 +83,12 @@ public class SearchBean {
             this.stepstatus.add(s);
         }
         int restriction = ((LoginBean) Helper.getManagedBeanValue("#{LoginForm}")).getMaximaleBerechtigung();
-        //		Session session = Helper.getHibernateSession();
 
         // projects
         String projectFilter = "";
-        //		Criteria crit = session.createCriteria(Project.class);
-        //		crit.addOrder(Order.asc("titel"));
+
         if (restriction > 2) {
             projectFilter = " projectIsArchived = false ";
-            //			crit.add(Restrictions.not(Restrictions.eq("projectIsArchived", true)));
         }
         this.projects.add(Helper.getTranslation("notSelected"));
 
@@ -103,58 +100,20 @@ public class SearchBean {
         } catch (DAOException e1) {
         }
 
-        //		crit = session.createCriteria(Werkstueckeigenschaft.class);
-        //		crit.addOrder(Order.asc("titel"));
-        //		crit.setProjection(Projections.distinct(Projections.property("titel")));
         this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));
         this.masterpiecePropertyTitles.addAll(PropertyManager.getDistinctMasterpiecePropertyTitles());
-        //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-        //			this.masterpiecePropertyTitles.add((String) it.next());
-        //		}
 
-        //		crit = session.createCriteria(Vorlageeigenschaft.class);
-        //		crit.addOrder(Order.asc("titel"));
-        //		crit.setProjection(Projections.distinct(Projections.property("titel")));
         this.templatePropertyTitles.add(Helper.getTranslation("notSelected"));
         this.templatePropertyTitles.addAll(PropertyManager.getDistinctTemplatePropertyTitles());
-        //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-        //			this.templatePropertyTitles.add((String) it.next());
-        //		}
 
-        //		crit = session.createCriteria(Prozesseigenschaft.class);
-        //		crit.addOrder(Order.asc("titel"));
-        //		crit.setProjection(Projections.distinct(Projections.property("titel")));
         this.processPropertyTitles.add(Helper.getTranslation("notSelected"));
         this.processPropertyTitles.addAll(PropertyManager.getDistinctProcessPropertyTitles());
-        //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-        //			String itstr = (String) it.next();
-        //			if (itstr!=null){
-        //				this.processPropertyTitles.add(itstr);
-        //			}
-        //		}
 
-        //		crit = session.createCriteria(Schritteigenschaft.class);
-        //		crit.addOrder(Order.asc("titel"));
-        //		crit.setProjection(Projections.distinct(Projections.property("titel")));
-        //        		this.stepPropertyTitles.add(Helper.getTranslation("notSelected"));
-        //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-        //			this.stepPropertyTitles.add((String) it.next());
-        //		}
         this.stepTitles.add(Helper.getTranslation("notSelected"));
         stepTitles.addAll(StepManager.getDistinctStepTitles());
-        //		crit = session.createCriteria(Step.class);
-        //		crit.addOrder(Order.asc("titel"));
-        //		crit.setProjection(Projections.distinct(Projections.property("titel")));
-        //		this.stepTitles.add(Helper.getTranslation("notSelected"));
-        //		for (Iterator<Object> it = crit.setFirstResult(0).setMaxResults(Integer.MAX_VALUE).list().iterator(); it.hasNext();) {
-        //			this.stepTitles.add((String) it.next());
-        //		}
 
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
+        initializeRowList();
+
         fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
         fieldnameList.add(new SelectItem("PROCESSID", Helper.getTranslation("id")));
         fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
@@ -175,6 +134,28 @@ public class SearchBean {
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
         
+    }
+
+    private void initializeRowList() {
+        ExtendedSearchRow row1 = new ExtendedSearchRow();
+        row1.setFieldName("PROCESSID");
+        rowList.add(row1);
+        
+        ExtendedSearchRow row2 = new ExtendedSearchRow();
+        row2.setFieldName("PROCESSTITLE");
+        rowList.add(row2);
+        
+        ExtendedSearchRow row3 = new ExtendedSearchRow();
+        row3.setFieldName("PROJECT");
+        rowList.add(row3);
+        
+        ExtendedSearchRow row4 = new ExtendedSearchRow();
+        row4.setFieldName("METADATA");
+        rowList.add(row4);
+        
+        ExtendedSearchRow row5 = new ExtendedSearchRow();
+        row5.setFieldName("PROCESSPROPERTY");
+        rowList.add(row5);
     }
 
     public List<String> getProjects() {
@@ -288,12 +269,7 @@ public class SearchBean {
     
     public String resetFilter() {
         rowList = new ArrayList<>();
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        rowList.add(new ExtendedSearchRow());
-        
+        initializeRowList();        
         return "";
     }
     
