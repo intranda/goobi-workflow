@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
@@ -72,7 +71,6 @@ import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.export.ExportXmlLog;
-import org.goobi.production.flow.helper.ExtendedSearchResultGeneration;
 import org.goobi.production.flow.helper.SearchColumn;
 import org.goobi.production.flow.helper.SearchResultHelper;
 import org.goobi.production.flow.statistics.StatisticsManager;
@@ -156,6 +154,11 @@ public class ProcessBean extends BasicBean {
     private String addToWikiField = "";
     private String userDisplayMode = "";
 
+    private List<SearchColumn> searchField = new ArrayList<SearchColumn>();
+    private List<SelectItem> possibleItems = null;
+    private SearchColumn currentField = null;
+    private int order = 0;
+    
 //    private Map<String, Boolean> availableColumns;
 
     private boolean showStatistics = false;
@@ -2232,20 +2235,13 @@ public class ProcessBean extends BasicBean {
         this.userDisplayMode = userDisplayMode;
     }
 
-    private List<SearchColumn> searchField = new ArrayList<SearchColumn>();
-    private List<SelectItem> possibleItems = null;
-
     public List<SearchColumn> getSearchField() {
         return searchField;
     }
 
     public void setSearchField(List<SearchColumn> searchField) {
         this.searchField = searchField;
-    }
-
-    private SearchColumn currentField = null;
-    private int order = 0;
-    
+    } 
     
     public int getSizeOfFieldList() {
         return searchField.size();
