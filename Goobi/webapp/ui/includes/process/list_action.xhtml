@@ -300,17 +300,13 @@
                                 rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 
-
-
-
                                 <h:commandLink id="expandbutton10">
                                     <h:graphicImage value="images/buttons/view3.gif" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.saveSearchResult}" />
-                                    <s:effectToggle event="click" duration="0.1" forId="possibleActions10" mode="blind" appendJs="return false;" />
-
-                                    <f:ajax render="expandbutton10" />
+<!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions10" mode="blind" appendJs="return false;" /> -->
+                                    <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{!ProzessverwaltungForm.dispaySearchResult}" />
                                 </h:commandLink>
-                                <x:div id="possibleActions10" style="display:none">
+                                <x:div id="possibleActions10" rendered="#{ProzessverwaltungForm.dispaySearchResult}">
 
                                     <x:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
 

@@ -154,6 +154,7 @@ public class ProcessBean extends BasicBean {
     private String addToWikiField = "";
     private String userDisplayMode = "";
 
+    private boolean dispaySearchResult = false;
     private List<SearchColumn> searchField = new ArrayList<SearchColumn>();
     private List<SelectItem> possibleItems = null;
     private SearchColumn currentField = null;
@@ -2272,6 +2273,14 @@ public class ProcessBean extends BasicBean {
 
     public void setPossibleItems(List<SelectItem> possibleItems) {
         this.possibleItems = possibleItems;
+    }
+
+    public boolean isDispaySearchResult() {
+        return dispaySearchResult;
+    }
+
+    public void setDispaySearchResult(boolean dispaySearchResult) {
+        this.dispaySearchResult = dispaySearchResult;
     }
 
 }

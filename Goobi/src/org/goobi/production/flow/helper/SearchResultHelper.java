@@ -174,33 +174,20 @@ public class SearchResultHelper {
 
         sb.append(" FROM prozesse ");
 
-        // add table names
-        for (SearchColumn sc : columnList) {
-            String table = sc.getTableType();
-            if (!table.isEmpty()) {
-                sb.append(", ");
-                sb.append(table);
-                sb.append(" ");
-                sb.append(sc.getTableName());
-                String additional = sc.getAdditionalTable();
-                if (!additional.isEmpty()) {
-                    sb.append(", ");
-                    sb.append(additional);
-                    sb.append(" ");
-                }
-            }
-        }
-
-        sb.append(" WHERE ");
-        // add 
+       boolean leftJoin=false;
 
         for (SearchColumn sc : columnList) {
-            String clause = sc.getWhereClause();
+            String clause = sc.getJoinClause();
             if (!clause.isEmpty()) {
-                sb.append(clause + " AND ");
+                if (!leftJoin) {
+                    sb.append(" LEFT JOIN ") ;
+                } else {
+                    sb.append(" JOIN ") ;
+                }
+                sb.append(clause);
             }
         }
-
+       
         String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
         if (!sql.isEmpty()) {
             sql = sql + " AND ";
@@ -219,7 +206,7 @@ public class SearchResultHelper {
             }
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
-        
+        sb.append(" WHERE ");
         sb.append(sql);
        
         List list = ProcessManager.runSQL(sb.toString());
