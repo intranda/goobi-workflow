@@ -26,13 +26,14 @@
                 <tr>
                     <td class="eingabeBoxen_row2" colspan="2">
 
-                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2" id="rowList" width="100%" columnClasses="column1, column2, column3, column4" >
+                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2" id="rowList" width="100%"
+                            columnClasses="column1, column2, column3, column4">
 
                             <h:column>
                                 <h:selectOneMenu value="#{row.fieldName}" style="width: 100%">
                                     <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
                                         itemLabel="#{msgs[fieldname.label]}" />
-                                    <f:ajax render="@form" />
+                                    <f:ajax render="@form" execute="@form" />
                                 </h:selectOneMenu>
                             </h:column>
 
@@ -55,38 +56,36 @@
                                     <h:selectOneMenu value="#{row.stepStatus}" style="width:30%">
                                         <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
                                             itemValue="#{stepstatus.searchString}" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:selectOneMenu value="#{row.stepName}" style="width:69%; float:right">
                                         <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}"
                                             itemValue="#{stepTitles}" />
-                                        <f:ajax render="@form" />
                                     </h:selectOneMenu>
                                 </h:panelGroup>
 
 
                                 <h:selectOneMenu value="#{row.projectName}" rendered="#{row.fieldName == 'PROJECT'}" style="width:100%">
                                     <f:selectItems value="#{SearchForm.projects}" var="proj" itemLabel="#{proj}" itemValue="#{proj}" />
-                                    <f:ajax render="@form" />
+                                    <f:ajax render="@form" execute="@form" />
                                 </h:selectOneMenu>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'PROCESSPROPERTY'}" layout="block" style="width:100%">
                                     <h:selectOneMenu value="#{row.processPropertyName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.processPropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{row.processPropertyValue}" style="width: 68%; float:right">
-                                        <f:ajax render="@form" />
+
                                     </h:inputText>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'TEMPLATE'}" layout="block" style="width:100%">
                                     <h:selectOneMenu value="#{row.templatePropertyName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.templatePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{row.templatePropertyValue}" style="width: 68%; float:right">
-                                        <f:ajax render="@form" />
                                     </h:inputText>
                                 </h:panelGroup>
 
@@ -94,10 +93,9 @@
                                     <h:selectOneMenu value="#{row.masterpiecePropertyName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}"
                                             itemValue="#{proc}" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{row.masterpiecePropertyValue}" style="width: 68%; float:right">
-                                        <f:ajax render="@form" />
                                     </h:inputText>
 
                                 </h:panelGroup>
@@ -105,10 +103,9 @@
                                 <h:panelGroup rendered="#{row.fieldName == 'METADATA'}" layout="block" style="width:100%">
                                     <h:selectOneMenu value="#{row.metadataName}" style="width: 30%">
                                         <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{row.metadataValue}" style="width: 68%; float:right">
-                                        <f:ajax render="@form" />
                                     </h:inputText>
                                 </h:panelGroup>
 
