@@ -46,6 +46,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -59,7 +61,7 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
-public class ExportDms extends ExportMets {
+public class ExportDms extends ExportMets implements IExportPlugin  {
 	private static final Logger myLogger = Logger.getLogger(ExportDms.class);
 	ConfigProjects cp;
 	private boolean exportWithImages = true;
@@ -465,4 +467,19 @@ public class ExportDms extends ExportMets {
             }
         }   
 	}
+	
+	   @Override
+	    public PluginType getType() {
+	        return PluginType.Export;
+	    }
+
+	    @Override
+	    public String getTitle() {
+	        return "ExportDms";
+	    }
+
+	    @Override
+	    public String getDescription() {
+	        return getTitle();
+	    }
 }

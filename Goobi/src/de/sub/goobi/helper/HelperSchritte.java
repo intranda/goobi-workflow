@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -41,6 +42,7 @@ import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
 import ugh.dl.DigitalDocument;
@@ -146,8 +148,8 @@ public class HelperSchritte {
                     myStep.setBearbeitungszeitpunkt(myDate);
                     myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
                     logger.debug("create history events for next step");
-                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
-                            .getValue(), processId);
+                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
+                            HistoryEventType.stepOpen.getValue(), processId);
                     /* wenn es ein automatischer Schritt mit Script ist */
                     logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
                     if (myStep.isTypAutomatisch()) {
@@ -171,7 +173,7 @@ public class HelperSchritte {
             }
         }
         Process po = ProcessManager.getProcessById(processId);
-       
+
         try {
             if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true)))) {
                 ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true))), processId);
@@ -322,12 +324,17 @@ public class HelperSchritte {
     }
 
     public void executeDmsExport(Step step, boolean automatic) {
-        AutomaticDmsExport dms =
-                new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+        IExportPlugin dms = null;
+
+        if (StringUtils.isNotBlank(step.getStepPlugin())) {
+            dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+        } else {
+            dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+        }
         if (!ConfigurationHelper.getInstance().isAutomaticExportWithOcr()) {
             dms.setExportFulltext(false);
         }
-//        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
+        //        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
@@ -375,6 +382,8 @@ public class HelperSchritte {
         } catch (UghHelperException e) {
             logger.error(e);
             abortStep(step);
+        } catch (ReadException e) {
+            logger.error(e);
         }
 
     }

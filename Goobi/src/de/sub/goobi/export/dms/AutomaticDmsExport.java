@@ -46,6 +46,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -59,7 +61,7 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
-public class AutomaticDmsExport extends ExportMets {
+public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
     private static final Logger myLogger = Logger.getLogger(AutomaticDmsExport.class);
     ConfigProjects cp;
     private boolean exportWithImages = true;
@@ -201,12 +203,11 @@ public class AutomaticDmsExport extends ExportMets {
                 /* ...wenn nicht, nur ein Fileformat schreiben. */
                 gdzfile.write(benutzerHome + File.separator + atsPpnBand + ".xml");
             }
-            
+
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "DMS-Export started");
 
-     
             if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
-               
+
                 /* Success-Ordner wieder löschen */
                 if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {
                     File successFile = new File(myProzess.getProjekt().getDmsImportSuccessPath() + File.separator + myProzess.getTitel());
@@ -214,7 +215,7 @@ public class AutomaticDmsExport extends ExportMets {
                 }
             }
         }
-      
+
         return true;
     }
 
@@ -281,7 +282,6 @@ public class AutomaticDmsExport extends ExportMets {
 
     public void imageDownload(Process myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
             InterruptedException, SwapException, DAOException {
-
 
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
@@ -360,5 +360,20 @@ public class AutomaticDmsExport extends ExportMets {
                 }
             }
         }
+    }
+
+    @Override
+    public PluginType getType() {
+        return PluginType.Export;
+    }
+
+    @Override
+    public String getTitle() {
+        return "AutomaticDmsExport";
+    }
+
+    @Override
+    public String getDescription() {
+        return getTitle();
     }
 }
