@@ -14,6 +14,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Ruleset;
+import org.goobi.production.enums.PluginType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -228,5 +229,23 @@ public class AutomaticDmsExportTest {
         EasyMock.expectLastCall();
        
         PowerMock.replayAll();
+    }
+    
+    @Test
+    public void testGetType() {
+        AutomaticDmsExport dms = new AutomaticDmsExport();
+        assertEquals(PluginType.Export, dms.getType());
+    }
+    
+    @Test
+    public void testGetTitle() {
+        AutomaticDmsExport dms = new AutomaticDmsExport();
+        assertEquals("AutomaticDmsExport", dms.getTitle());
+    }
+    
+    @Test
+    public void testGetDescription() {
+        AutomaticDmsExport dms = new AutomaticDmsExport();
+        assertEquals("AutomaticDmsExport", dms.getDescription());
     }
 }

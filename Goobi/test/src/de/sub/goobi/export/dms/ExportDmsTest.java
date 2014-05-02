@@ -13,6 +13,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Ruleset;
+import org.goobi.production.enums.PluginType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,6 +49,11 @@ public class ExportDmsTest {
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
+        String configFolder = System.getenv("junitdata");;
+        if (configFolder == null) {
+            configFolder = "/opt/digiverso/junit/data/";
+        }
+        ConfigurationHelper.CONFIG_FILE_NAME =configFolder + "goobi_config.properties";
         testProcess = new Process();
         testProcess.setTitel("testprocess");
         testProcess.setId(1);
@@ -65,12 +71,6 @@ public class ExportDmsTest {
     }
 
     private void setUpConfig() {
-        String configFolder = System.getenv("junitdata");;
-        if (configFolder == null) {
-            configFolder = "/opt/digiverso/junit/data/";
-        }
-        ConfigurationHelper.CONFIG_FILE_NAME =configFolder + "goobi_config.properties";
-
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
@@ -240,6 +240,23 @@ public class ExportDmsTest {
         ExportDms dms = new ExportDms();
         dms.setExportFulltext(true);
         dms.startExport(testProcess);
-
+    }
+    
+    @Test
+    public void testGetType() {
+        ExportDms dms = new ExportDms(true);
+        assertEquals(PluginType.Export, dms.getType());
+    }
+    
+    @Test
+    public void testGetTitle() {
+        ExportDms dms = new ExportDms(true);
+        assertEquals("ExportDms", dms.getTitle());
+    }
+    
+    @Test
+    public void testGetDescription() {
+        ExportDms dms = new ExportDms(true);
+        assertEquals("ExportDms", dms.getDescription());
     }
 }
