@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses({ ConfigProjectsTest.class, DigitalCollectionsTest.class})
+@SuiteClasses({ ConfigProjectsTest.class, DigitalCollectionsTest.class, ConfigurationHelperTest.class})
 public class TestAll {
 
   
