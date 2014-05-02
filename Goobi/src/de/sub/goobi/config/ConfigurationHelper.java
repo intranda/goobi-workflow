@@ -60,14 +60,6 @@ public class ConfigurationHelper implements Serializable {
         return configLocalPath;
     }
 
-    public boolean reloadingRequired() {
-        boolean ret = false;
-        if (configLocal != null) {
-            ret = configLocal.getReloadingStrategy().reloadingRequired() || config.getReloadingStrategy().reloadingRequired();
-        }
-        ret = config.getReloadingStrategy().reloadingRequired();
-        return ret;
-    }
 
     private int getLocalInt(String inPath, int inDefault) {
         try {
