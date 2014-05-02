@@ -452,6 +452,7 @@ public class MassImportForm {
 		return l;
 	}
 
+	@Deprecated
 	public String getHotfolderPathForPlugin(int pluginId) {
 		for (GoobiHotfolder hotfolder : GoobiHotfolder.getInstances()) {
 			if (hotfolder.getTemplate() == pluginId) {
@@ -466,7 +467,7 @@ public class MassImportForm {
 	 * 
 	 * @return current format
 	 */
-
+	@Deprecated
 	public String getCurrentFormat() {
 		if (this.format != null) {
 			return this.format.getTitle();
@@ -480,6 +481,7 @@ public class MassImportForm {
 	 * @param formatTitle
 	 *            current format
 	 */
+	@Deprecated
 	public void setCurrentFormat(String formatTitle) {
 		this.format = ImportFormat.getTypeFromTitle(formatTitle);
 	}
@@ -576,10 +578,7 @@ public class MassImportForm {
 		return this.possibleDigitalCollections;
 	}
 
-	public void setPossibleDigitalCollections(List<String> possibleDigitalCollections) {
-		this.possibleDigitalCollections = possibleDigitalCollections;
-	}
-
+	@Deprecated
 	public void setProcesses(List<Process> processes) {
 		this.processes = processes;
 	}
@@ -616,21 +615,6 @@ public class MassImportForm {
 		}
 		return this.format.getTitle();
 	}
-
-	// /**
-	// * @param usablePlugins
-	// * the usablePlugins to set
-	// */
-	// public void setUsablePlugins(List<String> usablePlugins) {
-	// this.usablePlugins = usablePlugins;
-	// }
-	//
-	// /**
-	// * @return the usablePlugins
-	// */
-	// public List<String> getUsablePlugins() {
-	// return usablePlugins;
-	// }
 
 	/**
 	 * @param currentPlugin
