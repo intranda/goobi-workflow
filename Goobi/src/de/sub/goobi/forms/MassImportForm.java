@@ -802,6 +802,7 @@ public class MassImportForm {
 		return getDocstructs().size();
 	}
 
+	@Deprecated
 	public String getInclude() {
 		return "plugins/" + plugin.getTitle() + ".jsp";
 	}
