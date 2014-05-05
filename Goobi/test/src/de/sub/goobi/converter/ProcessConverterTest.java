@@ -33,6 +33,8 @@ public class ProcessConverterTest {
         String zero = (String) conv.getAsObject(null, null, "NAN");
         assertEquals("0", zero);      
                 
+        String nullValue = (String) conv.getAsObject(null, null, null);
+        assertNull(nullValue);
     }
 
     @Test
@@ -46,6 +48,8 @@ public class ProcessConverterTest {
         value = conv.getAsString(null, null, "test");
         assertEquals("test", value);
         
+        String nullValue = (String) conv.getAsString(null, null, null);
+        assertNull(nullValue);
     }
 
     

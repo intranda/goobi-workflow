@@ -26,6 +26,8 @@ public class DocketConverterTest {
         Docket docket = new Docket();
         PowerMock.mockStatic(DocketManager.class);
         EasyMock.expect(DocketManager.getDocketById(1)).andReturn(docket);
+        
+        EasyMock.expect(DocketManager.getDocketById(2)).andThrow(new DAOException("test"));        
         EasyMock.expectLastCall();
         PowerMock.replayAll();
 
@@ -35,6 +37,9 @@ public class DocketConverterTest {
         assertNull(conv.getAsObject(null, null, null));
         String zero = (String) conv.getAsObject(null, null, "NAN");
         assertEquals("0", zero);
+
+        assertNotNull(conv.getAsObject(null, null, "2"));
+        
     }
 
     @Test
@@ -48,6 +53,9 @@ public class DocketConverterTest {
 
         value = conv.getAsString(null, null, "test");
         assertEquals("test", value);
+        
+        String nullValue = (String) conv.getAsString(null, null, null);
+        assertNull(nullValue);
     }
 
     @Test(expected = ConverterException.class)
