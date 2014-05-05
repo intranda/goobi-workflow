@@ -77,7 +77,7 @@ public class MassImportFormTest {
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
-        ConfigurationHelper.getInstance().setParameter("tempfolder", folder.getRoot().getAbsolutePath() + File.separator);
+//        ConfigurationHelper.getInstance().setParameter("tempfolder", folder.getRoot().getAbsolutePath() + File.separator);
 
     }
 

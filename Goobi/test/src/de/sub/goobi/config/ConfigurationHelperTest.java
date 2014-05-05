@@ -46,7 +46,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetTemporaryFolder() {
-        assertEquals("/opt/digiverso/goobi/tmp/", ConfigurationHelper.getInstance().getTemporaryFolder());
+        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getTemporaryFolder());
     }
 
     @Test
