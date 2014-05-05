@@ -447,7 +447,7 @@ public class MassImportFormTest {
         massImportForm.setUploadedFile(file);
         massImportForm.uploadFile();
         
-        File dest = new File(folder.getRoot().getAbsolutePath(), "junit.xml");
+        File dest = new File(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
         assertTrue(dest.exists() && dest.isFile());
     }
     
