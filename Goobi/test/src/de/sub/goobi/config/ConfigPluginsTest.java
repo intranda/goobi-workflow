@@ -2,12 +2,11 @@ package de.sub.goobi.config;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-
 import org.apache.commons.configuration.XMLConfiguration;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +24,11 @@ public class ConfigPluginsTest {
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
     }
     
+    @After
+    public void tearDown() {
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
+        ConfigurationHelper.getInstance().setParameter("pluginFolder", "/opt/digiverso/goobi/plugins/");
+    }
     
     @Test
     public void testConfigPluginsWithoutFile(){
