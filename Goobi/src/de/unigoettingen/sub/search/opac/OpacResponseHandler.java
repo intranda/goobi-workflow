@@ -27,6 +27,8 @@ package de.unigoettingen.sub.search.opac;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.xml.sax.Attributes;
@@ -131,10 +133,9 @@ public class OpacResponseHandler extends DefaultHandler {
 	}
 
 
-	public String getSessionId() {
-		//TODO HACK
+	public String getSessionId(String encoding) throws UnsupportedEncodingException {
 		if (!this.cookie.equals("")){
-			return this.sessionId + "/COOKIE=" + this.cookie;
+			return URLEncoder.encode(this.sessionId, encoding) + "/COOKIE=" + URLEncoder.encode(this.cookie, encoding);
 		}
 		return this.sessionId;
 	}

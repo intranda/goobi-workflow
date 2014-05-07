@@ -454,7 +454,7 @@ public class GetOpac {
 		// get pica longtitle
 		int retrieveNumber = numberOfHits + 1;
 		return retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.data_character_encoding + SET_ID_URL
-				+ this.lastOpacResult.getSet() + SESSIONID_URL + URLEncoder.encode(this.lastOpacResult.getSessionId(), URL_CHARACTER_ENCODING)
+				+ this.lastOpacResult.getSet() + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING)
 				+ SHOW_LONGTITLE_NR_URL + retrieveNumber);
 	}
 
@@ -477,7 +477,7 @@ public class GetOpac {
 		// return more than the first 10 hits
 		for (int i = 10; i < numberOfHits; i += 10) {
 			String tmpSearch = retrieveDataFromOPAC("/XML=1.0" + DATABASE_URL + this.cat.getDataBase() + SET_ID_URL + search.getSet() + SESSIONID_URL
-					+ search.getSessionId() + "/TTL=" + (i - 9) + SHOW_NEXT_HITS_URL + (i + 1));
+					+ search.getSessionId(URL_CHARACTER_ENCODING) + "/TTL=" + (i - 9) + SHOW_NEXT_HITS_URL + (i + 1));
 			search = parseOpacResponse(tmpSearch);
 			result[0].addAll(search.getOpacResponseItemPpns());
 			result[1].addAll(search.getOpacResponseItemTitles());
