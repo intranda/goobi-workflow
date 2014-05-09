@@ -212,7 +212,7 @@ public class UghHelper {
 
 	public String convertLanguage(String inLanguage) {
 		/* Datei zeilenweise durchlaufen und die Sprache vergleichen */
-		FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContextHelper.getCurrentFacesContext();
 		String filename;
 		try {
 			if (context != null) {
@@ -246,7 +246,7 @@ public class UghHelper {
 	public String convertUmlaut(String inString) {
 		String temp = inString;
 		/* Pfad zur Datei ermitteln */
-		FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContextHelper.getCurrentFacesContext();
 		String filename;
 
 		if (context != null) {

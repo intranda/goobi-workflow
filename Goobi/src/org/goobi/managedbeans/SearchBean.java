@@ -32,13 +32,12 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import org.goobi.beans.Project;
-
 import org.goobi.production.search.api.ExtendedSearchRow;
 
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -280,7 +279,7 @@ public class SearchBean {
             search += row.createSearchString();
         }
      
-        ProcessBean form = (ProcessBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
+        ProcessBean form = (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
         if (form != null) {
             form.filter = search;
             form.setModusAnzeige("aktuell");

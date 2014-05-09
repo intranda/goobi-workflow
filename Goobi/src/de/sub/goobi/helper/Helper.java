@@ -109,7 +109,7 @@ public class Helper implements Serializable, Observer {
     @SuppressWarnings("rawtypes")
     public static String getRequestParameter(String Parameter) {
         /* einen bestimmten übergebenen Parameter ermitteln */
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         Map requestParams = context.getExternalContext().getRequestParameterMap();
         String myParameter = (String) requestParams.get(Parameter);
         if (myParameter == null) {
@@ -188,7 +188,7 @@ public class Helper implements Serializable, Observer {
      * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
      */
     private static void setMeldung(String control, String meldung, String beschreibung, boolean nurInfo) {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
         // Never forget: Strings are immutable
         meldung = meldung.replaceAll("<", "&lt;");
@@ -259,7 +259,7 @@ public class Helper implements Serializable, Observer {
     }
 
     public static Object getManagedBeanValue(String expr) {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         if (context == null) {
             return null;
         } else {
@@ -284,8 +284,8 @@ public class Helper implements Serializable, Observer {
     private static void loadMsgs() {
         commonMessages = new HashMap<Locale, ResourceBundle>();
         localMessages = new HashMap<Locale, ResourceBundle>();
-        if (FacesContext.getCurrentInstance() != null) {
-            Iterator<Locale> polyglot = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
+        if (FacesContextHelper.getCurrentFacesContext() != null) {
+            Iterator<Locale> polyglot = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
             while (polyglot.hasNext()) {
                 Locale language = polyglot.next();
                 commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
@@ -326,7 +326,7 @@ public class Helper implements Serializable, Observer {
 
         Locale desiredLanguage = null;
         try {
-            desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+            desiredLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
         } catch (NullPointerException skip) {
         }
         if (desiredLanguage != null) {
@@ -340,7 +340,7 @@ public class Helper implements Serializable, Observer {
         String value = "";
         Locale desiredLanguage = null;
         try {
-            desiredLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+            desiredLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
         } catch (NullPointerException skip) {
         }
         if (desiredLanguage != null) {
@@ -386,7 +386,7 @@ public class Helper implements Serializable, Observer {
     }
 
     public static String getBaseUrl() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
         String fullpath = req.getRequestURL().toString();
         String servletpath = context.getExternalContext().getRequestServletPath();

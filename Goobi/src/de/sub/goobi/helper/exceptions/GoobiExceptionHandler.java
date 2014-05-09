@@ -46,6 +46,8 @@ import javax.faces.event.ExceptionQueuedEventContext;
 
 import org.apache.log4j.Logger;
 
+import de.sub.goobi.helper.FacesContextHelper;
+
 /**
  * 
  * @author Robert Sehr
@@ -79,7 +81,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 	            if (!t.getClass().equals(ViewExpiredException.class)) {
 	                logger.error("CLASS: " + t.getClass().getName());
 	            }
-	            FacesContext fc = FacesContext.getCurrentInstance();
+	            FacesContext fc = FacesContextHelper.getCurrentFacesContext();
                 Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
 	            NavigationHandler nav = fc.getApplication().getNavigationHandler();
 

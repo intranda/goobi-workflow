@@ -66,6 +66,7 @@ import org.joda.time.Years;
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -680,7 +681,7 @@ public class ProjectBean extends BasicBean {
 	}
 	
 	public void CreateExcel() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
+		FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
 		if (!facesContext.getResponseComplete()) {
 
 			/*

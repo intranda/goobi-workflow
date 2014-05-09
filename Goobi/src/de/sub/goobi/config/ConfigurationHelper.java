@@ -12,6 +12,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
 
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 
@@ -141,7 +142,7 @@ public class ConfigurationHelper implements Serializable {
      * den absoluten Pfad für die temporären Images zurückgeben
      */
     public static String getTempImagesPathAsCompleteDirectory() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         String filename;
         if (imagesPath != null) {
             filename = imagesPath;
@@ -161,7 +162,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getServletPathAsUrl() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         return context.getExternalContext().getRequestContextPath() + "/";
     }
 

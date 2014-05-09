@@ -38,7 +38,6 @@ import java.util.TimerTask;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.text.StrTokenizer;
@@ -56,6 +55,7 @@ import de.sub.goobi.modul.ExtendedProzessImpl;
 import de.sub.goobi.persistence.managers.ProcessManager;
 //import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.unigoettingen.goobi.module.api.exception.GoobiException;
 import de.unigoettingen.goobi.module.api.exception.GoobiModuleException;
@@ -261,7 +261,7 @@ public class ModuleServerForm {
 		myRunningShortSessions.put(tempID, processId);
 
 		GoobiModuleParameter gmp1 = new GoobiModuleParameter(processId, tempID, myModule.getModuleClient().longsessionID, typeParameters);
-		HttpSession insession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		HttpSession insession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
 
 		String applicationUrl = new HelperForm().getServletPathWithHostAsUrl();
 		gmp1.put("return_url", applicationUrl + HelperForm.MAIN_JSF_PATH + "/AktuelleSchritteBearbeiten.jsf?jsessionId=" + insession.getId());

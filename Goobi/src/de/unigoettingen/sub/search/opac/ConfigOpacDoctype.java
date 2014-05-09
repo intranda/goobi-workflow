@@ -30,7 +30,8 @@ package de.unigoettingen.sub.search.opac;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.faces.context.FacesContext;
+
+import de.sub.goobi.helper.FacesContextHelper;
 
 public class ConfigOpacDoctype {
 	private String title = "";
@@ -91,7 +92,7 @@ public class ConfigOpacDoctype {
 	}
 
 	public String getLocalizedLabel() {
-		String currentLocale = FacesContext.getCurrentInstance().getViewRoot().getLocale().getLanguage();
+		String currentLocale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale().getLanguage();
 		if (currentLocale != null && !currentLocale.equals("")) {
 			String answer = this.labels.get(currentLocale);
 			if (answer != null && !answer.equals("")) {

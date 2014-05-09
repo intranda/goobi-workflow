@@ -36,6 +36,7 @@ import java.util.TimeZone;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ import org.reflections.Reflections;
 
 import ugh.dl.Fileformat;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -215,12 +217,13 @@ public class HelperForm {
     }
 
     public String getServletPathAsUrl() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return context.getExternalContext().getRequestContextPath() + "/";
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        ExternalContext external = context.getExternalContext();
+        return external.getRequestContextPath() + "/";
     }
 
     public String getServletPathWithHostAsUrl() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
@@ -231,7 +234,7 @@ public class HelperForm {
     }
 
     public boolean getMessagesExist() {
-        return FacesContext.getCurrentInstance().getMessages().hasNext();
+        return FacesContextHelper.getCurrentFacesContext().getMessages().hasNext();
     }
 
     public TimeZone getTimeZone() {
@@ -251,7 +254,7 @@ public class HelperForm {
     }
 
     public boolean getIsIE() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         if (request.getHeader("User-Agent").contains("MSIE")) {
             return true;
@@ -261,7 +264,7 @@ public class HelperForm {
     }
 
     public String getUserAgent() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         return request.getHeader("User-Agent");

@@ -51,6 +51,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -165,7 +166,7 @@ public class UserBean extends BasicBean {
         }
 
         /* Pfad zur Datei ermitteln */
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         String filename =
                 session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator + "goobi_loginBlacklist.txt";

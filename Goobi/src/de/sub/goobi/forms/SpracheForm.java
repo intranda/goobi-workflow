@@ -40,6 +40,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 
 /**
@@ -58,7 +59,7 @@ public class SpracheForm {
 	    // TODO get languages from web.xml
 		String p = ConfigurationHelper.getInstance().getDefaultLanguage();
 		if (p != null && p.length() > 0) {
-			FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(p));
+		    FacesContextHelper.getCurrentFacesContext().getViewRoot().setLocale(new Locale(p));
 		}
 	}
 
@@ -88,9 +89,9 @@ public class SpracheForm {
 	 */
 	public List<Map<String, Object>> getSupportedLocales() {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		Locale currentDisplayLanguage = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+		Locale currentDisplayLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
 		// It seems we have an old Faces API, Faces 2.1’s getSupportedLocales() returns Iterator<Locale> → TODO: Update JSF API
-		Iterator<Locale> localesIterator = FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
+		Iterator<Locale> localesIterator = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
 		while (localesIterator.hasNext()) {
 			Locale supportedLocale = localesIterator.next();
 			if (supportedLocale.getLanguage().length() > 0) {
@@ -119,7 +120,7 @@ public class SpracheForm {
 		} else {
 			locale = new Locale(languageCode[0]);
 		}
-		FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContextHelper.getCurrentFacesContext();
 		context.getViewRoot().setLocale(locale);
 		context.getExternalContext().getSessionMap().put(SESSION_LOCALE_FIELD_ID, locale);
 	}
@@ -136,7 +137,7 @@ public class SpracheForm {
 	}
 
 	public Locale getLocale() {
-		FacesContext fac = FacesContext.getCurrentInstance();
+		FacesContext fac = FacesContextHelper.getCurrentFacesContext();
 		@SuppressWarnings("rawtypes")
 		Map session = fac.getExternalContext().getSessionMap();
 		UIViewRoot frame = fac.getViewRoot();

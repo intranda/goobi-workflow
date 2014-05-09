@@ -85,6 +85,7 @@ import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
@@ -1840,7 +1841,7 @@ public class Metadaten {
     public String getBild() {
         BildPruefen();
         /* Session ermitteln */
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
     }
@@ -1985,7 +1986,7 @@ public class Metadaten {
                     myLogger.trace("myBildCounter: " + this.myBildCounter);
 
                     /* Session ermitteln */
-                    FacesContext context = FacesContext.getCurrentInstance();
+                    FacesContext context = FacesContextHelper.getCurrentFacesContext();
                     HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
                     String mySession = session.getId() + "_" + this.myBildCounter + ".png";
                     myLogger.trace("facescontext");

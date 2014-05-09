@@ -49,6 +49,8 @@ import com.sun.media.jai.codec.ImageEncoder;
 import com.sun.media.jai.codec.TIFFEncodeParam;
 
 import org.goobi.beans.Process;
+
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -103,7 +105,7 @@ public class Multipage {
 	}
 
 	public void ExportStart(Process inProzess) throws IOException, InterruptedException, SwapException, DAOException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
+		FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
 		if (!facesContext.getResponseComplete()) {
 			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 

@@ -71,6 +71,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -759,7 +760,7 @@ public class MassImportForm {
 		logger.debug("generate docket for process list");
 		String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
 		File xsltfile = new File(rootpath, "docket_multipage.xsl");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
+		FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
 		if (!facesContext.getResponseComplete()) {
 			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 			String fileName = "batch_docket" + ".pdf";

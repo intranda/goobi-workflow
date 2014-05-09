@@ -94,6 +94,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import org.goobi.beans.Process;
 
 
+
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -102,6 +103,7 @@ import de.sub.goobi.export.download.ExportPdf;
 import de.sub.goobi.export.download.Multipage;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
@@ -1510,42 +1512,42 @@ public class ProcessBean extends BasicBean {
 
     public void StatisticsStatusVolumes() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsUsergroups() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsRuntimeSteps() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsProduction() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsStorage() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsCorrection() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsTroughput() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsProject() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
@@ -1717,7 +1719,7 @@ public class ProcessBean extends BasicBean {
      * transforms xml logfile with given xslt and provides download
      */
     public void TransformXml() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
             String OutputFileName = "export.xml";
             /*
@@ -1799,7 +1801,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void CreateExcel() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
             /*
@@ -1832,7 +1834,7 @@ public class ProcessBean extends BasicBean {
 //    }
 
     public void generateResultAsPdf() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
             /*
@@ -1897,7 +1899,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void generateResult() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
             /*

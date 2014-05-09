@@ -56,6 +56,7 @@ import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -90,7 +91,7 @@ public class ExportPdf extends ExportMets {
 
 		myLogger.debug("METS file created: " + metsTempFile);
 
-		FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContextHelper.getCurrentFacesContext();
 		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
 		String fullpath = req.getRequestURL().toString();
 		String servletpath = context.getExternalContext().getRequestServletPath();

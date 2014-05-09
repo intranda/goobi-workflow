@@ -49,6 +49,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import de.sub.goobi.forms.SessionForm;
+import de.sub.goobi.helper.FacesContextHelper;
 
 @SuppressWarnings("deprecation")
 public class SessionCounterFilter implements Filter {
@@ -88,7 +89,7 @@ public class SessionCounterFilter implements Filter {
 
     private FacesContext getFacesContext(ServletRequest request, ServletResponse response) {
         // Try to get it first
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (facesContext != null)
             return facesContext;
 

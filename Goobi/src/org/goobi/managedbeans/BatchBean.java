@@ -49,6 +49,7 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Batch;
 import de.sub.goobi.helper.BatchProcessHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -259,7 +260,7 @@ public class BatchBean extends BasicBean {
         logger.debug("generate docket for process list");
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         File xsltfile = new File(rootpath, "docket_multipage.xsl");
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         List<Process> docket = new ArrayList<Process>();
         if (this.selectedBatches.size() == 0) {
             Helper.setFehlerMeldung("noBatchSelected");

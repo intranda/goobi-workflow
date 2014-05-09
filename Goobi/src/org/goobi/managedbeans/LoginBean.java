@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.goobi.beans.User;
@@ -42,6 +41,7 @@ import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -67,7 +67,7 @@ public class LoginBean {
         this.myBenutzer = null;
         this.schonEingeloggt = false;
         SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
@@ -113,7 +113,7 @@ public class LoginBean {
                 if (b.istPasswortKorrekt(this.passwort)) {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
                     SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-                    HttpSession mySession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+                    HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
                     if (!temp.BenutzerInAndererSessionAktiv(mySession, b)) {
                         /* in der Session den Login speichern */
                         temp.sessionBenutzerAktualisieren(mySession, b);
@@ -140,7 +140,7 @@ public class LoginBean {
 
     public String NochmalEinloggen() {
         SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         /* in der Session den Login speichern */
         temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
@@ -150,7 +150,7 @@ public class LoginBean {
 
     public String EigeneAlteSessionsAufraeumen() {
         SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         temp.alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
         /* in der Session den Login speichern */
         temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
@@ -169,7 +169,7 @@ public class LoginBean {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
             SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-            temp.sessionBenutzerAktualisieren((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false), this.myBenutzer);
+            temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false), this.myBenutzer);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";

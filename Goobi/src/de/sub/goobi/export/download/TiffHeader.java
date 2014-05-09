@@ -40,6 +40,8 @@ import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 
+import de.sub.goobi.helper.FacesContextHelper;
+
 
 /**
  * Die Klasse TiffHeader dient zur Generierung einer Tiffheaderdatei *.conf
@@ -128,7 +130,7 @@ public class TiffHeader {
 	}
 
 	public void ExportStart() throws IOException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
+		FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
 		if (!facesContext.getResponseComplete()) {
 			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 			String fileName = "tiffwriter.conf";

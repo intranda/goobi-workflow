@@ -42,6 +42,8 @@ import javax.servlet.http.HttpSession;
 
 import org.goobi.beans.User;
 
+import de.sub.goobi.helper.FacesContextHelper;
+
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
  * 
@@ -89,7 +91,7 @@ public class SessionForm {
 		map.put("userid", Integer.valueOf(0));
 		map.put("session", insession);
 		map.put("browserIcon", "none.png");
-		FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContextHelper.getCurrentFacesContext();
 		if (context != null) {
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
