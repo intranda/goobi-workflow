@@ -58,11 +58,11 @@ public class HelperFormTest {
         EasyMock.expect(externalContext.getRequestContextPath()).andReturn("junit").anyTimes();
 
         EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
-        EasyMock.expect(root.getLocale()).andReturn(Locale.ENGLISH).anyTimes();
+        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
 
         EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
         List<Locale> locale = new ArrayList<>();
-        locale.add(Locale.ENGLISH);
+        locale.add(Locale.GERMAN);
 
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
 
