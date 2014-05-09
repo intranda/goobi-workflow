@@ -55,9 +55,7 @@ import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.export.dms.ExportDms_CorrectRusdml;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
@@ -131,13 +129,6 @@ public class ExportMets {
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
-
-        /* nur beim Rusdml-Projekt die Metadaten aufbereiten */
-        ConfigProjects cp = new ConfigProjects(myProzess.getProjekt().getTitel());
-        if (cp.getParamList("dmsImport.check").contains("rusdml")) {
-            ExportDms_CorrectRusdml expcorr = new ExportDms_CorrectRusdml(myProzess, this.myPrefs, gdzfile);
-            atsPpnBand = expcorr.correctionStart();
-        }
 
         String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
 
