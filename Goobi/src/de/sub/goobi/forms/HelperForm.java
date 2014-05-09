@@ -162,14 +162,7 @@ public class HelperForm {
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
             }
-
         }
-
-        //        for (MetadataFormat ffh : MetadataFormat.values()) {
-        //            if (!ffh.equals(MetadataFormat.RDF)) {
-        //                ffs.add(new SelectItem(ffh.getName(), null));
-        //            }
-        //        }
         return ffs;
     }
 
@@ -188,13 +181,6 @@ public class HelperForm {
             }
 
         }
-
-        //        for (MetadataFormat ffh : MetadataFormat.values()) {
-        //            if (ffh.isUsableForInternal())
-        //                if (!ffh.equals(MetadataFormat.RDF)) {
-        //                    ffs.add(new SelectItem(ffh.getName(), null));
-        //                }
-        //        }
         return ffs;
     }
 
