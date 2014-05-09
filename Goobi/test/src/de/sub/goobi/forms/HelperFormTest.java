@@ -22,6 +22,7 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -31,6 +32,16 @@ public class HelperFormTest {
 
     @Before
     public void setUp() {
+        String datafolder = System.getenv("junitdata");
+        if (datafolder == null) {
+            datafolder = "/opt/digiverso/junit/data/";
+        }
+        ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
+
+        ConfigurationHelper.getInstance().setParameter("localMessages", datafolder);
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
+        ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
+        
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);
         PowerMock.mockStatic(UIViewRoot.class);
