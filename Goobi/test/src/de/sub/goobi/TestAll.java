@@ -9,7 +9,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 @RunWith(Suite.class)
 @SuiteClasses({ de.sub.goobi.config.TestAll.class, de.sub.goobi.converter.TestAll.class, de.sub.goobi.export.dms.TestAll.class,
-        de.sub.goobi.forms.TestAll.class, OldTests.class })
+        de.sub.goobi.forms.TestAll.class, OldTests.class, de.sub.goobi.export.download.TestAll.class })
 public class TestAll {
 
     
