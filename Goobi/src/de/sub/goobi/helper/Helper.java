@@ -288,7 +288,11 @@ public class Helper implements Serializable, Observer {
             Iterator<Locale> polyglot = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
             while (polyglot.hasNext()) {
                 Locale language = polyglot.next();
+                try {
                 commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                } catch (Exception e) {
+                    myLogger.warn("Cannot load messages for language " + language.getLanguage());
+                }
                 File file = new File(ConfigurationHelper.getInstance().getPathForLocalMessages());
                 if (file.exists()) {
                     // Load local message bundle from file system only if file exists;
