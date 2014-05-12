@@ -70,7 +70,7 @@
 		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
 			<fileset dir="${private.dir}" />
 		</copy>
-		<move tofile="${dir.build.classes}/goobi_config.properties" file="${dir.build.classes}/template.properties" />
+		<move tofile="${dir.build.classes}/goobi_config.properties" file="${dir.build.classes}/template.properties"  failonerror="false"/>
 	</target>
 
 	<!-- Copy configuration files. -->
@@ -97,7 +97,7 @@
 	</target>
 
 	<!-- copy sources to build directory -->
-	<target name="copySources" depends="createDirs" description="Copy the sources to the build directory">
+	<target name="copySources" depends="createDirs, resources, copyConfig" description="Copy the sources to the build directory">
 		<copy todir="${dir.build.src}">
 			<fileset dir="${dir.src}" />
 			<fileset dir="${dir.src-dubious}" />
