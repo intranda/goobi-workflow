@@ -1864,19 +1864,20 @@ public class ProcessBean extends BasicBean {
                     rowList.add(row);
                 }
                 Document document = new Document();
-                Rectangle a4quer = new Rectangle(PageSize.A3.getHeight(), PageSize.A3.getWidth());
+                Rectangle a4quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
                 PdfWriter.getInstance(document, out);
                 document.setPageSize(a4quer);
                 document.open();
                 if (rowList.size() > 0) {
                     Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
-
                     document.add(p);
-                    PdfPTable table = new PdfPTable(9);
+                    PdfPTable table = new PdfPTable(rowList.get(0).size());
                     table.setSpacingBefore(20);
+                    
                     for (int i = 1; i < rowList.size(); i++) {
 
                         List<HSSFCell> row = rowList.get(i);
+                        table.completeRow();
                         for (int j = 0; j < row.size(); j++) {
                             HSSFCell myCell = row.get(j);
                             // TODO aufhübschen und nicht toString() nutzen

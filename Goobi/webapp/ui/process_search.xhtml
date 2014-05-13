@@ -102,7 +102,7 @@
 
                                 <h:panelGroup rendered="#{row.fieldName == 'METADATA'}" layout="block" style="width:100%">
                                     <h:selectOneMenu value="#{row.metadataName}" style="width: 30%">
-                                        <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
+                                        <f:selectItems value="#{SearchForm.metadataTitles}" var="proc" itemLabel="#{msgs[proc]}" itemValue="#{proc}" />
                                         <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{row.metadataValue}" style="width: 68%; float:right">
