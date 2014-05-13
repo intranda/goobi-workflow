@@ -80,6 +80,11 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         this.exportFulltext = exportFulltext;
     }
 
+    @Override
+    public void setExportImages(boolean exportImages) {
+        exportWithImages = exportImages;
+    }
+    
     /**
      * DMS-Export an eine gewünschte Stelle
      * 

@@ -266,4 +266,15 @@ public class ProcessManager implements IManager, Serializable {
         }
         return answer;
     }
+    
+    public static String getExportPluginName(int processId) {
+        String answer = "";
+        try {
+            answer = ProcessMysqlHelper.getExportPluginName(processId);
+        } catch (SQLException e) {
+            logger.error("Cannot not load information about process with id " + processId, e);
+        }
+        
+        return answer;
+    }
 }

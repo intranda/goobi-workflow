@@ -50,6 +50,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -70,6 +71,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.PluginType;
 import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.SearchColumn;
 import org.goobi.production.flow.helper.SearchResultHelper;
@@ -77,6 +79,8 @@ import org.goobi.production.flow.statistics.StatisticsManager;
 import org.goobi.production.flow.statistics.StatisticsRenderingElement;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
@@ -92,8 +96,6 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
-
-
 
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -161,8 +163,8 @@ public class ProcessBean extends BasicBean {
     private List<SelectItem> possibleItems = null;
     private SearchColumn currentField = null;
     private int order = 0;
-    
-//    private Map<String, Boolean> availableColumns;
+
+    //    private Map<String, Boolean> availableColumns;
 
     private boolean showStatistics = false;
 
@@ -197,7 +199,6 @@ public class ProcessBean extends BasicBean {
 
         searchField.add(new SearchColumn(order++));
 
-       
     }
 
     /**
@@ -798,7 +799,13 @@ public class ProcessBean extends BasicBean {
     }
 
     public void ExportDMS() {
-        ExportDms export = new ExportDms();
+        IExportPlugin export = null;
+        String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
+        if (StringUtils.isNotEmpty(pluginName)) {
+            export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+        } else {
+            export = new ExportDms();
+        }
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
@@ -813,9 +820,16 @@ public class ProcessBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public void ExportDMSPage() {
-        ExportDms export = new ExportDms();
+
         Boolean flagError = false;
         for (Process proz : (List<Process>) this.paginator.getList()) {
+            IExportPlugin export = null;
+            String pluginName = ProcessManager.getExportPluginName(proz.getId());
+            if (StringUtils.isNotEmpty(pluginName)) {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            } else {
+                export = new ExportDms();
+            }
             try {
                 export.startExport(proz);
             } catch (Exception e) {
@@ -843,9 +857,17 @@ public class ProcessBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public void ExportDMSSelection() {
-        ExportDms export = new ExportDms();
+
         for (Process proz : (List<Process>) this.paginator.getList()) {
+
             if (proz.isSelected()) {
+                IExportPlugin export = null;
+                String pluginName = ProcessManager.getExportPluginName(proz.getId());
+                if (StringUtils.isNotEmpty(pluginName)) {
+                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                } else {
+                    export = new ExportDms();
+                }
                 try {
                     export.startExport(proz);
                 } catch (Exception e) {
@@ -859,8 +881,16 @@ public class ProcessBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public void ExportDMSHits() {
-        ExportDms export = new ExportDms();
+
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
+            IExportPlugin export = null;
+            String pluginName = ProcessManager.getExportPluginName(proz.getId());
+            if (StringUtils.isNotEmpty(pluginName)) {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            } else {
+                export = new ExportDms();
+            }
+
             try {
                 export.startExport(proz);
             } catch (Exception e) {
@@ -1524,7 +1554,8 @@ public class ProcessBean extends BasicBean {
 
     public void StatisticsRuntimeSteps() {
         this.statisticsManager =
-                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                        filter);
     }
 
     public void StatisticsProduction() {
@@ -1533,7 +1564,8 @@ public class ProcessBean extends BasicBean {
     }
 
     public void StatisticsStorage() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsCorrection() {
@@ -1547,7 +1579,8 @@ public class ProcessBean extends BasicBean {
     }
 
     public void StatisticsProject() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
@@ -1825,13 +1858,13 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-//    public Map<String, Boolean> getAvailableColumns() {
-//        return availableColumns;
-//    }
-//
-//    public void setAvailableColumns(Map<String, Boolean> availableColumns) {
-//        this.availableColumns = availableColumns;
-//    }
+    //    public Map<String, Boolean> getAvailableColumns() {
+    //        return availableColumns;
+    //    }
+    //
+    //    public void setAvailableColumns(Map<String, Boolean> availableColumns) {
+    //        this.availableColumns = availableColumns;
+    //    }
 
     public void generateResultAsPdf() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
@@ -1873,7 +1906,7 @@ public class ProcessBean extends BasicBean {
                     document.add(p);
                     PdfPTable table = new PdfPTable(rowList.get(0).size());
                     table.setSpacingBefore(20);
-                    
+
                     for (int i = 1; i < rowList.size(); i++) {
 
                         List<HSSFCell> row = rowList.get(i);
@@ -1915,7 +1948,7 @@ public class ProcessBean extends BasicBean {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
-                
+
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2245,8 +2278,8 @@ public class ProcessBean extends BasicBean {
 
     public void setSearchField(List<SearchColumn> searchField) {
         this.searchField = searchField;
-    } 
-    
+    }
+
     public int getSizeOfFieldList() {
         return searchField.size();
     }

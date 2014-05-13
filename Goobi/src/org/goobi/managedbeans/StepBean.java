@@ -43,6 +43,7 @@ import java.util.TreeMap;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Processproperty;
@@ -54,6 +55,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
@@ -1077,9 +1079,14 @@ public class StepBean extends BasicBean {
     }
 
     public void ExportDMS() {
-        ExportDms export = new ExportDms();
+        IExportPlugin dms = null;
+        if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+            dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
+        } else {
+            dms = new ExportDms();
+        }
         try {
-            export.startExport(this.mySchritt.getProzess());
+            dms.startExport(this.mySchritt.getProzess());
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on export", e.getMessage());
             myLogger.error(e);

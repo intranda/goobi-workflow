@@ -27,5 +27,7 @@ public interface IExportPlugin extends IPlugin {
     TypeNotAllowedForParentException;
 
     public void setExportFulltext(boolean exportFulltext);
+    
+    public void setExportImages(boolean exportImages);
 
 }

@@ -79,6 +79,11 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
     public void setExportFulltext(boolean exportFulltext) {
         this.exportFulltext = exportFulltext;
     }
+    
+    @Override
+    public void setExportImages(boolean exportImages) {
+        exportWithImages = exportImages;
+    }
 
     /**
      * DMS-Export an eine gewünschte Stelle

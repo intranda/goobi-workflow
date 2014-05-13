@@ -39,6 +39,7 @@ import java.util.TreeMap;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Processproperty;
@@ -49,6 +50,7 @@ import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
@@ -187,15 +189,15 @@ public class BatchStepHelper {
             if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
-//            try {
-                PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            //            try {
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
 
-//                ProcessManager.saveProcess(this.currentStep.getProzess());
-                Helper.setMeldung("Property saved");
-//            } catch (DAOException e) {
-//                logger.error(e);
-//                Helper.setFehlerMeldung("Properties could not be saved");
-//            }
+            //                ProcessManager.saveProcess(this.currentStep.getProzess());
+            Helper.setMeldung("Property saved");
+            //            } catch (DAOException e) {
+            //                logger.error(e);
+            //                Helper.setFehlerMeldung("Properties could not be saved");
+            //            }
         }
     }
 
@@ -260,15 +262,15 @@ public class BatchStepHelper {
                     }
                 }
 
-//                try {
-                    PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+                //                try {
+                PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
 
-//                    ProcessManager.saveProcess(process);
-//                } catch (DAOException e) {
-//                    error = true;
-//                    logger.error(e);
-//                    Helper.setFehlerMeldung("Properties for process " + process.getTitel() + " could not be saved");
-//                }
+                //                    ProcessManager.saveProcess(process);
+                //                } catch (DAOException e) {
+                //                    error = true;
+                //                    logger.error(e);
+                //                    Helper.setFehlerMeldung("Properties for process " + process.getTitel() + " could not be saved");
+                //                }
             }
         }
         if (!error) {
@@ -517,9 +519,9 @@ public class BatchStepHelper {
                 StepManager.saveStep(temp);
                 HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
                         .getProzess().getId());
-//                this.currentStep.getProzess().getHistory()
-//                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
-//                                .getProzess()));
+                //                this.currentStep.getProzess().getHistory()
+                //                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
+                //                                .getProzess()));
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
@@ -774,14 +776,18 @@ public class BatchStepHelper {
 
             }
         }
-
     }
 
     public void ExportDMS() {
         for (Step step : this.steps) {
-            ExportDms export = new ExportDms();
+            IExportPlugin dms = null;
+            if (StringUtils.isNotBlank(step.getStepPlugin())) {
+                dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+            } else {
+                dms = new ExportDms();
+            }
             try {
-                export.startExport(step.getProzess());
+                dms.startExport(step.getProzess());
             } catch (Exception e) {
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
                 logger.error(e);
@@ -806,7 +812,7 @@ public class BatchStepHelper {
             }
 
             try {
-//                ProcessManager.saveProcess(s.getProzess());
+                //                ProcessManager.saveProcess(s.getProzess());
                 StepManager.saveStep(s);
             } catch (DAOException e) {
             }

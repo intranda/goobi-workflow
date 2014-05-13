@@ -46,7 +46,7 @@ class ProcessMysqlHelper implements Serializable {
             }
         }
     }
-    
+
     public static Process getProcessByTitle(String inTitle) throws SQLException {
         Connection connection = null;
         String sql = "SELECT * FROM prozesse WHERE Titel LIKE ?";
@@ -100,11 +100,9 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
- 
-
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
-            
+
             // delete metadata
             MetadataManager.deleteMetadata(o.getId());
 
@@ -275,8 +273,6 @@ class ProcessMysqlHelper implements Serializable {
             return null;
         }
     };
-
-
 
     private static void insertProcess(Process o) throws SQLException {
         String sql = "INSERT INTO prozesse " + generateInsertQuery(false) + generateValueQuery(false);
@@ -738,6 +734,21 @@ class ProcessMysqlHelper implements Serializable {
 
     public static String getProcessTitle(int processId) throws SQLException {
         String sql = "SELECT titel from prozesse WHERE ProzesseID = " + processId;
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static String getExportPluginName(int processId) throws SQLException {
+        String sql =
+                "SELECT stepPlugin FROM schritte WHERE schritte.stepPlugin != '' AND schritte.typExportDMS = true AND schritte.ProzesseID = "
+                        + processId + " LIMIT 1";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

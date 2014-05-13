@@ -52,7 +52,12 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
+
 import org.goobi.beans.Process;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
+
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -964,17 +969,23 @@ public class GoobiScript {
     }
 
     private void exportDms(List<Process> processes, String exportImages, boolean exportFulltext) {
-        ExportDms dms;
-        if (exportImages != null && exportImages.equals("false")) {
-            dms = new ExportDms(false);
-            dms.setExportFulltext(exportFulltext);
-        } else {
-            dms = new ExportDms(true);
-            dms.setExportFulltext(exportFulltext);
-        }
         for (Process prozess : processes) {
+            IExportPlugin export = null;
+            String pluginName = ProcessManager.getExportPluginName(prozess.getId());
+            if (StringUtils.isNotEmpty(pluginName)) {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            } else {
+                export = new ExportDms();
+            }
+            export.setExportFulltext(exportFulltext);
+            if (exportImages != null && exportImages.equals("false")) {
+                export.setExportImages(false);
+            } else {
+                export.setExportImages(true);
+            }
+
             try {
-                dms.startExport(prozess);
+                export.startExport(prozess);
             } catch (DocStructHasNoTypeException e) {
                 List<String> parameterList = new ArrayList<String>();
                 parameterList.add(prozess.getTitel());
