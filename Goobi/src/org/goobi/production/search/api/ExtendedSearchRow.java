@@ -73,7 +73,7 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + FilterString.TEMPLATE + this.templatePropertyName + ":" + templatePropertyValue + "\" ";
         }
 
-        else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty()) {
+        else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty() && !stepName.equals(Helper.getTranslation("notSelected"))) {
             value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
         }
 
