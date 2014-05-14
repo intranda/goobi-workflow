@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.cli.helper.StringPair;
 
 class MetadataMysqlHelper implements Serializable {
@@ -35,7 +37,7 @@ class MetadataMysqlHelper implements Serializable {
         for (StringPair pair : metadata) {
             sql.append("(" + processid + ", ? , ? ),");
             values.add(pair.getOne());
-            values.add(pair.getTwo());
+            values.add( StringEscapeUtils.escapeSql(pair.getTwo()));
 
         }
         String sqlString = sql.toString().substring(0, sql.toString().length() - 1);
