@@ -363,8 +363,8 @@ public class StepBean extends BasicBean {
             }
 
             try {
-                ProcessManager.saveProcess(s.getProzess());
-                //                StepManager.saveStep(s);
+//                ProcessManager.saveProcess(s.getProzess());
+                  StepManager.saveStep(s);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
                 myLogger.error("step couldn't get saved", e);

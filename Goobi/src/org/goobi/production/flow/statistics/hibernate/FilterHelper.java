@@ -492,7 +492,7 @@ public class FilterHelper {
         if (filter.toString().endsWith("(")) {
             return filter;
         }
-        
+
         if (filter.length() > 0) {
             if (conjunction) {
                 filter.append(" AND ");
@@ -519,7 +519,9 @@ public class FilterHelper {
      */
     public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly,
             Boolean hideStepsFromOtherUsers, boolean isProcess, boolean isStep) {
-
+        if (inFilter == null) {
+            inFilter = "";
+        }
         inFilter = MySQLHelper.escapeString(inFilter);
 
         StringBuilder filter = new StringBuilder();
@@ -566,9 +568,7 @@ public class FilterHelper {
             filter = checkStringBuilder(filter, true);
             filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly, hideStepsFromOtherUsers));
         }
-        
-       
-        
+
         if (!inFilter.isEmpty()) {
             filter = checkStringBuilder(filter, true);
             inFilter = inFilter.replace("(", " ( ");
@@ -580,10 +580,10 @@ public class FilterHelper {
             String tok = tokenizer.nextToken().trim();
             if (tok.equals("(")) {
                 filter.append("(");
-            } else if (tok.equals(")")){
+            } else if (tok.equals(")")) {
                 filter.append(")");
             }
-            
+
             else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProcessProperty(tok, false));
@@ -735,12 +735,11 @@ public class FilterHelper {
                 filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             }
             // USE OR
-            
+
             else if (tok.toLowerCase().startsWith("|" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterIds(tok));
-            }
-            else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSPROPERTY)
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSPROPERTY)
                     || tok.toLowerCase().startsWith("|" + FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterProcessProperty(tok, false));
