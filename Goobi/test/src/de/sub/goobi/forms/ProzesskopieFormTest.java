@@ -8,8 +8,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
@@ -33,11 +31,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class })
+@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -51,7 +50,7 @@ public class ProzesskopieFormTest {
     private String datafolder;
 
     @Before
-    public void setUp() throws IOException, URISyntaxException {
+    public void setUp() throws Exception {
         datafolder = System.getenv("junitdata");
         if (datafolder == null) {
             datafolder = "/opt/digiverso/junit/data/";
@@ -82,7 +81,6 @@ public class ProzesskopieFormTest {
 
     @Test
     public void testOpacAuswerten() {
-        
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
@@ -90,8 +88,59 @@ public class ProzesskopieFormTest {
         assertEquals("process_new1", form.Prepare());
         form.setOpacKatalog("GBV");
         form.setOpacSuchbegriff("517154005");
-        assertEquals("",form.OpacAuswerten());
-        
+        assertEquals("", form.OpacAuswerten());
+    }
+
+    @Test
+    public void testTemplateAuswahlAuswerten() {
+        // TODO
+    }
+
+    @Test
+    public void testGoToSeite1() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.GoToSeite1());
+    }
+
+    @Test
+    public void testGoToSeite2() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.GoToSeite2());
+
+        form.setOpacKatalog("GBV");
+        form.setOpacSuchbegriff("517154005");
+        form.getProzessKopie().setTitel("test");
+        assertEquals("", form.OpacAuswerten());
+        assertEquals("process_new2", form.GoToSeite2());
+
+    }
+
+    @Test
+    public void testNeuenProzessAnlegen() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        form.setOpacKatalog("GBV");
+        form.setOpacSuchbegriff("517154005");
+        form.getProzessKopie().setTitel("test");
+
+        assertEquals("", form.OpacAuswerten());
+
+           // TODO fix empty id
+//        String fixture = form.NeuenProzessAnlegen();
+//        assertEquals("process_new3", fixture);
+
     }
 
     private void setUpTemplate() {
@@ -160,7 +209,7 @@ public class ProzesskopieFormTest {
         template.setRegelsatz(ruleset);
     }
 
-    private void prepareMocking() {
+    private void prepareMocking() throws DAOException {
         Template template = new Template();
         List<Template> templateList = new ArrayList<>();
         templateList.add(template);
@@ -186,6 +235,12 @@ public class ProzesskopieFormTest {
         EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(propList).anyTimes();
         PowerMock.replay(PropertyManager.class);
 
+        PowerMock.mockStatic(ProcessManager.class);
+        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString())).andReturn(0).anyTimes();
+
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        EasyMock.expectLastCall().anyTimes();
+        PowerMock.replay(ProcessManager.class);
     }
 
 }
