@@ -40,7 +40,8 @@ public class NavigationForm {
 	private boolean showHelp = false;
 	private boolean showExpertView = false;
 	private boolean showSidebar = true;
-
+	private String activeTab = "productionStatistics";
+	
 	public String getAktuell() {
 		return this.aktuell;
 	}
@@ -95,4 +96,12 @@ public class NavigationForm {
 	public void setShowSidebar(boolean showSidebar) {
 		this.showSidebar = showSidebar;
 	}
+
+    public String getActiveTab() {
+        return activeTab;
+    }
+
+    public void setActiveTab(String activeTab) {
+        this.activeTab = activeTab;
+    }
 }
