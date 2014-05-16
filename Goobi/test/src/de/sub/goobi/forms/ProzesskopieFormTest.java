@@ -6,7 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import javax.faces.model.SelectItem;
 
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
@@ -34,6 +37,7 @@ import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
+import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class })
@@ -137,11 +141,59 @@ public class ProzesskopieFormTest {
 
         assertEquals("", form.OpacAuswerten());
 
-           // TODO fix empty id
-//        String fixture = form.NeuenProzessAnlegen();
-//        assertEquals("process_new3", fixture);
+        // TODO fix empty id
+        //        String fixture = form.NeuenProzessAnlegen();
+        //        assertEquals("process_new3", fixture);
 
     }
+
+    @Test
+    public void testGetArtists() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        ConfigurationHelper.getInstance().setParameter("TiffHeaderArtists", "1");
+        Collection<SelectItem> fixture = form.getArtists();
+        assertEquals(1, fixture.size());
+    }
+
+    @Test
+    public void testGetProzessVorlage() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setProzessVorlage(template);
+        assertEquals(template, form.getProzessVorlage());
+    }
+
+    @Test
+    public void testGetAuswahl() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setAuswahl(1);
+        assertEquals(1, form.getAuswahl().intValue());
+    }
+
+    @Test
+    public void testGetAllOpacCatalogues() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+
+        form.Prepare();
+        List<String> fixture = form.getAllOpacCatalogues();
+
+        assertEquals(11, fixture.size());
+    }
+    
+    @Test
+    public void testGetAllDoctypes() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+
+        form.Prepare();
+        List<ConfigOpacDoctype> fixture = form.getAllDoctypes();
+
+        assertEquals(18, fixture.size());
+    }
+    
 
     private void setUpTemplate() {
         template = new Process();
