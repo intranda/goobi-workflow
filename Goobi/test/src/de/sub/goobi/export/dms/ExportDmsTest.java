@@ -206,10 +206,18 @@ public class ExportDmsTest {
         assertNotNull(dms);
     }
 
+  
     @Test
     public void testSetExportFulltext() {
         ExportDms dms = new ExportDms(false);
         dms.setExportFulltext(false);
+        assertNotNull(dms);
+    }
+    
+    @Test
+    public void testSetExportImages() {
+        ExportDms dms = new ExportDms(false);
+        dms.setExportImages(false);
         assertNotNull(dms);
     }
 

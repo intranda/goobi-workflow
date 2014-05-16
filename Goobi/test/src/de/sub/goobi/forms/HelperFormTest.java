@@ -14,6 +14,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import org.easymock.EasyMock;
+import org.goobi.beans.Docket;
+import org.goobi.beans.Ruleset;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +27,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class, ExternalContext.class, UIViewRoot.class })
+@PrepareForTest({ FacesContext.class, ExternalContext.class, UIViewRoot.class, RulesetManager.class, DocketManager.class })
 public class HelperFormTest {
 
     @Before
@@ -41,7 +45,7 @@ public class HelperFormTest {
         ConfigurationHelper.getInstance().setParameter("localMessages", datafolder);
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
-        
+
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);
         PowerMock.mockStatic(UIViewRoot.class);
@@ -180,15 +184,41 @@ public class HelperFormTest {
 
     @Test
     public void testGetRegelsaetze() throws DAOException {
+        Ruleset r = new Ruleset();
+        r.setTitel("title");
+        r.setDatei("file");
+        r.setOrderMetadataByRuleset(false);
+        List<Ruleset> rulesetList = new ArrayList<>();
+        rulesetList.add(r);
+        PowerMock.mockStatic(RulesetManager.class);
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
+                rulesetList).anyTimes();
 
-        // TODO
-
+        PowerMock.replay(RulesetManager.class);
+        HelperForm helperForm = new HelperForm();
+        assertNotNull(helperForm);
+        List<SelectItem> fixture = helperForm.getRegelsaetze();
+        assertNotNull(fixture);
+        assertEquals(1, fixture.size());
     }
 
     @Test
     public void testGetDockets() throws DAOException {
-
-        // TODO
+        Docket d = new Docket();
+        d.setFile("file");
+        d.setId(1);
+        d.setName("name");
+        List<Docket> docketList = new ArrayList<>();
+        docketList.add(d);
+        PowerMock.mockStatic(DocketManager.class);
+        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
+                docketList).anyTimes();
+        PowerMock.replay(DocketManager.class);
+        HelperForm helperForm = new HelperForm();
+        assertNotNull(helperForm);
+        List<SelectItem> fixture = helperForm.getDockets();
+        assertNotNull(fixture);
+        assertEquals(1, fixture.size());
     }
 
     @Test
@@ -239,14 +269,14 @@ public class HelperFormTest {
         assertNotNull(helperForm);
         assertFalse(helperForm.isLdapIsWritable());
     }
-    
+
     @Test
     public void testIsPasswordIsChangable() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         assertFalse(helperForm.isPasswordIsChangable());
     }
-    
+
     @Test
     public void testIsShowError() {
         HelperForm helperForm = new HelperForm();
@@ -255,10 +285,6 @@ public class HelperFormTest {
         helperForm.setShowError(true);
         assertTrue(helperForm.isShowError());
 
-        
     }
-    
-   
-    
-    
+
 }
