@@ -530,6 +530,10 @@ public class ProcessBean extends BasicBean {
             answer = "sortHelperStatus";
         } else if (this.sortierung.equals("fortschrittDesc")) {
             answer = "sortHelperStatus desc";
+        } else if (this.sortierung.equals("idAsc")) {
+            answer = "prozesse.ProzesseID";
+        }else if (this.sortierung.equals("idDesc")) {
+            answer = "prozesse.ProzesseID desc";
         }
 
         return answer;
