@@ -8,6 +8,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.model.SelectItem;
+
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
@@ -29,12 +31,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TemplateManager.class, MasterpieceManager.class, PropertyManager.class})
+@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -53,7 +56,7 @@ public class ProzesskopieFormTest {
         if (datafolder == null) {
             datafolder = "/opt/digiverso/junit/data/";
         }
-        
+
         setUpTemplate();
         setUpRuleset();
         setUpConfig();
@@ -75,6 +78,20 @@ public class ProzesskopieFormTest {
 
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
+    }
+
+    @Test
+    public void testOpacAuswerten() {
+        
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        form.setOpacKatalog("GBV");
+        form.setOpacSuchbegriff("517154005");
+        assertEquals("",form.OpacAuswerten());
+        
     }
 
     private void setUpTemplate() {
@@ -118,15 +135,16 @@ public class ProzesskopieFormTest {
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
+        ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
 
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
-        
+
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
         File rulesetFolder = folder.newFolder("rulesets");
         rulesetFolder.mkdir();
-       
+
         File rulesetTemplate = new File(datafolder + RULESET_NAME);
         File rulesetFile = new File(rulesetFolder, RULESET_NAME);
         FileUtils.copyFile(rulesetTemplate, rulesetFile);
@@ -151,7 +169,7 @@ public class ProzesskopieFormTest {
         EasyMock.expect(TemplateManager.getTemplatesForProcess(EasyMock.anyInt())).andReturn(templateList).anyTimes();
 
         PowerMock.replay(TemplateManager.class);
-        
+
         Masterpiece master = new Masterpiece();
         List<Masterpiece> masterList = new ArrayList<>();
         masterList.add(master);
@@ -160,7 +178,6 @@ public class ProzesskopieFormTest {
         EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(masterList).anyTimes();
         PowerMock.replay(MasterpieceManager.class);
 
-        
         Processproperty prop = new Processproperty();
         List<Processproperty> propList = new ArrayList<>();
         propList.add(prop);
@@ -168,9 +185,7 @@ public class ProzesskopieFormTest {
         PowerMock.mockStatic(PropertyManager.class);
         EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(propList).anyTimes();
         PowerMock.replay(PropertyManager.class);
-        
-        
-        
+
     }
 
 }
