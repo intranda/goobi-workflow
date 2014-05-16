@@ -49,6 +49,11 @@ public class ProzesskopieFormTest {
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
+        datafolder = System.getenv("junitdata");
+        if (datafolder == null) {
+            datafolder = "/opt/digiverso/junit/data/";
+        }
+        
         setUpTemplate();
         setUpRuleset();
         setUpConfig();
@@ -114,15 +119,14 @@ public class ProzesskopieFormTest {
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
 
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
+        
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
         File rulesetFolder = folder.newFolder("rulesets");
         rulesetFolder.mkdir();
-        datafolder = System.getenv("junitdata");
-        if (datafolder == null) {
-            datafolder = "/opt/digiverso/junit/data/";
-        }
+       
         File rulesetTemplate = new File(datafolder + RULESET_NAME);
         File rulesetFile = new File(rulesetFolder, RULESET_NAME);
         FileUtils.copyFile(rulesetTemplate, rulesetFile);
