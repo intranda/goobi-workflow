@@ -198,7 +198,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetTiffHeaderArtists() {
-        assertNull(ConfigurationHelper.getInstance().getTiffHeaderArtists());
+        assertEquals("1", ConfigurationHelper.getInstance().getTiffHeaderArtists());
     }
 
     @Test
