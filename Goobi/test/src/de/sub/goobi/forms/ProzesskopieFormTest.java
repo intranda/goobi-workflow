@@ -147,14 +147,13 @@ public class ProzesskopieFormTest {
 
     }
 
-    @Test
-    public void testGetArtists() throws Exception {
-        ProzesskopieForm form = new ProzesskopieForm();
-        assertNotNull(form);
-        ConfigurationHelper.getInstance().setParameter("TiffHeaderArtists", "1");
-        Collection<SelectItem> fixture = form.getArtists();
-        assertEquals(1, fixture.size());
-    }
+//    @Test
+//    public void testGetArtists() throws Exception {
+//        ProzesskopieForm form = new ProzesskopieForm();
+//        assertNotNull(form);
+//        Collection<SelectItem> fixture = form.getArtists();
+//        assertEquals(1, fixture.size());
+//    }
 
     @Test
     public void testGetProzessVorlage() throws Exception {
@@ -237,7 +236,7 @@ public class ProzesskopieFormTest {
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
-
+        ConfigurationHelper.getInstance().setParameter("TiffHeaderArtists", "1");
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
 
     }
