@@ -36,66 +36,68 @@ import de.sub.goobi.config.ConfigurationHelper;
 @ManagedBean(name = "NavigationForm")
 @SessionScoped
 public class NavigationForm {
-	private String aktuell = "0";
-	private boolean showHelp = false;
-	private boolean showExpertView = false;
-	private boolean showSidebar = true;
-	private String activeTab = "productionStatistics";
-	
-	public String getAktuell() {
-		return this.aktuell;
-	}
+    private String aktuell = "0";
+    private boolean showHelp = false;
+    private boolean showExpertView = false;
+    private boolean showSidebar = true;
+    private String activeTab = "productionStatistics";
+    private String activeImportTab = "recordImport";
 
-	public void setAktuell(String aktuell) {
-		this.aktuell = aktuell;
-	}
+    public String getAktuell() {
+        return this.aktuell;
+    }
 
-	public String Reload() {
-		return "";
-	}
+    public void setAktuell(String aktuell) {
+        this.aktuell = aktuell;
+    }
 
-	public String JeniaPopupCloseAction() {
-		return "jeniaClosePopupFrameWithAction";
-	}
+    public String Reload() {
+        return "";
+    }
 
-	public String BenutzerBearbeiten() {
-		return "BenutzerBearbeiten";
-	}
+    public String JeniaPopupCloseAction() {
+        return "jeniaClosePopupFrameWithAction";
+    }
 
-	/**
-	 * 
-	 * @return true if show_taskmanager in file GoobiConfig.properties is =true
-	 */
-	public Boolean getShowTaskManager() {
-		return ConfigurationHelper.getInstance().isShowTaskmanager();
-	}
+    public String BenutzerBearbeiten() {
+        return "BenutzerBearbeiten";
+    }
 
-	public Boolean getShowModuleManager() {
-		return ConfigurationHelper.getInstance().isShowModulmanager();
-	}
+    /**
+     * 
+     * @return true if show_taskmanager in file GoobiConfig.properties is =true
+     */
+    public Boolean getShowTaskManager() {
+        return ConfigurationHelper.getInstance().isShowTaskmanager();
+    }
 
-	public boolean isShowHelp() {
-		return showHelp;
-	}
+    public Boolean getShowModuleManager() {
+        return ConfigurationHelper.getInstance().isShowModulmanager();
+    }
 
-	public void setShowHelp(boolean showHelp) {
-		this.showHelp = showHelp;
-	}
-	
-	public boolean isShowExpertView() {
-		return showExpertView;
-	}
-	
-	public void setShowExpertView(boolean showExpertView) {
-		this.showExpertView = showExpertView;
-	}
-	
-	public boolean isShowSidebar() {
-		return showSidebar;
-	}
-	public void setShowSidebar(boolean showSidebar) {
-		this.showSidebar = showSidebar;
-	}
+    public boolean isShowHelp() {
+        return showHelp;
+    }
+
+    public void setShowHelp(boolean showHelp) {
+        this.showHelp = showHelp;
+    }
+
+    public boolean isShowExpertView() {
+        return showExpertView;
+    }
+
+    public void setShowExpertView(boolean showExpertView) {
+        this.showExpertView = showExpertView;
+    }
+
+    public boolean isShowSidebar() {
+        return showSidebar;
+    }
+
+    public void setShowSidebar(boolean showSidebar) {
+        this.showSidebar = showSidebar;
+    }
 
     public String getActiveTab() {
         return activeTab;
@@ -103,5 +105,13 @@ public class NavigationForm {
 
     public void setActiveTab(String activeTab) {
         this.activeTab = activeTab;
+    }
+
+    public String getActiveImportTab() {
+        return activeImportTab;
+    }
+
+    public void setActiveImportTab(String activeImportTab) {
+        this.activeImportTab = activeImportTab;
     }
 }
