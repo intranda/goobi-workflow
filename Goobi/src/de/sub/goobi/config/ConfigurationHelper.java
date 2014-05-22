@@ -427,6 +427,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorEnableDefaultInitialisation", true);
     }
 
+    public boolean isMetsEditorEnableImageAssignment() {
+        return getLocalBoolean("MetsEditorEnableImageAssignment", true);
+    }
+    
     public boolean isMetsEditorDisplayFileManipulation() {
         return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
     }

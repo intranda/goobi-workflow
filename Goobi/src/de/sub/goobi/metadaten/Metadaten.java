@@ -858,7 +858,7 @@ public class Metadaten {
         this.currentTifFolder = null;
         readAllTifFolders();
         this.bildZuStrukturelement = false;
-        
+
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
@@ -1508,31 +1508,33 @@ public class Metadaten {
         retrieveAllImages();
 
         // added new
-        DocStruct log = this.mydocument.getLogicalDocStruct();
-        if (log.getType().isAnchor()) {
-            if (log.getAllChildren() != null && log.getAllChildren().size() > 0) {
-                log = log.getAllChildren().get(0);
-            } else {
-                return "";
+        if (ConfigurationHelper.getInstance().isMetsEditorEnableImageAssignment()) {
+            DocStruct log = this.mydocument.getLogicalDocStruct();
+            if (log.getType().isAnchor()) {
+                if (log.getAllChildren() != null && log.getAllChildren().size() > 0) {
+                    log = log.getAllChildren().get(0);
+                } else {
+                    return "";
+                }
             }
-        }
 
-        if (log.getAllChildren() != null) {
-            for (Iterator<DocStruct> iter = log.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct child = iter.next();
-                List<Reference> childRefs = child.getAllReferences("to");
-                for (Reference toAdd : childRefs) {
-                    boolean match = false;
-                    for (Reference ref : log.getAllReferences("to")) {
-                        if (ref.getTarget().equals(toAdd.getTarget())) {
-                            match = true;
-                            break;
+            if (log.getAllChildren() != null) {
+                for (Iterator<DocStruct> iter = log.getAllChildren().iterator(); iter.hasNext();) {
+                    DocStruct child = iter.next();
+                    List<Reference> childRefs = child.getAllReferences("to");
+                    for (Reference toAdd : childRefs) {
+                        boolean match = false;
+                        for (Reference ref : log.getAllReferences("to")) {
+                            if (ref.getTarget().equals(toAdd.getTarget())) {
+                                match = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!match) {
-                        log.getAllReferences("to").add(toAdd);
-                    }
+                        if (!match) {
+                            log.getAllReferences("to").add(toAdd);
+                        }
 
+                    }
                 }
             }
         }
@@ -3393,11 +3395,11 @@ public class Metadaten {
             return "";
         }
         String afterLastSlash = filename.substring(filename.lastIndexOf('/') + 1);
-//        int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
+        //        int afterLastBackslash = afterLastSlash.lastIndexOf('\\') + 1;
         int dotIndex = afterLastSlash.lastIndexOf('.');
         return (dotIndex == -1) ? "" : afterLastSlash.substring(dotIndex);
-    }    
-    
+    }
+
     public List<MetadataGroupImpl> getGroups() {
         return groups;
     }
@@ -3523,7 +3525,7 @@ public class Metadaten {
 
     public void rememberFilteredProcessStruct() {
         activateAllTreeElements(tree3);
-        List<DocStruct> selectdElements = getSelectedElements(treeOfFilteredProcess);        
+        List<DocStruct> selectdElements = getSelectedElements(treeOfFilteredProcess);
         TreeDurchlaufen(this.tree3, selectdElements);
 
     }
@@ -3546,7 +3548,7 @@ public class Metadaten {
     public void importFilteredProcessStruct() throws TypeNotAllowedAsChildException {
 
         List<DocStruct> selectdElements = getSelectedElements(treeOfFilteredProcess);
-     
+
         for (DocStruct docStructFromFilteredProcess : selectdElements) {
             List<Reference> refs = docStructFromFilteredProcess.getAllToReferences();
             List<Reference> clone = new ArrayList<Reference>(refs);
@@ -3596,11 +3598,11 @@ public class Metadaten {
     }
 
     public int getTreeWidth() {
-		return treeWidth;
-	}
-    
+        return treeWidth;
+    }
+
     public void setTreeWidth(int treeWidth) {
-		this.treeWidth = treeWidth;
-	}
-   
+        this.treeWidth = treeWidth;
+    }
+
 }
