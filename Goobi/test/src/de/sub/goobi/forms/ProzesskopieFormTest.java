@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
@@ -31,6 +30,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -42,7 +42,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-        HistoryAnalyserJob.class, StepManager.class })
+        HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -281,7 +281,7 @@ public class ProzesskopieFormTest {
         template.setRegelsatz(ruleset);
     }
 
-    private void prepareMocking() throws DAOException {
+    private void prepareMocking() throws Exception {
         Template template = new Template();
         List<Template> templateList = new ArrayList<>();
         templateList.add(template);
@@ -321,12 +321,16 @@ public class ProzesskopieFormTest {
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(this.template.getSchritte());
 
+        
+        PowerMock.mockStatic(FilesystemHelper.class);
+        FilesystemHelper.createDirectory(EasyMock.anyString());
+        
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(HistoryAnalyserJob.class);
         PowerMock.replay(StepManager.class);
-        
+        PowerMock.replay(FilesystemHelper.class);
         
        
     }
