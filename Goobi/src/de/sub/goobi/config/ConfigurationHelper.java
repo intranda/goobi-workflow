@@ -61,7 +61,6 @@ public class ConfigurationHelper implements Serializable {
         return configLocalPath;
     }
 
-
     private int getLocalInt(String inPath, int inDefault) {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath, inDefault));
@@ -120,8 +119,6 @@ public class ConfigurationHelper implements Serializable {
             return inDefault;
         }
     }
-
-   
 
     /*********************************** direct config results ***************************************/
 
@@ -430,7 +427,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorEnableImageAssignment() {
         return getLocalBoolean("MetsEditorEnableImageAssignment", true);
     }
-    
+
     public boolean isMetsEditorDisplayFileManipulation() {
         return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
     }
@@ -511,14 +508,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalLong(jobname, -1);
     }
 
-  
-
-    
     public List<String> getDownloadColumnWhitelist() {
         return getLocalList("downloadAvailableColumn");
     }
-    
-    
+
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -569,6 +562,9 @@ public class ConfigurationHelper implements Serializable {
     // for junit tests    
     public void setParameter(String inParameter, String value) {
         config.setProperty(inParameter, value);
+        if (configLocal != null) {
+            configLocal.setProperty(inParameter, value);
+        }
     }
 
 }
