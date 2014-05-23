@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
@@ -45,7 +46,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 public class ProzesskopieFormTest {
 
     private Process template;
-    private static final String RULESET_NAME = "ruleset.xml";    
+    private static final String RULESET_NAME = "ruleset.xml";
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -131,7 +132,7 @@ public class ProzesskopieFormTest {
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", meta.getAbsolutePath() + File.separator);
         File processFolder = new File(meta, "0");
         processFolder.mkdir();
-        
+
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
 
@@ -185,7 +186,7 @@ public class ProzesskopieFormTest {
 
         assertEquals(18, fixture.size());
     }
-    
+
     @Test
     public void testSetDocType() {
         ProzesskopieForm form = new ProzesskopieForm();
@@ -205,7 +206,6 @@ public class ProzesskopieFormTest {
 
     }
 
-    
     @Test
     public void testAdditionalFields() {
         ProzesskopieForm form = new ProzesskopieForm();
@@ -214,13 +214,112 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        
+
         List<AdditionalField> fixture = form.getAdditionalFields();
         assertNotNull(fixture);
         assertNotEquals(0, fixture.size());
 
     }
-    
+
+    @Test
+    public void testDigitalCollections() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        List<String> fixture = new ArrayList<>();
+        fixture.add("1");
+        form.setDigitalCollections(fixture);
+        assertEquals(fixture, form.getDigitalCollections());
+    }
+
+   @Test
+   public void testCalcProzesstitel() {
+       ProzesskopieForm form = new ProzesskopieForm();
+       assertNotNull(form);
+       form.setProzessVorlage(template);
+       secondStep.setBenutzer(userList);
+       
+       AdditionalField field1 = new AdditionalField(form);
+       field1.setTitel("TitleDocMain");
+       field1.setWert("Test title");
+       
+       
+       AdditionalField field2 = new AdditionalField(form);
+       field2.setTitel("ListOfCreators");
+       field2.setWert("first author");
+       
+       
+       AdditionalField field3 = new AdditionalField(form);
+       field3.setTitel("Identifier");
+       field3.setWert("123");
+       
+       List<AdditionalField> fixture =  new ArrayList<>();
+       fixture.add(field1);
+       fixture.add(field2);
+       fixture.add(field3);
+       form.setAdditionalFields(fixture);
+       form.CalcProzesstitel();
+       
+   }
+
+    @Test
+    public void testUseOpac() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        assertFalse(form.isUseOpac());
+    }
+
+    @Test
+    public void testUseTemplates() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        assertFalse(form.isUseTemplates());
+    }
+
+    @Test
+    public void testTifHeader_documentname() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        String fixture = "test";
+        form.setTifHeader_documentname(fixture);
+        assertEquals(fixture, form.getTifHeader_documentname());
+    }
+
+    @Test
+    public void testTifHeader_imagedescription() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        String fixture = "test";
+        form.setTifHeader_imagedescription(fixture);
+        assertEquals(fixture, form.getTifHeader_imagedescription());
+    }
+
+    @Test
+    public void testProzessKopie() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        Process p = new Process();
+        form.setProzessKopie(p);
+        assertEquals(p, form.getProzessKopie());
+    }
+
+    @Test
+    public void testOpacSuchfeld() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        String fixture = "test";
+        form.setOpacSuchfeld(fixture);
+        assertEquals(fixture, form.getOpacSuchfeld());
+    }
+
+    @Test
+    public void testOpacSuchbegriff() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        String fixture = "test";
+        form.setOpacSuchbegriff(fixture);
+        assertEquals(fixture, form.getOpacSuchbegriff());
+    }
+
     private void setUpTemplate() {
         template = new Process();
         template.setTitel("template");
@@ -256,7 +355,7 @@ public class ProzesskopieFormTest {
         template.setSchritte(stepList);
 
     }
-    
+
     private void setUpConfig() {
 
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
@@ -280,7 +379,7 @@ public class ProzesskopieFormTest {
         ruleset.setOrderMetadataByRuleset(true);
         ruleset.setTitel(RULESET_NAME);
         ruleset.setDatei(RULESET_NAME);
-       
+
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
         ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
@@ -328,19 +427,16 @@ public class ProzesskopieFormTest {
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(this.template.getSchritte());
 
-        
         PowerMock.mockStatic(FilesystemHelper.class);
         FilesystemHelper.createDirectory(EasyMock.anyString());
-        
-        
+
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(HistoryAnalyserJob.class);
         PowerMock.replay(StepManager.class);
         PowerMock.replay(FilesystemHelper.class);
-        
-       
+
     }
 
 }

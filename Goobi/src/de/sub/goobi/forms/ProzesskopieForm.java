@@ -583,7 +583,7 @@ public class ProzesskopieForm {
             WriteException {
         //        Helper.getHibernateSession().evict(this.prozessKopie);
 
-//        this.prozessKopie.setId(null);
+        //        this.prozessKopie.setId(null);
 
         if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
             CalcProzesstitel();
@@ -881,7 +881,7 @@ public class ProzesskopieForm {
                 ds.addChild(dsvolume);
                 this.myRdf = ff;
             }
-            
+
             /* Newspaper */
             if (this.docType.equals("Newspaper")) {
                 DocStructType dsty = myPrefs.getDocStrctTypeByName("Newspaper");
@@ -968,7 +968,7 @@ public class ProzesskopieForm {
 
     public void setDocType(String docType) {
         if (this.docType != null && this.docType.equals(docType)) {
-           return;
+            return;
         } else {
             this.docType = docType;
             if (myRdf != null) {
@@ -1548,32 +1548,37 @@ public class ProzesskopieForm {
         }
         return rulesets;
     }
-    
-    	public static String createAtstsl(String title, String author) {
-		StringBuilder result = new StringBuilder(8);
-		if (author != null && author.trim().length() > 0) {
-			result.append(author.length() > 4 ? author.substring(0, 4) : author);
-			result.append(title.length() > 4 ? title.substring(0, 4) : title);
-		} else {
-			StringTokenizer titleWords = new StringTokenizer(title);
-			int wordNo = 1;
-			while (titleWords.hasMoreTokens() && wordNo < 5) {
-				String word = titleWords.nextToken();
-				switch (wordNo) {
-				case 1:
-					result.append(word.length() > 4 ? word.substring(0, 4) : word);
-					break;
-				case 2:
-				case 3:
-					result.append(word.length() > 2 ? word.substring(0, 2) : word);
-					break;
-				case 4:
-					result.append(word.length() > 1 ? word.substring(0, 1) : word);
-					break;
-				}
-				wordNo++;
-			}
-		}
-		return result.toString().replaceAll("[\\W]", ""); // delete umlauts etc.
-	}
+
+    public static String createAtstsl(String title, String author) {
+        StringBuilder result = new StringBuilder(8);
+        if (author != null && author.trim().length() > 0) {
+            result.append(author.length() > 4 ? author.substring(0, 4) : author);
+            result.append(title.length() > 4 ? title.substring(0, 4) : title);
+        } else {
+            StringTokenizer titleWords = new StringTokenizer(title);
+            int wordNo = 1;
+            while (titleWords.hasMoreTokens() && wordNo < 5) {
+                String word = titleWords.nextToken();
+                switch (wordNo) {
+                    case 1:
+                        result.append(word.length() > 4 ? word.substring(0, 4) : word);
+                        break;
+                    case 2:
+                    case 3:
+                        result.append(word.length() > 2 ? word.substring(0, 2) : word);
+                        break;
+                    case 4:
+                        result.append(word.length() > 1 ? word.substring(0, 1) : word);
+                        break;
+                }
+                wordNo++;
+            }
+        }
+        return result.toString().replaceAll("[\\W]", ""); // delete umlauts etc.
+    }
+
+    public void setAdditionalFields(List<AdditionalField> list) {
+        this.additionalFields = list;
+    }
+
 }
