@@ -246,14 +246,19 @@ public class ShellScript {
                 scriptingArgs.add(paramList);
             }
             err = s.run(scriptingArgs);
+            String msg = "";
             for (String line : s.getStdOut()) {
-                Helper.setMeldung(line);
+                msg += line + "\n";
+//                Helper.setMeldung(line);
             }
+            Helper.setMeldung(msg);
             if (s.getStdErr().size() > 0) {
                 err = ShellScript.ERRORLEVEL_ERROR;
+                String message = "";
                 for (String line : s.getStdErr()) {
-                    Helper.setFehlerMeldung(line);
+                    message += line + "\n";
                 }
+                Helper.setFehlerMeldung(message);
             }
         } catch (FileNotFoundException e) {
             logger.error("FileNotFoundException in callShell2()", e);
