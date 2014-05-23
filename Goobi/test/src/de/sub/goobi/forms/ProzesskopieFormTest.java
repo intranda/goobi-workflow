@@ -179,7 +179,42 @@ public class ProzesskopieFormTest {
 
         assertEquals(18, fixture.size());
     }
+    
+    @Test
+    public void testSetDocType() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
 
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        form.setOpacKatalog("GBV");
+        form.setOpacSuchbegriff("517154005");
+        form.getProzessKopie().setTitel("test");
+        form.getProzessKopie().setId(0);
+        assertEquals("", form.OpacAuswerten());
+        form.setDocType("monograph");
+        form.setDocType("periodical");
+        form.setDocType("multivolume");
+
+    }
+
+    
+    @Test
+    public void testAdditionalFields() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        
+        List<AdditionalField> fixture = form.getAdditionalFields();
+        assertNotNull(fixture);
+        assertNotEquals(0, fixture.size());
+
+    }
+    
     private void setUpTemplate() {
         template = new Process();
         template.setTitel("template");
@@ -215,7 +250,7 @@ public class ProzesskopieFormTest {
         template.setSchritte(stepList);
 
     }
-
+    
     private void setUpConfig() {
 
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
@@ -291,6 +326,9 @@ public class ProzesskopieFormTest {
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(HistoryAnalyserJob.class);
         PowerMock.replay(StepManager.class);
+        
+        
+       
     }
 
 }
