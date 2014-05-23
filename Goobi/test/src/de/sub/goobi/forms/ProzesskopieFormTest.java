@@ -46,8 +46,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 public class ProzesskopieFormTest {
 
     private Process template;
-    private static final String RULESET_NAME = "ruleset.xml";
-
+    private static final String RULESET_NAME = "ruleset.xml";    
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -126,6 +125,12 @@ public class ProzesskopieFormTest {
 
     @Test
     public void testNeuenProzessAnlegen() throws Exception {
+        File meta = folder.newFolder("metadata");
+        meta.mkdir();
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", meta.getAbsolutePath() + File.separator);
+        File processFolder = new File(meta, "0");
+        processFolder.mkdir();
+        
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
 
@@ -324,6 +329,7 @@ public class ProzesskopieFormTest {
         
         PowerMock.mockStatic(FilesystemHelper.class);
         FilesystemHelper.createDirectory(EasyMock.anyString());
+        
         
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
