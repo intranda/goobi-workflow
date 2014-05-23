@@ -332,6 +332,11 @@ public class ConfigurationHelperTest {
     }
 
     @Test
+    public void testIsMetsEditorEnableImageAssignment() {
+        assertTrue(ConfigurationHelper.getInstance().isMetsEditorEnableImageAssignment());
+    }
+    
+    @Test
     public void testIsMetsEditorDisplayFileManipulation() {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorDisplayFileManipulation());
     }

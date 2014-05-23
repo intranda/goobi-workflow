@@ -583,7 +583,7 @@ public class ProzesskopieForm {
             WriteException {
         //        Helper.getHibernateSession().evict(this.prozessKopie);
 
-        this.prozessKopie.setId(null);
+//        this.prozessKopie.setId(null);
 
         if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
             CalcProzesstitel();

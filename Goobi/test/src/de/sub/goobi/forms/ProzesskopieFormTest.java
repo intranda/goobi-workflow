@@ -6,10 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
 
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
@@ -22,6 +20,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.User;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,13 +33,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class })
+@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
+        HistoryAnalyserJob.class, StepManager.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -96,11 +98,6 @@ public class ProzesskopieFormTest {
     }
 
     @Test
-    public void testTemplateAuswahlAuswerten() {
-        // TODO
-    }
-
-    @Test
     public void testGoToSeite1() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -138,22 +135,12 @@ public class ProzesskopieFormTest {
         form.setOpacKatalog("GBV");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
-
+        form.getProzessKopie().setId(0);
         assertEquals("", form.OpacAuswerten());
-
-        // TODO fix empty id
-        //        String fixture = form.NeuenProzessAnlegen();
-        //        assertEquals("process_new3", fixture);
+        String fixture = form.NeuenProzessAnlegen();
+        assertEquals("process_new3", fixture);
 
     }
-
-//    @Test
-//    public void testGetArtists() throws Exception {
-//        ProzesskopieForm form = new ProzesskopieForm();
-//        assertNotNull(form);
-//        Collection<SelectItem> fixture = form.getArtists();
-//        assertEquals(1, fixture.size());
-//    }
 
     @Test
     public void testGetProzessVorlage() throws Exception {
@@ -181,7 +168,7 @@ public class ProzesskopieFormTest {
 
         assertEquals(11, fixture.size());
     }
-    
+
     @Test
     public void testGetAllDoctypes() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
@@ -192,7 +179,6 @@ public class ProzesskopieFormTest {
 
         assertEquals(18, fixture.size());
     }
-    
 
     private void setUpTemplate() {
         template = new Process();
@@ -289,9 +275,22 @@ public class ProzesskopieFormTest {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString())).andReturn(0).anyTimes();
 
+        PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(List.class));
+
+        PowerMock.mockStatic(HistoryAnalyserJob.class);
+        EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+
+        PowerMock.mockStatic(StepManager.class);
+        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(this.template.getSchritte());
+
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
+        PowerMock.replay(MetadataManager.class);
+        PowerMock.replay(HistoryAnalyserJob.class);
+        PowerMock.replay(StepManager.class);
     }
 
 }
