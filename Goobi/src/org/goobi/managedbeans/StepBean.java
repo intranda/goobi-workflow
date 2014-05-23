@@ -952,7 +952,8 @@ public class StepBean extends BasicBean {
 
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
             myLogger.debug("Plugin is full GUI");
-            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
+            String mypath =  myPlugin.getPagePath();
+//            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
             myLogger.debug("open plugin GUI: " + mypath);
             myPlugin.execute();
             return mypath;

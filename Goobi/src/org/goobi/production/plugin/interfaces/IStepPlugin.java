@@ -49,5 +49,7 @@ public interface IStepPlugin extends IPlugin {
 	public Step getStep();
 
 	public PluginGuiType getPluginGuiType();
+	
+	public String getPagePath();
 
 }
