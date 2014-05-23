@@ -59,6 +59,8 @@ public class ProzesskopieFormTest {
         if (datafolder == null) {
             datafolder = "/opt/digiverso/junit/data/";
         }
+        ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder + File.separator);
 
         setUpTemplate();
         setUpRuleset();
@@ -278,13 +280,14 @@ public class ProzesskopieFormTest {
         ruleset.setOrderMetadataByRuleset(true);
         ruleset.setTitel(RULESET_NAME);
         ruleset.setDatei(RULESET_NAME);
-        ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
+       
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
         ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
         template.setRegelsatz(ruleset);
     }
 
+    @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {
         Template template = new Template();
         List<Template> templateList = new ArrayList<>();
