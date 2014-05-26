@@ -139,21 +139,21 @@
                                             <h:panelGroup
                                                 rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
                                                 <h:inputText style="width: 500px;margin-right:15px" value="#{myprocess_item.value}"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" />
+                                                    readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}" />
                                             </h:panelGroup>
                                             <!-- numbers only -->
                                             <h:panelGroup 
                                                 rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
                                                 <h:inputText  style="width: 500px;margin-right:15px" id="number"
                                                     value="#{myprocess_item.value}"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                    readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
                                                     <f:validateLongRange minimum="0" />
                                                 </h:inputText>
                                             </h:panelGroup>
                                             <!--  SelectOneMenu -->
                                             <h:panelGroup  rendered="#{(myprocess_item.type.name == 'list')}">
                                                 <h:selectOneMenu value="#{myprocess_item.value}" style="width: 500px;margin-right:15px"
-                                                   readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                   readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
                                                     <f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items"
                                                         itemLabel="#{myprocess_items}" itemValue="#{myprocess_items}" />
                                                 </h:selectOneMenu>
@@ -162,7 +162,7 @@
                                             <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
                                                 <h:selectManyListbox style="width: 500px;margin-right:15px"
                                                     value="#{myprocess_item.valueList}" size="5"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                    readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
                                                     <f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items"
                                                         itemLabel="#{myprocess_items}" itemValue="#{myprocess_items}" />
                                                 </h:selectManyListbox>
@@ -170,7 +170,7 @@
                                             <!--  Boolean -->
                                             <h:panelGroup rendered="#{(myprocess_item.type.name == 'boolean')}">
                                                 <h:selectBooleanCheckbox value="#{myprocess_item.booleanValue}"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" />
+                                                    readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}" />
                                             </h:panelGroup>
                                             <!--  Date -->
                                             <h:panelGroup rendered="#{(myprocess_item.type.name == 'date')}">
@@ -178,7 +178,7 @@
                                                     renderAsPopup="true" renderPopupButtonAsImage="true" popupTodayString="#{msgs.heute}"
                                                     popupWeekString="#{msgs.kw}" styleClass="projekteBearbeiten" imageLocation="images/calendarImages"
                                                     popupButtonImageUrl="images/calendarImages/calendar.gif"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                    readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
                                                 </x:inputCalendar>
 
                                             </h:panelGroup>
