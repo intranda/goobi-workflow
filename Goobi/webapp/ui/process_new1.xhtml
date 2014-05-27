@@ -95,7 +95,7 @@
 							<!-- ProzessTitel -->
 							<h:outputText value="#{msgs.prozessTitel}" />
 							<h:panelGroup>
-								<h:inputText value="#{ProzesskopieForm.prozessKopie.titel}" styleClass="prozessKopieFeldbreite" />
+								<h:inputText value="#{ProzesskopieForm.prozessKopie.titel}" styleClass="prozessKopieFeldbreiteInput" />
 								<h:commandLink action="#{ProzesskopieForm.CalcProzesstitel}" value="#{msgs.generieren}" />
 							</h:panelGroup>
 
@@ -130,18 +130,18 @@
 
 							<!-- Tifheader - Documentname -->
 							<h:outputText value="#{msgs.tifheaderdocumentname}" />
-							<h:inputText value="#{ProzesskopieForm.tifHeader_documentname}" styleClass="prozessKopieFeldbreite" />
+							<h:inputText value="#{ProzesskopieForm.tifHeader_documentname}" styleClass="prozessKopieFeldbreiteInput" />
 
 							<!-- Tifheader - Imagedescription -->
 							<h:outputText value="#{msgs.tifheaderimagedescription}" />
-							<h:inputText value="#{ProzesskopieForm.tifHeader_imagedescription}" styleClass="prozessKopieFeldbreite" />
+							<h:inputText value="#{ProzesskopieForm.tifHeader_imagedescription}" styleClass="prozessKopieFeldbreiteInput" />
 
 							<h:outputText value="#{msgs.inAuswahllisteAnzeigen}" rendered="#{ProzesskopieForm.useTemplates}" />
 							<h:selectBooleanCheckbox rendered="#{ProzesskopieForm.useTemplates}" value="#{ProzesskopieForm.prozessKopie.inAuswahllisteAnzeigen}" />
 
 
 							<h:outputText value="#{msgs.guessImages}" rendered="#{ProzesskopieForm.standardFields.images}" />
-							<h:inputText value="#{ProzesskopieForm.imagesGuessed}" rendered="#{ProzesskopieForm.standardFields.images}" styleClass="prozessKopieFeldbreite" />
+							<h:inputText value="#{ProzesskopieForm.imagesGuessed}" rendered="#{ProzesskopieForm.standardFields.images}" styleClass="prozessKopieFeldbreiteInput" />
 
 						</h:panelGrid>
 
@@ -169,7 +169,7 @@
 											<h:outputText value="#{intern.titel}:" />
 										</td>
 										<td>
-											<h:inputText value="#{intern.wert}" styleClass="prozessKopieFeldbreite" rendered="#{intern.selectList==null}" />
+											<h:inputText value="#{intern.wert}" styleClass="prozessKopieFeldbreiteInput" rendered="#{intern.selectList==null}" />
 											<!--  		<h:selectOneMenu  value="#{intern.wert}" styleClass="prozessKopieFeldbreite" rendered="#{intern.selectList!=null}">
 					<f:selectItems value="#{intern.selectList}" />
 				</h:selectOneMenu> -->
@@ -187,7 +187,7 @@
 									<h:outputText value="#{msgs.addToProcessLog}:" />
 								</td>
 								<td>
-									<h:inputTextarea value="#{ProzesskopieForm.addToWikiField}" styleClass="prozessKopieFeldbreite" />
+									<h:inputTextarea value="#{ProzesskopieForm.addToWikiField}" styleClass="prozessKopieFeldbreiteInput" />
 								</td>
 							</tr>
 

@@ -426,6 +426,11 @@ a.text_head:hover {
 	margin-right: 5px;
 }
 
+.prozessKopieFeldbreiteInput {
+	width: 442px;
+	margin-right: 5px;
+}
+
 .processMassImport {
 	width: 450px;	
 }
