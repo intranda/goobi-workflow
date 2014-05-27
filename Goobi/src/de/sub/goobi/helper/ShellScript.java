@@ -149,6 +149,8 @@ public class ShellScript {
         try {
             String[] callSequence = commandLine.toArray(new String[commandLine.size()]);
             process = new ProcessBuilder(callSequence).start();
+
+
             outputChannel = inputStreamToLinkedList(process.getInputStream());
             errorChannel = inputStreamToLinkedList(process.getErrorStream());
         } catch (IOException error) {
@@ -235,8 +237,8 @@ public class ShellScript {
                     params = paramList.split(" ");
                 }
                 for (String param : params) {
-                    if (!param.isEmpty()) {
-                        scriptingArgs.add(param);
+                    if (!param.trim().isEmpty()) {
+                        scriptingArgs.add(param.trim());
                     }
                 }
             } else {
