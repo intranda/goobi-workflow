@@ -909,4 +909,10 @@ public class BatchStepHelper {
     public List<Integer> getContainerList() {
         return new ArrayList<Integer>(this.containers.keySet());
     }
+    
+    
+    // needed for junit
+    public void setProcessPropertyList(List<ProcessProperty> processPropertyList) {
+        this.processPropertyList = processPropertyList;
+    }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.goobi.production.cli.helper.StringPair;
 
 class MetadataMysqlHelper implements Serializable {
