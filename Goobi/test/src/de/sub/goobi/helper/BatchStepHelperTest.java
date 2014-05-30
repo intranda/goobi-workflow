@@ -38,7 +38,7 @@ public class BatchStepHelperTest {
         process.setDocket(new Docket());
         process.setDocketId(0);
         process.setMetadatenKonfigurationID(0);
-        process.setIstTemplate(true);
+        process.setIstTemplate(false);
 
         Project project = new Project();
         project.setTitel("Project");

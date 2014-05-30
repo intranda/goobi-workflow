@@ -37,7 +37,7 @@ public class BatchProcessHelperTest {
         process.setDocket(new Docket());
         process.setDocketId(0);
         process.setMetadatenKonfigurationID(0);
-        process.setIstTemplate(true);
+        process.setIstTemplate(false);
 
         Project project = new Project();
         project.setTitel("Project");
@@ -193,27 +193,27 @@ public class BatchProcessHelperTest {
         BatchProcessHelper helper = new BatchProcessHelper(processList);
 
         Map<Integer, PropertyListObject> fixture = helper.getContainers();
-        assertEquals(2, fixture.size());
+        assertEquals(3, fixture.size());
     }
 
     @Test
     public void testContainerSize() {
         BatchProcessHelper helper = new BatchProcessHelper(processList);
-        assertEquals(2, helper.getContainersSize());
+        assertEquals(3, helper.getContainersSize());
     }
 
     @Test
     public void testSortedProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList);
         List<ProcessProperty> fixture = helper.getSortedProperties();
-        assertEquals(1, fixture.size());
+        assertEquals(12, fixture.size());
     }
 
     @Test
     public void testContainerlessProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList);
         List<ProcessProperty> fixture = helper.getContainerlessProperties();
-        assertEquals(0, fixture.size());
+        assertEquals(6, fixture.size());
 
     }
 
