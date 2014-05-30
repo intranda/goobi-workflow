@@ -1,4 +1,5 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
@@ -59,305 +61,347 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public class VariableReplacer {
 
-	private enum MetadataLevel {
-		ALL, FIRSTCHILD, TOPSTRUCT;
-	}
+    private enum MetadataLevel {
+        ALL,
+        FIRSTCHILD,
+        TOPSTRUCT;
+    }
 
-	private static final Logger logger = Logger.getLogger(VariableReplacer.class);
+    private static final Logger logger = Logger.getLogger(VariableReplacer.class);
 
-	DigitalDocument dd;
-	Prefs prefs;
-	UghHelper uhelp;
-	// $(meta.abc)
-	private final String namespaceMeta = "\\$\\(meta\\.([\\w.-]*)\\)";
+    DigitalDocument dd;
+    Prefs prefs;
+    UghHelper uhelp;
+    // $(meta.abc)
+    private final String namespaceMeta = "\\$\\(meta\\.([\\w.-]*)\\)";
 
-	private Process process;
-	private Step step;
+    // $(metas.abc)
+    private final String namespaceMetaMultiValue = "\\$\\(metas\\.([\\w.-]*)\\)";
 
-	@SuppressWarnings("unused")
-	private VariableReplacer() {
-	}
+    private Process process;
+    private Step step;
 
-	public VariableReplacer(DigitalDocument inDigitalDocument, Prefs inPrefs, Process p, Step s) {
-		this.dd = inDigitalDocument;
-		this.prefs = inPrefs;
-		this.uhelp = new UghHelper();
-		this.process = p;
-		this.step = s;
-	}
+    @SuppressWarnings("unused")
+    private VariableReplacer() {
+    }
 
-	/**
-	 * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen
-	 * ================================================================
-	 */
-	public String replace(String inString) {
-		if (inString == null) {
-			return "";
-		}
+    public VariableReplacer(DigitalDocument inDigitalDocument, Prefs inPrefs, Process p, Step s) {
+        this.dd = inDigitalDocument;
+        this.prefs = inPrefs;
+        this.uhelp = new UghHelper();
+        this.process = p;
+        this.step = s;
+    }
 
-		/*
-		 * replace metadata, usage: $(meta.firstchild.METADATANAME)
-		 */
-		for (MatchResult r : findRegexMatches(this.namespaceMeta, inString)) {
-			if (r.group(1).toLowerCase().startsWith("firstchild.")) {
-				inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11)));
-			} else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
-				inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10)));
-			} else {
-				inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1)));
-			}
-		}
+    /**
+     * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen
+     * ================================================================
+     */
+    public String replace(String inString) {
+        if (inString == null) {
+            return "";
+        }
 
-		// replace paths and files
-		try {
-			String processpath = this.process.getProcessDataDirectory().replace("\\", "/");
-			String tifpath = this.process.getImagesTifDirectory(false).replace("\\", "/");
-			String imagepath = this.process.getImagesDirectory().replace("\\", "/");
-			String origpath = this.process.getImagesOrigDirectory(false).replace("\\", "/");
-			String metaFile = this.process.getMetadataFilePath().replace("\\", "/");
-			String ocrBasisPath = this.process.getOcrDirectory().replace("\\", "/");
-			String ocrPlaintextPath = this.process.getTxtDirectory().replace("\\", "/");
-			String sourcePath = this.process.getSourceDirectory().replace("\\", "/");
-			String importPath = this.process.getImportDirectory().replace("\\", "/");
-			String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
+        /*
+         * replace metadata, usage: $(meta.firstchild.METADATANAME)
+         */
+        for (MatchResult r : findRegexMatches(this.namespaceMeta, inString)) {
+            if (r.group(1).toLowerCase().startsWith("firstchild.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
+            } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), false));
+            } else {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), false));
+            }
+        }
 
-			/* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */
-			if (tifpath.endsWith(File.separator)) {
-				tifpath = tifpath.substring(0, tifpath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (imagepath.endsWith(File.separator)) {
-				imagepath = imagepath.substring(0, imagepath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (origpath.endsWith(File.separator)) {
-				origpath = origpath.substring(0, origpath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (processpath.endsWith(File.separator)) {
-				processpath = processpath.substring(0, processpath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (importPath.endsWith(File.separator)) {
-				importPath = importPath.substring(0, importPath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (sourcePath.endsWith(File.separator)) {
-				sourcePath = sourcePath.substring(0, sourcePath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (ocrBasisPath.endsWith(File.separator)) {
-				ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (ocrPlaintextPath.endsWith(File.separator)) {
-				ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - File.separator.length()).replace("\\", "/");
-			}
-			if (inString.contains("(tifurl)")) {
-				if (SystemUtils.IS_OS_WINDOWS) {
-					inString = inString.replace("(tifurl)", "file:/" + tifpath);
-				} else {
-					inString = inString.replace("(tifurl)", "file://" + tifpath);
-				}
-			}
-			if (inString.contains("(origurl)")) {
-				if (SystemUtils.IS_OS_WINDOWS) {
-					inString = inString.replace("(origurl)", "file:/" + origpath);
-				} else {
-					inString = inString.replace("(origurl)", "file://" + origpath);
-				}
-			}
-			if (inString.contains("(imageurl)")) {
-				if (SystemUtils.IS_OS_WINDOWS) {
-					inString = inString.replace("(imageurl)", "file:/" + imagepath);
-				} else {
-					inString = inString.replace("(imageurl)", "file://" + imagepath);
-				}
-			}
+        for (MatchResult r : findRegexMatches(this.namespaceMetaMultiValue, inString)) {
+            if (r.group(1).toLowerCase().startsWith("firstchild.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
+            } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), true));
+            } else {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), true));
+            }
+        }
 
-			if (inString.contains("(tifpath)")) {
-				inString = inString.replace("(tifpath)", tifpath);
-			}
-			if (inString.contains("(origpath)")) {
-				inString = inString.replace("(origpath)", origpath);
-			}
-			if (inString.contains("(imagepath)")) {
-				inString = inString.replace("(imagepath)", imagepath);
-			}
-			if (inString.contains("(processpath)")) {
-				inString = inString.replace("(processpath)", processpath);
-			}
-			if (inString.contains("(importpath)")){
-				inString = inString.replace("(importpath)", importPath);
-			}
-			if (inString.contains("(sourcepath)")){
-				inString = inString.replace("(sourcepath)", sourcePath);
-			}
-			
-			if (inString.contains("(ocrbasispath)")){
-				inString = inString.replace("(ocrbasispath)", ocrBasisPath);
-			}
-			if (inString.contains("(ocrplaintextpath)")){
-				inString = inString.replace("(ocrplaintextpath)", ocrPlaintextPath);
-			}
-			if (inString.contains("(processtitle)")) {
-				inString = inString.replace("(processtitle)", this.process.getTitel());
-			}
-			if (inString.contains("(processid)")) {
-				inString = inString.replace("(processid)", String.valueOf(this.process.getId().intValue()));
-			}
-			if (inString.contains("(metaFile)")) {
-				inString = inString.replace("(metaFile)", metaFile);
-			}
-			if (inString.contains("(prefs)")) {
-				inString = inString.replace("(prefs)", myprefs);
-			}
+        // replace paths and files
+        try {
+            String processpath = this.process.getProcessDataDirectory().replace("\\", "/");
+            String tifpath = this.process.getImagesTifDirectory(false).replace("\\", "/");
+            String imagepath = this.process.getImagesDirectory().replace("\\", "/");
+            String origpath = this.process.getImagesOrigDirectory(false).replace("\\", "/");
+            String metaFile = this.process.getMetadataFilePath().replace("\\", "/");
+            String ocrBasisPath = this.process.getOcrDirectory().replace("\\", "/");
+            String ocrPlaintextPath = this.process.getTxtDirectory().replace("\\", "/");
+            String sourcePath = this.process.getSourceDirectory().replace("\\", "/");
+            String importPath = this.process.getImportDirectory().replace("\\", "/");
+            String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
-			if (this.step != null) {
-				String stepId = String.valueOf(this.step.getId());
-				String stepname = this.step.getTitel();
+            /* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */
+            if (tifpath.endsWith(File.separator)) {
+                tifpath = tifpath.substring(0, tifpath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (imagepath.endsWith(File.separator)) {
+                imagepath = imagepath.substring(0, imagepath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (origpath.endsWith(File.separator)) {
+                origpath = origpath.substring(0, origpath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (processpath.endsWith(File.separator)) {
+                processpath = processpath.substring(0, processpath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (importPath.endsWith(File.separator)) {
+                importPath = importPath.substring(0, importPath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (sourcePath.endsWith(File.separator)) {
+                sourcePath = sourcePath.substring(0, sourcePath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (ocrBasisPath.endsWith(File.separator)) {
+                ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (ocrPlaintextPath.endsWith(File.separator)) {
+                ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - File.separator.length()).replace("\\", "/");
+            }
+            if (inString.contains("(tifurl)")) {
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    inString = inString.replace("(tifurl)", "file:/" + tifpath);
+                } else {
+                    inString = inString.replace("(tifurl)", "file://" + tifpath);
+                }
+            }
+            if (inString.contains("(origurl)")) {
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    inString = inString.replace("(origurl)", "file:/" + origpath);
+                } else {
+                    inString = inString.replace("(origurl)", "file://" + origpath);
+                }
+            }
+            if (inString.contains("(imageurl)")) {
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    inString = inString.replace("(imageurl)", "file:/" + imagepath);
+                } else {
+                    inString = inString.replace("(imageurl)", "file://" + imagepath);
+                }
+            }
 
-				inString = inString.replace("(stepid)", stepId);
-				inString = inString.replace("(stepname)", stepname);
-			}
+            if (inString.contains("(tifpath)")) {
+                inString = inString.replace("(tifpath)", tifpath);
+            }
+            if (inString.contains("(origpath)")) {
+                inString = inString.replace("(origpath)", origpath);
+            }
+            if (inString.contains("(imagepath)")) {
+                inString = inString.replace("(imagepath)", imagepath);
+            }
+            if (inString.contains("(processpath)")) {
+                inString = inString.replace("(processpath)", processpath);
+            }
+            if (inString.contains("(importpath)")) {
+                inString = inString.replace("(importpath)", importPath);
+            }
+            if (inString.contains("(sourcepath)")) {
+                inString = inString.replace("(sourcepath)", sourcePath);
+            }
 
-			// replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
+            if (inString.contains("(ocrbasispath)")) {
+                inString = inString.replace("(ocrbasispath)", ocrBasisPath);
+            }
+            if (inString.contains("(ocrplaintextpath)")) {
+                inString = inString.replace("(ocrplaintextpath)", ocrPlaintextPath);
+            }
+            if (inString.contains("(processtitle)")) {
+                inString = inString.replace("(processtitle)", this.process.getTitel());
+            }
+            if (inString.contains("(processid)")) {
+                inString = inString.replace("(processid)", String.valueOf(this.process.getId().intValue()));
+            }
+            if (inString.contains("(metaFile)")) {
+                inString = inString.replace("(metaFile)", metaFile);
+            }
+            if (inString.contains("(prefs)")) {
+                inString = inString.replace("(prefs)", myprefs);
+            }
 
-			for (MatchResult r : findRegexMatches("\\(product\\.([^)]+)\\)", inString)) {
-				String propertyTitle = r.group(1);
-				for (Masterpiece ws : this.process.getWerkstueckeList()) {
-					for (Masterpieceproperty we : ws.getEigenschaftenList()) {
-						if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
-							inString = inString.replace(r.group(), we.getWert());
-							break;
-						}
-					}
-				}
-			}
+            if (this.step != null) {
+                String stepId = String.valueOf(this.step.getId());
+                String stepname = this.step.getTitel();
 
-			// replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
+                inString = inString.replace("(stepid)", stepId);
+                inString = inString.replace("(stepname)", stepname);
+            }
 
-			for (MatchResult r : findRegexMatches("\\(template\\.([^)]+)\\)", inString)) {
-				String propertyTitle = r.group(1);
-				for (Template v : this.process.getVorlagenList()) {
-					for (Templateproperty ve : v.getEigenschaftenList()) {
-						if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
-							inString = inString.replace(r.group(), ve.getWert());
-							break;
-						}
-					}
-				}
-			}
+            // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
 
-			// replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
+            for (MatchResult r : findRegexMatches("\\(product\\.([^)]+)\\)", inString)) {
+                String propertyTitle = r.group(1);
+                for (Masterpiece ws : this.process.getWerkstueckeList()) {
+                    for (Masterpieceproperty we : ws.getEigenschaftenList()) {
+                        if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
+                            inString = inString.replace(r.group(), we.getWert());
+                            break;
+                        }
+                    }
+                }
+            }
 
-			for (MatchResult r : findRegexMatches("\\(process\\.([^)]+)\\)", inString)) {
-				String propertyTitle = r.group(1);
-				List<ProcessProperty> ppList = PropertyParser.getPropertiesForProcess(this.process);
-				for (ProcessProperty pe : ppList) {
-					if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-						inString = inString.replace(r.group(), pe.getValue());
-						break;
-					}
-				}
+            // replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
 
-			}
+            for (MatchResult r : findRegexMatches("\\(template\\.([^)]+)\\)", inString)) {
+                String propertyTitle = r.group(1);
+                for (Template v : this.process.getVorlagenList()) {
+                    for (Templateproperty ve : v.getEigenschaftenList()) {
+                        if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
+                            inString = inString.replace(r.group(), ve.getWert());
+                            break;
+                        }
+                    }
+                }
+            }
 
-		} catch (SwapException e) {
-			logger.error(e);
-		} catch (DAOException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		} catch (InterruptedException e) {
-			logger.error(e);
-		}
+            // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
 
-		return inString;
-	}
+            for (MatchResult r : findRegexMatches("\\(process\\.([^)]+)\\)", inString)) {
+                String propertyTitle = r.group(1);
+                List<ProcessProperty> ppList = PropertyParser.getPropertiesForProcess(this.process);
+                for (ProcessProperty pe : ppList) {
+                    if (pe.getName().equalsIgnoreCase(propertyTitle)) {
+                        inString = inString.replace(r.group(), pe.getValue());
+                        break;
+                    }
+                }
 
-	/**
-	 * Metadatum von FirstChild oder TopStruct ermitteln (vorzugsweise vom FirstChild) und zurückgeben
-	 * ================================================================
-	 */
-	private String getMetadataFromDigitalDocument(MetadataLevel inLevel, String metadata) {
-		if (this.dd != null) {
-			/* TopStruct und FirstChild ermitteln */
-			DocStruct topstruct = this.dd.getLogicalDocStruct();
-			DocStruct firstchildstruct = null;
-			if (topstruct.getAllChildren() != null && topstruct.getAllChildren().size() > 0) {
-				firstchildstruct = topstruct.getAllChildren().get(0);
-			}
+            }
 
-			/* MetadataType ermitteln und ggf. Fehler melden */
-			MetadataType mdt;
-			try {
-				mdt = this.uhelp.getMetadataType(this.prefs, metadata);
-			} catch (UghHelperException e) {
-				Helper.setFehlerMeldung(e);
-				return "";
-			}
+        } catch (SwapException e) {
+            logger.error(e);
+        } catch (DAOException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        } catch (InterruptedException e) {
+            logger.error(e);
+        }
 
-			String result = "";
-			String resultTop = getMetadataValue(topstruct, mdt);
-			String resultFirst = null;
-			if (firstchildstruct != null) {
-				resultFirst = getMetadataValue(firstchildstruct, mdt);
-			}
+        return inString;
+    }
 
-			switch (inLevel) {
-			case FIRSTCHILD:
-				/* ohne vorhandenes FirstChild, kann dieses nicht zurückgegeben werden */
-				if (resultFirst == null) {
-					logger.info("Can not replace firstChild-variable for METS: " + metadata);
-					result = "";
-				} else {
-					result = resultFirst;
-				}
-				break;
+    /**
+     * Metadatum von FirstChild oder TopStruct ermitteln (vorzugsweise vom FirstChild) und zurückgeben
+     * ================================================================
+     */
 
-			case TOPSTRUCT:
-				if (resultTop == null) {
-					result = "";
-					logger.warn("Can not replace topStruct-variable for METS: " + metadata);
-				} else {
-					result = resultTop;
-				}
-				break;
+    private String getMetadataFromDigitalDocument(MetadataLevel inLevel, String metadata, boolean multiValue) {
+        if (this.dd != null) {
+            /* TopStruct und FirstChild ermitteln */
+            DocStruct topstruct = this.dd.getLogicalDocStruct();
+            DocStruct firstchildstruct = null;
+            if (topstruct.getAllChildren() != null && topstruct.getAllChildren().size() > 0) {
+                firstchildstruct = topstruct.getAllChildren().get(0);
+            }
 
-			case ALL:
-				if (resultFirst != null) {
-					result = resultFirst;
-				} else if (resultTop != null) {
-					result = resultTop;
-				} else {
-					result = "";
-					logger.warn("Can not replace variable for METS: " + metadata);
-				}
-				break;
+            /* MetadataType ermitteln und ggf. Fehler melden */
+            MetadataType mdt;
+            try {
+                mdt = this.uhelp.getMetadataType(this.prefs, metadata);
+            } catch (UghHelperException e) {
+                Helper.setFehlerMeldung(e);
+                return "";
+            }
 
-			}
-			return result;
-		} else {
-			return "";
-		}
-	}
+            String result = "";
+            String resultFirst = null;
+            String resultTop = null;
+            if (multiValue) {
+                resultTop = getAllMetadataValues(topstruct, mdt);
+                if (firstchildstruct != null) {
+                    resultFirst = getAllMetadataValues(firstchildstruct, mdt);
+                }
+            } else {
+                resultTop = getMetadataValue(topstruct, mdt);
+                if (firstchildstruct != null) {
+                    resultFirst = getMetadataValue(firstchildstruct, mdt);
+                }
+            }
 
-	/**
-	 * Metadatum von übergebenen Docstruct ermitteln, im Fehlerfall wird null zurückgegeben
-	 * ================================================================
-	 */
-	private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
-		List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
-		if (mds.size() > 0) {
-			return ((Metadata) mds.get(0)).getValue();
-		} else {
-			return null;
-		}
-	}
+            switch (inLevel) {
+                case FIRSTCHILD:
+                    /* ohne vorhandenes FirstChild, kann dieses nicht zurückgegeben werden */
+                    if (resultFirst == null) {
+                        logger.info("Can not replace firstChild-variable for METS: " + metadata);
+                        result = "";
+                    } else {
+                        result = resultFirst;
+                    }
+                    break;
 
-	/**
-	 * Suche nach regulären Ausdrücken in einem String, liefert alle gefundenen Treffer als Liste zurück
-	 * ================================================================
-	 */
-	public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
-		List<MatchResult> results = new ArrayList<MatchResult>();
-		for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
-			results.add(m.toMatchResult());
-		}
-		return results;
-	}
+                case TOPSTRUCT:
+                    if (resultTop == null) {
+                        result = "";
+                        logger.warn("Can not replace topStruct-variable for METS: " + metadata);
+                    } else {
+                        result = resultTop;
+                    }
+                    break;
+
+                case ALL:
+                    if (resultFirst != null) {
+                        result = resultFirst;
+                    } else if (resultTop != null) {
+                        result = resultTop;
+                    } else {
+                        result = "";
+                        logger.warn("Can not replace variable for METS: " + metadata);
+                    }
+                    break;
+
+            }
+            return result;
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Metadatum von übergebenen Docstruct ermitteln, im Fehlerfall wird null zurückgegeben
+     * ================================================================
+     */
+    private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
+        List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
+        if (mds.size() > 0) {
+            return ((Metadata) mds.get(0)).getValue();
+        } else {
+            return null;
+        }
+    }
+
+    private String getAllMetadataValues(DocStruct ds, MetadataType mdt) {
+        String answer = "";
+        List<? extends Metadata> metadataList = ds.getAllMetadataByType(mdt);
+        if (metadataList != null) {
+            for (Metadata md : metadataList) {
+                String value = md.getValue();
+                if (value != null && !value.isEmpty()) {
+                    if (answer.isEmpty()) {
+                        answer = value;
+                    } else {
+                        answer += "," + value;
+                    }
+                }
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * Suche nach regulären Ausdrücken in einem String, liefert alle gefundenen Treffer als Liste zurück
+     * ================================================================
+     */
+    public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
+        List<MatchResult> results = new ArrayList<MatchResult>();
+        for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
+            results.add(m.toMatchResult());
+        }
+        return results;
+    }
 }
