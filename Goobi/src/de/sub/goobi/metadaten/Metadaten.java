@@ -53,6 +53,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
@@ -3238,18 +3240,14 @@ public class Metadaten {
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
-// TODO
         for (String imagename : oldfilenames) {
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            System.out.println("current image prefix: " + filenamePrefix);
             for (String folder : allTifFolders) {
                 // check if folder is empty, otherwise get extension for folder
                 File currentImageFolder = new File(imageDirectory + folder);
-// TODO list only files
-                String[] files = currentImageFolder.list();
+                String[] files = currentImageFolder.list(Helper.dataFilter);
                 if (files != null && files.length != 0) {
-                    String fileExtension = files[0].substring(imagename.lastIndexOf("."));
-                    System.out.println("file extension for folder " + folder + " is " + fileExtension);
+                    String fileExtension = Metadaten.getFileExtension(files[0]);
                     File filename = new File(currentImageFolder, filenamePrefix + fileExtension);
                     File newFileName = new File(currentImageFolder, filenamePrefix + fileExtension + "_bak");
                     filename.renameTo(newFileName);
@@ -3262,9 +3260,9 @@ public class Metadaten {
                     File[] allOcrFolder = ocr.listFiles();
                     for (File folder : allOcrFolder) {
 
-                        String[] files = folder.list();
+                        String[] files = folder.list(Helper.dataFilter);
                         if (files != null && files.length != 0) {
-                            String fileExtension = files[0].substring(imagename.lastIndexOf("."));
+                            String fileExtension = Metadaten.getFileExtension(files[0]);
                             File filename = new File(folder, filenamePrefix + fileExtension);
                             File newFileName = new File(folder, filenamePrefix + fileExtension + "_bak");
                             filename.renameTo(newFileName);
@@ -3286,26 +3284,35 @@ public class Metadaten {
         int counter = 1;
         for (String imagename : oldfilenames) {
             String newfilenamePrefix = generateFileName(counter);
+            String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             for (String folder : allTifFolders) {
-                File fileToSort = new File(imageDirectory + folder, imagename);
-                String fileExtension = Metadaten.getFileExtension(fileToSort.getName().replace("_bak", ""));
-                File tempFileName = new File(imageDirectory + folder, fileToSort.getName() + "_bak");
-                File sortedName = new File(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
-                tempFileName.renameTo(sortedName);
-                mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getName());
+                File currentImageFolder = new File(imageDirectory + folder);
+                String[] files = currentImageFolder.list(FileFileFilter.FILE);
+                if (files != null && files.length != 0) {
+                    String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
+                    File tempFileName = new File(currentImageFolder, oldFilenamePrefix + fileExtension + "_bak");
+                    File sortedName = new File(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
+                    tempFileName.renameTo(sortedName);
+                    mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getName());
+                }
             }
             try {
+
                 File ocr = new File(myProzess.getOcrDirectory());
                 if (ocr.exists()) {
                     File[] allOcrFolder = ocr.listFiles();
                     for (File folder : allOcrFolder) {
-                        File fileToSort = new File(folder, imagename);
-                        String fileExtension = Metadaten.getFileExtension(fileToSort.getName().replace("_bak", ""));
-                        File tempFileName = new File(folder, fileToSort.getName() + "_bak");
-                        File sortedName = new File(folder, newfilenamePrefix + fileExtension.toLowerCase());
-                        tempFileName.renameTo(sortedName);
+
+                        String[] files = folder.list(FileFileFilter.FILE);
+                        if (files != null && files.length != 0) {
+                            String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
+                            File tempFileName = new File(folder, oldFilenamePrefix + fileExtension + "_bak");
+                            File sortedName = new File(folder, newfilenamePrefix + fileExtension.toLowerCase());
+                            tempFileName.renameTo(sortedName);
+                        }
                     }
                 }
+
             } catch (SwapException e) {
                 myLogger.error(e);
             } catch (DAOException e) {
@@ -3327,7 +3334,8 @@ public class Metadaten {
             // check what happens with .tar.gz
             String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
-                File[] filesInFolder = new File(myProzess.getImagesDirectory() + folder).listFiles();
+                File imageFolder = new File(myProzess.getImagesDirectory() + folder);
+                File[] filesInFolder = imageFolder.listFiles();
                 for (File currentFile : filesInFolder) {
                     String filename = currentFile.getName();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");

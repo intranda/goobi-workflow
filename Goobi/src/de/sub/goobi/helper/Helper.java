@@ -223,7 +223,8 @@ public class Helper implements Serializable, Observer {
         if (context != null) {
             msg = msg.replace("\n", "<br />");
             beschr = beschr.replace("\n", "<br />");
-            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, "<pre>" + msg + "</pre>", beschr));
+            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR,
+                    "<pre>" + msg + "</pre>", beschr));
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
             myLogger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
@@ -291,7 +292,7 @@ public class Helper implements Serializable, Observer {
             while (polyglot.hasNext()) {
                 Locale language = polyglot.next();
                 try {
-                commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                    commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                 } catch (Exception e) {
                     myLogger.warn("Cannot load messages for language " + language.getLanguage());
                 }
@@ -321,7 +322,7 @@ public class Helper implements Serializable, Observer {
             String data = System.getenv("junitdata");
             if (data == null || data.isEmpty()) {
                 Locale defaullLocale = new Locale("EN");
-                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));                
+                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
             }
         }
     }
@@ -561,7 +562,12 @@ public class Helper implements Serializable, Observer {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[pP][pP][tT][xX]?")) {
                 fileOk = true;
+            } else if (name.matches(prefix + "\\.[tT][xX][tT]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
+                fileOk = true;
             }
+
             return fileOk;
         }
     };
