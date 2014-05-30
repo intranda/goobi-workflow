@@ -25,7 +25,7 @@ import de.sub.goobi.samples.BenutzerTest;
 import de.sub.goobi.samples.BenutzergruppenTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FilesystemHelperTest.class, ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, PaginatorTest.class,
+@SuiteClasses({ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, PaginatorTest.class,
         BenutzergruppenTest.class, BenutzerTest.class, BackupFileRotationTest.class, GoobiVersionTest.class, CalculationUnitTest.class,
         ResultOutputTest.class, StatisticsModeTest.class, TimeUnitTest.class, ConverterTest.class, SQLHelperTest.class, SQLProductionTest.class,
         SQLStepRequestsTest.class, SQLStorageTest.class, IdentifierPPNTest.class })

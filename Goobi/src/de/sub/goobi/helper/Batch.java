@@ -1,13 +1,10 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * Visit the websites for more information. - http://www.goobi.org - http://launchpad.net/goobi-production - http://gdz.sub.uni-goettingen.de -
+ * http://www.intranda.com - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,35 +25,28 @@ package de.sub.goobi.helper;
  */
 public class Batch {
 
-	private String batchId;
-	private String batchLabel;
-	
-	
-	public Batch(Integer id, String label) {
-		this.batchId = String.valueOf(id);
-		this.batchLabel = label;
-	}
-	
-	
-	public String getBatchId() {
-		return this.batchId;
-	}
-	public void setBatchId(String batchId) {
-		this.batchId = batchId;
-	}
-	public String getBatchLabel() {
-		return this.batchLabel;
-	}
-	public void setBatchLabel(String batchLabel) {
-		this.batchLabel = batchLabel;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    private String batchId;
+    private String batchLabel;
+
+    public Batch(Integer id, String label) {
+        this.batchId = String.valueOf(id);
+        this.batchLabel = label;
+    }
+
+    public String getBatchId() {
+        return this.batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
+    }
+
+    public String getBatchLabel() {
+        return this.batchLabel;
+    }
+
+    public void setBatchLabel(String batchLabel) {
+        this.batchLabel = batchLabel;
+    }
+
 }

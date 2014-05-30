@@ -40,376 +40,374 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 
-
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class BatchProcessHelper {
 
-	private List<Process> processes;
-	private static final Logger logger = Logger.getLogger(BatchProcessHelper.class);
-	private Process currentProcess;
-	private List<ProcessProperty> processPropertyList;
-	private ProcessProperty processProperty;
-	private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
-	private Integer container;
+    private List<Process> processes;
+    private static final Logger logger = Logger.getLogger(BatchProcessHelper.class);
+    private Process currentProcess;
+    private List<ProcessProperty> processPropertyList;
+    private ProcessProperty processProperty;
+    private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
+    private Integer container;
+    private List<String> processNameList = new ArrayList<String>();
+    private String processName = "";
 
-	public BatchProcessHelper(List<Process> processes) {
-		this.processes = processes;
-		for (Process p : processes) {
+    
+    public BatchProcessHelper(List<Process> processes) {
+        this.processes = processes;
+        for (Process p : processes) {
 
-			this.processNameList.add(p.getTitel());
-		}
-		logger.debug("loaded batch with " + this.processes.size() + " processes.");
-		this.currentProcess = processes.get(0);
-		this.processName = this.currentProcess.getTitel();
-		loadProcessProperties(this.currentProcess);
-	}
+            this.processNameList.add(p.getTitel());
+        }
+        logger.debug("loaded batch with " + this.processes.size() + " processes.");
+        this.currentProcess = processes.get(0);
+        this.processName = this.currentProcess.getTitel();
+        loadProcessProperties(this.currentProcess);
+    }
 
-	public Process getCurrentProcess() {
-		return this.currentProcess;
-	}
+    public Process getCurrentProcess() {
+        return this.currentProcess;
+    }
 
-	public void setCurrentProcess(Process currentProcess) {
-		this.currentProcess = currentProcess;
-	}
+    public void setCurrentProcess(Process currentProcess) {
+        this.currentProcess = currentProcess;
+    }
 
-	public List<Process> getProcesses() {
-		return this.processes;
-	}
+    public List<Process> getProcesses() {
+        return this.processes;
+    }
 
-	public void setProcesses(List<Process> processes) {
-		this.processes = processes;
-	}
+    public void setProcesses(List<Process> processes) {
+        this.processes = processes;
+    }
 
-	public List<ProcessProperty> getProcessPropertyList() {
-		return this.processPropertyList;
-	}
+    public List<ProcessProperty> getProcessPropertyList() {
+        return this.processPropertyList;
+    }
 
-	public void setProcessPropertyList(List<ProcessProperty> processPropertyList) {
-		this.processPropertyList = processPropertyList;
-	}
+    public void setProcessPropertyList(List<ProcessProperty> processPropertyList) {
+        this.processPropertyList = processPropertyList;
+    }
 
-	public ProcessProperty getProcessProperty() {
-		return this.processProperty;
-	}
+    public ProcessProperty getProcessProperty() {
+        return this.processProperty;
+    }
 
-	public void setProcessProperty(ProcessProperty processProperty) {
-		this.processProperty = processProperty;
-	}
+    public void setProcessProperty(ProcessProperty processProperty) {
+        this.processProperty = processProperty;
+    }
 
-	public int getPropertyListSize() {
-		return this.processPropertyList.size();
-	}
-	
-	public List<ProcessProperty> getProcessProperties() {
-		return this.processPropertyList;
-	}
+    public int getPropertyListSize() {
+        return this.processPropertyList.size();
+    }
 
-	private List<String> processNameList = new ArrayList<String>();
+    public List<ProcessProperty> getProcessProperties() {
+        return this.processPropertyList;
+    }
 
-	public List<String> getProcessNameList() {
-		return this.processNameList;
-	}
+    public List<String> getProcessNameList() {
+        return this.processNameList;
+    }
 
-	public void setProcessNameList(List<String> processNameList) {
-		this.processNameList = processNameList;
-	}
+    public void setProcessNameList(List<String> processNameList) {
+        this.processNameList = processNameList;
+    }
 
-	private String processName = "";
+    public String getProcessName() {
+        return this.processName;
+    }
 
-	public String getProcessName() {
-		return this.processName;
-	}
+    public void setProcessName(String processName) {
+        this.processName = processName;
+        for (Process s : this.processes) {
+            if (s.getTitel().equals(processName)) {
+                this.currentProcess = s;
+                loadProcessProperties(this.currentProcess);
+                break;
+            }
+        }
+    }
 
-	public void setProcessName(String processName) {
-		this.processName = processName;
-		for (Process s : this.processes) {
-			if (s.getTitel().equals(processName)) {
-				this.currentProcess = s;
-				loadProcessProperties(this.currentProcess);
-				break;
-			}
-		}
-	}
+    public void saveCurrentProperty() {
+        List<ProcessProperty> ppList = getContainerProperties();
+        for (ProcessProperty pp : ppList) {
+            this.processProperty = pp;
+            if (!this.processProperty.isValid()) {
+                List<String> param = new ArrayList<String>();
+                param.add(processProperty.getName());
+                String value = Helper.getTranslation("propertyNotValid", param);
+                Helper.setFehlerMeldung(value);
+                return;
+            }
+            if (this.processProperty.getProzesseigenschaft() == null) {
+                Processproperty pe = new Processproperty();
+                pe.setProzess(this.currentProcess);
+                this.processProperty.setProzesseigenschaft(pe);
+                this.currentProcess.getEigenschaften().add(pe);
+            }
+            this.processProperty.transfer();
 
-	public void saveCurrentProperty() {
-		List<ProcessProperty> ppList = getContainerProperties();
-		for (ProcessProperty pp : ppList) {
-			this.processProperty = pp;
-			if (!this.processProperty.isValid()) {
-				List<String> param = new ArrayList<String>();
-				param.add(processProperty.getName());
-				String value = Helper.getTranslation("propertyNotValid", param);
-				Helper.setFehlerMeldung(value);	
-				return;
-			}
-			if (this.processProperty.getProzesseigenschaft() == null) {
-				Processproperty pe = new Processproperty();
-				pe.setProzess(this.currentProcess);
-				this.processProperty.setProzesseigenschaft(pe);
-				this.currentProcess.getEigenschaften().add(pe);
-			}
-			this.processProperty.transfer();
+            Process p = this.currentProcess;
+            List<Processproperty> props = p.getEigenschaftenList();
+            for (Processproperty pe : props) {
+                if (pe.getTitel() == null) {
+                    p.getEigenschaften().remove(pe);
+                }
+            }
+            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
+                this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
+            }
+            //			try {
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
 
-			Process p = this.currentProcess;
-			List<Processproperty> props = p.getEigenschaftenList();
-			for (Processproperty pe : props) {
-				if (pe.getTitel() == null) {
-					p.getEigenschaften().remove(pe);
-				}
-			}
-			if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
-				this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
-			}
-//			try {
-	            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            //				ProcessManager.saveProcess(this.currentProcess);
+            Helper.setMeldung("propertySaved");
+            //			} catch (DAOException e) {
+            //				logger.error(e);
+            //				Helper.setFehlerMeldung("propertyNotSaved");
+            //			}
+        }
+    }
 
-//				ProcessManager.saveProcess(this.currentProcess);
-				Helper.setMeldung("propertySaved");
-//			} catch (DAOException e) {
-//				logger.error(e);
-//				Helper.setFehlerMeldung("propertyNotSaved");
-//			}
-		}
-	}
+    public void saveCurrentPropertyForAll() {
+        List<ProcessProperty> ppList = getContainerProperties();
+        boolean error = false;
+        for (ProcessProperty pp : ppList) {
+            this.processProperty = pp;
+            if (!this.processProperty.isValid()) {
+                List<String> param = new ArrayList<String>();
+                param.add(processProperty.getName());
+                String value = Helper.getTranslation("propertyNotValid", param);
+                Helper.setFehlerMeldung(value);
+                return;
+            }
+            if (this.processProperty.getProzesseigenschaft() == null) {
+                Processproperty pe = new Processproperty();
+                pe.setProzess(this.currentProcess);
+                this.processProperty.setProzesseigenschaft(pe);
+                this.currentProcess.getEigenschaften().add(pe);
+            }
+            this.processProperty.transfer();
 
-	public void saveCurrentPropertyForAll() {
-		List<ProcessProperty> ppList = getContainerProperties();
-		boolean error = false;
-		for (ProcessProperty pp : ppList) {
-			this.processProperty = pp;
-			if (!this.processProperty.isValid()) {
-				List<String> param = new ArrayList<String>();
-				param.add(processProperty.getName());
-				String value = Helper.getTranslation("propertyNotValid", param);
-				Helper.setFehlerMeldung(value);	
-				return;
-			}
-			if (this.processProperty.getProzesseigenschaft() == null) {
-				Processproperty pe = new Processproperty();
-				pe.setProzess(this.currentProcess);
-				this.processProperty.setProzesseigenschaft(pe);
-				this.currentProcess.getEigenschaften().add(pe);
-			}			
-			this.processProperty.transfer();
+            Processproperty pe = new Processproperty();
+            pe.setTitel(this.processProperty.getName());
+            pe.setWert(this.processProperty.getValue());
+            pe.setContainer(this.processProperty.getContainer());
 
-			Processproperty pe = new Processproperty();
-			pe.setTitel(this.processProperty.getName());
-			pe.setWert(this.processProperty.getValue());
-			pe.setContainer(this.processProperty.getContainer());
+            for (Process s : this.processes) {
+                Process process = s;
+                if (!s.equals(this.currentProcess)) {
 
-			for (Process s : this.processes) {
-			    Process process = s;
-				if (!s.equals(this.currentProcess)) {
+                    if (pe.getTitel() != null) {
+                        boolean match = false;
 
-					if (pe.getTitel() != null) {
-						boolean match = false;
+                        for (Processproperty processPe : process.getEigenschaftenList()) {
+                            if (processPe.getTitel() != null) {
+                                if (pe.getTitel().equals(processPe.getTitel()) && pe.getContainer() == processPe.getContainer()) {
+                                    processPe.setWert(pe.getWert());
+                                    match = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!match) {
+                            Processproperty p = new Processproperty();
+                            p.setTitel(pe.getTitel());
+                            p.setWert(pe.getWert());
+                            p.setContainer(pe.getContainer());
+                            p.setType(pe.getType());
+                            p.setProzess(process);
+                            process.getEigenschaften().add(p);
+                        }
+                    }
+                } else {
+                    if (!process.getEigenschaftenList().contains(this.processProperty.getProzesseigenschaft())) {
+                        process.getEigenschaften().add(this.processProperty.getProzesseigenschaft());
+                    }
+                }
 
-						for (Processproperty processPe : process.getEigenschaftenList()) {
-							if (processPe.getTitel() != null) {
-								if (pe.getTitel().equals(processPe.getTitel()) && pe.getContainer() == processPe.getContainer()) {
-									processPe.setWert(pe.getWert());
-									match = true;
-									break;
-								}
-							}
-						}
-						if (!match) {
-							Processproperty p = new Processproperty();
-							p.setTitel(pe.getTitel());
-							p.setWert(pe.getWert());
-							p.setContainer(pe.getContainer());
-							p.setType(pe.getType());
-							p.setProzess(process);
-							process.getEigenschaften().add(p);
-						}
-					}
-				} else {
-					if (!process.getEigenschaftenList().contains(this.processProperty.getProzesseigenschaft())) {
-						process.getEigenschaften().add(this.processProperty.getProzesseigenschaft());
-					}
-				}
+                List<Processproperty> props = process.getEigenschaftenList();
+                for (Processproperty peig : props) {
+                    if (peig.getTitel() == null) {
+                        process.getEigenschaften().remove(peig);
+                    }
+                }
 
-				List<Processproperty> props = process.getEigenschaftenList();
-				for (Processproperty peig : props) {
-					if (peig.getTitel() == null) {
-						process.getEigenschaften().remove(peig);
-					}
-				}
+                //				try {
+                PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+                //				} catch (DAOException e) {
+                //					error = true;
+                //					logger.error(e);
+                //					List<String> param = new ArrayList<String>();
+                //					param.add(process.getTitel());
+                //					String value = Helper.getTranslation("propertiesForProcessNotSaved", param);
+                //					Helper.setFehlerMeldung(value);
+                //				}
+            }
+        }
+        if (!error) {
+            Helper.setMeldung("propertiesSaved");
+        }
+    }
 
-//				try {
-		            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-//				} catch (DAOException e) {
-//					error = true;
-//					logger.error(e);
-//					List<String> param = new ArrayList<String>();
-//					param.add(process.getTitel());
-//					String value = Helper.getTranslation("propertiesForProcessNotSaved", param);
-//					Helper.setFehlerMeldung(value);
-//				}
-			}
-		}
-		if (!error) {
-			Helper.setMeldung("propertiesSaved");
-		}
-	}
+    private void loadProcessProperties(Process process) {
+        //		this.pdao.refresh(this.currentProcess);
+        this.containers = new TreeMap<Integer, PropertyListObject>();
+        this.processPropertyList = PropertyParser.getPropertiesForProcess(this.currentProcess);
 
-	private void loadProcessProperties(Process process) {
-//		this.pdao.refresh(this.currentProcess);
-		this.containers = new TreeMap<Integer, PropertyListObject>();
-		this.processPropertyList = PropertyParser.getPropertiesForProcess(this.currentProcess);
-		
-		for (ProcessProperty pt : this.processPropertyList) {
-		    if (pt.getProzesseigenschaft() == null) {
+        for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getProzesseigenschaft() == null) {
                 Processproperty pe = new Processproperty();
                 pe.setProzess(process);
                 pt.setProzesseigenschaft(pe);
                 process.getEigenschaften().add(pe);
                 pt.transfer();
             }
-			if (!this.containers.keySet().contains(pt.getContainer())) {
-				PropertyListObject plo = new PropertyListObject(pt.getContainer());
-				plo.addToList(pt);
-				this.containers.put(pt.getContainer(), plo);
-			} else {
-				PropertyListObject plo = this.containers.get(pt.getContainer());
-				plo.addToList(pt);
-				this.containers.put(pt.getContainer(), plo);
-			}
-		}
-		for (Process p : this.processes) {
-			for (Processproperty pe : p.getEigenschaftenList()) {
-				if (!this.containers.keySet().contains(pe.getContainer())) {
-					this.containers.put(pe.getContainer(), null);
-				}
-			}
-		}
-		
-	}
+            if (!this.containers.keySet().contains(pt.getContainer())) {
+                PropertyListObject plo = new PropertyListObject(pt.getContainer());
+                plo.addToList(pt);
+                this.containers.put(pt.getContainer(), plo);
+            } else {
+                PropertyListObject plo = this.containers.get(pt.getContainer());
+                plo.addToList(pt);
+                this.containers.put(pt.getContainer(), plo);
+            }
+        }
+        for (Process p : this.processes) {
+            for (Processproperty pe : p.getEigenschaftenList()) {
+                if (!this.containers.keySet().contains(pe.getContainer())) {
+                    this.containers.put(pe.getContainer(), null);
+                }
+            }
+        }
 
-	public Map<Integer, PropertyListObject> getContainers() {
-		return this.containers;
-	}
+    }
 
-	public int getContainersSize() {
-		if (this.containers == null) {
-			return 0;
-		}
-		return this.containers.size();
-	}
+    public Map<Integer, PropertyListObject> getContainers() {
+        return this.containers;
+    }
 
-	public List<ProcessProperty> getSortedProperties() {
-		Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
-		Collections.sort(this.processPropertyList, comp);
-		return this.processPropertyList;
-	}
+    public int getContainersSize() {
+        if (this.containers == null) {
+            return 0;
+        }
+        return this.containers.size();
+    }
 
-	public List<ProcessProperty> getContainerlessProperties() {
-		List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
-		for (ProcessProperty pp : this.processPropertyList) {
-			if (pp.getContainer() == 0 && pp.getName() != null) {
-				answer.add(pp);
-			}
-		}
-		return answer;
-	}
+    public List<ProcessProperty> getSortedProperties() {
+        Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
+        Collections.sort(this.processPropertyList, comp);
+        return this.processPropertyList;
+    }
 
-	public Integer getContainer() {
-		return this.container;
-	}
-	
-	public List<Integer> getContainerList() {
-		return new ArrayList<Integer>(this.containers.keySet());
-	}
+    public List<ProcessProperty> getContainerlessProperties() {
+        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        for (ProcessProperty pp : this.processPropertyList) {
+            if (pp.getContainer() == 0 && pp.getName() != null) {
+                answer.add(pp);
+            }
+        }
+        return answer;
+    }
 
-	public void setContainer(Integer container) {
-		this.container = container;
-		if (container != null && container > 0) {
-			this.processProperty = getContainerProperties().get(0);
-		}
-	}
+    public Integer getContainer() {
+        return this.container;
+    }
 
-	public List<ProcessProperty> getContainerProperties() {
-		List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+    public List<Integer> getContainerList() {
+        return new ArrayList<Integer>(this.containers.keySet());
+    }
 
-		if (this.container != null && this.container > 0) {
-			for (ProcessProperty pp : this.processPropertyList) {
-				if (pp.getContainer() == this.container && pp.getName() != null) {
-					answer.add(pp);
-				}
-			}
-		} else {
-			answer.add(this.processProperty);
-		}
+    public void setContainer(Integer container) {
+        this.container = container;
+        if (container != null && container > 0) {
+            this.processProperty = getContainerProperties().get(0);
+        }
+    }
 
-		return answer;
-	}
+    public List<ProcessProperty> getContainerProperties() {
+        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
 
-	public String duplicateContainerForSingle() {
-		Integer currentContainer = this.processProperty.getContainer();
-		List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
-		// search for all properties in container
-		for (ProcessProperty pt : this.processPropertyList) {
-			if (pt.getContainer() == currentContainer) {
-				plist.add(pt);
-			}
-		}
-		int newContainerNumber = 0;
-		if (currentContainer > 0) {
-			newContainerNumber++;
-			// find new unused container number
-			boolean search = true;
-			while (search) {
-				if (!this.containers.containsKey(newContainerNumber)) {
-					search = false;
-				} else {
-					newContainerNumber++;
-				}
-			}
-		}
-		// clone properties
-		for (ProcessProperty pt : plist) {
-			ProcessProperty newProp = pt.getClone(newContainerNumber);
-			this.processPropertyList.add(newProp);
-			this.processProperty = newProp;
-			saveCurrentProperty();
-		}
-		loadProcessProperties(this.currentProcess);
+        if (this.container != null && this.container > 0) {
+            for (ProcessProperty pp : this.processPropertyList) {
+                if (pp.getContainer() == this.container && pp.getName() != null) {
+                    answer.add(pp);
+                }
+            }
+        } else {
+            answer.add(this.processProperty);
+        }
 
-		return "";
-	}
+        return answer;
+    }
 
-	public String duplicateContainerForAll() {
-		Integer currentContainer = this.processProperty.getContainer();
-		List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
-		// search for all properties in container
-		for (ProcessProperty pt : this.processPropertyList) {
-			if (pt.getContainer() == currentContainer) {
-				plist.add(pt);
-			}
-		}
+    public String duplicateContainerForSingle() {
+        Integer currentContainer = this.processProperty.getContainer();
+        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        // search for all properties in container
+        for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getContainer() == currentContainer) {
+                plist.add(pt);
+            }
+        }
+        int newContainerNumber = 0;
+        if (currentContainer > 0) {
+            newContainerNumber++;
+            // find new unused container number
+            boolean search = true;
+            while (search) {
+                if (!this.containers.containsKey(newContainerNumber)) {
+                    search = false;
+                } else {
+                    newContainerNumber++;
+                }
+            }
+        }
+        // clone properties
+        for (ProcessProperty pt : plist) {
+            ProcessProperty newProp = pt.getClone(newContainerNumber);
+            this.processPropertyList.add(newProp);
+            this.processProperty = newProp;
+            saveCurrentProperty();
+        }
+        loadProcessProperties(this.currentProcess);
 
-		int newContainerNumber = 0;
-		if (currentContainer > 0) {
-			newContainerNumber++;
-			boolean search = true;
-			while (search) {
-				if (!this.containers.containsKey(newContainerNumber)) {
-					search = false;
-				} else {
-					newContainerNumber++;
-				}
-			}
-		}
-		// clone properties
-		for (ProcessProperty pt : plist) {
-			ProcessProperty newProp = pt.getClone(newContainerNumber);
-			this.processPropertyList.add(newProp);
-			this.processProperty = newProp;
-			saveCurrentPropertyForAll();
-		}
-		loadProcessProperties(this.currentProcess);
-		return "";
-	}
+        return "";
+    }
+
+    public String duplicateContainerForAll() {
+        Integer currentContainer = this.processProperty.getContainer();
+        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        // search for all properties in container
+        for (ProcessProperty pt : this.processPropertyList) {
+            if (pt.getContainer() == currentContainer) {
+                plist.add(pt);
+            }
+        }
+
+        int newContainerNumber = 0;
+        if (currentContainer > 0) {
+            newContainerNumber++;
+            boolean search = true;
+            while (search) {
+                if (!this.containers.containsKey(newContainerNumber)) {
+                    search = false;
+                } else {
+                    newContainerNumber++;
+                }
+            }
+        }
+        // clone properties
+        for (ProcessProperty pt : plist) {
+            ProcessProperty newProp = pt.getClone(newContainerNumber);
+            this.processPropertyList.add(newProp);
+            this.processProperty = newProp;
+            saveCurrentPropertyForAll();
+        }
+        loadProcessProperties(this.currentProcess);
+        return "";
+    }
 
 }
