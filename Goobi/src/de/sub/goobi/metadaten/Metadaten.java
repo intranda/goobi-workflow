@@ -3238,12 +3238,22 @@ public class Metadaten {
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
-
+// TODO
         for (String imagename : oldfilenames) {
+            String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+            System.out.println("current image prefix: " + filenamePrefix);
             for (String folder : allTifFolders) {
-                File filename = new File(imageDirectory + folder, imagename);
-                File newFileName = new File(imageDirectory + folder, imagename + "_bak");
-                filename.renameTo(newFileName);
+                // check if folder is empty, otherwise get extension for folder
+                File currentImageFolder = new File(imageDirectory + folder);
+// TODO list only files
+                String[] files = currentImageFolder.list();
+                if (files != null && files.length != 0) {
+                    String fileExtension = files[0].substring(imagename.lastIndexOf("."));
+                    System.out.println("file extension for folder " + folder + " is " + fileExtension);
+                    File filename = new File(currentImageFolder, filenamePrefix + fileExtension);
+                    File newFileName = new File(currentImageFolder, filenamePrefix + fileExtension + "_bak");
+                    filename.renameTo(newFileName);
+                }
             }
 
             try {
@@ -3251,9 +3261,14 @@ public class Metadaten {
                 if (ocr.exists()) {
                     File[] allOcrFolder = ocr.listFiles();
                     for (File folder : allOcrFolder) {
-                        File filename = new File(folder, imagename);
-                        File newFileName = new File(folder, imagename + "_bak");
-                        filename.renameTo(newFileName);
+
+                        String[] files = folder.list();
+                        if (files != null && files.length != 0) {
+                            String fileExtension = files[0].substring(imagename.lastIndexOf("."));
+                            File filename = new File(folder, filenamePrefix + fileExtension);
+                            File newFileName = new File(folder, filenamePrefix + fileExtension + "_bak");
+                            filename.renameTo(newFileName);
+                        }
                     }
                 }
             } catch (SwapException e) {
@@ -3267,6 +3282,7 @@ public class Metadaten {
             }
 
         }
+        System.gc();
         int counter = 1;
         for (String imagename : oldfilenames) {
             String newfilenamePrefix = generateFileName(counter);
@@ -3308,7 +3324,7 @@ public class Metadaten {
 
     private void removeImage(String fileToDelete) {
         try {
-            // TODO check what happens with .tar.gz
+            // check what happens with .tar.gz
             String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
                 File[] filesInFolder = new File(myProzess.getImagesDirectory() + folder).listFiles();
