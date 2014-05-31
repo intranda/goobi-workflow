@@ -110,7 +110,7 @@ public class UserBean extends BasicBean {
         this.sortierung = "nachname, vorname";
         UserManager m = new UserManager();
         String myfilter = getBasicFilter();
-        if (this.filter != null || this.filter.length() != 0) {
+        if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
             myfilter +=
                     " AND (vorname like '%"
