@@ -43,10 +43,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
@@ -190,7 +190,8 @@ public class ModuleServerForm {
 			Document doc = builder.build(new File(filename));
 			Element root = doc.getRootElement();
 			/* alle Module durchlaufen */
-			for (Iterator<Element> iter = root.getChildren().iterator(); iter.hasNext();) {
+			for (@SuppressWarnings("unchecked")
+            Iterator<Element> iter = root.getChildren().iterator(); iter.hasNext();) {
 				Element myModule = iter.next();
 				rueckgabe.add(new ModuleDesc(myModule.getAttributeValue("name"), myModule.getAttributeValue("url"), null, myModule
 						.getAttributeValue("description")));

@@ -118,7 +118,7 @@ public class ProzesskopieFormTest {
 
         form.setOpacKatalog("GBV");
         form.setOpacSuchbegriff("517154005");
-        form.getProzessKopie().setTitel("test");
+        form.getProzessKopie().setTitel("test");        
         assertEquals("", form.OpacAuswerten());
         assertEquals("process_new2", form.GoToSeite2());
 

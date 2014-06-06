@@ -60,10 +60,10 @@ import org.goobi.production.plugin.ImportPluginLoader;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.properties.ImportProperty;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 import ugh.dl.Prefs;
 
@@ -139,6 +139,7 @@ public class MassImportForm {
 	 * 
 	 */
 
+	@SuppressWarnings("unchecked")
 	private void initializePossibleDigitalCollections() {
 		this.possibleDigitalCollections = new ArrayList<String>();
 		ArrayList<String> defaultCollections = new ArrayList<String>();
@@ -154,7 +155,7 @@ public class MassImportForm {
 			Document doc = builder.build(new File(filename));
 			Element root = doc.getRootElement();
 			/* alle Projekte durchlaufen */
-			List<Element> projekte = root.getChildren();
+            List<Element> projekte = root.getChildren();
 			for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
 				Element projekt = iter.next();
 

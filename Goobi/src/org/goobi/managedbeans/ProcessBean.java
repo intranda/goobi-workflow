@@ -85,7 +85,7 @@ import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
-import org.jdom2.transform.XSLTransformException;
+import org.jdom.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 
 import com.lowagie.text.Document;

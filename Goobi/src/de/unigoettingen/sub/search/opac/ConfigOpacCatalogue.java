@@ -35,12 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.DOMBuilder;
-import org.jdom2.output.DOMOutputter;
-import org.jdom2.output.XMLOutputter;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.DOMBuilder;
+import org.jdom.output.DOMOutputter;
+import org.jdom.output.XMLOutputter;
 import org.w3c.dom.Node;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -107,6 +107,7 @@ public class ConfigOpacCatalogue {
         return this.charset;
     }
 
+    @SuppressWarnings("unchecked")
     public Node executeBeautifier(Node myHitlist) {
         /* Ausgabe des Opac-Ergebnissen in Datei */
 
@@ -151,6 +152,7 @@ public class ConfigOpacCatalogue {
     /**
      * Beautifier für ein JDom-Object durchführen ================================================================
      */
+    @SuppressWarnings("unchecked")
     private void executeBeautifierForElement(Element el) {
         String matchedValue = "";
         for (ConfigOpacCatalogueBeautifier beautifier : this.beautifySetList) {

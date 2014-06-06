@@ -2,6 +2,7 @@ package de.sub.goobi.helper;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,17 +15,20 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Process;
+import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class })
+@PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class })
 public class GoobiScriptTest {
 
     private List<Process> processList;
@@ -57,7 +61,7 @@ public class GoobiScriptTest {
         stepList.add(second);
         process.setSchritte(stepList);
         processList.add(process);
-
+        
         prepareMocking();
     }
 
@@ -85,10 +89,31 @@ public class GoobiScriptTest {
         List<Usergroup> usergroupList = new ArrayList<>();
         usergroupList.add(group);
         PowerMock.mockStatic(UsergroupManager.class);
-        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(usergroupList)
-        .anyTimes();
+        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
+                usergroupList).anyTimes();
+
+        PowerMock.mockStatic(ProcessManager.class);
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         
-        
+        Ruleset r = new Ruleset();
+        r.setTitel("title");
+        r.setDatei("file");
+        r.setOrderMetadataByRuleset(false);
+        List<Ruleset> rulesetList = new ArrayList<>();
+        rulesetList.add(r);
+        PowerMock.mockStatic(RulesetManager.class);
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
+                rulesetList).anyTimes();
+
+        PowerMock.replay(RulesetManager.class);
+        PowerMock.replay(ProcessManager.class);
         PowerMock.replay(UsergroupManager.class);
         PowerMock.replay(UserManager.class);
         PowerMock.replay(StepManager.class);
@@ -161,4 +186,94 @@ public class GoobiScriptTest {
         script.execute(processList, "action:addUserGroup steptitle:first group:group");
     }
 
+    @Test
+    public void testExecuteSetTaskPropertyAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:setTaskProperty");
+        script.execute(processList, "action:setTaskProperty steptitle:first");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:test");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:wrong value:wrong");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:readimages value:wrong");
+
+        script.execute(processList, "action:setTaskProperty steptitle:first property:readimages value:true");
+
+        script.execute(processList, "action:setTaskProperty steptitle:first property:metadata value:false");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:automatic value:false");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:batch value:false");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:writeimages value:false");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:validate value:false");
+        script.execute(processList, "action:setTaskProperty steptitle:first property:exportdms value:false");
+
+    }
+
+    @Test
+    public void testSetStepStatusAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:setStepStatus");
+        script.execute(processList, "action:setStepStatus steptitle:first");
+        script.execute(processList, "action:setStepStatus steptitle:first status:NotANumber");
+        script.execute(processList, "action:setStepStatus steptitle:first status:1");
+    }
+    
+    @Test
+    public void testSetStepNumberAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:setStepNumber");
+        script.execute(processList, "action:setStepNumber steptitle:first");
+        script.execute(processList, "action:setStepNumber steptitle:first number:NotANumber");
+        script.execute(processList, "action:setStepNumber steptitle:first number:1");
+    }
+
+    @Test
+    public void testAddStepAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:addStep");
+        script.execute(processList, "action:addStep steptitle:third");
+        script.execute(processList, "action:addStep steptitle:third number:NotANumber");
+        script.execute(processList, "action:addStep steptitle:third number:3");
+    }
+    
+    @Test
+    public void testDeleteStepAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:deleteStep");
+        script.execute(processList, "action:deleteStep steptitle:wrong");
+        script.execute(processList, "action:deleteStep steptitle:third");
+    }
+
+    @Test
+    public void testAddShellScriptToStepAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:addShellScriptToStep");
+        script.execute(processList, "action:addShellScriptToStep steptitle:first");
+        script.execute(processList, "action:addShellScriptToStep steptitle:first label:label");
+        script.execute(processList, "action:addShellScriptToStep steptitle:first label:label script:script");
+    }
+    
+    @Test
+    public void testAddModuleToStepAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:addModuleToStep");
+        script.execute(processList, "action:addModuleToStep steptitle:first"); 
+        script.execute(processList, "action:addModuleToStep steptitle:first module:module"); 
+    }
+    
+    @Test
+    public void testSetRulesetAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:setRuleset");
+        script.execute(processList, "action:setRuleset ruleset:ruleset.xml");
+    }
+    
+    @Test
+    public void testDeleteProcessAction() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:deleteProcess");
+    
+        script.execute(processList, "action:deleteProcess contentOnly:true");
+        script.execute(processList, "action:deleteProcess contentOnly:false");
+
+    }
+    
+    
 }
