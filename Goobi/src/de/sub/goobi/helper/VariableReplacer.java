@@ -37,7 +37,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 

@@ -43,10 +43,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
@@ -177,7 +177,7 @@ public class ModuleServerForm {
 	/**
 	 * Module-Konfigurationen aus externer xml-Datei modules.xml einlesen ================================================================
 	 */
-	@SuppressWarnings("unchecked")
+
 	private List<ModuleDesc> getModulesFromConfigurationFile() {
 		List<ModuleDesc> rueckgabe = new ArrayList<ModuleDesc>();
 		String filename = help.getGoobiConfigDirectory() + "modules.xml";

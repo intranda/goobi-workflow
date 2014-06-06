@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 

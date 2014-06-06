@@ -60,10 +60,10 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -1099,7 +1099,6 @@ public class ProzesskopieForm {
         return this.possibleDigitalCollection;
     }
 
-    @SuppressWarnings("unchecked")
     private void initializePossibleDigitalCollections() {
         this.possibleDigitalCollection = new ArrayList<String>();
         ArrayList<String> defaultCollections = new ArrayList<String>();

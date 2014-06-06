@@ -30,7 +30,6 @@ package de.unigoettingen.sub.search.opac;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 

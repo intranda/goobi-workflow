@@ -29,9 +29,7 @@ package de.sub.goobi.forms;
  */
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +43,6 @@ import javax.servlet.http.HttpSession;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions

@@ -31,9 +31,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -53,7 +53,6 @@ public class ProcessSwapInTask extends LongRunningTask {
 	 * Aufruf als Thread ================================================================
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public void run() {
 		setStatusProgress(5);
 		String swapPath = null;
