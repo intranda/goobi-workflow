@@ -17,4 +17,6 @@ public interface IOpacPlugin extends IPlugin {
 
     public ConfigOpacDoctype getOpacDocType();
 
+    public String createAtstsl(String value, String value2);
+
 }
