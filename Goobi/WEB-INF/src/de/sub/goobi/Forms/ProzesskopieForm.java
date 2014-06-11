@@ -865,7 +865,17 @@ public class ProzesskopieForm {
                 ds.addChild(dsvolume);
                 this.myRdf = ff;
             }
+            /* Newspaper */
+            if (this.docType.equals("Newspaper")) {
+                DocStructType dsty = myPrefs.getDocStrctTypeByName("Newspaper");
+                DocStruct ds = dd.createDocStruct(dsty);
+                dd.setLogicalDocStruct(ds);
 
+                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("NewspaperVolume");
+                DocStruct dsvolume = dd.createDocStruct(dstyvolume);
+                ds.addChild(dsvolume);
+                this.myRdf = ff;
+            }
         } catch (TypeNotAllowedForParentException e) {
             myLogger.error(e);
         } catch (TypeNotAllowedAsChildException e) {
