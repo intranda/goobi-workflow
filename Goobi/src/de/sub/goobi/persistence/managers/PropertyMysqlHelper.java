@@ -350,7 +350,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<String> getDistinctPropertyTitles() throws SQLException {
-        String sql = "select distinct titel from prozesseeigenschaften";
+        String sql = "select distinct titel from prozesseeigenschaften order by Titel";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
