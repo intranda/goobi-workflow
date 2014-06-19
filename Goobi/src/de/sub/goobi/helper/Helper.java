@@ -221,10 +221,11 @@ public class Helper implements Serializable, Observer {
                     compoundMessage).send();
         }
         if (context != null) {
-            msg = msg.replace("\n", "<br />");
-            beschr = beschr.replace("\n", "<br />");
-            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR,
-                    "<pre>" + msg + "</pre>", beschr));
+            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
+//            msg = msg.replace("\n", "<br />");
+//            beschr = beschr.replace("\n", "<br />");
+//            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR,
+//                    "<pre>" + msg + "</pre>", beschr));
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
             myLogger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
