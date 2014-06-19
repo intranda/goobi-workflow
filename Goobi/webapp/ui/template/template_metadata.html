@@ -1,78 +1,79 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk">
 
 <h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Content-Script-Type" content="type" />
-	<meta http-equiv="pragma" content="no-cache" />
-	<meta http-equiv="cache-control" content="no-cache" />
-	<meta name="date" content="1970-01-01T00:00:00+01:00" />
-	<meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
-	<link rel="shortcut icon" href="#{HelperForm.servletPathWithHostAsUrl}/ui/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Script-Type" content="type" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="date" content="1970-01-01T00:00:00+01:00" />
+    <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
+    <link rel="shortcut icon" href="#{HelperForm.servletPathWithHostAsUrl}/ui/favicon.ico" />
 
-	<x:stylesheet media="screen" path="/ui/css/default.css" />
-	<x:stylesheet media="print" path="/ui/css/print.css" />
+    <x:stylesheet media="screen" path="/ui/css/default.css" />
+    <x:stylesheet media="print" path="/ui/css/print.css" />
 
-	<title><h:outputText value="Goobi #{HelperForm.version}" /></title>
-    
-    <script type="text/javascript" src="#{HelperForm.servletPathWithHostAsUrl}/ui/js/jquery-1.10.2.min.js"></script>
+    <title><h:outputText value="Goobi #{HelperForm.version}" /></title>
 
+    <script type="text/javascript">
+					$ = jQuery;
+	</script>
 </h:head>
 
 <ui:insert name="metadata" />
 
 <h:body>
-	<f:view locale="#{SpracheForm.locale}">
+    <f:view locale="#{SpracheForm.locale}">
 
-		<table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
-			<ui:include src="inc_head.xhtml" />
-		</table>
+        <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
+            <ui:include src="inc_head.xhtml" />
+        </table>
 
-		<table cellspacing="5" cellpadding="0" class="layoutTable" align="center">
+        <table cellspacing="5" cellpadding="0" class="layoutTable" align="center">
 
-			<tr>
+            <tr>
 
-				<td valign="top" height="100%" style="color: #434387; border-style: solid; border-width: 1px; border-color: #0083e2; background-color: #cbe5fc; width:180px">
+                <td valign="top" height="100%"
+                    style="color: #434387; border-style: solid; border-width: 1px; border-color: #0083e2; background-color: #cbe5fc; width: 180px">
 
-					<table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0">
-						<tr>
-							<td valign="top">
-								<ui:insert name="sidebar_top">
-									<ui:include src="inc_navigation.xhtml" />
-								</ui:insert>
-							</td>
-						</tr>
-						
-					</table>
+                    <table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0">
+                        <tr>
+                            <td valign="top">
+                                <ui:insert name="sidebar_top">
+                                    <ui:include src="inc_navigation.xhtml" />
+                                </ui:insert>
+                            </td>
+                        </tr>
 
-				</td>
+                    </table>
 
-				<td valign="top" id="layoutInhalt" class="layoutInhalt" style="background-color: #F0F0F0">
-					<h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
-						<h:panelGroup id="id3">
-							<h:form id="useform">
-								<ui:insert name="breadcrumb" />
-							</h:form>
-						</h:panelGroup>
-					</h:panelGrid>
+                </td>
 
-					<div style="margin: 15px">
-						<h3>
-							<ui:insert name="title" />
-						</h3>
+                <td valign="top" id="layoutInhalt" class="layoutInhalt" style="background-color: #F0F0F0">
+                    <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
+                        <h:panelGroup id="id3">
+                            <h:form id="useform">
+                                <ui:insert name="breadcrumb" />
+                            </h:form>
+                        </h:panelGroup>
+                    </h:panelGrid>
 
-						<x:messages globalOnly="true" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" />
+                    <div style="margin: 15px">
+                        <h3>
+                            <ui:insert name="title" />
+                        </h3>
 
-						<ui:insert name="content" />
+                        <x:messages globalOnly="true" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" />
 
-					</div>
-				</td>
-			</tr>
-			<ui:include src="inc_footer.xhtml" />
-		</table>
+                        <ui:insert name="content" />
 
-	</f:view>
+                    </div>
+                </td>
+            </tr>
+            <ui:include src="inc_footer.xhtml" />
+        </table>
+
+    </f:view>
 </h:body>
 </html>

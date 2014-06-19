@@ -47,6 +47,30 @@ body {
 table {
 	font-size: 11px;
 }
+
+.ui-autocomplete {
+    width: 92%;
+}
+
+.ui-inputfield, 
+.ui-widget-content .ui-inputfield, 
+.ui-widget-header .ui-inputfield,
+.ui-inputfield.ui-state-focus, 
+.ui-widget-content .ui-inputfield.ui-state-focus, 
+.ui-widget-header .ui-inputfield.ui-state-focus {
+    width: 100%;
+    box-shadow: none;
+}
+
+.ui-state-highlight, 
+.ui-widget-content .ui-state-highlight, 
+.ui-widget-header .ui-state-highlight {
+/*     background: none; */
+    color: #000;
+    text-shadow: none;
+}
+
+
 .headTable {
 	width:100%;
 	border:0px !important;

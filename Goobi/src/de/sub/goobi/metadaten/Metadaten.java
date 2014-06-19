@@ -3037,7 +3037,7 @@ public class Metadaten {
         this.currentTifFolder = currentTifFolder;
     }
 
-    public List<String> autocomplete(Object suggest) {
+    public List<String> autocomplete(String suggest) {
         String pref = (String) suggest;
         ArrayList<String> result = new ArrayList<String>();
         ArrayList<String> alle = new ArrayList<String>();

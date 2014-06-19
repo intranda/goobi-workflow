@@ -1,6 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:s="http://myfaces.apache.org/sandbox">
+    xmlns:s="http://myfaces.apache.org/sandbox"
+        xmlns:p="http://primefaces.org/ui"  
+    >
 
     <composite:interface>
     </composite:interface>
@@ -56,9 +58,11 @@
                                 <!-- 										value="#{Metadaten.pagesStart}"> -->
                                 <!-- 										<f:selectItems value="#{Metadaten.alleSeiten}" /> -->
                                 <!-- 									</h:selectOneMenu> -->
-
                                 <h:panelGroup id="pageStartGroup">
-                                    <x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" />
+<!--                                     <x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" /> -->
+                                    
+                                      <p:autoComplete id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" />
+ 
                                 </h:panelGroup>
 
                                 <h:commandLink action="#{Metadaten.CurrentStartpage}">
@@ -75,7 +79,9 @@
                                 <!-- 									</h:selectOneMenu> -->
 
                                 <h:panelGroup id="pageEndGroup">
-                                    <x:inputText id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" />
+                                    <p:autoComplete id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" />
+
+                                    <!--                                     <x:inputText id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" /> -->
                                 </h:panelGroup>
                                 <h:commandLink action="#{Metadaten.CurrentEndpage}">
                                     <f:ajax render="pageEndGroup" />
