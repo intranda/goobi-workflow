@@ -58,7 +58,7 @@
                                     <!-- erstes-Schaltknopf -->
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="1" immediate="true">
                                         <f:param name="Anzahl" value="-#{Metadaten.bildNummer}" />
-                                         <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
+                                        <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                     </h:commandLink>
                                     <!-- Trennzeichen -->
                                     <h:outputText value=" | " />
@@ -74,7 +74,7 @@
                                             <!-- vorvorheriges Bild -->
                                             <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer -2}" immediate="true">
                                                 <f:param name="Anzahl" value="-2" />
-                                                 <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
+                                                <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                             </h:commandLink>
                                             <!-- Trennzeichen -->
                                             <h:outputText value=" | " />
@@ -83,7 +83,7 @@
                                         <!-- vorheriges Bild -->
                                         <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer -1}" immediate="true">
                                             <f:param name="Anzahl" value="-1" />
-                                             <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
+                                            <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                         </h:commandLink>
                                         <!-- Trennzeichen -->
                                         <h:outputText value=" | " />
@@ -100,7 +100,7 @@
                                         <!-- naechste Seite -->
                                         <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer + 1}" immediate="true">
                                             <f:param name="Anzahl" value="1" />
-                                             <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
+                                            <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                         </h:commandLink>
                                         <!-- wenn es mindestens das vorvorvorletzte Bild ist -->
                                         <h:panelGroup rendered="#{Metadaten.bildNummer lt (Metadaten.bildLetztes - 2)}">
@@ -109,7 +109,7 @@
                                             <!-- Uebernaechste Seite -->
                                             <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildNummer + 2}" immediate="true">
                                                 <f:param name="Anzahl" value="2" />
-                                                 <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
+                                                <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                             </h:commandLink>
                                         </h:panelGroup>
                                         <!-- wenn noch mehr als drei Seiten folgen, dann ein grosses Trennzeichen -->
@@ -120,7 +120,7 @@
                                     <!-- letztes-Schaltknopf -->
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{Metadaten.bildLetztes}" immediate="true">
                                         <f:param name="Anzahl" value="#{Metadaten.bildLetztes}" />
-                                         <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
+                                        <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                     </h:commandLink>
                                 </h:panelGroup>
                             </td>
@@ -132,7 +132,7 @@
                                     <h:outputText value=" | " />
                                     <h:commandLink action="#{Metadaten.BildBlaettern}" value="#{msgs.seiteVor}" immediate="true">
                                         <f:param name="Anzahl" value="1" />
-                                         <f:ajax execute="@form" render="@form :formularBild :myBild :imageform"  />
+                                        <f:ajax execute="@form" render="@form :formularBild :myBild :imageform" />
                                     </h:commandLink>
                                 </td>
                             </h:panelGroup>
@@ -186,7 +186,9 @@
                     <h:outputText value="#{msgs.geheZuBild}:" style="margin-left:5px;margin-right:0px;font-size: 12px" title="#{msgs.geheZuImage}" />
                     <h:inputText value="#{Metadaten.bildNummerGeheZu}" onkeypress="return submitEnter('formularBild:goButton',event)"
                         style="width:30px;border-style: solid;border-color: silver;border-width: 1px" />
-                    <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none" />
+                    <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
+                        <f:ajax execute="@form" render="@form :formularBild :myBild" />
+                    </h:commandButton>
 
                     <!-- OCR -->
                     <h:commandLink id="ocrButton" action="#{Metadaten.showOcrResult}" rendered="#{Metadaten.showOcrButton}">

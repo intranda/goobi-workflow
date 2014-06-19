@@ -51,17 +51,17 @@
                                 <h:outputText value="#{msgs.vorname}" style="font-size: 11px" />
                                 <h:inputText value="#{Item.vorname}" styleClass="metadatenInput" 
                                     readonly="#{Metadaten.nurLesenModus}">
-                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    <f:ajax execute="@form" event="valueChange" />
                                 </h:inputText>
                                 <h:outputText value="#{msgs.nachname}" style="font-size: 11px" />
                                 <h:inputText value="#{Item.nachname}" styleClass="metadatenInput" 
                                     readonly="#{Metadaten.nurLesenModus}">
-                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    <f:ajax execute="@form" event="valueChange" />
                                 </h:inputText>
                                 <h:outputText value="#{msgs.rolle}" style="font-size: 11px" />
                                 <h:selectOneMenu value="#{Item.rolle}" styleClass="metadatenInput" 
                                     disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
-                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    <f:ajax execute="@form" event="valueChange"  />
                                     <f:selectItems value="#{Item.addableRollen}" />
                                 </h:selectOneMenu>
                             </h:panelGrid>
@@ -75,12 +75,12 @@
                                 <ui:repeat var="part" value="#{Item.additionalNameParts}">
                                     <h:panelGrid style="border-bottom: 0px;" columns="2" width="100%" columnClasses="first-column, second-column">
                                         <h:selectOneMenu value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput">
-                                            <f:ajax execute="@form" event="valueChange" render="@form" />
+                                            <f:ajax execute="@form" event="valueChange"  />
                                             <f:selectItems value="#{Item.possibleNamePartTypes}" />
                                         </h:selectOneMenu>
                                         <h:inputText value="#{part.value}" styleClass="metadatenInput" style="width:100%"
                                             readonly="#{Metadaten.nurLesenModus}">
-                                            <f:ajax execute="@form" event="valueChange" render="@form" />
+                                            <f:ajax execute="@form" event="valueChange" />
                                         </h:inputText>
                                     </h:panelGrid>
                                 </ui:repeat>
