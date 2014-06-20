@@ -126,7 +126,7 @@ public class SearchBean {
 
         fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
         fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
-        fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
+//        fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
         
        
@@ -148,10 +148,10 @@ public class SearchBean {
         row3.setFieldName("PROJECT");
         rowList.add(row3);
         
-        ExtendedSearchRow row4 = new ExtendedSearchRow();
-        row4.setFieldName("METADATA");
-        rowList.add(row4);
-        
+//        ExtendedSearchRow row4 = new ExtendedSearchRow();
+//        row4.setFieldName("METADATA");
+//        rowList.add(row4);
+//        
         ExtendedSearchRow row5 = new ExtendedSearchRow();
         row5.setFieldName("PROCESSPROPERTY");
         rowList.add(row5);
