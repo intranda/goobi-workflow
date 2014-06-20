@@ -18,9 +18,12 @@
 
 	<title><h:outputText value="Goobi #{HelperForm.version}" /></title>
 
-    <script type="text/javascript" src="#{HelperForm.servletPathWithHostAsUrl}/ui/js/jquery-1.10.2.min.js"></script>
+<!--     <script type="text/javascript" src="#{HelperForm.servletPathWithHostAsUrl}/ui/js/jquery-1.10.2.min.js"></script> -->
 
-
+	<script type="text/javascript">
+		$ = jQuery;
+	</script>
+	
 </h:head>
 
 <ui:insert name="metadata" />
