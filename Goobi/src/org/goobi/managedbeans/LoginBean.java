@@ -210,20 +210,22 @@ public class LoginBean {
         try {
             User temp = UserManager.getUserById(this.myBenutzer.getId());
             temp.setTabellengroesse(this.myBenutzer.getTabellengroesse());
+            temp.setSessiontimeout(myBenutzer.getSessiontimeout());
             temp.setMetadatenSprache(this.myBenutzer.getMetadatenSprache());
-            temp.setDisplayAutomaticTasks(myBenutzer.isDisplayAutomaticTasks());
-            temp.setDisplayBatchColumn(myBenutzer.isDisplayBatchColumn());
             temp.setDisplayDeactivatedProjects(myBenutzer.isDisplayDeactivatedProjects());
             temp.setDisplayFinishedProcesses(myBenutzer.isDisplayFinishedProcesses());
-            temp.setDisplayIdColumn(myBenutzer.isDisplayIdColumn());
-            temp.setDisplayLocksColumn(myBenutzer.isDisplayLocksColumn());
-            temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
-            temp.setDisplayOnlyOpenTasks(myBenutzer.isDisplayOnlyOpenTasks());
-            temp.setDisplayOnlySelectedTasks(myBenutzer.isDisplayOnlySelectedTasks());
-            temp.setDisplayProcessDateColumn(myBenutzer.isDisplayProcessDateColumn());
             temp.setDisplaySelectBoxes(myBenutzer.isDisplaySelectBoxes());
+            temp.setDisplayIdColumn(myBenutzer.isDisplayIdColumn());
+            temp.setDisplayBatchColumn(myBenutzer.isDisplayBatchColumn());
+            temp.setDisplayProcessDateColumn(myBenutzer.isDisplayProcessDateColumn());
+            temp.setDisplayLocksColumn(myBenutzer.isDisplayLocksColumn());
             temp.setDisplaySwappingColumn(myBenutzer.isDisplaySwappingColumn());
-            temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());
+            temp.setDisplayAutomaticTasks(myBenutzer.isDisplayAutomaticTasks());
+            temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());            
+            temp.setDisplayOnlySelectedTasks(myBenutzer.isDisplayOnlySelectedTasks());
+            temp.setDisplayOnlyOpenTasks(myBenutzer.isDisplayOnlyOpenTasks());
+           
+            temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
