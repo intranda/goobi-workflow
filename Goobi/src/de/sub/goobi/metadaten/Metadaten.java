@@ -3259,9 +3259,10 @@ public class Metadaten {
                     File[] allOcrFolder = ocr.listFiles();
                     for (File folder : allOcrFolder) {
 
-                        String[] files = folder.list(Helper.dataFilter);
+                        String[] files = folder.list();
+
                         if (files != null && files.length != 0) {
-                            String fileExtension = Metadaten.getFileExtension(files[0]);
+                            String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
                             File filename = new File(folder, filenamePrefix + fileExtension);
                             File newFileName = new File(folder, filenamePrefix + fileExtension + "_bak");
                             filename.renameTo(newFileName);
@@ -3302,7 +3303,7 @@ public class Metadaten {
                     File[] allOcrFolder = ocr.listFiles();
                     for (File folder : allOcrFolder) {
 
-                        String[] files = folder.list(FileFileFilter.FILE);
+                        String[] files = folder.list();
                         if (files != null && files.length != 0) {
                             String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
                             File tempFileName = new File(folder, oldFilenamePrefix + fileExtension + "_bak");
