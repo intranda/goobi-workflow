@@ -124,7 +124,7 @@
 							<!-- digitale Kollektion -->
 							<h:outputLabel for="digitaleKollektionen" rendered="#{ProzesskopieForm.standardFields.collections}" value="#{msgs.digitaleKollektionen}" />
 							<h:selectManyListbox id="digitaleKollektionen" styleClass="prozessKopieFeldbreite" rendered="#{ProzesskopieForm.standardFields.collections}"
-								value="#{ProzesskopieForm.digitalCollections}">
+								value="#{ProzesskopieForm.digitalCollections}"  style="max-height: 200px;">
 								<f:selectItems value="#{ProzesskopieForm.possibleDigitalCollections}" var="step" itemLabel="#{step}" itemValue="#{step}" />
 							</h:selectManyListbox>
 
