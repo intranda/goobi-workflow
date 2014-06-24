@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
-	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+	xmlns:x="http://myfaces.apache.org/tomahawk" >
 
 	<composite:interface>
 	</composite:interface>
@@ -199,10 +199,10 @@
 								</h:commandLink>
 
 								<!-- Schritt zurückgeben an vorherige Station für Korrekturzwecke -->
-								<h:commandLink id="correctionbutton">
+								<h:commandLink id="correctionbutton" onclick="toggle('actionform:correction')">
 									<h:graphicImage value="/ui/images/buttons/step_back_20px.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.korrekturmeldungAnVorherigeStationSenden}" />
-									<s:effectToggle event="click" forId="correction" duration="0.1" mode="blind" appendJs="return false;" />
+<!-- 									<s:effectToggle event="click" forId="correction" duration="0.1" mode="blind" appendJs="return false;" /> -->
 
 									<f:ajax render="correctionbutton" />
 								</h:commandLink>
@@ -227,10 +227,10 @@
 								<!-- Schritt weitergeben an nachfolgende Station für KorrekturBehobenZwecke -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
 
-									<h:commandLink id="solvebutton">
+									<h:commandLink id="solvebutton" onclick="toggle('actionform:solve')">
 										<h:graphicImage value="/ui/images/buttons/step_for_20px.gif" style="margin-right:3px;vertical-align:middle" />
 										<h:outputText value="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}" />
-										<s:effectToggle event="click" duration="0.1" forId="solve" mode="blind" appendJs="return false;" />
+<!-- 										<s:effectToggle event="click" duration="0.1" forId="solve" mode="blind" appendJs="return false;" /> -->
 
 										<f:ajax render="solvebutton" />
 									</h:commandLink>

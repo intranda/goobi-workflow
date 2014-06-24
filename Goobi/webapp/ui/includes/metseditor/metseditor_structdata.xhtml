@@ -1,14 +1,12 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:s="http://myfaces.apache.org/sandbox"
-        xmlns:p="http://primefaces.org/ui"  
-    >
+    xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
     </composite:interface>
 
     <composite:implementation>
-                
+
         <h:form id="formular3">
 
             <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
@@ -59,10 +57,11 @@
                                 <!-- 										<f:selectItems value="#{Metadaten.alleSeiten}" /> -->
                                 <!-- 									</h:selectOneMenu> -->
                                 <h:panelGroup id="pageStartGroup">
-<!--                                     <x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" /> -->
-                                    
-                                      <p:autoComplete id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" />
- 
+                                    <!--                                     <x:inputText id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" /> -->
+
+                                    <p:autoComplete id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}"
+                                        completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" />
+
                                 </h:panelGroup>
 
                                 <h:commandLink action="#{Metadaten.CurrentStartpage}">
@@ -79,7 +78,8 @@
                                 <!-- 									</h:selectOneMenu> -->
 
                                 <h:panelGroup id="pageEndGroup">
-                                    <p:autoComplete id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" />
+                                    <p:autoComplete id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}"
+                                        completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" />
 
                                     <!--                                     <x:inputText id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" /> -->
                                 </h:panelGroup>
@@ -136,7 +136,7 @@
                                     <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
                                     <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
                                 </h:commandLink>
-                            
+
                                 <!-- copy structure element from somewhere else -->
                                 <h:commandLink action="metseditor" title="#{msgs.copyDocstructFromOtherProcess}">
                                     <h:graphicImage value="images/buttons/sort_left_20px.gif"
@@ -148,12 +148,12 @@
                                 <!-- DocstructType aendern -->
                                 <h:panelGroup>
 
-                                    <h:commandLink id="expandbutton1">
+                                    <h:commandLink id="expandbutton1" onclick="toggle('formular3:possibleActions1')">
                                         <h:graphicImage value="images/buttons/sort_down_20px.gif"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.docstructTypeAendern}" />
-                                        <s:effectToggle event="click" duration="0.1" forId="possibleActions1" mode="blind" appendJs="return false;" />
-
+                                        
+                                       
                                         <f:ajax render="expandbutton1" />
                                     </h:commandLink>
 
@@ -175,11 +175,10 @@
 
                                 <!-- zusï¿½tzliche Strukturelemente als Kinder unter das ausgeaehlte Element -->
                                 <h:panelGroup>
-                                    <h:commandLink id="expandbutton2">
+                                    <h:commandLink id="expandbutton2" onclick="toggle('formular3:possibleActions2')">
                                         <h:graphicImage value="images/buttons/sort_down_20px.gif"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
-                                        <s:effectToggle event="click" duration="0.1" forId="possibleActions2" mode="blind" appendJs="return false;" />
 
                                         <f:ajax render="expandbutton2" />
                                     </h:commandLink>
@@ -265,8 +264,7 @@
                                 </h:commandLink>
 
                                 <h:commandLink rendered="#{Metadaten.isNotRootElement}" action="#{Metadaten.duplicateNode}">
-                                <h:graphicImage value="images/buttons/copy.gif"
-                                        style="margin-left:4px;margin-right:7px;vertical-align:middle" />
+                                    <h:graphicImage value="images/buttons/copy.gif" style="margin-left:4px;margin-right:7px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.duplicateStructureElement}" />
                                     <f:ajax render="@form :treeform " />
                                 </h:commandLink>
@@ -304,7 +302,7 @@
 
                                     <h:commandLink action="#{Metadaten.BildErsteSeiteAnzeigen}">
                                         <h:outputText value="#{msgs.ersteSeite}" />
-                                        
+
                                     </h:commandLink>
                                     <!-- 									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
                                     <!-- 										<x:inputText id="pagestart" forceId="true" value="#{Metadaten.ajaxSeiteStart}" /> -->
@@ -318,7 +316,7 @@
 
                                     <h:commandLink action="#{Metadaten.BildLetzteSeiteAnzeigen}">
                                         <h:outputText value="#{msgs.letzteSeite}" />
-                                     </h:commandLink>
+                                    </h:commandLink>
                                     <!-- 									<h:panelGroup rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
                                     <!-- 										<x:inputText id="pageend" forceId="true" value="#{Metadaten.ajaxSeiteEnde}" /> -->
                                     <!-- 									</h:panelGroup> -->
@@ -335,17 +333,17 @@
                                 <h:panelGrid id="mygrid6" columns="2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight">
                                     <h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}">
                                         <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
-                                        
+
                                     </h:commandLink>
                                     <h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}"
                                         rendered="#{Metadaten.treeProperties.showpagesasajax==false}">
                                         <h:outputText value="#{msgs.seitenZuweisen}" />
-                                       
+
                                     </h:commandLink>
                                     <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
                                         rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
                                         <h:outputText value="#{msgs.seitenZuweisen}" />
-                                       
+
                                     </h:commandLink>
                                 </h:panelGrid>
                             </td>
@@ -504,7 +502,7 @@
                     </tr>
                 </table>
             </h:panelGroup>
-            
+
             <!-- ########################################
 
             copy structure from other process
@@ -521,35 +519,37 @@
                 <table width="580px">
                     <tr>
                         <td colspan="2">
-                           
-                    		<table cellpadding="3" cellspacing="0" width="580px" class="eingabeBoxen" style="margin-top: 0px">
-			                    <tr>
-			                        <td class="eingabeBoxen_row1">
-			                            <h:outputText value="#{msgs.findProcess}" />
-			                        </td>
-			                    </tr>
-			                    <tr>
-			                        <td class="eingabeBoxen_row2" style="padding:10px;">
-			                        
-				                        <h:outputText value="#{msgs.copyDocstructFromOtherProcessDescription1}" />
-				                        <br/>	<br/>	
-			                             <h:outputText value="#{msgs.title}"/>
-                           				 <h:inputText style="margin-left:10px;width:350px" value="#{Metadaten.filterProcessTitle}"/>
-			                        </td>
-			                    </tr>
-			                    <tr>
-			                        <td class="eingabeBoxen_row3" align="right">
-			                            <h:commandLink action="#{Metadaten.filterMyProcess}">
-			                            	<h:outputText value="#{msgs.findProcess}"/>
-			                            </h:commandLink>
-			                        </td>
-			                    </tr>
-			                </table>
+
+                            <table cellpadding="3" cellspacing="0" width="580px" class="eingabeBoxen" style="margin-top: 0px">
+                                <tr>
+                                    <td class="eingabeBoxen_row1">
+                                        <h:outputText value="#{msgs.findProcess}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="eingabeBoxen_row2" style="padding: 10px;">
+
+                                        <h:outputText value="#{msgs.copyDocstructFromOtherProcessDescription1}" />
+                                        <br />
+                                        <br />
+                                        <h:outputText value="#{msgs.title}" />
+                                        <h:inputText style="margin-left:10px;width:350px" value="#{Metadaten.filterProcessTitle}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="eingabeBoxen_row3" align="right">
+                                        <h:commandLink action="#{Metadaten.filterMyProcess}">
+                                            <h:outputText value="#{msgs.findProcess}" />
+                                        </h:commandLink>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <h:dataTable style="margin-top:10px;" rendered="#{Metadaten.filteredProcess != null}" value="#{Metadaten.struktureTreeAsTableForFilteredProcess}" var="item" cellpadding="0" cellspacing="0" border="0">
+                            <h:dataTable style="margin-top:10px;" rendered="#{Metadaten.filteredProcess != null}"
+                                value="#{Metadaten.struktureTreeAsTableForFilteredProcess}" var="item" cellpadding="0" cellspacing="0" border="0">
                                 <h:column>
 
                                     <!-- Popup -->
@@ -597,14 +597,14 @@
 
                                         <h:commandLink styleClass="document" action="#{Metadaten.updateAllSubNodes}"
                                             rendered="#{item.node.einfuegenErlaubt}">
-                                            <h:outputText value="#{item.node.description}" style="#{item.node.selected?'color:red;':''}"/>
-                                         <!--     <x:updateActionListener property="#{Metadaten.docStructFromFilteredProcess}" value="#{item.node.struct}" /> -->
-                                        	<x:updateActionListener property="#{item.node.selected}" value="#{!item.node.selected}" />
-                                     
-                                        </h:commandLink>
-                                            <h:outputText rendered="#{!item.node.einfuegenErlaubt}" value="#{item.node.description}" style="color:grey"/>
+                                            <h:outputText value="#{item.node.description}" style="#{item.node.selected?'color:red;':''}" />
+                                            <!--     <x:updateActionListener property="#{Metadaten.docStructFromFilteredProcess}" value="#{item.node.struct}" /> -->
+                                            <x:updateActionListener property="#{item.node.selected}" value="#{!item.node.selected}" />
 
-                                       
+                                        </h:commandLink>
+                                        <h:outputText rendered="#{!item.node.einfuegenErlaubt}" value="#{item.node.description}" style="color:grey" />
+
+
                                     </x:popup>
 
                                 </h:column>
@@ -612,7 +612,7 @@
                             </h:dataTable>
                         </td>
                         <td width="1%" valign="top" align="right" nowrap="">
-                            <div style="margin-top:10px; padding: 10px 10px 10px 10px; border: 2px dashed silver">
+                            <div style="margin-top: 10px; padding: 10px 10px 10px 10px; border: 2px dashed silver">
                                 <h:commandLink target="_self" action="#{NavigationForm.Reload}" style="margin:5px"
                                     title="#{msgs.verschiebenAbbrechen}">
                                     <h:graphicImage value="images/buttons/cancel1.gif" style="border: 0px;vertical-align:middle;" />
@@ -621,10 +621,10 @@
                                 </h:commandLink>
                                 <h:commandLink target="_self" action="#{Metadaten.rememberFilteredProcessStruct}" style="margin-left:15px"
                                     title="#{msgs.weiter}" rendered="#{Metadaten.filteredProcess != null}">
-                                    
+
                                     <h:graphicImage value="images/buttons/order_right.gif" style="border: 0px;vertical-align:middle;" />
                                     <h:outputText value="#{msgs.weiter}" title="#{msgs.weiter}" />
-                                       	<x:updateActionListener value="true" property="#{Metadaten.displayInsertion}" />
+                                    <x:updateActionListener value="true" property="#{Metadaten.displayInsertion}" />
                                 </h:commandLink>
 
                             </div>
@@ -632,8 +632,8 @@
                     </tr>
                 </table>
             </h:panelGroup>
-            
-             <!-- ########################################
+
+            <!-- ########################################
 
             copy structure from other process into my own structure
 
@@ -650,11 +650,12 @@
                     <tr>
                         <td colspan="2">
                             <h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}" />
-                         </td>
+                        </td>
                     </tr>
                     <tr>
                         <td>
-                            <h:dataTable rendered="#{Metadaten.filteredProcess != null}" value="#{Metadaten.strukturBaum3Alle}" var="item" cellpadding="0" cellspacing="0" border="0">
+                            <h:dataTable rendered="#{Metadaten.filteredProcess != null}" value="#{Metadaten.strukturBaum3Alle}" var="item"
+                                cellpadding="0" cellspacing="0" border="0">
                                 <h:column>
 
                                     <!-- Popup -->
@@ -726,15 +727,14 @@
                                     <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                 </h:commandLink>
-                                
-                                <h:commandLink target="_self" action="#{NavigationForm.Reload}" style="margin:5px"
-                                    title="#{msgs.zurueck}">
+
+                                <h:commandLink target="_self" action="#{NavigationForm.Reload}" style="margin:5px" title="#{msgs.zurueck}">
                                     <h:graphicImage value="images/buttons/order_left.gif" style="border: 0px;vertical-align:middle;" />
                                     <h:outputText value="#{msgs.zurueck}" title="#{msgs.zurueck}" />
-                                    	<x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
+                                    <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
                                 </h:commandLink>
 
-                              
+
                             </div>
                         </td>
                     </tr>
