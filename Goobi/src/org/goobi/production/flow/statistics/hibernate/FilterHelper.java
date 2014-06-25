@@ -406,12 +406,12 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
 
-            return "prozesse.ProzesseID in (select processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
+            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
                     + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
 
         } else {
 
-            return "prozesse.ProzesseID not in (select processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
+            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
                     + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
 
         }

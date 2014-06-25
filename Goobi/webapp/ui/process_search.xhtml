@@ -143,14 +143,12 @@
 
                     <td class="eingabeBoxen_row3" align="right">
                         <h:commandButton id="absenden" action="#{SearchForm.createFilter}" title="#{msgs.filterAnwenden}"
-                            value="#{msgs.filterAnwenden}">
+                            value="#{msgs.filterAnwenden}" onclick="jQuery('#ajaxloader').show();">
                         </h:commandButton>
                     </td>
                 </tr>
             </table>
         </h:form>
-
-
 
     </ui:define>
 
