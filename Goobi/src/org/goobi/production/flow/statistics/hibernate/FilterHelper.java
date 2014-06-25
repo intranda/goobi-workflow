@@ -405,10 +405,12 @@ public class FilterHelper {
 
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
-               return "metadata.name like '%" + StringEscapeUtils.escapeSql(ts[0])
-                    + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%'";
+
+            return "prozesse.ProzesseID in (select processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
+                    + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+
         } else {
-// TODO fix not
+
             return "prozesse.ProzesseID not in (select processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
                     + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
 
