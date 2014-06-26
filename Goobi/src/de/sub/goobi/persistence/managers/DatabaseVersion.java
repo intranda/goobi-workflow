@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 4;
+    public static final int EXPECTED_VERSION = 5;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     public static int getCurrentVersion() {
@@ -47,6 +47,9 @@ public class DatabaseVersion {
             case 2:
                 logger.debug("Update database to version 3.");
                 updateToVersion3();
+            case 4:
+                logger.debug("Update database to version 5.");
+                updateToVersion5();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -186,7 +189,31 @@ public class DatabaseVersion {
                 }
             }
         }
-
     }
 
+    private static void updateToVersion5() {
+        String utf8 = "ALTER TABLE metadata MODIFY value text CHARACTER SET utf8 COLLATE utf8_general_ci";
+        String index = "ALTER TABLE metadata ADD index id(processid), ADD index metadataname(name)";
+        // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            logger.debug(utf8);
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, utf8);
+            runner.update(connection, index);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+
+         
+    }
 }
