@@ -54,9 +54,15 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -68,6 +74,7 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -157,7 +164,7 @@ public class GoobiScript {
             exportDms(inProzesse, this.myParameters.get("exportImages"), true);
         } else if (this.myParameters.get("action").equals("export")) {
             exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
-        } else if (this.myParameters.get("action").equals("doit")) {
+        } else if (this.myParameters.get("action").equals("dloit")) {
             exportDms(inProzesse, "false", false);
         } else if (this.myParameters.get("action").equals("doit2")) {
             exportDms(inProzesse, "false", true);
@@ -177,7 +184,12 @@ public class GoobiScript {
                 contentOnly = false;
             }
             deleteProcess(inProzesse, contentOnly);
-        } else {
+        } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {
+
+            updateMetadataTable(inProzesse);
+        }
+
+        else {
             Helper.setFehlerMeldung(
                     "goobiScriptfield",
                     "Unknown action",
@@ -965,7 +977,61 @@ public class GoobiScript {
 
         }
         Helper.setMeldung("goobiScriptfield", "", "updateImagePath finished");
+    }
 
+    private void updateMetadataTable(List<Process> inProzesse) {
+
+        for (Process proz : inProzesse) {
+            int id = proz.getId();
+
+            try {
+                String metdatdaPath = proz.getMetadataFilePath();
+                String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
+                File metadataFile = new File(metdatdaPath);
+                File anchorFile = new File(anchorPath);
+                List<StringPair> pairs = extractMetadata(metadataFile);
+
+                if (anchorFile.exists()) {
+                    pairs.addAll(extractMetadata(anchorFile));
+                }
+                MetadataManager.updateMetadata(id, pairs);
+
+            } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
+                logger.error("process id : " + id, e1);
+            }
+        }
+    }
+
+    private List<StringPair> extractMetadata(File metadataFile) throws JDOMException, IOException {
+        Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+        Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
+        Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+        List<StringPair> metadataPairs = new ArrayList<StringPair>();
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(metadataFile);
+        Element root = doc.getRootElement();
+        Element goobi =
+                root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
+                        "extension", mods).getChild("goobi", goobiNamespace);
+        List<Element> metadataList = goobi.getChildren();
+        for (Element goobimetadata : metadataList) {
+            String metadataType = goobimetadata.getAttributeValue("name");
+            String metadataValue = "";
+            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
+                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
+                if (!displayName.getValue().equals(",")) {
+                    metadataValue = displayName.getValue();
+                }
+            } else {
+                metadataValue = goobimetadata.getValue();
+            }
+            if (!metadataValue.equals("")) {
+                StringPair pair = new StringPair(metadataType, metadataValue);
+                metadataPairs.add(pair);
+            }
+        }
+        return metadataPairs;
     }
 
     private void exportDms(List<Process> processes, String exportImages, boolean exportFulltext) {
