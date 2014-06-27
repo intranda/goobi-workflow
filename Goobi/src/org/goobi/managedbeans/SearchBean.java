@@ -153,7 +153,7 @@ public class SearchBean {
         rowList.add(row4);
         
         ExtendedSearchRow row5 = new ExtendedSearchRow();
-        row5.setFieldName("PROCESSPROPERTY");
+        row5.setFieldName("STEP");
         rowList.add(row5);
     }
 
