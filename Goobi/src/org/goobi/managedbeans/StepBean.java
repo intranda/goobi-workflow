@@ -742,7 +742,7 @@ public class StepBean extends BasicBean {
 
     public String DownloadToHome() {
         try {
-            new File(this.mySchritt.getProzess().getImagesOrigDirectory(false));
+            new File(this.mySchritt.getProzess().getImagesOrigDirectory(true));
         } catch (Exception e1) {
 
         }
