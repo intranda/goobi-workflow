@@ -137,6 +137,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/OsnabrueckRefBioImport/lib/jdom-2.0.5.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
