@@ -68,7 +68,7 @@ import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.mq.WebServiceResult;
 //import org.hibernate.Session;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SpracheForm;
