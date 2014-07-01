@@ -688,7 +688,7 @@ public class GoobiScript {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
                         }
-                        Helper.setMeldung("goobiScriptfield", "Error while saving process: ", proz.getTitel());
+                        Helper.setMeldung("goobiScriptfield", "Updated process: ", proz.getTitel());
                         break;
                     }
                 }
