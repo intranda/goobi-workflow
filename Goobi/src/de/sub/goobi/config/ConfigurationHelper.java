@@ -455,6 +455,10 @@ public class ConfigurationHelper implements Serializable {
     public String getProcessTiteValidationlRegex() {
         return getLocalString("validateProcessTitelRegex", "[\\w-]*");
     }
+    
+    public String getProcessTitleReplacementRegex() {
+        return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
+    }
 
     public String getImagePrefix() {
         return getLocalString("ImagePrefix", "\\d{8}");
@@ -566,5 +570,4 @@ public class ConfigurationHelper implements Serializable {
             configLocal.setProperty(inParameter, value);
         }
     }
-
 }

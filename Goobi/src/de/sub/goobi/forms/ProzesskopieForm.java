@@ -1373,7 +1373,8 @@ public class ProzesskopieForm {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
         // remove non-ascii characters for the sake of TIFF header limits
-        String filteredTitle = newTitle.replaceAll("[^\\p{ASCII}]", "");
+        String regex = ConfigurationHelper.getInstance().getProcessTitleReplacementRegex();
+        String filteredTitle = newTitle.replaceAll(regex, "");
         prozessKopie.setTitel(filteredTitle);
         CalcTiffheader();
     }
