@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.enums.DisplayType;
-import org.goobi.api.display.helper.ConfigDispayRules;
+import org.goobi.api.display.helper.ConfigDisplayRules;
 
 import org.goobi.beans.Process;
 
@@ -39,7 +39,7 @@ import org.goobi.beans.Process;
 public class DisplayCase {
 	private DisplayType displayType = null;
 	private ArrayList<Item> itemList = new ArrayList<Item>();
-	private ConfigDispayRules configDisplay;
+	private ConfigDisplayRules configDisplay;
 	private Process myProcess;
 	private String metaName;
 	private BindState myBindState;
@@ -56,7 +56,7 @@ public class DisplayCase {
 		myProcess = inProcess;
 		myBindState = Modes.getBindState();
 		try {
-			configDisplay = ConfigDispayRules.getInstance();
+			configDisplay = ConfigDisplayRules.getInstance();
 			if (configDisplay != null) {
 			displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), myBindState.getTitle(), metaName);
 			itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), myBindState.getTitle(), metaName, displayType);
@@ -86,7 +86,7 @@ public class DisplayCase {
 		myProcess = inProcess;
 		myBindState = Modes.getBindState();
 		try {
-			configDisplay = ConfigDispayRules.getInstance();
+			configDisplay = ConfigDisplayRules.getInstance();
 			if (configDisplay != null) {
 				displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), bind, metaName);
 				itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), bind, metaName, displayType);

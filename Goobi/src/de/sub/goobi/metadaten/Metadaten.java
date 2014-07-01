@@ -57,7 +57,7 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.Modes;
 import org.goobi.api.display.enums.BindState;
-import org.goobi.api.display.helper.ConfigDispayRules;
+import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
@@ -779,7 +779,7 @@ public class Metadaten {
         /*
          * re-reading the config for display rules
          */
-        ConfigDispayRules.getInstance().refresh();
+        ConfigDisplayRules.getInstance().refresh();
 
         Modes.setBindState(BindState.edit);
         try {

@@ -39,9 +39,9 @@ import org.goobi.api.display.enums.DisplayType;
 
 import de.sub.goobi.helper.Helper;
 
-public final class ConfigDispayRules {
+public final class ConfigDisplayRules {
 
-	private static ConfigDispayRules instance = new ConfigDispayRules();
+	private static ConfigDisplayRules instance = new ConfigDisplayRules();
 	private static XMLConfiguration config;
 	private static String configPfad;
 	private final Helper helper = new Helper();
@@ -54,7 +54,7 @@ public final class ConfigDispayRules {
 	 * @throws ConfigurationException
 	 */
 
-	private ConfigDispayRules() {
+	private ConfigDisplayRules() {
 		configPfad = this.helper.getGoobiConfigDirectory() + "goobi_metadataDisplayRules.xml";
 		try {
 			config = new XMLConfiguration(configPfad);
@@ -67,7 +67,7 @@ public final class ConfigDispayRules {
 		}
 	}
 
-	public static ConfigDispayRules getInstance() {
+	public static ConfigDisplayRules getInstance() {
 		return instance;
 	}
 
