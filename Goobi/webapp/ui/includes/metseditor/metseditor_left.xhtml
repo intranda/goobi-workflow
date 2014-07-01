@@ -35,13 +35,13 @@ jQuery(window).resize(function() {
 							style="position:absolute;left:#{Metadaten.treeWidth-25}px"></h:graphicImage>
 
 								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:100px;padding:0px 15px;">
-									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 20}" />
+									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 60}" />
 									<h:graphicImage id="arrowleft" value="images/datascroller/arrow-previous1.gif" />
 									 
 								</h:commandLink>
 
 								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:120px;padding:0px 15px;">
-									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 20}" />
+									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 60}" />
 									<h:graphicImage id="arrowright" value="images/datascroller/arrow-next1.gif" />
 									 
 								</h:commandLink>
