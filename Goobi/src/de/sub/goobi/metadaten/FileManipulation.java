@@ -117,13 +117,15 @@ public class FileManipulation {
             }
 
             if (StringUtils.isNotBlank(uploadedFileName)) {
+                
                 String fileExtension = Metadaten.getFileExtension(basename);
                 if (!fileExtension.isEmpty() && !uploadedFileName.endsWith(fileExtension)) {
                     uploadedFileName = uploadedFileName + fileExtension;
                 }
                 basename = uploadedFileName;
-
             }
+            basename = basename.replace("[^\\p{ASCII}]", "_");
+            basename = basename.replace("[\\:\\*\\?\\|\\/]",  "_").replace(" ",  "_");
             logger.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator + basename;
 
