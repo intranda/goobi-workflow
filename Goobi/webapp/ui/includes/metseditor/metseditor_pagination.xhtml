@@ -1,19 +1,18 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:s="http://myfaces.apache.org/sandbox">
+    xmlns:s="http://myfaces.apache.org/sandbox" xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
     </composite:interface>
-@
+
     <composite:implementation>
         <h:form id="formular2" prependId="false">
-
             <h3 style="margin-top: 0px">
                 <h:outputText value="#{msgs.paginierung}" />
             </h3>
 
-            <h:commandLink action="#{Metadaten.createPagination}" value="#{msgs.paginierungEinlesen}"> 
-                <f:ajax execute="@form" render="@form"/>
+            <h:commandLink action="#{Metadaten.createPagination}" value="#{msgs.paginierungEinlesen}">
+                <f:ajax execute="@form" render="@form" />
             </h:commandLink>
             <h:panelGrid id="mygrid10" columns="2" style="margin:0px;">
 
@@ -74,41 +73,41 @@
                                         <h:outputLabel for="checkbox-fictitious" value="#{msgs.paginationFictitious}" />
                                     </div>
                                     <br />
-                                    
+
                                     <h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=1}" title="#{msgs.seitenzaehlung}">
                                         <h:graphicImage value="images/buttons/paginierung_seite_inactive.png"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <x:updateActionListener value="1" property="#{Metadaten.paginierungSeitenProImage}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
-                                    
+
                                     <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==1}" value="images/buttons/paginierung_seite.png"
                                         style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlung}" />
                                     <h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=2}" title="#{msgs.spaltenzaehlung}">
                                         <h:graphicImage value="images/buttons/paginierung_spalte_inactive.png"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <x:updateActionListener value="2" property="#{Metadaten.paginierungSeitenProImage}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
-                                    
+
                                     <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==2}" value="images/buttons/paginierung_spalte.png"
                                         style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.spaltenzaehlung}" />
                                     <h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=3}" title="#{msgs.blattzaehlung}">
                                         <h:graphicImage value="images/buttons/paginierung_blatt_inactive.png"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <x:updateActionListener value="3" property="#{Metadaten.paginierungSeitenProImage}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
-                                    
+
                                     <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==3}" value="images/buttons/paginierung_blatt.png"
                                         style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlung}" />
                                     <h:commandLink rendered="#{Metadaten.paginierungSeitenProImage!=4}" title="#{msgs.blattzaehlungrectoverso}">
                                         <h:graphicImage value="images/buttons/paginierung_blatt_rectoverso_inactive.png"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <x:updateActionListener value="4" property="#{Metadaten.paginierungSeitenProImage}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
-                                    
+
                                     <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==4}"
                                         value="images/buttons/paginierung_blatt_rectoverso.png"
                                         style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.blattzaehlungrectoverso}" />
@@ -116,9 +115,9 @@
                                         <h:graphicImage value="images/buttons/paginierung_seite_rectoverso_inactive.png"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <x:updateActionListener value="5" property="#{Metadaten.paginierungSeitenProImage}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
-                                    
+
                                     <h:graphicImage rendered="#{Metadaten.paginierungSeitenProImage==5}"
                                         value="images/buttons/paginierung_seite_rectoverso.png"
                                         style="margin-left:4px;margin-right:6px;vertical-align:middle" title="#{msgs.seitenzaehlungrectoverso}" />
@@ -127,13 +126,13 @@
                                     <h:commandLink id="s4" action="#{Metadaten.Paginierung}" style="margin-top:15px">
                                         <h:outputText value="#{msgs.nurDieMarkiertenSeiten}" />
                                         <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
                                     <br style="margin-top: 15px" />
                                     <h:commandLink id="s5" action="#{Metadaten.Paginierung}" style="margin-top:15px">
                                         <h:outputText value="#{msgs.abDerErstenMarkiertenSeite}" />
                                         <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
                                 </td>
                             </tr>
@@ -153,7 +152,7 @@
                                             <h:graphicImage value="images/buttons/up_20px.gif"
                                                 style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                             <h:outputText value="#{msgs.moveSeltectedPagesUp}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                            <f:ajax execute="@form" render="@form" />
                                         </h:commandLink>
                                     </td>
                                 </tr>
@@ -163,7 +162,7 @@
                                             <h:graphicImage value="images/buttons/down_20px.gif"
                                                 style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                             <h:outputText value="#{msgs.moveSeltectedPagesDown}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                            <f:ajax execute="@form" render="@form" />
                                         </h:commandLink>
                                     </td>
                                 </tr>
@@ -174,26 +173,74 @@
                                             <h:graphicImage value="images/buttons/waste1a_20px.gif"
                                                 style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                             <h:outputText value="#{msgs.deleteSeltectedPages}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                            <f:ajax execute="@form" render="@form" />
                                         </h:commandLink>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="eingabeBoxen_row2">
-                                        <h:commandLink action="#{Metadaten.reOrderPagination}">
+                                        <h:commandLink action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
                                             <h:graphicImage value="images/buttons/reload.gif"
                                                 style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                             <h:outputText value="#{msgs.reOrder}" />
-                                        <f:ajax execute="@form" render="@form"/>
+                                            <f:ajax execute="@form" render="@form" />
                                         </h:commandLink>
                                     </td>
                                 </tr>
 
+                                <tr>
+                                    <td class="eingabeBoxen_row2">
+                                             <p:growl id="growl" />
+                                        <h:panelGroup style="display: none" id="progressPanel">
+                                            <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2"
+                                                id="progressbutton" style="display: none;" />
+
+                                            <p:progressBar widgetVar="pbAjax" ajax="true" value="#{Metadaten.progress}" labelTemplate="{value}%"
+                                                styleClass="animated" global="false" style="margin: 5px 0px 5px 0px">
+                                                <p:ajax event="complete" listener="#{Metadaten.onComplete}" update="growl" />
+                                            </p:progressBar>
+
+                                        </h:panelGroup>
+
+                                        <script type="text/javascript">
+                                            function displayProgressBar() {
+                                                var element = document.getElementById('progressPanel');
+                                                if (element.style.display == 'block') {
+                                                    element.style.display = 'none';
+                                                } else {
+                                                    element.style.display = 'block';
+                                                }
+                                                document.getElementById('progressbutton').click();
+                                            }
+                                            
+                                            function start() {
+                                             
+                                                window['progress'] = setInterval(function() {
+                                                    var pbClient = PF('pbClient'),
+                                                    oldValue = pbClient.getValue(),
+                                                    newValue = oldValue + 10;
+                                             
+                                                    pbClient.setValue(pbClient.getValue() + 10);
+                                             
+                                                    if(newValue === 100) {
+                                                        clearInterval(window['progress']);
+                                                    }
+                                             
+                                             
+                                                }, 1000);
+                                            }
+           								</script> 
+                                    </td>
+                               </tr>
                             </table>
+
                         </h:panelGroup>
+
 
                     </h:panelGroup>
                     <!-- ++++++++++++++++     // Paginierung festlegen      ++++++++++++++++ -->
+
+
 
 
                 </h:panelGrid>

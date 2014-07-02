@@ -207,6 +207,10 @@ public class Metadaten {
     private int treeWidth = 180;
     private FileManipulation fileManipulation;
 
+    private double currentImageNo = 0;
+    private double totalImageNo = 0;
+    private Integer progress;
+    
     /**
      * Konstruktor ================================================================
      */
@@ -3239,8 +3243,12 @@ public class Metadaten {
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
+        progress = 0;
+        totalImageNo = oldfilenames.size() * 2;
+        currentImageNo = 0;
         for (String imagename : oldfilenames) {
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+            currentImageNo++;
             for (String folder : allTifFolders) {
                 // check if folder is empty, otherwise get extension for folder
                 File currentImageFolder = new File(imageDirectory + folder);
@@ -3283,6 +3291,7 @@ public class Metadaten {
         System.gc();
         int counter = 1;
         for (String imagename : oldfilenames) {
+            currentImageNo++;
             String newfilenamePrefix = generateFileName(counter);
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             for (String folder : allTifFolders) {
@@ -3325,7 +3334,9 @@ public class Metadaten {
             counter++;
         }
         retrieveAllImages();
-
+        progress = null;
+        totalImageNo = 0;
+        currentImageNo = 0;
         BildErmitteln(0);
     }
 
@@ -3627,6 +3638,39 @@ public class Metadaten {
 
     public void setTreeWidth(int treeWidth) {
         this.treeWidth = treeWidth;
+    }
+
+    // progress bar
+
+    public Integer getProgress() {
+        if (progress == null) {
+            progress = 0;
+        } else if (totalImageNo == 0) {
+            progress = 100;
+        }
+        else {
+            progress =  (int) (currentImageNo / totalImageNo * 100);
+
+            if (progress > 100)
+                progress = 100;
+        }
+
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
+    public void onComplete() {
+        progress = null;
+    }
+
+    public boolean isShowProgressBar() {
+        if (progress == null || progress == 100 || progress == 0) {
+            return false;
+        } 
+        return true;
     }
 
 }
