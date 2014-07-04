@@ -82,7 +82,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     private String metsRightsSponsor = "";
     private String metsRightsSponsorLogo = "";
     private String metsRightsSponsorSiteURL = "";
-    private String metsRightsLicense = "reserved";
+    private String metsRightsLicense = "";
 
     
     public void lazyLoad() {
