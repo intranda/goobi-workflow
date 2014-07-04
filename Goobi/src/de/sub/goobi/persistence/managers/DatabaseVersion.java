@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 5;
+    public static final int EXPECTED_VERSION = 6;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     public static int getCurrentVersion() {
@@ -50,11 +50,36 @@ public class DatabaseVersion {
             case 4:
                 logger.debug("Update database to version 5.");
                 updateToVersion5();
+            case 5:
+                logger.debug("Update database to version 6.");
+                updateToVersion6();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 logger.debug("Database is up to date.");
 
+        }
+    }
+
+    private static void updateToVersion6() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table projekte add column metsRightsSponsor varchar(255) default null;");
+            runner.update(connection, "alter table projekte add column metsRightsSponsorLogo varchar(255) default null;");
+            runner.update(connection, "alter table projekte add column metsRightsSponsorSiteURL varchar(255) default null;");
+            runner.update(connection, "alter table projekte add column metsRightsLicense varchar(255) default null;");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
         }
     }
 
@@ -214,6 +239,5 @@ public class DatabaseVersion {
             }
         }
 
-         
     }
 }

@@ -116,8 +116,9 @@ class ProjectMysqlHelper implements Serializable {
                         "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder,"
                                 + " fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, "
                                 + "metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, "
-                                + "metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived";
+                                + "metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived, metsRightsSponsor, metsRightsSponsorLogo, metsRightsSponsorSiteURL, metsRightsLicense";
                 //                StringBuilder propValues = new StringBuilder();
+
                 Object[] param =
                         { ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(),
                                 StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : ro.getDmsImportRootPath(),
@@ -143,11 +144,15 @@ class ProjectMysqlHelper implements Serializable {
                                 StringUtils.isBlank(ro.getMetsContentIDs()) ? null : ro.getMetsContentIDs(),
                                 ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
-                                ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
+                                ro.getNumberOfVolumes(), ro.getProjectIsArchived(),
+                                StringUtils.isBlank(ro.getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(),
+                                StringUtils.isBlank(ro.getMetsRightsSponsorLogo()) ? null : ro.getMetsRightsSponsorLogo(),
+                                StringUtils.isBlank(ro.getMetsRightsSponsorSiteURL()) ? null : ro.getMetsRightsSponsorSiteURL(),
+                                StringUtils.isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense() };
 
                 sql.append("INSERT INTO projekte (");
                 sql.append(propNames);
-                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
@@ -183,7 +188,12 @@ class ProjectMysqlHelper implements Serializable {
                 sql.append("endDate =?, ");
                 sql.append("numberOfPages =?, ");
                 sql.append("numberOfVolumes =?, ");
-                sql.append("projectIsArchived =? ");
+                sql.append("projectIsArchived =?, ");
+                sql.append("metsRightsSponsor =?, ");
+                sql.append("metsRightsSponsorLogo =?, ");
+                sql.append("metsRightsSponsorSiteURL =?, ");
+                sql.append("metsRightsLicense =? ");
+
                 Object[] param =
                         { ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(),
                                 StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : ro.getDmsImportRootPath(),
@@ -207,7 +217,12 @@ class ProjectMysqlHelper implements Serializable {
                                 StringUtils.isBlank(ro.getMetsContentIDs()) ? null : ro.getMetsContentIDs(),
                                 ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(),
-                                ro.getNumberOfVolumes(), ro.getProjectIsArchived() };
+                                ro.getNumberOfVolumes(), ro.getProjectIsArchived(),
+                                StringUtils.isBlank(ro.getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(),
+                                StringUtils.isBlank(ro.getMetsRightsSponsorLogo()) ? null : ro.getMetsRightsSponsorLogo(),
+                                StringUtils.isBlank(ro.getMetsRightsSponsorSiteURL()) ? null : ro.getMetsRightsSponsorSiteURL(),
+                                StringUtils.isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense() };
+
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
                 logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 run.update(connection, sql.toString(), param);

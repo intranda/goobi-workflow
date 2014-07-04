@@ -185,6 +185,12 @@ public class ProjectManager implements IManager, Serializable {
         r.setNumberOfPages(rs.getInt("numberOfPages"));
         r.setNumberOfVolumes(rs.getInt("numberOfVolumes"));
         r.setProjectIsArchived(rs.getBoolean("projectIsArchived"));
+
+        r.setMetsRightsSponsor(rs.getString("metsRightsSponsor"));
+        r.setMetsRightsSponsorLogo(rs.getString("metsRightsSponsorLogo"));
+        r.setMetsRightsSponsorSiteURL(rs.getString("metsRightsSponsorSiteURL"));
+        r.setMetsRightsLicense(rs.getString("metsRightsLicense"));
+
         return r;
     }
 
