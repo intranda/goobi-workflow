@@ -79,6 +79,12 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     private Integer numberOfVolumes;
     private Boolean projectIsArchived = false;
 
+    private String metsRightsSponsor = "";
+    private String metsRightsSponsorLogo = "";
+    private String metsRightsSponsorSiteURL = "";
+    private String metsRightsLicense = "reserved";
+
+    
     public void lazyLoad() {
         //		try {
         //			this.benutzer = null;
@@ -421,5 +427,37 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     @Override
     public boolean equals(Object obj) {
         return this.getTitel().equals(((Project) obj).getTitel());
+    }
+
+    public String getMetsRightsLicense() {
+        return metsRightsLicense;
+    }
+
+    public void setMetsRightsLicense(String metsRightsLicense) {
+        this.metsRightsLicense = metsRightsLicense;
+    }
+
+    public String getMetsRightsSponsorSiteURL() {
+        return metsRightsSponsorSiteURL;
+    }
+
+    public void setMetsRightsSponsorSiteURL(String metsRightsSponsorSiteURL) {
+        this.metsRightsSponsorSiteURL = metsRightsSponsorSiteURL;
+    }
+
+    public String getMetsRightsSponsorLogo() {
+        return metsRightsSponsorLogo;
+    }
+
+    public void setMetsRightsSponsorLogo(String metsRightsSponsorLogo) {
+        this.metsRightsSponsorLogo = metsRightsSponsorLogo;
+    }
+
+    public String getMetsRightsSponsor() {
+        return metsRightsSponsor;
+    }
+
+    public void setMetsRightsSponsor(String metsRightsSponsor) {
+        this.metsRightsSponsor = metsRightsSponsor;
     }
 }
