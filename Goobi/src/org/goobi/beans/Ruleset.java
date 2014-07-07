@@ -28,6 +28,8 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
@@ -45,6 +47,8 @@ public class Ruleset implements Serializable, DatabaseObject {
 	private Boolean orderMetadataByRuleset = false;
 	private static final Logger logger = Logger.getLogger(Ruleset.class);
 
+	private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
+	
 	public void lazyLoad(){
 		// nothing to load lazy here
 	}
@@ -74,6 +78,9 @@ public class Ruleset implements Serializable, DatabaseObject {
 	}
 
 	public Prefs getPreferences() {
+	    if (loadedPrefs.containsKey(id)) {
+	        return loadedPrefs.get(id);
+	    }
 		this.mypreferences = new Prefs();
 		try {
 			this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder()
@@ -81,6 +88,7 @@ public class Ruleset implements Serializable, DatabaseObject {
 		} catch (PreferencesException e) {
 			logger.error(e);
 		}
+		loadedPrefs.put(id, mypreferences);
 		return this.mypreferences;
 	}
 
@@ -92,5 +100,12 @@ public class Ruleset implements Serializable, DatabaseObject {
 		this.orderMetadataByRuleset = orderMetadataByRuleset;
 	}
 
+	public static Map<Integer, Prefs> getLoadedPrefs() {
+        return loadedPrefs;
+    }
+	
+	public static void setLoadedPrefs(Map<Integer, Prefs> loadedPrefs) {
+        Ruleset.loadedPrefs = loadedPrefs;
+    }
 
 }
