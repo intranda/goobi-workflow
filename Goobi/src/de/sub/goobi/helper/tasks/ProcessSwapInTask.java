@@ -52,7 +52,6 @@ public class ProcessSwapInTask extends LongRunningTask {
 	/**
 	 * Aufruf als Thread ================================================================
 	 */
-	@SuppressWarnings("unchecked")
     @Override
 	public void run() {
 		setStatusProgress(5);
