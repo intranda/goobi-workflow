@@ -152,6 +152,11 @@ public class GoobiScript {
             addShellScriptToStep(inProzesse);
         } else if (this.myParameters.get("action").equals("addModuleToStep")) {
             addModuleToStep(inProzesse);
+            
+        } else if (this.myParameters.get("action").equalsIgnoreCase("addPluginToStep")) {
+            addPluginToStep(inProzesse);
+            
+            
         } else if (this.myParameters.get("action").equals("updateImagePath")) {
             updateImagePath(inProzesse);
         } else if (this.myParameters.get("action").equals("updateContentFiles")) {
@@ -613,6 +618,46 @@ public class GoobiScript {
         Helper.setMeldung("goobiScriptfield", "", "addModuleToStep finished: ");
     }
 
+    // TODO junit test
+    private void addPluginToStep(List<Process> inProzesse) {
+        /*
+         * -------------------------------- Validierung der Actionparameter --------------------------------
+         */
+        if (this.myParameters.get("steptitle") == null || this.myParameters.get("steptitle").equals("")) {
+            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+            return;
+        }
+
+        if (this.myParameters.get("plugin") == null || this.myParameters.get("plugin").equals("")) {
+            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");
+            return;
+        }
+
+        /*
+         * -------------------------------- Durchführung der Action --------------------------------
+         */
+        for (Process proz : inProzesse) {
+            if (proz.getSchritte() != null) {
+                for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
+                    Step s = iterator.next();
+                    if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
+                        s.setStepPlugin(this.myParameters.get("plugin"));
+                        try {
+                            ProcessManager.saveProcess(proz);
+                        } catch (DAOException e) {
+                            Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
+                            logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
+                        }
+                        Helper.setMeldung("goobiScriptfield", "Added module to step: ", proz.getTitel());
+                        break;
+                    }
+                }
+            }
+        }
+        Helper.setMeldung("goobiScriptfield", "", "addModuleToStep finished: ");
+    }
+    
+    
     /**
      * Flag von Schritten setzen ================================================================
      */
