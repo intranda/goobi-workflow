@@ -47,6 +47,7 @@ public class DatabaseVersion {
             case 2:
                 logger.debug("Update database to version 3.");
                 updateToVersion3();
+            case 3:
             case 4:
                 logger.debug("Update database to version 5.");
                 updateToVersion5();
