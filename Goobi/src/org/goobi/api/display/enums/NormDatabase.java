@@ -5,7 +5,7 @@ import java.util.List;
 
 public enum NormDatabase {
 
-    GND("http://www.dnb.de/gnd/", "gnd"),
+    GND("http://d-nb.info/gnd/", "gnd"),
     REFGEO("http://normdata.intranda.com/normdata/refgeo/", "intranda Geo Datenbank"),
     REFBIO("http://normdata.intranda.com/normdata/refbio/", "intranda PND");
 
