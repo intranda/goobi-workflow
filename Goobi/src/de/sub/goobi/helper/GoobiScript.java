@@ -647,13 +647,13 @@ public class GoobiScript {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
                         }
-                        Helper.setMeldung("goobiScriptfield", "Added module to step: ", proz.getTitel());
+                        Helper.setMeldung("goobiScriptfield", "Added plugin to step: ", proz.getTitel());
                         break;
                     }
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "addModuleToStep finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "addPluginToStep finished: ");
     }
     
     
