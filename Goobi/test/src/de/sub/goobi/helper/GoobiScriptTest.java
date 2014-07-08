@@ -2,7 +2,6 @@ package de.sub.goobi.helper;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -272,8 +271,21 @@ public class GoobiScriptTest {
     
         script.execute(processList, "action:deleteProcess contentOnly:true");
         script.execute(processList, "action:deleteProcess contentOnly:false");
-
     }
     
+    
+    @Test
+    public void testAddPluginToStep() {
+        GoobiScript script = new GoobiScript();
+        script.execute(processList, "action:addPluginToStep");
+        
+        script.execute(processList, "action:addPluginToStep steptitle:");
+        script.execute(processList, "action:addPluginToStep  steptitle:first");
+
+        script.execute(processList, "action:addPluginToStep  steptitle:first plugin:");
+        script.execute(processList, "action:addPluginToStep  steptitle:first plugin:plugin");
+
+        
+    }
     
 }

@@ -618,7 +618,6 @@ public class GoobiScript {
         Helper.setMeldung("goobiScriptfield", "", "addModuleToStep finished: ");
     }
 
-    // TODO junit test
     private void addPluginToStep(List<Process> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
