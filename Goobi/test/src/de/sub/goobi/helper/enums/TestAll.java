@@ -1,4 +1,4 @@
-package de.sub.goobi.converter;
+package de.sub.goobi.helper.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -22,8 +22,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ DocketConverterTest.class, NormDatabaseConverterTest.class, ProcessConverterTest.class, StatisticsCalculationUnitConverterTest.class,
-        StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class })
+@SuiteClasses({ HistoryEventTypeTest.class })
 public class TestAll {
-
 }

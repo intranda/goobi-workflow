@@ -1,4 +1,4 @@
-/*
+/**
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
