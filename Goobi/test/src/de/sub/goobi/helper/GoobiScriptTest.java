@@ -145,7 +145,7 @@ public class GoobiScriptTest {
     public void testExecuteEmptyGoobiScript() {
         GoobiScript script = new GoobiScript();
         script.execute(new ArrayList<Process>(), "");
-        assertEquals(0, script.myParameters.size());
+        assertNull(script.myParameters);
     }
 
     @Test
