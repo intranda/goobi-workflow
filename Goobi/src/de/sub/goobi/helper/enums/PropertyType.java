@@ -88,11 +88,6 @@ public enum PropertyType {
 		return this.name.toLowerCase();
 	}
 
-	@SuppressWarnings("unused")
-	//here for jsf compatibility
-	private void setName(String name) {
-	}
-
 	@Override
 	public java.lang.String toString() {
 		return this.name(); 
@@ -111,12 +106,12 @@ public enum PropertyType {
 		return showInDisplay;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
+//	/**
+//	 * @param id the id to set
+//	 */
+//	public void setId(int id) {
+//		this.id = id;
+//	}
 
 	/**
 	 * @return the id

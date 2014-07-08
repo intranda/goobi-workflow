@@ -1,4 +1,5 @@
 package de.sub.goobi.helper.enums;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -22,7 +23,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ HistoryEventTypeTest.class })
+@SuiteClasses({ HistoryEventTypeTest.class, PropertyTypeTest.class, StepEditTypeTest.class, StepStatusTest.class })
 public class TestAll {
-
 }
