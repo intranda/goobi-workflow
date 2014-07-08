@@ -18,6 +18,8 @@ package de.sub.goobi;
  * 
  */
 import org.goobi.io.BackupFileRotationTest;
+import org.goobi.pagination.IntegerSequenceTest;
+import org.goobi.pagination.RomanNumberSequenceTest;
 import org.goobi.production.GoobiVersionTest;
 import org.goobi.production.flow.statistics.enums.CalculationUnitTest;
 import org.goobi.production.flow.statistics.enums.ResultOutputTest;
@@ -44,7 +46,7 @@ import de.sub.goobi.samples.BenutzergruppenTest;
 @SuiteClasses({ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, PaginatorTest.class,
         BenutzergruppenTest.class, BenutzerTest.class, BackupFileRotationTest.class, GoobiVersionTest.class, CalculationUnitTest.class,
         ResultOutputTest.class, StatisticsModeTest.class, TimeUnitTest.class, ConverterTest.class, SQLHelperTest.class, SQLProductionTest.class,
-        SQLStepRequestsTest.class, SQLStorageTest.class, IdentifierPPNTest.class })
+        SQLStepRequestsTest.class, SQLStorageTest.class, IdentifierPPNTest.class, IntegerSequenceTest.class, RomanNumberSequenceTest.class })
 public class OldTests {
 
 }
