@@ -1,4 +1,5 @@
 package de.sub.goobi;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,11 +25,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.ExceptionTest;
+import de.sub.goobi.helper.ldap.LdapUserTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ de.sub.goobi.config.TestAll.class, de.sub.goobi.converter.TestAll.class, de.sub.goobi.export.dms.TestAll.class,
         de.sub.goobi.forms.TestAll.class, OldTests.class, de.sub.goobi.export.download.TestAll.class, de.sub.goobi.helper.TestAll.class,
-        de.sub.goobi.helper.enums.TestAll.class, ExceptionTest.class })
+        de.sub.goobi.helper.enums.TestAll.class, ExceptionTest.class, LdapUserTest.class })
 public class TestAll {
 
     @Before
