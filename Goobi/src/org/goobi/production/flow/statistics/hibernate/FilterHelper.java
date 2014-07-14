@@ -746,7 +746,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.METADATA)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(FilterHelper.filterMetadataValue(tok, true));
+                filter.append(FilterHelper.filterMetadataValue(tok, false));
             } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPPROPERTY)
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, false);
