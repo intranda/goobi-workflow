@@ -173,7 +173,7 @@ public class GoobiScript {
                 exportDms(inProzesse, this.myParameters.get("exportImages"), true);
             } else if (this.myParameters.get("action").equals("export")) {
                 exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
-            } else if (this.myParameters.get("action").equals("dloit")) {
+        } else if (this.myParameters.get("action").equals("doit")) {
                 exportDms(inProzesse, "false", false);
             } else if (this.myParameters.get("action").equals("doit2")) {
                 exportDms(inProzesse, "false", true);
@@ -196,17 +196,23 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {
 
                 updateMetadataTable(inProzesse);
+        } else if (this.myParameters.get("action").equalsIgnoreCase("unloadRuleset")) {
+            unloadRuleset();
             }
 
             else {
                 Helper.setFehlerMeldung(
                         "goobiScriptfield",
                         "Unknown action",
-                        " - use: 'action:swapsteps, action:adduser, action:addusergroup, action:swapprozessesout, action:swapprozessesin, action:deleteTiffHeaderFile, action:importFromFileSystem'");
+                    " Please use one of the given below.");
                 return;
             }
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript finished");
+    }
+
+    private void unloadRuleset() {
+        Ruleset.resetLoadedPrefs();
     }
 
     private void updateContentFiles(List<Process> inProzesse) {
