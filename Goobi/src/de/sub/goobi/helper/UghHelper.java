@@ -246,15 +246,8 @@ public class UghHelper {
 	public String convertUmlaut(String inString) {
 		String temp = inString;
 		/* Pfad zur Datei ermitteln */
-		FacesContext context = FacesContextHelper.getCurrentFacesContext();
-		String filename;
-
-		if (context != null) {
-			HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-			filename = session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator + "goobi_opacUmlaut.txt";
-		} else {
-			filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
-		}
+		String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
+//		}
 		/* Datei zeilenweise durchlaufen und die Sprache vergleichen */
 		try {
 			FileInputStream fis = new FileInputStream(filename);
