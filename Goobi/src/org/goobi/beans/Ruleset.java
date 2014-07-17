@@ -100,12 +100,7 @@ public class Ruleset implements Serializable, DatabaseObject {
 		this.orderMetadataByRuleset = orderMetadataByRuleset;
 	}
 
-	public static Map<Integer, Prefs> getLoadedPrefs() {
-        return loadedPrefs;
-    }
-	
-	public static void setLoadedPrefs(Map<Integer, Prefs> loadedPrefs) {
-        Ruleset.loadedPrefs = loadedPrefs;
-    }
-
+	public static void resetLoadedPrefs() {
+	    loadedPrefs = new HashMap<Integer, Prefs>();
+	}
 }

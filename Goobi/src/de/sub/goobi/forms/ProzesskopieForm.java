@@ -1549,7 +1549,7 @@ public class ProzesskopieForm {
         return rulesets;
     }
 
-    public static String createAtstsl(String title, String author) {
+    public String createAtstsl(String title, String author) {
         StringBuilder result = new StringBuilder(8);
         if (author != null && author.trim().length() > 0) {
             result.append(author.length() > 4 ? author.substring(0, 4) : author);
@@ -1574,7 +1574,8 @@ public class ProzesskopieForm {
                 wordNo++;
             }
         }
-        return result.toString().replaceAll("[\\W]", ""); // delete umlauts etc.
+        String res = ughHelper.convertUmlaut(result.toString()).toLowerCase();
+        return res.replaceAll("[\\W]", ""); // delete umlauts etc.
     }
 
     public void setAdditionalFields(List<AdditionalField> list) {
