@@ -1,4 +1,5 @@
 package org.goobi.production.flow.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,6 +24,8 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -150,30 +153,43 @@ public class SearchResultHelper {
     public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
         @SuppressWarnings("rawtypes")
         List list = search(columnList, filter, showClosedProcesses, showArchivedProjects);
-        
+
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet("Search results");
 
         // create title row
         int titleColumnNumber = 0;
         HSSFRow title = sheet.createRow(0);
+        int columnNumber = 0;
         for (SearchColumn sc : columnList) {
             HSSFCell titleCell = title.createCell(titleColumnNumber++);
             titleCell.setCellValue(Helper.getTranslation(sc.getValue()));
+            HSSFCellStyle cellStyle = wb.createCellStyle();
+            HSSFFont cellFont = wb.createFont();
+            cellFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+            cellStyle.setFont(cellFont);
+            titleCell.setCellStyle(cellStyle);
         }
-        
-        
+
         int rowNumber = 1;
         for (Object obj : list) {
             Object[] objArr = (Object[]) obj;
             HSSFRow row = sheet.createRow(rowNumber++);
-            int columnNumber = 0;
+            columnNumber = 0;
             for (Object entry : objArr) {
                 HSSFCell cell = row.createCell(columnNumber++);
                 cell.setCellValue((String) entry);
-
             }
         }
+
+        sheet.createFreezePane(0, 1);
+        for (int i = 0; i < columnList.size(); i++) {
+            sheet.autoSizeColumn(i);
+            if (sheet.getColumnWidth(i) > 15000) {
+                sheet.setColumnWidth(i, 15000);
+            }
+        }
+
         return wb;
     }
 
@@ -191,20 +207,20 @@ public class SearchResultHelper {
 
         sb.append(" FROM prozesse ");
 
-       boolean leftJoin=false;
+        boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
             String clause = sc.getJoinClause();
             if (!clause.isEmpty()) {
                 if (!leftJoin) {
-                    sb.append(" LEFT JOIN ") ;
+                    sb.append(" LEFT JOIN ");
                 } else {
-                    sb.append(" JOIN ") ;
+                    sb.append(" JOIN ");
                 }
                 sb.append(clause);
             }
         }
-       
+
         String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
         if (!sql.isEmpty()) {
             sql = sql + " AND ";
@@ -225,7 +241,7 @@ public class SearchResultHelper {
         }
         sb.append(" WHERE ");
         sb.append(sql);
-       
+
         List list = ProcessManager.runSQL(sb.toString());
         return list;
     }
