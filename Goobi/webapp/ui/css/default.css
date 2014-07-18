@@ -265,6 +265,10 @@ a.mlink:hover {
 	border-color: #0083e2;
 }
 
+#benutzerliste tbody tr {
+    height: 24px;
+}
+
 #rowList .column1 {
     width: 20%;
 }
