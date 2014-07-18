@@ -30,7 +30,7 @@ public class CopyFileTest {
     @Test
     public void testCopyFile() throws IOException {
 
-        File srcFile = new File(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
+        File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
         File destFile = folder.newFile("destination");
 
         CopyFile.copyFile(srcFile, destFile);
@@ -39,7 +39,7 @@ public class CopyFileTest {
 
     @Test
     public void testCreateChecksum() throws IOException {
-        File srcFile = new File(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
+        File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
         long checksum = CopyFile.createChecksum(srcFile);
 
         assertEquals(219427218, checksum);
@@ -49,7 +49,7 @@ public class CopyFileTest {
     @Test
     public void testStart() throws IOException {
 
-        File srcFile = new File(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
+        File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
         File destFile = folder.newFile("destination");
 
         CopyFile.start(srcFile, destFile);
@@ -58,7 +58,7 @@ public class CopyFileTest {
     
     @Test
     public void testCopyDirectory() throws IOException {
-        File srcDir = new File(ConfigurationHelper.getInstance().getConfigurationFolder());
+        File srcDir = new File("/opt/digiverso/junit/data/");
         File dstDir = folder.newFolder("dest");
         
         CopyFile.copyDirectory(srcDir, dstDir);

@@ -17,6 +17,7 @@ public class FileUtilsTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
+    
     private File currentFolder;
 
     @Before

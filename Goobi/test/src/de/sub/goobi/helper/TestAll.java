@@ -23,7 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ BatchTest.class, FilesystemHelperTest.class, BatchProcessHelperTest.class, BatchStepHelperTest.class, BeanHelperTest.class,
-        GoobiScriptTest.class, CopyFileTest.class, FileUtilsTest.class })
+        GoobiScriptTest.class, CopyFileTest.class, FileUtilsTest.class, HelperTest.class })
 public class TestAll {
 
 }
