@@ -29,7 +29,6 @@ package de.sub.goobi.helper;
  */
 
 import java.io.File;
-import java.io.FilenameFilter;
 
 /**
  * File Utils collection
@@ -76,19 +75,19 @@ public class FileUtils {
 	
 	
 	
-	public static class FileListFilter implements FilenameFilter {
-		  private String name; 
-		  public FileListFilter(String name) {
-		    this.name = name;
-		  }
-		  @Override
-		public boolean accept(File directory, String filename) {
-		    boolean fileOK = true;
-		    if (this.name != null) {
-		      fileOK &= filename.matches(this.name);
-		    }
-		    return fileOK;
-		  }
-		}
+//	public static class FileListFilter implements FilenameFilter {
+//		  private String name; 
+//		  public FileListFilter(String name) {
+//		    this.name = name;
+//		  }
+//		  @Override
+//		public boolean accept(File directory, String filename) {
+//		    boolean fileOK = true;
+//		    if (this.name != null) {
+//		      fileOK &= filename.matches(this.name);
+//		    }
+//		    return fileOK;
+//		  }
+//		}
 
 }
