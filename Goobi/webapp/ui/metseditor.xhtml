@@ -132,10 +132,18 @@ $(window).resize(function() {
                     </td>
 
                         <td style="top: 10px;" id="BildArea2">
-                    		<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}" style="#{Metadaten.treeProperties.imageSticky?'position: fixed;top: 95px;left: 800px;':''}">
-                            
-                                <ui:include src="includes/metseditor/metseditor_image.xhtml" />
+                    		<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true and Metadaten.treeProperties.imageSticky}" style="position: fixed;top: 95px; left:#{Metadaten.treeWidth + 650}px">
+                                <ui:include src="includes/metseditor/metseditor_image.xhtml" >
+                                	<ui:param name="idPrefix" value="first"/>
+                                </ui:include>
                             </h:panelGroup>
+
+                         	<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true and !Metadaten.treeProperties.imageSticky}" >
+                         	 	<ui:include src="includes/metseditor/metseditor_image.xhtml">
+                         	 		<ui:param name="idPrefix" value="second"/>
+                         	 	</ui:include>
+                         	</h:panelGroup>
+                            
                         </td>
                 </tr>
             </table>
