@@ -192,10 +192,7 @@ public class GoobiScript {
         }
 
         else {
-            Helper.setFehlerMeldung(
-                    "goobiScriptfield",
-                    "Unknown action",
-                    " Please use one of the given below.");
+            Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             return;
         }
 
@@ -1017,25 +1014,29 @@ public class GoobiScript {
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(metadataFile);
         Element root = doc.getRootElement();
-        Element goobi =
-                root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
-                        "extension", mods).getChild("goobi", goobiNamespace);
-        List<Element> metadataList = goobi.getChildren();
-        for (Element goobimetadata : metadataList) {
-            String metadataType = goobimetadata.getAttributeValue("name");
-            String metadataValue = "";
-            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
-                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
-                if (displayName != null && !displayName.getValue().equals(",")) {
-                    metadataValue = displayName.getValue();
+        try {
+            Element goobi =
+                    root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
+                            "extension", mods).getChild("goobi", goobiNamespace);
+            List<Element> metadataList = goobi.getChildren();
+            for (Element goobimetadata : metadataList) {
+                String metadataType = goobimetadata.getAttributeValue("name");
+                String metadataValue = "";
+                if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
+                    Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
+                    if (displayName != null && !displayName.getValue().equals(",")) {
+                        metadataValue = displayName.getValue();
+                    }
+                } else {
+                    metadataValue = goobimetadata.getValue();
                 }
-            } else {
-                metadataValue = goobimetadata.getValue();
+                if (!metadataValue.equals("")) {
+                    StringPair pair = new StringPair(metadataType, metadataValue);
+                    metadataPairs.add(pair);
+                }
             }
-            if (!metadataValue.equals("")) {
-                StringPair pair = new StringPair(metadataType, metadataValue);
-                metadataPairs.add(pair);
-            }
+        } catch (NullPointerException e) {
+
         }
         return metadataPairs;
     }
