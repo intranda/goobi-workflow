@@ -173,7 +173,7 @@ public class GoobiScript {
                 exportDms(inProzesse, this.myParameters.get("exportImages"), true);
             } else if (this.myParameters.get("action").equals("export")) {
                 exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
-        } else if (this.myParameters.get("action").equals("doit")) {
+            } else if (this.myParameters.get("action").equals("doit")) {
                 exportDms(inProzesse, "false", false);
             } else if (this.myParameters.get("action").equals("doit2")) {
                 exportDms(inProzesse, "false", true);
@@ -196,17 +196,15 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {
 
                 updateMetadataTable(inProzesse);
-        } else if (this.myParameters.get("action").equalsIgnoreCase("unloadRuleset")) {
-            unloadRuleset();
+            } else if (this.myParameters.get("action").equalsIgnoreCase("unloadRuleset")) {
+                unloadRuleset();
             }
 
             else {
-                Helper.setFehlerMeldung(
-                        "goobiScriptfield",
-                        "Unknown action",
-                    " Please use one of the given below.");
+                Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
                 return;
             }
+
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript finished");
     }
@@ -1064,25 +1062,29 @@ public class GoobiScript {
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(metadataFile);
         Element root = doc.getRootElement();
-        Element goobi =
-                root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
-                        "extension", mods).getChild("goobi", goobiNamespace);
-        List<Element> metadataList = goobi.getChildren();
-        for (Element goobimetadata : metadataList) {
-            String metadataType = goobimetadata.getAttributeValue("name");
-            String metadataValue = "";
-            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
-                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
-                if (!displayName.getValue().equals(",")) {
-                    metadataValue = displayName.getValue();
+        try {
+            Element goobi =
+                    root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
+                            "extension", mods).getChild("goobi", goobiNamespace);
+            List<Element> metadataList = goobi.getChildren();
+            for (Element goobimetadata : metadataList) {
+                String metadataType = goobimetadata.getAttributeValue("name");
+                String metadataValue = "";
+                if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
+                    Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
+                    if (displayName != null && !displayName.getValue().equals(",")) {
+                        metadataValue = displayName.getValue();
+                    }
+                } else {
+                    metadataValue = goobimetadata.getValue();
                 }
-            } else {
-                metadataValue = goobimetadata.getValue();
+                if (!metadataValue.equals("")) {
+                    StringPair pair = new StringPair(metadataType, metadataValue);
+                    metadataPairs.add(pair);
+                }
             }
-            if (!metadataValue.equals("")) {
-                StringPair pair = new StringPair(metadataType, metadataValue);
-                metadataPairs.add(pair);
-            }
+        } catch (NullPointerException e) {
+
         }
         return metadataPairs;
     }
