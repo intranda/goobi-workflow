@@ -1026,7 +1026,7 @@ public class GoobiScript {
             String metadataValue = "";
             if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
                 Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
-                if (!displayName.getValue().equals(",")) {
+                if (displayName != null && !displayName.getValue().equals(",")) {
                     metadataValue = displayName.getValue();
                 }
             } else {
