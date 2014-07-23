@@ -121,7 +121,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javassist.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mets-1.10.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mods_3-5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics-1.4.02.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.5.jar"/>
@@ -136,5 +135,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics-1.4.03.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
