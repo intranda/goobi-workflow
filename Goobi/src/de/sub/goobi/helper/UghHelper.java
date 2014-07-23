@@ -243,7 +243,7 @@ public class UghHelper {
 	 * In einem String die Umlaute auf den Grundbuchstaben reduzieren ================================================================
 	 */
 	// TODO: Try to replace this with a external library
-	public String convertUmlaut(String inString) {
+	public static String convertUmlaut(String inString) {
 		String temp = inString;
 		/* Pfad zur Datei ermitteln */
 		String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
