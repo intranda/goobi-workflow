@@ -28,21 +28,19 @@ package org.goobi.api.display;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.List;
 
-import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
-
 import org.goobi.beans.Process;
 
 
 public class DisplayCase {
 	private DisplayType displayType = null;
-	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private List<Item> itemList = new ArrayList<Item>();
 	private ConfigDisplayRules configDisplay;
 	private Process myProcess;
 	private String metaName;
-	private BindState myBindState;
 	
 	/**
 	 * gets items with current bind state
@@ -54,12 +52,11 @@ public class DisplayCase {
 	public DisplayCase(Process inProcess, String metaType ){
 		metaName = metaType;
 		myProcess = inProcess;
-		myBindState = Modes.getBindState();
 		try {
 			configDisplay = ConfigDisplayRules.getInstance();
 			if (configDisplay != null) {
-			displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), myBindState.getTitle(), metaName);
-			itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), myBindState.getTitle(), metaName, displayType);
+			displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
+			itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
 			} else {
 				// no ruleset file
 				displayType = DisplayType.getByTitle("textarea");
@@ -84,12 +81,11 @@ public class DisplayCase {
 	public DisplayCase(Process inProcess, String bind, String metaType ){
 		metaName = metaType;
 		myProcess = inProcess;
-		myBindState = Modes.getBindState();
 		try {
 			configDisplay = ConfigDisplayRules.getInstance();
 			if (configDisplay != null) {
-				displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), bind, metaName);
-				itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), bind, metaName, displayType);
+				displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
+				itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
 			} else {
 				// no ruleset file
 				displayType = DisplayType.getByTitle("textarea");
@@ -126,7 +122,7 @@ public class DisplayCase {
 	 * @return ArrayList with items for metadatum
 	 */
 
-	public ArrayList<Item> getItemList() {
+	public List<Item> getItemList() {
 		return itemList;
 	}	
 }

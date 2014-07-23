@@ -28,15 +28,12 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
 
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
-import org.goobi.api.display.Modes;
-import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.enums.NormDatabase;
 
 import ugh.dl.Metadata;
@@ -59,7 +56,7 @@ public class MetadatumImpl implements Metadatum {
     private int identifier;
     private Prefs myPrefs;
     private Process myProcess;
-    private HashMap<String, DisplayCase> myValues = new HashMap<String, DisplayCase>();
+    private DisplayCase myValues;
     private List<SelectItem> items;
     private List<String> selectedItems;
 
@@ -71,15 +68,15 @@ public class MetadatumImpl implements Metadatum {
         this.identifier = inID;
         this.myPrefs = inPrefs;
         this.myProcess = inProcess;
-        for (BindState state : BindState.values()) {
-            this.myValues.put(state.getTitle(), new DisplayCase(this.myProcess, state.getTitle(), this.md.getType().getName()));
-        }
+
+        myValues = new DisplayCase(this.myProcess, this.md.getType().getName());
+
     }
 
-    public ArrayList<Item> getWert() {
+    public List<Item> getWert() {
         String value = this.md.getValue();
         if (value != null) {
-            for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+            for (Item i : myValues.getItemList()) {
                 if (i.getValue().equals(value)) {
                     i.setIsSelected(true);
                 } else {
@@ -87,7 +84,7 @@ public class MetadatumImpl implements Metadatum {
                 }
             }
         }
-        return this.myValues.get(Modes.getBindState().getTitle()).getItemList();
+        return this.myValues.getItemList();
     }
 
     public void setWert(String inWert) {
@@ -135,13 +132,13 @@ public class MetadatumImpl implements Metadatum {
      *****************************************************/
 
     public String getOutputType() {
-        return this.myValues.get(Modes.getBindState().getTitle()).getDisplayType().getTitle();
+        return this.myValues.getDisplayType().getTitle();
     }
 
     public List<SelectItem> getItems() {
         this.items = new ArrayList<SelectItem>();
         this.selectedItems = new ArrayList<String>();
-        for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+        for (Item i : this.myValues.getItemList()) {
             this.items.add(new SelectItem(i.getLabel()));
             if (i.getIsSelected()) {
                 this.selectedItems.add(i.getLabel());
@@ -151,12 +148,12 @@ public class MetadatumImpl implements Metadatum {
     }
 
     public void setItems(List<SelectItem> items) {
-        for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+        for (Item i : this.myValues.getItemList()) {
             i.setIsSelected(false);
         }
         String val = "";
         for (SelectItem sel : items) {
-            for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+            for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel.getValue())) {
                     i.setIsSelected(true);
                     val += i.getValue();
@@ -174,7 +171,7 @@ public class MetadatumImpl implements Metadatum {
                 int semicolon = values.indexOf(";");
                 if (semicolon != -1) {
                     String value = values.substring(0, semicolon);
-                    for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+                    for (Item i : this.myValues.getItemList()) {
                         if (i.getValue().equals(value)) {
                             this.selectedItems.add(i.getLabel());
                         }
@@ -182,7 +179,7 @@ public class MetadatumImpl implements Metadatum {
                     int length = values.length();
                     values = values.substring(semicolon + 1, length);
                 } else {
-                    for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+                    for (Item i : this.myValues.getItemList()) {
                         if (i.getValue().equals(values)) {
                             this.selectedItems.add(i.getLabel());
                         }
@@ -191,7 +188,7 @@ public class MetadatumImpl implements Metadatum {
                 }
             }
         } else {
-            for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+            for (Item i : this.myValues.getItemList()) {
                 if (i.getIsSelected()) {
                     values = values + ";" + i.getValue();
                     this.selectedItems.add(i.getLabel());
@@ -208,7 +205,7 @@ public class MetadatumImpl implements Metadatum {
 
         String val = "";
         for (String sel : selectedItems) {
-            for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+            for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel)) {
                     val += i.getValue() + ";";
                 }
@@ -221,13 +218,13 @@ public class MetadatumImpl implements Metadatum {
     public String getSelectedItem() {
         String value = this.md.getValue();
         if (value != null && value.length() != 0) {
-            for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+            for (Item i : this.myValues.getItemList()) {
                 if (i.getValue().equals(value)) {
                     return i.getLabel();
                 }
             }
         } else {
-            for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+            for (Item i : this.myValues.getItemList()) {
                 if (i.getIsSelected()) {
                     value = i.getValue();
                     setWert(value);
@@ -240,7 +237,7 @@ public class MetadatumImpl implements Metadatum {
 
     public void setSelectedItem(String selectedItem) {
 
-        for (Item i : this.myValues.get(Modes.getBindState().getTitle()).getItemList()) {
+        for (Item i : this.myValues.getItemList()) {
             if (i.getLabel().equals(selectedItem)) {
                 setWert(i.getValue());
             }
@@ -259,7 +256,7 @@ public class MetadatumImpl implements Metadatum {
         List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
         return databaseList;
     }
-    
+
     public String getNormdataValue() {
         return md.getAuthorityValue();
     }
@@ -281,7 +278,7 @@ public class MetadatumImpl implements Metadatum {
             return null;
         }
     }
-    
+
     public boolean isNormdata() {
         return md.getType().isAllowNormdata();
     }
