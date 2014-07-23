@@ -73,7 +73,7 @@ public class MetadatumImpl implements Metadatum {
 
     }
 
-    public ArrayList<Item> getWert() {
+    public List<Item> getWert() {
         String value = this.md.getValue();
         if (value != null) {
             for (Item i : myValues.getItemList()) {

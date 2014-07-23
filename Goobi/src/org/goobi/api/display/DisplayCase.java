@@ -28,16 +28,16 @@ package org.goobi.api.display;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.List;
 
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
-
 import org.goobi.beans.Process;
 
 
 public class DisplayCase {
 	private DisplayType displayType = null;
-	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private List<Item> itemList = new ArrayList<Item>();
 	private ConfigDisplayRules configDisplay;
 	private Process myProcess;
 	private String metaName;
@@ -122,7 +122,7 @@ public class DisplayCase {
 	 * @return ArrayList with items for metadatum
 	 */
 
-	public ArrayList<Item> getItemList() {
+	public List<Item> getItemList() {
 		return itemList;
 	}	
 }
