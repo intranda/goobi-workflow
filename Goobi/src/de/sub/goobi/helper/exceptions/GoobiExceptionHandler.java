@@ -90,7 +90,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 	                try {
 	                    // Push some useful stuff to the request scope for use in the page
 	                    requestMap.put("currentViewId", vee.getViewId());
-	                    nav.handleNavigation(fc, null, "error");
+	                    nav.handleNavigation(fc, null, "index");
 	                    fc.renderResponse();
 	                } finally {
 	                    i.remove();
