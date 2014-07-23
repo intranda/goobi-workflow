@@ -1083,8 +1083,8 @@ public class GoobiScript {
                     metadataPairs.add(pair);
                 }
             }
-        } catch (NullPointerException e) {
-
+        } catch (Exception e) {
+            logger.error("cannot extract metadata from " + metadataFile.getAbsolutePath());
         }
         return metadataPairs;
     }
