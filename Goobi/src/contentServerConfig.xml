@@ -135,4 +135,3 @@
 	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="0"></memoryUsage>
 
 </config>
->>>>>>> 2210ac1 Updated contentServer to ics-1.4.02 Removed unused ehcache.jar updated contentServerConfig
