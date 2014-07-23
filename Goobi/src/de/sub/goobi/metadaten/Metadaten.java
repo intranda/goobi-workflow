@@ -55,8 +55,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.log4j.Logger;
-import org.goobi.api.display.Modes;
-import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -238,7 +236,6 @@ public class Metadaten {
 
     public String Hinzufuegen() {
         this.modusHinzufuegen = true;
-        Modes.setBindState(BindState.create);
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -248,8 +245,7 @@ public class Metadaten {
 
     public String AddGroup() {
         this.modeAddGroup = true;
-        Modes.setBindState(BindState.create);
-
+        
         // reset selected groups
         selectedGroup = null;
         getSelectedGroup();
@@ -274,7 +270,6 @@ public class Metadaten {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         this.modeAddGroup = false;
-        Modes.setBindState(BindState.edit);
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -424,7 +419,6 @@ public class Metadaten {
         }
 
         this.modusHinzufuegen = false;
-        Modes.setBindState(BindState.edit);
         this.selectedMetadatum.setValue("");
         this.tempWert = "";
         MetadatenalsBeanSpeichern(this.myDocStruct);
@@ -454,7 +448,6 @@ public class Metadaten {
         }
 
         this.modeAddGroup = false;
-        Modes.setBindState(BindState.edit);
 
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -467,7 +460,6 @@ public class Metadaten {
     public String loadRightFrame() {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
-        Modes.setBindState(BindState.edit);
         return "metseditor";
     }
 
@@ -785,7 +777,6 @@ public class Metadaten {
          */
         ConfigDisplayRules.getInstance().refresh();
 
-        Modes.setBindState(BindState.edit);
         try {
             Integer id = new Integer(Helper.getRequestParameter("ProzesseID"));
             this.myProzess = ProcessManager.getProcessById(id);
@@ -1225,7 +1216,6 @@ public class Metadaten {
     public void setMyStrukturelement(DocStruct inStruct) {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
-        Modes.setBindState(BindState.edit);
         MetadatenalsBeanSpeichern(inStruct);
 
         /*

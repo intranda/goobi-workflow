@@ -29,7 +29,6 @@ package org.goobi.api.display;
  */
 import java.util.ArrayList;
 
-import org.goobi.api.display.enums.BindState;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 
@@ -42,7 +41,6 @@ public class DisplayCase {
 	private ConfigDisplayRules configDisplay;
 	private Process myProcess;
 	private String metaName;
-	private BindState myBindState;
 	
 	/**
 	 * gets items with current bind state
@@ -54,12 +52,11 @@ public class DisplayCase {
 	public DisplayCase(Process inProcess, String metaType ){
 		metaName = metaType;
 		myProcess = inProcess;
-		myBindState = Modes.getBindState();
 		try {
 			configDisplay = ConfigDisplayRules.getInstance();
 			if (configDisplay != null) {
-			displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), myBindState.getTitle(), metaName);
-			itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), myBindState.getTitle(), metaName, displayType);
+			displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
+			itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
 			} else {
 				// no ruleset file
 				displayType = DisplayType.getByTitle("textarea");
@@ -84,12 +81,11 @@ public class DisplayCase {
 	public DisplayCase(Process inProcess, String bind, String metaType ){
 		metaName = metaType;
 		myProcess = inProcess;
-		myBindState = Modes.getBindState();
 		try {
 			configDisplay = ConfigDisplayRules.getInstance();
 			if (configDisplay != null) {
-				displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), bind, metaName);
-				itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), bind, metaName, displayType);
+				displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
+				itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
 			} else {
 				// no ruleset file
 				displayType = DisplayType.getByTitle("textarea");
