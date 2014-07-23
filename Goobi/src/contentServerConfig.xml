@@ -1,166 +1,137 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
 
-	<!--  
-		  general parameters   
-		 -->
+	<!--########################################################## *############################################################# 
+		* * general parameters * *############################################################# 
+		*########################################################### -->
 
-	<!--  
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
 	Path to local config file
-		/>  -->
-    <localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" />
+		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" />
 
-	<!--  default 
-		resulution for results of image processing  sample: <defaultResolution value="600" 
-		/>  -->
-    <defaultResolution value="600" />
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
+		resulution for results of image processing * sample: <defaultResolution value="600" 
+		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<defaultResolution value="600" />
 
 	<!-- (MB); if 0 then disabled -->
-    <maxFileLength value="0" />
+	<maxFileLength value="0" />
 
-        <!--  
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
         Set quality with which to scale images. Possible settings are SPEED, QUALITY, ULTRAQUALITY
         Higher qualities require more processing time
         MaxStepSize may range from 0 to 99; higher values increase both image quality and loading times for QUALITY and ULTRAQUALITY.
         Recommended values lie between 10 and 50
         useScalrForJpeg activates a different scaling method for jpeg-images which generally operates
         much slower, so it is recommended to set this option to "false"
-          -->
-    <scaling quality="QUALITY" maxStepSize="50" thumbnailQuality="SPEED"></scaling>
+         *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <scaling quality="QUALITY" maxStepSize="50" thumbnailQuality="QUALITY"></scaling>
     
-       <!--  
+       <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
         General rendering options.
-          -->
-    <imageTypeSettings>
-        <type format="jpg2000">
-            <settings allowRenderWithJAI="false" scaleWithScalr="true" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
-        </type>
-        <type format="jpeg">
-            <settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false"
-                forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
-        </type>
-        <type format="png">
-            <settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false"
-                forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
-        </type>
-        <type colorType="bitonal">
-            <settings allowRenderWithJAI="true" scaleWithScalr="true" mergeWithJAI="true" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
-        </type>
-        <type format="jpeg" colorType="grayscale">
-            <settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false"
-                forceConvertToRGB="false"></settings>
-        </type>
-        <type compression="jpeg" colorType="grayscale">
-            <settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false"
-                forceConvertToRGB="false"></settings>
-        </type>
-        <type colorType="grayscale">
-            <settings allowRenderWithJAI="true" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
-        </type>
-
-        <type compression="jpeg">
-            <settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false"
-                forceConvertToRGB="false"></settings>
-        </type>
-        <type embeddedColorProfile="true">
-            <settings allowRenderWithJAI="true" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false"></settings>
-        </type>
-        <type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
-            <settings allowRenderWithJAI="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false"
-                forceConvertToRGB="false"></settings>
-        </type>
+         *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <imageTypeSettings>
+    	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
+    		<settings allowRenderWithJAI="false" allowSubSampline="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
+    	</type>
     </imageTypeSettings>
     
-    <!--  default 
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
 		file names for pdf or image (file extension will be automatically added); 
-		 define if sending of images or pdf should be with header "attachment" or 
-		not;  currently available variables for file name:  - $datetime current 
-		date and time (pdf and images)   sample:  <defaultFileNames>  <pdf value="GoobiContentServer_$datetime" 
-		sendAsAttachment="true"/>  </defaultFileNames>  -->
-    <defaultFileNames>
-        <pdf value="ContentServer_$datetime" sendAsAttachment="true" />
-        <image value="image_$datetime" sendAsAttachment="false" />
-    </defaultFileNames>
+		* define if sending of images or pdf should be with header "attachment" or 
+		not; * currently available variables for file name: * - $datetime current 
+		date and time (pdf and images) * * sample: * <defaultFileNames> * <pdf value="GoobiContentServer_$datetime" 
+		sendAsAttachment="true"/> * </defaultFileNames> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<defaultFileNames>
+		<pdf value="ContentServer_$datetime" sendAsAttachment="true" />
+		<image value="image_$datetime" sendAsAttachment="false" />
+	</defaultFileNames>
 
     <defaultImageConfig defaultFormat="jpeg"></defaultImageConfig>
 
-	<!--  configuration 
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * configuration 
 		for the pdf generation, these parameters will change the performance of pdf 
-		generation  - alwaysUseRenderedImage convert all images always to rendered 
-		image before sending it to iText  - alwaysCompressToJPEG compress all images 
-		always to jpeg image before sending it to iText  - metsFileGroup the filegroup 
-		to use for pdf generation  - writeAsPdfA write PDF file as Pdf/A  - pagesize 
+		generation * - alwaysUseRenderedImage convert all images always to rendered 
+		image before sending it to iText * - alwaysCompressToJPEG compress all images 
+		always to jpeg image before sending it to iText * - metsFileGroup the filegroup 
+		to use for pdf generation * - writeAsPdfA write PDF file as Pdf/A * - pagesize 
 		default page size for pdf generation; possible values are 'A4', 'original' 
-		and 'A4Box'  sample: <defaultPdfConfig alwaysUseRenderedImage="true" alwaysCompressToJPEG="true" 
-		metsFileGroup="DEFAULT" writeAsPdfA="true" pagesize="A4"/>  -->
-    <defaultPdfConfig metsFileGroup="PRESENTATION" writeAsPdfA="true" pagesize="original" />
+		and 'A4Box' * sample: <defaultPdfConfig alwaysUseRenderedImage="true" alwaysCompressToJPEG="true" 
+		metsFileGroup="DEFAULT" writeAsPdfA="true" pagesize="A4"/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="true"
+		pagesize="original" />
 
-	<!--  
-		  ContentServer parameters   
-		 -->
+	<!--########################################################## *############################################################# 
+		* * ContentServer parameters * *############################################################# 
+		*########################################################### -->
 
-	<!--  default 
-		path to repository for all image processing requests  if repository path 
-		is empty, in the servlet request has to be a complete url  sample: <defaultRepositoryPath 
-		value="file:///home/goobi/imageRepository/" />  -->
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
+		path to repository for all image processing requests * if repository path 
+		is empty, in the servlet request has to be a complete url * sample: <defaultRepositoryPath 
+		value="file:///home/goobi/imageRepository/" /> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- for digiverso -->
-    <defaultRepositoryPathImages value="file:///" />
+	<defaultRepositoryPathImages value="file:///" />
 	<!-- for ucc <defaultRepositoryPathImages value="file:///" /> -->
 
-    <defaultRepositoryPathPdf value="file:///" usage="true" />
+	<defaultRepositoryPathPdf value="file:///"
+		usage="true" />
 
-	<!--  default 
-		color for highlighting inside the image as RGB  -->
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
+		color for highlighting inside the image as RGB *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
 	<!-- gelb: 255 255 0 255 rot: 216 7 66 255 gruen: 0 154 107 255 blau: 0 
 		154 255 255 -->
 
-    <defaultHighlightColor valueRed="255" valueGreen="255" valueBlue="0" valueAlpha="255" />
+	<defaultHighlightColor valueRed="255" valueGreen="255"
+		valueBlue="0" valueAlpha="255" />
 
-	<!--  configuration 
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * configuration 
 		if watermark should be used and url for watermark content configuration file 
-		 sample: <watermark use="true" configFile="file:///home/goobi/config/watermarkconfig.xml" 
-		/>  -->
-    <watermark use="false" scale="true" convertColorSpace="false" scaleToPercent="6"
-        configFile="file:///opt/digiverso/viewer/config/config_imageFooter.xml" />
+		* sample: <watermark use="true" configFile="file:///home/goobi/config/watermarkconfig.xml" 
+		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<watermark use="false" scale="true" convertColorSpace="false" scaleToPercent="6"
+        configFile="file:///opt/digiverso/goobi/config/config_imageFooter.xml" />
 
-	<!--  configuration 
-		for the error watermark if message should not be shown on jsp echo page  
-		- title title on top of image  - titleSize fontsize for title  - messageSiz 
-		fontsize for error message  - messageLineLength maximum size of letters 
-		for each line  -->
-    <errorWaterMark title="Error" titleFontSize="20" messageFontSize="14" messageMaxLineLength="60" />
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * configuration 
+		for the error watermark if message should not be shown on jsp echo page * 
+		- title title on top of image * - titleSize fontsize for title * - messageSiz 
+		fontsize for error message * - messageLineLength maximum size of letters 
+		for each line *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<errorWaterMark title="Error" titleFontSize="20" 
+		messageFontSize="14" messageMaxLineLength="60" />
 
-	<!--  
-		  GoobiContentServer parameters   
-		 -->
+	<!--########################################################## *############################################################# 
+		* * GoobiContentServer parameters * *############################################################# 
+		*########################################################### -->
 
-	<!--  default 
-		path to repository for all mets processing requests  if repository path 
-		is empty, in the servlet request has to be a complete url  sample: <defaultRepositoryPath 
-		value="file:///home/goobi/metsRepository/" />  -->
-    <defaultRepositoryPathMets value="" />
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
+		path to repository for all mets processing requests * if repository path 
+		is empty, in the servlet request has to be a complete url * sample: <defaultRepositoryPath 
+		value="file:///home/goobi/metsRepository/" /> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<defaultRepositoryPathMets value="" />
 
-	<!--  configuration 
-		if titlepage for pdf file should be generated and  which config-file defines 
-		how the title page should look like   sample: <defaultRepositoryPath value="file:///home/goobi/config/pdftitlepage.xml" 
-		/>  -->
-    <pdfTitlePage use="false" configFile="file:///opt/digiverso/viewer/config/config_pdfTitlePage.xml" />
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * configuration 
+		if titlepage for pdf file should be generated and * which config-file defines 
+		how the title page should look like * * sample: <defaultRepositoryPath value="file:///home/goobi/config/pdftitlepage.xml" 
+		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<pdfTitlePage use="false"
+		configFile="file:///opt/digiverso/goobi/config/config_pdfTitlePage.xml" />
 
-	<!--  path to 
-		contentCache and maximum size in MB  -path: path in file system  -size: 
-		size in MB  -useCache: central switch, if no cache at all should be used 
-		 -useShortFileNames: define if the cached file name should only consist 
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * path to 
+		contentCache and maximum size in MB * -path: path in file system * -size: 
+		size in MB * -useCache: central switch, if no cache at all should be used 
+		* -useShortFileNames: define if the cached file name should only consist 
 		of given url-parameter and divid (usShortFileNames=true, not recommended) 
-		 or if it should be full named (useShortFileNames=false, more secure option) 
-		  sample: <contentCache useCache="false" path="/home/goobi/gcsCache" size="300"/> 
-		 -->
-    <contentCache useCache="false" useShortFileNames="false" />
+		* or if it should be full named (useShortFileNames=false, more secure option) 
+		* * sample: <contentCache useCache="false" path="/home/goobi/gcsCache" size="300"/> 
+		*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<contentCache useCache="false" useShortFileNames="false"/>
 
-    <thumbnailCache useCache="false" useShortFileNames="false" />
+	<thumbnailCache useCache="false" useShortFileNames="false"/>
+		
+	<pdfCache useCache="false" useShortFileNames="false" />
 
-    <pdfCache useCache="false" useShortFileNames="false" />
-
-    <memoryUsage maximalParallelRequests="0" lowMemoryThreshold="0"></memoryUsage>
+	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="0"></memoryUsage>
 
 </config>
