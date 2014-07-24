@@ -292,7 +292,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (!suffix.equals("")) {
                 String[] folderList = dir.list();
                 for (String folder : folderList) {
-                    if (folder.endsWith(suffix)) {
+                    if (folder.endsWith(suffix) && !folder.startsWith(DIRECTORY_PREFIX)) {
                         tifOrdner = folder;
                         break;
                     }
@@ -308,7 +308,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (files == null || files.length == 0) {
                     String[] folderList = dir.list();
                     for (String folder : folderList) {
-                        if (folder.endsWith(suffix)) {
+                        if (folder.endsWith(suffix) && !folder.startsWith(DIRECTORY_PREFIX)) {
                             tifOrdner = folder;
                             break;
                         }
