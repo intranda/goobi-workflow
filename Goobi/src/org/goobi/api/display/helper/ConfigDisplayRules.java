@@ -156,28 +156,9 @@ public final class ConfigDisplayRules {
                     if (myElementName.equals(elementName)) {
                         int item = config.getMaxIndex("ruleSet.context(" + i + ").select1(" + j + ").item");
                         for (int k = 0; k <= item; k++) {
-                            Item myItem = new Item(config.getString("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ").label"), // the
-                                                                                                                                            // displayed
-                                                                                                                                            // value
-                                    config.getString("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ").value"), // the
-                                                                                                                             // internal
-                                                                                                                             // value,
-                                                                                                                             // which
-                                                                                                                             // will
-                                                                                                                             // be
-                                                                                                                             // taken
-                                                                                                                             // if
-                                                                                                                             // label
-                                                                                                                             // is
-                                                                                                                             // selected
-                                    config.getBoolean("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ")[@selected]")); // indicates
-                                                                                                                                    // whether
-                                                                                                                                    // given
-                                                                                                                                    // item
-                                                                                                                                    // is
-                                                                                                                                    // preselected
-                                                                                                                                    // or
-                                                                                                                                    // not
+                            Item myItem = new Item(config.getString("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ").label"), 
+                                    config.getString("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ").value"), 
+                                    config.getBoolean("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ")[@selected]", false)); 
                             listOfItems.add(myItem);
                         }
                     }
@@ -209,28 +190,9 @@ public final class ConfigDisplayRules {
                         int item = config.getMaxIndex("ruleSet.context(" + i + ").select(" + j + ").item");
 
                         for (int k = 0; k <= item; k++) {
-                            Item myItem = new Item(config.getString("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ").label"), // the
-                                                                                                                                           // displayed
-                                                                                                                                           // value
-                                    config.getString("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ").value"), // the
-                                                                                                                            // internal
-                                                                                                                            // value,
-                                                                                                                            // which
-                                                                                                                            // will
-                                                                                                                            // be
-                                                                                                                            // taken
-                                                                                                                            // if
-                                                                                                                            // label
-                                                                                                                            // is
-                                                                                                                            // selected
-                                    config.getBoolean("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ")[@selected]")); // indicates
-                                                                                                                                   // whether
-                                                                                                                                   // given
-                                                                                                                                   // item
-                                                                                                                                   // is
-                                                                                                                                   // preselected
-                                                                                                                                   // or
-                                                                                                                                   // not
+                            Item myItem = new Item(config.getString("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ").label"), 
+                                    config.getString("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ").value"),
+                                    config.getBoolean("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ")[@selected]", false)); 
                             listOfItems.add(myItem);
                         }
                     }
@@ -260,10 +222,8 @@ public final class ConfigDisplayRules {
                 for (int j = 0; j <= type; j++) {
                     String myElementName = config.getString("ruleSet.context(" + i + ").input(" + j + ")[@ref]");
                     if (myElementName.equals(elementName)) {
-                        Item myItem = new Item(config.getString("ruleSet.context(" + i + ").input(" + j + ").label"), // the
-                                                                                                                      // displayed
-                                                                                                                      // value
-                                config.getString("ruleSet.context(" + i + ").input(" + j + ").label"), false);
+                        Item myItem = new Item(config.getString("ruleSet.context(" + i + ").input(" + j + ").label"),
+                                config.getString("ruleSet.context(" + i + ").input(" + j + ").label"), true);
                         listOfItems.add(myItem);
                     }
                 }
@@ -291,7 +251,7 @@ public final class ConfigDisplayRules {
                     String myElementName = config.getString("ruleSet.context(" + i + ").textarea(" + j + ")[@ref]");
                     if (myElementName.equals(elementName)) {
                         Item myItem = new Item(config.getString("ruleSet.context(" + i + ").textarea(" + j + ").label"), 
-                                config.getString("ruleSet.context(" + i + ").textarea(" + j + ").label"), false);
+                                config.getString("ruleSet.context(" + i + ").textarea(" + j + ").label"), true);
                         listOfItems.add(myItem);
                     }
                 }
@@ -312,7 +272,7 @@ public final class ConfigDisplayRules {
                     String myElementName = config.getString("ruleSet.context(" + i + ").readonly(" + j + ")[@ref]");
                     if (myElementName.equals(elementName)) {
                         Item myItem = new Item(config.getString("ruleSet.context(" + i + ").readonly(" + j + ").label"), 
-                                config.getString("ruleSet.context(" + i + ").readonly(" + j + ").label"), false);
+                                config.getString("ruleSet.context(" + i + ").readonly(" + j + ").label"), true);
                         listOfItems.add(myItem);
                     }
                 }
