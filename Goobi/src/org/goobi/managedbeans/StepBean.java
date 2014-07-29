@@ -616,6 +616,10 @@ public class StepBean extends BasicBean {
                 step.getEigenschaften().add(seg);
                 StepManager.saveStep(step);
             }
+            if (temp.isTypAutomatisch()) {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
+                myThread.start();
+            }
 
             StepManager.saveStep(mySchritt);
             /*
