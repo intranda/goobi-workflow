@@ -1025,6 +1025,10 @@ public class Metadaten {
 
         cleanupMetadata();
 
+        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
+            reOrderPagination();
+        }
+        
         if (!storeMetadata()) {
             return "Metadaten";
         }

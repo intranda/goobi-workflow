@@ -210,39 +210,31 @@
                                         	
                                         });
                                         
-																																									function displayProgressBar() {
-																																										var element = document
-																																												.getElementById('progressPanel');
-																																										if (element.style.display == 'block') {
-																																											element.style.display = 'none';
-																																										} else {
-																																											element.style.display = 'block';
-																																										}
-																																										document
-																																												.getElementById(
-																																														'progressbutton')
-																																												.click();
-																																									}
+										function displayProgressBar() {
+													var element = document.getElementById('progressPanel');
+													if (element.style.display == 'block') {
+														element.style.display = 'none';
+													} else {
+														element.style.display = 'block';
+													}
+													document.getElementById('progressbutton').click();
+												}
 
-																																									function start() {
+												function start() {
 
-																																										window['progress'] = setInterval(
-																																												function() {
-																																													var pbClient = PF('pbClient'), oldValue = pbClient
-																																															.getValue(), newValue = oldValue + 10;
+													window['progress'] = setInterval(
+															function() {
+																var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
 
-																																													pbClient
-																																															.setValue(pbClient
-																																																	.getValue() + 10);
+																pbClient.setValue(pbClient.getValue() + 10);
 
-																																													if (newValue === 100) {
-																																														clearInterval(window['progress']);
-																																													}
-
-																																												},
-																																												1000);
-																																									}
-																																								</script>
+																if (newValue === 100) {
+																	clearInterval(window['progress']);
+																}
+															},
+															1000);
+												}
+											</script>
                                     </td>
                                 </tr>
                             </table>
