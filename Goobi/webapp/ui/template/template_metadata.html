@@ -57,6 +57,34 @@
                         </h:panelGroup>
                     </h:panelGrid>
 
+<script type="text/javascript">
+/*
+ * Fix navigation on scrolling page
+ * */
+var nav = $(".layoutInhaltKopf");
+
+$(window).scroll(function() {
+	if(window.pageYOffset > 1 || document.documentElement.scrollTop > 1) {
+		
+		nav.css({
+			position: "fixed",
+			top: 0,
+			left: 0,
+			zIndex: 999
+			});
+	} else {
+		
+		nav.css({
+			position: "relative",
+			top: 0,
+			zIndex: 0
+		});
+	}
+});
+
+
+</script>
+
                     <div style="margin: 15px">
                         <h3>
                             <ui:insert name="title" />
