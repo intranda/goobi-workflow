@@ -210,7 +210,10 @@ public class Metadaten {
     private double currentImageNo = 0;
     private double totalImageNo = 0;
     private Integer progress;
-    
+
+    private boolean tiffFolderHasChanged = true;
+    private List<String> dataList = new ArrayList<String>();
+
     /**
      * Konstruktor ================================================================
      */
@@ -899,8 +902,8 @@ public class Metadaten {
 
         // TODO check filenames, correct them
         checkImageNames();
-        BildErmitteln(0);
         retrieveAllImages();
+        BildErmitteln(0);
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
@@ -1581,6 +1584,7 @@ public class Metadaten {
                 zaehler++;
             }
         }
+        dataList = null;
     }
 
     /**
@@ -1900,32 +1904,47 @@ public class Metadaten {
         myLogger.trace("ocr BildErmitteln");
         this.ocrResult = "";
 
-        List<String> dataList = new ArrayList<String>();
         myLogger.trace("dataList");
         // try {
-        dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
-        myLogger.trace("dataList 2");
-        // } catch (InvalidImagesException e) {
-        // myLogger.trace("dataList error");
-        // myLogger.error("Images could not be read", e);
-        // Helper.setFehlerMeldung("images could not be read", e);
-        // }
-        if (dataList == null || dataList.isEmpty()) {
-            try {
-                createPagination();
-                dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
-            } catch (TypeNotAllowedForParentException e) {
-                myLogger.error(e);
-            } catch (SwapException e) {
-                myLogger.error(e);
-            } catch (DAOException e) {
-                myLogger.error(e);
-            } catch (IOException e) {
-                myLogger.error(e);
-            } catch (InterruptedException e) {
-                myLogger.error(e);
+        if (dataList == null || dataList.isEmpty() || tiffFolderHasChanged) {
+            tiffFolderHasChanged = false;
+
+            if (this.currentTifFolder != null) {
+                myLogger.trace("currentTifFolder: " + this.currentTifFolder);
+                try {
+                    // dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+                    if (dataList == null) {
+                        myBild = null;
+                        myBildNummer = -1;
+                        return;
+                    }
+                    //
+                } catch (InvalidImagesException e1) {
+                    myLogger.trace("dataList error");
+                    myLogger.error("Images could not be read", e1);
+                    Helper.setFehlerMeldung("images could not be read", e1);
+                }
+            } else {
+                try {
+                    createPagination();
+                    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+                } catch (TypeNotAllowedForParentException e) {
+                    myLogger.error(e);
+                } catch (SwapException e) {
+                    myLogger.error(e);
+                } catch (DAOException e) {
+                    myLogger.error(e);
+                } catch (IOException e) {
+                    myLogger.error(e);
+                } catch (InterruptedException e) {
+                    myLogger.error(e);
+                }
             }
         }
+
+        myLogger.trace("dataList 2");
+
         if (dataList != null && dataList.size() > 0) {
             myLogger.trace("dataList not null");
             this.myBildLetztes = dataList.size();
@@ -1952,27 +1971,6 @@ public class Metadaten {
                     if (pos > dataList.size() - 1) {
                         pos = dataList.size() - 1;
                     }
-                    if (this.currentTifFolder != null) {
-                        myLogger.trace("currentTifFolder: " + this.currentTifFolder);
-                        try {
-                            // dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
-                            dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
-                            if (dataList == null) {
-                                myBild = null;
-                                myBildNummer = -1;
-                                return;
-                            }
-                            //
-                        } catch (InvalidImagesException e1) {
-                            myLogger.trace("dataList error");
-                            myLogger.error("Images could not be read", e1);
-                            Helper.setFehlerMeldung("images could not be read", e1);
-                        }
-                    }
-                    // if (dataList == null) {
-                    // myLogger.trace("dataList: null");
-                    // return;
-                    // }
                     /* das aktuelle tif erfassen */
                     if (dataList.size() > pos) {
                         this.myBild = dataList.get(pos);
@@ -3038,7 +3036,10 @@ public class Metadaten {
     }
 
     public void setCurrentTifFolder(String currentTifFolder) {
-        this.currentTifFolder = currentTifFolder;
+        if (!this.currentTifFolder.equals(currentTifFolder)) {
+            tiffFolderHasChanged = true;
+            this.currentTifFolder = currentTifFolder;
+        }
     }
 
     public List<String> autocomplete(String suggest) {
@@ -3647,9 +3648,8 @@ public class Metadaten {
             progress = 0;
         } else if (totalImageNo == 0) {
             progress = 100;
-        }
-        else {
-            progress =  (int) (currentImageNo / totalImageNo * 100);
+        } else {
+            progress = (int) (currentImageNo / totalImageNo * 100);
 
             if (progress > 100)
                 progress = 100;
@@ -3669,7 +3669,7 @@ public class Metadaten {
     public boolean isShowProgressBar() {
         if (progress == null || progress == 100 || progress == 0) {
             return false;
-        } 
+        }
         return true;
     }
 

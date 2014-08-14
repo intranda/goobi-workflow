@@ -715,10 +715,17 @@ public class MetadatenImagesHelper {
         if (dataList != null && dataList.size() != 0) {
             List<DocStruct> pagesList = mydocument.getPhysicalDocStruct().getAllChildren();
             if (pagesList != null) {
-                for (DocStruct page : pagesList) {
+                int pagessize = pagesList.size();
+                int datasize = dataList.size();
+                for(int i = 0; i < pagessize ; i++) {
+                    DocStruct page = pagesList.get(i);
+//                for (DocStruct page : pagesList) {
                     String filename = page.getImageName();
                     String filenamePrefix = filename.replace(Metadaten.getFileExtension(filename), "");
-                    for (String currentImage : dataList) {
+                    
+                    for (int j =0; j < datasize; j++) {
+                        String currentImage = dataList.get(j);
+//                    for (String currentImage : dataList) {
                         String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
                         if (currentImagePrefix.equals(filenamePrefix)) {
                             orderedFilenameList.add(currentImage);
@@ -728,7 +735,6 @@ public class MetadatenImagesHelper {
                 }
                 //                    orderedFilenameList.add(page.getImageName());
             }
-
             if (orderedFilenameList.size() == dataList.size()) {
                 return orderedFilenameList;
 
