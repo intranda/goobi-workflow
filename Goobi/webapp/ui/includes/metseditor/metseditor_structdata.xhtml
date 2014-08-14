@@ -9,7 +9,8 @@
 
         <h:form id="formular3">
 
-            <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
+            <h:panelGroup
+                rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess and not Metadaten.displayInsertion}">
 
                 <h3 style="margin-top: 0px">
                     <h:outputText value="#{msgs.strukturdaten}" />
@@ -145,6 +146,16 @@
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
                                 </h:commandLink>
 
+                                <!-- import last structure element again -->
+                                <h:commandLink action="#{Metadaten.rememberFilteredProcessStruct}" title="#{msgs.copyLastDocstruct}"
+                                    rendered="#{Metadaten.isProcessLoaded}">
+                                    <h:graphicImage value="images/buttons/sort_left_20px.gif"
+                                        style="margin-left:4px;margin-right:6px;vertical-align:middle" />
+                                    <h:outputText value="#{msgs.copyLastDocstruct}" />
+                                    <!--                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" /> -->
+                                    <x:updateActionListener value="true" property="#{Metadaten.displayInsertion}" />
+                                </h:commandLink>
+
                                 <!-- DocstructType aendern -->
                                 <h:panelGroup>
 
@@ -152,8 +163,8 @@
                                         <h:graphicImage value="images/buttons/sort_down_20px.gif"
                                             style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.docstructTypeAendern}" />
-                                        
-                                       
+
+
                                         <f:ajax render="expandbutton1" />
                                     </h:commandLink>
 
@@ -639,7 +650,7 @@
 
 			#########################################-->
 
-            <h:panelGroup rendered="#{Metadaten.modusCopyDocstructFromOtherProcess and Metadaten.displayInsertion}">
+            <h:panelGroup rendered="#{Metadaten.displayInsertion}">
 
                 <h3 style="margin-top: 0px">
                     <h:outputText value="#{msgs.copyDocstructFromOtherProcessDescription2}" />
@@ -706,6 +717,7 @@
                                             <h:outputText value="#{item.node.description}" />
                                             <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                             <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
+                                            <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
                                         </h:commandLink>
 
                                         <h:panelGroup rendered="#{not item.node.einfuegenErlaubt or item.node.selected}">
@@ -726,6 +738,7 @@
                                     <h:graphicImage value="images/buttons/cancel1.gif" style="border: 0px;vertical-align:middle;" />
                                     <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                    <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
                                 </h:commandLink>
 
                                 <h:commandLink target="_self" action="#{NavigationForm.Reload}" style="margin:5px" title="#{msgs.zurueck}">

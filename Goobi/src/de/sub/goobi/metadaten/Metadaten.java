@@ -3547,6 +3547,10 @@ public class Metadaten {
             return new ArrayList<TreeNode>();
         }
     }
+    
+    public boolean getIsProcessLoaded() {
+        return treeOfFilteredProcess != null;
+    }
 
     public void rememberFilteredProcessStruct() {
         activateAllTreeElements(tree3);
