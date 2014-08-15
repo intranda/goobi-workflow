@@ -43,7 +43,8 @@
 
                 <h:panelGrid id="mygrid11" columns="1" width="270px" style="margin:0px;">
                     <!-- ++++++++++++++++     Paginierung festlegen      ++++++++++++++++ -->
-                    <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}" style="position: fixed;  left: #{Metadaten.treeWidth+270}px;" id="paginationBox">
+                    <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}" style="position: fixed;  left: #{Metadaten.treeWidth+270}px;"
+                        id="paginationBox">
                         <table cellpadding="3" cellspacing="0" id="PaginierungActionBox" class="eingabeBoxen" style="width: 320px;">
                             <tr>
                                 <td class="eingabeBoxen_row1">
@@ -183,60 +184,23 @@
                                             <h:graphicImage value="images/buttons/reload.gif"
                                                 style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                             <h:outputText value="#{msgs.reOrder}" />
-                                            <f:ajax execute="@form" render="@form" />
+                                            <f:ajax execute="@form" render=":progressform" />
                                         </h:commandLink>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="eingabeBoxen_row2">
-
-                                        <h:panelGroup style="display: none" id="progressPanel">
-                                            <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2"
-                                                id="progressbutton" style="display: none;" />
-
-                                            <p:progressBar widgetVar="pbAjax" ajax="true" value="#{Metadaten.progress}" labelTemplate="{value}%"
-                                                styleClass="animated" global="false" style="margin: 5px 0px 5px 0px">
-                                                <p:ajax event="complete" listener="#{Metadaten.onComplete}" />
-                                            </p:progressBar>
-
-                                        </h:panelGroup>
-
                                         <script type="text/javascript">
-                                        
-                                        $(document).ready(function(){
-                                        	var additionalHeight = $('#validation').outerHeight();
-                                        	$('#paginationBox').css('top', 157 + additionalHeight + 'px');
-                                        	
-                                        });
-                                        
-										function displayProgressBar() {
-													var element = document.getElementById('progressPanel');
-													if (element.style.display == 'block') {
-														element.style.display = 'none';
-													} else {
-														element.style.display = 'block';
-													}
-													document.getElementById('progressbutton').click();
-												}
-
-												function start() {
-
-													window['progress'] = setInterval(
-															function() {
-																var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
-
-																pbClient.setValue(pbClient.getValue() + 10);
-
-																if (newValue === 100) {
-																	clearInterval(window['progress']);
-																}
-															},
-															1000);
-												}
-											</script>
+            								$(document).ready(
+            									function() {
+            										var additionalHeight = $('#validation').outerHeight();
+            										$('#paginationBox').css('top', 157 + additionalHeight + 'px');
+            										});
+										</script>
                                     </td>
                                 </tr>
+
+
+
+
+
+
                             </table>
 
                         </h:panelGroup>
