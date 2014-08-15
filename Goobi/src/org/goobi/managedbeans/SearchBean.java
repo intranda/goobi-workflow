@@ -128,7 +128,7 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
-        
+        fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
        
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());

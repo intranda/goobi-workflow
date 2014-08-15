@@ -48,8 +48,8 @@
                             <h:column>
 
                                 <h:inputText value="#{row.fieldValue}" style="width:99%"
-                                    rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH'}">
-                                    <f:ajax render="@form" />
+                                    rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'PROCESSLOG'}">
+                                        <f:ajax render="@form" execute="@form" />
                                 </h:inputText>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'STEP'}" layout="block" style="width:100%">

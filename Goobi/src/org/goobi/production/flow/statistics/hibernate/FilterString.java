@@ -46,6 +46,7 @@ public class FilterString {
 	public static final String BATCH = "batch:";
 	public static final String STEPAUTOMATIC = "stepautomatic:";
 	public static final String METADATA = "meta:";
+	public static final String PROCESSLOG = "log:";
 	
 	// german
 	public static final String PROZESSEIGENSCHAFT = "prozesseigenschaft:";
@@ -63,7 +64,7 @@ public class FilterString {
 	public static final String WERKSTUECK = "werkstueck:";
 	public static final String GRUPPE = "gruppe:";
 	public static final String SCHRITTAUTOMATISCH = "schrittautomatisch:";
-
+	public static final String PROZESSLOG = "log:";
 	
 	
 }

@@ -657,6 +657,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
 
+            } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(" prozesse.wikifield like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -728,9 +731,10 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.WORKPIECE) || tok.toLowerCase().startsWith("-" + FilterString.WERKSTUECK)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
-
+            }  else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
+                    filter = checkStringBuilder(filter, true);
+                    filter.append(" prozesse.wikifield not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             } else if (tok.toLowerCase().startsWith("-")) {
-
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             }
@@ -794,6 +798,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterWorkpiece(tok, false));
 
+            } else if (tok.toLowerCase().startsWith("|"  + FilterString.PROCESSLOG)) {
+                    filter = checkStringBuilder(filter, false);
+                    filter.append(" prozesse.wikifield like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");

@@ -54,7 +54,7 @@ public class ExtendedSearchRow {
     private String metadataName;
 
     private String metadataValue;
-
+    
     public String createSearchString() {
         String value = "";
         if (fieldName.equals("PROCESSTITLE") && !fieldValue.isEmpty()) {
@@ -94,6 +94,10 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
         }
 
+        else if (fieldName.equals("PROCESSLOG") && !fieldValue.isEmpty()) {
+            value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\"";
+        }
+        
         return value;
     }
 
@@ -208,5 +212,4 @@ public class ExtendedSearchRow {
     public void setMetadataValue(String metadataValue) {
         this.metadataValue = metadataValue;
     }
-
 }
