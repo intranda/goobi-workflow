@@ -1574,7 +1574,7 @@ public class ProzesskopieForm {
                 wordNo++;
             }
         }
-        String res = ughHelper.convertUmlaut(result.toString()).toLowerCase();
+        String res = UghHelper.convertUmlaut(result.toString()).toLowerCase();
         return res.replaceAll("[\\W]", ""); // delete umlauts etc.
     }
 
