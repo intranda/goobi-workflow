@@ -513,4 +513,10 @@ public class ConfigurationHelperTest {
     public void testGetGoobiModuleServerPort() {
         assertEquals(8000, ConfigurationHelper.getInstance().getGoobiModuleServerPort());
     }
+    
+    @Test
+    public void testIsMetsEditorRenameImagesOnExit() {
+        assertFalse(ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit());
+    }
+    
 }
