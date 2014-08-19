@@ -93,7 +93,7 @@
                                 <h:panelGrid columns="2" style="border-bottom: 0px;" width="100%" columnClasses="first-column, second-column">
                                     <h:selectOneMenu value="#{Item.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput">
                                         <f:ajax execute="@form" event="valueChange" render="@form" />
-                                        <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database.abbreviation}"
+                                        <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database}"
                                             itemValue="#{database}" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{Item.normdataValue}" styleClass="metadatenInput" style="width:100%"
@@ -181,10 +181,12 @@
                                 styleClass="metadatenInput, second-column" style="border: 0 none;" />
 
                             <h:panelGroup rendered="#{Item.normdata}" >
+                            
+                            
                                 <h:panelGrid columns="2" width="100%" columnClasses="first-column, second-column">
                                     <h:selectOneMenu value="#{Item.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput" >
                                         <f:ajax execute="@form" event="valueChange" />
-                                        <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database.abbreviation}"
+                                        <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{ddatabase}"
                                             itemValue="#{database}" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{Item.normdataValue}" styleClass="metadatenInput" style="width:100%"
