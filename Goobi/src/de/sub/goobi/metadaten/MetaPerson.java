@@ -32,7 +32,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import org.goobi.api.display.enums.NormDatabase;
+import org.goobi.api.display.helper.NormDatabase;
 
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
@@ -151,9 +151,13 @@ public class MetaPerson {
         p.setAdditionalNameParts(parts);
     }
 
-    public List<NormDatabase> getPossibleDatabases() {
+    public List<String> getPossibleDatabases() {
         List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
-        return databaseList;
+        List<String> abbrev = new ArrayList<String>();
+        for (NormDatabase norm : databaseList) {
+            abbrev.add(norm.getAbbreviation());
+        }
+        return abbrev;
     }
 
     public List<String> getPossibleNamePartTypes() {
@@ -172,15 +176,16 @@ public class MetaPerson {
         p.setAuthorityValue(normdata);
     }
 
-    public void setNormDatabase(NormDatabase database) {
+    public void setNormDatabase(String abbrev) {
+        NormDatabase database = NormDatabase.getByAbbreviation(abbrev);
         p.setAuthorityID(database.getAbbreviation());
         p.setAuthorityURI(database.getPath());
     }
 
-    public NormDatabase getNormDatabase() {
+    public String getNormDatabase() {
         if (p.getAuthorityURI() != null && p.getAuthorityID() != null) {
             NormDatabase ndb = NormDatabase.getByAbbreviation(p.getAuthorityID());
-            return ndb;
+            return ndb.getAbbreviation();
         } else {
             return null;
         }

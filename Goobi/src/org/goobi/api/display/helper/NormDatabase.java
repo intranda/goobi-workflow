@@ -1,4 +1,4 @@
-package org.goobi.api.display.enums;
+package org.goobi.api.display.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -17,24 +17,35 @@ package org.goobi.api.display.enums;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-public enum NormDatabase {
+import de.sub.goobi.config.ConfigNormdata;
 
-    GND("http://d-nb.info/gnd/", "gnd"),
-    REFGEO("http://normdata.intranda.com/normdata/refgeo/", "intranda Geo Datenbank"),
-    REFBIO("http://normdata.intranda.com/normdata/refbio/", "intranda PND");
+public class NormDatabase {
 
     private String path;
 
     private String abbreviation;
 
-    private NormDatabase(String path, String abbreviation) {
+    private static List<NormDatabase> allNormdatabases = new ArrayList<NormDatabase>();
+    
+    public NormDatabase(String path, String abbreviation) {
         this.path = path;
         this.abbreviation = abbreviation;
     }
 
+    public static List<NormDatabase> getAllDatabases() {
+        if (allNormdatabases == null || allNormdatabases.isEmpty()) {
+            allNormdatabases = ConfigNormdata.getConfiguredNormdatabases();
+        }
+        return allNormdatabases;
+    }
+
+    public static void setAllNormdatabases(List<NormDatabase> allNormdatabases) {
+        NormDatabase.allNormdatabases = allNormdatabases;
+    }
+    
     public String getAbbreviation() {
         return abbreviation;
     }
@@ -42,18 +53,14 @@ public enum NormDatabase {
     public String getPath() {
         return path;
     }
-
+//
     public static NormDatabase getByAbbreviation(String abbreviation) {
-        for (NormDatabase ndb : NormDatabase.values()) {
+        for (NormDatabase ndb : allNormdatabases) {
             if (ndb.getAbbreviation().equals(abbreviation)) {
                 return ndb;
             }
         }
-        return GND;
-    }
-
-    public static List<NormDatabase> getAllDatabases() {
-        return Arrays.asList(NormDatabase.values());
+        return getAllDatabases().get(0);
     }
 
 }
