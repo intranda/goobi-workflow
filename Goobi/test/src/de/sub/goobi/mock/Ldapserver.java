@@ -1,4 +1,4 @@
-package de.sub.goobi.helper.ldap;
+package de.sub.goobi.mock;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;

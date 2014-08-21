@@ -3671,4 +3671,8 @@ public class Metadaten {
         return true;
     }
 
+    // needed for junit test
+    public void setMyProzess(Process myProzess) {
+		this.myProzess = myProzess;
+	}
 }

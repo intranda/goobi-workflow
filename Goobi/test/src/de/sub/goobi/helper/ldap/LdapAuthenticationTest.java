@@ -22,6 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.mock.Ldapserver;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(InitialDirContext.class)
 

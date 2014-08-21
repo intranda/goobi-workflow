@@ -60,6 +60,8 @@ import de.sub.goobi.helper.exceptions.WrongImportFileException;
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
+
+@Deprecated
 public class ImportZentralblatt {
 	private static final Logger myLogger = Logger.getLogger(ImportZentralblatt.class);
 	String Trennzeichen;
