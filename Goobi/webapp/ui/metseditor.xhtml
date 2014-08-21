@@ -207,97 +207,96 @@
 			}
 		}
 
-			document.documentElement.onkeypress = function (event) {
-				//alert("Sie haben die Taste mit dem Wert " + event.which + " gedrueckt");
-				myButton = null;
-				event = event || window.event; // IE sucks
-				var key = event.which || event.keyCode; // IE uses .keyCode, Moz uses .which
-				
-				// -----------  previous20 image - cursor up
-				if ((key == 76 || key == 12 || key == 40) &amp;&amp; // "L" "^L" or "l"
-					event.shiftKey &amp;&amp; event.ctrlKey) {
-					myButton = document.getElementById("formularBild:imageBack20");
-					//goToImageBack();
-					if (event.preventDefault) {
-						event.preventDefault(); 
-					}
-					else {
-						event.returnValue = false;
-					} // IE sucks
+		document.documentElement.onkeypress = function (event) {
+			//alert("Sie haben die Taste mit dem Wert " + event.which + " gedrueckt");
+			myButton = null;
+			event = event || window.event; // IE sucks
+			var key = event.which || event.keyCode; // IE uses .keyCode, Moz uses .which
+
+			// -----------  previous20 image - cursor up
+			if ((key == 76 || key == 12 || key == 40) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				myButton = document.getElementById("second_imageBack20");
+				//goToImageBack();
+				if (event.preventDefault) {
+					event.preventDefault(); 
 				}
-				
-				// -----------  previous image - cursor left
-				if ((key == 76 || key == 12 || key == 37) &amp;&amp; // "L" "^L" or "l"
-					event.shiftKey &amp;&amp; event.ctrlKey) {
-					myButton = document.getElementById("formularBild:imageBack");
-					//goToImageBack();
-					if (event.preventDefault) {
-						event.preventDefault(); 
-					}
-					else {
-						event.returnValue = false;
-					} // IE sucks
-				}
-				
-				// -----------  next image - cursor right
-				if ((key == 76 || key == 12 || key == 39) &amp;&amp; // "L" "^L" or "l"
-					event.shiftKey &amp;&amp; event.ctrlKey) {
-					myButton = document.getElementById("formularBild:imageNext");
-					//goToImageNext();
-					if (event.preventDefault) {
-						event.preventDefault(); 
-					}
-					else {
-						event.returnValue = false;
-					} // IE sucks
-				}
-				
-				// -----------  next image - cursor down
-				if ((key == 76 || key == 12 || key == 38) &amp;&amp; // "L" "^L" or "l"
-					event.shiftKey &amp;&amp; event.ctrlKey) {
-					myButton = document.getElementById("formularBild:imageNext20");
-					//goToImageNext();
-					if (event.preventDefault) {
-						event.preventDefault(); 
-					}
-					else {
-						event.returnValue = false;
-					} // IE sucks
-				}
-				
-				// -----------  first image - pos1
-				if ((key == 76 || key == 12 || key == 36) &amp;&amp; // "L" "^L" or "l"
-					event.shiftKey &amp;&amp; event.ctrlKey) {
-					myButton = document.getElementById("formularBild:imageFirst");
-					//goToImageNext();
-					if (event.preventDefault) {
-						event.preventDefault(); 
-					}
-					else {
-						event.returnValue = false;
-					} // IE sucks
-				}
-				
-				// -----------  last image - end
-				if ((key == 76 || key == 12 || key == 35) &amp;&amp; // "L" "^L" or "l"
-					event.shiftKey &amp;&amp; event.ctrlKey) {
-					myButton = document.getElementById("formularBild:imageLast");
-					//goToImageNext();
-					if (event.preventDefault) {
-						event.preventDefault(); 
-					}
-					else {
-						event.returnValue = false;
-					} // IE sucks
-				}
-				
-				// ---------- click my Button
-				try{
-					if (myButton!=null)
-						myButton.click();
-				}catch(e){}	
+				else {
+					event.returnValue = false;
+				} // IE sucks
 			}
 			
+			// -----------  previous image - cursor left
+			if ((key == 76 || key == 12 || key == 37) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				myButton = document.getElementById("second_imageBack");
+				//goToImageBack();
+				if (event.preventDefault) {
+					event.preventDefault(); 
+				}
+				else {
+					event.returnValue = false;
+				} // IE sucks
+			}
+			
+			// -----------  next image - cursor right
+			if ((key == 76 || key == 12 || key == 39) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				myButton = document.getElementById("second_imageNext");
+				//goToImageNext();
+				if (event.preventDefault) {
+					event.preventDefault(); 
+				}
+				else {
+					event.returnValue = false;
+				} // IE sucks
+			}
+			
+			// -----------  next image - cursor down
+			if ((key == 76 || key == 12 || key == 38) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				myButton = document.getElementById("second_imageNext20");
+				//goToImageNext();
+				if (event.preventDefault) {
+					event.preventDefault(); 
+				}
+				else {
+					event.returnValue = false;
+				} // IE sucks
+			}
+			
+			// -----------  first image - pos1
+			if ((key == 76 || key == 12 || key == 36) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				myButton = document.getElementById("second_imageFirst");
+				//goToImageNext();
+				if (event.preventDefault) {
+					event.preventDefault(); 
+				}
+				else {
+					event.returnValue = false;
+				} // IE sucks
+			}
+			
+			// -----------  last image - end
+			if ((key == 76 || key == 12 || key == 35) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				myButton = document.getElementById("second_imageLast");
+				//goToImageNext();
+				if (event.preventDefault) {
+					event.preventDefault(); 
+				}
+				else {
+					event.returnValue = false;
+				} // IE sucks
+			}
+			
+			// ---------- click my Button
+			try{
+				if (myButton!=null)
+					myButton.click();
+			}catch(e){}	
+		}
 			
 			function paginierungWertAnzeigen(element) {
 				var inputBoxElement = document.getElementById("paginierungWert");
