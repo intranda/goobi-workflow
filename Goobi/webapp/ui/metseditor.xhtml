@@ -217,6 +217,9 @@
 			if ((key == 76 || key == 12 || key == 40) &amp;&amp; // "L" "^L" or "l"
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageBack20");
+				if (myButton == null) {
+					myButton = document.getElementById("second_imageBack20");
+				}
 				//goToImageBack();
 				if (event.preventDefault) {
 					event.preventDefault(); 
@@ -230,6 +233,9 @@
 			if ((key == 76 || key == 12 || key == 37) &amp;&amp; // "L" "^L" or "l"
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageBack");
+				if (myButton == null) {
+					myButton = document.getElementById("first_imageBack");
+				}
 				//goToImageBack();
 				if (event.preventDefault) {
 					event.preventDefault(); 
@@ -243,6 +249,9 @@
 			if ((key == 76 || key == 12 || key == 39) &amp;&amp; // "L" "^L" or "l"
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageNext");
+				if (myButton == null) {
+					myButton = document.getElementById("first_imageNext");
+				}
 				//goToImageNext();
 				if (event.preventDefault) {
 					event.preventDefault(); 
@@ -256,6 +265,9 @@
 			if ((key == 76 || key == 12 || key == 38) &amp;&amp; // "L" "^L" or "l"
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageNext20");
+				if (myButton == null) {
+					myButton = document.getElementById("first_imageNext20");
+				}
 				//goToImageNext();
 				if (event.preventDefault) {
 					event.preventDefault(); 
@@ -269,6 +281,9 @@
 			if ((key == 76 || key == 12 || key == 36) &amp;&amp; // "L" "^L" or "l"
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageFirst");
+				if (myButton == null) {
+					myButton = document.getElementById("first_imageFirst");
+				}
 				//goToImageNext();
 				if (event.preventDefault) {
 					event.preventDefault(); 
@@ -282,6 +297,9 @@
 			if ((key == 76 || key == 12 || key == 35) &amp;&amp; // "L" "^L" or "l"
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageLast");
+				if (myButton == null) {
+					myButton = document.getElementById("first_imageLast");
+				}
 				//goToImageNext();
 				if (event.preventDefault) {
 					event.preventDefault(); 
