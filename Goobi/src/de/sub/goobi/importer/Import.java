@@ -50,6 +50,7 @@ import de.sub.goobi.helper.exceptions.WrongImportFileException;
  * @author Steffen Hankiewicz
  * @version 1.00 - 25.06.2005
  */
+@Deprecated
 public class Import {
 	private static final Logger myLogger = Logger.getLogger(Import.class);
 	private String importFehler = "";
