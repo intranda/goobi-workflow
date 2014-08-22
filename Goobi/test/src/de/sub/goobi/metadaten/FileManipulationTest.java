@@ -207,8 +207,26 @@ public class FileManipulationTest {
     }
 
     @Test
-    public void testGetAllImportFolder() {
+    public void testGetAllImportFolder() throws FileNotFoundException {
         FileManipulation fixture = new FileManipulation(metadataBean);
+
+        // first upload file
+        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
+        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+
+        fixture.setUploadedFile(uploadedFile);
+        fixture.setUploadedFileName("fixture.tif");
+        fixture.setCurrentFolder("testprocess_media");
+        fixture.setInsertPage("lastPage");
+        fixture.uploadFile();
+
+        List<String> filesToDownload = new ArrayList<String>();
+        filesToDownload.add("1");
+
+        fixture.setDeleteFilesAfterMove(true);
+        fixture.setSelectedFiles(filesToDownload);
+        fixture.exportFiles();
+        
         List<String> list = fixture.getAllImportFolder();
 
         assertNotNull(list);
