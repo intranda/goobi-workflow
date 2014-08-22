@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FileManipulationTest.class, PaginatorTest.class })
+@SuiteClasses({ FileManipulationTest.class, PaginatorTest.class, MetadataGroupImplTest.class, MetadataGroupImplTest.class })
 public class TestAll {
 
 }
