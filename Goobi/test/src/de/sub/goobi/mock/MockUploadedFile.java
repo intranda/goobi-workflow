@@ -65,7 +65,6 @@ public class MockUploadedFile implements UploadedFile{
 
     @Override
     public StorageStrategy getStorageStrategy() {
-        // TODO Auto-generated method stub
         return null;
     }
 

@@ -22,7 +22,6 @@ public class MockProcess {
     public static Process createProcess(TemporaryFolder folder) throws Exception {
 
         String configFolder = System.getenv("junitdata");
-        ;
         if (configFolder == null) {
             configFolder = "/opt/digiverso/junit/data/";
         }

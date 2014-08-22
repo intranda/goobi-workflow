@@ -53,8 +53,6 @@ public class FileManipulationTest {
         metadataBean.XMLlesenStart();
     }
 
-  
-
     @Test
     public void testFileManipulation() {
         FileManipulation fixture = new FileManipulation(metadataBean);
@@ -62,12 +60,46 @@ public class FileManipulationTest {
     }
 
     @Test
+    public void testGetCurrentFolder() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        fixture.setCurrentFolder("testprocess_media");
+        assertEquals("testprocess_media", fixture.getCurrentFolder());
+    }
+
+    @Test
+    public void testGetUploadedFile() throws FileNotFoundException {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
+        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+        fixture.setUploadedFile(uploadedFile);
+        assertEquals(uploadedFile, fixture.getUploadedFile());
+    }
+
+    @Test
+    public void testUploadedFileName() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        String filename = "test.tif";
+        fixture.setUploadedFileName(filename);
+        assertEquals(filename, fixture.getUploadedFileName());
+    }
+
+    @Test
+    public void testInsertPage() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        String pageNo = "5";
+        fixture.setInsertPage(pageNo);
+        assertEquals(pageNo, fixture.getInsertPage());
+    }
+
+    @Test
+    public void testUploadFileWithoutSelection() throws Exception {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        fixture.uploadFile();
+    }
+
+    @Test
     public void testUploadFile() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
-        // uploadedFile is null
-
-        fixture.uploadFile();
-
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
         UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
@@ -76,130 +108,128 @@ public class FileManipulationTest {
         fixture.setCurrentFolder("testprocess_media");
         fixture.setInsertPage("lastPage");
         fixture.uploadFile();
-        
+
         fixture.setUploadedFile(uploadedFile);
         fixture.setUploadedFileName("fixture2");
         fixture.setCurrentFolder("testprocess_media");
         fixture.setInsertPage("1");
         fixture.uploadFile();
+    }
+
+    @Test
+    public void testInsertMode() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        String mode = "uncounted";
+        fixture.setInsertMode(mode);
+        assertEquals(mode, fixture.getInsertMode());
+    }
+
+    @Test
+    public void testImageSelection() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        String selection = "1";
+        fixture.setImageSelection(selection);
+        assertEquals(selection, fixture.getImageSelection());
+    }
+
+    @Test
+    public void testDownloadFile() throws FileNotFoundException {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
+        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+
+        fixture.setUploadedFile(uploadedFile);
+        fixture.setUploadedFileName("fixture");
+        fixture.setCurrentFolder("testprocess_media");
+        fixture.setInsertPage("lastPage");
+        fixture.uploadFile();
+
+        fixture.setImageSelection("1");
+        fixture.downloadFile();
+    }
+
+    @Test
+    public void testExportFilesWithoutSelection() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        fixture.exportFiles();
+    }
+
+    @Test
+    public void testSelectedFiles() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+
+        List<String> filesToDownload = new ArrayList<String>();
+        filesToDownload.add("1");
+        fixture.setSelectedFiles(filesToDownload);
+
+        assertEquals(filesToDownload, fixture.getSelectedFiles());
 
     }
 
-    // @Test
-    // public void testGetUploadedFileName() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetUploadedFileName() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetUploadedFile() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetUploadedFile() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetInsertPage() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetInsertPage() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetInsertMode() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetInsertMode() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetImageSelection() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetImageSelection() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testDownloadFile() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testExportFiles() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetSelectedFiles() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetSelectedFiles() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testIsDeleteFilesAfterMove() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetDeleteFilesAfterMove() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testIsMoveFilesInAllFolder() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetMoveFilesInAllFolder() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetAllImportFolder() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetAllImportFolder() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testImportFiles() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testGetCurrentFolder() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testSetCurrentFolder() {
-    // fail("Not yet implemented");
-    // }
-    
+    @Test
+    public void testDeleteFilesAfterMove() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        fixture.setDeleteFilesAfterMove(false);
+        assertFalse(fixture.isDeleteFilesAfterMove());
+        fixture.setDeleteFilesAfterMove(true);
+        assertTrue(fixture.isDeleteFilesAfterMove());
+    }
+
+    @Test
+    public void testExportFiles() throws FileNotFoundException {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+
+        // first upload file
+        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
+        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+
+        fixture.setUploadedFile(uploadedFile);
+        fixture.setUploadedFileName("fixture.tif");
+        fixture.setCurrentFolder("testprocess_media");
+        fixture.setInsertPage("lastPage");
+        fixture.uploadFile();
+
+        List<String> filesToDownload = new ArrayList<String>();
+        filesToDownload.add("1");
+
+        fixture.setDeleteFilesAfterMove(true);
+        fixture.setSelectedFiles(filesToDownload);
+        fixture.exportFiles();
+    }
+
+    @Test
+    public void testIsMoveFilesInAllFolder() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        fixture.setMoveFilesInAllFolder(false);
+        assertFalse(fixture.isMoveFilesInAllFolder());
+        fixture.setMoveFilesInAllFolder(true);
+        assertTrue(fixture.isMoveFilesInAllFolder());
+    }
+
+    @Test
+    public void testGetAllImportFolder() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        List<String> list = fixture.getAllImportFolder();
+
+        assertNotNull(list);
+        assertFalse(list.isEmpty());
+        
+    }
+
+    @Test
+    public void testImportFiles() {
+        FileManipulation fixture = new FileManipulation(metadataBean);
+        List<String> list = fixture.getAllImportFolder();
+        
+        
+        fixture.importFiles();
+        
+        fixture.setSelectedFiles(list);
+        fixture.importFiles();
+        
+    }
+
+    @SuppressWarnings("deprecation")
     private void prepareMocking() {
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);
@@ -227,6 +257,8 @@ public class FileManipulationTest {
 
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
         EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
+        EasyMock.expect(facesContext.getResponseComplete()).andReturn(true);
+
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
