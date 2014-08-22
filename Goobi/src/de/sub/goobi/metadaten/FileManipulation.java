@@ -21,7 +21,7 @@ package de.sub.goobi.metadaten;
  * details.
  *
  * This copyright notice MUST APPEAR in all copies of this file!
- ***************************************************************/ 
+ ***************************************************************/
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -117,7 +117,7 @@ public class FileManipulation {
             }
 
             if (StringUtils.isNotBlank(uploadedFileName)) {
-                
+
                 String fileExtension = Metadaten.getFileExtension(basename);
                 if (!fileExtension.isEmpty() && !uploadedFileName.endsWith(fileExtension)) {
                     uploadedFileName = uploadedFileName + fileExtension;
@@ -125,7 +125,7 @@ public class FileManipulation {
                 basename = uploadedFileName;
             }
             basename = basename.replace("[^\\p{ASCII}]", "_");
-            basename = basename.replace("[\\:\\*\\?\\|\\/]",  "_").replace(" ",  "_");
+            basename = basename.replace("[\\:\\*\\?\\|\\/]", "_").replace(" ", "_");
             logger.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + File.separator + basename;
 
@@ -156,23 +156,10 @@ public class FileManipulation {
             }
 
             Helper.setMeldung(Helper.getTranslation("metsEditorFileUploadSuccessful"));
-        } catch (IOException e) {
+        } catch (IOException | SwapException | DAOException | InterruptedException | TypeNotAllowedForParentException
+                | MetadataTypeNotAllowedException e) {
             logger.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed", e);
-        } catch (SwapException e) {
-            logger.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed", e);
-        } catch (DAOException e) {
-            logger.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed", e);
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed", e);
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e);
-            Helper.setFehlerMeldung("uploadFailed", e);
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e);
         } finally {
             if (inputStream != null) {
                 try {
@@ -541,7 +528,7 @@ public class FileManipulation {
             Helper.setFehlerMeldung("noFileSelected");
             return;
         }
-        String tempDirectory =ConfigurationHelper.getInstance().getTemporaryFolder();
+        String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
 
         String masterPrefix = "";
         boolean useMasterFolder = false;

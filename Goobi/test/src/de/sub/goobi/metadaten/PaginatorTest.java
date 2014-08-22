@@ -25,6 +25,7 @@ package de.sub.goobi.metadaten;
 import org.junit.Test;
 import org.junit.internal.ArrayComparisonFailure;
 
+import de.sub.goobi.mock.MockMetadatum;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

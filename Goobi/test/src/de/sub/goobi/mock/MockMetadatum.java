@@ -20,16 +20,19 @@
  * Suite 330, Boston, MA 02111-1307 USA
  */
 
-package de.sub.goobi.metadaten;
+package de.sub.goobi.mock;
 
 import org.goobi.api.display.Item;
+
+import de.sub.goobi.metadaten.Metadatum;
 import ugh.dl.Metadata;
 
 import javax.faces.model.SelectItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class MockMetadatum implements Metadatum {
+public class MockMetadatum implements Metadatum {
 
     private String value;
 

@@ -1,4 +1,5 @@
 package de.sub.goobi;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -43,10 +44,10 @@ import de.sub.goobi.samples.BenutzerTest;
 import de.sub.goobi.samples.BenutzergruppenTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, PaginatorTest.class,
-        BenutzergruppenTest.class, BenutzerTest.class, BackupFileRotationTest.class, GoobiVersionTest.class, CalculationUnitTest.class,
-        ResultOutputTest.class, StatisticsModeTest.class, TimeUnitTest.class, ConverterTest.class, SQLHelperTest.class, SQLProductionTest.class,
-        SQLStepRequestsTest.class, SQLStorageTest.class, IdentifierPPNTest.class, IntegerSequenceTest.class, RomanNumberSequenceTest.class })
+@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, BenutzergruppenTest.class, BenutzerTest.class,
+        BackupFileRotationTest.class, GoobiVersionTest.class, CalculationUnitTest.class, ResultOutputTest.class, StatisticsModeTest.class,
+        TimeUnitTest.class, ConverterTest.class, SQLHelperTest.class, SQLProductionTest.class, SQLStepRequestsTest.class, SQLStorageTest.class,
+        IdentifierPPNTest.class, IntegerSequenceTest.class, RomanNumberSequenceTest.class })
 public class OldTests {
 
 }

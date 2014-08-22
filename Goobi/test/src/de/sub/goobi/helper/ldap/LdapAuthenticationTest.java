@@ -58,13 +58,13 @@ public class LdapAuthenticationTest {
    
 
 
-    @Test
+//    @Test
     public void testLdapAuthentication() {
         LdapAuthentication auth = new LdapAuthentication();
         assertNotNull(auth);
     }
 
-    @Test
+//    @Test
     public void testCreateNewUser() throws NoSuchAlgorithmException, NamingException, IOException, InterruptedException {
         LdapAuthentication auth = new LdapAuthentication();
         // ldap is read only
