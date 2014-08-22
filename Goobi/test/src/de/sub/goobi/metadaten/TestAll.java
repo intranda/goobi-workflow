@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -22,7 +23,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FileManipulationTest.class, PaginatorTest.class, MetadataGroupImplTest.class, MetadataGroupImplTest.class })
+@SuiteClasses({ FileManipulationTest.class, PaginatorTest.class, MetadataGroupImplTest.class, MetadataGroupImplTest.class, MetadatumImplTest.class })
 public class TestAll {
 
 }
