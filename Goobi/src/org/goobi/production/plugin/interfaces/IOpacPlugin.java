@@ -36,4 +36,8 @@ public interface IOpacPlugin extends IPlugin {
 
     public String createAtstsl(String value, String value2);
 
+    public void setAtstsl(String createAtstsl);
+
+    public String getGattung();
+
 }
