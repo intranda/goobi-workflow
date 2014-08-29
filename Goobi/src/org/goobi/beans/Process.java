@@ -255,11 +255,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public long getMinutenGesperrt() {
-        return this.msp.getLockSekunden(this.id.longValue()) / 60;
+        return this.msp.getLockSekunden(this.id) / 60;
     }
 
     public long getSekundenGesperrt() {
-        return this.msp.getLockSekunden(this.id.longValue()) % 60;
+        return this.msp.getLockSekunden(this.id) % 60;
     }
 
     /*
