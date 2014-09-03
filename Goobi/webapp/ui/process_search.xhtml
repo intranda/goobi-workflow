@@ -124,15 +124,16 @@
 
 
                         </h:dataTable>
-                        <h:panelGrid columns="2" rendered="#{(LoginForm.maximaleBerechtigung == 1)}">
+                        <h:panelGrid columns="2" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" columnClasses="prozessKopieSpalte1, prozessKopieSpalte2">
 
                             <h:outputText value="#{msgs.showArchivedProjects}:" />
                             <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" />
+                        </h:panelGrid>
 
+                        <h:panelGrid columns="2" columnClasses="prozessKopieSpalte1, prozessKopieSpalte2">
                             <h:outputText value="#{msgs.showClosedProcesses}:" />
                             <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
                         </h:panelGrid>
-
                     </td>
                 </tr>
                 <tr>
