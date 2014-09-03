@@ -118,7 +118,7 @@
 
 <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
 			<div class="box themed_box">
-			<h2 class="box-header"><span class="close"></span> <h:outputText value="#{AktuelleSchritteForm.mySchritt.titel}" /></h2>
+			<h2 class="box-header"><span class="close"></span> <h:outputText value="#{msgs[AktuelleSchritteForm.mySchritt.titel]}" /></h2>
 			<div class="box-content"><ui:include src="/ui/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
 			<div class="clear"></div>
 			</div>
