@@ -116,16 +116,20 @@
 		</table>
 
 
-<c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
-			<div class="box themed_box">
-			<h2 class="box-header"><span class="close"></span> <h:outputText value="#{msgs[AktuelleSchritteForm.mySchritt.titel]}" /></h2>
-			<div class="box-content"><ui:include src="/ui/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
-			<div class="clear"></div>
-			</div>
-			</div>
-		</c:if>
+        <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
+            <div class="box themed_box">
+                <h2 class="box-header">
+                    <span class="close"></span>
+                    <h:outputText value="#{msgs[AktuelleSchritteForm.myPlugin.title]}" />
+                </h2>
+                <div class="box-content">
+                    <ui:include src="/ui/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </c:if>
 
-		<script src="#{HelperForm.servletPathAsUrl}/ui/js/tiny_mce/tiny_mce.js" type="text/javascript"></script>
+        <script src="#{HelperForm.servletPathAsUrl}/ui/js/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 
 		<script type="text/javascript">
 			tinyMCE
