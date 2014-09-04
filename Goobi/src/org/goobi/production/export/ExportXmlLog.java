@@ -36,24 +36,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
 import org.goobi.production.IProcessDataExport;
 import org.jaxen.JaxenException;
-import org.jaxen.jdom.JDOMXPath;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
+import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jdom2.transform.XSLTransformer;
-
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -62,7 +64,6 @@ import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
-//import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -368,12 +369,8 @@ public class ExportXmlLog implements IProcessDataExport {
             if (anchorFile.exists() && anchorFile.canRead()) {
                 anchorDoc = new SAXBuilder().build(anchorfilename);
             }
-            HashMap<String, Namespace> namespaces = new HashMap<String, Namespace>();
 
-            HashMap<String, String> names = getNamespacesFromConfig();
-            for (String key : names.keySet()) {
-                namespaces.put(key, Namespace.getNamespace(key, names.get(key)));
-            }
+            List<Namespace> namespaces = getNamespacesFromConfig();
 
             HashMap<String, String> fields = getMetsFieldsFromConfig(false);
             for (String key : fields.keySet()) {
@@ -423,15 +420,9 @@ public class ExportXmlLog implements IProcessDataExport {
 
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Element> getMetsValues(String expr, Object element, HashMap<String, Namespace> namespaces) throws JaxenException {
-        JDOMXPath xpath = new JDOMXPath(expr.trim().replace("\n", ""));
-        // Add all namespaces
-        for (String key : namespaces.keySet()) {
-            Namespace value = namespaces.get(key);
-            xpath.addNamespace(key, value.getURI());
-        }
-        return xpath.selectNodes(element);
+    public List<Element> getMetsValues(String expression, Object element, List<Namespace> namespaces) throws JaxenException {
+        XPathExpression<Element> xpath = XPathFactory.instance().compile(expression, Filters.element(), null, namespaces);
+        return xpath.evaluate(element);
     }
 
     /**
@@ -552,8 +543,8 @@ public class ExportXmlLog implements IProcessDataExport {
         return fields;
     }
 
-    private HashMap<String, String> getNamespacesFromConfig() {
-        HashMap<String, String> nss = new HashMap<String, String>();
+    private List<Namespace> getNamespacesFromConfig() {
+        List<Namespace> nss = new ArrayList<Namespace>();
         try {
             File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (file.exists() && file.canRead()) {
@@ -565,11 +556,12 @@ public class ExportXmlLog implements IProcessDataExport {
                 for (int i = 0; i <= count; i++) {
                     String name = config.getString("namespace(" + i + ")[@name]");
                     String value = config.getString("namespace(" + i + ")[@value]");
-                    nss.put(name, value);
+                    Namespace ns = Namespace.getNamespace(name, value);
+                    nss.add(ns);
                 }
             }
         } catch (Exception e) {
-            nss = new HashMap<String, String>();
+
         }
         return nss;
 
