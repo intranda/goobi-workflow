@@ -58,6 +58,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -97,7 +98,6 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import org.goobi.beans.Process;
 
-//import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
@@ -135,7 +135,6 @@ public class ProcessBean extends BasicBean {
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
     private Processproperty myProzessEigenschaft;
-    //    private Schritteigenschaft mySchrittEigenschaft;
     private User myBenutzer;
     private Template myVorlage;
     private Templateproperty myVorlageEigenschaft;
@@ -163,8 +162,6 @@ public class ProcessBean extends BasicBean {
     private List<SelectItem> possibleItems = null;
     private SearchColumn currentField = null;
     private int order = 0;
-
-    //    private Map<String, Boolean> availableColumns;
 
     private boolean showStatistics = false;
 
@@ -532,7 +529,7 @@ public class ProcessBean extends BasicBean {
             answer = "sortHelperStatus desc";
         } else if (this.sortierung.equals("idAsc")) {
             answer = "prozesse.ProzesseID";
-        }else if (this.sortierung.equals("idDesc")) {
+        } else if (this.sortierung.equals("idDesc")) {
             answer = "prozesse.ProzesseID desc";
         }
 
@@ -1917,8 +1914,6 @@ public class ProcessBean extends BasicBean {
                         table.completeRow();
                         for (int j = 0; j < row.size(); j++) {
                             HSSFCell myCell = row.get(j);
-                            // TODO aufhübschen und nicht toString() nutzen
-
                             String stringCellValue = myCell.toString();
                             table.addCell(stringCellValue);
                         }
@@ -1936,7 +1931,7 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    public void generateResult() {
+    public void generateResultXls() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
@@ -1954,6 +1949,57 @@ public class ProcessBean extends BasicBean {
                 HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
 
                 wb.write(out);
+                out.flush();
+                facesContext.responseComplete();
+
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+    public void generateResultDoc() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+
+            /*
+             * -------------------------------- Vorbereiten der Header-Informationen --------------------------------
+             */
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            try {
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType("search.doc");
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"search.doc\"");
+                ServletOutputStream out = response.getOutputStream();
+                SearchResultHelper sch = new SearchResultHelper();
+                XWPFDocument wb = sch.getResultAsWord(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                wb.write(out);
+                out.flush();
+                facesContext.responseComplete();
+
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+    public void generateResultRtf() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+
+            /*
+             * -------------------------------- Vorbereiten der Header-Informationen --------------------------------
+             */
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            try {
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType("search.rtf");
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"search.rtf\"");
+                ServletOutputStream out = response.getOutputStream();
+                SearchResultHelper sch = new SearchResultHelper();
+                sch.getResultAsRtf(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects, out);
                 out.flush();
                 facesContext.responseComplete();
 

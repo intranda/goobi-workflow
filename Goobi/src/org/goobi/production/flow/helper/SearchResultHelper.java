@@ -18,6 +18,9 @@ package org.goobi.production.flow.helper;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +32,21 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Cell;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+
+import com.lowagie.text.Table;
+import com.lowagie.text.rtf.RtfWriter2;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -148,6 +164,85 @@ public class SearchResultHelper {
                 possibleColumns.addAll(subList);
             }
         }
+    }
+
+    public XWPFDocument getResultAsWord(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
+        @SuppressWarnings("rawtypes")
+        List list = search(columnList, filter, showClosedProcesses, showArchivedProjects);
+
+        XWPFDocument doc = new XWPFDocument();
+
+        // create header row
+        int colNum = columnList.size();
+        int rowNum = list.size() + 1;
+
+        XWPFTable table = doc.createTable(rowNum, colNum);
+        CTTblWidth width = table.getCTTbl().addNewTblPr().addNewTblW();
+        width.setType(STTblWidth.DXA);
+        width.setW(BigInteger.valueOf(10000));
+
+        int currentRow = 0;
+        int currentCol = 0;
+        XWPFTableRow headerRow = table.getRow(currentRow++);
+        for (SearchColumn sc : columnList) {
+            XWPFTableCell cell = headerRow.getCell(currentCol++);
+            cell.setText(Helper.getTranslation(sc.getValue()));
+        }
+
+        for (Object obj : list) {
+            currentCol = 0;
+            Object[] objArr = (Object[]) obj;
+            XWPFTableRow row = table.getRow(currentRow++);
+            for (Object entry : objArr) {
+                XWPFTableCell cell = row.getCell(currentCol++);
+                cell.setText((String) entry);
+            }
+        }
+
+        return doc;
+    }
+
+    public void getResultAsRtf(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects,
+            OutputStream out) {
+        Document document = new Document();
+
+        RtfWriter2.getInstance(document, out);
+
+        @SuppressWarnings("rawtypes")
+        List list = search(columnList, filter, showClosedProcesses, showArchivedProjects);
+
+        document.open();
+
+        Table table = null;
+        try {
+            table = new Table(columnList.size());
+        } catch (BadElementException e1) {
+        }
+        table.setBorderWidth(1);
+
+        for (SearchColumn sc : columnList) {
+            Cell cell = new Cell(Helper.getTranslation(sc.getValue()));
+            cell.setHeader(true);
+            table.addCell(cell);
+        }
+        table.endHeaders();
+
+        for (Object obj : list) {
+            Object[] objArr = (Object[]) obj;
+            for (Object entry : objArr) {
+                Cell cell = new Cell((String) entry);
+                table.addCell(cell);
+            }
+
+        }
+        try {
+            document.add(table);
+        } catch (DocumentException e) {
+        }
+
+        document.close();
+
+        return;
     }
 
     public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {

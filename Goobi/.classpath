@@ -123,6 +123,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mods_3-5.jar"/>
 	<classpathentry kind="lib" path="lib-test/unboundid-ldapsdk-se.jar"/>
 	<classpathentry kind="lib" path="lib-test/catalina.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/itext-rtf-2.1.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.5.jar"/>
