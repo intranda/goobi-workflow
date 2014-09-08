@@ -1880,7 +1880,7 @@ public class Metadaten {
         if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             for (String directory : this.allTifFolders) {
-                if (directory.endsWith(suffix)) {
+                if (directory.endsWith(suffix) && !directory.startsWith(ConfigurationHelper.getInstance().getMasterDirectoryPrefix())) {
                     this.currentTifFolder = directory;
                     break;
                 }
