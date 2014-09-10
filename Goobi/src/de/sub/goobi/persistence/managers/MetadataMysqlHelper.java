@@ -72,7 +72,7 @@ class MetadataMysqlHelper implements Serializable {
 
     public static List<String> getDistinctMetadataNames() throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select distinct name from metadata");
+        sql.append("select distinct name from metadata order by name");
 
         sql.append(" ORDER BY name");
 
