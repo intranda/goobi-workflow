@@ -3675,4 +3675,8 @@ public class Metadaten {
     public void setMyProzess(Process myProzess) {
 		this.myProzess = myProzess;
 	}
+    
+    public void setMyBenutzerID(String id) {
+        myBenutzerID = id;
+    }
 }
