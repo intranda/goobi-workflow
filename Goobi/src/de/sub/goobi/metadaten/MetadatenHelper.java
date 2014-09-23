@@ -332,7 +332,7 @@ public class MetadatenHelper implements Comparator<Object> {
             if (label == null) {
                 label = dst.getName();
             }
-            myTypes[zaehler] = new SelectItem(dst.getName(), label);
+            myTypes[zaehler] = new SelectItem(dst, label);
             zaehler++;
         }
         return myTypes;
