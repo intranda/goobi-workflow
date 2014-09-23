@@ -212,6 +212,12 @@ public class Metadaten {
     private boolean tiffFolderHasChanged = true;
     private List<String> dataList = new ArrayList<String>();
 
+
+    private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
+    private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
+
+    
+    
     /**
      * Konstruktor ================================================================
      */
@@ -248,7 +254,7 @@ public class Metadaten {
 
     public String AddGroup() {
         this.modeAddGroup = true;
-        
+
         // reset selected groups
         selectedGroup = null;
         getSelectedGroup();
@@ -1028,7 +1034,7 @@ public class Metadaten {
         if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
             reOrderPagination();
         }
-        
+
         if (!storeMetadata()) {
             return "Metadaten";
         }
@@ -1452,11 +1458,32 @@ public class Metadaten {
             this.myDocStruct.addChild(ds);
         }
 
+        if (!addableMetadata.isEmpty()) {
+            for (MetadatumImpl mdi : addableMetadata) {
+                try {
+                    ds.addMetadata(mdi.getMd());
+                } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
+                    myLogger.error(e);
+                }
+            }
+        }
+        if (!addablePersondata.isEmpty()) {
+            for (MetaPerson mdp : addablePersondata) {
+                try {
+                    ds.addPerson(mdp.getP());
+                } catch (MetadataTypeNotAllowedException | IncompletePersonObjectException e) {
+                    myLogger.error(e);
+                }
+            }
+        }
+    
+        
         if (!this.pagesStart.equals("") && !this.pagesEnd.equals("")) {
             DocStruct temp = this.myDocStruct;
             this.myDocStruct = ds;
             this.ajaxSeiteStart = this.pagesStart;
-            this.ajaxSeiteEnde = this.pagesEnd;
+            this.ajaxSeiteEnde = this.pagesEnd;          
+
             AjaxSeitenStartUndEndeSetzen();
             this.myDocStruct = temp;
         }
@@ -3552,7 +3579,7 @@ public class Metadaten {
             return new ArrayList<TreeNode>();
         }
     }
-    
+
     public boolean getIsProcessLoaded() {
         return treeOfFilteredProcess != null;
     }
@@ -3673,10 +3700,76 @@ public class Metadaten {
 
     // needed for junit test
     public void setMyProzess(Process myProzess) {
-		this.myProzess = myProzess;
-	}
-    
+        this.myProzess = myProzess;
+    }
+
     public void setMyBenutzerID(String id) {
         myBenutzerID = id;
+    }
+
+    public List<MetadatumImpl> getAddableMetadata() {
+
+        String docstructName = "";
+        int selection = new Integer(neuesElementWohin).intValue();
+        if (selection < 3) {
+            docstructName = addDocStructType1;
+        } else {
+            docstructName = addDocStructType2;
+        }
+
+        addableMetadata = new LinkedList<MetadatumImpl>();
+        if (docstructName != null) {
+
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
+            try {
+                DocStruct ds = this.mydocument.createDocStruct(dst);
+
+                List<? extends Metadata> myTempMetadata =
+                        this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper
+                                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
+                if (myTempMetadata != null) {
+                    for (Metadata metadata : myTempMetadata) {
+                        MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
+                        meta.getSelectedItem();
+                        addableMetadata.add(meta);
+                    }
+                }
+            } catch (TypeNotAllowedForParentException e) {
+                myLogger.error(e);
+            }
+        }
+        return addableMetadata;
+    }
+
+    public List<MetaPerson> getAddablePersondata() {
+        String docstructName = "";
+        int selection = new Integer(neuesElementWohin).intValue();
+        if (selection < 3) {
+            docstructName = addDocStructType1;
+        } else {
+            docstructName = addDocStructType2;
+        }
+        addablePersondata = new LinkedList<MetaPerson>();
+        if (docstructName != null) {
+
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
+            try {
+                DocStruct ds = this.mydocument.createDocStruct(dst);
+
+                List<? extends Metadata> myTempMetadata =
+                        this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper
+                                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
+                if (myTempMetadata != null) {
+                    for (Metadata metadata : myTempMetadata) {
+                        MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds);
+
+                        addablePersondata.add(meta);
+                    }
+                }
+            } catch (TypeNotAllowedForParentException e) {
+                myLogger.error(e);
+            }
+        }
+        return addablePersondata;
     }
 }

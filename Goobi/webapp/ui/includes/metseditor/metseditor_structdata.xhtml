@@ -42,11 +42,11 @@
                                 <h:panelGroup>
                                     <x:selectOneMenu id="auswahlAddable1" forceId="true" style="width:315px;margin-left:8px;margin-bottom:4px"
                                         value="#{Metadaten.addDocStructType1}" rendered="#{Metadaten.neuesElementWohin lt 3}">
-                                        <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" />
+                                        <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
                                     </x:selectOneMenu>
                                     <x:selectOneMenu id="auswahlAddable2" forceId="true" style="width:315px;margin-left:8px;margin-bottom:4px"
                                         value="#{Metadaten.addDocStructType2}" rendered="#{Metadaten.neuesElementWohin gt 2}">
-                                        <f:selectItems value="#{Metadaten.addableDocStructTypenAlsKind}" />
+                                        <f:selectItems value="#{Metadaten.addableDocStructTypenAlsKind}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
                                     </x:selectOneMenu>
                                 </h:panelGroup>
                             </h:panelGrid>
@@ -173,7 +173,7 @@
                                             columnClasses="standardTable_ColumnRight">
                                             <!-- Auswahlliste -->
                                             <x:selectOneMenu style="width:315px;" value="#{Metadaten.tempWert}">
-                                                <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" />
+                                                <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}"  itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
                                             </x:selectOneMenu>
                                             <!-- Action -->
                                             <h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}"
