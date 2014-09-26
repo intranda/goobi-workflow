@@ -61,7 +61,6 @@ import ugh.dl.Prefs;
 import ugh.dl.Reference;
 import ugh.dl.RomanNumeral;
 import ugh.exceptions.ContentFileNotLinkedException;
-import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
@@ -156,30 +155,27 @@ public class MetadatenImagesHelper {
                 }
             }
             if (!match) {
-                logger.debug("adding docstruct with missing file " +imageNameInMets + " to abandoned list.");
+                logger.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
                 pagesWithoutFiles.add(imageNamesInMetsFile.get(imageNameInMets));
             }
         }
 
         // find abandoned image names in directory
         if (!pagesWithoutFiles.isEmpty()) {
-            
-            Collections.sort(pagesWithoutFiles, new Comparator<DocStruct>() {
-                   
 
-                        @Override
-                        public int compare(DocStruct o1, DocStruct o2) {
-                            MetadataType mdt =  myPrefs.getMetadataTypeByName("physPageNumber");
-                            String value1 = o1.getAllMetadataByType(mdt).get(0).getValue();
-                            String value2 = o2.getAllMetadataByType(mdt).get(0).getValue();
-                            Integer order1 = Integer.parseInt(value1);
-                            Integer order2 = Integer.parseInt(value2);
-                            return order1.compareTo(order2);
-                        }
-                    }
-                    );
-                  
-            
+            Collections.sort(pagesWithoutFiles, new Comparator<DocStruct>() {
+
+                @Override
+                public int compare(DocStruct o1, DocStruct o2) {
+                    MetadataType mdt = myPrefs.getMetadataTypeByName("physPageNumber");
+                    String value1 = o1.getAllMetadataByType(mdt).get(0).getValue();
+                    String value2 = o2.getAllMetadataByType(mdt).get(0).getValue();
+                    Integer order1 = Integer.parseInt(value1);
+                    Integer order2 = Integer.parseInt(value2);
+                    return order1.compareTo(order2);
+                }
+            });
+
             for (String imagename : imageNamesInDirectory) {
                 String currentImagePrefix = imagename.replace(Metadaten.getFileExtension(imagename), "");
                 boolean match = false;
@@ -206,8 +202,9 @@ public class MetadatenImagesHelper {
             String currentFile = imagesWithoutDocstruct.get(i);
             DocStruct currentPage = pagesWithoutFiles.get(i);
             currentPage.setImageName(folder.getAbsolutePath() + File.separator + currentFile);
-            logger.debug("set image " + currentFile + " to docstruct " + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
-               
+            logger.debug("set image " + currentFile + " to docstruct "
+                    + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+
         }
 
     }
@@ -237,6 +234,7 @@ public class MetadatenImagesHelper {
                 log = log.getAllChildren().get(0);
             }
         }
+        MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
 
         /*-------------------------------- 
          * der physische Baum wird nur
@@ -245,12 +243,13 @@ public class MetadatenImagesHelper {
         if (physicaldocstruct == null) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName("BoundBook");
             physicaldocstruct = this.mydocument.createDocStruct(dst);
+            this.mydocument.setPhysicalDocStruct(physicaldocstruct);
+        }
 
-            /*-------------------------------- 
-             * Probleme mit dem FilePath
-             * -------------------------------- */
-            MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
-            try {
+        // check for valid filepath
+        try {
+            List<? extends Metadata> filepath = physicaldocstruct.getAllMetadataByType(MDTypeForPath);
+            if (filepath == null || filepath.isEmpty()) {
                 Metadata mdForPath = new Metadata(MDTypeForPath);
                 if (SystemUtils.IS_OS_WINDOWS) {
                     mdForPath.setValue("file:/" + inProzess.getImagesTifDirectory(false));
@@ -258,10 +257,9 @@ public class MetadatenImagesHelper {
                     mdForPath.setValue("file://" + inProzess.getImagesTifDirectory(false));
                 }
                 physicaldocstruct.addMetadata(mdForPath);
-            } catch (MetadataTypeNotAllowedException e1) {
-            } catch (DocStructHasNoTypeException e1) {
             }
-            this.mydocument.setPhysicalDocStruct(physicaldocstruct);
+        } catch (Exception e) {
+            logger.error(e);
         }
 
         if (directory == null) {
@@ -515,7 +513,9 @@ public class MetadatenImagesHelper {
             outputFileStream.close();
             logger.trace("close stream");
         } else {
-            String cs = ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
+            String cs =
+                    ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
+                            + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);
@@ -717,15 +717,15 @@ public class MetadatenImagesHelper {
             if (pagesList != null) {
                 int pagessize = pagesList.size();
                 int datasize = dataList.size();
-                for(int i = 0; i < pagessize ; i++) {
+                for (int i = 0; i < pagessize; i++) {
                     DocStruct page = pagesList.get(i);
-//                for (DocStruct page : pagesList) {
+                    //                for (DocStruct page : pagesList) {
                     String filename = page.getImageName();
                     String filenamePrefix = filename.replace(Metadaten.getFileExtension(filename), "");
-                    
-                    for (int j =0; j < datasize; j++) {
+
+                    for (int j = 0; j < datasize; j++) {
                         String currentImage = dataList.get(j);
-//                    for (String currentImage : dataList) {
+                        //                    for (String currentImage : dataList) {
                         String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
                         if (currentImagePrefix.equals(filenamePrefix)) {
                             orderedFilenameList.add(currentImage);
