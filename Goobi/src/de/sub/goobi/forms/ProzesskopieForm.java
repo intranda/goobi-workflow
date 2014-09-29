@@ -140,6 +140,7 @@ public class ProzesskopieForm {
 
     public String Prepare() {
         atstsl = "";
+        opacSuchbegriff = "";
         //      Helper.getHibernateSession().refresh(this.prozessVorlage);
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             if (this.prozessVorlage.getSchritteList().size() == 0) {
