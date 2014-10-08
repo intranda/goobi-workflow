@@ -252,7 +252,7 @@ public class ProzesskopieForm {
             int selectItemCount = cp.getParamList("createNewProcess.itemlist.item(" + i + ").select").size();
             /* Children durchlaufen und SelectItems erzeugen */
             if (selectItemCount > 0) {
-                if (cp.getParamBoolean("createNewProcess.itemlist.item(" + i + ")[@multiselect]")) {
+                if (cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@multiselect]", "true").equals("true")) {
                     fa.setMultiselect(true);
                 } else {
                     fa.setMultiselect(false);
