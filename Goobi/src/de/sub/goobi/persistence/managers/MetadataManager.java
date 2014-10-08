@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -61,7 +62,16 @@ public class MetadataManager implements Serializable {
 
     public static List<String> getDistinctMetadataNames() {
         try {
-          return MetadataMysqlHelper.getDistinctMetadataNames();
+            return MetadataMysqlHelper.getDistinctMetadataNames();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<StringPair> getMetadata(int processId) {
+        try {
+            return MetadataMysqlHelper.getMetadata(processId);
         } catch (SQLException e) {
             logger.error(e);
         }
