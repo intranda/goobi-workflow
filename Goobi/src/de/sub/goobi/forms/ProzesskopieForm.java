@@ -233,6 +233,7 @@ public class ProzesskopieForm {
 
             fa.setInitEnd(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@initEnd]"));
 
+          
             /*
              * -------------------------------- Bindung an ein Metadatum eines Docstructs --------------------------------
              */
@@ -251,6 +252,11 @@ public class ProzesskopieForm {
             int selectItemCount = cp.getParamList("createNewProcess.itemlist.item(" + i + ").select").size();
             /* Children durchlaufen und SelectItems erzeugen */
             if (selectItemCount > 0) {
+                if (cp.getParamBoolean("createNewProcess.itemlist.item(" + i + ")[@multiselect]")) {
+                    fa.setMultiselect(true);
+                } else {
+                    fa.setMultiselect(false);
+                }
                 fa.setSelectList(new ArrayList<SelectItem>());
             }
             for (int j = 0; j < selectItemCount; j++) {
