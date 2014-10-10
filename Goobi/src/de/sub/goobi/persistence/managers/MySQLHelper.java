@@ -102,8 +102,12 @@ public class MySQLHelper implements Serializable {
                 while (rs.next()) {
                     // returning object to get null object, rs.getInt returns '0' on null value
                     Object object = rs.getObject(1);
-                    Integer id = (Integer) object;
-                    answer.add(id);
+                    if (object != null) {
+                        Long l = (Long) object;
+                        answer.add(l.intValue());
+                    } else {
+                        answer.add(null);
+                    }
                 }
             } finally {
                 if (rs != null) {
@@ -189,7 +193,7 @@ public class MySQLHelper implements Serializable {
             return answer;
         }
     };
-    
+
     public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<Long>() {
         @Override
         public Long handle(ResultSet rs) throws SQLException {
@@ -229,10 +233,7 @@ public class MySQLHelper implements Serializable {
             return answer;
         }
     };
-    
-    
-    
-    
+
     public static String escapeString(String inputString) {
         if (inputString != null) {
             inputString = inputString.replace("\\", "\\\\");
@@ -243,5 +244,5 @@ public class MySQLHelper implements Serializable {
         }
         return inputString;
     }
-    
+
 }
