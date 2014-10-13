@@ -1903,12 +1903,12 @@ public class ProcessBean extends BasicBean {
                 document.setPageSize(a4quer);
                 document.open();
                 if (rowList.size() > 0) {
-                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
-                    document.add(p);
+//                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
+//                    document.add(p);
                     PdfPTable table = new PdfPTable(rowList.get(0).size());
                     table.setSpacingBefore(20);
 
-                    for (int i = 1; i < rowList.size(); i++) {
+                    for (int i = 0; i < rowList.size(); i++) {
 
                         List<HSSFCell> row = rowList.get(i);
                         table.completeRow();
