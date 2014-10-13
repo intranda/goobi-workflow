@@ -103,8 +103,13 @@ public class MySQLHelper implements Serializable {
                     // returning object to get null object, rs.getInt returns '0' on null value
                     Object object = rs.getObject(1);
                     if (object != null) {
+                        if (object instanceof Long) {
                         Long l = (Long) object;
                         answer.add(l.intValue());
+                        } else if (object instanceof Integer) {
+                            Integer in = (Integer) object;
+                            answer.add(in);
+                        }
                     } else {
                         answer.add(null);
                     }
