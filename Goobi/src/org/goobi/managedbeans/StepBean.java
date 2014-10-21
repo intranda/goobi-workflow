@@ -62,10 +62,6 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-//import org.hibernate.Criteria;
-//import org.hibernate.Session;
-//import org.hibernate.criterion.Order;
-//import org.hibernate.criterion.Restrictions;
 
 import org.goobi.beans.Process;
 
@@ -363,8 +359,8 @@ public class StepBean extends BasicBean {
             }
 
             try {
-//                ProcessManager.saveProcess(s.getProzess());
-                  StepManager.saveStep(s);
+                //                ProcessManager.saveProcess(s.getProzess());
+                StepManager.saveStep(s);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
                 myLogger.error("step couldn't get saved", e);
@@ -495,16 +491,19 @@ public class StepBean extends BasicBean {
                 }
             }
         }
-
-        for (ProcessProperty prop : processPropertyList) {
-            if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue().equals(""))) {
-                Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " " + Helper.getTranslation("requiredValue"));
-                return "";
-            } else if (!prop.isValid()) {
-                List<String> parameter = new ArrayList<String>();
-                parameter.add(prop.getName());
-                Helper.setFehlerMeldung(Helper.getTranslation("PropertyValidation", parameter));
-                return "";
+        if (processPropertyList != null) {
+            for (ProcessProperty prop : processPropertyList) {
+                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
+                        && (prop.getValue() == null || prop.getValue().equals(""))) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " "
+                            + Helper.getTranslation("requiredValue"));
+                    return "";
+                } else if (!prop.isValid()) {
+                    List<String> parameter = new ArrayList<String>();
+                    parameter.add(prop.getName());
+                    Helper.setFehlerMeldung(Helper.getTranslation("PropertyValidation", parameter));
+                    return "";
+                }
             }
         }
 
@@ -803,15 +802,15 @@ public class StepBean extends BasicBean {
             if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
                 step.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
-                mySchritt.setBearbeitungszeitpunkt(new Date());
+                step.setBearbeitungszeitpunkt(new Date());
                 User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 if (ben != null) {
-                    mySchritt.setBearbeitungsbenutzer(ben);
+                    step.setBearbeitungsbenutzer(ben);
                 }
                 step.setBearbeitungsbeginn(new Date());
                 Process proz = step.getProzess();
                 try {
-                    ProcessManager.saveProcess(proz);
+                    StepManager.saveStep(step);
                 } catch (DAOException e) {
                     Helper.setMeldung("fehlerNichtSpeicherbar" + proz.getTitel());
                 }
@@ -831,15 +830,15 @@ public class StepBean extends BasicBean {
             if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
                 step.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
-                mySchritt.setBearbeitungszeitpunkt(new Date());
+                step.setBearbeitungszeitpunkt(new Date());
                 User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 if (ben != null) {
-                    mySchritt.setBearbeitungsbenutzer(ben);
+                    step.setBearbeitungsbenutzer(ben);
                 }
                 step.setBearbeitungsbeginn(new Date());
                 Process proz = step.getProzess();
                 try {
-                    ProcessManager.saveProcess(proz);
+                    StepManager.saveStep(step);
                 } catch (DAOException e) {
                     Helper.setMeldung("fehlerNichtSpeicherbar" + proz.getTitel());
                 }
@@ -943,9 +942,9 @@ public class StepBean extends BasicBean {
                 Helper.setFehlerMeldung("Plugin could not be found", this.mySchritt.getStepPlugin());
             } else {
                 myPlugin.initialize(mySchritt, "/task_edit");
-//                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
-//                    runPlugin();
-//                }
+                //                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
+                //                    runPlugin();
+                //                }
             }
         }
     }
@@ -956,8 +955,8 @@ public class StepBean extends BasicBean {
 
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
             myLogger.debug("Plugin is full GUI");
-            String mypath =  myPlugin.getPagePath();
-//            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
+            String mypath = myPlugin.getPagePath();
+            //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
             myLogger.debug("open plugin GUI: " + mypath);
             myPlugin.execute();
             return mypath;
