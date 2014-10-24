@@ -45,6 +45,7 @@ import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -62,7 +63,6 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -759,8 +759,8 @@ public class StepBean extends BasicBean {
         return "";
     }
 
-    @SuppressWarnings("unchecked")
     public String UploadFromHomeAlle() throws NumberFormatException, DAOException {
+
         List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
         List<String> geprueft = new ArrayList<String>();
         /*
@@ -770,16 +770,15 @@ public class StepBean extends BasicBean {
             this.nurOffeneSchritte = false;
             FilterAlleStart();
         }
-        for (Iterator<String> iter = fertigListe.iterator(); iter.hasNext();) {
-            String element = iter.next();
+        for (String element : fertigListe) {
             String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
+            
 
-            for (Iterator<Step> iterator = (Iterator<Step>) this.paginator.getCompleteList().iterator(); iterator.hasNext();) {
-                Step step = iterator.next();
-                /*
-                 * nur wenn der Schritt bereits im Bearbeitungsmodus ist, abschliessen
-                 */
-                if (step.getProzess().getId().intValue() == Integer.parseInt(myID) && step.getBearbeitungsstatusEnum() == StepStatus.INWORK) {
+            String sql = FilterHelper.criteriaBuilder("id:" + myID, false, false, false, false, false, true);
+            List<Step> stepList = StepManager.getSteps(getSortierung(), sql);
+
+            for (Step step : stepList) {
+                if (step.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
                     this.mySchritt = step;
                     if (SchrittDurchBenutzerAbschliessen() != "") {
                         geprueft.add(element);
@@ -791,7 +790,7 @@ public class StepBean extends BasicBean {
 
         this.myDav.removeFromHomeAlle(geprueft, DONEDIRECTORYNAME);
         Helper.setMeldung(null, "removed " + geprueft.size() + " directories from user home:", DONEDIRECTORYNAME);
-        return "";
+        return FilterAlleStart();
     }
 
     @SuppressWarnings("unchecked")
@@ -819,7 +818,7 @@ public class StepBean extends BasicBean {
         }
         // calcHomeImages();
         Helper.setMeldung(null, "Created directies in user home", "");
-        return "";
+        return FilterAlleStart();
     }
 
     @SuppressWarnings("unchecked")
@@ -847,7 +846,7 @@ public class StepBean extends BasicBean {
         }
         // calcHomeImages();
         Helper.setMeldung(null, "Created directories in user home", "");
-        return "";
+        return FilterAlleStart();
     }
 
     public String getScriptPath() {
