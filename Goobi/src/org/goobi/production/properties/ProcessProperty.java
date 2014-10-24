@@ -333,6 +333,7 @@ public class ProcessProperty implements IProperty, Serializable {
 		p.setShowStepConditions(new ArrayList<ShowStepCondition>(getShowStepConditions()));
 		p.setPossibleValues(new ArrayList<String>(getPossibleValues()));
 		p.setProjects(new ArrayList<String>(getProjects()));
+		p.setCurrentStepAccessCondition(currentStepAccessCondition);
 		return p;
 	}
 

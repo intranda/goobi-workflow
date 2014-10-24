@@ -207,6 +207,7 @@ public class ProzesskopieForm {
         this.naviFirstPage = "process_new1";
         if (this.opacKatalog.equals("")) {
             this.opacKatalog = cp.getParamString("createNewProcess.opac.catalogue");
+            opacSuchfeld = cp.getParamString("createNewProcess.opac.catalogue[@searchfield]", "12");
         }
 
         /*
