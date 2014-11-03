@@ -1502,6 +1502,7 @@ public class Metadaten {
      * mögliche Docstructs als Nachbar zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsNachbar() {
+
         return this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
     }
 
