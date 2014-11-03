@@ -50,7 +50,7 @@ public enum TimeUnit {
     months("3", "months", "month", "month", true, 21.3),
     quarters("4", "quarters", "quarter", "quarter", true, 64.0),
     years("5", "years", "year", "year", true, 256.0),
-    simpleSum("6", "alltime", null, null, false, -1.0);
+    simpleSum("6", "alltime", "alltime", "alltime", false, -1.0);
 
     private String id;
     private String title;
