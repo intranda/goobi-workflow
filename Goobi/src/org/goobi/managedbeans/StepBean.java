@@ -249,7 +249,7 @@ public class StepBean extends BasicBean {
             this.mySchritt.setBearbeitungsstatusEnum(StepStatus.INWORK);
             this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
             mySchritt.setBearbeitungszeitpunkt(new Date());
-            User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User ben = Helper.getCurrentUser();
             if (ben != null) {
                 mySchritt.setBearbeitungsbenutzer(ben);
             }
@@ -328,7 +328,7 @@ public class StepBean extends BasicBean {
                 s.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 s.setBearbeitungszeitpunkt(new Date());
-                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                User ben = Helper.getCurrentUser();
                 if (ben != null) {
                     s.setBearbeitungsbenutzer(ben);
                     s.setUserId(ben.getId());
@@ -420,7 +420,7 @@ public class StepBean extends BasicBean {
         }
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -559,7 +559,7 @@ public class StepBean extends BasicBean {
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.LOCKED);
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -659,7 +659,7 @@ public class StepBean extends BasicBean {
         this.mySchritt.setBearbeitungsende(now);
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -733,7 +733,7 @@ public class StepBean extends BasicBean {
 
     public String UploadFromHome() {
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -749,7 +749,7 @@ public class StepBean extends BasicBean {
 
         }
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -771,7 +771,6 @@ public class StepBean extends BasicBean {
         }
         for (String element : fertigListe) {
             String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
-            
 
             String sql = FilterHelper.criteriaBuilder("id:" + myID, false, false, false, false, false, true);
             List<Step> stepList = StepManager.getSteps(getSortierung(), sql);
@@ -794,6 +793,7 @@ public class StepBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public String DownloadToHomePage() {
+        User ben = Helper.getCurrentUser();
 
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getList().iterator(); iter.hasNext();) {
             Step step = iter.next();
@@ -801,9 +801,10 @@ public class StepBean extends BasicBean {
                 step.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 step.setBearbeitungszeitpunkt(new Date());
-                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 if (ben != null) {
                     step.setBearbeitungsbenutzer(ben);
+                } else {
+                    step.setBearbeitungsbenutzer(null);
                 }
                 step.setBearbeitungsbeginn(new Date());
                 Process proz = step.getProzess();
@@ -822,6 +823,7 @@ public class StepBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public String DownloadToHomeHits() {
+        User ben = Helper.getCurrentUser();
 
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getCompleteList().iterator(); iter.hasNext();) {
             Step step = iter.next();
@@ -829,9 +831,10 @@ public class StepBean extends BasicBean {
                 step.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 step.setBearbeitungszeitpunkt(new Date());
-                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 if (ben != null) {
                     step.setBearbeitungsbenutzer(ben);
+                } else {
+                    step.setBearbeitungsbenutzer(null);
                 }
                 step.setBearbeitungsbeginn(new Date());
                 Process proz = step.getProzess();
@@ -889,7 +892,8 @@ public class StepBean extends BasicBean {
     public void calcHomeImages() {
         this.gesamtAnzahlImages = 0;
         this.pageAnzahlImages = 0;
-        User aktuellerBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User aktuellerBenutzer = Helper.getCurrentUser();
+
         if (aktuellerBenutzer != null && aktuellerBenutzer.isMitMassendownload()) {
             for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getCompleteList().iterator(); iter.hasNext();) {
                 Step step = iter.next();
