@@ -3597,13 +3597,12 @@ public class Metadaten {
         for (TreeNode node : currentNode.getChildren()) {
             TreeNodeStruct3 tns = (TreeNodeStruct3) node;
             if (node.isSelected()) {
-                selectdElements.add(tns.getStruct());
+                selectdElements.add(tns.getStruct().copy(true, false));
             }
             if (tns.getChildren() != null && !tns.getChildren().isEmpty()) {
                 selectdElements.addAll(getSelectedElements(tns));
             }
         }
-
         return selectdElements;
     }
 
@@ -3617,6 +3616,7 @@ public class Metadaten {
             for (Reference ref : clone) {
                 docStructFromFilteredProcess.removeReferenceTo(ref.getTarget());
             }
+            
             this.tempStrukturelement.addChild(docStructFromFilteredProcess);
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
