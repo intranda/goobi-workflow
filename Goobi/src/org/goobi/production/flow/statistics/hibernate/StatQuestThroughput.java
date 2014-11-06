@@ -431,7 +431,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 					dataRow.setName(new Converter(objArr[1]).getString() + "");
 				}
 				dataRow.addValue(
-				        new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[2]).getDouble());
+				        new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[0]).getDouble());
 //						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
 //						(new Converter(objArr[0]).getDouble()));
 
