@@ -222,9 +222,10 @@ public class MetadatenHelper implements Comparator<Object> {
         // break;
         // }
         // }
+        newDocstruct.setParent(inOldDocstruct.getParent());
+
         int index = inOldDocstruct.getParent().getAllChildren().indexOf(inOldDocstruct);
         inOldDocstruct.getParent().getAllChildren().add(index, newDocstruct);
-
         /*
          * -------------------------------- altes Docstruct vom Parent entfernen und neues als aktuelles nehmen --------------------------------
          */
