@@ -212,12 +212,9 @@ public class Metadaten {
     private boolean tiffFolderHasChanged = true;
     private List<String> dataList = new ArrayList<String>();
 
-
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
-    
-    
     /**
      * Konstruktor ================================================================
      */
@@ -287,17 +284,40 @@ public class Metadaten {
     }
 
     public String Reload() {
+
+//        try {
+//            Thread.sleep(1000l);
+//        } catch (InterruptedException e1) {
+//            myLogger.error(e1);
+//        }
+        
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return "SperrungAbgelaufen";
         } else {
-            calculateMetadataAndImages();
-            cleanupMetadata();
-            // ignoring result of store operation
-            storeMetadata();
+            try {
+
+                this.myProzess.writeMetadataFile(this.gdzfile);
+            } catch (Exception e) {
+                Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+                myLogger.error(e);
+            }
             MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
             return "";
         }
     }
+
+    //    public String Reload() {
+    //        if (!SperrungAktualisieren()) {
+    //            return "metseditor_timeout";
+    //        } else {
+    //            calculateMetadataAndImages();
+    //            cleanupMetadata();
+    //            // ignoring result of store operation
+    //            storeMetadata();
+    //            MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+    //            return "";
+    //        }
+    //    }
 
     public String CopyGroup() {
         MetadataGroup newMetadataGroup;
@@ -937,11 +957,96 @@ public class Metadaten {
         }
     }
 
-    private void calculateMetadataAndImages() {
+//    private void calculateMetadataAndImages() {
+//
+//        /*
+//         * für den Prozess nochmal die Metadaten durchlaufen und die Daten speichern
+//         */
+//        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+//
+//        this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
+//        this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
+//        try {
+//            this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory(true))));
+//            ProcessManager.saveProcess(this.myProzess);
+//        } catch (DAOException e) {
+//            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+//            myLogger.error(e);
+//        } catch (Exception e) {
+//            Helper.setFehlerMeldung("error while counting current images", e);
+//            myLogger.error(e);
+//        }
+//    }
 
-        /*
-         * für den Prozess nochmal die Metadaten durchlaufen und die Daten speichern
-         */
+//    private void cleanupMetadata() {
+//        /*
+//         * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
+//         */
+//        this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
+//
+//        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+//            boolean match = false;
+//            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+//                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+//                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+//                    if (md.getType().getName().equals("_representative")) {
+//                        Integer value = new Integer(currentRepresentativePage);
+//                        md.setValue(String.valueOf(value + 1));
+//                        match = true;
+//                    }
+//                }
+//            }
+//            if (!match) {
+//                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+//                try {
+//                    Metadata md = new Metadata(mdt);
+//                    Integer value = new Integer(currentRepresentativePage);
+//                    md.setValue(String.valueOf(value + 1));
+//                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+//                } catch (MetadataTypeNotAllowedException e) {
+//
+//                }
+//
+//            }
+//        }
+//    }
+
+    public boolean isCheckForRepresentative() {
+        MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+        if (mdt != null) {
+            return true;
+        }
+        return false;
+    }
+
+//    private boolean storeMetadata() {
+//        boolean result = true;
+//        try {
+//            if (!new MetadatenVerifizierung().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
+//                return false;
+//            }
+//            this.myProzess.writeMetadataFile(this.gdzfile);
+//        } catch (Exception e) {
+//            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+//            myLogger.error(e);
+//            result = false;
+//
+//        }
+//        return result;
+//    }
+
+    /**
+     * Metadaten Schreiben
+     * 
+     * @throws InterruptedException
+     * @throws IOException ============================================================ == ==
+     * @throws DAOException
+     * @throws SwapException
+     * @throws WriteException
+     * @throws PreferencesException
+     */
+    public String XMLschreiben() {
+
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
@@ -956,12 +1061,11 @@ public class Metadaten {
             Helper.setFehlerMeldung("error while counting current images", e);
             myLogger.error(e);
         }
-    }
-
-    private void cleanupMetadata() {
+        /* xml-Datei speichern */
+        // MetadatenDebuggen(gdzfile.getDigitalDocument().getLogicalDocStruct());
         /*
          * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
-         */
+          */
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
 
         if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
@@ -989,59 +1093,36 @@ public class Metadaten {
 
             }
         }
-    }
-
-    public boolean isCheckForRepresentative() {
-        MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-        if (mdt != null) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean storeMetadata() {
-        boolean result = true;
+        
         try {
-            if (!new MetadatenVerifizierung().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
-                return false;
-            }
+            // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
+            // return false;
+            // }
             this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
             myLogger.error(e);
-            result = false;
-
-        }
-        return result;
-    }
-
-    /**
-     * Metadaten Schreiben
-     * 
-     * @throws InterruptedException
-     * @throws IOException ============================================================ == ==
-     * @throws DAOException
-     * @throws SwapException
-     * @throws WriteException
-     * @throws PreferencesException
-     */
-    public String XMLschreiben() {
-
-        calculateMetadataAndImages();
-
-        cleanupMetadata();
-
-        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
-            reOrderPagination();
-        }
-
-        if (!storeMetadata()) {
             return "Metadaten";
         }
-
         SperrungAufheben();
         return this.zurueck;
     }
+
+    //        calculateMetadataAndImages();
+    //
+    //        cleanupMetadata();
+    //
+    //        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
+    //            reOrderPagination();
+    //        }
+    //
+    //        if (!storeMetadata()) {
+    //            return "Metadaten";
+    //        }
+    //
+    //        SperrungAufheben();
+    //        return this.zurueck;
+    //    }
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -1476,13 +1557,12 @@ public class Metadaten {
                 }
             }
         }
-    
-        
+
         if (!this.pagesStart.equals("") && !this.pagesEnd.equals("")) {
             DocStruct temp = this.myDocStruct;
             this.myDocStruct = ds;
             this.ajaxSeiteStart = this.pagesStart;
-            this.ajaxSeiteEnde = this.pagesEnd;          
+            this.ajaxSeiteEnde = this.pagesEnd;
 
             AjaxSeitenStartUndEndeSetzen();
             this.myDocStruct = temp;
@@ -2186,7 +2266,7 @@ public class Metadaten {
      * ================================================================
      */
     public String AddAdditionalOpacPpns() {
-        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\r\n");
+        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\n");
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
@@ -2211,7 +2291,7 @@ public class Metadaten {
      * ================================================================
      */
     public String AddMetadaFromOpacPpn() {
-        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\r\n");
+        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\n");
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
@@ -3616,7 +3696,7 @@ public class Metadaten {
             for (Reference ref : clone) {
                 docStructFromFilteredProcess.removeReferenceTo(ref.getTarget());
             }
-            
+
             this.tempStrukturelement.addChild(docStructFromFilteredProcess);
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
