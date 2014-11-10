@@ -257,7 +257,9 @@ public class BatchBean extends BasicBean {
     }
 
     public String downloadDocket() {
-        logger.debug("generate docket for process list");
+         if (logger.isDebugEnabled()) {
+             logger.debug("generate docket for process list");
+         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         File xsltfile = new File(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();

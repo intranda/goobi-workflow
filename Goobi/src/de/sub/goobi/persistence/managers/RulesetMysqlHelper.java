@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -49,7 +50,9 @@ class RulesetMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
             return ret;
         } finally {
@@ -65,7 +68,9 @@ class RulesetMysqlHelper implements Serializable {
         sql.append("SELECT * FROM metadatenkonfigurationen");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
             return ret;
         } finally {
@@ -84,7 +89,9 @@ class RulesetMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
@@ -100,7 +107,9 @@ class RulesetMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] params = { rulesetId };
-            logger.debug(sql.toString() + ", " + rulesetId);
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + rulesetId);
+            }
             Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, params);
             return ret;
         } finally {
@@ -120,27 +129,31 @@ class RulesetMysqlHelper implements Serializable {
             if (ro.getId() == null) {
                 String propNames = "Titel, Datei, orderMetadataByRuleset";
                 String propValues = "?,? ,?";
-                Object[] param = {ro.getTitel(),ro.getDatei(), ro.isOrderMetadataByRuleset() };
-                
+                Object[] param = { ro.getTitel(), ro.getDatei(), ro.isOrderMetadataByRuleset() };
+
                 sql.append("INSERT INTO metadatenkonfigurationen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
 
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                }
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
                 }
             } else {
-                Object[] param = {ro.getTitel(),ro.getDatei(), ro.isOrderMetadataByRuleset() };
+                Object[] param = { ro.getTitel(), ro.getDatei(), ro.isOrderMetadataByRuleset() };
                 sql.append("UPDATE metadatenkonfigurationen SET ");
                 sql.append("Titel = ?, ");
                 sql.append("Datei = ?, ");
                 sql.append("orderMetadataByRuleset = ?");
                 sql.append(" WHERE MetadatenKonfigurationID = " + ro.getId() + ";");
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                }
                 run.update(connection, sql.toString(), param);
             }
         } finally {
@@ -157,7 +170,9 @@ class RulesetMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM metadatenkonfigurationen WHERE MetadatenKonfigurationID = " + ro.getId() + ";";
-                logger.debug(sql);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql);
+                }
                 run.update(connection, sql);
             } finally {
                 if (connection != null) {

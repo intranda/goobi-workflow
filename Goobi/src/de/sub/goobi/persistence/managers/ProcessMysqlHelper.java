@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -165,7 +166,9 @@ class ProcessMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             if (filter != null && !filter.isEmpty()) {
                 return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             } else {
@@ -193,7 +196,9 @@ class ProcessMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Process> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             return ret;
@@ -219,7 +224,9 @@ class ProcessMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Integer> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
             return ret;
@@ -236,7 +243,9 @@ class ProcessMysqlHelper implements Serializable {
         sql.append("SELECT * FROM prozesse");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             return ret;
         } finally {
@@ -298,7 +307,9 @@ class ProcessMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
@@ -542,7 +553,9 @@ class ProcessMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Integer> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
 
@@ -629,7 +642,9 @@ class ProcessMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
             Object[] param = { numberOfFiles, processId };
             sql.append("UPDATE prozesse SET sortHelperImages = ? WHERE ProzesseID = ?");
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             run.update(connection, sql.toString(), param);
         } finally {
             if (connection != null) {
@@ -647,7 +662,9 @@ class ProcessMysqlHelper implements Serializable {
             Object[] param = { logValue, processId };
 
             sql.append("UPDATE prozesse SET wikifield = ? WHERE ProzesseID = ?");
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             run.update(connection, sql.toString(), param);
         } finally {
             if (connection != null) {
@@ -665,7 +682,9 @@ class ProcessMysqlHelper implements Serializable {
             Object[] param = { value, processId };
 
             sql.append("UPDATE prozesse SET sortHelperStatus = ? WHERE ProzesseID = ?");
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             run.update(connection, sql.toString(), param);
         } finally {
             if (connection != null) {

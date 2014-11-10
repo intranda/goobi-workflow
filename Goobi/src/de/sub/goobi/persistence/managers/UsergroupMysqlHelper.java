@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -50,7 +51,9 @@ class UsergroupMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
             return ret;
         } finally {
@@ -74,7 +77,9 @@ class UsergroupMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
@@ -89,7 +94,9 @@ class UsergroupMysqlHelper implements Serializable {
         sql.append("SELECT * FROM benutzergruppen WHERE BenutzergruppenID = " + id);
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
             return ret;
         } finally {
@@ -115,7 +122,9 @@ class UsergroupMysqlHelper implements Serializable {
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                }
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     ro.setId(id);
@@ -126,7 +135,9 @@ class UsergroupMysqlHelper implements Serializable {
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ? ");
                 sql.append(" WHERE BenutzergruppenID = " + ro.getId() + ";");
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                }
 
                 run.update(connection, sql.toString(), param);
             }
@@ -144,7 +155,9 @@ class UsergroupMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM benutzergruppen WHERE BenutzergruppenID = " + ro.getId() + ";";
-                logger.debug(sql);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql);
+                }
                 run.update(connection, sql);
             } finally {
                 if (connection != null) {
@@ -162,7 +175,9 @@ class UsergroupMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
         } finally {
             if (connection != null) {

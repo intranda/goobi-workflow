@@ -85,54 +85,58 @@ public class HotfolderJob extends AbstractGoobiJob {
     public void execute() {
         // logger.error("TEST123");
         if (ConfigurationHelper.getInstance().isRunHotfolder()) {
-            logger.trace("1");
+//            logger.trace("1");
             List<GoobiHotfolder> hotlist = GoobiHotfolder.getInstances();
-            logger.trace("2");
+//            logger.trace("2");
             for (GoobiHotfolder hotfolder : hotlist) {
-                logger.trace("3");
+//                logger.trace("3");
                 List<File> list = hotfolder.getCurrentFiles();
-                logger.trace("4");
+//                logger.trace("4");
                 long size = getSize(list);
-                logger.trace("5");
+//                logger.trace("5");
                 try {
                     if (size > 0) {
                         if (!hotfolder.isLocked()) {
 
-                            logger.trace("6");
+//                            logger.trace("6");
                             Thread.sleep(10000);
-                            logger.trace("7");
+//                            logger.trace("7");
                             list = hotfolder.getCurrentFiles();
-                            logger.trace("8");
+//                            logger.trace("8");
                             if (size == getSize(list)) {
                                 hotfolder.lock();
-                                logger.trace("9");
+//                                logger.trace("9");
                                 Process template = ProcessManager.getProcessById(hotfolder.getTemplate());
                                 //								dao.refresh(template);
-                                logger.trace("10");
+//                                logger.trace("10");
                                 List<String> metsfiles = hotfolder.getFileNamesByFilter(GoobiHotfolder.filter);
-                                logger.trace("11");
+//                                logger.trace("11");
                                 HashMap<String, Integer> failedData = new HashMap<String, Integer>();
-                                logger.trace("12");
+//                                logger.trace("12");
 
                                 for (String filename : metsfiles) {
-                                    logger.debug("found file: " + filename);
-                                    logger.trace("13");
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("found file: " + filename);
+                                    }
+//                                    logger.trace("13");
 
                                     int returnValue =
                                             generateProcess(filename, template, hotfolder.getFolderAsFile(), hotfolder.getCollection(), hotfolder
                                                     .getUpdateStrategy());
-                                    logger.trace("14");
+//                                    logger.trace("14");
                                     if (returnValue != 0) {
-                                        logger.trace("15");
+//                                        logger.trace("15");
                                         failedData.put(filename, returnValue);
-                                        logger.trace("16");
+//                                        logger.trace("16");
                                     } else {
-                                        logger.debug("finished file: " + filename);
+                                        if (logger.isDebugEnabled()) {
+                                            logger.debug("finished file: " + filename);
+                                        }
                                     }
                                 }
                                 if (!failedData.isEmpty()) {
                                     // // TODO Errorhandling
-                                    logger.trace("17");
+//                                    logger.trace("17");
                                     for (String filename : failedData.keySet()) {
                                         File oldFile = new File(hotfolder.getFolderAsFile(), filename);
                                         if (oldFile.exists()) {
@@ -145,15 +149,15 @@ public class HotfolderJob extends AbstractGoobiJob {
                                 hotfolder.unlock();
                             }
                         } else {
-                            logger.trace("18");
+//                            logger.trace("18");
                             return;
                         }
-                        logger.trace("19");
+//                        logger.trace("19");
                     }
 
                 } catch (InterruptedException e) {
                     logger.error(e);
-                    logger.trace("20");
+//                    logger.trace("20");
                     //				} catch (DAOException e) {
                     //					logger.error(e);
                     //					logger.trace("21");

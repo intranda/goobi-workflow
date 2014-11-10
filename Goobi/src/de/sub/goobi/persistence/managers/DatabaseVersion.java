@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -35,7 +36,9 @@ public class DatabaseVersion {
         sql.append("SELECT * FROM databaseversion");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             int currentValue = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             return currentValue;
         } catch (SQLException e) {
@@ -55,27 +58,38 @@ public class DatabaseVersion {
     public static void updateDatabase(int currentVersion) {
         switch (currentVersion) {
             case 0:
-                logger.debug("Update database to version 1.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 1.");
+                }
                 updateToVersion1();
                 currentVersion = 1;
             case 1:
-                logger.debug("Update database to version 2.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 2.");
+                }
                 updateToVersion2();
             case 2:
-                logger.debug("Update database to version 3.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 3.");
+                }
                 updateToVersion3();
             case 3:
             case 4:
-                logger.debug("Update database to version 5.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 5.");
+                }
                 updateToVersion5();
             case 5:
-                logger.debug("Update database to version 6.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 6.");
+                }
                 updateToVersion6();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
-                logger.debug("Database is up to date.");
-
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Database is up to date.");
+                }
         }
     }
 
@@ -161,7 +175,9 @@ public class DatabaseVersion {
         sql.append("INSERT INTO databaseversion (version)  VALUES  (1)");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "CREATE TABLE databaseversion (version int(11))");
             runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
@@ -218,7 +234,9 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(tableMetadata);
+            if (logger.isDebugEnabled()) {
+                logger.debug(tableMetadata);
+            }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, tableMetadata);
         } catch (SQLException e) {
@@ -241,7 +259,9 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(utf8);
+            if (logger.isDebugEnabled()) {
+                logger.debug(utf8);
+            }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, utf8);
             runner.update(connection, index);

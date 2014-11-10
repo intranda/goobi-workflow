@@ -77,7 +77,7 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 @SessionScoped
 public class ProjectBean extends BasicBean {
     private static final long serialVersionUID = 6735912903249358786L;
-    private static final Logger myLogger = Logger.getLogger(ProjectBean.class);
+    private static final Logger logger = Logger.getLogger(ProjectBean.class);
 
     private Project myProjekt = new Project();
     private ProjectFileGroup myFilegroup;
@@ -174,7 +174,7 @@ public class ProjectBean extends BasicBean {
 
     public String Apply() {
         // call this to make saving and deleting permanent
-        myLogger.trace("Apply wird aufgerufen...");
+        logger.trace("Apply wird aufgerufen...");
         this.commitFileGroups();
         try {
             ProjectManager.saveProject(this.myProjekt);
@@ -234,7 +234,7 @@ public class ProjectBean extends BasicBean {
             try {
                 ProjectManager.saveProject(myProjekt);
             } catch (DAOException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
         }
         ProjectManager.saveProjectFileGroup(myFilegroup);
@@ -491,7 +491,7 @@ public class ProjectBean extends BasicBean {
         DateTime start = new DateTime(this.myProjekt.getStartDate().getTime());
         DateTime end = new DateTime(this.myProjekt.getEndDate().getTime());
         Weeks weeks = Weeks.weeksBetween(start, end);
-        myLogger.trace(weeks.getWeeks());
+        logger.trace(weeks.getWeeks());
         int days = (weeks.getWeeks() * 5);
 
         if (days < 1) {
@@ -609,7 +609,9 @@ public class ProjectBean extends BasicBean {
             try {
                 ImageIO.write(bi, "png", outputfile);
             } catch (IOException e) {
-                myLogger.debug("couldn't write project progress chart to file", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("couldn't write project progress chart to file", e);
+                }
             }
         }
     }
@@ -757,7 +759,7 @@ public class ProjectBean extends BasicBean {
                 }
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                myLogger.error(e);
+                logger.error(e);
             }
         } else {
             myProjekt = null;

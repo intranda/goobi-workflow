@@ -824,7 +824,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
-        logger.debug("current meta.xml file type for id " + getId() + ": " + type);
+        if (logger.isDebugEnabled()) {
+            logger.debug("current meta.xml file type for id " + getId() + ": " + type);
+        }
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
 
         if (ff == null) {
@@ -867,7 +869,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 bfr.performBackup();
             }
         } else {
-            logger.debug("No backup configured for meta data files.");
+            if (logger.isDebugEnabled()) {
+                logger.debug("No backup configured for meta data files.");
+            }
         }
         //            format = ConfigMain.getParameter("formatOfMetaBackups");
         //        }
@@ -880,7 +884,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
         FilenameFilter filter = new FileListFilter(FORMAT);
         File metaFilePath = new File(getProcessDataDirectory());
-        File metadataFile = new File (getMetadataFilePath());
+        File metadataFile = new File(getMetadataFilePath());
         if (!metadataFile.exists()) {
             return;
         }
@@ -954,8 +958,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         MetadataManager.updateMetadata(id, metadata);
     }
 
-
-
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
             PreferencesException {
         inFile.write(getTemplateFilePath());
@@ -966,7 +968,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (new File(getTemplateFilePath()).exists()) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
-            logger.debug("current template.xml file type: " + type);
+            if (logger.isDebugEnabled()) {
+                logger.debug("current template.xml file type: " + type);
+            }
             ff = MetadatenHelper.getFileformatByName(type, regelsatz);
             //            if (type.equals("mets")) {
             //                ff = new MetsMods(this.regelsatz.getPreferences());
@@ -1056,7 +1060,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String downloadDocket() {
 
-        logger.debug("generate docket for process " + this.id);
+        if (logger.isDebugEnabled()) {
+            logger.debug("generate docket for process " + this.id);
+        }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         File xsltfile = new File(rootpath, "docket.xsl");
         if (docket != null) {

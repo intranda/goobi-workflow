@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -53,7 +54,9 @@ class StepMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql + ", " + Arrays.toString(param));
+            }
             List<Step> list = new QueryRunner().query(connection, sql, resultSetToStepListHandler, param);
             return list;
         } finally {
@@ -73,7 +76,9 @@ class StepMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             if (filter != null && !filter.isEmpty()) {
                 return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             } else {
@@ -103,7 +108,9 @@ class StepMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Step> ret = null;
             if (filter != null && !filter.isEmpty()) {
                 ret = new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
@@ -324,7 +331,9 @@ class StepMysqlHelper implements Serializable {
         sql.append("SELECT * FROM schritte");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Step> ret = new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
             return ret;
         } finally {
@@ -371,7 +380,9 @@ class StepMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                }
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     property.setId(id);
@@ -438,7 +449,9 @@ class StepMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
@@ -455,14 +468,14 @@ class StepMysqlHelper implements Serializable {
             o.setProcessId(o.getProzess().getId());
         }
 
-//        if (o.getUserId() == null && o.getBearbeitungsbenutzer() != null) {
-//            o.setUserId(o.getBearbeitungsbenutzer().getId());
-//        }
+        //        if (o.getUserId() == null && o.getBearbeitungsbenutzer() != null) {
+        //            o.setUserId(o.getBearbeitungsbenutzer().getId());
+        //        }
 
         if (o.getBearbeitungsbenutzer() != null) {
             o.setUserId(o.getBearbeitungsbenutzer().getId());
         }
-                
+
         if (includeID) {
             Object[] param =
                     {
@@ -794,7 +807,9 @@ class StepMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             List<Integer> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
 
@@ -819,7 +834,9 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
@@ -919,7 +936,9 @@ class StepMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] params = { stepId };
-            logger.debug(sql.toString() + ", " + stepId);
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + stepId);
+            }
             List<String> ret = new QueryRunner().query(connection, sql.toString(), resultSetToScriptsHandler, params);
             return ret;
         } finally {

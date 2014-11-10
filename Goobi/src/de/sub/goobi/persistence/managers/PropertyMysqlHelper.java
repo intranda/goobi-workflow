@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -318,7 +319,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            }
             Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 pe.setId(id);
@@ -371,7 +374,9 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
@@ -385,7 +390,9 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
@@ -399,7 +406,9 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            logger.debug(sql.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {

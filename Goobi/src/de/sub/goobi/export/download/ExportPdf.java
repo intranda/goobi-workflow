@@ -68,138 +68,141 @@ import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 public class ExportPdf extends ExportMets {
 
-	@Override
-	public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-			WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-			SwapException, DAOException, TypeNotAllowedForParentException {
+    @Override
+    public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
-		/*
-		 * -------------------------------- Read Document --------------------------------
-		 */
-		Fileformat gdzfile = myProzess.readMetadataFile();
-		String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-		this.myPrefs = myProzess.getRegelsatz().getPreferences();
+        /*
+         * -------------------------------- Read Document --------------------------------
+         */
+        Fileformat gdzfile = myProzess.readMetadataFile();
+        String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+        this.myPrefs = myProzess.getRegelsatz().getPreferences();
 
-		/*
-		 * -------------------------------- first of all write mets-file in images-Folder of process --------------------------------
-		 */
-		new File("");
-		File metsTempFile = File.createTempFile(myProzess.getTitel(), ".xml");
-		writeMetsFile(myProzess, metsTempFile.toString(), gdzfile, true);
-		Helper.setMeldung(null, myProzess.getTitel() + ": ", "mets file created");
-		Helper.setMeldung(null, myProzess.getTitel() + ": ", "start pdf generation now");
+        /*
+         * -------------------------------- first of all write mets-file in images-Folder of process --------------------------------
+         */
+        new File("");
+        File metsTempFile = File.createTempFile(myProzess.getTitel(), ".xml");
+        writeMetsFile(myProzess, metsTempFile.toString(), gdzfile, true);
+        Helper.setMeldung(null, myProzess.getTitel() + ": ", "mets file created");
+        Helper.setMeldung(null, myProzess.getTitel() + ": ", "start pdf generation now");
+        if (logger.isDebugEnabled()) {
+            logger.debug("METS file created: " + metsTempFile);
+        }
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
+        String fullpath = req.getRequestURL().toString();
+        String servletpath = context.getExternalContext().getRequestServletPath();
+        String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
-		myLogger.debug("METS file created: " + metsTempFile);
+        if (!ConfigurationHelper.getInstance().isPdfAsDownload()) {
+            /*
+             * -------------------------------- use contentserver api for creation of pdf-file --------------------------------
+             */
+            CreatePdfFromServletThread pdf = new CreatePdfFromServletThread();
+            pdf.setMetsURL(metsTempFile.toURI().toURL());
+            pdf.setTargetFolder(new File(zielVerzeichnis));
+            pdf.setInternalServletPath(myBasisUrl);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Taget directory: " + zielVerzeichnis);
+                logger.debug("Using ContentServer2 base URL: " + myBasisUrl);
+            }
+            pdf.initialize(myProzess);
+            pdf.start();
+        } else {
 
-		FacesContext context = FacesContextHelper.getCurrentFacesContext();
-		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
-		String fullpath = req.getRequestURL().toString();
-		String servletpath = context.getExternalContext().getRequestServletPath();
-		String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
+            GetMethod method = null;
+            try {
+                /*
+                 * -------------------------------- define path for mets and pdfs --------------------------------
+                 */
+                URL goobiContentServerUrl = null;
+                String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
+                Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 
-		if (!ConfigurationHelper.getInstance().isPdfAsDownload()) {
-			/*
-			 * -------------------------------- use contentserver api for creation of pdf-file --------------------------------
-			 */
-			CreatePdfFromServletThread pdf = new CreatePdfFromServletThread();
-			pdf.setMetsURL(metsTempFile.toURI().toURL());
-			pdf.setTargetFolder(new File(zielVerzeichnis));
-			pdf.setInternalServletPath(myBasisUrl);
-			myLogger.debug("Taget directory: " + zielVerzeichnis);
-			myLogger.debug("Using ContentServer2 base URL: " + myBasisUrl);
-			pdf.initialize(myProzess);
-			pdf.start();
-		} else {
+                /*
+                 * -------------------------------- using mets file --------------------------------
+                 */
 
-			GetMethod method = null;
-			try {
-				/*
-				 * -------------------------------- define path for mets and pdfs --------------------------------
-				 */
-				URL goobiContentServerUrl = null;
-				String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
-				Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
+                if (new MetadatenVerifizierung().validate(myProzess) && metsTempFile.toURI().toURL() != null) {
+                    /* if no contentserverurl defined use internal goobiContentServerServlet */
+                    if (contentServerUrl == null || contentServerUrl.length() == 0) {
+                        contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";
+                    }
+                    goobiContentServerUrl =
+                            new URL(contentServerUrl + metsTempFile.toURI().toURL() + "&targetFileName=" + myProzess.getTitel() + ".pdf");
+                    /*
+                     * -------------------------------- mets data does not exist or is invalid --------------------------------
+                     */
 
-				/*
-				 * -------------------------------- using mets file --------------------------------
-				 */
+                } else {
+                    if (contentServerUrl == null || contentServerUrl.length() == 0) {
+                        contentServerUrl = myBasisUrl + "/cs/cs?action=pdf&images=";
+                    }
+                    String url = "";
+                    FilenameFilter filter = new FileListFilter("\\d*\\.tif");
+                    File imagesDir = new File(myProzess.getImagesTifDirectory(true));
+                    File[] meta = imagesDir.listFiles(filter);
+                    ArrayList<String> filenames = new ArrayList<String>();
+                    for (File data : meta) {
+                        String file = "";
+                        file += data.toURI().toURL();
+                        filenames.add(file);
+                    }
+                    Collections.sort(filenames, new MetadatenHelper(null, null));
+                    for (String f : filenames) {
+                        url = url + f + "$";
+                    }
+                    String imageString = url.substring(0, url.length() - 1);
+                    String targetFileName = "&targetFileName=" + myProzess.getTitel() + ".pdf";
+                    goobiContentServerUrl = new URL(contentServerUrl + imageString + targetFileName);
 
-				if (new MetadatenVerifizierung().validate(myProzess) && metsTempFile.toURI().toURL() != null) {
-					/* if no contentserverurl defined use internal goobiContentServerServlet */
-					if (contentServerUrl == null || contentServerUrl.length() == 0) {
-						contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";
-					}
-					goobiContentServerUrl = new URL(contentServerUrl + metsTempFile.toURI().toURL() + "&targetFileName=" + myProzess.getTitel() + ".pdf");
-					/*
-					 * -------------------------------- mets data does not exist or is invalid --------------------------------
-					 */
+                }
 
-				} else {
-					if (contentServerUrl == null || contentServerUrl.length() == 0) {
-						contentServerUrl = myBasisUrl + "/cs/cs?action=pdf&images=";
-					}
-					String url = "";
-					FilenameFilter filter = new FileListFilter("\\d*\\.tif");
-					File imagesDir = new File(myProzess.getImagesTifDirectory(true));
-					File[] meta = imagesDir.listFiles(filter);
-					ArrayList<String> filenames = new ArrayList<String>();
-					for (File data : meta) {
-						String file = "";
-						file += data.toURI().toURL();
-						filenames.add(file);
-					}
-					Collections.sort(filenames, new MetadatenHelper(null, null));
-					for (String f : filenames) {
-						url = url + f + "$";
-					}
-					String imageString = url.substring(0, url.length() - 1);
-					String targetFileName = "&targetFileName=" + myProzess.getTitel() + ".pdf";
-					goobiContentServerUrl = new URL(contentServerUrl + imageString + targetFileName);
-					
-				}
+                /*
+                 * -------------------------------- get pdf from servlet and forward response to file --------------------------------
+                 */
 
-				/*
-				 * -------------------------------- get pdf from servlet and forward response to file --------------------------------
-				 */
+                method = new GetMethod(goobiContentServerUrl.toString());
+                method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
 
-				method = new GetMethod(goobiContentServerUrl.toString());
-				method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
+                if (!context.getResponseComplete()) {
+                    HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+                    String fileName = myProzess.getTitel() + ".pdf";
+                    ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+                    String contentType = servletContext.getMimeType(fileName);
+                    response.setContentType(contentType);
+                    response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+                    response.sendRedirect(goobiContentServerUrl.toString());
+                    context.responseComplete();
+                }
+                if (metsTempFile.toURI().toURL() != null) {
+                    File tempMets = new File(metsTempFile.toURI().toURL().toString());
+                    tempMets.delete();
+                }
+            } catch (Exception e) {
 
-				if (!context.getResponseComplete()) {
-					HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-					String fileName = myProzess.getTitel() + ".pdf";
-					ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
-					String contentType = servletContext.getMimeType(fileName);
-					response.setContentType(contentType);
-					response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
-					response.sendRedirect(goobiContentServerUrl.toString());
-					context.responseComplete();
-				}
-				if (metsTempFile.toURI().toURL() != null) {
-					File tempMets = new File(metsTempFile.toURI().toURL().toString());
-					tempMets.delete();
-				}
-			} catch (Exception e) {
-
-				/*
-				 * -------------------------------- report Error to User as Error-Log --------------------------------
-				 */
-				Writer output = null;
-				String text = "error while pdf creation: " + e.getMessage();
-				File file = new File(zielVerzeichnis, myProzess.getTitel() + ".PDF-ERROR.log");
-				try {
-					output = new BufferedWriter(new FileWriter(file));
-					output.write(text);
-					output.close();
-				} catch (IOException e1) {
-				}
-				return false;
-			} finally {
-				if (method != null) {
-					method.releaseConnection();
-				}
-			}
-		}
-		return true;
-	}
+                /*
+                 * -------------------------------- report Error to User as Error-Log --------------------------------
+                 */
+                Writer output = null;
+                String text = "error while pdf creation: " + e.getMessage();
+                File file = new File(zielVerzeichnis, myProzess.getTitel() + ".PDF-ERROR.log");
+                try {
+                    output = new BufferedWriter(new FileWriter(file));
+                    output.write(text);
+                    output.close();
+                } catch (IOException e1) {
+                }
+                return false;
+            } finally {
+                if (method != null) {
+                    method.releaseConnection();
+                }
+            }
+        }
+        return true;
+    }
 }

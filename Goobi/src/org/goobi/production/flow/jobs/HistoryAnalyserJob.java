@@ -38,7 +38,6 @@ import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
-
 //import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -427,12 +426,16 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
             //				i++;
             //				Process proc = it.next();
             for (Process proc : processList) {
-                logger.debug("updating history entries for " + proc.getTitel());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("updating history entries for " + proc.getTitel());
+                }
                 try {
                     if (!proc.isSwappedOutGui()) {
                         if (true == updateHistory(proc) | updateHistoryForSteps(proc)) {
                             ProcessManager.saveProcess(proc);
-                            logger.debug("history updated for process " + proc.getId());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("history updated for process " + proc.getId());
+                            }
                         }
                     }
 

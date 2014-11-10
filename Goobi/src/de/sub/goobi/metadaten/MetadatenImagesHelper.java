@@ -155,7 +155,9 @@ public class MetadatenImagesHelper {
                 }
             }
             if (!match) {
-                logger.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
+                }
                 pagesWithoutFiles.add(imageNamesInMetsFile.get(imageNameInMets));
             }
         }
@@ -186,7 +188,9 @@ public class MetadatenImagesHelper {
                     }
                 }
                 if (!match) {
-                    logger.debug("adding " + imagename + " to list of images without docstructs");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("adding " + imagename + " to list of images without docstructs");
+                    }
                     imagesWithoutDocstruct.add(imagename);
                 }
             }
@@ -202,11 +206,11 @@ public class MetadatenImagesHelper {
             String currentFile = imagesWithoutDocstruct.get(i);
             DocStruct currentPage = pagesWithoutFiles.get(i);
             currentPage.setImageName(folder.getAbsolutePath() + File.separator + currentFile);
-            logger.debug("set image " + currentFile + " to docstruct "
-                    + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
-
+            if (logger.isDebugEnabled()) {
+                logger.debug("set image " + currentFile + " to docstruct "
+                        + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+            }
         }
-
     }
 
     /**

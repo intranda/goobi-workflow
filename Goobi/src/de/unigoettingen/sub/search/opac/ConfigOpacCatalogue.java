@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class ConfigOpacCatalogue {
-    private static final Logger myLogger = Logger.getLogger(ConfigOpacCatalogue.class);
+    private static final Logger logger = Logger.getLogger(ConfigOpacCatalogue.class);
     private String title = "";
     private String description = "";
     private String address = "";
@@ -138,7 +138,7 @@ public class ConfigOpacCatalogue {
             myHitlist = doutputter.output(doc);
             myHitlist = myHitlist.getFirstChild();
         } catch (JDOMException e) {
-            myLogger.error("JDOMException in executeBeautifier(Node)", e);
+            logger.error("JDOMException in executeBeautifier(Node)", e);
         }
 
         /* Ausgabe des überarbeiteten Opac-Ergebnisses */
@@ -226,9 +226,9 @@ public class ConfigOpacCatalogue {
             FileOutputStream output = new FileOutputStream(fileName);
             outputter.output(tempDoc.getRootElement(), output);
         } catch (FileNotFoundException e) {
-            myLogger.error("debugMyNode(Node, String)", e);
+            logger.error("debugMyNode(Node, String)", e);
         } catch (IOException e) {
-            myLogger.error("debugMyNode(Node, String)", e);
+            logger.error("debugMyNode(Node, String)", e);
         }
 
     }

@@ -1,4 +1,5 @@
 package org.goobi.production.flow.delay;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -48,9 +49,13 @@ public class DelayJob extends AbstractGoobiJob {
 
     @Override
     public void execute() {
-        logger.debug("execute delay job");
+        if (logger.isDebugEnabled()) {
+            logger.debug("execute delay job");
+        }
         List<Step> stepsWithDelay = getListOfStepsWithDelay();
-        logger.debug(stepsWithDelay.size() + " steps are waiting");
+        if (logger.isDebugEnabled()) {
+            logger.debug(stepsWithDelay.size() + " steps are waiting");
+        }
         for (Step step : stepsWithDelay) {
             IStepPlugin plugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
 
@@ -58,10 +63,13 @@ public class DelayJob extends AbstractGoobiJob {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
-                    ProcessManager.addLogfile(WikiFieldHelper.getWikiMessage(step.getProzess().getWikifield(), "debug", Helper.getTranslation("blockingDelayIsExhausted")), step.getProzess().getId());
+                    ProcessManager.addLogfile(WikiFieldHelper.getWikiMessage(step.getProzess().getWikifield(), "debug", Helper
+                            .getTranslation("blockingDelayIsExhausted")), step.getProzess().getId());
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
-                    logger.debug(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
+                    }
                 }
             }
 
@@ -73,5 +81,5 @@ public class DelayJob extends AbstractGoobiJob {
         DelayJob dj = new DelayJob();
         dj.execute();
     }
-    
+
 }

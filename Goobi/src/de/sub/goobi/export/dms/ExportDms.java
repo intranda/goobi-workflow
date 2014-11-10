@@ -62,7 +62,7 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
-    private static final Logger myLogger = Logger.getLogger(ExportDms.class);
+    private static final Logger logger = Logger.getLogger(ExportDms.class);
     ConfigProjects cp;
     private boolean exportWithImages = true;
     private boolean exportFulltext = true;
@@ -127,7 +127,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), e);
-            myLogger.error("Export abgebrochen, xml-LeseFehler", e);
+            logger.error("Export abgebrochen, xml-LeseFehler", e);
             return false;
         }
 
@@ -239,7 +239,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     }
                 } catch (InterruptedException e) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": error on export - ", e.getMessage());
-                    myLogger.error(myProzess.getTitel() + ": error on export", e);
+                    logger.error(myProzess.getTitel() + ": error on export", e);
                 }
                 if (agoraThread.rueckgabe.length() > 0) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraThread.rueckgabe);
@@ -354,7 +354,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     FilesystemHelper.createDirectoryForUser(zielTif.getAbsolutePath(), myBenutzer.getLogin());
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");
-                    myLogger.error("could not create destination directory", e);
+                    logger.error("could not create destination directory", e);
                 }
             }
 

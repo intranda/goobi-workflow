@@ -98,24 +98,34 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     public Boolean isDataComplete() {
         Boolean error = false;
         if (this.timeFilterFrom == null) {
-            logger.debug("time from is not set");
+            if (logger.isDebugEnabled()) {
+                logger.debug("time from is not set");
+            }
             error = true;
         }
         if (this.timeFilterTo == null) {
-            logger.debug("time to is not set");
+            if (logger.isDebugEnabled()) {
+                logger.debug("time to is not set");
+            }
             error = true;
         }
         if (this.requiredDailyOutput == null) {
-            logger.debug("daily output is not set");
+            if (logger.isDebugEnabled()) {
+                logger.debug("daily output is not set");
+            }
             error = true;
         }
         if (this.terminatingStep == null) {
-            logger.debug("terminating step is not set");
+            if (logger.isDebugEnabled()) {
+                logger.debug("terminating step is not set");
+            }
             error = true;
         }
         if (this.myIDlist == null) {
 
-            logger.debug("processes filter is not set");
+            if (logger.isDebugEnabled()) {
+                logger.debug("processes filter is not set");
+            }
             error = true;
         }
         return !error;

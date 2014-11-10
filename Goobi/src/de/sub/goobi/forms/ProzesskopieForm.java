@@ -106,7 +106,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 @ManagedBean(name = "ProzesskopieForm")
 @SessionScoped
 public class ProzesskopieForm {
-    private static final Logger myLogger = Logger.getLogger(ProzesskopieForm.class);
+    private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
     private Helper help = new Helper();
     UghHelper ughHelper = new UghHelper();
     private BeanHelper bHelper = new BeanHelper();
@@ -160,7 +160,7 @@ public class ProzesskopieForm {
         try {
             this.co = new ConfigOpac();
         } catch (IOException e) {
-            myLogger.error("Error while reading von opac-config", e);
+            logger.error("Error while reading von opac-config", e);
             Helper.setFehlerMeldung("Error while reading von opac-config", e);
             return null;
         }
@@ -396,7 +396,7 @@ public class ProzesskopieForm {
                             }
                         }
                     } catch (UghHelperException e) {
-                        myLogger.error(e);
+                        logger.error(e);
                         Helper.setFehlerMeldung(e.getMessage(), "");
                     }
                     if (field.getWert() != null && !field.getWert().equals("")) {
@@ -487,7 +487,7 @@ public class ProzesskopieForm {
             removeCollections(colStruct);
         } catch (PreferencesException e) {
             Helper.setFehlerMeldung("Error on creating process", e);
-            myLogger.error("Error on creating process", e);
+            logger.error("Error on creating process", e);
         } catch (RuntimeException e) {
             /*
              * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
@@ -749,13 +749,13 @@ public class ProzesskopieForm {
 
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
-                myLogger.error("creation of new process throws an error: ", e);
+                logger.error("creation of new process throws an error: ", e);
             } catch (UghHelperException e) {
                 Helper.setFehlerMeldung("UghHelperException", e.getMessage());
-                myLogger.error("creation of new process throws an error: ", e);
+                logger.error("creation of new process throws an error: ", e);
             } catch (MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
-                myLogger.error("creation of new process throws an error: ", e);
+                logger.error("creation of new process throws an error: ", e);
             }
 
         }
@@ -826,10 +826,10 @@ public class ProzesskopieForm {
             }
         } catch (UghHelperException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
-            myLogger.error(e);
+            logger.error(e);
         } catch (DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
-            myLogger.error(e);
+            logger.error(e);
         }
     }
 
@@ -901,11 +901,11 @@ public class ProzesskopieForm {
             }
 
         } catch (TypeNotAllowedForParentException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (TypeNotAllowedAsChildException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (PreferencesException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
     }
 
@@ -1010,12 +1010,12 @@ public class ProzesskopieForm {
                         }
                     }
                 } catch (PreferencesException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
                 try {
                     fillFieldsFromMetadataFile();
                 } catch (PreferencesException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
             }
         }
@@ -1159,10 +1159,10 @@ public class ProzesskopieForm {
                 }
             }
         } catch (JDOMException e1) {
-            myLogger.error("error while parsing digital collections", e1);
+            logger.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         } catch (IOException e1) {
-            myLogger.error("error while parsing digital collections", e1);
+            logger.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 
@@ -1181,7 +1181,7 @@ public class ProzesskopieForm {
         try {
             return new ConfigOpac().getAllCatalogueTitles();
         } catch (IOException e) {
-            myLogger.error("Error while reading von opac-config", e);
+            logger.error("Error while reading von opac-config", e);
             Helper.setFehlerMeldung("Error while reading von opac-config", e);
             return new ArrayList<String>();
         }
@@ -1191,7 +1191,7 @@ public class ProzesskopieForm {
         try {
             return new ConfigOpac().getAllDoctypes();
         } catch (IOException e) {
-            myLogger.error("Error while reading von opac-config", e);
+            logger.error("Error while reading von opac-config", e);
             Helper.setFehlerMeldung("Error while reading von opac-config", e);
             return new ArrayList<ConfigOpacDoctype>();
         }
@@ -1541,7 +1541,7 @@ public class ProzesskopieForm {
                 prozessKopie.setMetadatenKonfigurationID(selected);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                myLogger.error(e);
+                logger.error(e);
             }
         }
     }

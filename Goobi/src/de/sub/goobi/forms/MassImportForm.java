@@ -75,735 +75,724 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@ManagedBean(name="MassImportForm") 
+@ManagedBean(name = "MassImportForm")
 @SessionScoped
 public class MassImportForm {
-	private static final Logger logger = Logger.getLogger(MassImportForm.class);
-	private Process template;
-	private List<Process> processes;
-	private List<String> digitalCollections;
-	private List<String> possibleDigitalCollections;
-	// private List<String> recordList = new ArrayList<String>();
-	private List<String> ids = new ArrayList<String>();
-	private ImportFormat format = null;
-	private String idList = "";
-	private String records = "";
-	// private List<String> usablePlugins = new ArrayList<String>();
-	private List<String> usablePluginsForRecords = new ArrayList<String>();
-	private List<String> usablePluginsForIDs = new ArrayList<String>();
-	private List<String> usablePluginsForFiles = new ArrayList<String>();
-	private List<String> usablePluginsForFolder = new ArrayList<String>();
-	private final ImportPluginLoader ipl = new ImportPluginLoader();
-	private String currentPlugin = "";
-	private IImportPlugin plugin;
+    private static final Logger logger = Logger.getLogger(MassImportForm.class);
+    private Process template;
+    private List<Process> processes;
+    private List<String> digitalCollections;
+    private List<String> possibleDigitalCollections;
+    // private List<String> recordList = new ArrayList<String>();
+    private List<String> ids = new ArrayList<String>();
+    private ImportFormat format = null;
+    private String idList = "";
+    private String records = "";
+    // private List<String> usablePlugins = new ArrayList<String>();
+    private List<String> usablePluginsForRecords = new ArrayList<String>();
+    private List<String> usablePluginsForIDs = new ArrayList<String>();
+    private List<String> usablePluginsForFiles = new ArrayList<String>();
+    private List<String> usablePluginsForFolder = new ArrayList<String>();
+    private final ImportPluginLoader ipl = new ImportPluginLoader();
+    private String currentPlugin = "";
+    private IImportPlugin plugin;
 
-	private File importFile = null;
-	private final Helper help = new Helper();
-	// private ImportConfiguration ic = null;
+    private File importFile = null;
+    private final Helper help = new Helper();
+    // private ImportConfiguration ic = null;
 
-	private UploadedFile uploadedFile = null;
+    private UploadedFile uploadedFile = null;
 
-	private List<Process> processList;
+    private List<Process> processList;
 
-	public MassImportForm() {
+    public MassImportForm() {
 
-		// usablePlugins = ipl.getTitles();
-		this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
-		this.usablePluginsForIDs = this.ipl.getPluginsForType(ImportType.ID);
-		this.usablePluginsForFiles = this.ipl.getPluginsForType(ImportType.FILE);
-		this.usablePluginsForFolder = this.ipl.getPluginsForType(ImportType.FOLDER);
+        // usablePlugins = ipl.getTitles();
+        this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
+        this.usablePluginsForIDs = this.ipl.getPluginsForType(ImportType.ID);
+        this.usablePluginsForFiles = this.ipl.getPluginsForType(ImportType.FILE);
+        this.usablePluginsForFolder = this.ipl.getPluginsForType(ImportType.FOLDER);
 
-	}
+    }
 
-	public String Prepare() {
-		if (this.template.getContainsUnreachableSteps()) {
-			if (this.template.getSchritteList().size() == 0) {
-				Helper.setFehlerMeldung("noStepsInWorkflow");
-			}
-			for (Step s : this.template.getSchritteList()) {
-				if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
-					List<String> param = new ArrayList<String>();
-					param.add(s.getTitel());
-					Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", param));
-				}
-			}
-			return "";
-		}
-		initializePossibleDigitalCollections();
-		return "process_import_1";
-	}
+    public String Prepare() {
+        if (this.template.getContainsUnreachableSteps()) {
+            if (this.template.getSchritteList().size() == 0) {
+                Helper.setFehlerMeldung("noStepsInWorkflow");
+            }
+            for (Step s : this.template.getSchritteList()) {
+                if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
+                    List<String> param = new ArrayList<String>();
+                    param.add(s.getTitel());
+                    Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", param));
+                }
+            }
+            return "";
+        }
+        initializePossibleDigitalCollections();
+        return "process_import_1";
+    }
 
-	/**
-	 * generate a list with all possible collections for given project
-	 * 
-	 * 
-	 */
+    /**
+     * generate a list with all possible collections for given project
+     * 
+     * 
+     */
 
-	private void initializePossibleDigitalCollections() {
-		this.possibleDigitalCollections = new ArrayList<String>();
-		ArrayList<String> defaultCollections = new ArrayList<String>();
-		String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-		if (!(new File(filename).exists())) {
-			Helper.setFehlerMeldung("File not found: ", filename);
-			return;
-		}
-		this.digitalCollections = new ArrayList<String>();
-		try {
-			/* Datei einlesen und Root ermitteln */
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(new File(filename));
-			Element root = doc.getRootElement();
-			/* alle Projekte durchlaufen */
+    private void initializePossibleDigitalCollections() {
+        this.possibleDigitalCollections = new ArrayList<String>();
+        ArrayList<String> defaultCollections = new ArrayList<String>();
+        String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
+        if (!(new File(filename).exists())) {
+            Helper.setFehlerMeldung("File not found: ", filename);
+            return;
+        }
+        this.digitalCollections = new ArrayList<String>();
+        try {
+            /* Datei einlesen und Root ermitteln */
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = builder.build(new File(filename));
+            Element root = doc.getRootElement();
+            /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();
-			for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-				Element projekt = iter.next();
+            for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
+                Element projekt = iter.next();
 
-				// collect default collections
-				if (projekt.getName().equals("default")) {
-					List<Element> myCols = projekt.getChildren("DigitalCollection");
-					for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-						Element col = it2.next();
-						
-						if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
-							digitalCollections.add(col.getText());
-						}
-					
-						defaultCollections.add(col.getText());
-					}
-				} else {
-					// run through the projects
-					List<Element> projektnamen = projekt.getChildren("name");
-					for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-						Element projektname = iterator.next();
-						// all all collections to list
-						if (projektname.getText().equalsIgnoreCase(this.template.getProjekt().getTitel())) {
-							List<Element> myCols = projekt.getChildren("DigitalCollection");
-							for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-								Element col = it2.next();
-								
-								if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
-									digitalCollections.add(col.getText());
-								}
-							
-								this.possibleDigitalCollections.add(col.getText());
-							}
-						}
-					}
-				}
-			}
-		} catch (JDOMException e1) {
-			logger.error("error while parsing digital collections", e1);
-			Helper.setFehlerMeldung("Error while parsing digital collections", e1);
-		} catch (IOException e1) {
-			logger.error("error while parsing digital collections", e1);
-			Helper.setFehlerMeldung("Error while parsing digital collections", e1);
-		}
+                // collect default collections
+                if (projekt.getName().equals("default")) {
+                    List<Element> myCols = projekt.getChildren("DigitalCollection");
+                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
+                        Element col = it2.next();
 
-		if (this.possibleDigitalCollections.size() == 0) {
-			this.possibleDigitalCollections = defaultCollections;
-		}
-	}
+                        if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                            digitalCollections.add(col.getText());
+                        }
 
-	private List<String> allFilenames = new ArrayList<String>();
-	private List<String> selectedFilenames = new ArrayList<String>();
+                        defaultCollections.add(col.getText());
+                    }
+                } else {
+                    // run through the projects
+                    List<Element> projektnamen = projekt.getChildren("name");
+                    for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
+                        Element projektname = iterator.next();
+                        // all all collections to list
+                        if (projektname.getText().equalsIgnoreCase(this.template.getProjekt().getTitel())) {
+                            List<Element> myCols = projekt.getChildren("DigitalCollection");
+                            for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
+                                Element col = it2.next();
 
-	public List<String> getAllFilenames() {
+                                if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                                    digitalCollections.add(col.getText());
+                                }
 
-		return this.allFilenames;
-	}
+                                this.possibleDigitalCollections.add(col.getText());
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JDOMException e1) {
+            logger.error("error while parsing digital collections", e1);
+            Helper.setFehlerMeldung("Error while parsing digital collections", e1);
+        } catch (IOException e1) {
+            logger.error("error while parsing digital collections", e1);
+            Helper.setFehlerMeldung("Error while parsing digital collections", e1);
+        }
 
-	public void setAllFilenames(List<String> allFilenames) {
-		this.allFilenames = allFilenames;
-	}
+        if (this.possibleDigitalCollections.size() == 0) {
+            this.possibleDigitalCollections = defaultCollections;
+        }
+    }
 
-	public List<String> getSelectedFilenames() {
-		return this.selectedFilenames;
-	}
+    private List<String> allFilenames = new ArrayList<String>();
+    private List<String> selectedFilenames = new ArrayList<String>();
 
-	public void setSelectedFilenames(List<String> selectedFilenames) {
-		this.selectedFilenames = selectedFilenames;
-	}
+    public List<String> getAllFilenames() {
 
-	public String convertData() {
-		this.processList = new ArrayList<Process>();
-		if (StringUtils.isEmpty(currentPlugin)) {
-			Helper.setFehlerMeldung("missingPlugin");
-			return "";
-		}
-		if (testForData()) {
-			List<ImportObject> answer = new ArrayList<ImportObject>();
-			Integer batchId = null;
+        return this.allFilenames;
+    }
 
-			// found list with ids
-			Prefs prefs = this.template.getRegelsatz().getPreferences();
-			String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
-			this.plugin.setImportFolder(tempfolder);
-			this.plugin.setPrefs(prefs);
+    public void setAllFilenames(List<String> allFilenames) {
+        this.allFilenames = allFilenames;
+    }
 
-			if (StringUtils.isNotEmpty(this.idList)) {
-				// IImportPlugin plugin = (IImportPlugin)
-				// PluginLoader.getPlugin(PluginType.Import,
-				// this.currentPlugin);
-				List<String> ids = this.plugin.splitIds(this.idList);
-				List<Record> recordList = new ArrayList<Record>();
-				for (String id : ids) {
-					Record r = new Record();
-					r.setData(id);
-					r.setId(id);
-					r.setCollections(this.digitalCollections);
-					recordList.add(r);
-				}
+    public List<String> getSelectedFilenames() {
+        return this.selectedFilenames;
+    }
 
-				answer = this.plugin.generateFiles(recordList);
-			} else if (this.importFile != null) {
-				// uploaded file
-				// IImportPlugin plugin = (IImportPlugin)
-				// PluginLoader.getPlugin(PluginType.Import,
-				// this.currentPlugin);
-				this.plugin.setFile(this.importFile);
-				List<Record> recordList = this.plugin.generateRecordsFromFile();
-				for (Record r : recordList) {
-					r.setCollections(this.digitalCollections);
-				}
-				answer = this.plugin.generateFiles(recordList);
-			} else if (StringUtils.isNotEmpty(this.records)) {
-				// found list with records
-				// IImportPlugin plugin = (IImportPlugin)
-				// PluginLoader.getPlugin(PluginType.Import,
-				// this.currentPlugin);
-				List<Record> recordList = this.plugin.splitRecords(this.records);
-				for (Record r : recordList) {
-					r.setCollections(this.digitalCollections);
-				}
-				answer = this.plugin.generateFiles(recordList);
-			} else if (this.selectedFilenames.size() > 0) {
-				List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
-				for (Record r : recordList) {
-					r.setCollections(this.digitalCollections);
-				}
-				answer = this.plugin.generateFiles(recordList);
+    public void setSelectedFilenames(List<String> selectedFilenames) {
+        this.selectedFilenames = selectedFilenames;
+    }
 
-			}
+    public String convertData() {
+        this.processList = new ArrayList<Process>();
+        if (StringUtils.isEmpty(currentPlugin)) {
+            Helper.setFehlerMeldung("missingPlugin");
+            return "";
+        }
+        if (testForData()) {
+            List<ImportObject> answer = new ArrayList<ImportObject>();
+            Integer batchId = null;
 
-			if (answer.size() > 1) {
-//				Session session = Helper.getHibernateSession();
+            // found list with ids
+            Prefs prefs = this.template.getRegelsatz().getPreferences();
+            String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
+            this.plugin.setImportFolder(tempfolder);
+            this.plugin.setPrefs(prefs);
 
-				batchId = 1;
-				try {
-					batchId += ProcessManager.getMaxBatchNumber();
-				} catch (Exception e1) {
-				}
+            if (StringUtils.isNotEmpty(this.idList)) {
+                // IImportPlugin plugin = (IImportPlugin)
+                // PluginLoader.getPlugin(PluginType.Import,
+                // this.currentPlugin);
+                List<String> ids = this.plugin.splitIds(this.idList);
+                List<Record> recordList = new ArrayList<Record>();
+                for (String id : ids) {
+                    Record r = new Record();
+                    r.setData(id);
+                    r.setId(id);
+                    r.setCollections(this.digitalCollections);
+                    recordList.add(r);
+                }
 
-			}
-			for (ImportObject io : answer) {
-				if (batchId != null) {
-					io.setBatchId(batchId);
-				}
-				if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
-				    Process p = JobCreation.generateProcess(io, this.template);
-					// int returnValue =
-					// HotfolderJob.generateProcess(io.getProcessTitle(),
-					// this.template, new File(tempfolder), null, "error", b);
-					if (p == null) {
+                answer = this.plugin.generateFiles(recordList);
+            } else if (this.importFile != null) {
+                // uploaded file
+                // IImportPlugin plugin = (IImportPlugin)
+                // PluginLoader.getPlugin(PluginType.Import,
+                // this.currentPlugin);
+                this.plugin.setFile(this.importFile);
+                List<Record> recordList = this.plugin.generateRecordsFromFile();
+                for (Record r : recordList) {
+                    r.setCollections(this.digitalCollections);
+                }
+                answer = this.plugin.generateFiles(recordList);
+            } else if (StringUtils.isNotEmpty(this.records)) {
+                // found list with records
+                // IImportPlugin plugin = (IImportPlugin)
+                // PluginLoader.getPlugin(PluginType.Import,
+                // this.currentPlugin);
+                List<Record> recordList = this.plugin.splitRecords(this.records);
+                for (Record r : recordList) {
+                    r.setCollections(this.digitalCollections);
+                }
+                answer = this.plugin.generateFiles(recordList);
+            } else if (this.selectedFilenames.size() > 0) {
+                List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
+                for (Record r : recordList) {
+                    r.setCollections(this.digitalCollections);
+                }
+                answer = this.plugin.generateFiles(recordList);
+
+            }
+
+            if (answer.size() > 1) {
+                //				Session session = Helper.getHibernateSession();
+
+                batchId = 1;
+                try {
+                    batchId += ProcessManager.getMaxBatchNumber();
+                } catch (Exception e1) {
+                }
+
+            }
+            for (ImportObject io : answer) {
+                if (batchId != null) {
+                    io.setBatchId(batchId);
+                }
+                if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
+                    Process p = JobCreation.generateProcess(io, this.template);
+                    // int returnValue =
+                    // HotfolderJob.generateProcess(io.getProcessTitle(),
+                    // this.template, new File(tempfolder), null, "error", b);
+                    if (p == null) {
                         if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
                                 && !selectedFilenames.isEmpty()) {
                             if (selectedFilenames.contains(io.getImportFileName())) {
                                 selectedFilenames.remove(io.getImportFileName());
                             }
                         }
-						Helper.setFehlerMeldung("import failed for " + io.getProcessTitle() + ", process generation failed");
+                        Helper.setFehlerMeldung("import failed for " + io.getProcessTitle() + ", process generation failed");
 
-					} else {
-						Helper.setMeldung(ImportReturnValue.ExportFinished.getValue() + " for " + io.getProcessTitle());
-						this.processList.add(p);
-					}
-				} else {
-					List<String> param = new ArrayList<String>();
-					param.add(io.getProcessTitle());
-					param.add(io.getErrorMessage());
-					Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", param));
-					// Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
+                    } else {
+                        Helper.setMeldung(ImportReturnValue.ExportFinished.getValue() + " for " + io.getProcessTitle());
+                        this.processList.add(p);
+                    }
+                } else {
+                    List<String> param = new ArrayList<String>();
+                    param.add(io.getProcessTitle());
+                    param.add(io.getErrorMessage());
+                    Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", param));
+                    // Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
                     if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
                             && !selectedFilenames.isEmpty()) {
                         if (selectedFilenames.contains(io.getImportFileName())) {
                             selectedFilenames.remove(io.getImportFileName());
                         }
                     }
-				}
-			}
-			if (answer.size() != this.processList.size()) {
-				// some error on process generation, don't go to next page
-				return "";
-			}
-		}
+                }
+            }
+            if (answer.size() != this.processList.size()) {
+                // some error on process generation, don't go to next page
+                return "";
+            }
+        }
 
-		// missing data
-		else {
-			Helper.setFehlerMeldung("missingData");
-			return "";
-		}
-		this.idList = null;
-		if (this.importFile != null) {
-			this.importFile.delete();
-			this.importFile = null;
-		}
+        // missing data
+        else {
+            Helper.setFehlerMeldung("missingData");
+            return "";
+        }
+        this.idList = null;
+        if (this.importFile != null) {
+            this.importFile.delete();
+            this.importFile = null;
+        }
         if (selectedFilenames != null && !selectedFilenames.isEmpty()) {
             this.plugin.deleteFiles(this.selectedFilenames);
         }
-		this.records = "";
-		return "process_import_3";
-	}
+        this.records = "";
+        return "process_import_3";
+    }
 
-	/**
-	 * File upload with binary copying.
-	 */
-	public void uploadFile() {
-		ByteArrayInputStream inputStream = null;
-		OutputStream outputStream = null;
-		try {
-			if (this.uploadedFile == null) {
-				Helper.setFehlerMeldung("noFileSelected");
-				return;
-			}
+    /**
+     * File upload with binary copying.
+     */
+    public void uploadFile() {
+        ByteArrayInputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            if (this.uploadedFile == null) {
+                Helper.setFehlerMeldung("noFileSelected");
+                return;
+            }
 
-			String basename = this.uploadedFile.getName();
-			if (basename.startsWith(".")) {
-				basename = basename.substring(1);
-			}
-			if (basename.contains("/")) {
-				basename = basename.substring(basename.lastIndexOf("/") + 1);
-			}
-			if (basename.contains("\\")) {
-				basename = basename.substring(basename.lastIndexOf("\\") + 1);
-			}
+            String basename = this.uploadedFile.getName();
+            if (basename.startsWith(".")) {
+                basename = basename.substring(1);
+            }
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
 
-			String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
+            String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
 
-			inputStream = new ByteArrayInputStream(this.uploadedFile.getBytes());
-			outputStream = new FileOutputStream(filename);
+            inputStream = new ByteArrayInputStream(this.uploadedFile.getBytes());
+            outputStream = new FileOutputStream(filename);
 
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = inputStream.read(buf)) > 0) {
-				outputStream.write(buf, 0, len);
-			}
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
 
-			this.importFile = new File(filename);
-			List<String> param = new ArrayList<String>();
-			param.add(basename);
-			Helper.setMeldung(Helper.getTranslation("uploadSuccessful", param));
-			// Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			Helper.setFehlerMeldung("uploadFailed");
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
+            this.importFile = new File(filename);
+            List<String> param = new ArrayList<String>();
+            param.add(basename);
+            Helper.setMeldung(Helper.getTranslation("uploadSuccessful", param));
+            // Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
 
-		}
+        }
 
-	}
+    }
 
-	public UploadedFile getUploadedFile() {
-		return this.uploadedFile;
-	}
+    public UploadedFile getUploadedFile() {
+        return this.uploadedFile;
+    }
 
-	public void setUploadedFile(UploadedFile uploadedFile) {
-		this.uploadedFile = uploadedFile;
-	}
+    public void setUploadedFile(UploadedFile uploadedFile) {
+        this.uploadedFile = uploadedFile;
+    }
 
-	/**
-	 * tests input fields for correct data
-	 * 
-	 * @return true if data is valid or false otherwise
-	 */
+    /**
+     * tests input fields for correct data
+     * 
+     * @return true if data is valid or false otherwise
+     */
 
-	private boolean testForData() {
-		// if (format == null) {
-		// return false;
-		// }
-		if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null) && this.selectedFilenames.size() == 0) {
-			return false;
-		}
-		return true;
-	}
+    private boolean testForData() {
+        // if (format == null) {
+        // return false;
+        // }
+        if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null) && this.selectedFilenames.size() == 0) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * 
-	 * @return list with all import formats
-	 */
-	public List<String> getFormats() {
-		List<String> l = new ArrayList<String>();
-		for (ImportFormat input : ImportFormat.values()) {
-			l.add(input.getTitle());
-		}
-		return l;
-	}
+    /**
+     * 
+     * @return list with all import formats
+     */
+    public List<String> getFormats() {
+        List<String> l = new ArrayList<String>();
+        for (ImportFormat input : ImportFormat.values()) {
+            l.add(input.getTitle());
+        }
+        return l;
+    }
 
-	@Deprecated
-	public String getHotfolderPathForPlugin(int pluginId) {
-		for (GoobiHotfolder hotfolder : GoobiHotfolder.getInstances()) {
-			if (hotfolder.getTemplate() == pluginId) {
-				return hotfolder.getFolderAsString();
-			}
-		}
+    @Deprecated
+    public String getHotfolderPathForPlugin(int pluginId) {
+        for (GoobiHotfolder hotfolder : GoobiHotfolder.getInstances()) {
+            if (hotfolder.getTemplate() == pluginId) {
+                return hotfolder.getFolderAsString();
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * 
-	 * @return current format
-	 */
-	@Deprecated
-	public String getCurrentFormat() {
-		if (this.format != null) {
-			return this.format.getTitle();
-		} else {
-			return "";
-		}
-	}
+    /**
+     * 
+     * @return current format
+     */
+    @Deprecated
+    public String getCurrentFormat() {
+        if (this.format != null) {
+            return this.format.getTitle();
+        } else {
+            return "";
+        }
+    }
 
-	/**
-	 * 
-	 * @param formatTitle
-	 *            current format
-	 */
-	@Deprecated
-	public void setCurrentFormat(String formatTitle) {
-		this.format = ImportFormat.getTypeFromTitle(formatTitle);
-	}
+    /**
+     * 
+     * @param formatTitle current format
+     */
+    @Deprecated
+    public void setCurrentFormat(String formatTitle) {
+        this.format = ImportFormat.getTypeFromTitle(formatTitle);
+    }
 
-	/**
-	 * @param idList
-	 *            the idList to set
-	 */
-	public void setIdList(String idList) {
-		this.idList = idList;
-	}
+    /**
+     * @param idList the idList to set
+     */
+    public void setIdList(String idList) {
+        this.idList = idList;
+    }
 
-	/**
-	 * @return the idList
-	 */
-	public String getIdList() {
-		return this.idList;
-	}
+    /**
+     * @return the idList
+     */
+    public String getIdList() {
+        return this.idList;
+    }
 
-	/**
-	 * @param records
-	 *            the records to set
-	 */
-	public void setRecords(String records) {
-		this.records = records;
-	}
+    /**
+     * @param records the records to set
+     */
+    public void setRecords(String records) {
+        this.records = records;
+    }
 
-	/**
-	 * @return the records
-	 */
-	public String getRecords() {
-		return this.records;
-	}
+    /**
+     * @return the records
+     */
+    public String getRecords() {
+        return this.records;
+    }
 
-	/**
-	 * @param process
-	 *            the process to set
-	 */
-	public void setProcess(List<Process> processes) {
-		this.processes = processes;
-	}
+    /**
+     * @param process the process to set
+     */
+    public void setProcess(List<Process> processes) {
+        this.processes = processes;
+    }
 
-	/**
-	 * @return the process
-	 */
-	public List<Process> getProcess() {
-		return this.processes;
-	}
+    /**
+     * @return the process
+     */
+    public List<Process> getProcess() {
+        return this.processes;
+    }
 
-	/**
-	 * @param template
-	 *            the template to set
-	 */
-	public void setTemplate(Process template) {
-		// this.ic = new ImportConfiguration(template);
-		this.template = template;
+    /**
+     * @param template the template to set
+     */
+    public void setTemplate(Process template) {
+        // this.ic = new ImportConfiguration(template);
+        this.template = template;
 
-	}
+    }
 
-	/**
-	 * @return the template
-	 */
-	public Process getTemplate() {
-		return this.template;
-	}
+    /**
+     * @return the template
+     */
+    public Process getTemplate() {
+        return this.template;
+    }
 
-	/**
-	 * @param digitalCollections
-	 *            the digitalCollections to set
-	 */
-	public void setDigitalCollections(List<String> digitalCollections) {
-		this.digitalCollections = digitalCollections;
-	}
+    /**
+     * @param digitalCollections the digitalCollections to set
+     */
+    public void setDigitalCollections(List<String> digitalCollections) {
+        this.digitalCollections = digitalCollections;
+    }
 
-	/**
-	 * @return the digitalCollections
-	 */
-	public List<String> getDigitalCollections() {
-		return this.digitalCollections;
-	}
+    /**
+     * @return the digitalCollections
+     */
+    public List<String> getDigitalCollections() {
+        return this.digitalCollections;
+    }
 
-	/**
-	 * @param possibleDigitalCollection
-	 *            the possibleDigitalCollection to set
-	 */
-	public void setPossibleDigitalCollection(List<String> possibleDigitalCollection) {
-		this.possibleDigitalCollections = possibleDigitalCollection;
-	}
+    /**
+     * @param possibleDigitalCollection the possibleDigitalCollection to set
+     */
+    public void setPossibleDigitalCollection(List<String> possibleDigitalCollection) {
+        this.possibleDigitalCollections = possibleDigitalCollection;
+    }
 
-	/**
-	 * @return the possibleDigitalCollection
-	 */
-	public List<String> getPossibleDigitalCollection() {
-		return this.possibleDigitalCollections;
-	}
+    /**
+     * @return the possibleDigitalCollection
+     */
+    public List<String> getPossibleDigitalCollection() {
+        return this.possibleDigitalCollections;
+    }
 
-	@Deprecated
-	public void setProcesses(List<Process> processes) {
-		this.processes = processes;
-	}
+    @Deprecated
+    public void setProcesses(List<Process> processes) {
+        this.processes = processes;
+    }
 
-	/**
-	 * @param ids
-	 *            the ids to set
-	 */
-	public void setIds(List<String> ids) {
-		this.ids = ids;
-	}
+    /**
+     * @param ids the ids to set
+     */
+    public void setIds(List<String> ids) {
+        this.ids = ids;
+    }
 
-	/**
-	 * @return the ids
-	 */
-	public List<String> getIds() {
-		return this.ids;
-	}
+    /**
+     * @return the ids
+     */
+    public List<String> getIds() {
+        return this.ids;
+    }
 
-	/**
-	 * @param format
-	 *            the format to set
-	 */
-	public void setFormat(String format) {
-		this.format = ImportFormat.getTypeFromTitle(format);
-	}
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(String format) {
+        this.format = ImportFormat.getTypeFromTitle(format);
+    }
 
-	/**
-	 * @return the format
-	 */
-	public String getFormat() {
-		if (this.format == null) {
-			return "";
-		}
-		return this.format.getTitle();
-	}
+    /**
+     * @return the format
+     */
+    public String getFormat() {
+        if (this.format == null) {
+            return "";
+        }
+        return this.format.getTitle();
+    }
 
-	/**
-	 * @param currentPlugin
-	 *            the currentPlugin to set
-	 */
-	public void setCurrentPlugin(String currentPlugin) {
-		this.currentPlugin = currentPlugin;
-		if (currentPlugin != null && currentPlugin.length() > 0) {
-			this.plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, this.currentPlugin);
-			if (this.plugin.getImportTypes().contains(ImportType.FOLDER)) {
-				this.allFilenames = this.plugin.getAllFilenames();
-			}
-			plugin.setPrefs(template.getRegelsatz().getPreferences());
-		}
-	}
+    /**
+     * @param currentPlugin the currentPlugin to set
+     */
+    public void setCurrentPlugin(String currentPlugin) {
+        this.currentPlugin = currentPlugin;
+        if (currentPlugin != null && currentPlugin.length() > 0) {
+            this.plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, this.currentPlugin);
+            if (this.plugin.getImportTypes().contains(ImportType.FOLDER)) {
+                this.allFilenames = this.plugin.getAllFilenames();
+            }
+            plugin.setPrefs(template.getRegelsatz().getPreferences());
+        }
+    }
 
-	/**
-	 * @return the currentPlugin
-	 */
-	public String getCurrentPlugin() {
-		return this.currentPlugin;
-	}
+    /**
+     * @return the currentPlugin
+     */
+    public String getCurrentPlugin() {
+        return this.currentPlugin;
+    }
 
-	public IImportPlugin getPlugin() {
-		return plugin;
-	}
+    public IImportPlugin getPlugin() {
+        return plugin;
+    }
 
-	/**
-	 * @param usablePluginsForRecords
-	 *            the usablePluginsForRecords to set
-	 */
-	public void setUsablePluginsForRecords(List<String> usablePluginsForRecords) {
-		this.usablePluginsForRecords = usablePluginsForRecords;
-	}
+    /**
+     * @param usablePluginsForRecords the usablePluginsForRecords to set
+     */
+    public void setUsablePluginsForRecords(List<String> usablePluginsForRecords) {
+        this.usablePluginsForRecords = usablePluginsForRecords;
+    }
 
-	/**
-	 * @return the usablePluginsForRecords
-	 */
-	public List<String> getUsablePluginsForRecords() {
-		return this.usablePluginsForRecords;
-	}
+    /**
+     * @return the usablePluginsForRecords
+     */
+    public List<String> getUsablePluginsForRecords() {
+        return this.usablePluginsForRecords;
+    }
 
-	/**
-	 * @param usablePluginsForIDs
-	 *            the usablePluginsForIDs to set
-	 */
-	public void setUsablePluginsForIDs(List<String> usablePluginsForIDs) {
-		this.usablePluginsForIDs = usablePluginsForIDs;
-	}
+    /**
+     * @param usablePluginsForIDs the usablePluginsForIDs to set
+     */
+    public void setUsablePluginsForIDs(List<String> usablePluginsForIDs) {
+        this.usablePluginsForIDs = usablePluginsForIDs;
+    }
 
-	/**
-	 * @return the usablePluginsForIDs
-	 */
-	public List<String> getUsablePluginsForIDs() {
-		return this.usablePluginsForIDs;
-	}
+    /**
+     * @return the usablePluginsForIDs
+     */
+    public List<String> getUsablePluginsForIDs() {
+        return this.usablePluginsForIDs;
+    }
 
-	/**
-	 * @param usablePluginsForFiles
-	 *            the usablePluginsForFiles to set
-	 */
-	public void setUsablePluginsForFiles(List<String> usablePluginsForFiles) {
-		this.usablePluginsForFiles = usablePluginsForFiles;
-	}
+    /**
+     * @param usablePluginsForFiles the usablePluginsForFiles to set
+     */
+    public void setUsablePluginsForFiles(List<String> usablePluginsForFiles) {
+        this.usablePluginsForFiles = usablePluginsForFiles;
+    }
 
-	/**
-	 * @return the usablePluginsForFiles
-	 */
-	public List<String> getUsablePluginsForFiles() {
-		return this.usablePluginsForFiles;
-	}
+    /**
+     * @return the usablePluginsForFiles
+     */
+    public List<String> getUsablePluginsForFiles() {
+        return this.usablePluginsForFiles;
+    }
 
-	public boolean getHasNextPage() {
-		java.lang.reflect.Method method;
-		try {
-			method = this.plugin.getClass().getMethod("getCurrentDocStructs");
-			Object o = method.invoke(this.plugin);
-			@SuppressWarnings("unchecked")
-			List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-			if (this.plugin != null && list != null) {
-				return true;
-			}
-		} catch (Exception e) {
-		}
-		try {
-			method = this.plugin.getClass().getMethod("getProperties");
-			Object o = method.invoke(this.plugin);
-			@SuppressWarnings("unchecked")
-			List<ImportProperty> list = (List<ImportProperty>) o;
-			if (this.plugin != null && list.size() > 0) {
-				return true;
-			}
-		} catch (Exception e) {
-		}
-		return false;
-	}
+    public boolean getHasNextPage() {
+        java.lang.reflect.Method method;
+        try {
+            method = this.plugin.getClass().getMethod("getCurrentDocStructs");
+            Object o = method.invoke(this.plugin);
+            @SuppressWarnings("unchecked")
+            List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
+            if (this.plugin != null && list != null) {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        try {
+            method = this.plugin.getClass().getMethod("getProperties");
+            Object o = method.invoke(this.plugin);
+            @SuppressWarnings("unchecked")
+            List<ImportProperty> list = (List<ImportProperty>) o;
+            if (this.plugin != null && list.size() > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
 
-	public String nextPage() {
-		if (!testForData()) {
-			Helper.setFehlerMeldung("missingData");
-			return "";
-		}
-		java.lang.reflect.Method method;
-		try {
-			method = this.plugin.getClass().getMethod("getCurrentDocStructs");
-			Object o = method.invoke(this.plugin);
-			@SuppressWarnings("unchecked")
-			List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-			if (this.plugin != null && list != null) {
-				return "process_import_2_mass";
-			}
-		} catch (Exception e) {
-		}
-		return "process_import_2";
-	}
+    public String nextPage() {
+        if (!testForData()) {
+            Helper.setFehlerMeldung("missingData");
+            return "";
+        }
+        java.lang.reflect.Method method;
+        try {
+            method = this.plugin.getClass().getMethod("getCurrentDocStructs");
+            Object o = method.invoke(this.plugin);
+            @SuppressWarnings("unchecked")
+            List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
+            if (this.plugin != null && list != null) {
+                return "process_import_2_mass";
+            }
+        } catch (Exception e) {
+        }
+        return "process_import_2";
+    }
 
-	public List<ImportProperty> getProperties() {
+    public List<ImportProperty> getProperties() {
 
-		if (this.plugin != null) {
-			return this.plugin.getProperties();
-		}
-		return new ArrayList<ImportProperty>();
-	}
+        if (this.plugin != null) {
+            return this.plugin.getProperties();
+        }
+        return new ArrayList<ImportProperty>();
+    }
 
-	public List<Process> getProcessList() {
-		return this.processList;
-	}
+    public List<Process> getProcessList() {
+        return this.processList;
+    }
 
-	public void setProcessList(List<Process> processList) {
-		this.processList = processList;
-	}
+    public void setProcessList(List<Process> processList) {
+        this.processList = processList;
+    }
 
-	public List<String> getUsablePluginsForFolder() {
-		return this.usablePluginsForFolder;
-	}
+    public List<String> getUsablePluginsForFolder() {
+        return this.usablePluginsForFolder;
+    }
 
-	public void setUsablePluginsForFolder(List<String> usablePluginsForFolder) {
-		this.usablePluginsForFolder = usablePluginsForFolder;
-	}
+    public void setUsablePluginsForFolder(List<String> usablePluginsForFolder) {
+        this.usablePluginsForFolder = usablePluginsForFolder;
+    }
 
-	public String downloadDocket() {
-		logger.debug("generate docket for process list");
-		String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-		File xsltfile = new File(rootpath, "docket_multipage.xsl");
-		FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-		if (!facesContext.getResponseComplete()) {
-			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-			String fileName = "batch_docket" + ".pdf";
-			ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-			String contentType = servletContext.getMimeType(fileName);
-			response.setContentType(contentType);
-			response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+    public String downloadDocket() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("generate docket for process list");
+        }
+        String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
+        File xsltfile = new File(rootpath, "docket_multipage.xsl");
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = "batch_docket" + ".pdf";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
-			// write docket to servlet output stream
-			try {
-				ServletOutputStream out = response.getOutputStream();
-				ExportDocket ern = new ExportDocket();
-				ern.startExport(this.processList, out, xsltfile.getAbsolutePath());
-				out.flush();
-			} catch (IOException e) {
-				logger.error("IOException while exporting run note", e);
-			}
+            // write docket to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                ExportDocket ern = new ExportDocket();
+                ern.startExport(this.processList, out, xsltfile.getAbsolutePath());
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting run note", e);
+            }
 
-			facesContext.responseComplete();
-		}
-		return "";
-	}
+            facesContext.responseComplete();
+        }
+        return "";
+    }
 
-	public List<? extends DocstructElement> getDocstructs() {
-		java.lang.reflect.Method method;
-		try {
-			method = this.plugin.getClass().getMethod("getCurrentDocStructs");
-			Object o = method.invoke(this.plugin);
-			@SuppressWarnings("unchecked")
-			List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-			if (this.plugin != null && list != null) {
-				return list;
-			}
-		} catch (Exception e) {
-		}
-		return new ArrayList<DocstructElement>();
-	}
+    public List<? extends DocstructElement> getDocstructs() {
+        java.lang.reflect.Method method;
+        try {
+            method = this.plugin.getClass().getMethod("getCurrentDocStructs");
+            Object o = method.invoke(this.plugin);
+            @SuppressWarnings("unchecked")
+            List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
+            if (this.plugin != null && list != null) {
+                return list;
+            }
+        } catch (Exception e) {
+        }
+        return new ArrayList<DocstructElement>();
+    }
 
-	public int getDocstructssize() {
-		return getDocstructs().size();
-	}
+    public int getDocstructssize() {
+        return getDocstructs().size();
+    }
 
-	@Deprecated
-	public String getInclude() {
-		return "plugins/" + plugin.getTitle() + ".jsp";
-	}
+    @Deprecated
+    public String getInclude() {
+        return "plugins/" + plugin.getTitle() + ".jsp";
+    }
 }

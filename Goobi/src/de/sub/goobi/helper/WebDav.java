@@ -48,7 +48,7 @@ import de.sub.goobi.export.download.TiffHeader;
 public class WebDav implements Serializable {
 
 	private static final long serialVersionUID = -1929234096626965538L;
-	private static final Logger myLogger = Logger.getLogger(WebDav.class);
+	private static final Logger logger = Logger.getLogger(WebDav.class);
 
 	/*
  	 * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome	
@@ -73,7 +73,7 @@ public class WebDav implements Serializable {
 		try {
 			VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 		} catch (Exception ioe) {
-			myLogger.error("Exception UploadFromHomeAlle()", ioe);
+			logger.error("Exception UploadFromHomeAlle()", ioe);
 			Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", ioe.getMessage());
 			return rueckgabe;
 		}
@@ -114,7 +114,7 @@ public class WebDav implements Serializable {
 		try {
 			VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 		} catch (Exception ioe) {
-			myLogger.error("Exception RemoveFromHomeAlle()", ioe);
+			logger.error("Exception RemoveFromHomeAlle()", ioe);
 			Helper.setFehlerMeldung("Upload stoped, error", ioe.getMessage());
 			return;
 		}
@@ -138,7 +138,7 @@ public class WebDav implements Serializable {
 		try {
 			nach = inBenutzer.getHomeDir();
 		} catch (Exception ioe) {
-			myLogger.error("Exception UploadFromHome(...)", ioe);
+			logger.error("Exception UploadFromHome(...)", ioe);
 			Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
 			return;
 		}
@@ -151,7 +151,7 @@ public class WebDav implements Serializable {
 				List<String> param = new ArrayList<String>();
 				param.add(String.valueOf(nach.replaceAll(" ", "__")));
 				Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", param));
-				myLogger.error("Can not create project directory " + nach.replaceAll(" ", "__"));
+				logger.error("Can not create project directory " + nach.replaceAll(" ", "__"));
 				return;
 			}
 		}
@@ -188,7 +188,7 @@ public class WebDav implements Serializable {
 			}
 
 		} catch (Exception ioe) {
-			myLogger.error("Exception DownloadToHome()", ioe);
+			logger.error("Exception DownloadToHome()", ioe);
 			Helper.setFehlerMeldung("Aborted download to home, error", ioe.getMessage());
 			return;
 		}
@@ -208,8 +208,8 @@ public class WebDav implements Serializable {
 		/* Leerzeichen maskieren */
 		nach = nach.replaceAll(" ", "__");
 
-		myLogger.info("von: " + von);
-		myLogger.info("nach: " + nach);
+		logger.info("von: " + von);
+		logger.info("nach: " + nach);
 
 		File imagePfad = new File(von);
 		File benutzerHome = new File(nach);
@@ -229,12 +229,12 @@ public class WebDav implements Serializable {
 		try {
             	ShellScript.legacyCallShell2(command);
             } catch (java.io.IOException ioe) {
-			myLogger.error("IOException DownloadToHome()", ioe);
+			logger.error("IOException DownloadToHome()", ioe);
 			Helper.setFehlerMeldung("Download aborted, IOException", ioe.getMessage());
 		} catch (InterruptedException e) {
-			myLogger.error("InterruptedException DownloadToHome()", e);
+			logger.error("InterruptedException DownloadToHome()", e);
 			Helper.setFehlerMeldung("Download aborted, InterruptedException", e.getMessage());
-			myLogger.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -251,7 +251,7 @@ public class WebDav implements Serializable {
 			outfile.close();
 		} catch (Exception e) {
 			Helper.setFehlerMeldung("Download aborted", e);
-			myLogger.error(e);
+			logger.error(e);
 		}
 	}
 
@@ -268,7 +268,7 @@ public class WebDav implements Serializable {
 			};
 			return benutzerHome.list(filter).length;
 		} catch (Exception e) {
-			myLogger.error(e);
+			logger.error(e);
 			return 0;
 		}
 	}

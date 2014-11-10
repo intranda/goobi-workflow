@@ -1,4 +1,5 @@
 package org.goobi.production;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -33,13 +34,20 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
-        logger.debug("Checking for database version");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Checking for database version");
+        }
         int currentVersion = DatabaseVersion.getCurrentVersion();
-        logger.debug("Current version is " + currentVersion);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Current version is " + currentVersion);
+        }
         if (currentVersion == DatabaseVersion.EXPECTED_VERSION) {
-            logger.debug("Database version is up to date.");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Database version is up to date.");
+            }
         } else {
-            logger.warn("Database version is to old, updating schema from version " + currentVersion +" to current version " + DatabaseVersion.EXPECTED_VERSION);
+            logger.warn("Database version is to old, updating schema from version " + currentVersion + " to current version "
+                    + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
     }
