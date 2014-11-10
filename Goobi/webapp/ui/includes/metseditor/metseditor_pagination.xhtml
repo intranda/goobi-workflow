@@ -12,7 +12,7 @@
             </h3>
 
             <h:commandLink action="#{Metadaten.createPagination}" value="#{msgs.paginierungEinlesen}">
-                <f:ajax execute="@form" render="@form" />
+                <f:ajax execute="@form" render="@form validation" />
             </h:commandLink>
             <h:panelGrid id="mygrid10" columns="2" style="margin:0px;">
 

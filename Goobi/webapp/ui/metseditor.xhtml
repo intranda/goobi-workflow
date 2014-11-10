@@ -64,10 +64,10 @@
                     <h:outputText value=" | " style="font-size: 11px;" />
                     <!-- Metadaten validieren -->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}" rendered="#{not Metadaten.nurLesenModus}" id="validateButton">
-                        <!--                         <f:ajax render="@form :metadatenRechtsWrapp" /> -->
+                        <f:ajax render="@form :metadatenRechtsWrapp validation" />
                     </h:commandLink>
-                     <h:outputText value="#{msgs.validieren}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="validateText" />
-                     
+                    <h:outputText value="#{msgs.validieren}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="validateText" />
+
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten nicht schreiben, nur zurück gehen-->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.goZurueck}" value="#{msgs.goBack}" target="_parent" immediate="true" id="returnButton" />
