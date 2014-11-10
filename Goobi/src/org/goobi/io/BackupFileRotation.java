@@ -52,7 +52,7 @@ import java.io.IOException;
  */
 public class BackupFileRotation {
 
-	private static final Logger myLogger = Logger.getLogger(BackupFileRotation.class);
+	private static final Logger logger = Logger.getLogger(BackupFileRotation.class);
 
 	private int numberOfBackups;
 	private String format;
@@ -73,7 +73,7 @@ public class BackupFileRotation {
 		metaFiles = generateBackupBaseNameFileList(format, processDataDirectory);
 
 		if (metaFiles.length < 1) {
-			myLogger.info("No files matching format '" + format + "' in directory " + processDataDirectory + " found.");
+			logger.info("No files matching format '" + format + "' in directory " + processDataDirectory + " found.");
 			return;
 		}
 
@@ -116,7 +116,7 @@ public class BackupFileRotation {
 		try {
 			FilesystemHelper.renameFile(oldFileName, newFileName);
 		} catch (IOException ioe) {
-			myLogger.trace("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
+			logger.trace("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
 		}
 
 	}

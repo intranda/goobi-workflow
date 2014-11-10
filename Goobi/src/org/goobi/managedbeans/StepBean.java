@@ -91,7 +91,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 @SessionScoped
 public class StepBean extends BasicBean {
     private static final long serialVersionUID = 5841566727939692509L;
-    private static final Logger myLogger = Logger.getLogger(StepBean.class);
+    private static final Logger logger = Logger.getLogger(StepBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private IStepPlugin myPlugin;
@@ -271,7 +271,7 @@ public class StepBean extends BasicBean {
                 StepManager.saveStep(mySchritt);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
-                myLogger.error("step couldn't get saved", e);
+                logger.error("step couldn't get saved", e);
                 //					} finally {
                 //						this.flagWait = false;
             }
@@ -362,7 +362,7 @@ public class StepBean extends BasicBean {
                 StepManager.saveStep(s);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
-                myLogger.error("step couldn't get saved", e);
+                logger.error("step couldn't get saved", e);
             }
         }
 
@@ -552,8 +552,10 @@ public class StepBean extends BasicBean {
     }
 
     public String ReportProblem() {
-        myLogger.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
-        myLogger.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
+        if (logger.isDebugEnabled()) {
+            logger.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
+            logger.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
+        }
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         Date myDate = new Date();
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.LOCKED);
@@ -904,7 +906,7 @@ public class StepBean extends BasicBean {
                         this.gesamtAnzahlImages += FileUtils.getNumberOfFiles(step.getProzess().getImagesOrigDirectory(false));
                     }
                 } catch (Exception e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
             }
         }
@@ -926,9 +928,9 @@ public class StepBean extends BasicBean {
         try {
             schrittPerParameterLaden();
         } catch (NumberFormatException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (DAOException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
         return this.mySchritt;
     }
@@ -956,10 +958,12 @@ public class StepBean extends BasicBean {
         //        Helper.setMeldung(mySchritt.getStepPlugin());
 
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
-            myLogger.debug("Plugin is full GUI");
             String mypath = myPlugin.getPagePath();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Plugin is full GUI");
             //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
-            myLogger.debug("open plugin GUI: " + mypath);
+                logger.debug("open plugin GUI: " + mypath);
+            }
             myPlugin.execute();
             return mypath;
         } else {
@@ -1095,7 +1099,7 @@ public class StepBean extends BasicBean {
             dms.startExport(this.mySchritt.getProzess());
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on export", e.getMessage());
-            myLogger.error(e);
+            logger.error(e);
         }
     }
 
@@ -1158,7 +1162,7 @@ public class StepBean extends BasicBean {
             try {
                 ProcessManager.saveProcess(this.mySchritt.getProzess());
             } catch (DAOException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
         }
     }

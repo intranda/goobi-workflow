@@ -91,7 +91,7 @@ public class Helper implements Serializable, Observer {
 
     }
 
-    private static final Logger myLogger = Logger.getLogger(Helper.class);
+    private static final Logger logger = Logger.getLogger(Helper.class);
     private static final long serialVersionUID = -7449236652821237059L;
 
     private String myMetadatenVerzeichnis;
@@ -222,10 +222,10 @@ public class Helper implements Serializable, Observer {
         }
         if (context != null) {
             msg = msg.replace("\n", "<br />");
-            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));        
+            context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
-            myLogger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
+            logger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
 
         }
     }
@@ -272,9 +272,9 @@ public class Helper implements Serializable, Observer {
                     try {
                         value = vb.getValue(context);
                     } catch (PropertyNotFoundException e) {
-                        myLogger.error(e);
+                        logger.error(e);
                     } catch (EvaluationException e) {
-                        myLogger.error(e);
+                        logger.error(e);
                     }
                 }
             }
@@ -292,7 +292,7 @@ public class Helper implements Serializable, Observer {
                 try {
                     commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                 } catch (Exception e) {
-                    myLogger.warn("Cannot load messages for language " + language.getLanguage());
+                    logger.warn("Cannot load messages for language " + language.getLanguage());
                 }
                 File file = new File(ConfigurationHelper.getInstance().getPathForLocalMessages());
                 if (file.exists()) {
@@ -407,7 +407,9 @@ public class Helper implements Serializable, Observer {
      * Copies src file to dst file. If the dst file does not exist, it is created
      */
     public static void copyFile(File src, File dst) throws IOException {
-        myLogger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
+        if (logger.isDebugEnabled()) {
+            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
+        }
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
 

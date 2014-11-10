@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  */
 
 public abstract class AbstractGoobiException extends Exception {
-   private static final Logger myLogger = Logger.getLogger(AbstractGoobiException.class);
+   private static final Logger logger = Logger.getLogger(AbstractGoobiException.class);
    private static final long serialVersionUID = 967941638835011325L;
 
    protected Exception exception;
@@ -79,7 +79,7 @@ public abstract class AbstractGoobiException extends Exception {
 	public void printStackTrace() {
 		super.printStackTrace();
 		if (this.exception != null) {
-           myLogger.error("%%%% wrapped exception: ");
+           logger.error("%%%% wrapped exception: ");
 			this.exception.printStackTrace();
 		}
 	}
@@ -88,7 +88,7 @@ public abstract class AbstractGoobiException extends Exception {
 	public void printStackTrace(PrintStream printStream) {
 		super.printStackTrace(printStream);
 		if (this.exception != null) {
-           myLogger.error("%%%% wrapped exception: ");
+           logger.error("%%%% wrapped exception: ");
 			this.exception.printStackTrace(printStream);
 		}
 	}

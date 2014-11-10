@@ -63,7 +63,7 @@ import de.sub.goobi.helper.exceptions.WrongImportFileException;
 
 @Deprecated
 public class ImportRussland {
-   private static final Logger myLogger = Logger.getLogger(ImportRussland.class);
+   private static final Logger logger = Logger.getLogger(ImportRussland.class);
    private DocStruct logicalTopstruct;
    private Process prozess;
    
@@ -153,7 +153,7 @@ public class ImportRussland {
        * Datei abschliessend wieder speichern
        * --------------------------------*/
       inProzess.writeMetadataFile(gdzfile);
-      myLogger.debug("ParsenRussland() - Ende");
+      logger.debug("ParsenRussland() - Ende");
    }
 
    
@@ -417,7 +417,7 @@ public class ImportRussland {
          //         
          inStruct.addMetadata(md);
       } catch (Exception e) {
-         myLogger.error("Import fehlgeschlagen: " + inDetail, e);
+         logger.error("Import fehlgeschlagen: " + inDetail, e);
       }
    } 
 

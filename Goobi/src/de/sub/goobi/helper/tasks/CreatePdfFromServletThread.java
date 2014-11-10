@@ -1,4 +1,5 @@
 package de.sub.goobi.helper.tasks;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -51,189 +52,191 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 /*************************************************************************************
- * Creation of PDF-Files as long running task for GoobiContentServerServlet
- * First of all the variables have to be set via the setters after that you can
- * initialize and run it
+ * Creation of PDF-Files as long running task for GoobiContentServerServlet First of all the variables have to be set via the setters after that you
+ * can initialize and run it
  * 
  * @author Steffen Hankiewicz
  * @version 12.02.2009
  *************************************************************************************/
 public class CreatePdfFromServletThread extends LongRunningTask {
-	private static final Logger logger = Logger.getLogger(CreatePdfFromServletThread.class);
-	private File targetFolder;
-	private String internalServletPath;
-	private URL metsURL;
+    private static final Logger logger = Logger.getLogger(CreatePdfFromServletThread.class);
+    private File targetFolder;
+    private String internalServletPath;
+    private URL metsURL;
 
-	@Override
-	public void initialize(Process inProzess) {
-		super.initialize(inProzess);
-		setTitle("Create PDF: " + inProzess.getTitel());
-	}
+    @Override
+    public void initialize(Process inProzess) {
+        super.initialize(inProzess);
+        setTitle("Create PDF: " + inProzess.getTitel());
+    }
 
-	/**
-	 * Aufruf als Thread
-	 * ================================================================
-	 */
-	@Override
-	public void run() {
-		setStatusProgress(30);
-		if (this.getProzess() == null || this.targetFolder == null || this.internalServletPath == null) {
-			setStatusMessage("parameters for temporary and final folder and internal servlet path not defined");
-			setStatusProgress(-1);
-			return;
-		}
-		GetMethod method = null;
-		try {
-			/* --------------------------------
-			 * define path for mets and pdfs
-			 * --------------------------------*/
-			URL goobiContentServerUrl = null;
-			String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
-			new File("");
-			File tempPdf = File.createTempFile(this.getProzess().getTitel(), ".pdf");
-			File finalPdf = new File(this.targetFolder, this.getProzess().getTitel() + ".pdf");
-			Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
-			
-			/* --------------------------------
-			 * using mets file
-			 * --------------------------------*/
+    /**
+     * Aufruf als Thread ================================================================
+     */
+    @Override
+    public void run() {
+        setStatusProgress(30);
+        if (this.getProzess() == null || this.targetFolder == null || this.internalServletPath == null) {
+            setStatusMessage("parameters for temporary and final folder and internal servlet path not defined");
+            setStatusProgress(-1);
+            return;
+        }
+        GetMethod method = null;
+        try {
+            /* --------------------------------
+             * define path for mets and pdfs
+             * --------------------------------*/
+            URL goobiContentServerUrl = null;
+            String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
+            new File("");
+            File tempPdf = File.createTempFile(this.getProzess().getTitel(), ".pdf");
+            File finalPdf = new File(this.targetFolder, this.getProzess().getTitel() + ".pdf");
+            Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 
-			
-			if (new MetadatenVerifizierung().validate(this.getProzess()) && this.metsURL != null) {
-				/* if no contentserverurl defined use internal goobiContentServerServlet */
-					if (contentServerUrl == null || contentServerUrl.length() == 0) {
-						contentServerUrl = this.internalServletPath + "/gcs/gcs?action=pdf&metsFile=";
-					}
-				goobiContentServerUrl = new URL(contentServerUrl + this.metsURL);		
-			
-				/* --------------------------------
-				 * mets data does not exist or is invalid
-				 * --------------------------------*/
-				
-			} else {
-				if (contentServerUrl == null || contentServerUrl.length() == 0) {
-					contentServerUrl = this.internalServletPath + "/cs/cs?action=pdf&images=";
-				}
-				String url = "";
-				FilenameFilter filter = Helper.imageNameFilter;
-				File imagesDir = new File(this.getProzess().getImagesTifDirectory(true));
-				File[] meta = imagesDir.listFiles(filter);
-				ArrayList<String> filenames = new ArrayList<String>();
-				for (File data : meta) {
-					String file = "";
-					file +=data.toURI().toURL();
-					filenames.add(file);
-				}
-				Collections.sort(filenames, new MetadatenHelper(null, null));
-				for (String f : filenames) {
-					url = url + f + "$";
-				}
-				String imageString = url.substring(0, url.length()-1);
-				String targetFileName = "&targetFileName=" + this.getProzess().getTitel()+".pdf";	
-				goobiContentServerUrl = new URL(contentServerUrl + imageString + targetFileName);
-			}
-			
-			/* --------------------------------
-			 * get pdf from servlet and forward response to file 
-			 * --------------------------------*/
+            /* --------------------------------
+             * using mets file
+             * --------------------------------*/
 
-			HttpClient httpclient = new HttpClient();
-			logger.debug("Retrieving: " + goobiContentServerUrl.toString());
-			method = new GetMethod(goobiContentServerUrl.toString());
-			try {
-			method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
-			int statusCode = httpclient.executeMethod(method);
-			if (statusCode != HttpStatus.SC_OK) {
-				logger.error("HttpStatus nicht ok", null);
-				logger.debug("Response is:\n" + method.getResponseBodyAsString());
-				return;
-			}
+            if (new MetadatenVerifizierung().validate(this.getProzess()) && this.metsURL != null) {
+                /* if no contentserverurl defined use internal goobiContentServerServlet */
+                if (contentServerUrl == null || contentServerUrl.length() == 0) {
+                    contentServerUrl = this.internalServletPath + "/gcs/gcs?action=pdf&metsFile=";
+                }
+                goobiContentServerUrl = new URL(contentServerUrl + this.metsURL);
 
-			InputStream inStream = method.getResponseBodyAsStream();
-			BufferedInputStream bis = new BufferedInputStream(inStream);
-			FileOutputStream fos = new FileOutputStream(tempPdf);
-			byte[] bytes = new byte[8192];
-			int count = bis.read(bytes);
-			while (count != -1 && count <= 8192) {
-				fos.write(bytes, 0, count);
-				count = bis.read(bytes);
-			}
-			if (count != -1) {
-				fos.write(bytes, 0, count);
-			}
-			fos.close();
-			bis.close();
-			setStatusProgress(80);
-			} finally {
-				method.releaseConnection();
-			}
-			/* --------------------------------
-			 * copy pdf from temp to final destination
-			 * --------------------------------*/
-			logger.debug("pdf file created: " + tempPdf.getAbsolutePath() + "; now copy it to " + finalPdf.getAbsolutePath());
-			Helper.copyFile(tempPdf, finalPdf);
-			logger.debug("pdf copied to " + finalPdf.getAbsolutePath() + "; now start cleaning up");
-			tempPdf.delete();
-			if (this.metsURL != null) {
-				File tempMets = new File(this.metsURL.toString());
-				tempMets.delete();
-			}
-		} catch (Exception e) {
-			logger.error("Error while creating pdf for " + this.getProzess().getTitel(), e);
-			setStatusMessage("error " + e.getClass().getSimpleName() + " while pdf creation: " + e.getMessage());
-			setStatusProgress(-1);
+                /* --------------------------------
+                 * mets data does not exist or is invalid
+                 * --------------------------------*/
 
-			/* --------------------------------
-			 * report Error to User as Error-Log
-			 * --------------------------------*/
-			Writer output = null;
-			String text = "error while pdf creation: " + e.getMessage();
-			File file = new File(this.targetFolder, this.getProzess().getTitel() + ".PDF-ERROR.log");
-			try {
-				output = new BufferedWriter(new FileWriter(file));
-				output.write(text);
-				output.close();
-			} catch (IOException e1) {
-				logger.error("Error while reporting error to user in file " + file.getAbsolutePath(), e);
-			}
-			return;
-		} finally {
-			if (method != null) {
-				method.releaseConnection();
-			}
+            } else {
+                if (contentServerUrl == null || contentServerUrl.length() == 0) {
+                    contentServerUrl = this.internalServletPath + "/cs/cs?action=pdf&images=";
+                }
+                String url = "";
+                FilenameFilter filter = Helper.imageNameFilter;
+                File imagesDir = new File(this.getProzess().getImagesTifDirectory(true));
+                File[] meta = imagesDir.listFiles(filter);
+                ArrayList<String> filenames = new ArrayList<String>();
+                for (File data : meta) {
+                    String file = "";
+                    file += data.toURI().toURL();
+                    filenames.add(file);
+                }
+                Collections.sort(filenames, new MetadatenHelper(null, null));
+                for (String f : filenames) {
+                    url = url + f + "$";
+                }
+                String imageString = url.substring(0, url.length() - 1);
+                String targetFileName = "&targetFileName=" + this.getProzess().getTitel() + ".pdf";
+                goobiContentServerUrl = new URL(contentServerUrl + imageString + targetFileName);
+            }
 
-		}
-		setStatusMessage("done");
-		setStatusProgress(100);
-	}
+            /* --------------------------------
+             * get pdf from servlet and forward response to file 
+             * --------------------------------*/
 
+            HttpClient httpclient = new HttpClient();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Retrieving: " + goobiContentServerUrl.toString());
+            }
+            method = new GetMethod(goobiContentServerUrl.toString());
+            try {
+                method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
+                int statusCode = httpclient.executeMethod(method);
+                if (statusCode != HttpStatus.SC_OK) {
+                    logger.error("HttpStatus nicht ok", null);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Response is:\n" + method.getResponseBodyAsString());
+                    }
+                    return;
+                }
 
-	/**************************************************************************************
-	 * Setter for targetFolder
-	 * 
-	 * @param targetFolder
-	 *            the targetFolder to set
-	 **************************************************************************************/
-	public void setTargetFolder(File targetFolder) {
-		this.targetFolder = targetFolder;
-	}
+                InputStream inStream = method.getResponseBodyAsStream();
+                BufferedInputStream bis = new BufferedInputStream(inStream);
+                FileOutputStream fos = new FileOutputStream(tempPdf);
+                byte[] bytes = new byte[8192];
+                int count = bis.read(bytes);
+                while (count != -1 && count <= 8192) {
+                    fos.write(bytes, 0, count);
+                    count = bis.read(bytes);
+                }
+                if (count != -1) {
+                    fos.write(bytes, 0, count);
+                }
+                fos.close();
+                bis.close();
+                setStatusProgress(80);
+            } finally {
+                method.releaseConnection();
+            }
+            /* --------------------------------
+             * copy pdf from temp to final destination
+             * --------------------------------*/
+            if (logger.isDebugEnabled()) {
+                logger.debug("pdf file created: " + tempPdf.getAbsolutePath() + "; now copy it to " + finalPdf.getAbsolutePath());
+            }
+            Helper.copyFile(tempPdf, finalPdf);
+            if (logger.isDebugEnabled()) {
+                logger.debug("pdf copied to " + finalPdf.getAbsolutePath() + "; now start cleaning up");
+            }
+            tempPdf.delete();
+            if (this.metsURL != null) {
+                File tempMets = new File(this.metsURL.toString());
+                tempMets.delete();
+            }
+        } catch (Exception e) {
+            logger.error("Error while creating pdf for " + this.getProzess().getTitel(), e);
+            setStatusMessage("error " + e.getClass().getSimpleName() + " while pdf creation: " + e.getMessage());
+            setStatusProgress(-1);
 
-	/**************************************************************************************
-	 * Setter for internalServletPath
-	 * 
-	 * @param internalServletPath
-	 *            the internalServletPath to set
-	 **************************************************************************************/
-	public void setInternalServletPath(String internalServletPath) {
-		this.internalServletPath = internalServletPath;
-	}
+            /* --------------------------------
+             * report Error to User as Error-Log
+             * --------------------------------*/
+            Writer output = null;
+            String text = "error while pdf creation: " + e.getMessage();
+            File file = new File(this.targetFolder, this.getProzess().getTitel() + ".PDF-ERROR.log");
+            try {
+                output = new BufferedWriter(new FileWriter(file));
+                output.write(text);
+                output.close();
+            } catch (IOException e1) {
+                logger.error("Error while reporting error to user in file " + file.getAbsolutePath(), e);
+            }
+            return;
+        } finally {
+            if (method != null) {
+                method.releaseConnection();
+            }
 
-	public URL getMetsURL() {
-		return this.metsURL;
-	}
+        }
+        setStatusMessage("done");
+        setStatusProgress(100);
+    }
 
-	public void setMetsURL(URL metsURL) {
-		this.metsURL = metsURL;
-	}
+    /**************************************************************************************
+     * Setter for targetFolder
+     * 
+     * @param targetFolder the targetFolder to set
+     **************************************************************************************/
+    public void setTargetFolder(File targetFolder) {
+        this.targetFolder = targetFolder;
+    }
+
+    /**************************************************************************************
+     * Setter for internalServletPath
+     * 
+     * @param internalServletPath the internalServletPath to set
+     **************************************************************************************/
+    public void setInternalServletPath(String internalServletPath) {
+        this.internalServletPath = internalServletPath;
+    }
+
+    public URL getMetsURL() {
+        return this.metsURL;
+    }
+
+    public void setMetsURL(URL metsURL) {
+        this.metsURL = metsURL;
+    }
 
 }

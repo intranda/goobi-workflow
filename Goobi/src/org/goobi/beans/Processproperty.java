@@ -252,6 +252,9 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
         if (getClass() != obj.getClass())
             return false;
         Processproperty other = (Processproperty) obj;
+        if (id != null && other.id != null && id.equals(other.id)) {
+            return true;
+        }
         if (container == null) {
             if (other.container != null)
                 return false;
@@ -266,11 +269,6 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
             if (other.datentyp != null)
                 return false;
         } else if (!datentyp.equals(other.datentyp))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
             return false;
         if (processId != other.processId)
             return false;

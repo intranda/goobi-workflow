@@ -109,7 +109,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 @ManagedBean(name = "Metadaten")
 @SessionScoped
 public class Metadaten {
-    private static final Logger myLogger = Logger.getLogger(Metadaten.class);
+    private static final Logger logger = Logger.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
     private boolean treeReloaden = false;
@@ -212,12 +212,9 @@ public class Metadaten {
     private boolean tiffFolderHasChanged = true;
     private List<String> dataList = new ArrayList<String>();
 
-
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
-    
-    
     /**
      * Konstruktor ================================================================
      */
@@ -287,17 +284,40 @@ public class Metadaten {
     }
 
     public String Reload() {
+
+        //        try {
+        //            Thread.sleep(1000l);
+        //        } catch (InterruptedException e1) {
+        //            myLogger.error(e1);
+        //        }
+
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return "SperrungAbgelaufen";
         } else {
-            calculateMetadataAndImages();
-            cleanupMetadata();
-            // ignoring result of store operation
-            storeMetadata();
+            try {
+
+                this.myProzess.writeMetadataFile(this.gdzfile);
+            } catch (Exception e) {
+                Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+                logger.error(e);
+            }
             MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
             return "";
         }
     }
+
+    //    public String Reload() {
+    //        if (!SperrungAktualisieren()) {
+    //            return "metseditor_timeout";
+    //        } else {
+    //            calculateMetadataAndImages();
+    //            cleanupMetadata();
+    //            // ignoring result of store operation
+    //            storeMetadata();
+    //            MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+    //            return "";
+    //        }
+    //    }
 
     public String CopyGroup() {
         MetadataGroup newMetadataGroup;
@@ -315,7 +335,7 @@ public class Metadaten {
 
             this.myDocStruct.addMetadataGroup(newMetadataGroup);
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
+            logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -339,7 +359,7 @@ public class Metadaten {
 
             this.myDocStruct.addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
+            logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -369,9 +389,9 @@ public class Metadaten {
 
             this.myDocStruct.addPerson(per);
         } catch (IncompletePersonObjectException e) {
-            myLogger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
+            logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error("Fehler beim Kopieren von Personen (MetadataTypeNotAllowedException): " + e.getMessage());
+            logger.error("Fehler beim Kopieren von Personen (MetadataTypeNotAllowedException): " + e.getMessage());
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -389,16 +409,16 @@ public class Metadaten {
                 MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
             } catch (DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes (DocStructHasNoTypeException): ", e.getMessage());
-                myLogger.error("Error while changing DocStructTypes (DocStructHasNoTypeException): " + e.getMessage());
+                logger.error("Error while changing DocStructTypes (DocStructHasNoTypeException): " + e.getMessage());
             } catch (MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes (MetadataTypeNotAllowedException): ", e.getMessage());
-                myLogger.error("Error while changing DocStructTypes (MetadataTypeNotAllowedException): " + e.getMessage());
+                logger.error("Error while changing DocStructTypes (MetadataTypeNotAllowedException): " + e.getMessage());
             } catch (TypeNotAllowedAsChildException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes (TypeNotAllowedAsChildException): ", e.getMessage());
-                myLogger.error("Error while changing DocStructTypes (TypeNotAllowedAsChildException): " + e.getMessage());
+                logger.error("Error while changing DocStructTypes (TypeNotAllowedAsChildException): " + e.getMessage());
             } catch (TypeNotAllowedForParentException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes (TypeNotAllowedForParentException): ", e.getMessage());
-                myLogger.error("Error while changing DocStructTypes (TypeNotAllowedForParentException): " + e.getMessage());
+                logger.error("Error while changing DocStructTypes (TypeNotAllowedForParentException): " + e.getMessage());
             }
         }
         return "metseditor";
@@ -411,7 +431,7 @@ public class Metadaten {
 
             this.myDocStruct.addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
+            logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
         }
 
         /*
@@ -423,7 +443,7 @@ public class Metadaten {
                 md2.setValue(this.selectedMetadatum.getValue());
                 this.myDocStruct.addMetadata(md2);
             } catch (MetadataTypeNotAllowedException e) {
-                myLogger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
+                logger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
             }
         }
 
@@ -453,7 +473,7 @@ public class Metadaten {
 
             this.myDocStruct.addMetadataGroup(md);
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
+            logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
         }
 
         this.modeAddGroup = false;
@@ -606,7 +626,7 @@ public class Metadaten {
                 this.tempMetadatumList.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
-                myLogger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+                logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
         return myList;
@@ -645,7 +665,7 @@ public class Metadaten {
                 this.tempMetadataGroups.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
-                myLogger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+                logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
         return myList;
@@ -937,11 +957,96 @@ public class Metadaten {
         }
     }
 
-    private void calculateMetadataAndImages() {
+    //    private void calculateMetadataAndImages() {
+    //
+    //        /*
+    //         * für den Prozess nochmal die Metadaten durchlaufen und die Daten speichern
+    //         */
+    //        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+    //
+    //        this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
+    //        this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
+    //        try {
+    //            this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory(true))));
+    //            ProcessManager.saveProcess(this.myProzess);
+    //        } catch (DAOException e) {
+    //            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+    //            myLogger.error(e);
+    //        } catch (Exception e) {
+    //            Helper.setFehlerMeldung("error while counting current images", e);
+    //            myLogger.error(e);
+    //        }
+    //    }
 
-        /*
-         * für den Prozess nochmal die Metadaten durchlaufen und die Daten speichern
-         */
+    //    private void cleanupMetadata() {
+    //        /*
+    //         * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
+    //         */
+    //        this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
+    //
+    //        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+    //            boolean match = false;
+    //            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+    //                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+    //                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+    //                    if (md.getType().getName().equals("_representative")) {
+    //                        Integer value = new Integer(currentRepresentativePage);
+    //                        md.setValue(String.valueOf(value + 1));
+    //                        match = true;
+    //                    }
+    //                }
+    //            }
+    //            if (!match) {
+    //                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+    //                try {
+    //                    Metadata md = new Metadata(mdt);
+    //                    Integer value = new Integer(currentRepresentativePage);
+    //                    md.setValue(String.valueOf(value + 1));
+    //                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+    //                } catch (MetadataTypeNotAllowedException e) {
+    //
+    //                }
+    //
+    //            }
+    //        }
+    //    }
+
+    public boolean isCheckForRepresentative() {
+        MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+        if (mdt != null) {
+            return true;
+        }
+        return false;
+    }
+
+    //    private boolean storeMetadata() {
+    //        boolean result = true;
+    //        try {
+    //            if (!new MetadatenVerifizierung().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
+    //                return false;
+    //            }
+    //            this.myProzess.writeMetadataFile(this.gdzfile);
+    //        } catch (Exception e) {
+    //            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+    //            myLogger.error(e);
+    //            result = false;
+    //
+    //        }
+    //        return result;
+    //    }
+
+    /**
+     * Metadaten Schreiben
+     * 
+     * @throws InterruptedException
+     * @throws IOException ============================================================ == ==
+     * @throws DAOException
+     * @throws SwapException
+     * @throws WriteException
+     * @throws PreferencesException
+     */
+    public String XMLschreiben() {
+
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
@@ -951,17 +1056,16 @@ public class Metadaten {
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-            myLogger.error(e);
+            logger.error(e);
         } catch (Exception e) {
             Helper.setFehlerMeldung("error while counting current images", e);
-            myLogger.error(e);
+            logger.error(e);
         }
-    }
-
-    private void cleanupMetadata() {
+        /* xml-Datei speichern */
+        // MetadatenDebuggen(gdzfile.getDigitalDocument().getLogicalDocStruct());
         /*
          * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
-         */
+          */
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
 
         if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
@@ -989,59 +1093,36 @@ public class Metadaten {
 
             }
         }
-    }
 
-    public boolean isCheckForRepresentative() {
-        MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-        if (mdt != null) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean storeMetadata() {
-        boolean result = true;
         try {
-            if (!new MetadatenVerifizierung().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
-                return false;
-            }
+            // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
+            // return false;
+            // }
             this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-            myLogger.error(e);
-            result = false;
-
-        }
-        return result;
-    }
-
-    /**
-     * Metadaten Schreiben
-     * 
-     * @throws InterruptedException
-     * @throws IOException ============================================================ == ==
-     * @throws DAOException
-     * @throws SwapException
-     * @throws WriteException
-     * @throws PreferencesException
-     */
-    public String XMLschreiben() {
-
-        calculateMetadataAndImages();
-
-        cleanupMetadata();
-
-        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
-            reOrderPagination();
-        }
-
-        if (!storeMetadata()) {
+            logger.error(e);
             return "Metadaten";
         }
-
         SperrungAufheben();
         return this.zurueck;
     }
+
+    //        calculateMetadataAndImages();
+    //
+    //        cleanupMetadata();
+    //
+    //        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
+    //            reOrderPagination();
+    //        }
+    //
+    //        if (!storeMetadata()) {
+    //            return "Metadaten";
+    //        }
+    //
+    //        SperrungAufheben();
+    //        return this.zurueck;
+    //    }
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -1256,7 +1337,9 @@ public class Metadaten {
         try {
             this.metahelper.KnotenUp(this.myDocStruct);
         } catch (TypeNotAllowedAsChildException e) {
-            myLogger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
+            }
         }
         return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
     }
@@ -1268,7 +1351,9 @@ public class Metadaten {
         try {
             this.metahelper.KnotenDown(this.myDocStruct);
         } catch (TypeNotAllowedAsChildException e) {
-            myLogger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
+            }
         }
         return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
     }
@@ -1325,7 +1410,7 @@ public class Metadaten {
                 siblings.add(index + 1, ds);
                 myDocStruct = ds;
             } catch (TypeNotAllowedForParentException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
         }
 
@@ -1363,7 +1448,9 @@ public class Metadaten {
             }
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
-                myLogger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<DocStruct>();
@@ -1398,7 +1485,9 @@ public class Metadaten {
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
-                myLogger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<DocStruct>();
@@ -1432,7 +1521,9 @@ public class Metadaten {
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct;
             if (parent == null) {
-                myLogger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<DocStruct>();
@@ -1463,7 +1554,7 @@ public class Metadaten {
                 try {
                     ds.addMetadata(mdi.getMd());
                 } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
             }
         }
@@ -1472,17 +1563,16 @@ public class Metadaten {
                 try {
                     ds.addPerson(mdp.getP());
                 } catch (MetadataTypeNotAllowedException | IncompletePersonObjectException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
             }
         }
-    
-        
+
         if (!this.pagesStart.equals("") && !this.pagesEnd.equals("")) {
             DocStruct temp = this.myDocStruct;
             this.myDocStruct = ds;
             this.ajaxSeiteStart = this.pagesStart;
-            this.ajaxSeiteEnde = this.pagesEnd;          
+            this.ajaxSeiteEnde = this.pagesEnd;
 
             AjaxSeitenStartUndEndeSetzen();
             this.myDocStruct = temp;
@@ -1515,15 +1605,15 @@ public class Metadaten {
         try {
             imagehelper.checkImageNames(this.myProzess);
         } catch (TypeNotAllowedForParentException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (SwapException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (DAOException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (IOException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (InterruptedException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
     }
 
@@ -1918,21 +2008,21 @@ public class Metadaten {
         /*
          * wenn die Bilder nicht angezeigt werden, brauchen wir auch das Bild nicht neu umrechnen
          */
-        myLogger.trace("start BildErmitteln 1");
+        logger.trace("start BildErmitteln 1");
         if (!this.bildAnzeigen) {
-            myLogger.trace("end BildErmitteln 1");
+            logger.trace("end BildErmitteln 1");
             return;
         }
-        myLogger.trace("ocr BildErmitteln");
+        logger.trace("ocr BildErmitteln");
         this.ocrResult = "";
 
-        myLogger.trace("dataList");
+        logger.trace("dataList");
         // try {
         if (dataList == null || dataList.isEmpty() || tiffFolderHasChanged) {
             tiffFolderHasChanged = false;
 
             if (this.currentTifFolder != null) {
-                myLogger.trace("currentTifFolder: " + this.currentTifFolder);
+                logger.trace("currentTifFolder: " + this.currentTifFolder);
                 try {
                     // dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
                     dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
@@ -1943,8 +2033,8 @@ public class Metadaten {
                     }
                     //
                 } catch (InvalidImagesException e1) {
-                    myLogger.trace("dataList error");
-                    myLogger.error("Images could not be read", e1);
+                    logger.trace("dataList error");
+                    logger.error("Images could not be read", e1);
                     Helper.setFehlerMeldung("images could not be read", e1);
                 }
             } else {
@@ -1952,40 +2042,40 @@ public class Metadaten {
                     createPagination();
                     dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
                 } catch (TypeNotAllowedForParentException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 } catch (SwapException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 } catch (DAOException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 } catch (IOException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 } catch (InterruptedException e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
             }
         }
 
-        myLogger.trace("dataList 2");
+        logger.trace("dataList 2");
 
         if (dataList != null && dataList.size() > 0) {
-            myLogger.trace("dataList not null");
+            logger.trace("dataList not null");
             this.myBildLetztes = dataList.size();
-            myLogger.trace("myBildLetztes");
+            logger.trace("myBildLetztes");
             for (int i = 0; i < dataList.size(); i++) {
-                myLogger.trace("file: " + i);
+                logger.trace("file: " + i);
                 if (this.myBild == null) {
                     this.myBild = dataList.get(0);
                 }
-                myLogger.trace("myBild: " + this.myBild);
+                logger.trace("myBild: " + this.myBild);
                 String index = dataList.get(i).substring(0, dataList.get(i).lastIndexOf("."));
-                myLogger.trace("index: " + index);
+                logger.trace("index: " + index);
                 String myPicture = this.myBild.substring(0, this.myBild.lastIndexOf("."));
-                myLogger.trace("myPicture: " + myPicture);
+                logger.trace("myPicture: " + myPicture);
                 /* wenn das aktuelle Bild gefunden ist, das neue ermitteln */
                 if (index.equals(myPicture)) {
-                    myLogger.trace("index == myPicture");
+                    logger.trace("index == myPicture");
                     int pos = i + welches;
-                    myLogger.trace("pos: " + pos);
+                    logger.trace("pos: " + pos);
                     /* aber keine Indexes ausserhalb des Array erlauben */
                     if (pos < 0) {
                         pos = 0;
@@ -1999,39 +2089,39 @@ public class Metadaten {
                     } else {
                         this.myBild = dataList.get(dataList.size() - 1);
                     }
-                    myLogger.trace("found myBild");
+                    logger.trace("found myBild");
                     /* die korrekte Seitenzahl anzeigen */
                     this.myBildNummer = pos + 1;
-                    myLogger.trace("myBildNummer: " + this.myBildNummer);
+                    logger.trace("myBildNummer: " + this.myBildNummer);
                     /* Pages-Verzeichnis ermitteln */
                     String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
-                    myLogger.trace("myPfad: " + myPfad);
+                    logger.trace("myPfad: " + myPfad);
                     /*
                      * den Counter für die Bild-ID auf einen neuen Wert setzen, damit nichts gecacht wird
                      */
                     this.myBildCounter++;
-                    myLogger.trace("myBildCounter: " + this.myBildCounter);
+                    logger.trace("myBildCounter: " + this.myBildCounter);
 
                     /* Session ermitteln */
                     FacesContext context = FacesContextHelper.getCurrentFacesContext();
                     HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
                     String mySession = session.getId() + "_" + this.myBildCounter + ".png";
-                    myLogger.trace("facescontext");
+                    logger.trace("facescontext");
 
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + File.separator + this.myBild;
-                        myLogger.trace("tiffconverterpfad: " + tiffconverterpfad);
+                        logger.trace("tiffconverterpfad: " + tiffconverterpfad);
                         if (!new File(tiffconverterpfad).exists()) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + new File(this.myProzess.getImagesTifDirectory(true)).getName());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, this.myImageRotation);
-                        myLogger.trace("scaleFile");
+                        logger.trace("scaleFile");
                     } catch (Exception e) {
                         Helper.setFehlerMeldung("could not find image folder", e);
-                        myLogger.error(e);
+                        logger.error(e);
                     }
                     break;
                 }
@@ -2049,7 +2139,7 @@ public class Metadaten {
             }
         } catch (Exception e) {
             this.myBildNummer = -1;
-            myLogger.error(e);
+            logger.error(e);
         }
         /* wenn das Bild nicht existiert, den Status ändern */
         if (!exists) {
@@ -2127,7 +2217,7 @@ public class Metadaten {
                 this.myDocStruct.addMetadata(mdDin);
                 this.myDocStruct.addMetadata(mdIso);
             } catch (MetadataTypeNotAllowedException e) {
-                myLogger.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
+                logger.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
             }
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
@@ -2163,7 +2253,7 @@ public class Metadaten {
                 this.myDocStruct.addPerson(mdDin);
                 this.myDocStruct.addPerson(mdIso);
             } catch (MetadataTypeNotAllowedException e) {
-                myLogger.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
+                logger.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
             }
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
@@ -2186,7 +2276,7 @@ public class Metadaten {
      * ================================================================
      */
     public String AddAdditionalOpacPpns() {
-        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\r\n");
+        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\n");
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
@@ -2211,7 +2301,7 @@ public class Metadaten {
      * ================================================================
      */
     public String AddMetadaFromOpacPpn() {
-        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\r\n");
+        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\n");
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
@@ -2345,7 +2435,9 @@ public class Metadaten {
     }
 
     public List<String> getAjaxAlleSeiten(String prefix) {
-        myLogger.debug("Ajax-Liste abgefragt");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Ajax-Liste abgefragt");
+        }
         List<String> li = new ArrayList<String>();
         if (this.alleSeiten != null && this.alleSeiten.length > 0) {
             for (int i = 0; i < this.alleSeiten.length; i++) {
@@ -2650,7 +2742,7 @@ public class Metadaten {
             Metadata md = new Metadata(mdt);
             this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess);
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error(e.getMessage());
+            logger.error(e.getMessage());
         }
         this.tempTyp = tempTyp;
     }
@@ -2682,7 +2774,7 @@ public class Metadaten {
             MetadataGroup md = new MetadataGroup(mdt);
             this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md);
         } catch (MetadataTypeNotAllowedException e) {
-            myLogger.error(e.getMessage());
+            logger.error(e.getMessage());
         }
         this.tempGroupType = tempTyp;
     }
@@ -2829,7 +2921,7 @@ public class Metadaten {
                 BildErmitteln(0);
             } catch (Exception e) {
                 Helper.setFehlerMeldung("Error while generating image", e.getMessage());
-                myLogger.error(e);
+                logger.error(e);
             }
         }
     }
@@ -3248,13 +3340,13 @@ public class Metadaten {
         try {
             imageDirectory = myProzess.getImagesDirectory();
         } catch (SwapException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (DAOException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (IOException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (InterruptedException e) {
-            myLogger.error(e);
+            logger.error(e);
 
         }
         if (imageDirectory.equals("")) {
@@ -3301,13 +3393,13 @@ public class Metadaten {
                     }
                 }
             } catch (SwapException e) {
-                myLogger.error(e);
+                logger.error(e);
             } catch (DAOException e) {
-                myLogger.error(e);
+                logger.error(e);
             } catch (IOException e) {
-                myLogger.error(e);
+                logger.error(e);
             } catch (InterruptedException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
 
         }
@@ -3346,13 +3438,13 @@ public class Metadaten {
                 }
 
             } catch (SwapException e) {
-                myLogger.error(e);
+                logger.error(e);
             } catch (DAOException e) {
-                myLogger.error(e);
+                logger.error(e);
             } catch (IOException e) {
-                myLogger.error(e);
+                logger.error(e);
             } catch (InterruptedException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
             counter++;
         }
@@ -3396,13 +3488,13 @@ public class Metadaten {
                 }
             }
         } catch (SwapException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (DAOException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (IOException e) {
-            myLogger.error(e);
+            logger.error(e);
         } catch (InterruptedException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
 
     }
@@ -3538,25 +3630,25 @@ public class Metadaten {
                         buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct());
 
             } catch (PreferencesException e) {
-                myLogger.error("Error loading the tree for filtered processes (PreferencesException): ", e);
+                logger.error("Error loading the tree for filtered processes (PreferencesException): ", e);
 
             } catch (ReadException e) {
-                myLogger.error("Error loading the tree for filtered processes (ReadException): ", e);
+                logger.error("Error loading the tree for filtered processes (ReadException): ", e);
 
             } catch (SwapException e) {
-                myLogger.error("Error loading the tree for filtered processes (SwapException): ", e);
+                logger.error("Error loading the tree for filtered processes (SwapException): ", e);
 
             } catch (DAOException e) {
-                myLogger.error("Error loading the tree for filtered processes (DAOException): ", e);
+                logger.error("Error loading the tree for filtered processes (DAOException): ", e);
 
             } catch (WriteException e) {
-                myLogger.error("Error loading the tree for filtered processes (WriteException): ", e);
+                logger.error("Error loading the tree for filtered processes (WriteException): ", e);
 
             } catch (IOException e) {
-                myLogger.error("Error loading the tree for filtered processes (IOException): ", e);
+                logger.error("Error loading the tree for filtered processes (IOException): ", e);
 
             } catch (InterruptedException e) {
-                myLogger.error("Error loading the tree for filtered processes (InterruptedException): ", e);
+                logger.error("Error loading the tree for filtered processes (InterruptedException): ", e);
 
             }
             activateAllTreeElements(treeOfFilteredProcess);
@@ -3616,7 +3708,7 @@ public class Metadaten {
             for (Reference ref : clone) {
                 docStructFromFilteredProcess.removeReferenceTo(ref.getTarget());
             }
-            
+
             this.tempStrukturelement.addChild(docStructFromFilteredProcess);
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
@@ -3736,7 +3828,7 @@ public class Metadaten {
                     }
                 }
             } catch (TypeNotAllowedForParentException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
         }
         return addableMetadata;
@@ -3768,7 +3860,7 @@ public class Metadaten {
                     }
                 }
             } catch (TypeNotAllowedForParentException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
         }
         return addablePersondata;

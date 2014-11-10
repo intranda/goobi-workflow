@@ -83,26 +83,36 @@ public class HelperSchritte {
     }
 
     private void closeStepObject(Step currentStep, int processId, boolean requestFromGUI) {
-        logger.debug("closing step with id " + currentStep.getId() + " and process id " + processId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("closing step with id " + currentStep.getId() + " and process id " + processId);
+        }
         currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
         Date myDate = new Date();
-        logger.debug("set new date for edit time");
+        if (logger.isDebugEnabled()) {
+            logger.debug("set new date for edit time");
+        }
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
             LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (lf != null) {
                 User ben = lf.getMyBenutzer();
                 if (ben != null) {
-                    logger.debug("set new user");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("set new user");
+                    }
                     currentStep.setBearbeitungsbenutzer(ben);
                 }
             }
         } catch (Exception e) {
-            logger.debug("cannot resolve LoginForm", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("cannot resolve LoginForm", e);
+            }
         }
-        logger.debug("set new end date");
         currentStep.setBearbeitungsende(myDate);
-        logger.debug("saving step");
+        if (logger.isDebugEnabled()) {
+            logger.debug("set new end date");
+            logger.debug("saving step");
+        }
         try {
             StepManager.saveStep(currentStep);
         } catch (DAOException e) {
@@ -110,9 +120,9 @@ public class HelperSchritte {
         }
         List<Step> automatischeSchritte = new ArrayList<Step>();
         List<Step> stepsToFinish = new ArrayList<Step>();
-
-        logger.debug("create history events for step");
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("create history events for step");
+        }
         HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
                 .getValue(), processId);
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
@@ -130,7 +140,9 @@ public class HelperSchritte {
         }
         /* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
         if (offeneSchritteGleicherReihenfolge == 0) {
-            logger.debug("found " + allehoeherenSchritte.size() + " tasks");
+            if (logger.isDebugEnabled()) {
+                logger.debug("found " + allehoeherenSchritte.size() + " tasks");
+            }
             int reihenfolge = 0;
             boolean matched = false;
             for (Step myStep : allehoeherenSchritte) {
@@ -143,17 +155,25 @@ public class HelperSchritte {
                     /*
                      * den Schritt aktivieren, wenn es kein vollautomatischer ist
                      */
-                    logger.debug("open step " + myStep.getTitel());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("open step " + myStep.getTitel());
+                    }
                     myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     myStep.setBearbeitungszeitpunkt(myDate);
                     myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                    logger.debug("create history events for next step");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("create history events for next step");
+                    }
                     HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
                             HistoryEventType.stepOpen.getValue(), processId);
                     /* wenn es ein automatischer Schritt mit Script ist */
-                    logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
+                    }
                     if (myStep.isTypAutomatisch()) {
-                        logger.debug("add step to list of automatic tasks");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("add step to list of automatic tasks");
+                        }
                         automatischeSchritte.add(myStep);
                     } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
                         stepsToFinish.add(myStep);
@@ -187,16 +207,23 @@ public class HelperSchritte {
         } catch (InterruptedException e) {
             logger.error(e);
         }
-        logger.debug("update process status");
+
         updateProcessStatus(processId);
-        logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
+        if (logger.isDebugEnabled()) {
+            logger.debug("update process status");
+            logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
+        }
         for (Step automaticStep : automatischeSchritte) {
-            logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+            if (logger.isDebugEnabled()) {
+                logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+            }
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
             myThread.start();
         }
         for (Step finish : stepsToFinish) {
-            logger.debug("closing task " + finish.getTitel());
+            if (logger.isDebugEnabled()) {
+                logger.debug("closing task " + finish.getTitel());
+            }
             CloseStepObjectAutomatic(finish);
         }
 
@@ -241,7 +268,9 @@ public class HelperSchritte {
         int size = scriptpaths.size();
         int returnParameter = 0;
         for (String script : scriptpaths) {
-            logger.debug("starting script " + script);
+            if (logger.isDebugEnabled()) {
+                logger.debug("starting script " + script);
+            }
             if (returnParameter != 0) {
                 abortStep(step);
                 break;

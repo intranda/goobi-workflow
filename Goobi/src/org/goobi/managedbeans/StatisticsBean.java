@@ -50,7 +50,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 @ManagedBean(name = "StatistikForm")
 @ApplicationScoped
 public class StatisticsBean {
-    private static final Logger myLogger = Logger.getLogger(StatisticsBean.class);
+    private static final Logger logger = Logger.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;
 
@@ -115,7 +115,7 @@ public class StatisticsBean {
 
             return (long) StepManager.countSteps("titel", "");
         } catch (DAOException e) {
-            myLogger.error("Hibernate error", e);
+            logger.error("Hibernate error", e);
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e);
             return Long.valueOf(-1);
         }
@@ -163,7 +163,7 @@ public class StatisticsBean {
         try {
             return StepManager.countSteps(null, filter);
         } catch (DAOException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
         return 0;
 

@@ -72,7 +72,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 
 public class MetadatenHelper implements Comparator<Object> {
-    private static final Logger myLogger = Logger.getLogger(MetadatenHelper.class);
+    private static final Logger logger = Logger.getLogger(MetadatenHelper.class);
     public static final int PAGENUMBER_FIRST = 0;
     public static final int PAGENUMBER_LAST = 1;
 
@@ -304,7 +304,7 @@ public class MetadatenHelper implements Comparator<Object> {
                 newTypes.add(dst);
             } else {
                 Helper.setMeldung(null, "Regelsatz-Fehler: ", " DocstructType " + tempTitel + " nicht definiert");
-                myLogger.error("getAddableDocStructTypen() - Regelsatz-Fehler: DocstructType " + tempTitel + " nicht definiert");
+                logger.error("getAddableDocStructTypen() - Regelsatz-Fehler: DocstructType " + tempTitel + " nicht definiert");
             }
         }
 
@@ -607,7 +607,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 name1 = mdt1.getNameByLanguage(this.language);
                 name2 = mdt2.getNameByLanguage(this.language);
             } catch (java.lang.NullPointerException e) {
-                myLogger.debug("Language " + language + " for metadata " + s1.getType() + " or " + s2.getType() + " is missing in ruleset");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Language " + language + " for metadata " + s1.getType() + " or " + s2.getType() + " is missing in ruleset");
+                }
                 return 0;
             }
             if (name1 == null || name1.length() == 0) {
@@ -713,7 +715,7 @@ public class MetadatenHelper implements Comparator<Object> {
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
             } catch (PreferencesException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
 
         }
@@ -733,7 +735,7 @@ public class MetadatenHelper implements Comparator<Object> {
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
             } catch (PreferencesException e) {
-                myLogger.error(e);
+                logger.error(e);
             }
 
         }
@@ -772,7 +774,7 @@ public class MetadatenHelper implements Comparator<Object> {
                 }
             }
         } catch (PreferencesException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
         return metadataList;
     }

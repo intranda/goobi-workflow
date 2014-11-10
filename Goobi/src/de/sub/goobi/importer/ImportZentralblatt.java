@@ -63,7 +63,7 @@ import de.sub.goobi.helper.exceptions.WrongImportFileException;
 
 @Deprecated
 public class ImportZentralblatt {
-	private static final Logger myLogger = Logger.getLogger(ImportZentralblatt.class);
+	private static final Logger logger = Logger.getLogger(ImportZentralblatt.class);
 	String Trennzeichen;
 	private Helper help;
 	private Prefs myPrefs;
@@ -85,7 +85,7 @@ public class ImportZentralblatt {
 	 */
 	protected void Parsen(BufferedReader reader, Process inProzess) throws IOException, WrongImportFileException, TypeNotAllowedForParentException,
 			TypeNotAllowedAsChildException, MetadataTypeNotAllowedException, WriteException {
-		myLogger.debug("ParsenZentralblatt() - Start");
+		logger.debug("ParsenZentralblatt() - Start");
 		this.myPrefs = inProzess.getRegelsatz().getPreferences();
 		String prozessID = String.valueOf(inProzess.getId().intValue());
 		String line;
@@ -138,7 +138,7 @@ public class ImportZentralblatt {
 				int posTrennzeichen = line.indexOf(this.Trennzeichen);
 				/* wenn kein Trennzeichen vorhanden, Parsingfehler */
 				if (posTrennzeichen == -1) {
-					myLogger.error("Import() - Parsingfehler (kein Doppelpunkt) der Importdatei in der Zeile <br/>" + HtmlTagsMaskieren(line));
+					logger.error("Import() - Parsingfehler (kein Doppelpunkt) der Importdatei in der Zeile <br/>" + HtmlTagsMaskieren(line));
 					throw new WrongImportFileException("Parsingfehler (kein Doppelpunkt) der Importdatei in der Zeile <br/>"
 							+ HtmlTagsMaskieren(line));
 				} else {
@@ -199,9 +199,9 @@ public class ImportZentralblatt {
 			gdzfile.write(this.help.getGoobiDataDirectory() + prozessID + File.separator + "meta.xml");
 		} catch (PreferencesException e) {
 			Helper.setFehlerMeldung("Import aborted: ", e.getMessage());
-			myLogger.error(e);
+			logger.error(e);
 		}
-		myLogger.debug("ParsenZentralblatt() - Ende");
+		logger.debug("ParsenZentralblatt() - Ende");
 	}
 
 	private String xmlTauglichkeitPruefen(String text) {

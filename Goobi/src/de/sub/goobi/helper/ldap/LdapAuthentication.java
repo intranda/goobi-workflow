@@ -66,7 +66,7 @@ import de.sub.goobi.helper.Helper;
 import dubious.sub.goobi.helper.encryption.MD4;
 
 public class LdapAuthentication {
-    private static final Logger myLogger = Logger.getLogger(LdapAuthentication.class);
+    private static final Logger logger = Logger.getLogger(LdapAuthentication.class);
 
     public LdapAuthentication() {
 
@@ -110,14 +110,22 @@ public class LdapAuthentication {
             /*
              * -------------------------------- check if HomeDir exists, else create it --------------------------------
              */
-            myLogger.debug("HomeVerzeichnis pruefen");
+            if (logger.isDebugEnabled()) {
+                logger.debug("HomeVerzeichnis pruefen");
+            }
             String homePath = getUserHomeDirectory(inBenutzer);
             if (!new File(homePath).exists()) {
-                myLogger.debug("HomeVerzeichnis existiert noch nicht");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("HomeVerzeichnis existiert noch nicht");
+                }
                 FilesystemHelper.createDirectoryForUser(homePath, inBenutzer.getLogin());
-                myLogger.debug("HomeVerzeichnis angelegt");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("HomeVerzeichnis angelegt");
+                }
             } else {
-                myLogger.debug("HomeVerzeichnis existiert schon");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("HomeVerzeichnis existiert schon");
+                }
             }
         } else {
             Helper.setMeldung(Helper.getTranslation("ldapIsReadOnly"));
@@ -132,12 +140,16 @@ public class LdapAuthentication {
      * @return Login correct or not
      */
     public boolean isUserPasswordCorrect(User inBenutzer, String inPasswort) {
-        myLogger.debug("start login session with ldap");
+        if (logger.isDebugEnabled()) {
+            logger.debug("start login session with ldap");
+        }
         Hashtable<String, String> env = LdapConnectionSettings();
 
         // Start TLS
         if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
-            myLogger.debug("use TLS for auth");
+            if (logger.isDebugEnabled()) {
+                logger.debug("use TLS for auth");
+            }
             env = new Hashtable<String, String>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
             env.put(Context.PROVIDER_URL, ConfigurationHelper.getInstance().getLdapUrl());
@@ -161,10 +173,10 @@ public class LdapAuthentication {
                 // Perform search for privileged attributes under authenticated context
 
             } catch (IOException e) {
-                myLogger.error("TLS negotiation error:", e);
+                logger.error("TLS negotiation error:", e);
                 return false;
             } catch (NamingException e) {
-                myLogger.error("JNDI error:", e);
+                logger.error("JNDI error:", e);
                 return false;
             } finally {
                 if (tls != null) {
@@ -183,39 +195,55 @@ public class LdapAuthentication {
                 }
             }
         } else {
-            myLogger.debug("don't use TLS for auth");
+            if (logger.isDebugEnabled()) {
+                logger.debug("don't use TLS for auth");
+            }
             env.put(Context.SECURITY_PRINCIPAL, getUserDN(inBenutzer));
             env.put(Context.SECURITY_CREDENTIALS, inPasswort);
-            myLogger.debug("ldap environment set");
-
+            if (logger.isDebugEnabled()) {
+                logger.debug("ldap environment set");
+            }
             try {
-                myLogger.debug("start classic ldap authentification");
-                myLogger.debug("user DN is " + getUserDN(inBenutzer));
-
+                if (logger.isDebugEnabled()) {
+                    logger.debug("start classic ldap authentification");
+                    logger.debug("user DN is " + getUserDN(inBenutzer));
+                }
                 if (ConfigurationHelper.getInstance().getLdapAttribute() == null) {
-                    myLogger.debug("ldap attribute to test is null");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("ldap attribute to test is null");
+                    }
                     new InitialDirContext(env);
                     return true;
                 } else {
-                    myLogger.debug("ldap attribute to test is not null");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("ldap attribute to test is not null");
+                    }
                     DirContext ctx = new InitialDirContext(env);
 
                     Attributes attrs = ctx.getAttributes(getUserDN(inBenutzer));
                     Attribute la = attrs.get(ConfigurationHelper.getInstance().getLdapAttribute());
-                    myLogger.debug("ldap attributes set");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("ldap attributes set");
+                    }
                     String test = (String) la.get(0);
                     if (test.equals(ConfigurationHelper.getInstance().getLdapAttributeValue())) {
-                        myLogger.debug("ldap ok");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("ldap ok");
+                        }
                         ctx.close();
                         return true;
                     } else {
-                        myLogger.debug("ldap not ok");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("ldap not ok");
+                        }
                         ctx.close();
                         return false;
                     }
                 }
             } catch (NamingException e) {
-                myLogger.debug("login not allowed for " + inBenutzer.getLogin(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("login not allowed for " + inBenutzer.getLogin(), e);
+                }
                 return false;
             }
         }
@@ -262,12 +290,12 @@ public class LdapAuthentication {
                 // Perform search for privileged attributes under authenticated context
 
             } catch (IOException e) {
-                myLogger.error("TLS negotiation error:", e);
+                logger.error("TLS negotiation error:", e);
 
                 return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
             } catch (NamingException e) {
 
-                myLogger.error("JNDI error:", e);
+                logger.error("JNDI error:", e);
 
                 return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
             } finally {
@@ -303,7 +331,7 @@ public class LdapAuthentication {
             rueckgabe = (String) la.get(0);
             ctx.close();
         } catch (NamingException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
         return rueckgabe;
     }
@@ -328,7 +356,9 @@ public class LdapAuthentication {
 
             while (answer.hasMore()) {
                 SearchResult sr = answer.next();
-                myLogger.debug(">>>" + sr.getName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(">>>" + sr.getName());
+                }
                 Attributes attrs = sr.getAttributes();
                 String givenName = " ";
                 String surName = " ";
@@ -360,17 +390,18 @@ public class LdapAuthentication {
                 } catch (Exception e4) {
                     hd = " ";
                 }
-                myLogger.debug(givenName);
-                myLogger.debug(surName);
-                myLogger.debug(mail);
-                myLogger.debug(cn);
-                myLogger.debug(hd);
-
+                if (logger.isDebugEnabled()) {
+                    logger.debug(givenName);
+                    logger.debug(surName);
+                    logger.debug(mail);
+                    logger.debug(cn);
+                    logger.debug(hd);
+                }
             }
 
             ctx.close();
         } catch (NamingException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
         return rueckgabe;
     }
@@ -394,7 +425,7 @@ public class LdapAuthentication {
             rueckgabe = (String) la.get(0);
             ctx.close();
         } catch (NamingException e) {
-            myLogger.error(e);
+            logger.error(e);
             Helper.setFehlerMeldung(e.getMessage());
         }
         return rueckgabe;
@@ -425,7 +456,7 @@ public class LdapAuthentication {
 
             ctx.close();
         } catch (NamingException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
     }
 
@@ -454,11 +485,11 @@ public class LdapAuthentication {
                 ctx.reconnect(null);
                 ctx.unbind(getUserDN(inBenutzer));
             } catch (IOException e) {
-                myLogger.error("TLS negotiation error:", e);
+                logger.error("TLS negotiation error:", e);
 
             } catch (NamingException e) {
 
-                myLogger.error("JNDI error:", e);
+                logger.error("JNDI error:", e);
 
             } finally {
                 if (tls != null) {
@@ -491,7 +522,7 @@ public class LdapAuthentication {
 
             ctx.close();
         } catch (NamingException e) {
-            myLogger.error(e);
+            logger.error(e);
         }
     }
 
@@ -535,7 +566,7 @@ public class LdapAuthentication {
                     lanmgrpassword = new BasicAttribute("sambaLMPassword", LdapUser.toHexString(LdapUser.lmHash(inNewPassword)));
                     // TODO: Don't catch super class exception, make sure that the password isn't logged here
                 } catch (Exception e) {
-                    myLogger.error(e);
+                    logger.error(e);
                 }
 
                 /*
@@ -547,7 +578,7 @@ public class LdapAuthentication {
                     ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
                 } catch (UnsupportedEncodingException e) {
                     // TODO: Make sure that the password isn't logged here
-                    myLogger.error(e);
+                    logger.error(e);
                 }
                 BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000l));
                 mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userpassword);
@@ -560,7 +591,9 @@ public class LdapAuthentication {
                 ctx.close();
                 return true;
             } catch (NamingException e) {
-                myLogger.debug("Benutzeranmeldung nicht korrekt oder Passwortänderung nicht möglich", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Benutzeranmeldung nicht korrekt oder Passwortänderung nicht möglich", e);
+                }
                 return false;
             }
         }
@@ -617,7 +650,7 @@ public class LdapAuthentication {
                 ks.store(ksos, password);
                 ksos.close();
             } catch (Exception e) {
-                myLogger.error(e);
+                logger.error(e);
             }
 
         }

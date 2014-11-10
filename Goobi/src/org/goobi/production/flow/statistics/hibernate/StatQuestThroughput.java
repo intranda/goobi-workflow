@@ -56,6 +56,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
  * @author Wulf Riebensahm
  ****************************************************************************/
 public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe {
+    final private Logger logger = Logger.getLogger(StatQuestThroughput.class);
 
 	private Date timeFilterFrom;
 	private TimeUnit timeGrouping;
@@ -85,7 +86,6 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 		this.flagIncludeLoops = includeLoops;
 	}
 
-	final private Logger myLogger = Logger.getLogger(StatQuestThroughput.class);
 
 	/*
 	 * (non-Javadoc)
@@ -312,8 +312,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 		String headerFromSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, null, this.myIDlist).getSQL(requestedType, null,
 				true, true);
 
-		this.myLogger.trace(natSQL);
-		this.myLogger.trace(headerFromSQL);
+		this.logger.trace(natSQL);
+		this.logger.trace(headerFromSQL);
 
 		return buildDataTableFromSQL(natSQL, headerFromSQL);
 	}
@@ -331,7 +331,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 		// adding time restrictions
 		String natSQL = new SQLStepRequests(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist).getSQL(requestedType, step, true, this.flagIncludeLoops);
 
-		this.myLogger.trace(natSQL);
+		this.logger.trace(natSQL);
 
 		return buildDataTableFromSQL(natSQL, null);
 	}
@@ -431,7 +431,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 					dataRow.setName(new Converter(objArr[1]).getString() + "");
 				}
 				dataRow.addValue(
-				        new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[2]).getDouble());
+				        new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[0]).getDouble());
 //						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
 //						(new Converter(objArr[0]).getDouble()));
 

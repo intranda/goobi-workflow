@@ -267,6 +267,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setBearbeitungsbenutzer(User bearbeitungsbenutzer) {
         this.bearbeitungsbenutzer = bearbeitungsbenutzer;
+        if (bearbeitungsbenutzer != null) {
+            userId = bearbeitungsbenutzer.getId();
+        } else {
+            userId = null;
+        }
     }
 
     public Integer getId() {
@@ -769,10 +774,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             // only steps with same title and batchId
             String sql = "schritte.titel = \"" + titel + "\" and prozesse.batchID = " + batchNumber;
             try {
-               int number = StepManager.countSteps(null, sql);
-               if (number > 1) {
-                   return true;
-               }
+                int number = StepManager.countSteps(null, sql);
+                if (number > 1) {
+                    return true;
+                }
             } catch (DAOException e) {
             }
         }

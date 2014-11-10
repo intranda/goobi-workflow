@@ -54,14 +54,15 @@ public class BatchProcessHelper {
     private List<String> processNameList = new ArrayList<String>();
     private String processName = "";
 
-    
     public BatchProcessHelper(List<Process> processes) {
         this.processes = processes;
         for (Process p : processes) {
 
             this.processNameList.add(p.getTitel());
         }
-        logger.debug("loaded batch with " + this.processes.size() + " processes.");
+        if (logger.isDebugEnabled()) {
+            logger.debug("loaded batch with " + this.processes.size() + " processes.");
+        }
         this.currentProcess = processes.get(0);
         this.processName = this.currentProcess.getTitel();
         loadProcessProperties(this.currentProcess);
