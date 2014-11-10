@@ -147,9 +147,7 @@ public class ProzesskopieForm {
             }
             for (Step s : this.prozessVorlage.getSchritteList()) {
                 if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
-                    List<String> param = new ArrayList<String>();
-                    param.add(s.getTitel());
-                    Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", param));
+                    Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", s.getTitel()));
                 }
             }
 

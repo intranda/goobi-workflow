@@ -136,9 +136,7 @@ public class BatchProcessHelper {
         for (ProcessProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(processProperty.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
                 Helper.setFehlerMeldung(value);
                 return;
             }
@@ -178,9 +176,7 @@ public class BatchProcessHelper {
         for (ProcessProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(processProperty.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
                 Helper.setFehlerMeldung(value);
                 return;
             }

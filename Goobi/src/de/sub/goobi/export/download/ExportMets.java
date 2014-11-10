@@ -292,7 +292,7 @@ public class ExportMets {
         mm.setMetsRightsSponsor(vp.replace(myProzess.getProjekt().getMetsRightsSponsor()));
         mm.setMetsRightsSponsorLogo(vp.replace(myProzess.getProjekt().getMetsRightsSponsorLogo()));
         mm.setMetsRightsSponsorSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsSponsorSiteURL()));
-        
+
         mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
         mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
 
@@ -303,7 +303,7 @@ public class ExportMets {
         String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
         pointer = vp.replace(anchor);
         mm.setMptrAnchorUrl(pointer);
-        
+
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<String>();
         if (ConfigurationHelper.getInstance().isExportValidateImages()) {
@@ -317,9 +317,7 @@ public class ExportMets {
                     if (sizeOfPagination == sizeOfImages) {
                         dd.overrideContentFiles(images);
                     } else {
-                        List<String> param = new ArrayList<String>();
-                        param.add(String.valueOf(sizeOfPagination));
-                        param.add(String.valueOf(sizeOfImages));
+                        String[] param = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
                         Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
                         return false;
                     }

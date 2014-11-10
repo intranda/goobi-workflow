@@ -498,9 +498,7 @@ public class StepBean extends BasicBean {
                             + Helper.getTranslation("requiredValue"));
                     return "";
                 } else if (!prop.isValid()) {
-                    List<String> parameter = new ArrayList<String>();
-                    parameter.add(prop.getName());
-                    Helper.setFehlerMeldung(Helper.getTranslation("PropertyValidation", parameter));
+                    Helper.setFehlerMeldung(Helper.getTranslation("PropertyValidation", prop.getName()));
                     return "";
                 }
             }
@@ -1207,9 +1205,7 @@ public class StepBean extends BasicBean {
         boolean valid = true;
         for (IProperty p : this.processPropertyList) {
             if (!p.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(p.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", p.getName());
                 Helper.setFehlerMeldung(value);
                 valid = false;
             }
@@ -1251,9 +1247,7 @@ public class StepBean extends BasicBean {
         for (ProcessProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(processProperty.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
                 Helper.setFehlerMeldung(value);
                 Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
                 return;

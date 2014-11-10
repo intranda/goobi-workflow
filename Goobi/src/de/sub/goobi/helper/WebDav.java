@@ -148,9 +148,7 @@ public class WebDav implements Serializable {
 			nach += myProzess.getProjekt().getTitel() + File.separator;
 			File projectDirectory = new File (nach = nach.replaceAll(" ", "__"));
 			if (!projectDirectory.exists() && !projectDirectory.mkdir()) {
-				List<String> param = new ArrayList<String>();
-				param.add(String.valueOf(nach.replaceAll(" ", "__")));
-				Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", param));
+				Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", nach.replaceAll(" ", "__")));
 				logger.error("Can not create project directory " + nach.replaceAll(" ", "__"));
 				return;
 			}

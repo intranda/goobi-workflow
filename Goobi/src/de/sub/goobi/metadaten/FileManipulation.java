@@ -132,9 +132,7 @@ public class FileManipulation {
             logger.trace("filename to import: " + filename);
 
             if (new File(filename).exists()) {
-                List<String> parameterList = new ArrayList<String>();
-                parameterList.add(basename);
-                Helper.setFehlerMeldung(Helper.getTranslation("fileExists", parameterList));
+                Helper.setFehlerMeldung(Helper.getTranslation("fileExists", basename));
                 return;
             }
 
@@ -334,11 +332,8 @@ public class FileManipulation {
         }
 
         if (downloadFile == null || !downloadFile.exists()) {
-            List<String> paramList = new ArrayList<String>();
-            //           paramList.add(metadataBean.getMyProzess().getTitel());
-            paramList.add(filenamePrefix);
-            paramList.add(currentFolder);
-            Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", paramList));
+            String[] parameter = {filenamePrefix, currentFolder};
+            Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", parameter));
             return;
         }
 

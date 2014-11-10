@@ -830,10 +830,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
 
         if (ff == null) {
-            List<String> param = new ArrayList<String>();
-            param.add(titel);
-            param.add(type);
-            Helper.setFehlerMeldung(Helper.getTranslation("MetadataFormatNotAvailable", param));
+            String[] parameter = {titel, type};
+            Helper.setFehlerMeldung(Helper.getTranslation("MetadataFormatNotAvailable", parameter));
             return null;
         }
         try {

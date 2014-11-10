@@ -812,11 +812,9 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            List<String> param = new ArrayList<String>();
-            param.add("METS");
-            param.add(this.myProzess.getTitel());
+            String[] parameter = {"METS", this.myProzess.getTitel()};
 
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             logger.error("ExportMETS error", e);
         }
@@ -827,10 +825,8 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            List<String> param = new ArrayList<String>();
-            param.add("PDF");
-            param.add(this.myProzess.getTitel());
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            String[] parameter = {"PDF", this.myProzess.getTitel()};
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
 
             Helper.setFehlerMeldung("An error occured while trying to export PDF file for: " + this.myProzess.getTitel(), e);
             logger.error("ExportPDF error", e);
@@ -848,10 +844,8 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            List<String> param = new ArrayList<String>();
-            param.add("DMS");
-            param.add(this.myProzess.getTitel());
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            String[] parameter = {"DMS", this.myProzess.getTitel()};
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
             logger.error("ExportDMS error", e);
         }
@@ -2152,9 +2146,7 @@ public class ProcessBean extends BasicBean {
         boolean valid = true;
         for (IProperty p : this.processPropertyList) {
             if (!p.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(p.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", p.getName());
                 Helper.setFehlerMeldung(value);
                 valid = false;
             }
@@ -2191,9 +2183,7 @@ public class ProcessBean extends BasicBean {
         for (ProcessProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(processProperty.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
                 Helper.setFehlerMeldung(value);
                 return;
             }

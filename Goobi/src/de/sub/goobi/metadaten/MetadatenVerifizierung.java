@@ -96,9 +96,9 @@ public class MetadatenVerifizierung {
             Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
             try {
                 if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                    List<String> parameter = new ArrayList<String>();
-                    parameter.add(identifierTopStruct.getType().getNameByLanguage(metadataLanguage));
-                    parameter.add(logical.getType().getNameByLanguage(metadataLanguage));
+                    String[] parameter =
+                            { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
+                                    logical.getType().getNameByLanguage(metadataLanguage) };
 
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierCharacter", parameter));
 
@@ -108,17 +108,14 @@ public class MetadatenVerifizierung {
                 Metadata identifierFirstChild = firstChild.getAllIdentifierMetadata().get(0);
                 if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
                         && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
-                    List<String> parameter = new ArrayList<String>();
-                    parameter.add(identifierTopStruct.getType().getName());
-                    parameter.add(logical.getType().getName());
-                    parameter.add(firstChild.getType().getName());
+                    String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierSame", parameter));
                     ergebnis = false;
                 }
                 if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                    List<String> parameter = new ArrayList<String>();
-                    parameter.add(identifierTopStruct.getType().getNameByLanguage(metadataLanguage));
-                    parameter.add(firstChild.getType().getNameByLanguage(metadataLanguage));
+                    String[] parameter =
+                            { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
+                                    firstChild.getType().getNameByLanguage(metadataLanguage) };
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierCharacter", parameter));
                     ergebnis = false;
                 }
@@ -218,10 +215,8 @@ public class MetadatenVerifizierung {
                     int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                     int sizeOfImages = images.size();
                     if (sizeOfPagination != sizeOfImages) {
-                        List<String> param = new ArrayList<String>();
-                        param.add(String.valueOf(sizeOfPagination));
-                        param.add(String.valueOf(sizeOfImages));
-                        Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
+                        String[] parameter = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
+                        Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", parameter));
                         return false;
                     }
                 }

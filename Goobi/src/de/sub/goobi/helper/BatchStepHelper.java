@@ -875,15 +875,11 @@ public class BatchStepHelper {
 
                     if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
                             && (prop.getValue() == null || prop.getValue().equals(""))) {
-                        List<String> parameter = new ArrayList<String>();
-                        parameter.add(prop.getName());
-                        parameter.add(s.getProzess().getTitel());
+                        String[] parameter = { prop.getName(), s.getProzess().getTitel() };
                         Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
                         error = true;
                     } else if (!prop.isValid()) {
-                        List<String> parameter = new ArrayList<String>();
-                        parameter.add(prop.getName());
-                        parameter.add(s.getProzess().getTitel());
+                        String[] parameter = { prop.getName(), s.getProzess().getTitel() };
                         Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyValidation", parameter));
                         error = true;
                     }
@@ -909,8 +905,7 @@ public class BatchStepHelper {
     public List<Integer> getContainerList() {
         return new ArrayList<Integer>(this.containers.keySet());
     }
-    
-    
+
     // needed for junit
     public void setProcessPropertyList(List<ProcessProperty> processPropertyList) {
         this.processPropertyList = processPropertyList;

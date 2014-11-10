@@ -122,9 +122,7 @@ public class MassImportForm {
             }
             for (Step s : this.template.getSchritteList()) {
                 if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
-                    List<String> param = new ArrayList<String>();
-                    param.add(s.getTitel());
-                    Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", param));
+                    Helper.setFehlerMeldung(Helper.getTranslation("noUserInStep", s.getTitel()));
                 }
             }
             return "";
@@ -318,10 +316,8 @@ public class MassImportForm {
                         this.processList.add(p);
                     }
                 } else {
-                    List<String> param = new ArrayList<String>();
-                    param.add(io.getProcessTitle());
-                    param.add(io.getErrorMessage());
-                    Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", param));
+                    String[] parameter = {io.getProcessTitle(), io.getErrorMessage()};
+                    Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", parameter));
                     // Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
                     if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
                             && !selectedFilenames.isEmpty()) {
@@ -389,9 +385,7 @@ public class MassImportForm {
             }
 
             this.importFile = new File(filename);
-            List<String> param = new ArrayList<String>();
-            param.add(basename);
-            Helper.setMeldung(Helper.getTranslation("uploadSuccessful", param));
+            Helper.setMeldung(Helper.getTranslation("uploadSuccessful", basename));
             // Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
