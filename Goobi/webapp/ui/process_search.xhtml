@@ -1,5 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" template="/ui/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk">
 
     <ui:define name="breadcrumb">
         <h:commandLink id="id2" value="#{msgs.startseite}" action="index" />
@@ -26,13 +25,11 @@
                 <tr>
                     <td class="eingabeBoxen_row2" colspan="2">
 
-                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2" id="rowList" width="100%"
-                            columnClasses="column1, column2, column3, column4">
+                        <h:dataTable value="#{SearchForm.rowList}" var="row" class="eingabeBoxen_row2" id="rowList" width="100%" columnClasses="column1, column2, column3, column4">
 
                             <h:column>
                                 <h:selectOneMenu value="#{row.fieldName}" style="width: 100%">
-                                    <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}"
-                                        itemLabel="#{msgs[fieldname.label]}" />
+                                    <f:selectItems var="fieldname" value="#{SearchForm.fieldnameList}" itemValue="#{fieldname.value}" itemLabel="#{msgs[fieldname.label]}" />
                                     <f:ajax render="@form" execute="@form" />
                                 </h:selectOneMenu>
                             </h:column>
@@ -47,20 +44,17 @@
 
                             <h:column>
 
-                                <h:inputText value="#{row.fieldValue}" style="width:99%"
-                                    rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'PROCESSLOG'}">
-                                        <f:ajax render="@form" execute="@form" />
+                                <h:inputText value="#{row.fieldValue}" style="width:99%" rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'PROCESSLOG'}">
+                                    <f:ajax render="@form" execute="@form" />
                                 </h:inputText>
 
                                 <h:panelGroup rendered="#{row.fieldName == 'STEP'}" layout="block" style="width:100%">
                                     <h:selectOneMenu value="#{row.stepStatus}" style="width:30%">
-                                        <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}"
-                                            itemValue="#{stepstatus.searchString}" />
+                                        <f:selectItems value="#{SearchForm.stepstatus}" var="stepstatus" itemLabel="#{stepstatus.title}" itemValue="#{stepstatus.searchString}" />
                                         <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:selectOneMenu value="#{row.stepName}" style="width:69%; float:right">
-                                        <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}"
-                                            itemValue="#{stepTitles}" />
+                                        <f:selectItems value="#{SearchForm.stepTitles}" var="stepTitles" itemLabel="#{stepTitles}" itemValue="#{stepTitles}" />
                                     </h:selectOneMenu>
                                 </h:panelGroup>
 
@@ -91,8 +85,7 @@
 
                                 <h:panelGroup rendered="#{row.fieldName == 'WORKPIECE'}" layout="block" style="width:100%">
                                     <h:selectOneMenu value="#{row.masterpiecePropertyName}" style="width: 30%">
-                                        <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}"
-                                            itemValue="#{proc}" />
+                                        <f:selectItems value="#{SearchForm.masterpiecePropertyTitles}" var="proc" itemLabel="#{proc}" itemValue="#{proc}" />
                                         <f:ajax render="@form" execute="@form" />
                                     </h:selectOneMenu>
                                     <h:inputText value="#{row.masterpiecePropertyValue}" style="width: 68%; float:right">
@@ -127,12 +120,16 @@
                         <h:panelGrid columns="2" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" columnClasses="prozessKopieSpalte1, prozessKopieSpalte2">
 
                             <h:outputText value="#{msgs.showArchivedProjects}:" />
-                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" />
+                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}">
+                                <f:ajax render="@form" execute="@form" />
+                            </h:selectBooleanCheckbox>
                         </h:panelGrid>
 
                         <h:panelGrid columns="2" columnClasses="prozessKopieSpalte1, prozessKopieSpalte2">
                             <h:outputText value="#{msgs.showClosedProcesses}:" />
-                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
+                            <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}">
+                                <f:ajax render="@form" execute="@form" />
+                            </h:selectBooleanCheckbox>
                         </h:panelGrid>
                     </td>
                 </tr>
@@ -143,8 +140,7 @@
                     </td>
 
                     <td class="eingabeBoxen_row3" align="right">
-                        <h:commandButton id="absenden" action="#{SearchForm.createFilter}" title="#{msgs.filterAnwenden}"
-                            value="#{msgs.filterAnwenden}" onclick="jQuery('#ajaxloader').show();">
+                        <h:commandButton id="absenden" action="#{SearchForm.createFilter}" title="#{msgs.filterAnwenden}" value="#{msgs.filterAnwenden}" onclick="jQuery('#ajaxloader').show();">
                         </h:commandButton>
                     </td>
                 </tr>
