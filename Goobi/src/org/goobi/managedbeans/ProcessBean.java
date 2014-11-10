@@ -2279,15 +2279,15 @@ public class ProcessBean extends BasicBean {
                 this.myProzess.getEigenschaften().add(pe);
             }
             this.processProperty.transfer();
-
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
         }
-        try {
-            ProcessManager.saveProcess(this.myProzess);
+//        try {
+//            ProcessManager.saveProcess(this.myProzess);
             Helper.setMeldung("propertySaved");
-        } catch (DAOException e) {
-            logger.error(e);
-            Helper.setFehlerMeldung("propertiesNotSaved");
-        }
+//        } catch (DAOException e) {
+//            logger.error(e);
+//            Helper.setFehlerMeldung("propertiesNotSaved");
+//        }
         loadProcessProperties();
 
         return "";

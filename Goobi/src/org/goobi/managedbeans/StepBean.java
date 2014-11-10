@@ -1422,8 +1422,8 @@ public class StepBean extends BasicBean {
             }
             this.processProperty.transfer();
 
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
         }
-        PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
         Helper.setMeldung("propertySaved");
         loadProcessProperties();
         return "";
