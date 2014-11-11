@@ -82,7 +82,6 @@
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten schreiben und zurück gehen-->
                     <h:commandLink id="saveMetsAndExitButton" style="font-size:11px" target="_parent" action="#{Metadaten.XMLschreiben}" value="#{msgs.speichernZurueck}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" onclick="displayProgressBar()">
-                        <f:ajax render="@form :treeform" execute="@form" />
                     </h:commandLink>
 
 
