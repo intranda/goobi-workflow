@@ -47,6 +47,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
@@ -340,6 +341,12 @@ public class Helper implements Serializable, Observer {
         }
     }
 
+    @Deprecated
+    public static String getTranslation(String dbTitel, List<String> parameterList) {
+        String[] values = parameterList.toArray(new String[parameterList.size()]);
+        return getTranslation(dbTitel, values);
+    }
+    
     public static String getTranslation(String dbTitel, String... parameterList) {
         String value = "";
         Locale desiredLanguage = null;
