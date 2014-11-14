@@ -122,6 +122,8 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
+import de.sub.goobi.persistence.managers.UserManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name = "ProzessverwaltungForm")
 @SessionScoped
@@ -165,6 +167,9 @@ public class ProcessBean extends BasicBean {
     private boolean showStatistics = false;
 
     private static String DONEDIRECTORYNAME = "fertig/";
+
+    private DatabasePaginator usergroupPaginator;
+    private DatabasePaginator userPaginator;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
@@ -679,27 +684,60 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    public String BenutzerLoeschen() {
-        this.mySchritt.getBenutzer().remove(this.myBenutzer);
-        StepManager.removeUserFromStep(mySchritt, myBenutzer);
-        return "";
-    }
-
     public String BenutzergruppeLoeschen() {
         this.mySchritt.getBenutzergruppen().remove(this.myBenutzergruppe);
         StepManager.removeUsergroupFromStep(mySchritt, myBenutzergruppe);
+        updateUsergroupPaginator();
         return "";
     }
 
     public String BenutzergruppeHinzufuegen() {
         if (!mySchritt.getBenutzergruppen().contains(myBenutzergruppe)) {
             this.mySchritt.getBenutzergruppen().add(this.myBenutzergruppe);
+
             try {
                 StepManager.saveStep(mySchritt);
             } catch (DAOException e) {
                 logger.error(e);
             }
         }
+        updateUsergroupPaginator();
+        return "";
+    }
+
+    public DatabasePaginator getUsergroupPaginator() {
+        return usergroupPaginator;
+    }
+
+    private void updateUsergroupPaginator() {
+        String filter =
+                " benutzergruppen.BenutzergruppenID not in (select BenutzerGruppenID from schritteberechtigtegruppen where schritteberechtigtegruppen.schritteID = "
+                        + mySchritt.getId() + ")";
+
+        UsergroupManager m = new UsergroupManager();
+        usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+
+    }
+
+    public DatabasePaginator getUserPaginator() {
+        return userPaginator;
+    }
+
+    private void updateUserPaginator() {
+
+        String filter =
+                "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
+                        + mySchritt.getId() + ")";
+
+        UserManager m = new UserManager();
+        userPaginator = new DatabasePaginator("Nachname", filter, m, "");
+
+    }
+
+    public String BenutzerLoeschen() {
+        this.mySchritt.getBenutzer().remove(this.myBenutzer);
+        StepManager.removeUserFromStep(mySchritt, myBenutzer);
+        updateUserPaginator();
         return "";
     }
 
@@ -712,6 +750,7 @@ public class ProcessBean extends BasicBean {
                 logger.error(e);
             }
         }
+        updateUserPaginator();
         return "";
     }
 
@@ -773,11 +812,9 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            List<String> param = new ArrayList<String>();
-            param.add("METS");
-            param.add(this.myProzess.getTitel());
+            String[] parameter = {"METS", this.myProzess.getTitel()};
 
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             logger.error("ExportMETS error", e);
         }
@@ -788,10 +825,8 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            List<String> param = new ArrayList<String>();
-            param.add("PDF");
-            param.add(this.myProzess.getTitel());
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            String[] parameter = {"PDF", this.myProzess.getTitel()};
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
 
             Helper.setFehlerMeldung("An error occured while trying to export PDF file for: " + this.myProzess.getTitel(), e);
             logger.error("ExportPDF error", e);
@@ -809,10 +844,8 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            List<String> param = new ArrayList<String>();
-            param.add("DMS");
-            param.add(this.myProzess.getTitel());
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", param), e);
+            String[] parameter = {"DMS", this.myProzess.getTitel()};
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
             logger.error("ExportDMS error", e);
         }
@@ -1171,10 +1204,14 @@ public class ProcessBean extends BasicBean {
 
     public void setMySchritt(Step mySchritt) {
         this.mySchritt = mySchritt;
+        updateUsergroupPaginator();
+        updateUserPaginator();
     }
 
     public void setMySchrittReload(Step mySchritt) {
         this.mySchritt = mySchritt;
+        updateUsergroupPaginator();
+        updateUserPaginator();
     }
 
     //    public Schritteigenschaft getMySchrittEigenschaft() {
@@ -1902,8 +1939,8 @@ public class ProcessBean extends BasicBean {
                 document.setPageSize(a4quer);
                 document.open();
                 if (rowList.size() > 0) {
-//                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
-//                    document.add(p);
+                    //                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
+                    //                    document.add(p);
                     PdfPTable table = new PdfPTable(rowList.get(0).size());
                     table.setSpacingBefore(20);
 
@@ -2109,9 +2146,7 @@ public class ProcessBean extends BasicBean {
         boolean valid = true;
         for (IProperty p : this.processPropertyList) {
             if (!p.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(p.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", p.getName());
                 Helper.setFehlerMeldung(value);
                 valid = false;
             }
@@ -2148,9 +2183,7 @@ public class ProcessBean extends BasicBean {
         for (ProcessProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
-                List<String> param = new ArrayList<String>();
-                param.add(processProperty.getName());
-                String value = Helper.getTranslation("propertyNotValid", param);
+                String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
                 Helper.setFehlerMeldung(value);
                 return;
             }
@@ -2279,15 +2312,15 @@ public class ProcessBean extends BasicBean {
                 this.myProzess.getEigenschaften().add(pe);
             }
             this.processProperty.transfer();
-
+            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
         }
-        try {
-            ProcessManager.saveProcess(this.myProzess);
-            Helper.setMeldung("propertySaved");
-        } catch (DAOException e) {
-            logger.error(e);
-            Helper.setFehlerMeldung("propertiesNotSaved");
-        }
+        //        try {
+        //            ProcessManager.saveProcess(this.myProzess);
+        Helper.setMeldung("propertySaved");
+        //        } catch (DAOException e) {
+        //            logger.error(e);
+        //            Helper.setFehlerMeldung("propertiesNotSaved");
+        //        }
         loadProcessProperties();
 
         return "";

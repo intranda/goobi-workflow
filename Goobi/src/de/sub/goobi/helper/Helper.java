@@ -341,7 +341,13 @@ public class Helper implements Serializable, Observer {
         }
     }
 
+    @Deprecated
     public static String getTranslation(String dbTitel, List<String> parameterList) {
+        String[] values = parameterList.toArray(new String[parameterList.size()]);
+        return getTranslation(dbTitel, values);
+    }
+    
+    public static String getTranslation(String dbTitel, String... parameterList) {
         String value = "";
         Locale desiredLanguage = null;
         try {
@@ -353,7 +359,7 @@ public class Helper implements Serializable, Observer {
         } else {
             value = getString(Locale.ENGLISH, dbTitel);
         }
-        if (value != null && parameterList != null && parameterList.size() > 0) {
+        if (value != null && parameterList != null && parameterList.length > 0) {
             int parameterCount = 0;
             for (String parameter : parameterList) {
                 if (value != null && parameter != null) {

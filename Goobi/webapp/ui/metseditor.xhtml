@@ -21,14 +21,14 @@
 
                         <h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
                             <f:param id="vdid5" name="Ansicht" value="Paginierung" />
-
+                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
                         </h:commandLink>
                         <h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px" rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
                         <h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
 
                         <h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
                             <f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
-
+                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
                         </h:commandLink>
 
                         <h:outputText id="vdid10" value="#{msgs.strukturdaten}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
@@ -36,7 +36,7 @@
 
                         <h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}" value="#{msgs.metadaten}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
                             <f:param id="vdid13" name="Ansicht" value="Metadaten" />
-
+                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
                         </h:commandLink>
 
                         <h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
@@ -45,7 +45,7 @@
 
                         <h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
                             <f:param id="vdid17" name="Ansicht" value="File" />
-
+                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
                         </h:commandLink>
 
                         <h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File' and Metadaten.displayFileManipulation}" />
@@ -64,10 +64,10 @@
                     <h:outputText value=" | " style="font-size: 11px;" />
                     <!-- Metadaten validieren -->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}" rendered="#{not Metadaten.nurLesenModus}" id="validateButton">
-                        <!--                         <f:ajax render="@form :metadatenRechtsWrapp" /> -->
+                        <f:ajax render="@form :metadatenRechtsWrapp validation" />
                     </h:commandLink>
-                     <h:outputText value="#{msgs.validieren}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="validateText" />
-                     
+                    <h:outputText value="#{msgs.validieren}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="validateText" />
+
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten nicht schreiben, nur zurück gehen-->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.goZurueck}" value="#{msgs.goBack}" target="_parent" immediate="true" id="returnButton" />
@@ -82,7 +82,6 @@
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten schreiben und zurück gehen-->
                     <h:commandLink id="saveMetsAndExitButton" style="font-size:11px" target="_parent" action="#{Metadaten.XMLschreiben}" value="#{msgs.speichernZurueck}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" onclick="displayProgressBar()">
-                        <f:ajax render="@form :treeform" execute="@form" />
                     </h:commandLink>
 
 

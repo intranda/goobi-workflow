@@ -109,9 +109,7 @@ public class Paginator {
 			try {
 			    roman.setValue(paginationStartValue.toUpperCase());
 			} catch (NumberFormatException e) {
-			    List<String> param = new ArrayList<String>();
-			    param.add(paginationStartValue);
-			    Helper.setFehlerMeldung(Helper.getTranslation("NoRomanNumber", param));
+			    Helper.setFehlerMeldung(Helper.getTranslation("NoRomanNumber", paginationStartValue));
 			}
 		}
 	}

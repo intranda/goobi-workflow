@@ -37,13 +37,13 @@ jQuery(window).resize(function() {
 								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:100px;padding:0px 15px;">
 									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 60}" />
 									<h:graphicImage id="arrowleft" value="images/datascroller/arrow-previous1.gif" />
-									 
+									<f:ajax execute="@form" render="@all" />
 								</h:commandLink>
 
 								<h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:120px;padding:0px 15px;">
 									<x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 60}" />
 									<h:graphicImage id="arrowright" value="images/datascroller/arrow-next1.gif" />
-									 
+									<f:ajax execute="@form" render="@all" />
 								</h:commandLink>
 								
 						<x:dataTable id="tabelle" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" cellpadding="0" cellspacing="0">
