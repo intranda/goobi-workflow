@@ -753,6 +753,11 @@ a.metadataHeaderLinks {
 a.metadataHeaderLinks:hover {
 	text-decoration: underline;
 }
+
+.ui-commandlink.ui-widget.metadataHeaderLinks {
+    font-size: 11px;
+}
+
 /*Tabellen in ProjektBearbeiten -> Details*/
 table.tableDetails{
 	float: left;

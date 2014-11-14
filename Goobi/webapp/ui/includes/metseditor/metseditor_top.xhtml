@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox" xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
     </composite:interface>
@@ -8,24 +8,23 @@
             <h:panelGrid id="grid1" columns="2" cellpadding="0" cellspacing="0">
                 <h:commandLink value="#{msgs.treelevel} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks">
                     <x:updateActionListener value="#{Metadaten.treeProperties.showtreelevel?false:true}" property="#{Metadaten.treeProperties.showtreelevel}" />
-                    <f:ajax execute="@form" render="@all" />
+                    <f:ajax execute="@form" render=":treeform" />
                 </h:commandLink>
                 <h:commandLink value="#{msgs.treeTitle} " action="#{NavigationForm.Reload}" style="padding-left: 5px;" styleClass="metadataHeaderLinks">
                     <x:updateActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" />
-                    <f:ajax execute="@form" render="@all" />
+                    <f:ajax execute="@form" render=":treeform" />
                 </h:commandLink>
                 <h:commandLink value="#{msgs.treePageNumber} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks">
                     <x:updateActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" />
-                    <f:ajax execute="@form" render="@all" />
+                    <f:ajax execute="@form" render=":treeform" />
                 </h:commandLink>
                 <h:commandLink value="#{msgs.treeExpand} " style="padding-left: 5px;" action="#{Metadaten.TreeExpand}" styleClass="metadataHeaderLinks">
                     <x:updateActionListener value="#{Metadaten.treeProperties.fullexpanded?false:true}" property="#{Metadaten.treeProperties.fullexpanded}" />
-                    <f:ajax execute="@form" render="@all" />
+                    <f:ajax execute="@form" render=":treeform" />
                 </h:commandLink>
-                <h:commandLink value="#{msgs.stickyImage} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks">
+                <p:commandLink value="#{msgs.stickyImage} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks" update=":metadatenRechtsWrapp">
                     <x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
-                    <f:ajax execute="@form" render="@all" />
-                </h:commandLink>
+                </p:commandLink>
                 <h:outputText />
             </h:panelGrid>
         </h:form>
