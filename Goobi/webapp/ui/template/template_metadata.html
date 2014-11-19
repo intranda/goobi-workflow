@@ -49,9 +49,7 @@
                     <td valign="top" id="layoutInhalt" class="layoutInhalt" style="background-color: #F0F0F0">
                         <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
                             <h:panelGroup id="id3">
-                                <h:form id="useform">
                                     <ui:insert name="breadcrumb" />
-                                </h:form>
                             </h:panelGroup>
                         </h:panelGrid>
 
@@ -85,14 +83,14 @@ jsf.ajax.addOnEvent(function(data) {
     var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
     var ajaxloader = document.getElementById("ajaxloader");
 	
-    var validateButton = document.getElementById("useform:validateButton");
-    var validateText = document.getElementById("useform:validateText");
+    var validateButton = document.getElementById("validateButton");
+    var validateText = document.getElementById("validateText");
     
-    var saveButton = document.getElementById("useform:saveMetsFileButton");
-	var saveText = document.getElementById("useform:saveMetsFileText");
+    var saveButton = document.getElementById("saveMetsFileButton");
+	var saveText = document.getElementById("saveMetsFileText");
 	
-	var saveAndExitButton = document.getElementById("useform:saveMetsAndExitButton");
-	var saveMetsAndExitText = document.getElementById("useform:saveMetsAndExitText");
+	var saveAndExitButton = document.getElementById("saveMetsAndExitButton");
+	var saveMetsAndExitText = document.getElementById("saveMetsAndExitText");
 	
 	
 	
