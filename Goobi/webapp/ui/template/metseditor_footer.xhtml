@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
 
 	<composite:interface>
 	</composite:interface>
@@ -17,11 +17,20 @@
 									<h:outputText value="#{HelperForm.applicationWebsiteMsg}" />
 								</h:outputLink>
 
-								<h:outputText value=" | #{msgs.toolentwicklung} | " />
+                            <h:outputText value=" | #{msgs.toolentwicklung} | " />
 
-								<h:commandLink action="imprint" value="#{msgs.impressum}" id="impr" />
-								<img id="ajaxloader" src="#{HelperForm.servletPathWithHostAsUrl}/ui/images/ajaxload_small.gif" style="display: none;position: fixed;top: 90px;right: 15px;" />
-								<script language="javascript">
+                            <h:commandLink action="imprint" value="#{msgs.impressum}" id="impr" />
+                            <img id="ajaxloader" src="#{HelperForm.servletPathWithHostAsUrl}/ui/images/ajaxload_small.gif" style="display: none; position: fixed; top: 90px; right: 15px;" />
+                            <p:ajaxStatus style="position: fixed;top: 90px;right: 15px;">
+                                <f:facet name="start">
+                                    <h:graphicImage value="#{HelperForm.servletPathWithHostAsUrl}/ui/images/ajaxload_small.gif" />
+                                </f:facet>
+
+                                <f:facet name="complete">
+                                    <h:outputText value="" />
+                                </f:facet>
+                            </p:ajaxStatus>
+                            <script language="javascript">
 							      function toggle(id) {
 							          var element = document.getElementById(id);
 							          if(element.style.display == 'block') {
