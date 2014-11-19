@@ -215,6 +215,7 @@ public class Metadaten {
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
+    private int numberOfNavigation = 0;
     /**
      * Konstruktor ================================================================
      */
@@ -1902,13 +1903,16 @@ public class Metadaten {
         BildBlaettern();
     }
 
+    public int getNumberOfNavigation() {
+        return numberOfNavigation;
+    }
+    
+    public void setNumberOfNavigation(int numberOfNavigation) {
+        this.numberOfNavigation = numberOfNavigation;
+    }
+    
     public String BildBlaettern() {
-        String parameter = Helper.getRequestParameter("Anzahl");
-        if (parameter.equals("")) {
-            parameter = "0";
-        }
-        int tempint = Integer.parseInt(parameter);
-        BildErmitteln(tempint);
+        BildErmitteln(numberOfNavigation);
         return "";
     }
 
