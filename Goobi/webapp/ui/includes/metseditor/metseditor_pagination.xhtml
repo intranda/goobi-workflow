@@ -15,7 +15,7 @@
 
             <!-- ++++++++++++++++     Auswahl der Seiten      ++++++++++++++++ -->
             <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}">
-                <table cellpadding="3" cellspacing="0" width="200px" class="eingabeBoxen" style="margin-top: 3px">
+                <table cellpadding="3" cellspacing="0" width="200px" class="eingabeBoxen" style="margin-top: 3px" id="pagination-list">
                     <tr>
                         <td class="eingabeBoxen_row1">
                             <h:outputText value="#{msgs.auswahlDerSeiten}" />
@@ -133,7 +133,7 @@
                                     <h:commandLink action="#{Metadaten.moveSeltectedPagesUp}">
                                         <h:graphicImage value="images/buttons/up_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.moveSeltectedPagesUp}" />
-                                        <f:ajax execute="@form" render="@form" />
+                                        <f:ajax execute="@form" render=":mygrid10" />
                                     </h:commandLink>
                                 </td>
                             </tr>
@@ -142,7 +142,7 @@
                                     <h:commandLink action="#{Metadaten.moveSeltectedPagesDown}">
                                         <h:graphicImage value="images/buttons/down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.moveSeltectedPagesDown}" />
-                                        <f:ajax execute="@form" render="@form" />
+                                        <f:ajax execute="@form" render=":mygrid10" />
                                     </h:commandLink>
                                 </td>
                             </tr>
