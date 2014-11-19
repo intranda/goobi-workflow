@@ -233,7 +233,6 @@ public class Metadaten {
      * @return Navigationsanweisung "null" als String (also gleiche Seite reloaden)
      */
     public String AnsichtAendern() {
-        this.modusAnsicht = Helper.getRequestParameter("Ansicht");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -908,16 +907,7 @@ public class Metadaten {
             throw new ReadException(Helper.getTranslation("metaDataError"));
         }
 
-        // if (this.mydocument.getPhysicalDocStruct() == null || this.mydocument.getPhysicalDocStruct().getAllChildren() == null
-        // || this.mydocument.getPhysicalDocStruct().getAllChildren().size() == 0) {
-        // try {
-        // createPagination();
-        // } catch (TypeNotAllowedForParentException e) {
-        //
-        // }
-        // }
-
-        // TODO check filenames, correct them
+        // check filenames, correct them
         checkImageNames();
         retrieveAllImages();
         BildErmitteln(0);
