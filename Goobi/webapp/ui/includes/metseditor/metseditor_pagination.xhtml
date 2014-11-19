@@ -9,7 +9,7 @@
         </h3>
 
         <h:commandLink action="#{Metadaten.createPagination}" value="#{msgs.paginierungEinlesen}">
-            <f:ajax execute="@form" render="@form validation" />
+            <f:ajax execute="@form" render="@form" />
         </h:commandLink>
         <h:panelGrid id="mygrid10" columns="2" style="margin:0px;">
 
@@ -160,7 +160,7 @@
                                     <h:commandLink action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
                                         <h:graphicImage value="images/buttons/reload.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.reOrder}" />
-                                        <f:ajax execute="@form" render=":progressform" />
+                                        <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
                                     <script type="text/javascript">
             								$(document).ready(

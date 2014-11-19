@@ -23,7 +23,7 @@
                 </h:commandLink>
                 <h:commandLink value="#{msgs.stickyImage} " action="#{NavigationForm.Reload}" styleClass="metadataHeaderLinks" >
                     <x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
-                     <f:ajax execute="@form" render=":metadatenRechtsWrapp" />
+                     <f:ajax execute="@form" render="@form" />
                 </h:commandLink>
                 <h:outputText />
             </h:panelGrid>

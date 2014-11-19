@@ -97,7 +97,7 @@
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax render="@form :formular1 :formular2 :formular3 :second_formularBild :first_formularBild :first_myBild :second_myBild " />
+                        <f:ajax render="@form" />
                     </h:commandLink>
 
                     <h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
