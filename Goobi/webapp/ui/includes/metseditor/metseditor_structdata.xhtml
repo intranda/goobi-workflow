@@ -109,14 +109,14 @@
                             <h:commandLink action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
                                 <h:graphicImage value="images/buttons/sort_up_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                 <h:outputText value="#{msgs.docstructNachObenSchieben}" />
-                                <f:ajax render="@form :treeform " />
+                                <f:ajax render=":tabelle" />
                             </h:commandLink>
 
                             <!-- Knoten nach unten -->
                             <h:commandLink action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
                                 <h:graphicImage value="images/buttons/sort_down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                 <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
-                                <f:ajax render="@form :treeform " />
+                                <f:ajax render=":tabelle" />
                             </h:commandLink>
 
                             <!-- Knoten an andere Stelle schieben -->
