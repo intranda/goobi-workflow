@@ -60,6 +60,8 @@ table {
 .ui-widget-header .ui-inputfield.ui-state-focus {
     width: 100%;
     box-shadow: none;
+    padding: 1px;
+    font-weight: 200;
 }
 
 .ui-state-highlight, 
