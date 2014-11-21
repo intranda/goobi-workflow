@@ -132,13 +132,13 @@
                                     <f:ajax execute="@form" render=":first_image-navigation :second_image-navigation :first_myBild :second_myBild" />
                                 </h:commandLink>
                             </td>
-                            <h:outputText id="#{idPrefix}_hiddenBildNummer" value="#{Metadaten.bildNummer}" style="display: none" />
+                          
                         </h:panelGroup>
                     </tr>
                 </table>
                 <!-- Ende Bildnavigation -->
             </h:panelGroup>
-
+            <h:outputText id="#{idPrefix}_hiddenBildNummer" value="#{Metadaten.bildNummer}" style="display: none" />
             <h:panelGroup style="text-align: center">
                 <!-- Zoom -->
                 <h:commandLink action="#{Metadaten.BildZoomMinus}" id="#{idPrefix}_zoomMinus" style="margin-left: 0px;margin-right:5px">
