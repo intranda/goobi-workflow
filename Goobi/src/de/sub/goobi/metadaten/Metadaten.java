@@ -285,14 +285,8 @@ public class Metadaten {
 
     public String Reload() {
 
-        //        try {
-        //            Thread.sleep(1000l);
-        //        } catch (InterruptedException e1) {
-        //            myLogger.error(e1);
-        //        }
-
         if (!SperrungAktualisieren()) {
-            return "SperrungAbgelaufen";
+            return "metseditor_timeout";
         } else {
             try {
 
@@ -305,19 +299,6 @@ public class Metadaten {
             return "";
         }
     }
-
-    //    public String Reload() {
-    //        if (!SperrungAktualisieren()) {
-    //            return "metseditor_timeout";
-    //        } else {
-    //            calculateMetadataAndImages();
-    //            cleanupMetadata();
-    //            // ignoring result of store operation
-    //            storeMetadata();
-    //            MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
-    //            return "";
-    //        }
-    //    }
 
     public String CopyGroup() {
         MetadataGroup newMetadataGroup;
