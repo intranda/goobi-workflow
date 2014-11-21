@@ -181,14 +181,15 @@
 		}
 		
 		function focusForPicture() {
-			var hiddenImageNo = document.getElementById("first_hiddenBildNummer");
-			if (hiddenImageNo == null) {
-				hiddenImageNo = document.getElementById("second_hiddenBildNummer");
+			
+			var hiddenImageNo = $("#first_hiddenBildNummer");
+			if (hiddenImageNo.length == 0) {
+				hiddenImageNo = $("#second_hiddenBildNummer");
 			}
 			if (isIE()) {
 				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
 
-					if (i == hiddenImageNo.value) {
+					if (i == hiddenImageNo.text()) {
 						if (i+1 &lt; document.getElementsByName("myCheckboxes").length) {
 							document.getElementsByName("myCheckboxes")[i + 1].focus();
 						}
@@ -197,7 +198,7 @@
 				}
 			} else {
 				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
-					if (i == hiddenImageNo.value - 1) {
+					if (i+1 == hiddenImageNo.text() ) {
 						if (i + 1 &lt; document.getElementsByName("myCheckboxes").length) {
 							document.getElementsByName("myCheckboxes")[i + 1].focus();
 						}
