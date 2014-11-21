@@ -35,7 +35,7 @@ public class ConfigNormdataTest {
 
     @After
     public void tearDown() {
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", "/opt/digiverso/junit/data/");
     }
 
     @Test
