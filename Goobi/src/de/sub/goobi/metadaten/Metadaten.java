@@ -165,6 +165,8 @@ public class Metadaten {
     private SelectItem structSeiten[];
     private MetadatumImpl structSeitenNeu[];
     private DocStruct logicalTopstruct;
+    private DocStruct physicalTopstruct;
+    private DocStruct currentTopstruct;
 
     private boolean modusHinzufuegen = false;
     private boolean modusHinzufuegenPerson = false;
@@ -295,7 +297,7 @@ public class Metadaten {
                 Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
                 logger.error(e);
             }
-            MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+            MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             return "";
         }
     }
@@ -387,7 +389,7 @@ public class Metadaten {
             try {
                 DocStruct rueckgabe = this.metahelper.ChangeCurrentDocstructType(this.myDocStruct, this.tempWert);
                 MetadatenalsBeanSpeichern(rueckgabe);
-                MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+                MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             } catch (DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes (DocStructHasNoTypeException): ", e.getMessage());
                 logger.error("Error while changing DocStructTypes (DocStructHasNoTypeException): " + e.getMessage());
@@ -435,7 +437,7 @@ public class Metadaten {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
     }
 
@@ -463,7 +465,7 @@ public class Metadaten {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
     }
 
@@ -909,8 +911,9 @@ public class Metadaten {
 
         createDefaultValues(this.logicalTopstruct);
         MetadatenalsBeanSpeichern(this.logicalTopstruct);
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
-
+        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct, false);
+        physicalTopstruct = mydocument.getPhysicalDocStruct();
+        currentTopstruct = logicalTopstruct;
         if (!this.nurLesenModus) {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Paginierung";
@@ -929,60 +932,6 @@ public class Metadaten {
         }
     }
 
-    //    private void calculateMetadataAndImages() {
-    //
-    //        /*
-    //         * für den Prozess nochmal die Metadaten durchlaufen und die Daten speichern
-    //         */
-    //        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
-    //
-    //        this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
-    //        this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
-    //        try {
-    //            this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory(true))));
-    //            ProcessManager.saveProcess(this.myProzess);
-    //        } catch (DAOException e) {
-    //            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-    //            myLogger.error(e);
-    //        } catch (Exception e) {
-    //            Helper.setFehlerMeldung("error while counting current images", e);
-    //            myLogger.error(e);
-    //        }
-    //    }
-
-    //    private void cleanupMetadata() {
-    //        /*
-    //         * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
-    //         */
-    //        this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
-    //
-    //        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
-    //            boolean match = false;
-    //            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-    //                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-    //                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-    //                    if (md.getType().getName().equals("_representative")) {
-    //                        Integer value = new Integer(currentRepresentativePage);
-    //                        md.setValue(String.valueOf(value + 1));
-    //                        match = true;
-    //                    }
-    //                }
-    //            }
-    //            if (!match) {
-    //                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-    //                try {
-    //                    Metadata md = new Metadata(mdt);
-    //                    Integer value = new Integer(currentRepresentativePage);
-    //                    md.setValue(String.valueOf(value + 1));
-    //                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-    //                } catch (MetadataTypeNotAllowedException e) {
-    //
-    //                }
-    //
-    //            }
-    //        }
-    //    }
-
     public boolean isCheckForRepresentative() {
         MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
         if (mdt != null) {
@@ -990,22 +939,6 @@ public class Metadaten {
         }
         return false;
     }
-
-    //    private boolean storeMetadata() {
-    //        boolean result = true;
-    //        try {
-    //            if (!new MetadatenVerifizierung().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
-    //                return false;
-    //            }
-    //            this.myProzess.writeMetadataFile(this.gdzfile);
-    //        } catch (Exception e) {
-    //            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-    //            myLogger.error(e);
-    //            result = false;
-    //
-    //        }
-    //        return result;
-    //    }
 
     /**
      * Metadaten Schreiben
@@ -1157,8 +1090,8 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
-    private String MetadatenalsTree3Einlesen1(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct) {
-        this.tree3 = buildTree(inTree, inLogicalTopStruct);
+    private String MetadatenalsTree3Einlesen1(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct,  boolean expandAll) {
+        this.tree3 = buildTree(inTree, inLogicalTopStruct, expandAll);
 
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1167,7 +1100,7 @@ public class Metadaten {
     }
 
     @SuppressWarnings("rawtypes")
-    private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct) {
+    private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct, boolean expandAll) {
         HashMap map;
         TreeNodeStruct3 knoten;
         List<DocStruct> status = new ArrayList<DocStruct>();
@@ -1207,7 +1140,7 @@ public class Metadaten {
             map = (HashMap) iter.next();
             knoten = (TreeNodeStruct3) map.get("node");
             // Ausklappstatus wiederherstellen
-            if (status.contains(knoten.getStruct())) {
+            if (status.contains(knoten.getStruct()) || expandAll) {
                 knoten.setExpanded(true);
             }
             // Selection wiederherstellen
@@ -1313,7 +1246,7 @@ public class Metadaten {
                 logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
             }
         }
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -1327,7 +1260,7 @@ public class Metadaten {
                 logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
             }
         }
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -1338,7 +1271,7 @@ public class Metadaten {
     public String KnotenVerschieben() throws TypeNotAllowedAsChildException {
         this.myDocStruct.getParent().removeChild(this.myDocStruct);
         this.tempStrukturelement.addChild(this.myDocStruct);
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.neuesElementWohin = "1";
         return "metseditor";
     }
@@ -1360,7 +1293,7 @@ public class Metadaten {
 
         }
         // den Tree neu einlesen
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     public String duplicateNode() {
@@ -1386,7 +1319,7 @@ public class Metadaten {
             }
         }
 
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -1550,7 +1483,7 @@ public class Metadaten {
             this.myDocStruct = temp;
         }
 
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -2261,7 +2194,7 @@ public class Metadaten {
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
-                    MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+                    MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
                 } else {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
@@ -2319,7 +2252,7 @@ public class Metadaten {
 
                     }
 
-                    MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+                    MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
                 } else {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
@@ -3602,7 +3535,7 @@ public class Metadaten {
         if (this.modusCopyDocstructFromOtherProcess) {
             try {
                 treeOfFilteredProcess =
-                        buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct());
+                        buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct(), false);
 
             } catch (PreferencesException e) {
                 logger.error("Error loading the tree for filtered processes (PreferencesException): ", e);
@@ -3686,7 +3619,7 @@ public class Metadaten {
 
             this.tempStrukturelement.addChild(docStructFromFilteredProcess);
         }
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.neuesElementWohin = "1";
     }
 
@@ -3840,4 +3773,15 @@ public class Metadaten {
         }
         return addablePersondata;
     }
+
+    public void changeTopstruct() {
+        if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
+            currentTopstruct = physicalTopstruct;
+        } else {
+            currentTopstruct = logicalTopstruct;
+        }
+        MetadatenalsBeanSpeichern(this.currentTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, true);
+    }
+
 }
