@@ -20,23 +20,23 @@
                     <h:panelGroup id="vdid3" rendered="#{not Metadaten.nurLesenModus}">
 
                         <h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
-                            <f:param id="vdid5" name="Ansicht" value="Paginierung" />
-                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
+                            <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
                         <h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px" rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
                         <h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
 
                         <h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
-                            <f:param id="vdid9" name="Ansicht" value="Strukturdaten" />
-                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
+                            <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
 
                         <h:outputText id="vdid10" value="#{msgs.strukturdaten}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}" />
                         <h:outputText id="vdid11" value=" | " style="font-size: 11px;" />
 
                         <h:commandLink id="vdid12" action="#{Metadaten.AnsichtAendern}" value="#{msgs.metadaten}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Metadaten'}">
-                            <f:param id="vdid13" name="Ansicht" value="Metadaten" />
-                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
+                            <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
 
                         <h:outputText id="vdid14" value="#{msgs.metadaten}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'Metadaten'}" />
@@ -44,8 +44,8 @@
                         <h:outputText id="vdid15" value=" | " style="font-size: 11px;" rendered="#{Metadaten.displayFileManipulation}" />
 
                         <h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
-                            <f:param id="vdid17" name="Ansicht" value="File" />
-                            <f:ajax execute="@form" render=":metadatenRechtsWrapp @form" />
+                            <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
 
                         <h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File' and Metadaten.displayFileManipulation}" />
@@ -55,16 +55,16 @@
 
                 <td align="right">
                     <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}" value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
-                        <f:ajax render="@form :metadatenRechtsWrapp" />
+                        <f:ajax render="@form" />
                     </h:commandLink>
                     <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==false}" value="#{msgs.metadatenBildAnzeigen}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
-                        <f:ajax render="@form :metadatenRechtsWrapp" />
+                        <f:ajax render="@form" />
                     </h:commandLink>
 
                     <h:outputText value=" | " style="font-size: 11px;" />
                     <!-- Metadaten validieren -->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}" rendered="#{not Metadaten.nurLesenModus}" id="validateButton">
-                        <f:ajax render="@form :metadatenRechtsWrapp validation" />
+                        <f:ajax render="@form" />
                     </h:commandLink>
                     <h:outputText value="#{msgs.validieren}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="validateText" />
 
@@ -181,14 +181,15 @@
 		}
 		
 		function focusForPicture() {
-			var hiddenImageNo = document.getElementById("first_imageform:hiddenBildNummer");
-			if (hiddenImageNo == null) {
-				hiddenImageNo = document.getElementById("second_imageform:hiddenBildNummer");
+			
+			var hiddenImageNo = $("#first_hiddenBildNummer");
+			if (hiddenImageNo.length == 0) {
+				hiddenImageNo = $("#second_hiddenBildNummer");
 			}
 			if (isIE()) {
 				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
 
-					if (i == hiddenImageNo.value) {
+					if (i == hiddenImageNo.text()) {
 						if (i+1 &lt; document.getElementsByName("myCheckboxes").length) {
 							document.getElementsByName("myCheckboxes")[i + 1].focus();
 						}
@@ -197,7 +198,7 @@
 				}
 			} else {
 				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
-					if (i == hiddenImageNo.value - 1) {
+					if (i+1 == hiddenImageNo.text() ) {
 						if (i + 1 &lt; document.getElementsByName("myCheckboxes").length) {
 							document.getElementsByName("myCheckboxes")[i + 1].focus();
 						}
@@ -218,7 +219,7 @@
 				event.shiftKey &amp;&amp; event.ctrlKey) {
 				myButton = document.getElementById("second_imageBack20");
 				if (myButton == null) {
-					myButton = document.getElementById("second_imageBack20");
+					myButton = document.getElementById("first_imageBack20");
 				}
 				//goToImageBack();
 				if (event.preventDefault) {

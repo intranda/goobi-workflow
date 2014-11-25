@@ -215,6 +215,7 @@ public class Metadaten {
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
+    private int numberOfNavigation = 0;
     /**
      * Konstruktor ================================================================
      */
@@ -233,7 +234,6 @@ public class Metadaten {
      * @return Navigationsanweisung "null" als String (also gleiche Seite reloaden)
      */
     public String AnsichtAendern() {
-        this.modusAnsicht = Helper.getRequestParameter("Ansicht");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -285,14 +285,8 @@ public class Metadaten {
 
     public String Reload() {
 
-        //        try {
-        //            Thread.sleep(1000l);
-        //        } catch (InterruptedException e1) {
-        //            myLogger.error(e1);
-        //        }
-
         if (!SperrungAktualisieren()) {
-            return "SperrungAbgelaufen";
+            return "metseditor_timeout";
         } else {
             try {
 
@@ -305,19 +299,6 @@ public class Metadaten {
             return "";
         }
     }
-
-    //    public String Reload() {
-    //        if (!SperrungAktualisieren()) {
-    //            return "metseditor_timeout";
-    //        } else {
-    //            calculateMetadataAndImages();
-    //            cleanupMetadata();
-    //            // ignoring result of store operation
-    //            storeMetadata();
-    //            MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
-    //            return "";
-    //        }
-    //    }
 
     public String CopyGroup() {
         MetadataGroup newMetadataGroup;
@@ -908,16 +889,7 @@ public class Metadaten {
             throw new ReadException(Helper.getTranslation("metaDataError"));
         }
 
-        // if (this.mydocument.getPhysicalDocStruct() == null || this.mydocument.getPhysicalDocStruct().getAllChildren() == null
-        // || this.mydocument.getPhysicalDocStruct().getAllChildren().size() == 0) {
-        // try {
-        // createPagination();
-        // } catch (TypeNotAllowedForParentException e) {
-        //
-        // }
-        // }
-
-        // TODO check filenames, correct them
+        // check filenames, correct them
         checkImageNames();
         retrieveAllImages();
         BildErmitteln(0);
@@ -1912,13 +1884,16 @@ public class Metadaten {
         BildBlaettern();
     }
 
+    public int getNumberOfNavigation() {
+        return numberOfNavigation;
+    }
+    
+    public void setNumberOfNavigation(int numberOfNavigation) {
+        this.numberOfNavigation = numberOfNavigation;
+    }
+    
     public String BildBlaettern() {
-        String parameter = Helper.getRequestParameter("Anzahl");
-        if (parameter.equals("")) {
-            parameter = "0";
-        }
-        int tempint = Integer.parseInt(parameter);
-        BildErmitteln(tempint);
+        BildErmitteln(numberOfNavigation);
         return "";
     }
 

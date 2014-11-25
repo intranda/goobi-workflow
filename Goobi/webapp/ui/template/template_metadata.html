@@ -16,48 +16,44 @@
 
     <title><h:outputText value="Goobi #{HelperForm.version}" /></title>
 
- 
+
 </h:head>
 
 <ui:insert name="metadata" />
 
 <h:body>
     <f:view locale="#{SpracheForm.locale}">
+        <h:form id="metseditor" prependId="false" enctype="multipart/form-data">
+            <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
+                <ui:include src="metseditor_head.xhtml" />
+            </table>
 
-        <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
-            <ui:include src="inc_head.xhtml" />
-        </table>
+            <table cellspacing="5" cellpadding="0" class="layoutTable" align="center">
 
-        <table cellspacing="5" cellpadding="0" class="layoutTable" align="center">
+                <tr>
 
-            <tr>
+                    <td valign="top" height="100%" style="color: #434387; border-style: solid; border-width: 1px; border-color: #0083e2; background-color: #cbe5fc; width: 180px">
 
-                <td valign="top" height="100%"
-                    style="color: #434387; border-style: solid; border-width: 1px; border-color: #0083e2; background-color: #cbe5fc; width: 180px">
+                        <table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0" id="sidebar">
+                            <tr>
+                                <td valign="top">
+                                    <ui:insert name="sidebar_top">
+                                    </ui:insert>
+                                </td>
+                            </tr>
 
-                    <table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0">
-                        <tr>
-                            <td valign="top">
-                                <ui:insert name="sidebar_top">
-                                    <ui:include src="inc_navigation.xhtml" />
-                                </ui:insert>
-                            </td>
-                        </tr>
+                        </table>
 
-                    </table>
+                    </td>
 
-                </td>
+                    <td valign="top" id="layoutInhalt" class="layoutInhalt" style="background-color: #F0F0F0">
+                        <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
+                            <h:panelGroup id="id3">
+                                    <ui:insert name="breadcrumb" />
+                            </h:panelGroup>
+                        </h:panelGrid>
 
-                <td valign="top" id="layoutInhalt" class="layoutInhalt" style="background-color: #F0F0F0">
-                    <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
-                        <h:panelGroup id="id3">
-                            <h:form id="useform">
-                                <ui:insert name="breadcrumb" />
-                            </h:form>
-                        </h:panelGroup>
-                    </h:panelGrid>
-
-<script type="text/javascript">
+                        <script type="text/javascript">
 /*
  * Fix navigation on scrolling page
  * */
@@ -87,14 +83,14 @@ jsf.ajax.addOnEvent(function(data) {
     var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
     var ajaxloader = document.getElementById("ajaxloader");
 	
-    var validateButton = document.getElementById("useform:validateButton");
-    var validateText = document.getElementById("useform:validateText");
+    var validateButton = document.getElementById("validateButton");
+    var validateText = document.getElementById("validateText");
     
-    var saveButton = document.getElementById("useform:saveMetsFileButton");
-	var saveText = document.getElementById("useform:saveMetsFileText");
+    var saveButton = document.getElementById("saveMetsFileButton");
+	var saveText = document.getElementById("saveMetsFileText");
 	
-	var saveAndExitButton = document.getElementById("useform:saveMetsAndExitButton");
-	var saveMetsAndExitText = document.getElementById("useform:saveMetsAndExitText");
+	var saveAndExitButton = document.getElementById("saveMetsAndExitButton");
+	var saveMetsAndExitText = document.getElementById("saveMetsAndExitText");
 	
 	
 	
@@ -132,23 +128,23 @@ jsf.ajax.addOnEvent(function(data) {
     }
 });
 
-</script>
+						</script>
 
-                    <div style="margin: 15px">
-                        <h3>
-                            <ui:insert name="title" />
-                        </h3>
+                        <div style="margin: 15px">
+                            <h3>
+                                <ui:insert name="title" />
+                            </h3>
 
-                        <x:messages globalOnly="true" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" id="validation" />
+                            <x:messages globalOnly="true" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" id="validation" />
 
-                        <ui:insert name="content" />
+                            <ui:insert name="content" />
 
-                    </div>
-                </td>
-            </tr>
-            <ui:include src="inc_footer.xhtml" />
-        </table>
-
+                        </div>
+                    </td>
+                </tr>
+                <ui:include src="metseditor_footer.xhtml" />
+            </table>
+        </h:form>
     </f:view>
 </h:body>
 </html>

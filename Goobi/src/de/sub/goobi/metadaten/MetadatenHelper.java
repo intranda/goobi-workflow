@@ -262,7 +262,7 @@ public class MetadatenHelper implements Comparator<Object> {
         int max = parent.getAllChildren().size();
         int index = parent.getAllChildren().indexOf(inStruct);
 
-        if (max == index) {
+        if (max -1 <= index) {
             return;
         } else {
             parent.getAllChildren().remove(inStruct);
