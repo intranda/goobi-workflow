@@ -25,10 +25,14 @@
                 <x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
                 <f:ajax execute="@form" render="@form" />
             </h:commandLink>
-
-            <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.toggleStructureTree}" styleClass="metadataHeaderLinks">
-                <f:ajax execute="@form" render="@all" />
-            </h:commandLink>
+            <h:panelGroup>
+                <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.showPhysicalTree}" styleClass="metadataHeaderLinks" rendered="#{Metadaten.physicalTopstruct}">
+                    <f:ajax execute="@form" render="@all" />
+                </h:commandLink>
+                <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.showLogicalTree}" styleClass="metadataHeaderLinks" rendered="#{not Metadaten.physicalTopstruct}">
+                    <f:ajax execute="@form" render="@all" />
+                </h:commandLink>
+            </h:panelGroup>
         </h:panelGrid>
     </composite:implementation>
 

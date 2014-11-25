@@ -3777,6 +3777,7 @@ public class Metadaten {
     public void changeTopstruct() {
         if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
             currentTopstruct = physicalTopstruct;
+            modusAnsicht = "Metadaten";
         } else {
             currentTopstruct = logicalTopstruct;
         }
@@ -3784,4 +3785,8 @@ public class Metadaten {
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, true);
     }
 
+    public boolean isPhysicalTopstruct() {
+        return currentTopstruct.getType().getName().equals(physicalTopstruct.getType().getName());
+    }
+    
 }
