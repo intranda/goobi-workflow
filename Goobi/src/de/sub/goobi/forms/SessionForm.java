@@ -193,13 +193,17 @@ public class SessionForm {
     @SuppressWarnings("rawtypes")
     public boolean BenutzerInAndererSessionAktiv(HttpSession insession, User inBenutzer) {
         boolean rueckgabe = false;
-        for (Iterator iter = this.alleSessions.iterator(); iter.hasNext();) {
-            HashMap map = (HashMap) iter.next();
-            boolean sessiongleich = map.get("id").equals(insession.getId());
-            boolean nutzergleich = inBenutzer.getId().intValue() == ((Integer) map.get("userid")).intValue();
-            if (!sessiongleich && nutzergleich) {
-                rueckgabe = true;
-                break;
+        if (alleSessions != null && insession != null) {
+            for (Iterator iter = this.alleSessions.iterator(); iter.hasNext();) {
+                HashMap map = (HashMap) iter.next();
+                if (map != null) {
+                    boolean sessiongleich = map.get("id").equals(insession.getId());
+                    boolean nutzergleich = inBenutzer.getId().intValue() == ((Integer) map.get("userid")).intValue();
+                    if (!sessiongleich && nutzergleich) {
+                        rueckgabe = true;
+                        break;
+                    }
+                }
             }
         }
         return rueckgabe;
@@ -240,5 +244,5 @@ public class SessionForm {
     public String getDate() {
         return dateFormatter.format(new Date());
     }
-    
+
 }
