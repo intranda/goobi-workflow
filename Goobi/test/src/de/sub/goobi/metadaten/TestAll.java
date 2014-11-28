@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ FileManipulationTest.class, PaginatorTest.class, MetadataGroupImplTest.class, MetadatumImplTest.class,
-        MetadatenSperrungTest.class, MetadatenTest.class })
+        MetadatenSperrungTest.class, MetadatenTest.class, MetaPersonTest.class, TreeNodeStruct3Test.class })
 public class TestAll {
 
 }
