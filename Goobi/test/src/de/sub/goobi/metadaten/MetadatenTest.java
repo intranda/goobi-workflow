@@ -26,8 +26,10 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
+import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -230,6 +232,8 @@ public class MetadatenTest {
         p.setAutorityFile("id", "uri", "value");
         MetaPerson md = new MetaPerson(p, 0, prefs, null);
        
+        p.addNamePart(new NamePart("type", "value"));
+        
         fixture.setCurPerson(md);
 
         String value = fixture.KopierenPerson();
@@ -241,4 +245,18 @@ public class MetadatenTest {
         assertEquals("", value);
     }
     
+    
+    
+    @Test
+    public void testChangeCurrentDocstructType() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        
+        DocStruct dsToChange = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(0);
+        fixture.setMyStrukturelement(dsToChange);
+        fixture.setTempWert("Chapter");
+        
+        assertEquals("metseditor", fixture.ChangeCurrentDocstructType());
+    }
 }

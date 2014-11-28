@@ -216,6 +216,7 @@ public class Metadaten {
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
     private int numberOfNavigation = 0;
+
     /**
      * Konstruktor ================================================================
      */
@@ -388,18 +389,10 @@ public class Metadaten {
                 DocStruct rueckgabe = this.metahelper.ChangeCurrentDocstructType(this.myDocStruct, this.tempWert);
                 MetadatenalsBeanSpeichern(rueckgabe);
                 MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
-            } catch (DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung("Error while changing DocStructTypes (DocStructHasNoTypeException): ", e.getMessage());
-                logger.error("Error while changing DocStructTypes (DocStructHasNoTypeException): " + e.getMessage());
-            } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung("Error while changing DocStructTypes (MetadataTypeNotAllowedException): ", e.getMessage());
-                logger.error("Error while changing DocStructTypes (MetadataTypeNotAllowedException): " + e.getMessage());
-            } catch (TypeNotAllowedAsChildException e) {
-                Helper.setFehlerMeldung("Error while changing DocStructTypes (TypeNotAllowedAsChildException): ", e.getMessage());
-                logger.error("Error while changing DocStructTypes (TypeNotAllowedAsChildException): " + e.getMessage());
-            } catch (TypeNotAllowedForParentException e) {
-                Helper.setFehlerMeldung("Error while changing DocStructTypes (TypeNotAllowedForParentException): ", e.getMessage());
-                logger.error("Error while changing DocStructTypes (TypeNotAllowedForParentException): " + e.getMessage());
+            } catch (DocStructHasNoTypeException | MetadataTypeNotAllowedException | TypeNotAllowedAsChildException
+                    | TypeNotAllowedForParentException e) {
+                Helper.setFehlerMeldung("Error while changing DocStructTypes: ", e.getMessage());
+                logger.error("Error while changing DocStructTypes: " + e);
             }
         }
         return "metseditor";
@@ -1887,11 +1880,11 @@ public class Metadaten {
     public int getNumberOfNavigation() {
         return numberOfNavigation;
     }
-    
+
     public void setNumberOfNavigation(int numberOfNavigation) {
         this.numberOfNavigation = numberOfNavigation;
     }
-    
+
     public String BildBlaettern() {
         BildErmitteln(numberOfNavigation);
         return "";
