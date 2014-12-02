@@ -75,6 +75,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
 
@@ -494,22 +495,32 @@ public class MetadatenImagesHelper {
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
             ImageManipulatorException {
         logger.trace("start scaleFile");
-        int tmpSize = inSize / 3;
+       
+        int tmpSize = inSize;
         if (tmpSize < 1) {
             tmpSize = 1;
         }
-        logger.trace("tmpSize: " + tmpSize);
+        logger.trace("Scale to " + tmpSize + "%");
+        
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
             ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
             logger.trace("im");
-            Dimension dim = new Dimension();
-            dim.height = tmpSize;
-            dim.width = tmpSize;
+            ImageInterpreter ii = im.getMyInterpreter();
+            Dimension inputResolution = new Dimension((int)ii.getXResolution(), (int)ii.getYResolution());
+            logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
+            Dimension outputResolution = new Dimension(144, 144);
+            logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
+            Dimension dim = new Dimension(tmpSize*outputResolution.width/inputResolution.width, tmpSize*outputResolution.height/inputResolution.height);
+            logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
             RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
             logger.trace("ri");
             JpegInterpreter pi = new JpegInterpreter(ri);
             logger.trace("pi");
+            pi.setXResolution(outputResolution.width);
+            logger.trace("xres = " + pi.getXResolution());
+            pi.setYResolution(outputResolution.height);
+            logger.trace("yres = " + pi.getYResolution());
             FileOutputStream outputFileStream = new FileOutputStream(outFileName);
             logger.trace("output");
             pi.writeToStream(null, outputFileStream);
