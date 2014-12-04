@@ -812,7 +812,7 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            String[] parameter = {"METS", this.myProzess.getTitel()};
+            String[] parameter = { "METS", this.myProzess.getTitel() };
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
@@ -825,7 +825,7 @@ public class ProcessBean extends BasicBean {
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            String[] parameter = {"PDF", this.myProzess.getTitel()};
+            String[] parameter = { "PDF", this.myProzess.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
 
             Helper.setFehlerMeldung("An error occured while trying to export PDF file for: " + this.myProzess.getTitel(), e);
@@ -837,14 +837,19 @@ public class ProcessBean extends BasicBean {
         IExportPlugin export = null;
         String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
         if (StringUtils.isNotEmpty(pluginName)) {
-            export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            try {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            } catch (Exception e) {
+                logger.error("Can't load export plugin, use default plugin", e);
+                export = new ExportDms();
+            }
         } else {
             export = new ExportDms();
         }
         try {
             export.startExport(this.myProzess);
         } catch (Exception e) {
-            String[] parameter = {"DMS", this.myProzess.getTitel()};
+            String[] parameter = { "DMS", this.myProzess.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
             logger.error("ExportDMS error", e);
@@ -859,7 +864,12 @@ public class ProcessBean extends BasicBean {
             IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(proz.getId());
             if (StringUtils.isNotEmpty(pluginName)) {
-                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                try {
+                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                } catch (Exception e) {
+                    logger.error("Can't load export plugin, use default plugin", e);
+                    export = new ExportDms();
+                }
             } else {
                 export = new ExportDms();
             }
@@ -897,7 +907,12 @@ public class ProcessBean extends BasicBean {
                 IExportPlugin export = null;
                 String pluginName = ProcessManager.getExportPluginName(proz.getId());
                 if (StringUtils.isNotEmpty(pluginName)) {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                    try {
+                        export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                    } catch (Exception e) {
+                        logger.error("Can't load export plugin, use default plugin", e);
+                        export = new ExportDms();
+                    }
                 } else {
                     export = new ExportDms();
                 }
@@ -919,7 +934,12 @@ public class ProcessBean extends BasicBean {
             IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(proz.getId());
             if (StringUtils.isNotEmpty(pluginName)) {
-                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                try {
+                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                } catch (Exception e) {
+                    logger.error("Can't load export plugin, use default plugin", e);
+                    export = new ExportDms();
+                }
             } else {
                 export = new ExportDms();
             }

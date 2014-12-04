@@ -356,7 +356,12 @@ public class HelperSchritte {
         IExportPlugin dms = null;
 
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
-            dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+            try {
+                dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+            } catch (Exception e) {
+                logger.error("Can't load export plugin, use default plugin", e);
+                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+            }
         } else {
             dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
         }

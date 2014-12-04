@@ -1094,7 +1094,12 @@ public class GoobiScript {
             IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(prozess.getId());
             if (StringUtils.isNotEmpty(pluginName)) {
-                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                try {
+                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                } catch (Exception e) {
+                    logger.error("Can't load export plugin, use default plugin", e);
+                    export = new ExportDms();
+                }
             } else {
                 export = new ExportDms();
             }
@@ -1107,13 +1112,15 @@ public class GoobiScript {
 
             try {
                 export.startExport(prozess);
-            } catch (DocStructHasNoTypeException |PreferencesException |WriteException | MetadataTypeNotAllowedException | ExportFileException | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException | InterruptedException e) {
-                String[] parameter = {prozess.getTitel(), e.getMessage()};
+            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ExportFileException
+                    | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
+                    | InterruptedException e) {
+                String[] parameter = { prozess.getTitel(), e.getMessage() };
                 Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameter));
                 logger.error("DocStructHasNoTypeException", e);
-           
+
                 logger.error("PreferencesException", e);
-            
+
             }
         }
     }
