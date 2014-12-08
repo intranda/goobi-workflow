@@ -55,6 +55,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.AutomaticDmsExport;
+import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -362,7 +363,8 @@ public class HelperSchritte {
                 logger.error("Can't load export plugin, use default plugin", e);
                 dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
             }
-        } else {
+        }
+        if (dms == null) {
             dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
         }
         if (!ConfigurationHelper.getInstance().isAutomaticExportWithOcr()) {

@@ -1095,7 +1095,7 @@ public class StepBean extends BasicBean {
                 logger.error("Can't load export plugin, use default plugin", e);
                 dms = new ExportDms();
             }
-        } else {
+        } if (dms == null) {
             dms = new ExportDms();
         }
         try {

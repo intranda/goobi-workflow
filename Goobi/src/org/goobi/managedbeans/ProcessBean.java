@@ -843,7 +843,8 @@ public class ProcessBean extends BasicBean {
                 logger.error("Can't load export plugin, use default plugin", e);
                 export = new ExportDms();
             }
-        } else {
+        }
+        if (export == null) {
             export = new ExportDms();
         }
         try {
@@ -870,7 +871,8 @@ public class ProcessBean extends BasicBean {
                     logger.error("Can't load export plugin, use default plugin", e);
                     export = new ExportDms();
                 }
-            } else {
+            }
+            if (export == null) {
                 export = new ExportDms();
             }
             try {
@@ -913,7 +915,8 @@ public class ProcessBean extends BasicBean {
                         logger.error("Can't load export plugin, use default plugin", e);
                         export = new ExportDms();
                     }
-                } else {
+                }
+                if (export == null) {
                     export = new ExportDms();
                 }
                 try {
@@ -940,7 +943,8 @@ public class ProcessBean extends BasicBean {
                     logger.error("Can't load export plugin, use default plugin", e);
                     export = new ExportDms();
                 }
-            } else {
+            }
+            if (export == null) {
                 export = new ExportDms();
             }
 
