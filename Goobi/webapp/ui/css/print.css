@@ -84,12 +84,15 @@ div#myTree,
 }
 
 .layoutInhalt {
-	display: none;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #e3c240;
 	background-color: #fafcfe;
 	padding-bottom: 15px;
+}
+
+#layoutInhalt {
+    display: none;
 }
 
 .layoutInhaltKopf {
