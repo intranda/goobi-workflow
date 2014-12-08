@@ -54,8 +54,7 @@ table {
 	height: 600px;
 }
 
-div#myTree,
-.layoutTable tr:first-child td:first-child {
+div#myTree{
 				width: 100% !important;
 }
 
