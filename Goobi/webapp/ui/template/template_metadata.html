@@ -28,11 +28,11 @@
                 <ui:include src="metseditor_head.xhtml" />
             </table>
 
-            <table cellspacing="5" cellpadding="0" class="layoutTable" align="center">
+            <table cellspacing="5" cellpadding="0" class="layoutTable" align="center" >
 
                 <tr>
 
-                    <td valign="top" height="100%" style="color: #434387; border-style: solid; border-width: 1px; border-color: #0083e2; background-color: #cbe5fc; width: 180px">
+                    <td id="sidebartd" valign="top" height="100%" >
 
                         <table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0" id="sidebar">
                             <tr>
@@ -58,6 +58,8 @@
  * Fix navigation on scrolling page
  * */
 var nav = $(".layoutInhaltKopf");
+var sidebar = $("#sidebar");
+var sidebarwidth = sidebar.outerWidth();
 
 $(window).scroll(function() {
 	if(window.pageYOffset > 50 || document.documentElement.scrollTop > 50) {
@@ -68,11 +70,26 @@ $(window).scroll(function() {
 			left: 0,
 			zIndex: 999
 			});
+		
+		sidebar.css({
+			position: "fixed",	
+			top: 30 + 'px',
+			width: sidebarwidth + 'px',
+			zIndex: 999
+		});
+		
 	} else {
 		
 		nav.css({
 			position: "relative",
 			top: 0,
+			zIndex: 0
+		});
+		
+		sidebar.css({
+			position: "relative",
+			top: 0,
+			width: sidebarwidth + 'px',
 			zIndex: 0
 		});
 	}
@@ -129,8 +146,8 @@ jsf.ajax.addOnEvent(function(data) {
 });
 
 						</script>
-
-                        <div style="margin: 15px">
+<x:div id="contentDiv"  style="margin: 15px">
+<!--                         <div style="margin: 15px"> -->
                             <h3>
                                 <ui:insert name="title" />
                             </h3>
@@ -139,7 +156,8 @@ jsf.ajax.addOnEvent(function(data) {
 
                             <ui:insert name="content" />
 
-                        </div>
+<!--                         </div> -->
+                        </x:div>
                     </td>
                 </tr>
                 <ui:include src="metseditor_footer.xhtml" />
