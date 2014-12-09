@@ -348,7 +348,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     private static Boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Process inProcess) {
         List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent historyItem : list) {
-            if (inEvent != historyItem) { // this is required, in case items
+            if (inEvent.getId() == null || !inEvent.getId().equals(historyItem.getId())) { // this is required, in case items
                 // from the same list are compared
                 if (historyItem.equals(inEvent)) {
                     return true;
