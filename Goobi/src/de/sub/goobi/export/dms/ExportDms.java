@@ -204,6 +204,26 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             } else if (this.exportFulltext) {
                 fulltextDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
             }
+            File exportFolder = new File(myProzess.getExportDirectory());
+            if (exportFolder.exists() && exportFolder.isDirectory()) {
+                File[] subdir = exportFolder.listFiles();
+                for (File dir : subdir) {
+                    if (dir.isDirectory() && dir.list().length > 0) {
+                        if (!dir.getName().matches(".+\\.\\d+")) {
+                            String suffix = dir.getName().substring(dir.getName().lastIndexOf("_"));
+                            File destination = new File(benutzerHome + File.separator + atsPpnBand + suffix);
+                            if (!destination.exists()) {
+                                destination.mkdir();
+                            }
+                            File[] files = dir.listFiles();
+                            for (int i = 0; i < files.length; i++) {
+                                File target = new File(destination + File.separator + files[i].getName());
+                                Helper.copyFile(files[i], target);
+                            }
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), e);
             return false;
@@ -381,26 +401,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                                 File meinZiel = new File(zielTif + File.separator + files[i].getName());
                                 Helper.copyFile(files[i], meinZiel);
                             }
-                        }
-                    }
-                }
-            }
-        }
-        File exportFolder = new File(myProzess.getExportDirectory());
-        if (exportFolder.exists() && exportFolder.isDirectory()) {
-            File[] subdir = exportFolder.listFiles();
-            for (File dir : subdir) {
-                if (dir.isDirectory() && dir.list().length > 0) {
-                    if (!dir.getName().matches(".+\\.\\d+")) {
-                        String suffix = dir.getName().substring(dir.getName().lastIndexOf("_"));
-                        File destination = new File(benutzerHome + File.separator + atsPpnBand + suffix);
-                        if (!destination.exists()) {
-                            destination.mkdir();
-                        }
-                        File[] files = dir.listFiles();
-                        for (int i = 0; i < files.length; i++) {
-                            File target = new File(destination + File.separator + files[i].getName());
-                            Helper.copyFile(files[i], target);
                         }
                     }
                 }

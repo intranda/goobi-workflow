@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import org.goobi.api.display.Item;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,7 +21,7 @@ public class MetadatumImplTest {
 
     private Prefs prefs;
     private Process process;
-
+    private static final String METADATA_TYPE =  "junitMetadata";
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -35,14 +34,14 @@ public class MetadatumImplTest {
 
     @Test
     public void testMetadatumImpl() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         assertNotNull(md);
     }
 
     @Test
     public void testWert() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         String value = "test";
         md.setWert(value);
@@ -51,15 +50,15 @@ public class MetadatumImplTest {
 
     @Test
     public void testTyp() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
-        md.setTyp("junitMetadata");
-        assertEquals("junitMetadata", md.getTyp());
+        md.setTyp(METADATA_TYPE);
+        assertEquals(METADATA_TYPE, md.getTyp());
     }
 
     @Test
     public void testGetIdentifier() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         md.setIdentifier(1);
         assertEquals(1, md.getIdentifier());
@@ -67,7 +66,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testtMd() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
 
         md.setMd(m);
@@ -77,14 +76,14 @@ public class MetadatumImplTest {
 
     @Test
     public void testGetOutputType() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         assertEquals("textarea", md.getOutputType());
     }
 
     @Test
     public void testGetItems() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         List<SelectItem> items = md.getItems();
         assertNotNull(items);
@@ -93,7 +92,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testGetSelectedItems() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         List<String> items = md.getSelectedItems();
         assertNotNull(items);
@@ -101,7 +100,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testGetSelectedItem() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         String item = md.getSelectedItem();
         assertNotNull(item);
@@ -109,7 +108,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testGetValue() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
 
         md.setValue("value");
@@ -119,7 +118,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testGetPossibleDatabases() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         List<String> databases = md.getPossibleDatabases();
         assertNotNull(databases);
@@ -127,7 +126,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testGetNormdataValue() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         String id = md.getNormdataValue();
         assertNull(id);
@@ -135,7 +134,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testSetNormdataValue() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         String id = md.getNormdataValue();
         assertNull(id);
@@ -146,7 +145,7 @@ public class MetadatumImplTest {
 
     @Test
     public void testNormDatabase() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         List<String> databases = md.getPossibleDatabases();
         md.setNormDatabase(databases.get(0));
@@ -156,7 +155,7 @@ public class MetadatumImplTest {
    
     @Test
     public void testIsNormdata() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
         assertFalse(md.isNormdata());
     }

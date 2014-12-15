@@ -54,8 +54,7 @@ table {
 	height: 600px;
 }
 
-div#myTree,
-.layoutTable tr:first-child td:first-child {
+div#myTree{
 				width: 100% !important;
 }
 
@@ -84,12 +83,15 @@ div#myTree,
 }
 
 .layoutInhalt {
-	display: none;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #e3c240;
 	background-color: #fafcfe;
 	padding-bottom: 15px;
+}
+
+#layoutInhalt {
+    display: none;
 }
 
 .layoutInhaltKopf {

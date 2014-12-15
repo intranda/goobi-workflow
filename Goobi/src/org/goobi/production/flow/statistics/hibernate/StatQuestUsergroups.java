@@ -56,7 +56,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
-    public List<DataTable> getDataTables( String filter) {
+    public List<DataTable> getDataTables( String filter, String originalFilter) {
         List<Step> stepList = null;
         if (filter == null || filter.length() == 0) {
             stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ");

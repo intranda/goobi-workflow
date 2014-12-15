@@ -293,9 +293,10 @@ public class FilterHelper {
          * filtering by a certain done step, which the current user finished
          */
 
-        String login = tok.substring(tok.indexOf(":") + 1);
-        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login LIKE '%"
-                + StringEscapeUtils.escapeSql(login) + "%'" + "))";
+        String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
+
+        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
+                + login + "'))";
     }
 
     /**

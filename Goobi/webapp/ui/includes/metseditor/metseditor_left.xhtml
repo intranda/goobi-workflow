@@ -1,4 +1,6 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox"
+xmlns:p="http://primefaces.org/ui"
+>
 
     <composite:interface>
     </composite:interface>
@@ -24,21 +26,32 @@
         <style>
 #myTree {
     width: #{Metadaten.treeWidth}px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position:relative;
 }
+#sidebartd {
+    width: #{Metadaten.treeWidth}px;
+    color: #434387; 
+    border-style: solid; 
+    border-width: 1px; 
+    border-color: #0083e2; 
+    background-color: #cbe5fc;
+}
+
 </style>
 
         <div id="myTree" class="layoutTreeView2">
 
-            <h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action" style="position:absolute;left:#{Metadaten.treeWidth-25}px"></h:graphicImage>
+            <h:graphicImage id="veid3" alt="print" url="images/print.png" onclick="self.window.print()" styleClass="action" style="position:absolute;left:#{Metadaten.treeWidth-35}px"></h:graphicImage>
 
-            <h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:100px;padding:0px 15px;">
+            <h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-40}px;top:40px;padding:0px 15px;">
                 <x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 60}" />
                 <h:graphicImage id="arrowleft" value="images/datascroller/arrow-previous1.gif" />
                 <f:ajax execute="@form" render="@all" />
             </h:commandLink>
 
-            <h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-30}px;top:120px;padding:0px 15px;">
+            <h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-40}px;top:60px;padding:0px 15px;">
                 <x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 60}" />
                 <h:graphicImage id="arrowright" value="images/datascroller/arrow-next1.gif" />
                 <f:ajax execute="@form" render="@all" />
@@ -97,9 +110,9 @@
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax render="@form" />
+                        <f:ajax render=":tabelle :first_image-navigation :second_image-navigation :first_myBild :second_myBild :metadatenRechtsWrapp"  />
                     </h:commandLink>
-
+                    
                     <h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
 
                     <h:outputText value="-#{item.node.lastImage})" style="color:grey;margin-left:0px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />

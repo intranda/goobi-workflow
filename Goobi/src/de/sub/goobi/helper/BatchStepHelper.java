@@ -782,8 +782,14 @@ public class BatchStepHelper {
         for (Step step : this.steps) {
             IExportPlugin dms = null;
             if (StringUtils.isNotBlank(step.getStepPlugin())) {
-                dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
-            } else {
+                try {
+                    dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+                } catch (Exception e) {
+                    logger.error("Can't load export plugin, use default plugin", e);
+                    dms = new ExportDms();
+                }
+            }
+            if (dms == null) {
                 dms = new ExportDms();
             }
             try {

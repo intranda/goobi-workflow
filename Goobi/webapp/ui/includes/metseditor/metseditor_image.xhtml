@@ -185,6 +185,7 @@
                 <!-- OCR -->
                 <h:commandLink id="#{idPrefix}_ocrButton" action="#{Metadaten.showOcrResult}" rendered="#{Metadaten.showOcrButton}">
                     <h:graphicImage value="images/buttons/ocr.png" style="margin-left:14px;vertical-align:middle" />
+                    <f:ajax  render=":first_myBild :second_myBild" />
                 </h:commandLink>
 
                 <!-- //OCR -->

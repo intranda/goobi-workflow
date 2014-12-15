@@ -959,7 +959,7 @@ public class StepBean extends BasicBean {
             String mypath = myPlugin.getPagePath();
             if (logger.isDebugEnabled()) {
                 logger.debug("Plugin is full GUI");
-            //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
+                //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
                 logger.debug("open plugin GUI: " + mypath);
             }
             myPlugin.execute();
@@ -1089,8 +1089,13 @@ public class StepBean extends BasicBean {
     public void ExportDMS() {
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
-            dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
-        } else {
+            try {
+                dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
+            } catch (Exception e) {
+                logger.error("Can't load export plugin, use default plugin", e);
+                dms = new ExportDms();
+            }
+        } if (dms == null) {
             dms = new ExportDms();
         }
         try {

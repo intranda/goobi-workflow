@@ -29,7 +29,7 @@
                                 <f:selectItem itemValue="2" itemLabel="#{msgs.hinterDasAktuelleElement}" />
                                 <f:selectItem itemValue="3" itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
                                 <f:selectItem itemValue="4" itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
-                                <f:ajax render="@form" event="change" />
+                                <f:ajax render=":mygrid1" event="change" />
                                 <!-- 
 						     -->
                             </h:selectOneRadio>
@@ -86,7 +86,7 @@
                 <tr>
                     <td class="eingabeBoxen_row3" align="right">
                         <h:commandLink action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}">
-                            <f:ajax execute="@form" render="@form :treeform" />
+                            <f:ajax execute="@form" render=":tabelle" />
                         </h:commandLink>
                     </td>
                 </tr>
@@ -161,6 +161,7 @@
                                         <!-- Action -->
                                         <h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.uebernehmen}" />
+                                            <f:ajax render=":tabelle" />
                                         </h:commandLink>
                                     </h:panelGrid>
                                 </x:div>
@@ -314,16 +315,15 @@
                             <h:panelGrid id="mygrid6" columns="2" width="100%" columnClasses="standardTable_Column,standardTable_ColumnRight">
                                 <h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}">
                                     <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
-
                                 </h:commandLink>
                                 <h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}" rendered="#{Metadaten.treeProperties.showpagesasajax==false}">
                                     <h:outputText value="#{msgs.seitenZuweisen}" />
-
+                                    <f:ajax execute="@form" render="@form" />
                                 </h:commandLink>
-                                <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" rendered="#{Metadaten.treeProperties.showpagesasajax==true}">
-                                    <h:outputText value="#{msgs.seitenZuweisen}" />
-
-                                </h:commandLink>
+<!--                                 <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" rendered="#{Metadaten.treeProperties.showpagesasajax==true}"> -->
+<!--                                     <h:outputText value="#{msgs.seitenZuweisen}" /> -->
+<!--                                     <f:ajax render=":metadatenRechtsWrapp" /> -->
+<!--                                 </h:commandLink> -->
                             </h:panelGrid>
                         </td>
 

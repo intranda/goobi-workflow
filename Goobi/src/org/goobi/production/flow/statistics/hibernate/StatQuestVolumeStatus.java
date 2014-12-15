@@ -55,7 +55,7 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 	 * (non-Javadoc)
 	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
 	 */
-	public List<DataTable> getDataTables(String filter) {
+	public List<DataTable> getDataTables(String filter, String originalFilter) {
 
 //		IEvaluableFilter originalFilter;
 //

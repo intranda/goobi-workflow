@@ -815,3 +815,8 @@ table.tableCalcStat .left{
 .languageSwitch .currentLanguage {
     font-weight: bold;
 }
+
+
+.ui-inputtextarea-resizable {
+    resize: vertical;
+}
