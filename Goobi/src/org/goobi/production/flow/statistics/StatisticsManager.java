@@ -211,7 +211,7 @@ public class StatisticsManager implements Serializable {
                 question.setCalculationUnit(targetCalculationUnit);
             }
             renderingElements = new ArrayList<StatisticsRenderingElement>();
-            List<DataTable> myDataTables = question.getDataTables(filterString);
+            List<DataTable> myDataTables = question.getDataTables(filterString, filter);
 
             /*
              * -------------------------------- if DataTables exist analyze them

@@ -534,7 +534,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     @Override
-    public List<DataTable> getDataTables(String filter) {
+    public List<DataTable> getDataTables(String filter, String originalFilter) {
         return null;
     }
 

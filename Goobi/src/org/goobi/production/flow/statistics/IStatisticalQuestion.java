@@ -55,7 +55,7 @@ public interface IStatisticalQuestion {
 	 * @param dataSource
 	 * @return List<DataTable> 
 	 ****************************************************************************/
-	public List<DataTable> getDataTables(String filter);
+	public List<DataTable> getDataTables(String sqlFilter, String originalFilter);
 
 	/**
 	 * This method is used to set a grouping unit for time based data 

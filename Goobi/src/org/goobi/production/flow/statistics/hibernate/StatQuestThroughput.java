@@ -107,7 +107,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 	 * (org.goobi.production.flow.statistics.IDataSource)
 	 */
 	@Override
-	public List<DataTable> getDataTables(String filter) {
+	public List<DataTable> getDataTables(String filter, String originalFilter) {
 
 		List<DataTable> allTables = new ArrayList<DataTable>();
 
