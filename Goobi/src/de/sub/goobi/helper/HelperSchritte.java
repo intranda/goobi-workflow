@@ -55,7 +55,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.AutomaticDmsExport;
-import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
