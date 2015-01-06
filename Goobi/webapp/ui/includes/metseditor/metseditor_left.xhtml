@@ -1,6 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox"
-xmlns:p="http://primefaces.org/ui"
->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox" xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
     </composite:interface>
@@ -25,20 +23,77 @@ xmlns:p="http://primefaces.org/ui"
 
         <style>
 #myTree {
-    width: #{Metadaten.treeWidth}px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position:relative;
-}
-#sidebartd {
-    width: #{Metadaten.treeWidth}px;
-    color: #434387; 
-    border-style: solid; 
-    border-width: 1px; 
-    border-color: #0083e2; 
-    background-color: #cbe5fc;
+    width: #{Metadaten.treeWidth
 }
 
+px
+;
+
+    
+overflow-y
+:
+ 
+auto
+;
+
+    
+overflow-x
+:
+ 
+hidden
+;
+
+    
+position
+:relative
+;
+
+
+}
+#sidebartd {
+    width: #{Metadaten.treeWidth
+}
+px
+;
+
+    
+color
+:
+ 
+#434387
+;
+ 
+    
+border-style
+:
+ 
+solid
+;
+ 
+    
+border-width
+:
+ 
+1
+px
+;
+ 
+    
+border-color
+:
+ 
+#0083e2
+;
+ 
+    
+background-color
+:
+ 
+#cbe5fc
+;
+
+
+}
 </style>
 
         <div id="myTree" class="layoutTreeView2">
@@ -65,6 +120,7 @@ xmlns:p="http://primefaces.org/ui"
                         <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
                         <h:graphicImage value="images/plus.gif" rendered="#{item.node.hasChildren and not item.node.expanded}" style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
                         <h:graphicImage value="images/minus.gif" rendered="#{item.node.hasChildren and item.node.expanded}" style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
+                        <f:ajax render=":tabelle :first_image-navigation :second_image-navigation :first_myBild :second_myBild :metadatenRechtsWrapp" />
                     </h:commandLink>
 
                     <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="17" displayAtDistanceY="-40">
@@ -110,9 +166,9 @@ xmlns:p="http://primefaces.org/ui"
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax render=":tabelle :first_image-navigation :second_image-navigation :first_myBild :second_myBild :metadatenRechtsWrapp"  />
+                        <f:ajax render=":tabelle :first_image-navigation :second_image-navigation :first_myBild :second_myBild :metadatenRechtsWrapp" />
                     </h:commandLink>
-                    
+
                     <h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
 
                     <h:outputText value="-#{item.node.lastImage})" style="color:grey;margin-left:0px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
@@ -121,7 +177,7 @@ xmlns:p="http://primefaces.org/ui"
 
             </x:dataTable>
 
-<!--             <h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" /> -->
+            <!--             <h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" /> -->
 
         </div>
     </composite:implementation>

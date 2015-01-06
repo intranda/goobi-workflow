@@ -31,6 +31,7 @@ package de.sub.goobi.metadaten;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +54,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.ConfigDisplayRules;
@@ -2548,19 +2550,30 @@ public class Metadaten {
         String myOcrUrl = getOcrBasisUrl(this.myBildNummer);
         HttpClient client = new HttpClient();
         GetMethod method = new GetMethod(myOcrUrl);
+        InputStream stream = null;
         try {
             int statusCode = client.executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {
                 this.ocrResult = "HttpStatus nicht ok";
                 return;
             }
-            this.ocrResult = method.getResponseBodyAsString();
+            
+            stream = method.getResponseBodyAsStream();
+            this.ocrResult = IOUtils.toString(stream, "UTF-8");
+//            this.ocrResult = method.getResponseBodyAsString();
         } catch (HttpException e) {
             this.ocrResult = "Fatal protocol violation: " + e.getMessage();
         } catch (IOException e) {
             this.ocrResult = "Fatal transport error: " + e.getMessage();
         } finally {
             method.releaseConnection();
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    stream = null;
+                }
+            }
         }
     }
 
