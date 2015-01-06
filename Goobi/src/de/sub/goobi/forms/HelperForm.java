@@ -219,6 +219,13 @@ public class HelperForm {
         return reqUrl;
     }
 
+    public String getContextPath() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        String contextPath = request.getContextPath();
+        return contextPath;
+    }
+    
     public boolean getMessagesExist() {
         return FacesContextHelper.getCurrentFacesContext().getMessages().hasNext();
     }

@@ -108,7 +108,7 @@
 					<h4 style="margin-top: 20px">
 						<h:outputText value="#{element.title}" />
 					</h4>
-					<img style="margin-bottom: 15px" src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}"
+					<img style="margin-bottom: 15px" src="#{HelperForm.contextPath}/imagesTemp/#{element.imageUrl}" title="#{element.title}"
 						rendered="#{element.dataTable.showableInChart and Form.statisticsManager2.targetResultOutput=='chart'}" />
 				</h:panelGroup>
 
@@ -130,7 +130,7 @@
 						<h:outputText value="#{element.title}" />
 					</h4>
 					<h:panelGroup>
-						<img style="margin-bottom: 15px" src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}"
+						<img style="margin-bottom: 15px" src="#{HelperForm.contextPath}/imagesTemp/#{element.imageUrl}" title="#{element.title}"
 							rendered="#{element.dataTable.showableInChart}" />
 						<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
 						<h:commandLink action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable}">
