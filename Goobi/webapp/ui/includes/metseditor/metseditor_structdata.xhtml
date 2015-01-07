@@ -161,7 +161,7 @@
                                         <!-- Action -->
                                         <h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.uebernehmen}" />
-                                            <f:ajax render=":tabelle" />
+                                            <f:ajax render="@all" execute="@all"/>
                                         </h:commandLink>
                                     </h:panelGrid>
                                 </x:div>
