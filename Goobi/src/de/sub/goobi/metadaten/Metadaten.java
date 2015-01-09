@@ -924,59 +924,7 @@ public class Metadaten {
         }
     }
 
-    //    private void calculateMetadataAndImages() {
-    //
-    //        /*
-    //         * für den Prozess nochmal die Metadaten durchlaufen und die Daten speichern
-    //         */
-    //        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
-    //
-    //        this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
-    //        this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
-    //        try {
-    //            this.myProzess.setSortHelperImages(FileUtils.getNumberOfFiles(new File(this.myProzess.getImagesOrigDirectory(true))));
-    //            ProcessManager.saveProcess(this.myProzess);
-    //        } catch (DAOException e) {
-    //            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-    //            myLogger.error(e);
-    //        } catch (Exception e) {
-    //            Helper.setFehlerMeldung("error while counting current images", e);
-    //            myLogger.error(e);
-    //        }
-    //    }
-
-    //    private void cleanupMetadata() {
-    //        /*
-    //         * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
-    //         */
-    //        this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
-    //
-    //        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
-    //            boolean match = false;
-    //            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-    //                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-    //                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-    //                    if (md.getType().getName().equals("_representative")) {
-    //                        Integer value = new Integer(currentRepresentativePage);
-    //                        md.setValue(String.valueOf(value + 1));
-    //                        match = true;
-    //                    }
-    //                }
-    //            }
-    //            if (!match) {
-    //                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-    //                try {
-    //                    Metadata md = new Metadata(mdt);
-    //                    Integer value = new Integer(currentRepresentativePage);
-    //                    md.setValue(String.valueOf(value + 1));
-    //                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-    //                } catch (MetadataTypeNotAllowedException e) {
-    //
-    //                }
-    //
-    //            }
-    //        }
-    //    }
+ 
 
     public boolean isCheckForRepresentative() {
         MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
@@ -985,22 +933,6 @@ public class Metadaten {
         }
         return false;
     }
-
-    //    private boolean storeMetadata() {
-    //        boolean result = true;
-    //        try {
-    //            if (!new MetadatenVerifizierung().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
-    //                return false;
-    //            }
-    //            this.myProzess.writeMetadataFile(this.gdzfile);
-    //        } catch (Exception e) {
-    //            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-    //            myLogger.error(e);
-    //            result = false;
-    //
-    //        }
-    //        return result;
-    //    }
 
     /**
      * Metadaten Schreiben
@@ -1075,21 +1007,7 @@ public class Metadaten {
         return this.zurueck;
     }
 
-    //        calculateMetadataAndImages();
-    //
-    //        cleanupMetadata();
-    //
-    //        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
-    //            reOrderPagination();
-    //        }
-    //
-    //        if (!storeMetadata()) {
-    //            return "Metadaten";
-    //        }
-    //
-    //        SperrungAufheben();
-    //        return this.zurueck;
-    //    }
+
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -1837,20 +1755,6 @@ public class Metadaten {
         return null;
     }
 
-    // public String Paginierung() {
-    // Pagination p = new Pagination(this.alleSeitenAuswahl, this.alleSeitenNeu, this.paginierungAbSeiteOderMarkierung, this.paginierungArt,
-    // this.paginierungSeitenProImage, this.paginierungWert);
-    // String result = p.doPagination();
-    // /*
-    // * zum Schluss nochmal alle Seiten neu einlesen
-    // */
-    // this.alleSeitenAuswahl = null;
-    // retrieveAllImages();
-    // if (!SperrungAktualisieren()) {
-    // return "SperrungAbgelaufen";
-    // }
-    // return result;
-    // }
 
     /**
      * alle Knoten des Baums expanden oder collapsen ================================================================
