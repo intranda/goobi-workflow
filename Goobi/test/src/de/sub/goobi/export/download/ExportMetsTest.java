@@ -20,29 +20,20 @@ package de.sub.goobi.export.download;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.goobi.beans.Process;
-import org.goobi.beans.Project;
-import org.goobi.beans.ProjectFileGroup;
-import org.goobi.beans.Ruleset;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
 
 public class ExportMetsTest {
- private static final String RULESET_NAME = "ruleset.xml";
     
     private Process testProcess = null;
-    private File processFolder = null;
+
     
     
     @Rule

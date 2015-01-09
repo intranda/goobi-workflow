@@ -29,8 +29,8 @@ package org.goobi.pagination;
 
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 
 public class IntegerSequenceTest {
 
@@ -45,7 +45,7 @@ public class IntegerSequenceTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void throwIllegalArgumentExceptionWhenStartIsBelowEnd() {
 
-		IntegerSequence seq = new IntegerSequence(5, 1);
+		new IntegerSequence(5, 1);
 
 	}
 

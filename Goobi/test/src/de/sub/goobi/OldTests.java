@@ -39,7 +39,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import de.sub.goobi.helper.archive.ProcessSwapOutTaskTest;
 import de.sub.goobi.helper.encryption.DesEncrypterTest;
 import de.sub.goobi.helper.importer.ImportOpacTest;
-import de.sub.goobi.metadaten.PaginatorTest;
 import de.sub.goobi.samples.BenutzerTest;
 import de.sub.goobi.samples.BenutzergruppenTest;
 

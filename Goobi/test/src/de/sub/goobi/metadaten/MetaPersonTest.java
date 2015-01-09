@@ -2,12 +2,10 @@ package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import org.apache.bcel.generic.ARRAYLENGTH;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;

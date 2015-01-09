@@ -3,14 +3,9 @@ package de.sub.goobi.helper.ldap;
 import static org.junit.Assert.*;
 
 import javax.naming.Name;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.OperationNotSupportedException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.ModificationItem;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.goobi.beans.Ldap;
