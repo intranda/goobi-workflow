@@ -50,6 +50,7 @@ public class ConnectionManager {
     private static final Logger logger = Logger.getLogger(ConnectionManager.class);
 
     private DataSource ds = null;
+    @SuppressWarnings("rawtypes")
     private static GenericObjectPool _pool = null;
 
     /**
@@ -94,6 +95,7 @@ public class ConnectionManager {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static void printDriverStats() throws Exception {
         ObjectPool connectionPool = ConnectionManager._pool;
         if (logger.isDebugEnabled()) {

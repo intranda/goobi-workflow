@@ -10,11 +10,9 @@ import org.junit.rules.TemporaryFolder;
 
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
-import ugh.dl.Prefs;
 
 public class TreeNodeStruct3Test {
 
-    private Prefs prefs;
     private Process process;
     private DocStruct docstruct;
 
@@ -25,7 +23,6 @@ public class TreeNodeStruct3Test {
     public void setUp() throws Exception {
 
         process = MockProcess.createProcess(folder);
-        prefs = process.getRegelsatz().getPreferences();
         docstruct = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
     }
 

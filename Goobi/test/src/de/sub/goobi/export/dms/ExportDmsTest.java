@@ -21,15 +21,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.goobi.beans.Process;
-import org.goobi.beans.Project;
-import org.goobi.beans.ProjectFileGroup;
-import org.goobi.beans.Ruleset;
 import org.goobi.production.enums.PluginType;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,7 +38,6 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;

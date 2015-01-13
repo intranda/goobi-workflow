@@ -1008,21 +1008,7 @@ public class Metadaten {
         return this.zurueck;
     }
 
-    //        calculateMetadataAndImages();
-    //
-    //        cleanupMetadata();
-    //
-    //        if (ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit()) {
-    //            reOrderPagination();
-    //        }
-    //
-    //        if (!storeMetadata()) {
-    //            return "Metadaten";
-    //        }
-    //
-    //        SperrungAufheben();
-    //        return this.zurueck;
-    //    }
+
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -1770,20 +1756,6 @@ public class Metadaten {
         return null;
     }
 
-    // public String Paginierung() {
-    // Pagination p = new Pagination(this.alleSeitenAuswahl, this.alleSeitenNeu, this.paginierungAbSeiteOderMarkierung, this.paginierungArt,
-    // this.paginierungSeitenProImage, this.paginierungWert);
-    // String result = p.doPagination();
-    // /*
-    // * zum Schluss nochmal alle Seiten neu einlesen
-    // */
-    // this.alleSeitenAuswahl = null;
-    // retrieveAllImages();
-    // if (!SperrungAktualisieren()) {
-    // return "SperrungAbgelaufen";
-    // }
-    // return result;
-    // }
 
     /**
      * alle Knoten des Baums expanden oder collapsen ================================================================

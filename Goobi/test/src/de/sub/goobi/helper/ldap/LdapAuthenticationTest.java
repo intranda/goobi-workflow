@@ -6,18 +6,15 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
+
 import javax.naming.directory.InitialDirContext;
 
-import org.easymock.EasyMock;
+
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 

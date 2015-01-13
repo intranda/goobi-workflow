@@ -4,21 +4,21 @@ import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
 import com.unboundid.ldap.listener.InMemoryListenerConfig;
 import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
-import com.unboundid.util.LDAPTestUtils;
-import com.unboundid.util.ssl.KeyStoreKeyManager;
-import com.unboundid.util.ssl.SSLUtil;
-import com.unboundid.util.ssl.TrustStoreTrustManager;
+//import com.unboundid.ldap.sdk.LDAPException;
+//import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
+//import com.unboundid.util.LDAPTestUtils;
+//import com.unboundid.util.ssl.KeyStoreKeyManager;
+//import com.unboundid.util.ssl.SSLUtil;
+//import com.unboundid.util.ssl.TrustStoreTrustManager;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class Ldapserver {
 
-    private static String serverKeyStorePath;
-    private static char[] serverKeyStorePIN;
-    private static String serverTrustStorePath;
-    private static String clientTrustStorePath;
+//    private static String serverKeyStorePath;
+//    private static char[] serverKeyStorePIN;
+//    private static String serverTrustStorePath;
+//    private static String clientTrustStorePath;
 
     private static String ldifFilePath;
 
