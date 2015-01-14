@@ -773,6 +773,19 @@ public class MetadatenHelper implements Comparator<Object> {
                     }
                 }
             }
+            ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
+            if (ds.getAllMetadata() != null) {
+                for (Metadata md : ds.getAllMetadata()) {
+                    metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                }
+            }
+            if (ds.getAllPersons() != null) {
+
+                for (Person p : ds.getAllPersons()) {
+                    metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                }
+            }
+            
         } catch (PreferencesException e) {
             logger.error(e);
         }
