@@ -358,23 +358,30 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Boolean getDisplayMETSButton() {
-        if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
-            return getTifDirectoryExists();
-        } else {
-            return true;
+        if (sortHelperImages == null || sortHelperImages == 0) {
+            if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
+                return getTifDirectoryExists();
+            }
         }
+        return true;
     }
 
     public Boolean getDisplayPDFButton() {
-        return getTifDirectoryExists();
+        if (sortHelperImages == null || sortHelperImages == 0) {
+            return getTifDirectoryExists();
+        }
+        return true;
     }
 
     public Boolean getDisplayDMSButton() {
-        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
-            return getTifDirectoryExists();
-        } else {
-            return true;
+        if (sortHelperDocstructs == null || sortHelperDocstructs == 0) {
+            if (ConfigurationHelper.getInstance().isExportValidateImages()) {
+                if (sortHelperImages == null || sortHelperImages == 0) {
+                    return getTifDirectoryExists();
+                }
+            }
         }
+        return true;
     }
 
     public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
@@ -830,7 +837,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
 
         if (ff == null) {
-            String[] parameter = {titel, type};
+            String[] parameter = { titel, type };
             Helper.setFehlerMeldung(Helper.getTranslation("MetadataFormatNotAvailable", parameter));
             return null;
         }
