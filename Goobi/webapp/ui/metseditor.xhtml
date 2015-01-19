@@ -64,7 +64,7 @@
                     <h:outputText value=" | " style="font-size: 11px;" />
                     <!-- Metadaten validieren -->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Validate}" value="#{msgs.validieren}" rendered="#{not Metadaten.nurLesenModus}" id="validateButton">
-                        <f:ajax render="@form" />
+                        
                     </h:commandLink>
                     <h:outputText value="#{msgs.validieren}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="validateText" />
 
@@ -74,8 +74,11 @@
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten schreiben -->
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Reload}" value="#{msgs.speichern}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButton">
+                    	<f:ajax render="@all"></f:ajax>
                     </h:commandLink>
-
+					<h:commandLink style="font-size:11px; display:none" action="#{Metadaten.Reload}" value="#{msgs.speichern} nur links" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButtonAjax">
+                    	<f:ajax render="tabelle"></f:ajax>
+                    </h:commandLink>
                     <h:outputText value="#{msgs.speichern}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="saveMetsFileText" />
 
 
@@ -94,7 +97,7 @@
 
     <ui:define name="content">
 
-        <h:form id="progressform" prependId="false">
+       
             <h:panelGroup style="display: none" id="progressPanel">
                 <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2" id="progressbutton" style="display: none;" />
 
@@ -130,7 +133,7 @@
                                                             1000);
                                                 }
              </script>
-        </h:form>
+     
         <h:panelGroup id="metadatenRechtsWrapp">
             <table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
 
@@ -302,6 +305,19 @@
 					myButton = document.getElementById("first_imageLast");
 				}
 				//goToImageNext();
+				if (event.preventDefault) {
+					event.preventDefault(); 
+				}
+				else {
+					event.returnValue = false;
+				} // IE sucks
+			}
+			
+			// -----------  save
+			if ((key == 13) &amp;&amp; // "L" "^L" or "l"
+				event.shiftKey &amp;&amp; event.ctrlKey) {
+				document.getElementById("saveMetsFileButton").focus();
+				myButton = document.getElementById("saveMetsFileButtonAjax");
 				if (event.preventDefault) {
 					event.preventDefault(); 
 				}
