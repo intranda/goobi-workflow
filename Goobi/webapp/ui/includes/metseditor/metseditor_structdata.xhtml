@@ -124,6 +124,7 @@
                                 <h:graphicImage value="images/buttons/sort_left_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                 <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
                                 <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
+                                <f:ajax render="@all" />
                             </h:commandLink>
 
                             <!-- copy structure element from somewhere else -->
@@ -131,6 +132,7 @@
                                 <h:graphicImage value="images/buttons/sort_left_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                 <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
                                 <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
+                                <f:ajax render="@all" />
                             </h:commandLink>
 
                             <!-- import last structure element again -->
@@ -139,6 +141,7 @@
                                 <h:outputText value="#{msgs.copyLastDocstruct}" />
                                 <!--                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" /> -->
                                 <x:updateActionListener value="true" property="#{Metadaten.displayInsertion}" />
+                                <f:ajax render="@all" />
                             </h:commandLink>
 
                             <!-- DocstructType aendern -->
