@@ -66,67 +66,104 @@
                         <f:ajax render=":tabelle :first_image-navigation :second_image-navigation :first_myBild :second_myBild :metadatenRechtsWrapp" />
                     </h:commandLink>
 
-                    <h:graphicImage id="documentWithButton" value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" />
+<x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="17" displayAtDistanceY="-40">
 
-                    <p:tooltip id="toolTip" for="documentWithButton">
-                        <div>
-                            <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
-                                <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
+                        <f:facet name="popup">
+                            <div>
+                                <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
+                                    <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
 
-                                    <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
+                                        <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
 
-                                    <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
+                                        <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
 
-                                    <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
+                                        <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
 
-                                    <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
+                                        <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
 
-                                    <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
+                                        <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
 
-                                    <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
+                                        <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
 
-                                    <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
+                                        <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
+                                    </h:panelGrid>
                                 </h:panelGrid>
-                            </h:panelGrid>
-                        </div>
-                    </p:tooltip>
-                    <h:graphicImage id="document" value="images/document.png" rendered="#{!item.node.hasChildren}" style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" />
-                    <p:tooltip id="toolTip2" for="document">
-                        <div>
-                            <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
-                                <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
+                            </div>
+                        </f:facet>
 
-                                    <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
+                        <h:graphicImage value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" />
+                        <h:graphicImage value="images/document.png" rendered="#{!item.node.hasChildren}" style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" />
 
-                                    <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
+                    </x:popup>
 
-                                    <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
+<!--                     <h:graphicImage id="documentWithButton" value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" /> -->
 
-                                    <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
+<!--                     <p:tooltip id="toolTip" for="documentWithButton"> -->
+<!--                         <div> -->
+<!--                             <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}"> -->
+<!--                                 <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110"> -->
 
-                                    <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
+<!--                                     <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" /> -->
 
-                                    <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
+<!--                                     <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" /> -->
 
-                                    <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
-                                </h:panelGrid>
-                            </h:panelGrid>
-                        </div>
-                    </p:tooltip>
+<!--                                     <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" /> -->
+
+<!--                                     <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" /> -->
+
+<!--                                     <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" /> -->
+
+<!--                                     <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" /> -->
+
+<!--                                     <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" /> -->
+<!--                                 </h:panelGrid> -->
+<!--                             </h:panelGrid> -->
+<!--                         </div> -->
+<!--                     </p:tooltip> -->
+<!--                     <h:graphicImage id="document" value="images/document.png" rendered="#{!item.node.hasChildren}" style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" /> -->
+<!--                     <p:tooltip id="toolTip2" for="document"> -->
+<!--                         <div> -->
+<!--                             <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}"> -->
+<!--                                 <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110"> -->
+
+<!--                                     <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" /> -->
+
+<!--                                     <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" /> -->
+
+<!--                                     <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" /> -->
+
+<!--                                     <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" /> -->
+
+<!--                                     <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" /> -->
+
+<!--                                     <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" /> -->
+
+<!--                                     <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" /> -->
+<!--                                     <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" /> -->
+<!--                                 </h:panelGrid> -->
+<!--                             </h:panelGrid> -->
+<!--                         </div> -->
+<!--                     </p:tooltip> -->
 
                     <h:outputText value="#{item.niveau}" style="color:grey;margin-right:4px" rendered="#{Metadaten.treeProperties.showtreelevel}" />
 
