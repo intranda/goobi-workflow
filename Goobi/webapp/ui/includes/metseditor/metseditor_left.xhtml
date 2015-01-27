@@ -19,7 +19,8 @@
 											height : winH - 85
 										});
 									});
-								</script>
+		</script>
+					
 
         <style>
 #myTree {
@@ -105,11 +106,12 @@
 
                     <h:outputText value="#{item.niveau}" style="color:grey;margin-right:4px" rendered="#{Metadaten.treeProperties.showtreelevel}" />
 
-                    <h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}" action="#{Metadaten.loadRightFrame}">
+                    <h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}" action="#{Metadaten.loadRightFrame}" onclick="if (!styleAnpassen2(this)) return">
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax render=":tabelle :metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
+                        <f:ajax render=":metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
+<!--                         <f:ajax render=":tabelle :metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" /> -->
                     </h:commandLink>
 
                     <h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
@@ -123,6 +125,9 @@
             <!--             <h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" /> -->
 
         </div>
+        
+        
+  
     </composite:implementation>
 
 </ui:composition>

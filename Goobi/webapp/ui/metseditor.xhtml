@@ -54,6 +54,10 @@
                 </td>
 
                 <td align="right">
+	                <!-- Metadaten per key schreiben -->
+                    <h:commandLink style="font-size:11px; display:none" action="#{Metadaten.Reload}" value="#{msgs.speichern} nur links" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButtonAjax">
+                        <f:ajax render=":tabelle"></f:ajax>
+                    </h:commandLink>
                     <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}" value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
                         <f:ajax render="@form :metadatenRechtsWrapp" />
                     </h:commandLink>
@@ -76,18 +80,12 @@
                     <h:commandLink style="font-size:11px" action="#{Metadaten.Reload}" value="#{msgs.speichern}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButton">
                         <f:ajax render="@form :tabelle :validation" />
                     </h:commandLink>
-                    <!--                     <h:commandLink style="font-size:11px; display:inline" action="#{Metadaten.Reload}" value="#{msgs.speichern} nur links" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButtonAjax"> -->
-                    <!--                         <f:ajax render=":tabelle"></f:ajax> -->
-                    <!--                     </h:commandLink> -->
                     <h:outputText value="#{msgs.speichern}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="saveMetsFileText" />
-
 
                     <h:outputText value=" | " style="font-size: 11px;" rendered="#{not Metadaten.nurLesenModus}" />
                     <!-- Metadaten schreiben und zurück gehen-->
                     <h:commandLink id="saveMetsAndExitButton" style="font-size:11px" target="_parent" action="#{Metadaten.XMLschreiben}" value="#{msgs.speichernZurueck}" rendered="#{not Metadaten.nurLesenModus}" immediate="false" onclick="displayProgressBar()">
                     </h:commandLink>
-
-
                     <h:outputText value="#{msgs.speichernZurueck}" style="font-size: 11px; display: none;" rendered="#{not Metadaten.nurLesenModus}" id="saveMetsAndExitText" />
 
                 </td>

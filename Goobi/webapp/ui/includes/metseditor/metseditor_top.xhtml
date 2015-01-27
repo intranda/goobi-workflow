@@ -25,7 +25,8 @@
                     <x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
                      <f:ajax execute="@form" render=":validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :first_imageForm :second_imageForm" />
                 </h:commandLink>
-                <h:outputText />
+                <h:commandLink value="#{msgs.reload} " action="#{NavigationForm.Reload}" style="padding-left: 5px;" styleClass="metadataHeaderLinks" >
+                </h:commandLink>
             </h:panelGrid>
     </composite:implementation>
 

@@ -40,6 +40,14 @@
 							          }
 							        }
 							    
+									function styleAnpassen2(element) {
+								 		var galleryLinks;
+										galleryLinks = document.getElementsByClassName('documentSelected');
+										for (var i = 0; i &lt; galleryLinks.length; i++)
+											galleryLinks[i].className = "document";
+										element.className = "documentSelected";
+										return true;
+									}
 								
 									function submitEnter(commandId, e) {
 										var keycode;
