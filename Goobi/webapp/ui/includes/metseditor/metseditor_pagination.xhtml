@@ -157,7 +157,7 @@
                                     <h:commandLink action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
                                         <h:graphicImage value="images/buttons/reload.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                         <h:outputText value="#{msgs.reOrder}" />
-                                        <f:ajax execute="@form" render="@form" />
+                                        <f:ajax execute="@form" render="@form :progressform" />
                                     </h:commandLink>
                                     <script type="text/javascript">
             								$(document).ready(
@@ -165,7 +165,7 @@
             										var additionalHeight = $('#validation').outerHeight();
             										$('#paginationBox').css('top', 157 + additionalHeight + 'px');
 													});
-																																				</script>
+									</script>
                                 </td>
                             </tr>
 

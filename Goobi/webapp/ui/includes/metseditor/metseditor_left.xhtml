@@ -63,7 +63,7 @@
                         <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
                         <h:graphicImage value="images/plus.gif" rendered="#{item.node.hasChildren and not item.node.expanded}" style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
                         <h:graphicImage value="images/minus.gif" rendered="#{item.node.hasChildren and item.node.expanded}" style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
-                        <f:ajax render=":tabelle :validation" />
+                        <f:ajax render=":tabelle" />
                     </h:commandLink>
 
                     <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="17" displayAtDistanceY="-40">

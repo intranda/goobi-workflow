@@ -77,7 +77,7 @@
                     <tr>
                         <td class="eingabeBoxen_row3" align="right">
                             <h:commandLink action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}">
-                                <f:ajax execute="@form" render=":tabelle" />
+                                <f:ajax execute="@form" render=":tabelle :validation" />
                             </h:commandLink>
                         </td>
                     </tr>
@@ -104,14 +104,14 @@
                                 <h:commandLink action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
                                     <h:graphicImage value="images/buttons/sort_up_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.docstructNachObenSchieben}" />
-                                    <f:ajax render=":metseditorLeft" />
+                                    <f:ajax render=":tabelle :validation" />
                                 </h:commandLink>
 
                                 <!-- Knoten nach unten -->
                                 <h:commandLink action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
                                     <h:graphicImage value="images/buttons/sort_down_20px.gif" style="margin-left:4px;margin-right:6px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
-                                    <f:ajax render=":metseditorLeft" />
+                                    <f:ajax render=":tabelle :validation" />
                                 </h:commandLink>
 
                                 <!-- Knoten an andere Stelle schieben -->
@@ -156,7 +156,7 @@
                                             <!-- Action -->
                                             <h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                 <h:outputText value="#{msgs.uebernehmen}" />
-                                                <f:ajax render=":metseditorLeft :metadatenRechtsWrapp :validation" execute="@all" />
+                                                <f:ajax render=":tabelle :metadatenRechtsWrapp :validation" execute="@all" />
                                             </h:commandLink>
                                         </h:panelGrid>
                                     </x:div>
@@ -221,13 +221,13 @@
                                 <h:commandLink rendered="#{Metadaten.isNotRootElement}" action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
                                     <h:graphicImage value="images/buttons/waste1a_20px.gif" style="margin-left:4px;margin-right:7px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.strukturelementLoeschen}" />
-                                    <f:ajax render="@form :metseditorLeft" />
+                                    <f:ajax render="@form :tabelle :validation" />
                                 </h:commandLink>
 
                                 <h:commandLink rendered="#{Metadaten.isNotRootElement}" action="#{Metadaten.duplicateNode}">
                                     <h:graphicImage value="images/buttons/copy.gif" style="margin-left:4px;margin-right:7px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.duplicateStructureElement}" />
-                                    <f:ajax render="@form :metseditorLeft" />
+                                    <f:ajax render="@form :tabelle :validation" />
                                 </h:commandLink>
 
                             </h:panelGrid>
