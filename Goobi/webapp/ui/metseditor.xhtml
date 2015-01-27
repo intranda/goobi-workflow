@@ -137,7 +137,7 @@
             <table id="metadatenRechts" cellpadding="2" cellspacing="0" style="width: 100%; height: 100%; top: 10px; margin-top: 20px;">
 
                 <tr valign="top" style="width: 100%; height: 100%">
-                    <td style="Metadaten .treeProperties.imageSticky?'width: 600px;':''}">
+                    <td style="#{Metadaten.treeProperties.imageSticky?'width: 600px;':''}">
                         <h:panelGroup rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
                             <h:form id="metaForm" prependId="false">
                                 <ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
@@ -156,21 +156,21 @@
                         </h:panelGroup>
                     </td>
 
-                    <h:form id="imageForm" prependId="false">
-                        <td style="top: 10px;" id="BildArea2">
-                            <h:panelGroup rendered="#{Metadaten.bildAnzeigen==true and Metadaten.treeProperties.imageSticky}" style="position: fixed;top: 95px; right:190px">
-                                <ui:include src="includes/metseditor/metseditor_image.xhtml">
-                                    <ui:param name="idPrefix" value="first" />
-                                </ui:include>
-                            </h:panelGroup>
 
-                            <h:panelGroup rendered="#{Metadaten.bildAnzeigen==true and !Metadaten.treeProperties.imageSticky}">
-                                <ui:include src="includes/metseditor/metseditor_image.xhtml">
-                                    <ui:param name="idPrefix" value="second" />
-                                </ui:include>
-                            </h:panelGroup>
-                        </td>
-                    </h:form>
+                    <td style="top: 10px;" id="BildArea2">
+                        <h:panelGroup rendered="#{Metadaten.bildAnzeigen==true and Metadaten.treeProperties.imageSticky}" style="position: fixed;top: 95px; right:190px">
+                            <ui:include src="includes/metseditor/metseditor_image.xhtml">
+                                <ui:param name="idPrefix" value="first" />
+                            </ui:include>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{Metadaten.bildAnzeigen==true and !Metadaten.treeProperties.imageSticky}">
+                            <ui:include src="includes/metseditor/metseditor_image.xhtml">
+                                <ui:param name="idPrefix" value="second" />
+                            </ui:include>
+                        </h:panelGroup>
+                    </td>
+
                 </tr>
             </table>
         </h:panelGroup>
