@@ -142,12 +142,9 @@ xmlns:p="http://primefaces.org/ui"
                     <!-- Metadaten -->
                     <h:column>
                         <h:panelGrid columns="1" rendered="#{(Item.outputType == 'textarea')}" width="100%">
-                            <!--                             <h:inputTextarea pt:onpaste="AJAXRequest( this, event );" value="#{Item.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput" style="height: 45px;"> -->
-                            <!--                                 <f:ajax execute="@form" event="keyup" /> -->
-                            <!--                             </h:inputTextarea> -->
 
                             <p:inputTextarea value="#{Item.value}" immediate="false" readonly="#{Metadaten.nurLesenModus}" styleClass="metadatenInput" style="height: 45px; padding: 0px;" autoResize="false">
-                               <p:ajax event="blur"  />
+                               <p:ajax event="blur"   />
                             </p:inputTextarea>
 
                         </h:panelGrid>

@@ -177,10 +177,9 @@
 
                 <!-- gehezu-Schaltknopf -->
                 <h:outputText value="#{msgs.geheZuBild}:" style="margin-left:5px;margin-right:0px;font-size: 12px" title="#{msgs.geheZuImage}" />
-                <h:inputText value="#{Metadaten.bildNummerGeheZu}" onkeypress="return submitEnter('#{idPrefix}_goButton',event)" style="width:30px;border-style: solid;border-color: silver;border-width: 1px" />
-                <h:commandButton value="go" id="#{idPrefix}_goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
-                    <f:ajax execute="@form" render=":first_image-navigation :second_image-navigation :first_myBild :second_myBild" />
-                </h:commandButton>
+                <x:inputText value="#{Metadaten.bildNummerGeheZu}" onkeypress="return submitEnter('#{idPrefix}_goButton',event)" style="width:30px;border-style: solid;border-color: silver;border-width: 1px" />
+                <x:commandButton value="go" id="#{idPrefix}_goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
+                </x:commandButton>
 
                 <!-- OCR -->
                 <h:commandLink id="#{idPrefix}_ocrButton" action="#{Metadaten.showOcrResult}" rendered="#{Metadaten.showOcrButton}">

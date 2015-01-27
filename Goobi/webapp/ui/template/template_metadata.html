@@ -23,17 +23,18 @@
 
 <h:body>
     <f:view locale="#{SpracheForm.locale}">
-        <h:form id="metseditor" prependId="false" enctype="multipart/form-data">
+        <h:form id="metseditorTop" prependId="false">
             <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
                 <ui:include src="metseditor_head.xhtml" />
             </table>
+        </h:form>
 
             <table cellspacing="5" cellpadding="0" class="layoutTable" align="center" >
 
                 <tr>
 
                     <td id="sidebartd" valign="top" height="100%" >
-
+                    <h:form id="metseditorLeft" prependId="false">
                         <table width="100%" style="height: 100%" align="center" border="0" cellpadding="3" cellspacing="0" id="sidebar">
                             <tr>
                                 <td valign="top">
@@ -43,16 +44,17 @@
                             </tr>
 
                         </table>
-
+                    </h:form>
                     </td>
 
                     <td valign="top" id="layoutInhalt" class="layoutInhalt" style="background-color: #F0F0F0">
+                    <h:form id="metseditorNavigation" prependId="false">
                         <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
                             <h:panelGroup id="id3">
                                     <ui:insert name="breadcrumb" />
                             </h:panelGroup>
                         </h:panelGrid>
-
+                    </h:form>
                         <script type="text/javascript">
 /*
  * Fix navigation on scrolling page
@@ -146,8 +148,7 @@ jsf.ajax.addOnEvent(function(data) {
 });
 
 						</script>
-<x:div id="contentDiv"  style="margin: 15px">
-<!--                         <div style="margin: 15px"> -->
+                        <x:div id="contentDiv"  style="margin: 15px">
                             <h3>
                                 <ui:insert name="title" />
                             </h3>
@@ -156,13 +157,11 @@ jsf.ajax.addOnEvent(function(data) {
 
                             <ui:insert name="content" />
 
-<!--                         </div> -->
                         </x:div>
                     </td>
                 </tr>
                 <ui:include src="metseditor_footer.xhtml" />
             </table>
-        </h:form>
     </f:view>
 </h:body>
 </html>
