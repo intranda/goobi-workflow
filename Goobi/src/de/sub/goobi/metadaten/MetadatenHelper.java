@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import ugh.dl.DigitalDocument;
@@ -262,7 +263,7 @@ public class MetadatenHelper implements Comparator<Object> {
         int max = parent.getAllChildren().size();
         int index = parent.getAllChildren().indexOf(inStruct);
 
-        if (max -1 <= index) {
+        if (max - 1 <= index) {
             return;
         } else {
             parent.getAllChildren().remove(inStruct);
@@ -750,13 +751,16 @@ public class MetadatenHelper implements Comparator<Object> {
 
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
-                    metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                    if (StringUtils.isNotBlank(md.getValue())) {
+                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                    }
                 }
             }
             if (ds.getAllPersons() != null) {
-
                 for (Person p : ds.getAllPersons()) {
-                    metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                    if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
+                        metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                    }
                 }
             }
 
@@ -764,32 +768,39 @@ public class MetadatenHelper implements Comparator<Object> {
                 ds = ds.getAllChildren().get(0);
                 if (ds.getAllMetadata() != null) {
                     for (Metadata md : ds.getAllMetadata()) {
-                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                        if (StringUtils.isNotBlank(md.getValue())) {
+                            metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                        }
                     }
                 }
                 if (ds.getAllPersons() != null) {
                     for (Person p : ds.getAllPersons()) {
-                        metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                        if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
+                            metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                        }
                     }
                 }
             }
             ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
-                    metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                    if (StringUtils.isNotBlank(md.getValue())) {
+                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                    }
                 }
             }
             if (ds.getAllPersons() != null) {
 
                 for (Person p : ds.getAllPersons()) {
-                    metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                    if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
+                        metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                    }
                 }
             }
-            
+
         } catch (PreferencesException e) {
             logger.error(e);
         }
         return metadataList;
     }
-
 }
