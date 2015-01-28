@@ -655,6 +655,8 @@ public class ProcessBean extends BasicBean {
             this.mySchritt.setProzess(this.myProzess);
         }
         Speichern();
+        updateUsergroupPaginator();
+        updateUserPaginator();
     }
 
     public String SchrittLoeschen() {
@@ -713,7 +715,6 @@ public class ProcessBean extends BasicBean {
         String filter =
                 " benutzergruppen.BenutzergruppenID not in (select BenutzerGruppenID from schritteberechtigtegruppen where schritteberechtigtegruppen.schritteID = "
                         + mySchritt.getId() + ")";
-
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
 
@@ -724,11 +725,9 @@ public class ProcessBean extends BasicBean {
     }
 
     private void updateUserPaginator() {
-
         String filter =
                 "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
                         + mySchritt.getId() + ")";
-
         UserManager m = new UserManager();
         userPaginator = new DatabasePaginator("Nachname", filter, m, "");
 

@@ -19,7 +19,8 @@
 											height : winH - 85
 										});
 									});
-								</script>
+		</script>
+					
 
         <style>
 #myTree {
@@ -46,13 +47,13 @@
             <h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-40}px;top:40px;padding:0px 15px;">
                 <x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth - 60}" />
                 <h:graphicImage id="arrowleft" value="images/datascroller/arrow-previous1.gif" />
-                <f:ajax execute="@form" render="@all" />
+                <f:ajax execute="@form" render=":metseditorLeft :validation :metadatenRechtsWrapp :paginationForm :metaForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
             </h:commandLink>
 
             <h:commandLink action="#{NavigationForm.Reload}" style="position:absolute;left:#{Metadaten.treeWidth-40}px;top:60px;padding:0px 15px;">
                 <x:updateActionListener property="#{Metadaten.treeWidth}" value="#{Metadaten.treeWidth + 60}" />
                 <h:graphicImage id="arrowright" value="images/datascroller/arrow-next1.gif" />
-                <f:ajax execute="@form" render="@all" />
+                <f:ajax execute="@form" render="@form :validation :metadatenRechtsWrapp :paginationForm :metaForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
             </h:commandLink>
 
             <x:dataTable id="tabelle" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" cellpadding="0" cellspacing="0">
@@ -63,78 +64,54 @@
                         <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
                         <h:graphicImage value="images/plus.gif" rendered="#{item.node.hasChildren and not item.node.expanded}" style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
                         <h:graphicImage value="images/minus.gif" rendered="#{item.node.hasChildren and item.node.expanded}" style="border: 0px none;margin-top:0px;margin-right:3px;margin-left:#{item.niveau * 10 + 0}px;" />
-                        <f:ajax render=":tabelle :first_image-navigation :second_image-navigation :first_myBild :second_myBild :metadatenRechtsWrapp" />
+                        <f:ajax render=":tabelle" />
                     </h:commandLink>
 
-                    <h:graphicImage id="documentWithButton" value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" />
+                    <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="17" displayAtDistanceY="-40">
 
-                    <p:tooltip id="toolTip" for="documentWithButton">
-                        <div>
-                            <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
-                                <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
+                        <f:facet name="popup">
+                            <div>
+                                <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
+                                    <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
 
-                                    <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
+                                        <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
 
-                                    <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
+                                        <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
 
-                                    <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
+                                        <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
 
-                                    <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
+                                        <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
 
-                                    <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
+                                        <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
 
-                                    <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
+                                        <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
 
-                                    <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
+                                        <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
+                                        <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
+                                    </h:panelGrid>
                                 </h:panelGrid>
-                            </h:panelGrid>
-                        </div>
-                    </p:tooltip>
-                    <h:graphicImage id="document" value="images/document.png" rendered="#{!item.node.hasChildren}" style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" />
-                    <p:tooltip id="toolTip2" for="document">
-                        <div>
-                            <h:panelGrid columns="1" styleClass="metadatapopup" rendered="#{item.node.mainTitle != '' or item.node.zblNummer != '' or item.node.firstImage != '' or item.node.zblSeiten != '' or item.node.ppnDigital != ''}">
-                                <h:panelGrid columns="1" style="font-size: 10" cellspacing="0" cellpadding="0" width="110">
+                            </div>
+                        </f:facet>
 
-                                    <h:outputText value="Maintitle:" rendered="#{item.node.mainTitle != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != ''}" />
+                        <h:graphicImage value="images/document.png" rendered="#{item.node.hasChildren}" style="margin-right:2px;vertical-align:middle" />
+                        <h:graphicImage value="images/document.png" rendered="#{!item.node.hasChildren}" style="margin-right:2px;vertical-align:middle;margin-left:#{item.niveau * 10 + 12}px;" />
 
-                                    <h:outputText value="Startimage:" rendered="#{node.firstImage!= ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.firstImage}" rendered="#{item.node.firstImage != ''}" />
-
-                                    <h:outputText value="ZBL-Seiten:" rendered="#{item.node.zblSeiten != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblSeiten}" rendered="#{item.node.zblSeiten != ''}" />
-
-                                    <h:outputText value="ZBL-ID:" rendered="#{item.node.zblNummer != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.zblNummer}" rendered="#{item.node.zblNummer != ''}" />
-
-                                    <h:outputText value="PPN-Digital" rendered="#{item.node.ppnDigital != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.ppnDigital}" rendered="#{item.node.ppnDigital != ''}" />
-
-                                    <h:outputText value="DateIssued" rendered="#{item.node.dateIssued != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.dateIssued}" rendered="#{item.node.dateIssued != ''}" />
-
-                                    <h:outputText value="PartNumber" rendered="#{item.node.partNumber != ''}" style="font-size: 10; text-decoration: underline;font-weight: bold; color: black;" />
-                                    <h:outputText value="#{item.node.partNumber}" rendered="#{item.node.partNumber != ''}" />
-                                </h:panelGrid>
-                            </h:panelGrid>
-                        </div>
-                    </p:tooltip>
+                    </x:popup>
 
                     <h:outputText value="#{item.niveau}" style="color:grey;margin-right:4px" rendered="#{Metadaten.treeProperties.showtreelevel}" />
 
-                    <h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}" action="#{Metadaten.loadRightFrame}">
+                    <h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}" action="#{Metadaten.loadRightFrame}" onclick="if (!styleAnpassen2(this)) return">
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax render="tabelle metadatenRechtsWrapp"></f:ajax>
+                        <f:ajax render=":metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
+<!--                         <f:ajax render=":tabelle :metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" /> -->
                     </h:commandLink>
 
                     <h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
@@ -148,6 +125,9 @@
             <!--             <h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" /> -->
 
         </div>
+        
+        
+  
     </composite:implementation>
 
 </ui:composition>
