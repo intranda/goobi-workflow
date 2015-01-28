@@ -110,7 +110,7 @@
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax render=":metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
+                        <f:ajax render=":metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm :first_imageForm :second_imageForm" />
 <!--                         <f:ajax render=":tabelle :metaForm :validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :paginationForm :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" /> -->
                     </h:commandLink>
 
