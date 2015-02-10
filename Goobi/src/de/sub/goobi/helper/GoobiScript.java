@@ -89,6 +89,9 @@ public class GoobiScript {
     HashMap<String, String> myParameters;
     private static final Logger logger = Logger.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
+    private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+    private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
+    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
 
     /**
      * Starten des Scripts ================================================================
@@ -1054,37 +1057,52 @@ public class GoobiScript {
     }
 
     private List<StringPair> extractMetadata(File metadataFile) throws JDOMException, IOException {
-        Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
-        Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-        Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+
         List<StringPair> metadataPairs = new ArrayList<StringPair>();
 
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(metadataFile);
         Element root = doc.getRootElement();
+        // TODO read metadata from physical
         try {
             Element goobi =
                     root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
                             "extension", mods).getChild("goobi", goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
-            for (Element goobimetadata : metadataList) {
-                String metadataType = goobimetadata.getAttributeValue("name");
-                String metadataValue = "";
-                if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
-                    Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
-                    if (displayName != null && !displayName.getValue().equals(",")) {
-                        metadataValue = displayName.getValue();
-                    }
-                } else {
-                    metadataValue = goobimetadata.getValue();
-                }
-                if (!metadataValue.equals("")) {
-                    StringPair pair = new StringPair(metadataType, metadataValue);
-                    metadataPairs.add(pair);
+            metadataPairs.addAll(getMetadata(metadataList));
+            for (Element el : root.getChildren("dmdSec", mets)) {
+                if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
+                    Element phys =
+                            el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
+                                    "goobi", goobiNamespace);
+                    List<Element> physList = phys.getChildren();
+                    metadataPairs.addAll(getMetadata(physList));
                 }
             }
+
         } catch (Exception e) {
             logger.error("cannot extract metadata from " + metadataFile.getAbsolutePath());
+        }
+        return metadataPairs;
+    }
+
+    private List<StringPair> getMetadata(List<Element> elements) {
+        List<StringPair> metadataPairs = new ArrayList<StringPair>();
+        for (Element goobimetadata : elements) {
+            String metadataType = goobimetadata.getAttributeValue("name");
+            String metadataValue = "";
+            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
+                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
+                if (displayName != null && !displayName.getValue().equals(",")) {
+                    metadataValue = displayName.getValue();
+                }
+            } else {
+                metadataValue = goobimetadata.getValue();
+            }
+            if (!metadataValue.equals("")) {
+                StringPair pair = new StringPair(metadataType, metadataValue);
+                metadataPairs.add(pair);
+            }
         }
         return metadataPairs;
     }
@@ -1100,7 +1118,8 @@ public class GoobiScript {
                     logger.error("Can't load export plugin, use default plugin", e);
                     export = new ExportDms();
                 }
-            } if (export == null) {
+            }
+            if (export == null) {
                 export = new ExportDms();
             }
             export.setExportFulltext(exportFulltext);
