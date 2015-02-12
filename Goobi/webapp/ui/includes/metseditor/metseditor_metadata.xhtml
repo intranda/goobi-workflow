@@ -75,7 +75,7 @@ xmlns:p="http://primefaces.org/ui"
                                         <f:selectItems value="#{Item.possibleNamePartTypes}" />
                                     </h:selectOneMenu>
                                     <p:inputText value="#{part.value}" styleClass="metadatenInput" style="width:100%" readonly="#{Metadaten.nurLesenModus}">
-                                       <p:ajax event="blur"  />
+                                       <p:ajax event="blur" process="@parent" />
                                     </p:inputText>
                                 </h:panelGrid>
                             </ui:repeat>
@@ -91,7 +91,7 @@ xmlns:p="http://primefaces.org/ui"
                                     <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
                                 </h:selectOneMenu>
                                 <p:inputText value="#{Item.normdataValue}" styleClass="metadatenInput" style="width:100%" readonly="#{Metadaten.nurLesenModus}">
-                                    <p:ajax event="blur"  />
+                                     <p:ajax event="blur" process="@parent" />
                                 </p:inputText>
 
                             </h:panelGrid>
@@ -174,7 +174,7 @@ xmlns:p="http://primefaces.org/ui"
                                     <f:selectItems value="#{Item.possibleDatabases}" var="database" itemLabel="#{ddatabase}" itemValue="#{database}" />
                                 </h:selectOneMenu>
                                 <p:inputText value="#{Item.normdataValue}" styleClass="metadatenInput" style="width:100%" readonly="#{Metadaten.nurLesenModus}">
-                                    <p:ajax event="blur"  />
+                                     <p:ajax event="blur" process="@parent" />
                                 </p:inputText>
                             </h:panelGrid>
                         </h:panelGroup>
