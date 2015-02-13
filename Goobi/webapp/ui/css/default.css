@@ -774,10 +774,7 @@ table.tableCalcStat .right{
 table.tableCalcStat .left{
 	padding-right: 5px;
 }
-.jscalendar-DB-title-background-style {
-	/*background-color:  #F4BBA5;*/
-	background-image:url('gradient.php_30px_.png');
-}
+
 .jscalendar-DB-title-control-normal-style:hover{
 	border: 0px solid white;
 	color: white !important;

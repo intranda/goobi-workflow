@@ -41,7 +41,7 @@ table.subTabbedPane myFaces_panelTabbedPane_emptyHeaderCell{
 td.activeTab {
     width: 150px !important;
     font-size: 100% !important;
-    background-image:url('gradient.php_30px_.png');
+    background-image:none !important;
     border-top: 1px solid #F4BBA5 !important;
     border-left: 1px solid #F4BBA5 !important; 
     border-bottom: none;
