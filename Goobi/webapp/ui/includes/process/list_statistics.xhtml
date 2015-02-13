@@ -137,7 +137,7 @@
                         </h4>
                         <h:panelGroup>
                             <h:panelGroup rendered="#{element.dataTable.showableInChart}">
-                                <img style="margin-bottom: 15px" src=#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
+                                <img style="margin-bottom: 15px" src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
                             </h:panelGroup>
                             <h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
                             <h:commandLink action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable}">
