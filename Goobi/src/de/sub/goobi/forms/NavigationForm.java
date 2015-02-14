@@ -28,8 +28,11 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 
+import java.util.HashMap;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.naming.ldap.HasControls;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
@@ -42,7 +45,8 @@ public class NavigationForm {
     private boolean showSidebar = true;
     private String activeTab = "productionStatistics";
     private String activeImportTab = "recordImport";
-
+    private HashMap<String, String> uiStatus = new HashMap<String, String>();
+    
     public String getAktuell() {
         return this.aktuell;
     }
@@ -114,4 +118,9 @@ public class NavigationForm {
     public void setActiveImportTab(String activeImportTab) {
         this.activeImportTab = activeImportTab;
     }
+    
+    public HashMap<String, String> getUiStatus() {
+		return uiStatus;
+	}
+    
 }

@@ -2426,9 +2426,8 @@ public class Metadaten {
             }
         }
         try {
-            // int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
-            myBild = null;
-            BildErmitteln(0);
+            int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
+            BildErmitteln(pageNumber);
         } catch (Exception e) {
             e.printStackTrace();
         }
