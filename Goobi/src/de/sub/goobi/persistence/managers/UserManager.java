@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -194,6 +195,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplaySelectBoxes(rs.getBoolean("displaySelectBoxes"));
         r.setDisplaySwappingColumn(rs.getBoolean("displaySwappingColumn"));
         r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));
+        r.setEmail(rs.getString("email"));
         
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
