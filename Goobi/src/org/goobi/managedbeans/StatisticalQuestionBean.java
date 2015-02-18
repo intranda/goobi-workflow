@@ -35,13 +35,21 @@ public class StatisticalQuestionBean {
     public String setStatisticalQuestion(String pluginName) {
         currentPluginName = pluginName;
         
-        currentPlugin = (IStatisticPlugin) PluginLoader.getPluginByTitle(PluginType.Statistics, currentPluginName);
+        currentPlugin =(IStatisticPlugin) PluginLoader.getPluginByTitle(PluginType.Statistics, currentPluginName);
         return "";
     }
 
     
     public String getCurrentPluginName() {
         return currentPluginName;
+    }
+
+    public IStatisticPlugin getCurrentPlugin() {
+        return currentPlugin;
+    }
+
+    public void setCurrentPlugin(IStatisticPlugin currentPlugin) {
+        this.currentPlugin = currentPlugin;
     }
     
     
