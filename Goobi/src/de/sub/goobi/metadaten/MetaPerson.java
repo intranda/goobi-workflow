@@ -147,6 +147,7 @@ public class MetaPerson {
             parts = new ArrayList<NamePart>();
         }
         NamePart part = new NamePart();
+        part.setType("date");
         parts.add(part);
         p.setAdditionalNameParts(parts);
     }

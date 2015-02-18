@@ -49,20 +49,17 @@
                         </h:commandLink>
 
                         <h:outputText id="vdid18" value="#{msgs.fileManipulation}" style="font-weight:bold;font-size: 11px;" rendered="#{Metadaten.modusAnsicht == 'File' and Metadaten.displayFileManipulation}" />
-
+						 <!-- Metadaten per shortcut schreiben -->
+	                    <h:commandLink style="font-size:11px; display:none" action="#{Metadaten.Reload}" value="#{msgs.speichern} nur links" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButtonAjax">
+	                        <f:ajax render=":tabelle"></f:ajax>
+	                    </h:commandLink>
                     </h:panelGroup>
                 </td>
 
                 <td align="right">
-	                <!-- Metadaten per key schreiben -->
-                    <h:commandLink style="font-size:11px; display:none" action="#{Metadaten.Reload}" value="#{msgs.speichern} nur links" rendered="#{not Metadaten.nurLesenModus}" immediate="false" id="saveMetsFileButtonAjax">
-                        <f:ajax render=":tabelle :vdid3"></f:ajax>
-                    </h:commandLink>
-                    <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}" value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
-                        <f:ajax render="@form :metadatenRechtsWrapp" />
+	                <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==true}" value="#{msgs.metadatenBildAusblenden}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
                     </h:commandLink>
                     <h:commandLink action="#{Metadaten.BildAnzeigen}" rendered="#{Metadaten.bildAnzeigen==false}" value="#{msgs.metadatenBildAnzeigen}" style="#{Metadaten.nurLesenModus ? 'font-size:11px':'font-size:11px;'}">
-                        <f:ajax render="@form :metadatenRechtsWrapp" />
                     </h:commandLink>
 
                     <h:outputText value=" | " style="font-size: 11px;" />

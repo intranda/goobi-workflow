@@ -437,7 +437,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
             }
             String rueckgabe = getImagesDirectory() + origOrdner + File.separator;
-            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000") {
+            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000"
+                    && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
                 FilesystemHelper.createDirectory(rueckgabe);
             }
             return rueckgabe;

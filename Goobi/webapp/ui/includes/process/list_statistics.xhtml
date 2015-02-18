@@ -103,7 +103,7 @@
             <!-- ++++++++++++++++     Presentation of Data      ++++++++++++++++ -->
 
             <h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.isSimple}">
-                <img style="margin-bottom: 15px" src="#{HelperForm.contextPath}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}" title="#{element.title}" />
+                <img style="margin-bottom: 15px" src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}" title="#{element.title}" />
             </h:panelGroup>
 
             <h:panelGroup rendered="#{!ProzessverwaltungForm.statisticsManager.statisticMode.isSimple}">
@@ -115,7 +115,7 @@
                         <h4 style="margin-top: 20px">
                             <h:outputText value="#{element.title}" />
                         </h4>
-                        <img style="margin-bottom: 15px" src="#{HelperForm.contextPath}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
+                        <img style="margin-bottom: 15px" src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
                     </h:panelGroup>
 
 
@@ -137,7 +137,7 @@
                         </h4>
                         <h:panelGroup>
                             <h:panelGroup rendered="#{element.dataTable.showableInChart}">
-                                <img style="margin-bottom: 15px" src="#{HelperForm.contextPath}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
+                                <img style="margin-bottom: 15px" src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
                             </h:panelGroup>
                             <h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
                             <h:commandLink action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable}">
