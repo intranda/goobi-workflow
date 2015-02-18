@@ -66,6 +66,7 @@ public class User implements DatabaseObject {
 	private boolean mitMassendownload = false;
 	private Ldap ldapGruppe;
 	private String css;
+	private String email;
 	
 	
 	private boolean displayDeactivatedProjects = false;
@@ -610,6 +611,14 @@ public class User implements DatabaseObject {
 
     public void setDisplayModulesColumn(boolean displayModulesColumn) {
         this.displayModulesColumn = displayModulesColumn;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 

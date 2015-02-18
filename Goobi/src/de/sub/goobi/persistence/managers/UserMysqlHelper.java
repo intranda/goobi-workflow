@@ -127,9 +127,9 @@ class UserMysqlHelper implements Serializable {
                 String propNames =
                         "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
-                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks";
+                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email";
 
-                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                                 ro.getLogin() == null ? null : ro.getLogin(), ro.getPasswort() == null ? null : ro.getPasswort(), ro.isIstAktiv(),
@@ -141,7 +141,8 @@ class UserMysqlHelper implements Serializable {
                                 ro.getLdaplogin() == null ? null : ro.getLdaplogin(), ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(),
                                 ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
                                 ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks() };
+                                ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
+                                ro.getEmail() == null ? null : ro.getEmail() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -185,7 +186,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displayProcessDateColumn =  ?, ");
                 sql.append("displaySelectBoxes =  ?, ");
                 sql.append("displaySwappingColumn =  ?, ");
-                sql.append("hideCorrectionTasks =  ? ");
+                sql.append("hideCorrectionTasks =  ?, ");
+                sql.append("email =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -198,7 +200,8 @@ class UserMysqlHelper implements Serializable {
                                 ro.getLdaplogin() == null ? null : ro.getLdaplogin(), ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(),
                                 ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
                                 ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks() };
+                                ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
+                                ro.getEmail() == null ? null : ro.getEmail() };
                 if (logger.isDebugEnabled()) {
                     logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 }
@@ -441,21 +444,4 @@ class UserMysqlHelper implements Serializable {
         }
     };
 
-    public static void main(String[] args) {
-        try {
-            List<Ldap> ldapList = LdapManager.getLdaps(null, null, 0, 10);
-            for (Ldap ldap : ldapList) {
-                System.out.println(ldap.getTitel());
-            }
-
-            List<User> list = UserMysqlHelper.getUsers(null, "login = 'testadmin'", 0, 10);
-            for (User u : list) {
-                System.out.println(u.getLogin());
-            }
-        } catch (SQLException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        }
-    }
 }
