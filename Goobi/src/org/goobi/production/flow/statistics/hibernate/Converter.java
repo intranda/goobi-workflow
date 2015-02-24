@@ -42,7 +42,7 @@ import org.goobi.production.flow.statistics.StatisticsManager;
  * @author Wulf Riebensahm
  * @version 23.05.2009
  */
-class Converter {
+public class Converter {
 	private static final Logger logger = Logger.getLogger(Converter.class);
 
 	Object myObject = null;
@@ -68,7 +68,7 @@ class Converter {
 	 * @param Object
 	 *            which will get converted
 	 */
-	protected Converter(Object obj) {
+	public Converter(Object obj) {
 		this();
 		if (obj == null) {
 			throw new NullPointerException();
@@ -119,7 +119,7 @@ class Converter {
 	 * 
 	 * @return String, fall back is toString() method
 	 */
-	protected String getString() {
+	public String getString() {
 		if (this.myObject instanceof Date) {
 			return this.sdf.format(this.myObject);
 		} else {
@@ -133,7 +133,7 @@ class Converter {
 	 * @return Double value of GB, calculated on the basis
 	 * of Bytes
 	 */
-	protected Double getGB() {
+	public Double getGB() {
 		return getDouble() / (1024 * 1024 * 1024);
 
 	}
