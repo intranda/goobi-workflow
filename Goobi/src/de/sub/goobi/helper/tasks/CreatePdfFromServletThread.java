@@ -27,27 +27,31 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
@@ -81,8 +85,10 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             setStatusProgress(-1);
             return;
         }
-        GetMethod method = null;
+        CloseableHttpClient httpclient =null;
+        HttpGet method = null;
         try {
+            httpclient = HttpClientBuilder.create().build();
             /* --------------------------------
              * define path for mets and pdfs
              * --------------------------------*/
@@ -135,40 +141,80 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * get pdf from servlet and forward response to file 
              * --------------------------------*/
 
-            HttpClient httpclient = new HttpClient();
             if (logger.isDebugEnabled()) {
                 logger.debug("Retrieving: " + goobiContentServerUrl.toString());
             }
-            method = new GetMethod(goobiContentServerUrl.toString());
+            method = new HttpGet(goobiContentServerUrl.toString());
+
+            Builder builder = RequestConfig.custom();
+            builder.setSocketTimeout(contentServerTimeOut);
+            RequestConfig rc = builder.build();
+            method.setConfig(rc);
+
+            InputStream istr = null;
+            OutputStream ostr = null;
             try {
-                method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
-                int statusCode = httpclient.executeMethod(method);
-                if (statusCode != HttpStatus.SC_OK) {
-                    logger.error("HttpStatus nicht ok", null);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Response is:\n" + method.getResponseBodyAsString());
-                    }
-                    return;
+                byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
+                istr = new ByteArrayInputStream(response);
+                ostr = new FileOutputStream(tempPdf);
+
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = istr.read(buf)) > 0) {
+                    ostr.write(buf, 0, len);
                 }
 
-                InputStream inStream = method.getResponseBodyAsStream();
-                BufferedInputStream bis = new BufferedInputStream(inStream);
-                FileOutputStream fos = new FileOutputStream(tempPdf);
-                byte[] bytes = new byte[8192];
-                int count = bis.read(bytes);
-                while (count != -1 && count <= 8192) {
-                    fos.write(bytes, 0, count);
-                    count = bis.read(bytes);
-                }
-                if (count != -1) {
-                    fos.write(bytes, 0, count);
-                }
-                fos.close();
-                bis.close();
-                setStatusProgress(80);
+            } catch (IOException e) {
+                logger.error(e);
             } finally {
                 method.releaseConnection();
+                if (httpclient != null) {
+                    httpclient.close();
+                }
+                if (istr != null) {
+                    try {
+                        istr.close();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                }
+                if (ostr != null) {
+                    try {
+                        ostr.close();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                }
             }
+
+            //                int statusCode = httpclient.executeMethod(method);
+            //                if (statusCode != HttpStatus.SC_OK) {
+            //                    logger.error("HttpStatus nicht ok", null);
+            //                    if (logger.isDebugEnabled()) {
+            //                        logger.debug("Response is:\n" + method.getResponseBodyAsString());
+            //                    }
+            //                    return;
+            //                }
+            //
+            //                InputStream inStream = method.getResponseBodyAsStream();
+            //                BufferedInputStream bis = new BufferedInputStream(inStream);
+            //                FileOutputStream fos = new FileOutputStream(tempPdf);
+            //                byte[] bytes = new byte[8192];
+            //                int count = bis.read(bytes);
+            //                while (count != -1 && count <= 8192) {
+            //                    fos.write(bytes, 0, count);
+            //                    count = bis.read(bytes);
+            //                }
+            //                if (count != -1) {
+            //                    fos.write(bytes, 0, count);
+            //                }
+            //                fos.close();
+            //                bis.close();
+            //                setStatusProgress(80);
+            //            } finally {
+            //                method.releaseConnection();
+            //            }
             /* --------------------------------
              * copy pdf from temp to final destination
              * --------------------------------*/

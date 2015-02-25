@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -444,7 +445,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorEnableImageAssignment() {
         return getLocalBoolean("MetsEditorEnableImageAssignment", true);
     }
-    
+
     public boolean isMetsEditorRenameImagesOnExit() {
         return getLocalBoolean("MetsEditorRenameImagesOnExit", false);
     }
@@ -476,7 +477,7 @@ public class ConfigurationHelper implements Serializable {
     public String getProcessTiteValidationlRegex() {
         return getLocalString("validateProcessTitelRegex", "[\\w-]*");
     }
-    
+
     public String getProcessTitleReplacementRegex() {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
@@ -537,6 +538,19 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("downloadAvailableColumn");
     }
 
+    // proxy settings
+    public boolean isUseProxy() {
+        return getLocalBoolean("http_useProxy", false);
+    }
+    
+    public String getProxyUrl(){
+        return getLocalString("http_proxyUrl");
+    }
+    
+    public int getProxyPort() {
+        return getLocalInt("http_proxyPort", 8080);
+    }
+    
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -559,27 +573,32 @@ public class ConfigurationHelper implements Serializable {
     }
 
     // old parameter, remove them
-
+    @Deprecated
     public boolean isUseSwapping() {
         return getLocalBoolean("useSwapping", false);
     }
 
+    @Deprecated
     public boolean isShowTaskmanager() {
         return getLocalBoolean("show_taskmanager", false);
     }
 
+    @Deprecated
     public boolean isShowModulmanager() {
         return getLocalBoolean("show_modulmanager", false);
     }
 
+    @Deprecated
     public boolean isRunHotfolder() {
         return getLocalBoolean("runHotfolder", false);
     }
 
+    @Deprecated
     public boolean isImportUseOldConfiguration() {
         return getLocalBoolean("importUseOldConfiguration", false);
     }
 
+    @Deprecated
     public int getGoobiModuleServerPort() {
         return getLocalInt("goobiModuleServerPort");
     }

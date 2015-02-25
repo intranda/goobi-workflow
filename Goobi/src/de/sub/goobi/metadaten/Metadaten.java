@@ -50,12 +50,11 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.production.enums.PluginType;
@@ -90,6 +89,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
+import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.Transliteration;
 import de.sub.goobi.helper.TreeNode;
 import de.sub.goobi.helper.VariableReplacer;
@@ -1008,8 +1008,6 @@ public class Metadaten {
         return this.zurueck;
     }
 
-
-
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
      * 
@@ -1755,7 +1753,6 @@ public class Metadaten {
 
         return null;
     }
-
 
     /**
      * alle Knoten des Baums expanden oder collapsen ================================================================
@@ -2519,25 +2516,31 @@ public class Metadaten {
 
     public void showOcrResult() {
         String myOcrUrl = getOcrBasisUrl(this.myBildNummer);
-        HttpClient client = new HttpClient();
-        GetMethod method = new GetMethod(myOcrUrl);
+        CloseableHttpClient client = null;
+        HttpGet method = new HttpGet(myOcrUrl);
         InputStream stream = null;
         try {
-            int statusCode = client.executeMethod(method);
-            if (statusCode != HttpStatus.SC_OK) {
-                this.ocrResult = "HttpStatus nicht ok";
-                return;
+            client = HttpClientBuilder.create().build();
+
+            stream = client.execute(method, HttpClientHelper.streamResponseHandler);
+            if (stream != null) {
+                this.ocrResult = IOUtils.toString(stream, "UTF-8");
+            } else {
+                ocrResult = "";
             }
-            
-            stream = method.getResponseBodyAsStream();
-            this.ocrResult = IOUtils.toString(stream, "UTF-8");
-//            this.ocrResult = method.getResponseBodyAsString();
-        } catch (HttpException e) {
-            this.ocrResult = "Fatal protocol violation: " + e.getMessage();
+            //            this.ocrResult = method.getResponseBodyAsString();
+
         } catch (IOException e) {
             this.ocrResult = "Fatal transport error: " + e.getMessage();
         } finally {
             method.releaseConnection();
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException e) {
+                    client = null;
+                }
+            }
             if (stream != null) {
                 try {
                     stream.close();

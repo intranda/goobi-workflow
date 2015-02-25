@@ -41,8 +41,6 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.goobi.io.FileListFilter;
 
 import ugh.dl.Fileformat;
@@ -113,14 +111,12 @@ public class ExportPdf extends ExportMets {
             pdf.start();
         } else {
 
-            GetMethod method = null;
             try {
                 /*
                  * -------------------------------- define path for mets and pdfs --------------------------------
                  */
                 URL goobiContentServerUrl = null;
                 String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
-                Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 
                 /*
                  * -------------------------------- using mets file --------------------------------
@@ -165,9 +161,6 @@ public class ExportPdf extends ExportMets {
                  * -------------------------------- get pdf from servlet and forward response to file --------------------------------
                  */
 
-                method = new GetMethod(goobiContentServerUrl.toString());
-                method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
-
                 if (!context.getResponseComplete()) {
                     HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
                     String fileName = myProzess.getTitel() + ".pdf";
@@ -197,10 +190,6 @@ public class ExportPdf extends ExportMets {
                 } catch (IOException e1) {
                 }
                 return false;
-            } finally {
-                if (method != null) {
-                    method.releaseConnection();
-                }
             }
         }
         return true;
