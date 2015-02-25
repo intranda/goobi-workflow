@@ -43,8 +43,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,6 +57,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.HttpClientHelper;
 
 /*******************************************************************************
  * Connects to OPAC system.
@@ -115,7 +122,7 @@ public class GetOpac {
 	public static final String URL_CHARACTER_ENCODING = "iso-8859-1";
 
 	// resources
-	private HttpClient opacClient;
+	private CloseableHttpClient opacClient;
 	private DocumentBuilder docBuilder;
 
 	// STATE (Instance variables) *****************************************
@@ -153,8 +160,7 @@ public class GetOpac {
 	 *********************************************************************/
 
 	public GetOpac(Catalogue opac) throws ParserConfigurationException {
-		super();
-		this.opacClient = new HttpClient();
+		this.opacClient = HttpClientBuilder.create().build();
 		this.cat = opac;
 		this.docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	}
@@ -169,13 +175,12 @@ public class GetOpac {
 	 * @since 0.1
 	 *********************************************************************/
 
-	public GetOpac() throws ParserConfigurationException, IOException {
-		super();
-		this.opacClient = new HttpClient();
-		this.docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		// TODO: Remove this default catalogue.
-		this.cat = new Catalogue(Catalogue.SUB_OPAC);
-	}
+//	public GetOpac() throws ParserConfigurationException, IOException {
+//		this.opacClient = HttpClientBuilder.create().build();
+//		this.docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+//		// TODO: Remove this default catalogue.
+//		this.cat = new Catalogue(Catalogue.SUB_OPAC);
+//	}
 
 	// MANIPULATION (Manipulation - what the object does) ******************
 
@@ -655,17 +660,25 @@ public class GetOpac {
             logger.info("Retrieving URL: http://" + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
         }
 
-        GetMethod opacRequest = null;
-        opacRequest = new GetMethod("http://" + this.cat.getServerAddress() + url + this.cat.getCbs());
+        HttpGet opacRequest = null;
+        opacRequest = new HttpGet("http://" + this.cat.getServerAddress() + url + this.cat.getCbs());
 
         if (this.cat.getPort() == 80) {
         } else {
-            opacRequest = new GetMethod("http://" + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
+            opacRequest = new HttpGet("http://" + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
 
         }
-        try {
-            this.opacClient.executeMethod(opacRequest);
-            return opacRequest.getResponseBodyAsString();
+        try { 
+            
+           if (ConfigurationHelper.getInstance().isUseProxy()) {
+               HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+               Builder builder = RequestConfig.custom();
+               builder.setProxy(proxy);
+               RequestConfig rc = builder.build();
+               opacRequest.setConfig(rc);
+           }
+           
+         return this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
         } finally {
             opacRequest.releaseConnection();
         }

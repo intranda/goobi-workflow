@@ -29,11 +29,12 @@ package de.sub.goobi.metadaten;
  */
 import java.awt.Dimension;
 import java.awt.image.RenderedImage;
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,10 +46,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 
 import ugh.dl.ContentFile;
@@ -69,6 +72,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -495,23 +499,25 @@ public class MetadatenImagesHelper {
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
             ImageManipulatorException {
         logger.trace("start scaleFile");
-       
+
         int tmpSize = inSize;
         if (tmpSize < 1) {
             tmpSize = 1;
         }
         logger.trace("Scale to " + tmpSize + "%");
-        
+
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
             ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
             logger.trace("im");
             ImageInterpreter ii = im.getMyInterpreter();
-            Dimension inputResolution = new Dimension((int)ii.getXResolution(), (int)ii.getYResolution());
+            Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
             logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
             Dimension outputResolution = new Dimension(144, 144);
             logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-            Dimension dim = new Dimension(tmpSize*outputResolution.width/inputResolution.width, tmpSize*outputResolution.height/inputResolution.height);
+            Dimension dim =
+                    new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
+                            / inputResolution.height);
             logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
             RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
             logger.trace("ri");
@@ -534,36 +540,58 @@ public class MetadatenImagesHelper {
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);
-            HttpClient httpclient = new HttpClient();
-            GetMethod method = new GetMethod(csUrl.toString());
-            logger.trace("get");
-            Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
-            method.getParams().setParameter("http.socket.timeout", contentServerTimeOut);
-            int statusCode = httpclient.executeMethod(method);
-            if (statusCode != HttpStatus.SC_OK) {
+            CloseableHttpClient httpclient = null;
+            HttpGet method = null;
+            InputStream istr = null;
+            OutputStream fos = null;
+            try {
+                httpclient = HttpClientBuilder.create().build();
+                method = new HttpGet(csUrl.toString());
+                logger.trace("get");
+                Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
+                Builder builder = RequestConfig.custom();
+                builder.setSocketTimeout(contentServerTimeOut);
+                RequestConfig rc = builder.build();
+                method.setConfig(rc);
+
+                byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
+                if (response == null) {
+                    logger.error("Response stream is null");
+                    return;
+                }
+                istr = new ByteArrayInputStream(response);
+                fos = new FileOutputStream(outFileName);
+
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = istr.read(buf)) > 0) {
+                    fos.write(buf, 0, len);
+                }
+            } catch (Exception e) {
+                logger.error("Unable to connect to url " + cs, e);
                 return;
+            } finally {
+                method.releaseConnection();
+                if (httpclient != null) {
+                    httpclient.close();
+                }
+                if (istr != null) {
+                    try {
+                        istr.close();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                }
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                }
             }
-            logger.trace("statusCode: " + statusCode);
-            InputStream inStream = method.getResponseBodyAsStream();
-            logger.trace("inStream");
-            BufferedInputStream bis = new BufferedInputStream(inStream);
-            logger.trace("BufferedInputStream");
-            FileOutputStream fos = new FileOutputStream(outFileName);
-            logger.trace("FileOutputStream");
-            byte[] bytes = new byte[8192];
-            int count = bis.read(bytes);
-            while (count != -1 && count <= 8192) {
-                fos.write(bytes, 0, count);
-                count = bis.read(bytes);
-            }
-            if (count != -1) {
-                fos.write(bytes, 0, count);
-            }
-            logger.trace("write");
-            fos.close();
-            bis.close();
         }
-        logger.trace("end scaleFile");
     }
 
     // Add a method to validate the image files
@@ -587,8 +615,7 @@ public class MetadatenImagesHelper {
             String[] dateien = dir.list(Helper.dataFilter);
             if (dateien == null || dateien.length == 0) {
                 String value = Helper.getTranslation("noObjectsFound", title);
-                
-                
+
                 Helper.setFehlerMeldung(value);
                 return false;
             }
@@ -605,7 +632,7 @@ public class MetadatenImagesHelper {
                         curFile = iterator.next();
                         int curFileNumber = Integer.parseInt(curFile.substring(0, curFile.indexOf(".")));
                         if (curFileNumber != counter + myDiff) {
-                            String[] parameter = { title, String.valueOf(counter + myDiff), curFile};
+                            String[] parameter = { title, String.valueOf(counter + myDiff), curFile };
                             String value = Helper.getTranslation("wrongImageNumber", parameter);
                             Helper.setFehlerMeldung(value);
                             myDiff = curFileNumber - counter;
@@ -614,17 +641,17 @@ public class MetadatenImagesHelper {
                     }
                 } catch (NumberFormatException e1) {
                     isValid = false;
-                    String[] parameter =  {title, curFile};
+                    String[] parameter = { title, curFile };
                     String value = Helper.getTranslation("wrongFileName", parameter);
                     Helper.setFehlerMeldung(value);
-//                    Helper.setFehlerMeldung("[" + title + "] Filename of image wrong - not an 8-digit-number: " + curFile);
+                    //                    Helper.setFehlerMeldung("[" + title + "] Filename of image wrong - not an 8-digit-number: " + curFile);
                 }
                 return isValid;
             }
             return true;
         }
         Helper.setFehlerMeldung(Helper.getTranslation("noImageFolderFound", title));
-//        Helper.setFehlerMeldung("[" + title + "] No image-folder found");
+        //        Helper.setFehlerMeldung("[" + title + "] No image-folder found");
         return false;
     }
 

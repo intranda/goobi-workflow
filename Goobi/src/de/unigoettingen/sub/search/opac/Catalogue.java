@@ -38,13 +38,16 @@ import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import de.sub.goobi.helper.HttpClientHelper;
 
 public class Catalogue {
     private static final Logger logger = Logger.getLogger(Catalogue.class);
@@ -201,11 +204,17 @@ public class Catalogue {
 
                 this.description + ": " + requestUrl);
             }
-            HttpClient opacClient = new HttpClient();
-            GetMethod opacRequest = new GetMethod(requestUrl);
+            CloseableHttpClient opacClient = null;
+            try {
+                opacClient = HttpClientBuilder.create().build();
+                HttpGet opacRequest = new HttpGet(requestUrl);
 
-            opacClient.executeMethod(opacRequest);
-            return opacRequest.getResponseBodyAsString();
+                return opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
+            } finally {
+                if (opacClient != null) {
+                    opacClient.close();
+                }
+            }
         }
     }
 
