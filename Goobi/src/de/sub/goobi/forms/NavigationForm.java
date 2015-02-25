@@ -32,7 +32,6 @@ import java.util.HashMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.naming.ldap.HasControls;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
