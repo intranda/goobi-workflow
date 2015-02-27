@@ -24,11 +24,7 @@ public class StatisticalQuestionBean {
 
     private String currentPluginName = "";
 
-    private String data = "";
-
     private IStatisticPlugin currentPlugin;
-
-    private boolean calculateFinished = false;
 
     public StatisticalQuestionBean() {
         possiblePluginNames = PluginLoader.getListOfPlugins(PluginType.Statistics);
@@ -69,8 +65,9 @@ public class StatisticalQuestionBean {
     }
 
     public void calculate() {
-        //        currentPlugin.setFilter("");       
-        calculateFinished = true;
+        currentPlugin.calculate();
+        
+
     }
 
     /**
@@ -82,23 +79,26 @@ public class StatisticalQuestionBean {
         return Arrays.asList(CalculationUnit.values());
     }
 
-    public boolean isCalculateFinished() {
-        return calculateFinished;
-    }
-
-    public void setCalculateFinished(boolean calculateFinished) {
-        this.calculateFinished = calculateFinished;
-    }
-
     public String getData() {
-        if (calculateFinished) {
-            data = currentPlugin.getData();
-        }
-        calculateFinished = false;
-        return data;
+       return currentPlugin.getData();
     }
 
     public void setData(String data) {
-        this.data = data;
+    }
+    
+    public String getAxis() {
+        return currentPlugin.getAxis();
+    }
+    
+    public void setAxis(String axis) {
+        
+    }
+    
+    public int getMax() {
+        return currentPlugin.getMax();
+    }
+    
+    public void setMax(int max) {
+        
     }
 }

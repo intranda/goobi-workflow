@@ -34,5 +34,10 @@ public interface IStatisticPlugin extends IPlugin {
     public void setTargetTimeUnit(TimeUnit targetTimeUnit);
     
     public void setFilter(String filter);
+    
+    public void calculate();
+    
+    public String getAxis();
   
+    public int getMax();
 }
