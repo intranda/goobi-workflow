@@ -224,7 +224,8 @@ public class LoginBean {
             temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());            
             temp.setDisplayOnlySelectedTasks(myBenutzer.isDisplayOnlySelectedTasks());
             temp.setDisplayOnlyOpenTasks(myBenutzer.isDisplayOnlyOpenTasks());
-           
+            temp.setEmail(myBenutzer.getEmail());
+            
             temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
