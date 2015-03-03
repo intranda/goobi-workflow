@@ -10,10 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.flow.statistics.IStatisticalQuestion;
-import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 import org.goobi.production.plugin.PluginLoader;
@@ -22,8 +19,6 @@ import org.goobi.production.plugin.interfaces.IStatisticPlugin;
 @ManagedBean(name = "StatisticalQuestionBean")
 @SessionScoped
 public class StatisticalQuestionBean {
-
-    private static final Logger logger = Logger.getLogger(StatisticalQuestionBean.class);
 
     private List<String> possiblePluginNames;
 
