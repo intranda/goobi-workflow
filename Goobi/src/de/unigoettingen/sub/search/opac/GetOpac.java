@@ -672,6 +672,9 @@ public class GetOpac {
             
            if (ConfigurationHelper.getInstance().isUseProxy()) {
                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+              if (logger.isDebugEnabled()) {
+                  logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+              }
                Builder builder = RequestConfig.custom();
                builder.setProxy(proxy);
                RequestConfig rc = builder.build();
