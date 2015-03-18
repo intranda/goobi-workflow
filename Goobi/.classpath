@@ -130,6 +130,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-cache-4.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpmime-4.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-4.4.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jempbox-1.7.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
