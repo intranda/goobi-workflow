@@ -38,6 +38,9 @@ import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -47,6 +50,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
 
 public class Catalogue {
@@ -208,7 +212,19 @@ public class Catalogue {
             try {
                 opacClient = HttpClientBuilder.create().build();
                 HttpGet opacRequest = new HttpGet(requestUrl);
-
+                if (logger.isDebugEnabled()) {
+                    logger.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
+                }
+                if (ConfigurationHelper.getInstance().isUseProxy()) {
+                    HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                    }
+                    Builder builder = RequestConfig.custom();
+                    builder.setProxy(proxy);
+                    RequestConfig rc = builder.build();
+                    opacRequest.setConfig(rc);
+                }
                 return opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
             } finally {
                 if (opacClient != null) {
