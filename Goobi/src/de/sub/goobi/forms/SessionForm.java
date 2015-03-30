@@ -60,6 +60,8 @@ public class SessionForm {
     private String aktuelleZeit = this.formatter.format(new Date());
     private String bitteAusloggen = "";
 
+    private static final String MONITORING_CHECK = "nagios-plugins";
+    
     public int getAktiveSessions() {
         if (this.alleSessions == null) {
             return 0;
@@ -108,6 +110,9 @@ public class SessionForm {
             String mybrowser = request.getHeader("User-Agent");
             if (mybrowser == null) {
                 mybrowser = "-";
+            }
+            if (mybrowser.contains(MONITORING_CHECK)) {
+                return;
             }
             map.put("browser", mybrowser);
             if (mybrowser.indexOf("Gecko") > 0) {
