@@ -299,6 +299,7 @@ public class HelperSchritte {
             prefs = po.getRegelsatz().getPreferences();
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
+                logger.error("Metadata file is not readable.");
                 return -1;
             }
             dd = po.readMetadataFile().getDigitalDocument();
