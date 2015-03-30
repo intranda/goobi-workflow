@@ -371,7 +371,7 @@ public class MetadatenTest {
         fixture.setMyBenutzerID("1");
         assertEquals("", fixture.Loeschen());
     }
-
+    
     @Test
     public void testGetAddableRollen() throws Exception {
         Metadaten fixture = new Metadaten();
@@ -604,8 +604,8 @@ public class MetadatenTest {
         fixture.setPaginierungSeitenProImage(1);
         fixture.setPaginierungArt("3");
         fixture.setPaginierungAbSeiteOderMarkierung(2);
-        
-       assertEquals("metseditor_timeout",fixture.Paginierung());
+       
+       assertEquals("metseditor_timeout",fixture.Paginierung());      
     }
 
     @Test
@@ -616,7 +616,41 @@ public class MetadatenTest {
         assertEquals("metseditor", fixture.TreeExpand());
     }
     
-   
+    @Test
+    public void testXMLschreiben() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        fixture.setCurrentRepresentativePage("1");
+        assertEquals("Metadaten", fixture.XMLschreiben());
+    }
     
     
+    @Test
+    public void testGoMain()  throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        
+        MetadatenSperrung locking = new MetadatenSperrung();
+        locking.setLocked(1, "1");
+        fixture.setMyBenutzerID("1");
+        
+        assertEquals("index", fixture.goMain());
+    }
+    
+    @Test
+    public void testGoZurueck()  throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        
+        MetadatenSperrung locking = new MetadatenSperrung();
+        locking.setLocked(1, "1");
+        fixture.setMyBenutzerID("1");
+        
+        assertEquals("Main", fixture.goZurueck());
+    }
+    
+
 }
