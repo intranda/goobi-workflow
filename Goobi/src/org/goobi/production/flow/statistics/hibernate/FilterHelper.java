@@ -523,6 +523,7 @@ public class FilterHelper {
         if (inFilter == null) {
             inFilter = "";
         }
+        inFilter = inFilter.trim();
         inFilter = MySQLHelper.escapeString(inFilter);
 
         StringBuilder filter = new StringBuilder();

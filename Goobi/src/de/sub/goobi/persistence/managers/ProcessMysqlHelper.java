@@ -161,7 +161,7 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
-        if (filter != null && !filter.isEmpty()) {
+        if (filter != null && !filter.isEmpty() ) {
             sql.append(" AND " + filter);
         }
         try {
@@ -169,11 +169,11 @@ class ProcessMysqlHelper implements Serializable {
             if (logger.isDebugEnabled()) {
                 logger.debug(sql.toString());
             }
-            if (filter != null && !filter.isEmpty()) {
+//            if (filter != null && !filter.isEmpty()) {
+//                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+//            } else {
                 return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            } else {
-                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            }
+//            }
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
