@@ -43,11 +43,11 @@ xmlns:p="http://primefaces.org/ui"
                 </h4>
 
                 <!-- öffnen der Tabelle -->
-                <h:dataTable value="#{Metadaten.myPersonen}" var="Item" style="background-color:#F0F0F0" styleClass="Tabelle" headerClass="TabelleHeader" columnClasses="TabelleSpalteLinks,TabelleSpalteLinks,TabelleSpalteLinks" width="90%">
+                <h:dataTable value="#{Metadaten.myPersonen}" var="Item" style="background-color:#F0F0F0; padding:0px;" styleClass="Tabelle" headerClass="TabelleHeader" columnClasses="MetsEditorLeftPerson,MetsEditorButtons" width="90%">
 
                     <!-- Metadaten -->
                     <h:column>
-                        <h:panelGrid style="border-bottom: 0px;" columns="2" columnClasses="first-column, second-column">
+                        <h:panelGrid style="border-bottom: 0px;width:100%;" columns="2" columnClasses="first-column, second-column">
                             <h:outputText value="#{msgs.vorname}" style="font-size: 11px" />
                             <p:inputText value="#{Item.vorname}" styleClass="metadatenInput" readonly="#{Metadaten.nurLesenModus}">
                                 <p:ajax event="blur"  />
@@ -132,11 +132,11 @@ xmlns:p="http://primefaces.org/ui"
                 </h4>
 
                 <!-- öffnen der Tabelle -->
-                <x:dataTable value="#{Metadaten.myMetadaten}" var="Item" styleClass="Tabelle" headerClass="TabelleHeader" columnClasses="first-colum, second-column, TabelleSpalteLinks" width="88%">
+                <x:dataTable value="#{Metadaten.myMetadaten}" var="Item" styleClass="Tabelle" headerClass="TabelleHeader" columnClasses="MetsEditorLeft1, MetsEditorLeft2, MetsEditorButtons" width="88%">
 
                     <!-- Metadaten -->
-                    <x:column styleClass="first-column">
-                        <h:outputText value="#{Item.typ}" style="font-size: 11px" />
+                    <x:column>
+                        <h:outputText value="#{Item.typ}" />
                     </x:column>
 
                     <!-- Metadaten -->
