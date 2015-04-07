@@ -2225,7 +2225,10 @@ public class Metadaten {
 
     public void Validate() {
         MetadatenVerifizierung mv = new MetadatenVerifizierung();
-        mv.validate(this.gdzfile, this.myPrefs, this.myProzess);
+        boolean valid = mv.validate(this.gdzfile, this.myPrefs, this.myProzess);
+        if (valid) {
+        	Helper.setMeldung("ValidationSuccessful");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
     }
 
