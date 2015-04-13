@@ -2424,4 +2424,12 @@ public class ProcessBean extends BasicBean {
         this.dispaySearchResult = dispaySearchResult;
     }
 
+    public void setConfirmLink(boolean confirm) {
+        
+    }
+    
+    public boolean getConfirmLink() {
+        return ConfigurationHelper.getInstance().isConfirmLinking();
+    }
+    
 }

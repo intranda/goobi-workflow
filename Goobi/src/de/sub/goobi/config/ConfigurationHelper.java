@@ -603,6 +603,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("goobiModuleServerPort");
     }
 
+    
+    public boolean isConfirmLinking() {
+        return getLocalBoolean("confirmLinking", false);
+    }
+
+    
     // for junit tests    
     public void setParameter(String inParameter, String value) {
         config.setProperty(inParameter, value);
