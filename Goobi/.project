@@ -36,12 +36,12 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.instantiations.assist.eclipse.coverage.instrumentationBuilder</name>
+			<name>org.zeroturnaround.eclipse.rebelXmlBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.zeroturnaround.eclipse.rebelXmlBuilder</name>
+			<name>com.instantiations.assist.eclipse.coverage.instrumentationBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -54,8 +54,8 @@
 		<nature>net.sourceforge.metrics.nature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
-		<nature>com.instantiations.assist.eclipse.coverage.codeCoverageNature</nature>
 		<nature>org.zeroturnaround.eclipse.jrebelNature</nature>
+		<nature>com.instantiations.assist.eclipse.coverage.codeCoverageNature</nature>
 	</natures>
 	<linkedResources>
 		<link>

@@ -1488,15 +1488,7 @@ public class Metadaten {
     private void checkImageNames() {
         try {
             imagehelper.checkImageNames(this.myProzess);
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e);
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
+        } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException | InterruptedException e) {
             logger.error(e);
         }
     }
@@ -1537,7 +1529,6 @@ public class Metadaten {
                         if (!match) {
                             log.getAllReferences("to").add(toAdd);
                         }
-
                     }
                 }
             }
@@ -1574,8 +1565,6 @@ public class Metadaten {
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
                                     + meineSeite.getValue());
-                    // new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
-                    // + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
                 }
                 zaehler++;
             }
@@ -2236,7 +2225,10 @@ public class Metadaten {
 
     public void Validate() {
         MetadatenVerifizierung mv = new MetadatenVerifizierung();
-        mv.validate(this.gdzfile, this.myPrefs, this.myProzess);
+        boolean valid = mv.validate(this.gdzfile, this.myPrefs, this.myProzess);
+        if (valid) {
+        	Helper.setMeldung("ValidationSuccessful");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
     }
 

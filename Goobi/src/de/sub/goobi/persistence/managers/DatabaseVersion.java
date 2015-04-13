@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 7;
+    public static final int EXPECTED_VERSION = 8;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     public static int getCurrentVersion() {
@@ -89,6 +89,11 @@ public class DatabaseVersion {
                     logger.debug("Update database to version 7.");
                 }
                 updateToVersion7();
+            case 7:
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 7.");
+                }
+                updateToVersion8();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -98,6 +103,30 @@ public class DatabaseVersion {
         }
     }
 
+    private static void updateToVersion8() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table schritte modify typAutomatischScriptpfad text;");
+            runner.update(connection, "alter table schritte modify typAutomatischScriptpfad2 text;");
+            runner.update(connection, "alter table schritte modify typAutomatischScriptpfad3 text;");
+            runner.update(connection, "alter table schritte modify typAutomatischScriptpfad4 text;");
+            runner.update(connection, "alter table schritte modify typAutomatischScriptpfad5 text;");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+    
+    
     private static void updateToVersion6() {
         Connection connection = null;
         try {

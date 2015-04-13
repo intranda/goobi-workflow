@@ -46,6 +46,7 @@ import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
 import ugh.dl.DigitalDocument;
+import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -296,21 +297,14 @@ public class HelperSchritte {
         Prefs prefs = null;
         try {
             prefs = po.getRegelsatz().getPreferences();
+            Fileformat ff = po.readMetadataFile();
+            if (ff == null) {
+                logger.error("Metadata file is not readable.");
+                return -1;
+            }
             dd = po.readMetadataFile().getDigitalDocument();
-        } catch (DAOException e1) {
-            logger.error(e1);
-        } catch (PreferencesException e2) {
+        } catch (DAOException | PreferencesException | ReadException | SwapException | WriteException | IOException | InterruptedException e2) {
             logger.error(e2);
-        } catch (ReadException e2) {
-            logger.error(e2);
-        } catch (IOException e2) {
-            logger.error(e2);
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (WriteException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
 

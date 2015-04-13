@@ -519,4 +519,8 @@ public class ConfigurationHelperTest {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit());
     }
     
+    @Test
+    public void testIsConfirmLinking() {
+        assertFalse(ConfigurationHelper.getInstance().isConfirmLinking());
+    }
 }

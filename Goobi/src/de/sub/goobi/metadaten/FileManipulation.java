@@ -321,18 +321,12 @@ public class FileManipulation {
                     break;
                 }
             }
-        } catch (SwapException e1) {
-            logger.error(e1);
-        } catch (DAOException e1) {
-            logger.error(e1);
-        } catch (IOException e1) {
-            logger.error(e1);
-        } catch (InterruptedException e1) {
+        } catch (SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);
         }
 
         if (downloadFile == null || !downloadFile.exists()) {
-            String[] parameter = {filenamePrefix, currentFolder};
+            String[] parameter = { filenamePrefix, currentFolder };
             Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", parameter));
             return;
         }
@@ -428,12 +422,7 @@ public class FileManipulation {
                             }
 
                             File destinationFile = new File(tempFolder, processTitle + "_" + currentFile.getName());
-
-                            //                            if (deleteFilesAfterMove) {
-                            //                                currentFile.renameTo(destinationFile);
-                            //                            } else {
                             FileUtils.copyFile(currentFile, destinationFile);
-                            //                            }
                             break;
 
                         }
@@ -553,14 +542,7 @@ public class FileManipulation {
                             for (File object : sortedList) {
                                 FileUtils.copyFileToDirectory(object, masterDirectory);
                             }
-                        } catch (SwapException e) {
-                            logger.error(e);
-                            Helper.setFehlerMeldung("", e);
-                        } catch (DAOException e) {
-                            logger.error(e);
-                        } catch (IOException e) {
-                            logger.error(e);
-                        } catch (InterruptedException e) {
+                        } catch (SwapException | DAOException | IOException | InterruptedException e) {
                             logger.error(e);
                         }
                     } else {
@@ -580,15 +562,7 @@ public class FileManipulation {
                                         FileUtils.copyFileToDirectory(object, directory);
                                     }
 
-                                }
-
-                                catch (IOException e) {
-                                    logger.error(e);
-                                } catch (SwapException e) {
-                                    logger.error(e);
-                                } catch (DAOException e) {
-                                    logger.error(e);
-                                } catch (InterruptedException e) {
+                                } catch (IOException | SwapException | DAOException | InterruptedException e) {
                                     logger.error(e);
                                 }
 
@@ -611,13 +585,7 @@ public class FileManipulation {
                                         importedFilenames.add(object.getName());
                                     }
                                     FileUtils.copyFileToDirectory(object, directory);
-                                } catch (IOException e) {
-                                    logger.error(e);
-                                } catch (SwapException e) {
-                                    logger.error(e);
-                                } catch (DAOException e) {
-                                    logger.error(e);
-                                } catch (InterruptedException e) {
+                                } catch (IOException | SwapException | DAOException | InterruptedException e) {
                                     logger.error(e);
                                 }
                             }
@@ -637,17 +605,8 @@ public class FileManipulation {
                     insertPage = String.valueOf(++indexToImport);
                 }
             }
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e);
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
+        } catch (TypeNotAllowedForParentException | SwapException | DAOException | MetadataTypeNotAllowedException | IOException
+                | InterruptedException e) {
             logger.error(e);
         }
 
