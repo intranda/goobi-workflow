@@ -58,9 +58,10 @@
 
                 <td valign="top" class="layoutInhalt">
                     <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
-                        <h:panelGroup id="id3">
+                        <h:panelGroup id="id3" style="position:relative">
                             <h:form id="useform">
                                 <ui:insert name="breadcrumb" />
+                                <h:commandLink style="float: right; margin-right: 5px;" action="#{NavigationForm.changeTheme}" title="#{msgs.changeTheme}" value="#{msgs.changeTheme}"/>
                             </h:form>
                         </h:panelGroup>
                     </h:panelGrid>

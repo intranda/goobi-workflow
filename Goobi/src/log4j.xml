@@ -5,23 +5,23 @@
     <!--                                                                     -->
     <!-- ******************************************************************* -->
 
-    <appender name="BINARY-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender">
-        <param name="path" value="/opt/digiverso/logs/binary-vanilla-chronicle" />
-        <param name="includeCallerData" value="false" />
-        <param name="includeMappedDiagnosticContext" value="false" />
-    </appender>
+<!--     <appender name="BINARY-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/binary-vanilla-chronicle" /> -->
+<!--         <param name="includeCallerData" value="false" /> -->
+<!--         <param name="includeMappedDiagnosticContext" value="false" /> -->
+<!--     </appender> -->
 
-    <appender name="TEXT-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
-        <param name="path" value="/opt/digiverso/logs/text-vanilla-chronicle" />
-        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" />
-        <param name="stackTradeDepth" value="3" />
-    </appender>
+<!--     <appender name="TEXT-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/text-vanilla-chronicle" /> -->
+<!--         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" /> -->
+<!--         <param name="stackTradeDepth" value="3" /> -->
+<!--     </appender> -->
 
-    <appender name="BINARY-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender">
-        <param name="path" value="/opt/digiverso/logs/binary-indexed-chronicle" />
-        <param name="includeCallerData" value="false" />
-        <param name="includeMappedDiagnosticContext" value="false" />
-    </appender>
+<!--     <appender name="BINARY-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/binary-indexed-chronicle" /> -->
+<!--         <param name="includeCallerData" value="false" /> -->
+<!--         <param name="includeMappedDiagnosticContext" value="false" /> -->
+<!--     </appender> -->
 
     <appender name="TEXT-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
         <param name="path" value="/opt/digiverso/logs/text-indexed-chronicle" />
@@ -33,11 +33,11 @@
     <!-- STDOUT                                                              -->
     <!-- ******************************************************************* -->
 
-    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
-        </layout>
-    </appender>
+<!--     <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"> -->
+<!--         <layout class="org.apache.log4j.PatternLayout"> -->
+<!--             <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" /> -->
+<!--         </layout> -->
+<!--     </appender> -->
 
     <!-- ******************************************************************* -->
     <!--                                                                     -->
@@ -97,7 +97,7 @@
 
     <root>
         <level value="error" />
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
     </root>
 
 </log4j:configuration>
