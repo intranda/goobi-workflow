@@ -23,6 +23,15 @@
 
 <h:body>
     <f:view locale="#{SpracheForm.locale}">
+    
+    		<h:form>
+			<div id="feedback">
+				<h:commandLink style="padding-right:0px;" action="#{NavigationForm.changeTheme}">
+					<img src="images/newUI.png" />
+				 </h:commandLink>
+			</div>
+		</h:form>
+		
         <h:form id="metseditorTop" prependId="false">
             <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
                 <ui:include src="metseditor_head.xhtml" />
