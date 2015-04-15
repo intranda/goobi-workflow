@@ -636,9 +636,9 @@ public class User implements DatabaseObject {
             gravatar.setSize(IMAGE_SIZE);
             gravatar.setRating(GravatarRating.GENERAL_AUDIENCES);
             String url = gravatar.getUrl(email);
+            url = url.replace("d=404", "d=http://www.gravatar.com/avatar/92bb3cacd091cbee44637e73f2ea1f7c.jpg?s=27");
             return url; 
-        }
-        
+        }        
         return null;
     }
 }
