@@ -25,6 +25,14 @@
 <h:body>
     <f:view locale="#{SpracheForm.locale}">
 
+		<h:form>
+			<div id="feedback">
+				<h:commandLink style="padding-right:0px;" action="#{NavigationForm.changeTheme}">
+					<img src="images/newUI.png" />
+				 </h:commandLink>
+			</div>
+		</h:form>
+
         <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
             <ui:include src="inc_head.xhtml" />
         </table>
@@ -61,7 +69,6 @@
                         <h:panelGroup id="id3" style="position:relative">
                             <h:form id="useform">
                                 <ui:insert name="breadcrumb" />
-                                <h:commandLink style="float: right; margin-right: 5px;" action="#{NavigationForm.changeTheme}" title="#{msgs.changeTheme}" value="#{msgs.changeTheme}"/>
                             </h:form>
                         </h:panelGroup>
                     </h:panelGrid>
