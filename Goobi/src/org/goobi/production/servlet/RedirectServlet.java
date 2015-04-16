@@ -1,11 +1,9 @@
-<html>
-<!-- 
+package org.goobi.production.servlet;
+
+/**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
  * 			- http://digiverso.com 
  * 
@@ -25,36 +23,48 @@
  * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
--->
-<!-- ######################################## 
+ */
 
-			index.html als automatischen Forward auf die index.jsp
-			des Servlets
+import java.io.IOException;
 
-			Fall das Servlet noch neu kompiliert werden muss, wird
-			waehrenddessen ein animiertes Gif angezeigt.
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-######################################### -->
+import de.sub.goobi.config.ConfigurationHelper;
 
-<head>
-<meta http-equiv="Refresh" content="0; URL=ui/index.xhtml"/>
-<title>Goobi</title>
-</head>
-<body>
-<table width="100%" height="100%" border="0">
-	<tr>
-		<td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td valign="middle">
-		<div align="center"><img src="ui/images/ajax-loader.gif"><br>
-		<br>
-		<font face="Arial, Helvetica, sans-serif" style="color:#219ABD">goobi is loading</div>
-		</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-	</tr>
-</table>
-</body>
-</html>
+/**
+ * Servlet implementation class RedirectServlet
+ */
+public class RedirectServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public RedirectServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Redirect-Servlet aufgerufen");
+		String destination = "ui/index.xhtml";
+		if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
+			destination = "uii/index.xhtml";
+		}
+		response.sendRedirect(response.encodeRedirectURL(destination));
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}
