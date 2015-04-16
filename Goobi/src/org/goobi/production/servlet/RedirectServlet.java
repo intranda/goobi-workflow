@@ -36,6 +36,8 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 /**
  * Servlet implementation class RedirectServlet
+ * 
+ * @author Steffen Hankiewicz <info@intranda.com>
  */
 public class RedirectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,14 +47,12 @@ public class RedirectServlet extends HttpServlet {
      */
     public RedirectServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Redirect-Servlet aufgerufen");
 		String destination = "ui/index.xhtml";
 		if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
 			destination = "uii/index.xhtml";
