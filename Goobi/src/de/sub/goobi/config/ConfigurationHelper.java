@@ -542,6 +542,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ui_useIntrandaUI", false);
     }
     
+    public String getDashboardPlugin() {
+        return getLocalString("dashboardPlugin", null);
+    }
+    
     // proxy settings
     public boolean isUseProxy() {
         return getLocalBoolean("http_useProxy", false);
