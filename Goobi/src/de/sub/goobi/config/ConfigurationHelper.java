@@ -615,7 +615,10 @@ public class ConfigurationHelper implements Serializable {
     public boolean isConfirmLinking() {
         return getLocalBoolean("confirmLinking", false);
     }
-
+    
+    public boolean isAllowFolderLinkingForProcessList() {
+        return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
+    }
     
     // for junit tests    
     public void setParameter(String inParameter, String value) {

@@ -2432,4 +2432,8 @@ public class ProcessBean extends BasicBean {
         return ConfigurationHelper.getInstance().isConfirmLinking();
     }
     
+    public boolean getAllowFolderLinkingForProcessList() {
+        return ConfigurationHelper.getInstance().isAllowFolderLinkingForProcessList();
+    }
+    
 }
