@@ -155,7 +155,7 @@ public class JobCreation {
         return true;
     }
 
-    @SuppressWarnings("static-access")
+    @SuppressWarnings({ "static-access", "deprecation" })
     public static void moveFiles(File metsfile, String basepath, Process p) throws SwapException, DAOException, IOException, InterruptedException {
         if (ConfigurationHelper.getInstance().isImportUseOldConfiguration()) {
             File imagesFolder = new File(basepath);

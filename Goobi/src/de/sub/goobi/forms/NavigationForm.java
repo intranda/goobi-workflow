@@ -75,10 +75,12 @@ public class NavigationForm {
      * 
      * @return true if show_taskmanager in file GoobiConfig.properties is =true
      */
+    @SuppressWarnings("deprecation")
     public Boolean getShowTaskManager() {
         return ConfigurationHelper.getInstance().isShowTaskmanager();
     }
 
+    @SuppressWarnings("deprecation")
     public Boolean getShowModuleManager() {
         return ConfigurationHelper.getInstance().isShowModulmanager();
     }

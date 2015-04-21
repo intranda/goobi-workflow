@@ -68,6 +68,7 @@ import de.unigoettingen.goobi.module.api.util.UniqueID;
 
 @ManagedBean(name = "ModuleServerForm")
 @RequestScoped
+@Deprecated
 public class ModuleServerForm {
     private Boolean running = false;
     private static GoobiModuleManager modulmanager = null;

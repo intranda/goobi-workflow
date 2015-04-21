@@ -1,7 +1,5 @@
 package org.goobi.production.plugin.interfaces;
 
-import java.util.Date;
-
 import org.goobi.production.enums.PluginType;
 
 public abstract class AbstractStatisticsPlugin implements IStatisticPlugin {

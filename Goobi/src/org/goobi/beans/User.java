@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.List;
 
 import jgravatar.Gravatar;
-import jgravatar.GravatarDefaultImage;
 import jgravatar.GravatarRating;
 
 import org.apache.commons.lang.StringUtils;

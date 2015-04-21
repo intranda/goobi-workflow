@@ -31,11 +31,8 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
-import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
-
-import de.sub.goobi.helper.exceptions.DAOException;
 
 class UserMysqlHelper implements Serializable {
     /**
