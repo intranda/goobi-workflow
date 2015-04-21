@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="goobi_config.properties|hibernate.cfg.xml|log4j.properties|messages/" kind="src" path="src"/>
+	<classpathentry excluding="goobi_config.properties|hibernate.cfg.xml|log4j.properties|log4j.xml|messages/" kind="src" path="src"/>
 	<classpathentry kind="src" path="src_merge"/>
 	<classpathentry kind="src" path="src-dubious"/>
 	<classpathentry kind="src" path="test/src"/>
