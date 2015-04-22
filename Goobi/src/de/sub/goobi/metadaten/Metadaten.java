@@ -1536,6 +1536,29 @@ public class Metadaten {
         return "";
     }
 
+    public String reloadPagination() throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
+        
+        DocStruct physical = mydocument.getPhysicalDocStruct();
+        if (physical != null && physical.getAllChildren() != null) {
+            List<DocStruct> pages = physical.getAllChildren();
+
+            for (DocStruct page : pages) {
+
+                mydocument.getFileSet().removeFile(page.getAllContentFiles().get(0));
+
+                List<Reference> refs = new ArrayList<Reference>(page.getAllFromReferences());
+                for (ugh.dl.Reference ref : refs) {
+                    ref.getSource().removeReferenceTo(page);
+                }
+            }
+        }
+        while (physical.getAllChildren() != null && !physical.getAllChildren().isEmpty()) {
+            physical.removeChild(physical.getAllChildren().get(0));
+        }
+
+        return createPagination();
+    }
+    
     /**
      * alle Seiten ermitteln ================================================================
      */
