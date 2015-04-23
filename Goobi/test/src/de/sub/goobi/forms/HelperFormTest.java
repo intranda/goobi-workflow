@@ -117,7 +117,7 @@ public class HelperFormTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getVersion();
-        assertEquals("2.0", fixture);
+        assertEquals("2.1", fixture);
     }
 
     @Test
