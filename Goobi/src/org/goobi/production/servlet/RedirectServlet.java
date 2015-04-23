@@ -55,7 +55,10 @@ public class RedirectServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String destination = "ui/index.xhtml";
 		if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
-			destination = "uii/index.xhtml";
+			String path = request.getRequestURL().toString();
+			path = path.replace("/ui/index.xhtml", "/");
+			path = path.replace("/index.html", "/");
+			destination = path + "uii/index.xhtml";
 		}
 		response.sendRedirect(response.encodeRedirectURL(destination));
 	}

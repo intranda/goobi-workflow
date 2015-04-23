@@ -49,6 +49,11 @@
 		<url-pattern>/index.html</url-pattern>
 	</servlet-mapping>
 	
+	<servlet-mapping>
+		<servlet-name>Redirect Servlet</servlet-name>
+		<url-pattern>/ui/index.xhtml</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<description></description>
 		<display-name>WebInterface</display-name>
