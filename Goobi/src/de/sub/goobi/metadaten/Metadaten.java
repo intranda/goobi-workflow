@@ -1469,15 +1469,31 @@ public class Metadaten {
      * mögliche Docstructs als Kind zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsKind() {
-        return this.metahelper.getAddableDocStructTypen(this.myDocStruct, false);
+        SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, false);
+        addDocStructType2 =  getSelectedStructType(itemList, addDocStructType2);
+        return itemList;
+    }
+
+    private String getSelectedStructType(SelectItem[] itemList, String docTypeName) {
+        if (itemList != null && itemList.length > 0) {
+           for (SelectItem item : itemList)  {
+               if (item.getValue().equals(docTypeName)) {
+                   return docTypeName;
+               }
+           }
+           return itemList[0].getValue().toString();
+        } else {
+            return "";
+        }
     }
 
     /**
      * mögliche Docstructs als Nachbar zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsNachbar() {
-
-        return this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
+        SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
+        addDocStructType1 =  getSelectedStructType(itemList, addDocStructType1);
+        return itemList;
     }
 
     /*
@@ -3712,7 +3728,6 @@ public class Metadaten {
         } else {
             docstructName = addDocStructType2;
         }
-
         addableMetadata = new LinkedList<MetadatumImpl>();
         if (docstructName != null) {
 
