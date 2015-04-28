@@ -53,7 +53,7 @@ public class FileUtils {
 			/* --------------------------------
 			 * die Images zählen
 			 * --------------------------------*/
-			anzahl = inDir.list(Helper.imageNameFilter).length;
+			anzahl = inDir.list(Helper.dataFilter).length;
 
 			/* --------------------------------
 			 * die Unterverzeichnisse durchlaufen
