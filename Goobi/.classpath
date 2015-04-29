@@ -123,7 +123,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-dbcp2-2.0.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-pool2-2.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics-1.4.07.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jgravatar.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-nio-4.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-codec-1.9.jar"/>
@@ -146,5 +145,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.4.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics-1.4.10.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
