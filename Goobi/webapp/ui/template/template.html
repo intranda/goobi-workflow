@@ -27,7 +27,7 @@
 
 		<h:form>
 			<div id="feedback">
-				<h:commandLink style="padding-right:0px;" action="#{NavigationForm.changeTheme}">
+				<h:commandLink rendered="#{LoginForm.myBenutzer != null}" style="padding-right:0px;" action="#{NavigationForm.changeTheme}">
 					<img src="images/newUI.png" />
 				 </h:commandLink>
 			</div>

@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
 
+import de.sub.goobi.config.ConfigurationHelper;
+
 public class SecurityCheckFilter implements Filter {
 
     public SecurityCheckFilter() { //called once. no method arguments allowed here!
@@ -61,10 +63,13 @@ public class SecurityCheckFilter implements Filter {
         HttpServletResponse hres = (HttpServletResponse) response;
         String url = hreq.getRequestURI();
         LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
-
-        if (((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("index.xhtml")) && !url.contains("javax.faces.resource") && !url.contains("wi?")
-                && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains("index.xhtml")) {
-            hres.sendRedirect("index.xhtml");
+        String destination = "ui/index.xhtml";
+        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
+			destination = "uii/index.xhtml";
+        }
+        if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
+                && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains(destination)) {
+            hres.sendRedirect("../" + destination);
         } else {
             chain.doFilter(request, response);
         }
