@@ -396,7 +396,9 @@ public class ProzesskopieForm {
                             MetadataType mdt = this.ughHelper.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
                             Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
-                                field.setWert(md.getValue());
+                            	if ((md.getValue() != null && !md.getValue().isEmpty()) || field.getWert() == null || field.getWert().isEmpty()){
+                            		field.setWert(md.getValue());
+                                }
                                 md.setValue(field.getWert().replace("&amp;", "&"));
                             }
                         }
