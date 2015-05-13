@@ -1436,7 +1436,9 @@ public class Metadaten {
         if (!addableMetadata.isEmpty()) {
             for (MetadatumImpl mdi : addableMetadata) {
                 try {
-                    ds.addMetadata(mdi.getMd());
+                    Metadata md = new Metadata(mdi.getMd().getType());
+                    md.setValue(mdi.getValue());
+                    ds.addMetadata(md);
                 } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
                     logger.error(e);
                 }
@@ -1445,7 +1447,14 @@ public class Metadaten {
         if (!addablePersondata.isEmpty()) {
             for (MetaPerson mdp : addablePersondata) {
                 try {
-                    ds.addPerson(mdp.getP());
+                    Person p = mdp.getP();
+                    Person md = new Person(p.getType());
+                    md.setFirstname(p.getFirstname());
+                    md.setLastname(p.getLastname());
+                    md.setAuthorityID(p.getAuthorityID());
+                    md.setAuthorityURI(p.getAuthorityURI());
+                    md.setAuthorityValue(p.getAuthorityValue());
+                    ds.addPerson(p);
                 } catch (MetadataTypeNotAllowedException | IncompletePersonObjectException e) {
                     logger.error(e);
                 }
@@ -1461,7 +1470,8 @@ public class Metadaten {
             AjaxSeitenStartUndEndeSetzen();
             this.myDocStruct = temp;
         }
-
+        oldDocstructName = "";
+        createAddableData();
         return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
@@ -2850,10 +2860,12 @@ public class Metadaten {
     }
 
     public void setAddDocStructType1(String addDocStructType1) {
+        createAddableData();
         this.addDocStructType1 = addDocStructType1;
     }
 
     public String getAddDocStructType2() {
+        createAddableData();
         return this.addDocStructType2;
     }
 
@@ -3720,10 +3732,8 @@ public class Metadaten {
     }
 
     private String oldDocstructName = "";
-    private String oldDocstructName2 = "";
 
-
-    public List<MetadatumImpl> getAddableMetadata() {
+    private void createAddableData() {
 
         String docstructName = "";
         int selection = new Integer(neuesElementWohin).intValue();
@@ -3748,7 +3758,7 @@ public class Metadaten {
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
-                            meta.getSelectedItem();
+//                            meta.getSelectedItem();
                             addableMetadata.add(meta);
                         }
                     }
@@ -3756,21 +3766,6 @@ public class Metadaten {
                     logger.error(e);
                 }
             }
-        }
-        return addableMetadata;
-    }
-
-    public List<MetaPerson> getAddablePersondata() {
-        String docstructName = "";
-        int selection = new Integer(neuesElementWohin).intValue();
-        if (selection < 3) {
-            docstructName = addDocStructType1;
-        } else {
-            docstructName = addDocStructType2;
-        }
-        if (docstructName != null && (oldDocstructName2.isEmpty() || !oldDocstructName2.equals(docstructName))) {
-            oldDocstructName2 = docstructName;
-
             addablePersondata = new LinkedList<MetaPerson>();
             if (docstructName != null) {
 
@@ -3793,6 +3788,15 @@ public class Metadaten {
                 }
             }
         }
+    }
+
+    public List<MetadatumImpl> getAddableMetadata() {
+
+        return addableMetadata;
+    }
+
+    public List<MetaPerson> getAddablePersondata() {
+
         return addablePersondata;
     }
 
