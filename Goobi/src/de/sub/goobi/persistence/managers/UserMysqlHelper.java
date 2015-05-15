@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
+
 class UserMysqlHelper implements Serializable {
     /**
      * 
