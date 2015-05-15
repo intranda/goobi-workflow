@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
@@ -434,7 +435,7 @@ public class ProzesskopieFormTest {
 
         PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(List.class));
+        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);

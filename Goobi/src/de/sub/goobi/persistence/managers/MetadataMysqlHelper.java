@@ -24,6 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -49,14 +51,14 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processid, List<StringPair> metadata) throws SQLException {
+    public static void insertMetadata(int processid, Map<String, String> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO metadata (processid, name, value) VALUES ");
         List<Object> values = new ArrayList<Object>();
-        for (StringPair pair : metadata) {
+        for (Entry<String, String> pair : metadata.entrySet()) {
             sql.append("(" + processid + ", ? , ? ),");
-            values.add(pair.getOne());
-            values.add(StringEscapeUtils.escapeSql(pair.getTwo()));
+            values.add(pair.getKey());
+            values.add(StringEscapeUtils.escapeSql(pair.getValue()));
 
         }
         String sqlString = sql.toString().substring(0, sql.toString().length() - 1);

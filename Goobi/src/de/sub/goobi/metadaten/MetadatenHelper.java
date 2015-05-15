@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -65,7 +66,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
-import org.goobi.production.cli.helper.StringPair;
 import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -743,23 +743,34 @@ public class MetadatenHelper implements Comparator<Object> {
         return null;
     }
 
-    public static List<StringPair> getMetadataOfFileformat(Fileformat gdzfile) {
-        List<StringPair> metadataList = new ArrayList<>();
+    public static Map<String, String> getMetadataOfFileformat(Fileformat gdzfile) {
+        //        List<StringPair> metadataList = new ArrayList<>();
 
+        Map<String, String> metadataList = new HashMap<String, String>();
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
 
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
                     if (StringUtils.isNotBlank(md.getValue())) {
-                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                        if (metadataList.containsKey(md.getType().getName())) {
+                            String oldValue = metadataList.get(md.getType().getName());
+                            metadataList.put(md.getType().getName(), oldValue + "; " + md.getValue());
+                        } else {
+                            metadataList.put(md.getType().getName(), md.getValue());
+                        }
                     }
                 }
             }
             if (ds.getAllPersons() != null) {
                 for (Person p : ds.getAllPersons()) {
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
-                        metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                        if (metadataList.containsKey(p.getType().getName())) {
+                            String oldValue = metadataList.get(p.getType().getName());
+                            metadataList.put(p.getType().getName(), oldValue + "; " + p.getFirstname() + " " + p.getLastname());
+                        } else {
+                            metadataList.put(p.getType().getName(), p.getFirstname() + " " + p.getLastname());
+                        }
                     }
                 }
             }
@@ -769,14 +780,24 @@ public class MetadatenHelper implements Comparator<Object> {
                 if (ds.getAllMetadata() != null) {
                     for (Metadata md : ds.getAllMetadata()) {
                         if (StringUtils.isNotBlank(md.getValue())) {
-                            metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                            if (metadataList.containsKey(md.getType().getName())) {
+                                String oldValue = metadataList.get(md.getType().getName());
+                                metadataList.put(md.getType().getName(), oldValue + "; " + md.getValue());
+                            } else {
+                                metadataList.put(md.getType().getName(), md.getValue());
+                            }
                         }
                     }
                 }
                 if (ds.getAllPersons() != null) {
                     for (Person p : ds.getAllPersons()) {
                         if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
-                            metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                            if (metadataList.containsKey(p.getType().getName())) {
+                                String oldValue = metadataList.get(p.getType().getName());
+                                metadataList.put(p.getType().getName(), oldValue + "; " + p.getFirstname() + " " + p.getLastname());
+                            } else {
+                                metadataList.put(p.getType().getName(), p.getFirstname() + " " + p.getLastname());
+                            }
                         }
                     }
                 }
@@ -785,7 +806,12 @@ public class MetadatenHelper implements Comparator<Object> {
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
                     if (StringUtils.isNotBlank(md.getValue())) {
-                        metadataList.add(new StringPair(md.getType().getName(), md.getValue()));
+                        if (metadataList.containsKey(md.getType().getName())) {
+                            String oldValue = metadataList.get(md.getType().getName());
+                            metadataList.put(md.getType().getName(), oldValue + "; " + md.getValue());
+                        } else {
+                            metadataList.put(md.getType().getName(), md.getValue());
+                        }
                     }
                 }
             }
@@ -793,7 +819,12 @@ public class MetadatenHelper implements Comparator<Object> {
 
                 for (Person p : ds.getAllPersons()) {
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
-                        metadataList.add(new StringPair(p.getType().getName(), p.getFirstname() + " " + p.getLastname()));
+                        if (metadataList.containsKey(p.getType().getName())) {
+                            String oldValue = metadataList.get(p.getType().getName());
+                            metadataList.put(p.getType().getName(), oldValue + "; " + p.getFirstname() + " " + p.getLastname());
+                        } else {
+                            metadataList.put(p.getType().getName(), p.getFirstname() + " " + p.getLastname());
+                        }
                     }
                 }
             }

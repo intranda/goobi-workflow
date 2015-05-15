@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -50,7 +51,6 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
-import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.export.ExportDocket;
 
 import ugh.dl.Fileformat;
@@ -959,7 +959,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         ff.write(metadataFileName);
 
-        List<StringPair> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+       Map<String, String> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
     }

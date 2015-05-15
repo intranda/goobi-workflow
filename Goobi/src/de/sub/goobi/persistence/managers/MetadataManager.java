@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.StringPair;
@@ -41,7 +42,7 @@ public class MetadataManager implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processId, List<StringPair> metadata) {
+    public static void insertMetadata(int processId, Map<String, String> metadata) {
         logger.trace("Insert new metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.insertMetadata(processId, metadata);
@@ -50,7 +51,7 @@ public class MetadataManager implements Serializable {
         }
     }
 
-    public static void updateMetadata(int processId, List<StringPair> metadata) {
+    public static void updateMetadata(int processId, Map<String, String> metadata) {
         logger.trace("Update metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.removeMetadata(processId);
