@@ -166,9 +166,9 @@ public class SearchResultHelper {
         }
     }
 
-    public XWPFDocument getResultAsWord(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
+    public XWPFDocument getResultAsWord(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         @SuppressWarnings("rawtypes")
-        List list = search(columnList, filter, showClosedProcesses, showArchivedProjects);
+        List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
         XWPFDocument doc = new XWPFDocument();
 
@@ -202,14 +202,14 @@ public class SearchResultHelper {
         return doc;
     }
 
-    public void getResultAsRtf(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects,
+    public void getResultAsRtf(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects,
             OutputStream out) {
         Document document = new Document();
 
         RtfWriter2.getInstance(document, out);
 
         @SuppressWarnings("rawtypes")
-        List list = search(columnList, filter, showClosedProcesses, showArchivedProjects);
+        List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
         document.open();
 
@@ -245,9 +245,9 @@ public class SearchResultHelper {
         return;
     }
 
-    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
+    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         @SuppressWarnings("rawtypes")
-        List list = search(columnList, filter, showClosedProcesses, showArchivedProjects);
+        List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet("Search results");
@@ -289,7 +289,7 @@ public class SearchResultHelper {
     }
 
     @SuppressWarnings("rawtypes")
-    private List search(List<SearchColumn> columnList, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
+    private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ");
 
@@ -337,6 +337,9 @@ public class SearchResultHelper {
         sb.append(" WHERE ");
         sb.append(sql);
 
+        if (order != null && !order.isEmpty()) {
+            sb.append(" ORDER BY " + order);
+        }
         List list = ProcessManager.runSQL(sb.toString());
         return list;
     }
