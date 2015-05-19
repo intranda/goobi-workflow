@@ -1941,7 +1941,7 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sch.getResult(searchField, this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
 
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
@@ -2005,7 +2005,7 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb = sch.getResult(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sch.getResult(searchField, this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
 
                 wb.write(out);
                 out.flush();
@@ -2032,7 +2032,7 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.doc\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                XWPFDocument wb = sch.getResultAsWord(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects);
+                XWPFDocument wb = sch.getResultAsWord(searchField, this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2058,7 +2058,7 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.rtf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                sch.getResultAsRtf(searchField, this.filter, this.showClosedProcesses, this.showArchivedProjects, out);
+                sch.getResultAsRtf(searchField, this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects, out);
                 out.flush();
                 facesContext.responseComplete();
 
