@@ -266,11 +266,11 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationHeaderTitle() {
-        return getLocalString("ApplicationHeaderTitle", "Goobi - Universitätsbibliothek Göttingen");
+        return getLocalString("ApplicationHeaderTitle", "Goobi intranda edition");
     }
 
     public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.gdz.uni-goettingen.de");
+        return getLocalString("ApplicationTitle", "http://goobi.intranda.com");
     }
 
     public String getApplicationTitleStyle() {
@@ -538,6 +538,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("downloadAvailableColumn");
     }
 
+    public boolean isUseIntrandaUi() {
+        return getLocalBoolean("ui_useIntrandaUI", false);
+    }
+    
+    public String getDashboardPlugin() {
+        return getLocalString("dashboardPlugin", null);
+    }
+    
     // proxy settings
     public boolean isUseProxy() {
         return getLocalBoolean("http_useProxy", false);
@@ -603,6 +611,15 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("goobiModuleServerPort");
     }
 
+    
+    public boolean isConfirmLinking() {
+        return getLocalBoolean("confirmLinking", false);
+    }
+    
+    public boolean isAllowFolderLinkingForProcessList() {
+        return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
+    }
+    
     // for junit tests    
     public void setParameter(String inParameter, String value) {
         config.setProperty(inParameter, value);

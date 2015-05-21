@@ -31,6 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import jgravatar.Gravatar;
+import jgravatar.GravatarRating;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -66,6 +70,7 @@ public class User implements DatabaseObject {
 	private boolean mitMassendownload = false;
 	private Ldap ldapGruppe;
 	private String css;
+	private String email;
 	
 	
 	private boolean displayDeactivatedProjects = false;
@@ -83,7 +88,7 @@ public class User implements DatabaseObject {
 	private boolean displayOnlySelectedTasks = false;
 	private boolean displayOnlyOpenTasks = false;
 	
-	
+	private static final int IMAGE_SIZE = 27;
 	
 
 	public void lazyLoad(){
@@ -610,6 +615,30 @@ public class User implements DatabaseObject {
 
     public void setDisplayModulesColumn(boolean displayModulesColumn) {
         this.displayModulesColumn = displayModulesColumn;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public void setImageUrl (String url) {
+        
+    }
+    
+    public String getImageUrl() {
+        if (StringUtils.isNotEmpty(email)) {
+            Gravatar gravatar = new Gravatar();
+            gravatar.setSize(IMAGE_SIZE);
+            gravatar.setRating(GravatarRating.GENERAL_AUDIENCES);
+            String url = gravatar.getUrl(email);
+            url = url.replace("d=404", "d=http://www.gravatar.com/avatar/92bb3cacd091cbee44637e73f2ea1f7c.jpg?s=27");
+            return url; 
+        }        
+        return null;
     }
 }
 

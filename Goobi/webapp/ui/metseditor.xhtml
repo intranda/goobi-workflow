@@ -19,14 +19,14 @@
                 <td>
                     <h:panelGroup id="vdid3" rendered="#{not Metadaten.nurLesenModus}">
 
-                        <h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Paginierung'}">
+                        <h:commandLink id="vdid4" action="#{Metadaten.AnsichtAendern}" value="#{msgs.paginierung}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Paginierung'}"  disabled="#{Metadaten.physicalTopstruct}">
                             <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax execute="@form" render=":vdid3 :metadatenRechtsWrapp :paginationForm" />
                         </h:commandLink>
                         <h:outputText id="vdid6" value="#{msgs.paginierung}" style="font-weight:bold;font-size: 11px" rendered="#{Metadaten.modusAnsicht == 'Paginierung'}" />
                         <h:outputText id="vdid7" value=" | " style="font-size: 11px;" />
 
-                        <h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}">
+                        <h:commandLink id="vdid8" action="#{Metadaten.AnsichtAendern}" value="#{msgs.strukturdaten}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'Strukturdaten'}"  disabled="#{Metadaten.physicalTopstruct}">
                             <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax execute="@form" render=":vdid3 :metadatenRechtsWrapp :validation :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm" />
                         </h:commandLink>
@@ -43,7 +43,7 @@
 
                         <h:outputText id="vdid15" value=" | " style="font-size: 11px;" rendered="#{Metadaten.displayFileManipulation}" />
 
-                        <h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}">
+                        <h:commandLink id="vdid16" action="#{Metadaten.AnsichtAendern}" value="#{msgs.fileManipulation}" style="font-size: 11px;" rendered="#{Metadaten.modusAnsicht != 'File' and Metadaten.displayFileManipulation}" disabled="#{Metadaten.physicalTopstruct}">
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax execute="@form" render=":vdid3 :metadatenRechtsWrapp :fileUploadForm :fileDownloadForm :serverUploadForm :serverDownloadForm" />
                         </h:commandLink>

@@ -140,6 +140,7 @@ public class ProzesskopieForm {
 
     public String Prepare() {
         atstsl = "";
+        opacSuchbegriff = "";
         //      Helper.getHibernateSession().refresh(this.prozessVorlage);
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             if (this.prozessVorlage.getSchritteList().size() == 0) {
@@ -231,6 +232,7 @@ public class ProzesskopieForm {
 
             fa.setInitEnd(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@initEnd]"));
 
+          
             /*
              * -------------------------------- Bindung an ein Metadatum eines Docstructs --------------------------------
              */
@@ -248,6 +250,11 @@ public class ProzesskopieForm {
              */
             int selectItemCount = cp.getParamList("createNewProcess.itemlist.item(" + i + ").select").size();
             /* Children durchlaufen und SelectItems erzeugen */
+
+            if (selectItemCount ==1) {
+            	fa.setWert(cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(0)"));
+            }
+            
             if (selectItemCount > 0) {
                 if (cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@multiselect]", "true").equals("true")) {
                     fa.setMultiselect(true);
@@ -389,7 +396,9 @@ public class ProzesskopieForm {
                             MetadataType mdt = this.ughHelper.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
                             Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
-                                field.setWert(md.getValue());
+                            	if ((md.getValue() != null && !md.getValue().isEmpty()) || field.getWert() == null || field.getWert().isEmpty()){
+                            		field.setWert(md.getValue());
+                                }
                                 md.setValue(field.getWert().replace("&amp;", "&"));
                             }
                         }

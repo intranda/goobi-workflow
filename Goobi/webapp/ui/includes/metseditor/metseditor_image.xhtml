@@ -225,7 +225,7 @@
                     <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                 </h:commandButton>
 
-                <h:outputText value="#{msgs.setRepresentative} " rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}" />
+                <h:outputText value="#{msgs.setRepresentative}: " rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}" />
                 <h:selectOneMenu style="width: 200px" value="#{Metadaten.currentRepresentativePage}" rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}">
                     <f:selectItems value="#{Metadaten.alleSeiten}" />
                 </h:selectOneMenu>

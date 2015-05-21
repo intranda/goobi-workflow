@@ -294,12 +294,12 @@ public final class ConfigDisplayRules {
             if (this.allValues.isEmpty() && config != null) {
                 getDisplayItems();
             } else if (config == null) {
-                return DisplayType.textarea;
+                return DisplayType.input;
             }
             HashMap<String, HashMap<String, ArrayList<Item>>> itemsByType = this.allValues.get(myproject);
             if (itemsByType == null) {
                 if (myproject.equals("*")) {
-                    return DisplayType.textarea;
+                    return DisplayType.input;
                 } else {
                     return getElementTypeByName("*", myelementName);
                 }
@@ -317,7 +317,7 @@ public final class ConfigDisplayRules {
         }
 
         if (myproject.equals("*")) {
-            return DisplayType.textarea;
+            return DisplayType.input;
         } else {
             return getElementTypeByName("*", myelementName);
         }

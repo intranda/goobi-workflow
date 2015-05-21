@@ -36,12 +36,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.IProcessDataExport;
+import org.goobi.production.cli.helper.StringPair;
 import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -68,6 +69,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.MetadataManager;
 
 /**
  * This class provides xml logfile generation. After the the generation the file will be written to user home directory
@@ -355,7 +357,26 @@ public class ExportXmlLog implements IProcessDataExport {
             digdoc.addContent(docElements);
             processElements.add(digdoc);
         }
-
+        // metadata
+        List<StringPair> metadata = MetadataManager.getMetadata(process.getId());
+        if (metadata != null && !metadata.isEmpty()) {
+            List<Element> mdlist = new ArrayList<Element>();
+            for (StringPair md : metadata) {
+                String name = md.getOne();
+                String value = md.getTwo();
+                if (StringUtils.isNotBlank(value) && StringUtils.isNotBlank(name)) {
+                    Element element = new Element("metadata", xmlns);
+                    element.setAttribute("name", name);
+                    element.addContent(value);
+                    mdlist.add(element);
+                }
+            }
+            if (!mdlist.isEmpty()) {
+                Element metadataElement = new Element("metadatalist", xmlns);
+                metadataElement.addContent(mdlist);
+                processElements.add(metadataElement);
+            }
+        }
         // METS information
         Element metsElement = new Element("metsInformation", xmlns);
         List<Element> metadataElements = new ArrayList<Element>();

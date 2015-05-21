@@ -349,11 +349,18 @@
 
 					<!-- Download-Schaltknopf -->
 					<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="action16" title="#{msgs.imHomeVerzeichnisVerlinken}"
-						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
+						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse and !ProzessverwaltungForm.confirmLink}">
 						<h:graphicImage value="images/buttons/load_down2.gif" style="margin-right:2px" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 					</h:commandLink>
-
+                    
+                    <!-- Download with confirmation -->
+                    <h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="action16a" title="#{msgs.imHomeVerzeichnisVerlinken}"
+                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse and ProzessverwaltungForm.confirmLink}" onclick="if (!confirm('#{msgs.confirmLink}')) return false">
+                        <h:graphicImage value="images/buttons/load_down2.gif" style="margin-right:2px" />
+                        <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                    </h:commandLink>
+                    
 					<!-- Download-Schaltknopf -->
 					<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="action17" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}"
 						onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false"
@@ -361,6 +368,7 @@
 						<h:graphicImage value="images/buttons/load_down3.gif" style="margin-right:2px" />
 						<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 					</h:commandLink>
+
 
 					<!-- Upload-Schaltknopf -->
 					<h:commandLink action="#{ProzessverwaltungForm.UploadFromHome}" id="action18" title="#{msgs.ausHomeverzeichnisEntfernen}"

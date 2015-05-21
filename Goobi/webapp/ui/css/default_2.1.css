@@ -1,3 +1,20 @@
+#feedback a{ 
+	display:block; 
+	position:fixed; 
+	bottom:50px; 
+	right:-1px; 
+	background:#E52C29; 
+	padding:7px 5px;
+ 	border:1px solid #E52C29;
+ 	border-left-color:#E52C29;
+ 	border-top-color:#E52C29;
+ }
+ 
+ #feedback a:hover{
+ 	background:#368EE0;
+ 	border:1px solid #368EE0;
+ }
+
 /* ######################################## 
 
 					CSS-Datei fuer die Formatierung der Webseiten
@@ -502,6 +519,44 @@ a.text_head:hover {
 	height: 25px;
 	width: 100%;
 	padding: 5px;
+	font-size: 11px;
+	border-bottom: 1px solid #4b4b98;
+	text-align: left;
+	color: black;
+}
+
+.MetsEditorButtons {
+	height: 25px;
+	width: 100%;
+	padding: 5px;
+	font-size: 11px;
+	border-bottom: 1px solid #4b4b98;
+	text-align: left;
+	color: black;
+	min-width: 40px;
+	vertical-align: top;
+}
+
+.MetsEditorLeftPerson {
+	width: 100%;
+	font-size: 11px;
+	border-bottom: 1px solid #4b4b98;
+	text-align: left;
+	color: black;
+	vertical-align: top;
+	padding:0px;
+}
+.MetsEditorLeft1 {
+	width: 25%;
+	font-size: 11px;
+	border-bottom: 1px solid #4b4b98;
+	text-align: left;
+	color: black;
+	vertical-align: top;
+	padding-top:6px;
+}
+.MetsEditorLeft2 {
+	width: 75%;
 	font-size: 11px;
 	border-bottom: 1px solid #4b4b98;
 	text-align: left;

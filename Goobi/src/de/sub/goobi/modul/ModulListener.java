@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 
 import de.sub.goobi.forms.ModuleServerForm;
 
+@Deprecated
 public class ModulListener implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(ModulListener.class);
 

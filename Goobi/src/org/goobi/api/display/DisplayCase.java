@@ -59,12 +59,12 @@ public class DisplayCase {
 			itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
 			} else {
 				// no ruleset file
-				displayType = DisplayType.getByTitle("textarea");
+				displayType = DisplayType.getByTitle("input");
 				itemList.add(new Item(metaName, "", false));
 			}
 		} catch (Exception e) {
 			// incorrect ruleset file
-			displayType = DisplayType.getByTitle("textarea");
+			displayType = DisplayType.getByTitle("input");
 			itemList.add(new Item(metaName, "", false));
 		}
 			
@@ -88,12 +88,12 @@ public class DisplayCase {
 				itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
 			} else {
 				// no ruleset file
-				displayType = DisplayType.getByTitle("textarea");
+				displayType = DisplayType.getByTitle("input");
 				itemList.add(new Item(metaName, "", false));
 			}
 		} catch (Exception e) {
 			// incorrect ruleset file
-			displayType = DisplayType.getByTitle("textarea");
+			displayType = DisplayType.getByTitle("input");
 			itemList.add(new Item(metaName, "", false));
 		}
 		

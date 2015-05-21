@@ -28,10 +28,16 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 
+import java.util.HashMap;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 
 @ManagedBean(name = "NavigationForm")
 @SessionScoped
@@ -42,7 +48,9 @@ public class NavigationForm {
     private boolean showSidebar = true;
     private String activeTab = "productionStatistics";
     private String activeImportTab = "recordImport";
-
+    private HashMap<String, String> uiStatus = new HashMap<String, String>();
+    private String currentTheme = "/uii";
+    
     public String getAktuell() {
         return this.aktuell;
     }
@@ -67,10 +75,12 @@ public class NavigationForm {
      * 
      * @return true if show_taskmanager in file GoobiConfig.properties is =true
      */
+    @SuppressWarnings("deprecation")
     public Boolean getShowTaskManager() {
         return ConfigurationHelper.getInstance().isShowTaskmanager();
     }
 
+    @SuppressWarnings("deprecation")
     public Boolean getShowModuleManager() {
         return ConfigurationHelper.getInstance().isShowModulmanager();
     }
@@ -114,4 +124,24 @@ public class NavigationForm {
     public void setActiveImportTab(String activeImportTab) {
         this.activeImportTab = activeImportTab;
     }
+    
+    public HashMap<String, String> getUiStatus() {
+		return uiStatus;
+	}
+
+    public String changeTheme() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        String completePath = context.getExternalContext().getRequestServletPath();
+        if (StringUtils.isNotBlank(completePath)) {
+            completePath = completePath.replace("/uii", "");
+            completePath = completePath.replace("/ui", "");
+        }
+        if (currentTheme.equals("/uii")) {
+            currentTheme = "/ui";
+        } else {
+            currentTheme = "/uii";
+        }
+        return currentTheme + completePath + "?faces-redirect=true";
+    }
+    
 }

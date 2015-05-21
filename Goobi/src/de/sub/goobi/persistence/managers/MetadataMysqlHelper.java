@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -19,11 +20,15 @@ package de.sub.goobi.persistence.managers;
  */
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.production.cli.helper.StringPair;
 
@@ -46,14 +51,14 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processid, List<StringPair> metadata) throws SQLException {
+    public static void insertMetadata(int processid, Map<String, String> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO metadata (processid, name, value) VALUES ");
         List<Object> values = new ArrayList<Object>();
-        for (StringPair pair : metadata) {
+        for (Entry<String, String> pair : metadata.entrySet()) {
             sql.append("(" + processid + ", ? , ? ),");
-            values.add(pair.getOne());
-            values.add( StringEscapeUtils.escapeSql(pair.getTwo()));
+            values.add(pair.getKey());
+            values.add(StringEscapeUtils.escapeSql(pair.getValue()));
 
         }
         String sqlString = sql.toString().substring(0, sql.toString().length() - 1);
@@ -86,4 +91,39 @@ class MetadataMysqlHelper implements Serializable {
             }
         }
     }
+
+    public static List<StringPair> getMetadata(int processId) throws SQLException {
+        String sql = "SELECT * FROM metadata WHERE processid = ? ORDER BY name";
+        Object[] param = { processId };
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, resultSetToMetadataHandler, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<List<StringPair>>() {
+        @Override
+        public List<StringPair> handle(ResultSet rs) throws SQLException {
+            List<StringPair> answer = new ArrayList<StringPair>();
+            try {
+                while (rs.next()) {
+                   String name = rs.getString("name");
+                   String value = rs.getString("value");
+                   StringPair sp = new StringPair(name, value);
+                   answer.add(sp);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
 }

@@ -1,0 +1,103 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+<!--     <appender name="BINARY-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryVanillaChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/binary-vanilla-chronicle" /> -->
+<!--         <param name="includeCallerData" value="false" /> -->
+<!--         <param name="includeMappedDiagnosticContext" value="false" /> -->
+<!--     </appender> -->
+
+<!--     <appender name="TEXT-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/text-vanilla-chronicle" /> -->
+<!--         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" /> -->
+<!--         <param name="stackTradeDepth" value="3" /> -->
+<!--     </appender> -->
+
+<!--     <appender name="BINARY-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/binary-indexed-chronicle" /> -->
+<!--         <param name="includeCallerData" value="false" /> -->
+<!--         <param name="includeMappedDiagnosticContext" value="false" /> -->
+<!--     </appender> -->
+
+    <appender name="TEXT-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
+        <param name="path" value="/opt/digiverso/logs/text-indexed-chronicle" />
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" />
+        <param name="stackTradeDepth" value="3" />
+    </appender>
+
+    <!-- ******************************************************************* -->
+    <!-- STDOUT                                                              -->
+    <!-- ******************************************************************* -->
+
+<!--     <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"> -->
+<!--         <layout class="org.apache.log4j.PatternLayout"> -->
+<!--             <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" /> -->
+<!--         </layout> -->
+<!--     </appender> -->
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <logger name="de.sub.goobi" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+    <logger name="org.goobi" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+
+    <logger name="de.unigoettingen.sub.search.opac" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+    <logger name="ugh" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+    <logger name="de.sub.goobi.persistence" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+    <logger name="de.sub.goobi.Metadaten" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+    <logger name="de.unigoettingen.gdz.goobi.contentserver" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+
+    <logger name="de.intranda.goobi" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+    <logger name="org.quartz" additivity="false">
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </logger>
+
+
+    <!-- ******************************************************************* -->
+    <!--                                                                     -->
+    <!-- ******************************************************************* -->
+
+    <root>
+        <level value="error" />
+        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+    </root>
+
+</log4j:configuration>

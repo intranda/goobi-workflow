@@ -167,6 +167,8 @@ public class Metadaten {
     private SelectItem structSeiten[];
     private MetadatumImpl structSeitenNeu[];
     private DocStruct logicalTopstruct;
+    private DocStruct physicalTopstruct;
+    private DocStruct currentTopstruct;
 
     private boolean modusHinzufuegen = false;
     private boolean modusHinzufuegenPerson = false;
@@ -298,7 +300,7 @@ public class Metadaten {
                 Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
                 logger.error(e);
             }
-            MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+            MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             return "";
         }
     }
@@ -390,7 +392,7 @@ public class Metadaten {
             try {
                 DocStruct rueckgabe = this.metahelper.ChangeCurrentDocstructType(this.myDocStruct, this.tempWert);
                 MetadatenalsBeanSpeichern(rueckgabe);
-                MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+                MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             } catch (DocStructHasNoTypeException | MetadataTypeNotAllowedException | TypeNotAllowedAsChildException
                     | TypeNotAllowedForParentException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes: ", e.getMessage());
@@ -430,7 +432,7 @@ public class Metadaten {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
     }
 
@@ -458,7 +460,7 @@ public class Metadaten {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
     }
 
@@ -904,8 +906,9 @@ public class Metadaten {
 
         createDefaultValues(this.logicalTopstruct);
         MetadatenalsBeanSpeichern(this.logicalTopstruct);
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
-
+        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct, false);
+        physicalTopstruct = mydocument.getPhysicalDocStruct();
+        currentTopstruct = logicalTopstruct;
         if (!this.nurLesenModus) {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Paginierung";
@@ -923,8 +926,6 @@ public class Metadaten {
             }
         }
     }
-
- 
 
     public boolean isCheckForRepresentative() {
         MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
@@ -1068,8 +1069,8 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
-    private String MetadatenalsTree3Einlesen1(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct) {
-        this.tree3 = buildTree(inTree, inLogicalTopStruct);
+    private String MetadatenalsTree3Einlesen1(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct, boolean expandAll) {
+        this.tree3 = buildTree(inTree, inLogicalTopStruct, expandAll);
 
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1078,7 +1079,7 @@ public class Metadaten {
     }
 
     @SuppressWarnings("rawtypes")
-    private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct) {
+    private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct, boolean expandAll) {
         HashMap map;
         TreeNodeStruct3 knoten;
         List<DocStruct> status = new ArrayList<DocStruct>();
@@ -1118,7 +1119,7 @@ public class Metadaten {
             map = (HashMap) iter.next();
             knoten = (TreeNodeStruct3) map.get("node");
             // Ausklappstatus wiederherstellen
-            if (status.contains(knoten.getStruct())) {
+            if (status.contains(knoten.getStruct()) || expandAll) {
                 knoten.setExpanded(true);
             }
             // Selection wiederherstellen
@@ -1224,7 +1225,7 @@ public class Metadaten {
                 logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
             }
         }
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -1238,7 +1239,7 @@ public class Metadaten {
                 logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
             }
         }
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -1249,7 +1250,7 @@ public class Metadaten {
     public String KnotenVerschieben() throws TypeNotAllowedAsChildException {
         this.myDocStruct.getParent().removeChild(this.myDocStruct);
         this.tempStrukturelement.addChild(this.myDocStruct);
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.neuesElementWohin = "1";
         return "metseditor";
     }
@@ -1271,7 +1272,7 @@ public class Metadaten {
 
         }
         // den Tree neu einlesen
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     public String duplicateNode() {
@@ -1297,7 +1298,7 @@ public class Metadaten {
             }
         }
 
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
@@ -1435,7 +1436,9 @@ public class Metadaten {
         if (!addableMetadata.isEmpty()) {
             for (MetadatumImpl mdi : addableMetadata) {
                 try {
-                    ds.addMetadata(mdi.getMd());
+                    Metadata md = new Metadata(mdi.getMd().getType());
+                    md.setValue(mdi.getValue());
+                    ds.addMetadata(md);
                 } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
                     logger.error(e);
                 }
@@ -1444,7 +1447,14 @@ public class Metadaten {
         if (!addablePersondata.isEmpty()) {
             for (MetaPerson mdp : addablePersondata) {
                 try {
-                    ds.addPerson(mdp.getP());
+                    Person p = mdp.getP();
+                    Person md = new Person(p.getType());
+                    md.setFirstname(p.getFirstname());
+                    md.setLastname(p.getLastname());
+                    md.setAuthorityID(p.getAuthorityID());
+                    md.setAuthorityURI(p.getAuthorityURI());
+                    md.setAuthorityValue(p.getAuthorityValue());
+                    ds.addPerson(p);
                 } catch (MetadataTypeNotAllowedException | IncompletePersonObjectException e) {
                     logger.error(e);
                 }
@@ -1460,24 +1470,41 @@ public class Metadaten {
             AjaxSeitenStartUndEndeSetzen();
             this.myDocStruct = temp;
         }
-
-        return MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        oldDocstructName = "";
+        createAddableData();
+        return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     /**
      * mögliche Docstructs als Kind zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsKind() {
-        return this.metahelper.getAddableDocStructTypen(this.myDocStruct, false);
+        SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, false);
+        //      addDocStructType2 =  getSelectedStructType(itemList, addDocStructType2);
+        return itemList;
     }
 
     /**
      * mögliche Docstructs als Nachbar zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsNachbar() {
-
-        return this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
+        SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
+        //      addDocStructType1 =  getSelectedStructType(itemList, addDocStructType1);
+        return itemList;
     }
+
+    //    private String getSelectedStructType(SelectItem[] itemList, String docTypeName) {
+    //        if (itemList != null && itemList.length > 0) {
+    //           for (SelectItem item : itemList)  {
+    //               if (item.getValue().equals(docTypeName)) {
+    //                   return docTypeName;
+    //               }
+    //           }
+    //           return itemList[0].getValue().toString();
+    //        } else {
+    //            return "";
+    //        }
+    //    }
 
     /*
      * ##################################################### ##################################################### ## ## Strukturdaten: Seiten ##
@@ -1487,15 +1514,7 @@ public class Metadaten {
     private void checkImageNames() {
         try {
             imagehelper.checkImageNames(this.myProzess);
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e);
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
+        } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException | InterruptedException e) {
             logger.error(e);
         }
     }
@@ -1536,12 +1555,34 @@ public class Metadaten {
                         if (!match) {
                             log.getAllReferences("to").add(toAdd);
                         }
-
                     }
                 }
             }
         }
         return "";
+    }
+
+    public String reloadPagination() throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
+
+        DocStruct physical = mydocument.getPhysicalDocStruct();
+        if (physical != null && physical.getAllChildren() != null) {
+            List<DocStruct> pages = physical.getAllChildren();
+
+            for (DocStruct page : pages) {
+
+                mydocument.getFileSet().removeFile(page.getAllContentFiles().get(0));
+
+                List<Reference> refs = new ArrayList<Reference>(page.getAllFromReferences());
+                for (ugh.dl.Reference ref : refs) {
+                    ref.getSource().removeReferenceTo(page);
+                }
+            }
+        }
+        while (physical.getAllChildren() != null && !physical.getAllChildren().isEmpty()) {
+            physical.removeChild(physical.getAllChildren().get(0));
+        }
+
+        return createPagination();
     }
 
     /**
@@ -1573,8 +1614,6 @@ public class Metadaten {
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
                                     + meineSeite.getValue());
-                    // new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
-                    // + meineSeite.getValue() + " - " + mySeitenDocStruct.getImageName());
                 }
                 zaehler++;
             }
@@ -2157,7 +2196,7 @@ public class Metadaten {
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
-                    MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+                    MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
                 } else {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
@@ -2215,7 +2254,7 @@ public class Metadaten {
 
                     }
 
-                    MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+                    MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
                 } else {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
@@ -2235,7 +2274,10 @@ public class Metadaten {
 
     public void Validate() {
         MetadatenVerifizierung mv = new MetadatenVerifizierung();
-        mv.validate(this.gdzfile, this.myPrefs, this.myProzess);
+        boolean valid = mv.validate(this.gdzfile, this.myPrefs, this.myProzess);
+        if (valid) {
+            Helper.setMeldung("ValidationSuccessful");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
     }
 
@@ -2422,9 +2464,8 @@ public class Metadaten {
             }
         }
         try {
-            // int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
-            myBild = null;
-            BildErmitteln(0);
+            int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
+            BildErmitteln(pageNumber);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2819,10 +2860,12 @@ public class Metadaten {
     }
 
     public void setAddDocStructType1(String addDocStructType1) {
+        createAddableData();
         this.addDocStructType1 = addDocStructType1;
     }
 
     public String getAddDocStructType2() {
+        createAddableData();
         return this.addDocStructType2;
     }
 
@@ -3515,7 +3558,7 @@ public class Metadaten {
         if (this.modusCopyDocstructFromOtherProcess) {
             try {
                 treeOfFilteredProcess =
-                        buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct());
+                        buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct(), false);
 
             } catch (PreferencesException e) {
                 logger.error("Error loading the tree for filtered processes (PreferencesException): ", e);
@@ -3599,7 +3642,7 @@ public class Metadaten {
 
             this.tempStrukturelement.addChild(docStructFromFilteredProcess);
         }
-        MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.neuesElementWohin = "1";
     }
 
@@ -3688,7 +3731,9 @@ public class Metadaten {
         myBenutzerID = id;
     }
 
-    public List<MetadatumImpl> getAddableMetadata() {
+    private String oldDocstructName = "";
+
+    private void createAddableData() {
 
         String docstructName = "";
         int selection = new Integer(neuesElementWohin).intValue();
@@ -3697,60 +3742,77 @@ public class Metadaten {
         } else {
             docstructName = addDocStructType2;
         }
+        if (docstructName != null && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
+            oldDocstructName = docstructName;
 
-        addableMetadata = new LinkedList<MetadatumImpl>();
-        if (docstructName != null) {
+            addableMetadata = new LinkedList<MetadatumImpl>();
+            if (docstructName != null) {
 
-            DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
-            try {
-                DocStruct ds = this.mydocument.createDocStruct(dst);
+                DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
+                try {
+                    DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                List<? extends Metadata> myTempMetadata =
-                        this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper
-                                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
-                if (myTempMetadata != null) {
-                    for (Metadata metadata : myTempMetadata) {
-                        MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
-                        meta.getSelectedItem();
-                        addableMetadata.add(meta);
+                    List<? extends Metadata> myTempMetadata =
+                            this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper
+                                    .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
+                    if (myTempMetadata != null) {
+                        for (Metadata metadata : myTempMetadata) {
+                            MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
+//                            meta.getSelectedItem();
+                            addableMetadata.add(meta);
+                        }
                     }
+                } catch (TypeNotAllowedForParentException e) {
+                    logger.error(e);
                 }
-            } catch (TypeNotAllowedForParentException e) {
-                logger.error(e);
+            }
+            addablePersondata = new LinkedList<MetaPerson>();
+            if (docstructName != null) {
+
+                DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
+                try {
+                    DocStruct ds = this.mydocument.createDocStruct(dst);
+
+                    List<? extends Metadata> myTempMetadata =
+                            this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper
+                                    .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
+                    if (myTempMetadata != null) {
+                        for (Metadata metadata : myTempMetadata) {
+                            MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds);
+
+                            addablePersondata.add(meta);
+                        }
+                    }
+                } catch (TypeNotAllowedForParentException e) {
+                    logger.error(e);
+                }
             }
         }
+    }
+
+    public List<MetadatumImpl> getAddableMetadata() {
+
         return addableMetadata;
     }
 
     public List<MetaPerson> getAddablePersondata() {
-        String docstructName = "";
-        int selection = new Integer(neuesElementWohin).intValue();
-        if (selection < 3) {
-            docstructName = addDocStructType1;
-        } else {
-            docstructName = addDocStructType2;
-        }
-        addablePersondata = new LinkedList<MetaPerson>();
-        if (docstructName != null) {
 
-            DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
-            try {
-                DocStruct ds = this.mydocument.createDocStruct(dst);
-
-                List<? extends Metadata> myTempMetadata =
-                        this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper
-                                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
-                if (myTempMetadata != null) {
-                    for (Metadata metadata : myTempMetadata) {
-                        MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds);
-
-                        addablePersondata.add(meta);
-                    }
-                }
-            } catch (TypeNotAllowedForParentException e) {
-                logger.error(e);
-            }
-        }
         return addablePersondata;
     }
+
+    public void changeTopstruct() {
+        if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
+            currentTopstruct = physicalTopstruct;
+            modusAnsicht = "Metadaten";
+        } else {
+            currentTopstruct = logicalTopstruct;
+        }
+        MetadatenalsBeanSpeichern(this.currentTopstruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, true);
+    }
+
+    public boolean isPhysicalTopstruct() {
+        return currentTopstruct.getType().getName().equals(physicalTopstruct.getType().getName());
+    }
+
 }

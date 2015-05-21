@@ -419,9 +419,9 @@ public class BatchStepHelper {
 
         this.myDav.UploadFromHome(this.currentStep.getProzess());
         reportProblem();
+        saveStep();
         this.problemMessage = "";
         this.myProblemStep = "";
-        saveStep();
         StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
         return asf.FilterAlleStart();
     }
@@ -443,6 +443,7 @@ public class BatchStepHelper {
         Date myDate = new Date();
         this.currentStep.setBearbeitungsstatusEnum(StepStatus.LOCKED);
         this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
+        this.currentStep.setPrioritaet(Integer.valueOf(10));
         currentStep.setBearbeitungszeitpunkt(new Date());
         User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
         if (ben != null) {
@@ -459,6 +460,7 @@ public class BatchStepHelper {
             }
             if (temp != null) {
                 temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                temp.setPrioritaet(Integer.valueOf(10));
                 temp.setCorrectionStep();
                 temp.setBearbeitungsende(null);
                 ErrorProperty se = new ErrorProperty();
@@ -498,6 +500,7 @@ public class BatchStepHelper {
                 //						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
+                    step.setPrioritaet(Integer.valueOf(10));
                     step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
                     step.setCorrectionStep();
                     step.setBearbeitungsende(null);

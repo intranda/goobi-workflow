@@ -50,6 +50,7 @@ import de.unigoettingen.goobi.module.api.exception.GoobiException;
  * 
  * @author Igor Toker
  */
+@Deprecated
 public class ExtendedProzessImpl extends ProcessImpl {
    
    /**

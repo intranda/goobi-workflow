@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -21,6 +22,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.StringPair;
@@ -40,7 +42,7 @@ public class MetadataManager implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processId, List<StringPair> metadata) {
+    public static void insertMetadata(int processId, Map<String, String> metadata) {
         logger.trace("Insert new metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.insertMetadata(processId, metadata);
@@ -49,7 +51,7 @@ public class MetadataManager implements Serializable {
         }
     }
 
-    public static void updateMetadata(int processId, List<StringPair> metadata) {
+    public static void updateMetadata(int processId, Map<String, String> metadata) {
         logger.trace("Update metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.removeMetadata(processId);
@@ -61,7 +63,16 @@ public class MetadataManager implements Serializable {
 
     public static List<String> getDistinctMetadataNames() {
         try {
-          return MetadataMysqlHelper.getDistinctMetadataNames();
+            return MetadataMysqlHelper.getDistinctMetadataNames();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<StringPair> getMetadata(int processId) {
+        try {
+            return MetadataMysqlHelper.getMetadata(processId);
         } catch (SQLException e) {
             logger.error(e);
         }

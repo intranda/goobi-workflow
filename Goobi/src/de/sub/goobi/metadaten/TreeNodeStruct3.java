@@ -35,142 +35,179 @@ import de.sub.goobi.helper.TreeNode;
 
 public class TreeNodeStruct3 extends TreeNode {
 
-	private DocStruct struct;
-	private String firstImage;
-	private String lastImage;
-	private String zblNummer;
-	private String mainTitle;
-	private String ppnDigital;
-	private String identifier;
-	private String zblSeiten;
-	private String partNumber;
-	private String dateIssued;
-	
-	private boolean einfuegenErlaubt = true;
+    private DocStruct struct;
+    private String firstImage;
+    private String lastImage;
+    private String zblNummer;
+    private String mainTitle;
+    private String ppnDigital;
+    private String identifier;
+    private String zblSeiten;
+    private String partNumber;
+    private String dateIssued;
 
-	/**
-	 * Konstruktoren
-	 */
-	public TreeNodeStruct3() {
-	}
+    private boolean einfuegenErlaubt = true;
 
-	/* =============================================================== */
+    /**
+     * Konstruktoren
+     */
+    public TreeNodeStruct3() {
+    }
 
-	public TreeNodeStruct3(boolean expanded, String label, String id) {
-		this.expanded = expanded;
-		this.label = label;
-		this.id = id;
-		this.children = new ArrayList<TreeNode>();
-	}
+    /* =============================================================== */
 
-	/* =============================================================== */
+    public TreeNodeStruct3(boolean expanded, String label, String id) {
+        this.expanded = expanded;
+        this.label = label;
+        this.id = id;
+        this.children = new ArrayList<TreeNode>();
+    }
 
-	public TreeNodeStruct3(String label, DocStruct struct) {
-		this.label = label;
-		this.struct = struct;
-	}
+    /* =============================================================== */
 
-	/* =============================================================== */
+    public TreeNodeStruct3(String label, DocStruct struct) {
+        this.label = label;
+        this.struct = struct;
+    }
 
-	public String getIdentifier() {
-		return this.identifier;
-	}
+    /* =============================================================== */
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+    public String getIdentifier() {
+        return this.identifier;
+    }
 
-	public String getMainTitle() {
-		
-		int maxSize = ConfigurationHelper.getInstance().getMetsEditorMaxTitleLength();
-		if (maxSize > 0 && this.mainTitle!=null && this.mainTitle.length() > maxSize){
-			return this.mainTitle.substring(0, maxSize -1);
-		}
-		
-		return this.mainTitle;
-	}
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-	public void setMainTitle(String mainTitle) {
-		this.mainTitle = mainTitle;
-	}
-	
-	public String getPpnDigital() {
-		return this.ppnDigital;
-	}
+    public String getMainTitle() {
 
-	public void setPpnDigital(String ppnDigital) {
-		this.ppnDigital = ppnDigital;
-	}
+        int maxSize = ConfigurationHelper.getInstance().getMetsEditorMaxTitleLength();
+        if (maxSize > 0 && this.mainTitle != null && this.mainTitle.length() > maxSize) {
+            return this.mainTitle.substring(0, maxSize - 1);
+        }
 
-	public String getFirstImage() {
-		return this.firstImage;
-	}
+        return this.mainTitle;
+    }
 
-	public void setFirstImage(String firstImage) {
-		this.firstImage = firstImage;
-	}
+    public void setMainTitle(String mainTitle) {
+        this.mainTitle = mainTitle;
+    }
 
-	public String getLastImage() {
-		return this.lastImage;
-	}
+    public String getPpnDigital() {
+        return this.ppnDigital;
+    }
 
-	public void setLastImage(String lastImage) {
-		this.lastImage = lastImage;
-	}
+    public void setPpnDigital(String ppnDigital) {
+        this.ppnDigital = ppnDigital;
+    }
 
-	public DocStruct getStruct() {
-		return this.struct;
-	}
+    public String getFirstImage() {
+        return this.firstImage;
+    }
 
-	public void setStruct(DocStruct struct) {
-		this.struct = struct;
-	}
+    public void setFirstImage(String firstImage) {
+        this.firstImage = firstImage;
+    }
 
-	public String getZblNummer() {
-		return this.zblNummer;
-	}
+    public String getLastImage() {
+        return this.lastImage;
+    }
 
-	public void setZblNummer(String zblNummer) {
-		this.zblNummer = zblNummer;
-	}
+    public void setLastImage(String lastImage) {
+        this.lastImage = lastImage;
+    }
 
-	public String getDescription() {
-		return this.label;
-	}
+    public DocStruct getStruct() {
+        return this.struct;
+    }
 
-	public void setDescription(String description) {
-		this.label = description;
-	}
+    public void setStruct(DocStruct struct) {
+        this.struct = struct;
+    }
 
-	public boolean isEinfuegenErlaubt() {
-		return this.einfuegenErlaubt;
-	}
+    public String getZblNummer() {
+        return this.zblNummer;
+    }
 
-	public void setEinfuegenErlaubt(boolean einfuegenErlaubt) {
-		this.einfuegenErlaubt = einfuegenErlaubt;
-	}
+    public void setZblNummer(String zblNummer) {
+        this.zblNummer = zblNummer;
+    }
 
-	public String getZblSeiten() {
-		return this.zblSeiten;
-	}
+    public String getDescription() {
+        return this.label;
+    }
 
-	public void setZblSeiten(String zblSeiten) {
-		this.zblSeiten = zblSeiten;
-	}
+    public void setDescription(String description) {
+        this.label = description;
+    }
 
-	public String getDateIssued() {
-		return dateIssued;
-	}
-	public void setDateIssued(String dateIssued) {
-		this.dateIssued = dateIssued;
-	}
-	
-	public String getPartNumber() {
-		return partNumber;
-	}
-	
-	public void setPartNumber(String partNumber) {
-		this.partNumber = partNumber;
-	}
-	
+    public boolean isEinfuegenErlaubt() {
+        return this.einfuegenErlaubt;
+    }
+
+    public void setEinfuegenErlaubt(boolean einfuegenErlaubt) {
+        this.einfuegenErlaubt = einfuegenErlaubt;
+    }
+
+    public String getZblSeiten() {
+        return this.zblSeiten;
+    }
+
+    public void setZblSeiten(String zblSeiten) {
+        this.zblSeiten = zblSeiten;
+    }
+
+    public String getDateIssued() {
+        return dateIssued;
+    }
+
+    public void setDateIssued(String dateIssued) {
+        this.dateIssued = dateIssued;
+    }
+
+    public String getPartNumber() {
+        return partNumber;
+    }
+
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    public String getMetadataPopup() {
+        StringBuilder answer = new StringBuilder();
+        answer.append("<dl>");
+
+        if (!mainTitle.isEmpty()) {
+            answer.append("<dt>Maintitle:</dt><dd>" + mainTitle + "</dd>");
+        }
+
+        if (!firstImage.isEmpty()) {
+            answer.append("<dt>Startimage:</dt><dd>" + firstImage + "</dd>");
+        }
+
+        if (!zblSeiten.isEmpty()) {
+            answer.append("<dt>ZBL-Seiten:</dt><dd>" + zblSeiten + "</dd>");
+        }
+
+        if (!zblNummer.isEmpty()) {
+            answer.append("<dt>ZBL-ID:</dt><dd>" + zblNummer + "</dd>");
+        }
+
+        if (!ppnDigital.isEmpty()) {
+            answer.append("<dt>PPN-Digital:</dt><dd>" + ppnDigital + "</dd>");
+        }
+
+        if (!dateIssued.isEmpty()) {
+            answer.append("<dt>DateIssued:</dt><dd>" + dateIssued + "</dd>");
+        }
+
+        if (!partNumber.isEmpty()) {
+            answer.append("<dt>PartNumber:</dt><dd>" + partNumber + "</dd>");
+        }
+
+        answer.append("</dl>");
+        return answer.toString();
+    }
+
 }
