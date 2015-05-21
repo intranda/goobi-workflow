@@ -66,13 +66,5 @@ public class ConfigPluginsTest {
         assertNotNull(config);
     }
     
-    @Test
-    public void testOldPluginLoaderWithConfiguration(){
-    
-        @SuppressWarnings("deprecation")
-        IImportPlugin plugin =(IImportPlugin) PluginLoader.getPlugin(PluginType.Import, "JunitImportPluginError");
-        
-        XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
-        assertNotNull(config);
-    }
+  
 }

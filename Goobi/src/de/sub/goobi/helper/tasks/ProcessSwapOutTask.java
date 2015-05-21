@@ -53,7 +53,8 @@ public class ProcessSwapOutTask extends LongRunningTask {
    /**
     * Aufruf als Thread
     * ================================================================*/
-   @Override
+   @SuppressWarnings("deprecation")
+@Override
 public void run() {
       setStatusProgress(5);
       Helper help = new Helper();

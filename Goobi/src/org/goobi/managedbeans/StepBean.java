@@ -941,7 +941,7 @@ public class StepBean extends BasicBean {
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
             if (myPlugin == null) {
-                Helper.setFehlerMeldung("Plugin could not be found", this.mySchritt.getStepPlugin());
+                Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
             } else {
                 myPlugin.initialize(mySchritt, "/task_edit");
                 //                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {

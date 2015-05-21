@@ -62,6 +62,7 @@ import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.ValueBinding;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
@@ -484,6 +485,17 @@ public class Helper implements Serializable, Observer {
         return true;
     }
 
+    public static String getTheme() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        String completePath = context.getExternalContext().getRequestServletPath();
+        if (StringUtils.isNotBlank(completePath)) {
+            String[] parts = completePath.split("/");
+            return parts[1];
+        }
+        return "";
+    }
+    
+    
     /**
      * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
      */

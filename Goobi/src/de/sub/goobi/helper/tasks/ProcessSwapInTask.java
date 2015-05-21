@@ -52,6 +52,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 	/**
 	 * Aufruf als Thread ================================================================
 	 */
+    @SuppressWarnings("deprecation")
     @Override
 	public void run() {
 		setStatusProgress(5);

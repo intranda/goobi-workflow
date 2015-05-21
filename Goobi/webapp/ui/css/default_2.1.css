@@ -1,3 +1,20 @@
+#feedback a{ 
+	display:block; 
+	position:fixed; 
+	bottom:50px; 
+	right:-1px; 
+	background:#E52C29; 
+	padding:7px 5px;
+ 	border:1px solid #E52C29;
+ 	border-left-color:#E52C29;
+ 	border-top-color:#E52C29;
+ }
+ 
+ #feedback a:hover{
+ 	background:#368EE0;
+ 	border:1px solid #368EE0;
+ }
+
 /* ######################################## 
 
 					CSS-Datei fuer die Formatierung der Webseiten

@@ -78,7 +78,7 @@ public class MetadatumImplTest {
     public void testGetOutputType() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
-        assertEquals("textarea", md.getOutputType());
+        assertEquals("input", md.getOutputType());
     }
 
     @Test

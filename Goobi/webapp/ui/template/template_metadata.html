@@ -11,7 +11,7 @@
     <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
     <link rel="shortcut icon" href="#{HelperForm.contextPath}/ui/favicon.ico" />
 
-    <x:stylesheet media="screen" path="/ui/css/default.css" />
+    <x:stylesheet media="screen" path="/ui/css/default_2.1.css" />
     <x:stylesheet media="print" path="/ui/css/print.css" />
 
     <title><h:outputText value="Goobi #{HelperForm.version}" /></title>
@@ -23,6 +23,15 @@
 
 <h:body>
     <f:view locale="#{SpracheForm.locale}">
+    
+    		<h:form>
+			<div id="feedback">
+				<h:commandLink style="padding-right:0px;" action="#{NavigationForm.changeTheme}">
+					<img src="images/newUI.png" />
+				 </h:commandLink>
+			</div>
+		</h:form>
+		
         <h:form id="metseditorTop" prependId="false">
             <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
                 <ui:include src="metseditor_head.xhtml" />

@@ -67,6 +67,7 @@ import de.unigoettingen.goobi.module.api.types.GoobiProcessProperty;
  * 
  * @author Steffen Hankiewicz
  */
+@Deprecated
 public class ExtendedDataImpl extends DataImpl {
    BeanHelper beanhelp = new BeanHelper();
 

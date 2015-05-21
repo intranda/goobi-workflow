@@ -11,7 +11,7 @@
 
     <link rel="shortcut icon" href="#{HelperForm.contextPath}/ui/favicon.ico" />
 
-    <x:stylesheet media="screen" path="/ui/css/default.css" />
+    <x:stylesheet media="screen" path="/ui/css/default_2.1.css" />
     <x:stylesheet media="print" path="/ui/css/print.css" />
 
     <title><h:outputText value="Goobi #{HelperForm.version}" /></title>
@@ -24,6 +24,14 @@
 
 <h:body>
     <f:view locale="#{SpracheForm.locale}">
+
+		<h:form>
+			<div id="feedback">
+				<h:commandLink rendered="#{LoginForm.myBenutzer != null}" style="padding-right:0px;" action="#{NavigationForm.changeTheme}">
+					<img src="images/newUI.png" />
+				 </h:commandLink>
+			</div>
+		</h:form>
 
         <table class="headTable" cellspacing="0" cellpadding="0" style="padding-left: 5px; padding-right: 5px; margin-top: 5px;">
             <ui:include src="inc_head.xhtml" />
@@ -58,7 +66,7 @@
 
                 <td valign="top" class="layoutInhalt">
                     <h:panelGrid id="id2" columns="1" styleClass="layoutInhaltKopf">
-                        <h:panelGroup id="id3">
+                        <h:panelGroup id="id3" style="position:relative">
                             <h:form id="useform">
                                 <ui:insert name="breadcrumb" />
                             </h:form>

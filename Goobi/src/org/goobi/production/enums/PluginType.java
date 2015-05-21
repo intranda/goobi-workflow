@@ -28,12 +28,14 @@ package org.goobi.production.enums;
  * exception statement from your version.
  */
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
+import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IServletPlugin;
+import org.goobi.production.plugin.interfaces.IStatisticPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 
@@ -46,7 +48,9 @@ public enum PluginType {
     Servlet(5, "servlet", IServletPlugin.class),
     Opac(6, "opac", IOpacPlugin.class),
     Delay(7, "delay", IDelayPlugin.class),
-    Export(8, "export", IExportPlugin.class);
+    Export(8, "export", IExportPlugin.class),
+    Statistics(9, "statistics", IStatisticPlugin.class),
+    Dashboard(10, "dashboard", IDashboardPlugin.class);
 
     private int id;
     private String name;
