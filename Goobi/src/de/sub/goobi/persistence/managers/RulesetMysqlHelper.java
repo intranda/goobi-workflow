@@ -65,7 +65,7 @@ class RulesetMysqlHelper implements Serializable {
     public static List<Ruleset> getAllRulesets() throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM metadatenkonfigurationen");
+        sql.append("SELECT * FROM metadatenkonfigurationen order by titel");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isDebugEnabled()) {
