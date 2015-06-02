@@ -93,7 +93,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetPluginFolder() {
-        assertEquals("/opt/digiverso/goobi/plugins/", ConfigurationHelper.getInstance().getPluginFolder());
+        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getPluginFolder());
     }
 
     @Test
