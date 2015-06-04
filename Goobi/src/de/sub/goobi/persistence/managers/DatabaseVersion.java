@@ -91,7 +91,7 @@ public class DatabaseVersion {
                 updateToVersion7();
             case 7:
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 7.");
+                    logger.debug("Update database to version 8.");
                 }
                 updateToVersion8();
             case 999:
