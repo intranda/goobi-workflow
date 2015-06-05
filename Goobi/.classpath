@@ -138,7 +138,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-databind-2.5.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jxls-core-1.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jxls-reader-1.0.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics-1.4.12.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
@@ -153,5 +152,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics-1.4.21.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
