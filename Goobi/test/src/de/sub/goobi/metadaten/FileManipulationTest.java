@@ -2,7 +2,6 @@ package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -40,16 +39,11 @@ public class FileManipulationTest {
 
     private Metadaten metadataBean;
 
-    private static int counter = 1;
-    
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
-        File file = new File("/tmp/" + counter++);
-        file.createNewFile();
-        
         prepareMocking();
 
         ConfigurationHelper.setImagesPath("/tmp/");
@@ -57,8 +51,6 @@ public class FileManipulationTest {
         Process testProcess = MockProcess.createProcess(folder);
         metadataBean.setMyProzess(testProcess);
         metadataBean.XMLlesenStart();
-        
-        
     }
 
     @Test
