@@ -55,20 +55,12 @@ public class FileManipulationTest {
 
     @Test
     public void testFileManipulation() {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         assertNotNull(fixture);
     }
 
     @Test
     public void testGetCurrentFolder() {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.setCurrentFolder("testprocess_media");
         assertEquals("testprocess_media", fixture.getCurrentFolder());
@@ -76,10 +68,6 @@ public class FileManipulationTest {
 
     @Test
     public void testGetUploadedFile() throws FileNotFoundException {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
         UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
@@ -89,10 +77,6 @@ public class FileManipulationTest {
 
     @Test
     public void testUploadedFileName() {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         String filename = "test.tif";
         fixture.setUploadedFileName(filename);
@@ -101,10 +85,6 @@ public class FileManipulationTest {
 
     @Test
     public void testInsertPage() {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         String pageNo = "5";
         fixture.setInsertPage(pageNo);
@@ -113,20 +93,12 @@ public class FileManipulationTest {
 
     @Test
     public void testUploadFileWithoutSelection() throws Exception {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.uploadFile();
     }
 
     @Test
     public void testUploadFile() throws Exception {
-        try {
-            setUp();
-        } catch (Exception e) {
-        }
         FileManipulation fixture = new FileManipulation(metadataBean);
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
         UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
