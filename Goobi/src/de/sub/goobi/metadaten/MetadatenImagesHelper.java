@@ -77,9 +77,9 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
-import de.unigoettingen.sub.commons.contentlib.imagelib.imageinterpreter.ImageInterpreter;
-import de.unigoettingen.sub.commons.contentlib.imagelib.imageinterpreter.JpegInterpreter;
+import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
 
 public class MetadatenImagesHelper {
     private static final Logger logger = Logger.getLogger(MetadatenImagesHelper.class);
