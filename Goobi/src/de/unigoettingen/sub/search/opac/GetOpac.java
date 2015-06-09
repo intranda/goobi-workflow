@@ -623,15 +623,15 @@ public class GetOpac {
     private String retrieveDataFromOPAC(String url) throws IOException {
 
         if (verbose) {
-            logger.info("Retrieving URL: http://" + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
+            logger.info("Retrieving URL: " +cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
         }
 
         HttpGet opacRequest = null;
-        opacRequest = new HttpGet("http://" + this.cat.getServerAddress() + url + this.cat.getCbs());
+        opacRequest = new HttpGet(cat.getProtocol()  + this.cat.getServerAddress() + url + this.cat.getCbs());
 
         if (this.cat.getPort() == 80) {
         } else {
-            opacRequest = new HttpGet("http://" + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
+            opacRequest = new HttpGet(cat.getProtocol()  + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
 
         }
         try {

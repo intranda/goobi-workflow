@@ -79,6 +79,11 @@ public class ConfigOpac {
             if (this.config.getString("catalogue(" + i + ").config[@charset]") != null) {
             	charset = this.config.getString("catalogue(" + i + ").config[@charset]");
             }
+            String protocol = "http://";
+            if (this.config.getString("catalogue(" + i + ").config[@protocol]") != null) {
+                protocol = config.getString("catalogue(" + i + ").config[@protocol]");
+            }
+            
             String opacType = this.config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
             /* ---------------------
              * Opac-Beautifier einlesen und in Liste zu jedem Catalogue packen
@@ -103,7 +108,7 @@ public class ConfigOpac {
             }
 
             ConfigOpacCatalogue coc = new ConfigOpacCatalogue(title, description, address, database, iktlist,
-                  port, charset, cbs, beautyList, opacType);
+                  port, charset, cbs, beautyList, opacType,  protocol);
             return coc;
          }
       }
