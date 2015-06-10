@@ -1043,10 +1043,12 @@ public class GoobiScript {
                 String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
                 File metadataFile = new File(metdatdaPath);
                 File anchorFile = new File(anchorPath);
-                Map<String, String> pairs = extractMetadata(metadataFile);
+                Map<String, String> pairs = new HashMap<String, String>();
+                
+                pairs = extractMetadata(metadataFile, pairs);
 
                 if (anchorFile.exists()) {
-                    pairs.putAll(extractMetadata(anchorFile));
+                    pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
                 MetadataManager.updateMetadata(id, pairs);
 
@@ -1056,27 +1058,26 @@ public class GoobiScript {
         }
     }
 
-    private Map<String, String> extractMetadata(File metadataFile) throws JDOMException, IOException {
-
-        Map<String, String> metadataPairs = new HashMap<String, String>();
+   
+   
+    private Map<String, String> extractMetadata(File metadataFile, Map<String, String> metadataPairs) throws JDOMException, IOException {
 
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(metadataFile);
         Element root = doc.getRootElement();
-        // TODO read metadata from physical
         try {
             Element goobi =
                     root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
                             "extension", mods).getChild("goobi", goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
-            metadataPairs.putAll(getMetadata(metadataList));
+            metadataPairs = getMetadata(metadataList, metadataPairs);
             for (Element el : root.getChildren("dmdSec", mets)) {
                 if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
                     Element phys =
                             el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
                                     "goobi", goobiNamespace);
                     List<Element> physList = phys.getChildren();
-                    metadataPairs.putAll(getMetadata(physList));
+                    metadataPairs = getMetadata(physList, metadataPairs);
                 }
             }
 
@@ -1086,8 +1087,9 @@ public class GoobiScript {
         return metadataPairs;
     }
 
-    private Map<String, String> getMetadata(List<Element> elements) {
-        Map<String, String> metadataPairs = new HashMap<String, String>();
+    private Map<String, String> getMetadata(List<Element> elements, Map<String, String> metadataPairs) {
+
+
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
             String metadataValue = "";
@@ -1100,6 +1102,14 @@ public class GoobiScript {
                 metadataValue = goobimetadata.getValue();
             }
             if (!metadataValue.equals("")) {
+               
+                if (metadataPairs.containsKey(metadataType)) {
+                    String oldValue = metadataPairs.get(metadataType);
+                    metadataPairs.put(metadataType, oldValue + "; " + metadataValue);
+                } else {
+                    metadataPairs.put(metadataType, metadataValue);
+                }
+                
                 metadataPairs.put(metadataType, metadataValue);
             }
         }
