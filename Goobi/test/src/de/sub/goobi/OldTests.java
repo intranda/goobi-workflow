@@ -31,7 +31,6 @@ import org.goobi.production.flow.statistics.hibernate.SQLHelperTest;
 import org.goobi.production.flow.statistics.hibernate.SQLProductionTest;
 import org.goobi.production.flow.statistics.hibernate.SQLStepRequestsTest;
 import org.goobi.production.flow.statistics.hibernate.SQLStorageTest;
-import org.goobi.webapi.beans.IdentifierPPNTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -46,7 +45,7 @@ import de.sub.goobi.samples.BenutzergruppenTest;
 @SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, BenutzergruppenTest.class, BenutzerTest.class,
         BackupFileRotationTest.class, GoobiVersionTest.class, CalculationUnitTest.class, ResultOutputTest.class, StatisticsModeTest.class,
         TimeUnitTest.class, ConverterTest.class, SQLHelperTest.class, SQLProductionTest.class, SQLStepRequestsTest.class, SQLStorageTest.class,
-        IdentifierPPNTest.class, IntegerSequenceTest.class, RomanNumberSequenceTest.class })
+         IntegerSequenceTest.class, RomanNumberSequenceTest.class })
 public class OldTests {
 
 }

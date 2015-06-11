@@ -51,18 +51,10 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jboss-logging-3.1.0.GA.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jcommon-1.0.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-bundle-1.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-client-1.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-core-1.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-json-1.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-multipart-1.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-server-1.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-servlet-1.12.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jfreechart-1.0.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/joda-time-1.6.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jspf.core-1.0.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsr311-api-1.1.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jstl-api-1.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jstl-impl-1.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jta-1.1.jar"/>
@@ -113,7 +105,6 @@
 	<classpathentry kind="lib" path="test/lib/hamcrest-all-1.3.jar"/>
 	<classpathentry kind="lib" path="test/lib/objenesis-1.2.jar"/>
 	<classpathentry kind="lib" path="lib-test/guava-r09.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javassist.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mets-1.10.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mods_3-5.jar"/>
 	<classpathentry kind="lib" path="lib-test/unboundid-ldapsdk-se.jar"/>
@@ -138,6 +129,22 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-databind-2.5.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jxls-core-1.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jxls-reader-1.0.5.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.ws.rs-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-client.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-common.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-container-servlet-core.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-container-servlet.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-media-jaxb.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-server.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/hk2-api-2.4.0-b12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/hk2-locator-2.4.0-b12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/hk2-utils-2.4.0-b12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javassist-3.18.1-GA.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javassist.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.annotation-api-1.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.inject-2.4.0-b12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-guava-2.18.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
