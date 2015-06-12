@@ -9,6 +9,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.lang.StringUtils;
+import org.goobi.production.cli.WebInterfaceConfig;
+
 @Provider
 public class AuthorizationFilter implements ContainerRequestFilter {
     @Context
@@ -17,6 +20,11 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
+        String token = requestContext.getHeaderString("token");
+        if (StringUtils.isBlank(token)) {
+            token = req.getParameter("token");
+        }
+
         String ip = req.getRemoteHost();
         if (ip.startsWith("127.0.0.1")) {
             ip = req.getHeader("x-forwarded-for");
@@ -24,10 +32,18 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 ip = "127.0.0.1";
             }
         }
-        // TODO check against configured ip range
-        if (!ip.equals("127.0.0.1")) {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User cannot access the resource.").build());
+        //  check against configured ip range
+        if (!checkPermissions(ip, token)) {
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the resource from ip " + ip)
+                    .build());
         }
+    }
+
+    private boolean checkPermissions(String ip, String token) {
+        if (token == null) {
+            return false;
+        } else
+            return !WebInterfaceConfig.getCredencials(ip, token).isEmpty();
     }
 
 }
