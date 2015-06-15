@@ -466,6 +466,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("MetsEditorMaxTitleLength", 0);
     }
 
+    public boolean isMetsEditorUseExternalOCR() {
+        return getLocalBoolean("MetsEditorUseExternalOCR", false);
+    }
+    
     public boolean isMetsEditorShowOCRButton() {
         return getLocalBoolean("showOcrButton", false);
     }
