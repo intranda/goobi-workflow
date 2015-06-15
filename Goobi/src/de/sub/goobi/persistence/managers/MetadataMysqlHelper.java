@@ -109,7 +109,7 @@ class MetadataMysqlHelper implements Serializable {
     
     
     public static List<Integer> getAllProcessesWithMetadata(String name, String value) throws SQLException {
-        String sql = "SELECT processid FROM metadata WHERE name = ? and value = ?";
+        String sql = "SELECT processid FROM metadata WHERE name = ? and value LIKE ?";
         Object[] param = { name, value };
         Connection connection = null;
         try {
