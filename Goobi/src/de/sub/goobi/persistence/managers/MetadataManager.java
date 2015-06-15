@@ -78,4 +78,14 @@ public class MetadataManager implements Serializable {
         }
         return new ArrayList<>();
     }
+    
+    public static List<Integer> getProcessesWithMetadata(String name, String value) {
+        try {
+            return MetadataMysqlHelper.getAllProcessesWithMetadata(name, value);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<>();
+    }
+    
 }
