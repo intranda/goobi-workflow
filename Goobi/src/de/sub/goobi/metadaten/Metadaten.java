@@ -28,10 +28,13 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -83,6 +86,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
+import org.mozilla.universalchardet.UniversalDetector;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -2552,43 +2556,136 @@ public class Metadaten {
      */
 
     public boolean isShowOcrButton() {
-        return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
+        if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
+            return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
+        } else {
+            try {
+                File textFolder = new File(myProzess.getTxtDirectory());
+                return textFolder.exists();
+            } catch (SwapException | DAOException | IOException | InterruptedException e) {
+                logger.error(e);
+                return false;
+            }
+        }
     }
 
     public void showOcrResult() {
-        String myOcrUrl = getOcrBasisUrl(this.myBildNummer);
-        CloseableHttpClient client = null;
-        HttpGet method = new HttpGet(myOcrUrl);
-        InputStream stream = null;
+        if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
+            String myOcrUrl = getOcrBasisUrl(this.myBildNummer);
+            CloseableHttpClient client = null;
+            HttpGet method = new HttpGet(myOcrUrl);
+            InputStream stream = null;
+            try {
+                client = HttpClientBuilder.create().build();
+
+                stream = client.execute(method, HttpClientHelper.streamResponseHandler);
+                if (stream != null) {
+                    this.ocrResult = IOUtils.toString(stream, "UTF-8");
+                } else {
+                    ocrResult = "";
+                }
+                //            this.ocrResult = method.getResponseBodyAsString();
+
+            } catch (IOException e) {
+                this.ocrResult = "Fatal transport error: " + e.getMessage();
+            } finally {
+                method.releaseConnection();
+                if (client != null) {
+                    try {
+                        client.close();
+                    } catch (IOException e) {
+                        client = null;
+                    }
+                }
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        stream = null;
+                    }
+                }
+            }
+        } else {
+
+            String index = dataList.get(myBildNummer).substring(0, dataList.get(myBildNummer).lastIndexOf("."));
+            logger.error("index: " + index);
+            String ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
+            logger.error("myPicture: " + ocrFile);
+            InputStreamReader inputReader = null;
+            BufferedReader in = null;
+            FileInputStream fis = null;
+            try {
+                File txtfile = new File(myProzess.getTxtDirectory() + ocrFile);
+
+                StringBuilder response = new StringBuilder();
+                String line;
+                if (txtfile.exists() && txtfile.canRead()) {
+                  
+                    // System.out.println("read file " +
+                    // txtfile.getAbsolutePath());
+                    fis = new FileInputStream(txtfile);
+                    inputReader = new InputStreamReader(fis, getFileEncoding(txtfile));
+                    // inputReader = new InputStreamReader(fis, "ISO-8859-1");
+                    in = new BufferedReader(inputReader);
+                    while ((line = in.readLine()) != null) {
+                        response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
+                    }
+                    response.append("</p>");
+                    
+                    ocrResult =  response.toString();
+                }
+            } catch (IOException | SwapException | DAOException | InterruptedException e) {
+                logger.error(e);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        in = null;
+                    }
+                }
+                if (inputReader != null) {
+                    try {
+                        inputReader.close();
+                    } catch (IOException e) {
+                        inputReader = null;
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        fis = null;
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    private String getFileEncoding(File file) throws IOException {
+        byte[] buf = new byte[4096];
+        String encoding = null;
+        FileInputStream fis = new FileInputStream(file);
         try {
-            client = HttpClientBuilder.create().build();
-
-            stream = client.execute(method, HttpClientHelper.streamResponseHandler);
-            if (stream != null) {
-                this.ocrResult = IOUtils.toString(stream, "UTF-8");
-            } else {
-                ocrResult = "";
+            UniversalDetector detector = new UniversalDetector(null);
+            int nread;
+            while (((nread = fis.read(buf)) > 0) && !detector.isDone()) {
+                detector.handleData(buf, 0, nread);
             }
-            //            this.ocrResult = method.getResponseBodyAsString();
-
-        } catch (IOException e) {
-            this.ocrResult = "Fatal transport error: " + e.getMessage();
+            detector.dataEnd();
+            encoding = detector.getDetectedCharset();
+            detector.reset();
         } finally {
-            method.releaseConnection();
-            if (client != null) {
-                try {
-                    client.close();
-                } catch (IOException e) {
-                    client = null;
-                }
+            if (fis != null) {
+                fis.close();
             }
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    stream = null;
-                }
-            }
+        }
+        if (encoding == null) {
+            return "UTF-8";
+        } else {
+            return encoding;
         }
     }
 
@@ -3758,7 +3855,7 @@ public class Metadaten {
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
-//                            meta.getSelectedItem();
+                            //                            meta.getSelectedItem();
                             addableMetadata.add(meta);
                         }
                     }
