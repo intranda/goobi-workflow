@@ -146,6 +146,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-guava-2.18.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/juniversalchardet-1.0.3.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lombok.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
