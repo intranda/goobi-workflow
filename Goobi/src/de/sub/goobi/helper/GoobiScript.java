@@ -1044,7 +1044,7 @@ public class GoobiScript {
                 File metadataFile = new File(metdatdaPath);
                 File anchorFile = new File(anchorPath);
                 Map<String, String> pairs = new HashMap<String, String>();
-                
+
                 pairs = extractMetadata(metadataFile, pairs);
 
                 if (anchorFile.exists()) {
@@ -1058,8 +1058,6 @@ public class GoobiScript {
         }
     }
 
-   
-   
     private Map<String, String> extractMetadata(File metadataFile, Map<String, String> metadataPairs) throws JDOMException, IOException {
 
         SAXBuilder builder = new SAXBuilder();
@@ -1089,7 +1087,6 @@ public class GoobiScript {
 
     private Map<String, String> getMetadata(List<Element> elements, Map<String, String> metadataPairs) {
 
-
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
             String metadataValue = "";
@@ -1102,15 +1099,13 @@ public class GoobiScript {
                 metadataValue = goobimetadata.getValue();
             }
             if (!metadataValue.equals("")) {
-               
+
                 if (metadataPairs.containsKey(metadataType)) {
                     String oldValue = metadataPairs.get(metadataType);
                     metadataPairs.put(metadataType, oldValue + "; " + metadataValue);
                 } else {
                     metadataPairs.put(metadataType, metadataValue);
                 }
-                
-                metadataPairs.put(metadataType, metadataValue);
             }
         }
         return metadataPairs;
