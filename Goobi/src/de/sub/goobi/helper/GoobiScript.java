@@ -1089,6 +1089,7 @@ public class GoobiScript {
 
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
+            // TODO ignore anchor identifier
             String metadataValue = "";
             if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
                 Element displayName = goobimetadata.getChild("displayName", goobiNamespace);

@@ -171,6 +171,9 @@ public class ProcessBean extends BasicBean {
     private DatabasePaginator usergroupPaginator;
     private DatabasePaginator userPaginator;
 
+    private List<String> stepPluginList = new ArrayList<String>();
+    private List<String> validationPluginList = new ArrayList<String>();
+
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
 
@@ -199,6 +202,12 @@ public class ProcessBean extends BasicBean {
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
         searchField.add(new SearchColumn(order++));
+
+        stepPluginList = PluginLoader.getListOfPlugins(PluginType.Step);
+        Collections.sort(stepPluginList);
+
+        validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
+        Collections.sort(validationPluginList);
 
     }
 
@@ -2425,15 +2434,23 @@ public class ProcessBean extends BasicBean {
     }
 
     public void setConfirmLink(boolean confirm) {
-        
+
     }
-    
+
     public boolean getConfirmLink() {
         return ConfigurationHelper.getInstance().isConfirmLinking();
     }
-    
+
     public boolean getAllowFolderLinkingForProcessList() {
         return ConfigurationHelper.getInstance().isAllowFolderLinkingForProcessList();
     }
+
+    public List<String> getPossibleStepPlugins() {
+        return stepPluginList;
+    }
+
     
+    public List<String> getPossibleValidationPlugins() {
+        return validationPluginList;
+    }
 }
