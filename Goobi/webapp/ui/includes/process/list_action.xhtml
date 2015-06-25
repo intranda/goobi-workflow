@@ -1,5 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
 
     <composite:interface>
     </composite:interface>
@@ -7,8 +6,7 @@
     <composite:implementation>
 
         <!-- ++++++++++++++++     Action      ++++++++++++++++ -->
-        <h:panelGroup
-            rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2)}">
+        <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2)}">
 
             <table cellpadding="3" cellspacing="0" width="100%" class="eingabeBoxen" style="margin-top: 20px">
                 <tr>
@@ -19,58 +17,48 @@
                 <tr>
                     <td class="eingabeBoxen_row2">
                         <h:panelGrid columns="1">
-
-                            <!-- Upload-Schaltknopf -->
-                            <h:commandLink rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }"
-                                id="action1" action="#{ProzessverwaltungForm.UploadFromHomeAlle}"
-                                title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                <h:graphicImage value="images/buttons/load_up_set_20px.gif"
-                                    style="margin-left:0px;margin-right:0px;vertical-align:middle" />
-                                <h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
-                            </h:commandLink>
-
-                            <h:panelGroup
-                                rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-
-                                <h:commandLink id="expandbutton1" onclick="toggle('possibleActions1')">
-                                    <h:graphicImage value="images/buttons/load_down_set_20px.gif"
-                                        style="margin-left:0px;margin-right:0px;vertical-align:middle" />
-                                    <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
-                                    <!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions1" mode="blind" appendJs="return false;" /> -->
-
-                                    <f:ajax render="expandbutton1" />
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
+                                <!-- Upload-Schaltknopf -->
+                                <h:commandLink rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }" id="action1" action="#{ProzessverwaltungForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                    <h:graphicImage value="images/buttons/load_up_set_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
+                                    <h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
                                 </h:commandLink>
 
-                                <x:div id="possibleActions1" style="display:none">
-                                    <h:panelGrid columns="1" style="margin-left:40px">
+                                <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
-                                        <!-- Download-Schaltknopf für Selection-->
-                                        <h:commandLink id="action2" action="#{ProzessverwaltungForm.DownloadToHomeSelection}"
-                                            rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-                                            onclick="if (!confirm('#{msgs.download}')) return false">
-                                            <h:outputText value="- #{msgs.auswahl2}" />
-                                        </h:commandLink>
+                                    <h:commandLink id="expandbutton1" onclick="toggle('possibleActions1')">
+                                        <h:graphicImage value="images/buttons/load_down_set_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
+                                        <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
+                                        <!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions1" mode="blind" appendJs="return false;" /> -->
 
-                                        <!-- Download-Schaltknopf für Page-->
-                                        <h:commandLink id="action3" action="#{ProzessverwaltungForm.DownloadToHomePage}"
-                                            title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.download}')) return false">
-                                            <h:outputText value="- #{msgs.trefferDieserSeite}" />
-                                        </h:commandLink>
+                                        <f:ajax render="expandbutton1" />
+                                    </h:commandLink>
 
-                                        <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                        <h:commandLink id="action4" action="#{ProzessverwaltungForm.DownloadToHomeHits}"
-                                            title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.download}')) return false">
-                                            <h:outputText value="- #{msgs.gesamtesTrefferset}" />
-                                        </h:commandLink>
+                                    <x:div id="possibleActions1" style="display:none">
+                                        <h:panelGrid columns="1" style="margin-left:40px">
 
-                                    </h:panelGrid>
+                                            <!-- Download-Schaltknopf für Selection-->
+                                            <h:commandLink id="action2" action="#{ProzessverwaltungForm.DownloadToHomeSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                <h:outputText value="- #{msgs.auswahl2}" />
+                                            </h:commandLink>
 
-                                </x:div>
+                                            <!-- Download-Schaltknopf für Page-->
+                                            <h:commandLink id="action3" action="#{ProzessverwaltungForm.DownloadToHomePage}" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                <h:outputText value="- #{msgs.trefferDieserSeite}" />
+                                            </h:commandLink>
 
+                                            <!-- Download-Schaltknopf für gesamtes Trefferset -->
+                                            <h:commandLink id="action4" action="#{ProzessverwaltungForm.DownloadToHomeHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                <h:outputText value="- #{msgs.gesamtesTrefferset}" />
+                                            </h:commandLink>
+
+                                        </h:panelGrid>
+
+                                    </x:div>
+
+                                </h:panelGroup>
                             </h:panelGroup>
-
-                            <h:panelGroup
-                                rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
                                 <h:commandLink id="expandbutton2" onclick="toggle('possibleActions2')">
                                     <h:graphicImage value="images/buttons/dms.png" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -86,21 +74,17 @@
                                         <h:outputText style="back-color:blue; color: red; font-weight: bold;" value="#{msgs.timeoutWarningDMS}" />
 
                                         <!-- Download-Schaltknopf für Selection-->
-                                        <h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}"
-                                            rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-                                            onclick="if (!confirm('#{msgs.download}')) return false">
+                                        <h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
                                             <h:outputText value="- #{msgs.auswahl2}" />
                                         </h:commandLink>
 
                                         <!-- Download-Schaltknopf für Page-->
-                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7"
-                                            onclick="if (!confirm('#{msgs.download}')) return false">
+                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7" onclick="if (!confirm('#{msgs.download}')) return false">
                                             <h:outputText value="- #{msgs.trefferDieserSeite}" />
                                         </h:commandLink>
 
                                         <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8"
-                                            onclick="if (!confirm('#{msgs.download}')) return false">
+                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8" onclick="if (!confirm('#{msgs.download}')) return false">
                                             <h:outputText value="- #{msgs.gesamtesTrefferset}" />
                                         </h:commandLink>
 
@@ -111,12 +95,10 @@
                             </h:panelGroup>
 
                             <!-- Bearbeitungsstatus hochsetzen-->
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
                                 <h:commandLink id="expandbutton3" onclick="toggle('possibleActions3')">
-                                    <h:graphicImage value="images/buttons/step_for_20px.gif"
-                                        style="margin-left:0px;margin-right:0px;vertical-align:middle" />
+                                    <h:graphicImage value="images/buttons/step_for_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.bearbeitungsstatusHochsetzen}" />
                                     <!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions3" mode="blind" appendJs="return false;" /> -->
 
@@ -126,23 +108,17 @@
                                 <x:div id="possibleActions3" style="display:none">
                                     <h:panelGrid columns="1" style="margin-left:40px">
                                         <!-- Download-Schaltknopf für Selection-->
-                                        <h:commandLink id="action9" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenSelection}"
-                                            rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-                                            onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
+                                        <h:commandLink id="action9" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
                                             <h:outputText value="- #{msgs.auswahl2}" />
                                         </h:commandLink>
 
                                         <!-- Download-Schaltknopf für Page-->
-                                        <h:commandLink action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenPage}"
-                                            title="#{msgs.trefferDieserSeite}" id="action10"
-                                            onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
+                                        <h:commandLink action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenPage}" title="#{msgs.trefferDieserSeite}" id="action10" onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
                                             <h:outputText value="- #{msgs.trefferDieserSeite}" />
                                         </h:commandLink>
 
                                         <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                        <h:commandLink id="action11" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenHits}"
-                                            title="#{msgs.gesamtesTrefferset}"
-                                            onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
+                                        <h:commandLink id="action11" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
                                             <h:outputText value="- #{msgs.gesamtesTrefferset}" />
                                         </h:commandLink>
 
@@ -151,12 +127,10 @@
 
                             </h:panelGroup>
 
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
                                 <h:commandLink id="expandbutton4" onclick="toggle('possibleActions4')">
-                                    <h:graphicImage value="images/buttons/step_back_20px.gif"
-                                        style="margin-left:0px;margin-right:0px;vertical-align:middle" />
+                                    <h:graphicImage value="images/buttons/step_back_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.bearbeitungsstatusRuntersetzen}" />
                                     <!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions4" mode="blind" appendJs="return false;" /> -->
 
@@ -167,23 +141,17 @@
                                     <h:panelGrid columns="1" style="margin-left:40px">
 
                                         <!-- Download-Schaltknopf für Selection-->
-                                        <h:commandLink id="action12" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenSelection}"
-                                            rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-                                            onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
+                                        <h:commandLink id="action12" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
                                             <h:outputText value="- #{msgs.auswahl2}" />
                                         </h:commandLink>
 
                                         <!-- Download-Schaltknopf für Page-->
-                                        <h:commandLink id="action13" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenPage}"
-                                            title="#{msgs.trefferDieserSeite}"
-                                            onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
+                                        <h:commandLink id="action13" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenPage}" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
                                             <h:outputText value="- #{msgs.trefferDieserSeite}" />
                                         </h:commandLink>
 
                                         <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                        <h:commandLink id="action14" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenHits}"
-                                            title="#{msgs.gesamtesTrefferset}"
-                                            onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
+                                        <h:commandLink id="action14" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
                                             <h:outputText value="- #{msgs.gesamtesTrefferset}" />
                                         </h:commandLink>
 
@@ -192,8 +160,7 @@
 
                             </h:panelGroup>
 
-                            <h:panelGroup
-                                rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
                                 <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
                                     <h:graphicImage value="images/buttons/admin4b.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
@@ -203,8 +170,7 @@
                                     <f:ajax render="expandbutton5" />
                                 </h:commandLink>
 
-                                <h:messages for="goobiScriptfield" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true"
-                                    tooltip="true" />
+                                <h:messages for="goobiScriptfield" errorClass="text_red" infoClass="text_blue" showDetail="true" showSummary="true" tooltip="true" />
 
                                 <x:div id="possibleActions5" style="display:none">
                                     <h:panelGrid columns="1" style="margin-left:40px">
@@ -214,76 +180,54 @@
                                             <tr>
                                                 <td colspan="3">
 
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'">addUser</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">addUserGroup</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:deleteTiffHeaderFile'">deleteTiffHeaderFile</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot;swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'">swapSteps</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'">importFromFileSystem</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesOut'">swapProzessesOut</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'">setRuleset</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'">addUser</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">addUserGroup</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:deleteTiffHeaderFile'">deleteTiffHeaderFile</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot;swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'">swapSteps</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'">importFromFileSystem</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesOut'">swapProzessesOut</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'">setRuleset</span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3">
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'">swapProzessesIn</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'">setStepStatus</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'">addModuleToStep</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch value:true_OR_false'">setTaskProperty</span>
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:tiffWriter'">tiffWriter</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'">swapProzessesIn</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'">setStepStatus</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'">addModuleToStep</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch value:true_OR_false'">setTaskProperty</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:tiffWriter'">tiffWriter</span>
 
-                                                    <span class="goobiScriptLink"
-                                                        onclick="document.getElementById('goobiScriptfield').value='action:exportDms exportImages:false'">exportDms</span>
+                                                    <span class="goobiScriptLink" onclick="document.getElementById('goobiScriptfield').value='action:exportDms exportImages:false'">exportDms</span>
 
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3">
-                                                    <x:inputTextarea id="goobiScriptfield" forceId="true" style="width:450px;height:100px"
-                                                        value="#{ProzessverwaltungForm.goobiScript}" />
+                                                    <x:inputTextarea id="goobiScriptfield" forceId="true" style="width:450px;height:100px" value="#{ProzessverwaltungForm.goobiScript}" />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <!-- GoobiScript für selektierte Treffer der Seite -->
-                                                    <h:commandLink id="script1" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
-                                                        action="#{ProzessverwaltungForm.GoobiScriptSelection}" title="#{msgs.auswahl2}">
+                                                    <h:commandLink id="script1" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" action="#{ProzessverwaltungForm.GoobiScriptSelection}" title="#{msgs.auswahl2}">
                                                         <h:outputText value="#{msgs.auswahl2}" />
                                                     </h:commandLink>
                                                 </td>
 
                                                 <td>
                                                     <!-- GoobiScript für Treffer der Seite -->
-                                                    <h:commandLink id="script2" action="#{ProzessverwaltungForm.GoobiScriptPage}"
-                                                        title="#{msgs.trefferDieserSeite}">
+                                                    <h:commandLink id="script2" action="#{ProzessverwaltungForm.GoobiScriptPage}" title="#{msgs.trefferDieserSeite}">
                                                         <h:outputText value="#{msgs.trefferDieserSeite}" />
                                                     </h:commandLink>
                                                 </td>
 
                                                 <td align="right">
                                                     <!-- GoobiScript für alle Treffer -->
-                                                    <h:commandLink id="script3" action="#{ProzessverwaltungForm.GoobiScriptHits}"
-                                                        title="#{msgs.gesamtesTrefferset}"
-                                                        onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                    <h:commandLink id="script3" action="#{ProzessverwaltungForm.GoobiScriptHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                         <h:outputText value="#{msgs.gesamtesTrefferset}" />
                                                     </h:commandLink>
                                                 </td>
@@ -295,15 +239,13 @@
                             </h:panelGroup>
 
 
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
 
                                 <h:commandLink id="expandbutton10">
                                     <h:graphicImage value="images/buttons/view3.gif" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.saveSearchResult}" />
-                                    <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}"
-                                        value="#{!ProzessverwaltungForm.dispaySearchResult}" />
+                                    <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{!ProzessverwaltungForm.dispaySearchResult}" />
                                 </h:commandLink>
                                 <x:div id="possibleActions10" rendered="#{ProzessverwaltungForm.dispaySearchResult}" style="padding-left: 30px;">
 
@@ -317,8 +259,7 @@
 
                                         <h:column>
                                             <h:selectOneMenu value="#{field.value}">
-                                                <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item"
-                                                    itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
+                                                <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
                                             </h:selectOneMenu>
                                         </h:column>
                                         <h:column>
@@ -328,8 +269,7 @@
 
                                             </h:commandLink>
 
-                                            <h:commandLink action="#{ProzessverwaltungForm.deleteField}"
-                                                rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                            <h:commandLink action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
                                                 <h:graphicImage value="images/minus.gif" style="margin-right:4px" />
                                                 <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
                                                 <f:ajax render="@form" execute="@form" />
@@ -338,36 +278,29 @@
 
                                     </x:dataTable>
 
-                                    <h:panelGroup
-                                        rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <h:graphicImage value="images/buttons/excel-20.png"
-                                            style="margin-left:5px;margin-right:8px;vertical-align:middle" />
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <h:graphicImage value="images/buttons/excel-20.png" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
                                         <h:commandLink action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}">
                                             <h:outputText value="#{msgs.createExcel}" />
                                         </h:commandLink>
                                     </h:panelGroup>
 
-                                    <h:panelGroup
-                                        rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <h:graphicImage value="images/buttons/word-20.png"
-                                            style="margin-left:5px;margin-right:8px;vertical-align:middle" />
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <h:graphicImage value="images/buttons/word-20.png" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
                                         <h:commandLink action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}">
                                             <h:outputText value="#{msgs.createDoc}" />
                                         </h:commandLink>
                                     </h:panelGroup>
 
-                                    <h:panelGroup
-                                        rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <h:graphicImage value="images/buttons/text-20.png"
-                                            style="margin-left:5px;margin-right:8px;vertical-align:middle" />
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <h:graphicImage value="images/buttons/text-20.png" style="margin-left:5px;margin-right:8px;vertical-align:middle" />
                                         <h:commandLink action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}">
                                             <h:outputText value="#{msgs.createRtf}" />
                                         </h:commandLink>
                                     </h:panelGroup>
 
 
-                                    <h:panelGroup
-                                        rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <h:graphicImage value="images/buttons/pdf-20.png" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
                                         <h:commandLink action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}">
                                             <h:outputText value="#{msgs.createPdf}" />
@@ -377,12 +310,10 @@
 
                             </h:panelGroup>
 
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
                                 <h:commandLink id="expandbutton6" onclick="toggle('possibleActions6')">
-                                    <h:graphicImage value="images/buttons/statistik1_20px.gif"
-                                        style="margin-left:0px;margin-right:0px;vertical-align:middle" />
+                                    <h:graphicImage value="images/buttons/statistik1_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
                                     <!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions6" mode="blind" appendJs="return false;" /> -->
 
@@ -392,20 +323,17 @@
                                 <x:div id="possibleActions6" style="display:none">
                                     <h:panelGrid columns="1" style="margin-left:40px">
                                         <!-- Statistische Auswertung-Schaltknopf für Page-->
-                                        <h:commandLink id="action20" action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}"
-                                            rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}">
+                                        <h:commandLink id="action20" action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}">
                                             <h:outputText value="- #{msgs.auswahl2}" />
                                         </h:commandLink>
 
                                         <!-- Statistische Auswertung-Schaltknopf für Page-->
-                                        <h:commandLink id="action21" action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}"
-                                            title="#{msgs.trefferDieserSeite}">
+                                        <h:commandLink id="action21" action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}" title="#{msgs.trefferDieserSeite}">
                                             <h:outputText value="- #{msgs.trefferDieserSeite}" />
                                         </h:commandLink>
 
                                         <!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
-                                        <h:commandLink id="action22" action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}"
-                                            title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                        <h:commandLink id="action22" action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="- #{msgs.gesamtesTrefferset}" />
                                         </h:commandLink>
                                     </h:panelGrid>
@@ -413,12 +341,10 @@
 
                             </h:panelGroup>
 
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 
                                 <h:commandLink id="expandbutton7" onclick="toggle('possibleActions7')">
-                                    <h:graphicImage value="images/buttons/statistik4_20px.gif"
-                                        style="margin-left:0px;margin-right:0px;vertical-align:middle" />
+                                    <h:graphicImage value="images/buttons/statistik4_20px.gif" style="margin-left:0px;margin-right:0px;vertical-align:middle" />
                                     <h:outputText value="#{msgs.statistischeAuswertung}" />
                                     <!--                                     <s:effectToggle event="click" duration="0.1" forId="possibleActions7" mode="blind" appendJs="return false;" /> -->
 
@@ -428,58 +354,49 @@
                                 <x:div id="possibleActions7" style="display:none">
                                     <h:panelGrid columns="1" style="margin-left:40px">
                                         <!-- StatisticsStatusVolumes-->
-                                        <h:commandLink id="action30" rendered="#{!HelperForm.anonymized}"
-                                            action="#{ProzessverwaltungForm.StatisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
+                                        <h:commandLink id="action30" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
                                             <h:outputText value="- #{msgs.statusOfVolumes}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- StatisticsUsergroups -->
-                                        <h:commandLink id="action31" rendered="#{!HelperForm.anonymized}"
-                                            action="#{ProzessverwaltungForm.StatisticsUsergroups}" title="#{msgs.statusForUsers}">
+                                        <h:commandLink id="action31" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsUsergroups}" title="#{msgs.statusForUsers}">
                                             <h:outputText value="- #{msgs.statusForUsers}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- StatisticsRuntimeSteps -->
-                                        <h:commandLink id="action32"
-                                            rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}"
-                                            action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
+                                        <h:commandLink id="action32" rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
                                             <h:outputText value="- #{msgs.runtimeOfSteps}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- StatisticsProduction -->
-                                        <h:commandLink id="action33" rendered="#{!HelperForm.anonymized}"
-                                            action="#{ProzessverwaltungForm.StatisticsProduction}" title="#{msgs.productionStatistics}">
+                                        <h:commandLink id="action33" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsProduction}" title="#{msgs.productionStatistics}">
                                             <h:outputText value="- #{msgs.productionStatistics}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- StatisticsTroughput -->
-                                        <h:commandLink id="action34" rendered="#{!HelperForm.anonymized}"
-                                            action="#{ProzessverwaltungForm.StatisticsTroughput}" title="#{msgs.productionThroughput}">
+                                        <h:commandLink id="action34" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsTroughput}" title="#{msgs.productionThroughput}">
                                             <h:outputText value="- #{msgs.productionThroughput}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- StatisticsStorage -->
-                                        <h:commandLink id="action35" action="#{ProzessverwaltungForm.StatisticsStorage}"
-                                            title="#{msgs.storageCalculator}">
+                                        <h:commandLink id="action35" action="#{ProzessverwaltungForm.StatisticsStorage}" title="#{msgs.storageCalculator}">
                                             <h:outputText value="- #{msgs.storageCalculator}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- StatisticsCorrection -->
-                                        <h:commandLink id="action36" rendered="#{!HelperForm.anonymized}"
-                                            action="#{ProzessverwaltungForm.StatisticsCorrection}" title="#{msgs.errorTracking}">
+                                        <h:commandLink id="action36" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsCorrection}" title="#{msgs.errorTracking}">
                                             <h:outputText value="- #{msgs.errorTracking}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
 
                                         <!-- ProjectAssociationss -->
-                                        <h:commandLink id="action37" action="#{ProzessverwaltungForm.StatisticsProject}"
-                                            title="#{msgs.projectAssociation}">
+                                        <h:commandLink id="action37" action="#{ProzessverwaltungForm.StatisticsProject}" title="#{msgs.projectAssociation}">
                                             <h:outputText value="- #{msgs.projectAssociation}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                         </h:commandLink>
@@ -503,14 +420,12 @@
                                     <h:panelGrid columns="2" style="margin-left:40px">
 
                                         <h:outputText value="#{msgs.showArchivedProjects}:" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
-                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}"
-                                            rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
+                                        <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" rendered="#{(LoginForm.maximaleBerechtigung == 1)}" />
 
                                         <h:outputText value="#{msgs.showClosedProcesses}:" />
                                         <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
                                     </h:panelGrid>
-                                    <h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" style="margin-left:44px"
-                                        title="#{msgs.uebernehmen}">
+                                    <h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" style="margin-left:44px" title="#{msgs.uebernehmen}">
                                         <h:outputText value="#{msgs.uebernehmen}" />
                                     </h:commandLink>
                                 </x:div>
@@ -543,8 +458,7 @@
                                         <h:outputText value="#{msgs.ausgelagerung}" />
                                         <h:selectBooleanCheckbox id="check5" value="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
                                     </h:panelGrid>
-                                    <h:commandLink action="#{NavigationForm.Reload}" id="reloadcheck" style="margin-left:44px"
-                                        title="#{msgs.uebernehmen}">
+                                    <h:commandLink action="#{NavigationForm.Reload}" id="reloadcheck" style="margin-left:44px" title="#{msgs.uebernehmen}">
                                         <h:outputText value="#{msgs.uebernehmen}" />
                                     </h:commandLink>
                                 </x:div>
