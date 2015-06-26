@@ -346,7 +346,7 @@
 						<f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
 						<f:param name="zurueck" value="process_all" />
 					</h:commandLink>
-                    <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList">
+                    <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
     					<!-- Download-Schaltknopf -->
     					<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="action16" title="#{msgs.imHomeVerzeichnisVerlinken}"
     						rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse and !ProzessverwaltungForm.confirmLink}">
