@@ -58,7 +58,7 @@ public class ConfigOpacCatalogue {
     private ArrayList<ConfigOpacCatalogueBeautifier> beautifySetList;
     private String opacType;
     private String protocol = "http://";
-    
+
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
             ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType) {
         this.title = title;
@@ -157,15 +157,25 @@ public class ConfigOpacCatalogue {
     private void executeBeautifierForElement(Element el) {
         String matchedValue = "";
         for (ConfigOpacCatalogueBeautifier beautifier : this.beautifySetList) {
-            Element elementToChange = null;
+            Element subfieldToChange = null;
+            Element mainFieldToChange = null;
             /* eine Kopie der zu prüfenden Elemente anlegen (damit man darin löschen kann */
+
+            System.out.println("****");
+            System.out.println("check " + beautifier.getTagElementToChange().getTag() + " " + beautifier.getTagElementToChange().getSubtag());
+
             ArrayList<ConfigOpacCatalogueBeautifierElement> prooflist =
                     new ArrayList<ConfigOpacCatalogueBeautifierElement>(beautifier.getTagElementsToProof());
             /* von jedem Record jedes Field durchlaufen */
             List<Element> elements = el.getChildren("field");
-
+            boolean foundValue = false;
             for (Element field : elements) {
                 String tag = field.getAttributeValue("tag");
+                
+                if (beautifier.getTagElementToChange().getTag().equals(tag)) {
+                    mainFieldToChange = field;
+                }
+                
                 /* von jedem Field alle Subfelder durchlaufen */
                 List<Element> subelements = field.getChildren("subfield");
                 for (Element subfield : subelements) {
@@ -173,21 +183,28 @@ public class ConfigOpacCatalogue {
                     String value = subfield.getText();
 
                     if (beautifier.getTagElementToChange().getTag().equals(tag) && beautifier.getTagElementToChange().getSubtag().equals(subtag)) {
-                        elementToChange = subfield;
+                        subfieldToChange = subfield;
                     }
                     /*
                      * wenn die Werte des Subfeldes in der Liste der zu prüfenden Beutifier-Felder stehen, dieses aus der Liste der Beautifier
                      * entfernen
                      */
-                    for (ConfigOpacCatalogueBeautifierElement cocbe : beautifier.getTagElementsToProof()) {
-                        if (cocbe.getValue().equals("*")) {
-                            if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag)) {
-                                matchedValue = value;
+                    if (!prooflist.isEmpty()) {
+                        for (ConfigOpacCatalogueBeautifierElement cocbe : beautifier.getTagElementsToProof()) {
+                            if (cocbe.getValue().equals("*")) {
+                                if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag)) {
+                                    if (!foundValue) {
+                                        matchedValue = value;
+                                        foundValue = true;
+                                    }
+                                    prooflist.remove(cocbe);
+                                }
+                            } else if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag) && value.matches(cocbe.getValue())) {
+                                if (!foundValue) {
+                                    matchedValue = value;
+                                }
                                 prooflist.remove(cocbe);
                             }
-                        } else if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag) && value.matches(cocbe.getValue())) {
-                            matchedValue = value;
-                            prooflist.remove(cocbe);
                         }
                     }
                 }
@@ -197,20 +214,29 @@ public class ConfigOpacCatalogue {
              * wirklich geändert werden -------------------
              */
 
-            if (prooflist.size() == 0 && elementToChange == null) {
-                Element field = new Element("field");
-                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
-                elementToChange = new Element("subfield");
-                elementToChange.setAttribute("code", beautifier.getTagElementToChange().getSubtag());
-                field.addContent(elementToChange);
-                elements.add(field);
+            // check main field
+            if (prooflist.size() == 0 && mainFieldToChange == null) {
+                mainFieldToChange =  new Element("field");
+                mainFieldToChange.setAttribute("tag", beautifier.getTagElementToChange().getTag());
+                elements.add(mainFieldToChange);
             }
-
+            
+            
+            // check subfield
+            if (prooflist.size() == 0 && subfieldToChange == null) {
+//                Element field = new Element("field");
+//                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
+                subfieldToChange = new Element("subfield");
+                subfieldToChange.setAttribute("code", beautifier.getTagElementToChange().getSubtag());
+                mainFieldToChange.addContent(subfieldToChange);
+//                elements.add(field);
+            }
+                
             if (prooflist.size() == 0) {
                 if (beautifier.getTagElementToChange().getValue().equals("*")) {
-                    elementToChange.setText(matchedValue);
+                    subfieldToChange.setText(matchedValue);
                 } else {
-                    elementToChange.setText(beautifier.getTagElementToChange().getValue());
+                    subfieldToChange.setText(beautifier.getTagElementToChange().getValue());
                 }
             }
 
