@@ -198,7 +198,7 @@ public class Metadaten {
     private String zurueck = "Main";
     private MetadatenSperrung sperrung = new MetadatenSperrung();
     private boolean nurLesenModus;
-    private String neuesElementWohin = "1";
+    private String neuesElementWohin = "4";
     private boolean modusStrukturelementVerschieben = false;
     private String additionalOpacPpns;
     private String opacSuchfeld = "12";
