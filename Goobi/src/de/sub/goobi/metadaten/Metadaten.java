@@ -471,9 +471,32 @@ public class Metadaten {
     public String loadRightFrame() {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
+        if (neuesElementWohin.equals("3") || neuesElementWohin.equals("4")) {
+            if (!docStructIsAllowed(getAddableDocStructTypenAlsKind(), addDocStructType2)) {
+                addDocStructType2 = "";
+                createAddableData();
+            }
+        } else {
+            if (!docStructIsAllowed(getAddableDocStructTypenAlsNachbar(), addDocStructType1)) {
+                addDocStructType1 = "";
+                createAddableData();
+            }
+        }
+
         return "metseditor";
     }
-
+    private boolean docStructIsAllowed(SelectItem[] itemList, String docstruct) {
+        if (itemList != null && itemList.length > 0) {
+            for (SelectItem item : itemList) {
+                DocStructType type = (DocStructType) item.getValue();
+                if (type.getName().equals(docstruct)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     public String SpeichernPerson() {
         try {
             Person per = new Person(this.myPrefs.getMetadataTypeByName(this.tempPersonRolle));
@@ -2620,7 +2643,7 @@ public class Metadaten {
                 StringBuilder response = new StringBuilder();
                 String line;
                 if (txtfile.exists() && txtfile.canRead()) {
-                  
+
                     // System.out.println("read file " +
                     // txtfile.getAbsolutePath());
                     fis = new FileInputStream(txtfile);
@@ -2631,8 +2654,8 @@ public class Metadaten {
                         response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
                     }
                     response.append("</p>");
-                    
-                    ocrResult =  response.toString();
+
+                    ocrResult = response.toString();
                 }
             } catch (IOException | SwapException | DAOException | InterruptedException e) {
                 logger.error(e);
