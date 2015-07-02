@@ -738,7 +738,7 @@ public class FilterHelper {
                     filter.append(" prozesse.wikifield not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 2)) + "%'");
             }
             // USE OR
 
