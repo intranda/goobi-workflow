@@ -161,9 +161,6 @@ public class ConfigOpacCatalogue {
             Element mainFieldToChange = null;
             /* eine Kopie der zu prüfenden Elemente anlegen (damit man darin löschen kann */
 
-            System.out.println("****");
-            System.out.println("check " + beautifier.getTagElementToChange().getTag() + " " + beautifier.getTagElementToChange().getSubtag());
-
             ArrayList<ConfigOpacCatalogueBeautifierElement> prooflist =
                     new ArrayList<ConfigOpacCatalogueBeautifierElement>(beautifier.getTagElementsToProof());
             /* von jedem Record jedes Field durchlaufen */
