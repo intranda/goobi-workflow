@@ -191,9 +191,9 @@ public class GoobiScript {
                 }
             } else if (this.myParameters.get("action").equals("deleteProcess")) {
                 String value = myParameters.get("contentOnly");
-                boolean contentOnly = true;
-                if (value != null && value.equalsIgnoreCase("false")) {
-                    contentOnly = false;
+                boolean contentOnly = false;
+                if (value != null && value.equalsIgnoreCase("true")) {
+                    contentOnly = true;
                 }
                 deleteProcess(inProzesse, contentOnly);
             } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {

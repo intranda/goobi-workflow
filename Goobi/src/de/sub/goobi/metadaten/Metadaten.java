@@ -3740,7 +3740,7 @@ public class Metadaten {
         for (TreeNode node : currentNode.getChildren()) {
             TreeNodeStruct3 tns = (TreeNodeStruct3) node;
             if (node.isSelected()) {
-                selectdElements.add(tns.getStruct().copy(true, false));
+                selectdElements.add(tns.getStruct().copy(true, true));
             }
             if (tns.getChildren() != null && !tns.getChildren().isEmpty()) {
                 selectdElements.addAll(getSelectedElements(tns));
