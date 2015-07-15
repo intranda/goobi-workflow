@@ -27,6 +27,7 @@ package org.goobi.production.enums;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
@@ -50,7 +51,8 @@ public enum PluginType {
     Delay(7, "delay", IDelayPlugin.class),
     Export(8, "export", IExportPlugin.class),
     Statistics(9, "statistics", IStatisticPlugin.class),
-    Dashboard(10, "dashboard", IDashboardPlugin.class);
+    Dashboard(10, "dashboard", IDashboardPlugin.class),
+    Administration(11, "administration", IAdministrationPlugin.class);
 
     private int id;
     private String name;

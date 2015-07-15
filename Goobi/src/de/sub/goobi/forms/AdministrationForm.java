@@ -31,20 +31,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.jobs.JobManager;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import org.quartz.SchedulerException;
 
 import ugh.dl.DocStruct;
@@ -74,7 +78,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.MD5;
 
 @ManagedBean(name = "AdministrationForm")
-@ViewScoped
+@SessionScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
     private static final Logger logger = Logger.getLogger(AdministrationForm.class);
@@ -83,6 +87,17 @@ public class AdministrationForm implements Serializable {
     private boolean rusFullExport = false;
 
     public final static String DIRECTORY_SUFFIX = "_tif";
+
+    private List<String> possibleAdministrationPluginNames;
+
+    private String currentAdministrationPluginName;
+
+    private IAdministrationPlugin administrationPlugin;
+
+    public AdministrationForm() {
+        possibleAdministrationPluginNames = PluginLoader.getListOfPlugins(PluginType.Administration);
+        Collections.sort(possibleAdministrationPluginNames);
+    }
 
     /* =============================================================== */
 
@@ -112,6 +127,7 @@ public class AdministrationForm implements Serializable {
     /**
      * restart quartz timer for scheduled storage calculation, so it notices chanced start time configuration from configuration
      */
+    @Deprecated
     public void restartStorageCalculationScheduler() {
         try {
             JobManager.restartTimedJobs();
@@ -124,6 +140,7 @@ public class AdministrationForm implements Serializable {
     /**
      * run storage calculation for all processes now
      */
+    @Deprecated
     public void startStorageCalculationForAllProcessesNow() {
         HistoryAnalyserJob job = new HistoryAnalyserJob();
         if (job.getIsRunning() == false) {
@@ -138,9 +155,11 @@ public class AdministrationForm implements Serializable {
         return this.istPasswortRichtig;
     }
 
+    @Deprecated
     public void createIndex() {
     }
 
+    @Deprecated
     public void ProzesseDurchlaufen() throws DAOException {
         List<Process> auftraege = ProcessManager.getAllProcesses();
         //		List<Process> auftraege = dao.search("from Prozess");
@@ -150,6 +169,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "Elements successful counted");
     }
 
+    @Deprecated
     public void AnzahlenErmitteln() throws DAOException, IOException, InterruptedException, SwapException {
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
         List<Process> auftraege = ProcessManager.getAllProcesses();
@@ -170,6 +190,7 @@ public class AdministrationForm implements Serializable {
     }
 
     //TODO: Remove this
+    @Deprecated
     public void SiciKorr() throws DAOException {
         Usergroup gruppe = UsergroupManager.getUsergroupById(15);
         List<Usergroup> neueGruppen = new ArrayList<Usergroup>();
@@ -183,6 +204,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "Sici erfolgreich korrigiert");
     }
 
+    @Deprecated
     public void StandardRegelsatzSetzen() throws DAOException {
         Ruleset mk = RulesetManager.getRulesetById(Integer.valueOf(1));
 
@@ -200,6 +222,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "Standard-ruleset successful set");
     }
 
+    @Deprecated
     public void ProzesseDatumSetzen() throws DAOException {
         List<Process> auftraege = ProcessManager.getAllProcesses();
         for (Process auf : auftraege) {
@@ -216,6 +239,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "created date");
     }
 
+    @Deprecated
     public void ImagepfadKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
 
@@ -277,18 +301,21 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "Image paths set");
     }
 
-    public void test(){
-    	Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
-    	Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
-    	Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
-    	Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 4", new Exception("eine Exception die eine Exception ist und damit eine Exception geworfen hat."));
+    @Deprecated
+    public void test() {
+        Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
+        Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
+        Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
+        Helper.setFehlerMeldung(
+                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 4",
+                new Exception("eine Exception die eine Exception ist und damit eine Exception geworfen hat."));
 
-    	Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
-    	Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
-    	Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
+        Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
+        Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
+        Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
     }
-    
-    
+
+    @Deprecated
     public void PPNsKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
 
@@ -408,6 +435,7 @@ public class AdministrationForm implements Serializable {
     }
 
     //TODO: Remove this
+    @Deprecated
     public static void PPNsFuerStatistischesJahrbuchKorrigieren2() {
         UghHelper ughhelp = new UghHelper();
         List<Process> pl = ProcessManager.getProcesses(null, " titel like 'statjafud%'", 0, Integer.MAX_VALUE);
@@ -467,6 +495,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung("PPNs adjusted");
     }
 
+    @Deprecated
     public void PPNsFuerStatistischesJahrbuchKorrigieren() throws DAOException {
         UghHelper ughhelp = new UghHelper();
         BeanHelper bhelp = new BeanHelper();
@@ -570,12 +599,44 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(null, "", "PPNs adjusted");
     }
 
+    @Deprecated
     public boolean isRusFullExport() {
         return this.rusFullExport;
     }
 
+    @Deprecated
     public void setRusFullExport(boolean rusFullExport) {
         this.rusFullExport = rusFullExport;
+    }
+
+    public List<String> getPossibleAdministrationPluginNames() {
+        return possibleAdministrationPluginNames;
+    }
+
+    public void setPossibleAdministrationPluginNames(List<String> possibleAdministrationPluginNames) {
+        this.possibleAdministrationPluginNames = possibleAdministrationPluginNames;
+    }
+
+    public String getCurrentAdministrationPluginName() {
+        return currentAdministrationPluginName;
+    }
+
+    public void setCurrentAdministrationPluginName(String currentAdministrationPluginName) {
+        this.currentAdministrationPluginName = currentAdministrationPluginName;
+    }
+
+    public IAdministrationPlugin getAdministrationPlugin() {
+        return administrationPlugin;
+    }
+
+    public void setAdministrationPlugin(IAdministrationPlugin administrationPlugin) {
+        this.administrationPlugin = administrationPlugin;
+    }
+
+    public void setPlugin(String pluginName) {
+        currentAdministrationPluginName = pluginName;
+        administrationPlugin = (IAdministrationPlugin) PluginLoader.getPluginByTitle(PluginType.Administration, currentAdministrationPluginName);
+
     }
 
 }
