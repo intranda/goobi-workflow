@@ -36,71 +36,87 @@ import org.goobi.beans.DatabaseObject;
 
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
+import ugh.fileformats.mets.MetsMods;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class Ruleset implements Serializable, DatabaseObject {
-	private static final long serialVersionUID = -6663371963274685060L;
-	private Integer id;
-	private String titel;
-	private String datei;
-	private Prefs mypreferences;
-	private Boolean orderMetadataByRuleset = false;
-	private static final Logger logger = Logger.getLogger(Ruleset.class);
+    private static final long serialVersionUID = -6663371963274685060L;
+    private Integer id;
+    private String titel;
+    private String datei;
+    private Prefs mypreferences;
+    private Boolean orderMetadataByRuleset = false;
+    private static final Logger logger = Logger.getLogger(Ruleset.class);
 
-	private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
-	
-	public void lazyLoad(){
-		// nothing to load lazy here
-	}
-	
-	public String getDatei() {
-		return this.datei;
-	}
+    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
 
-	public void setDatei(String datei) {
-		this.datei = datei;
-	}
+    public void lazyLoad() {
+        // nothing to load lazy here
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public String getDatei() {
+        return this.datei;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setDatei(String datei) {
+        this.datei = datei;
+    }
 
-	public String getTitel() {
-		return this.titel;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setTitel(String titel) {
-		this.titel = titel;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Prefs getPreferences() {
-	    if (loadedPrefs.containsKey(id)) {
-	        return loadedPrefs.get(id);
-	    }
-		this.mypreferences = new Prefs();
-		try {
-			this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder()
-					+ this.datei);
-		} catch (PreferencesException e) {
-			logger.error(e);
-		}
-		loadedPrefs.put(id, mypreferences);
-		return this.mypreferences;
-	}
+    public String getTitel() {
+        return this.titel;
+    }
 
-	public boolean isOrderMetadataByRuleset() {
-		return orderMetadataByRuleset;
-	}
+    public void setTitel(String titel) {
+        this.titel = titel;
+    }
 
-	public void setOrderMetadataByRuleset(boolean orderMetadataByRuleset) {
-		this.orderMetadataByRuleset = orderMetadataByRuleset;
-	}
+    public Prefs getPreferences() {
+        if (loadedPrefs.containsKey(id)) {
+            mypreferences = loadedPrefs.get(id);
+            validateRuleset();
+            return mypreferences;
+        }
+        this.mypreferences = new Prefs();
+        try {
+            this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
+        } catch (PreferencesException e) {
+            logger.error(e);
+        }
+        loadedPrefs.put(id, mypreferences);
+        return this.mypreferences;
+    }
 
-	public static void resetLoadedPrefs() {
-	    loadedPrefs = new HashMap<Integer, Prefs>();
-	}
+    private void validateRuleset() {
+        try {
+            new MetsMods(mypreferences);
+        } catch (Exception e) {
+            try {
+                this.mypreferences = new Prefs();
+                mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
+                loadedPrefs.put(id, mypreferences);
+            } catch (PreferencesException e1) {
+                logger.error(e1);
+            }
+        }
+    }
+
+    public boolean isOrderMetadataByRuleset() {
+        return orderMetadataByRuleset;
+    }
+
+    public void setOrderMetadataByRuleset(boolean orderMetadataByRuleset) {
+        this.orderMetadataByRuleset = orderMetadataByRuleset;
+    }
+
+    public static void resetLoadedPrefs() {
+        loadedPrefs = new HashMap<Integer, Prefs>();
+    }
 }
