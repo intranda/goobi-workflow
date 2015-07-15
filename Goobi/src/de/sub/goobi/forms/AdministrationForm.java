@@ -633,10 +633,10 @@ public class AdministrationForm implements Serializable {
         this.administrationPlugin = administrationPlugin;
     }
 
-    public void setPlugin(String pluginName) {
+    public String setPlugin(String pluginName) {
         currentAdministrationPluginName = pluginName;
         administrationPlugin = (IAdministrationPlugin) PluginLoader.getPluginByTitle(PluginType.Administration, currentAdministrationPluginName);
-
+        return "administration";
     }
 
 }
