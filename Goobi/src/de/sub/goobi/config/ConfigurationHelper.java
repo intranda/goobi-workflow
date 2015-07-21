@@ -534,6 +534,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportValidateImages", true);
     }
 
+    public boolean isExportInTemporaryFile() {
+        return getLocalBoolean("ExportInTemporaryFile", false);
+    }
+    
     public long getJobStartTime(String jobname) {
         return getLocalLong(jobname, -1);
     }

@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ProjectFileGroup;
@@ -334,7 +335,20 @@ public class ExportMets {
             dd.addAllContentFiles();
 
         }
-        mm.write(targetFileName);
+        if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
+            File tempFile = File.createTempFile(myProzess.getTitel(), ".xml");
+            mm.write(tempFile.getAbsolutePath());
+            FileUtils.copyFile(tempFile, new File(targetFileName));
+
+            FileUtils.deleteQuietly(tempFile);
+            File anchorFile = new File(tempFile.getAbsolutePath().replace(".xml", "_anchor.xml"));
+            if (anchorFile.exists()) {
+                FileUtils.copyFile(tempFile, new File(targetFileName.replace(".xml", "_anchor.xml")));
+                FileUtils.deleteQuietly(anchorFile);
+            }
+        } else {
+            mm.write(targetFileName);
+        }
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
     }
