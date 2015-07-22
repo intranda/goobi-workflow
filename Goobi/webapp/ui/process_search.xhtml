@@ -36,9 +36,18 @@
 
                             <h:column>
 
-                                <h:selectOneMenu value="#{row.fieldOperand}" style="width: 100%">
-                                    <f:selectItems value="#{SearchForm.operands}" />
-                                </h:selectOneMenu>
+                                <h:panelGroup rendered="#{row.fieldName != 'PROCESSID'}">
+                                    <h:selectOneMenu value="#{row.fieldOperand}" style="width: 100%">
+                                        <f:selectItems value="#{SearchForm.operands}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{row.fieldName == 'PROCESSID'}">
+                                    <h:selectOneMenu value="#{row.fieldOperand}" style="width: 100%">
+                                        <f:selectItems value="#{SearchForm.operandsForID}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+
 
                             </h:column>
 

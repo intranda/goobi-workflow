@@ -233,7 +233,14 @@ public class SearchBean {
         return answer;
     }
 
-
+    public List<SelectItem> getOperandsForID() {
+        List<SelectItem> answer = new ArrayList<SelectItem>();
+        SelectItem and = new SelectItem("", Helper.getTranslation("IS"));
+        SelectItem not = new SelectItem("-", Helper.getTranslation("IS NOT"));
+        answer.add(and);
+        answer.add(not);
+        return answer;
+    }
 
     public List<SelectItem> getFieldnameList() {
         return fieldnameList;
