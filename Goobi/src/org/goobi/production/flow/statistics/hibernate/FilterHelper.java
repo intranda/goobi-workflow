@@ -407,13 +407,13 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
 
-            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
-                    + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%"
+                    + StringEscapeUtils.escapeSql(ts[0]) + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
 
         } else {
 
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%" + StringEscapeUtils.escapeSql(ts[0])
-                    + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%"
+                    + StringEscapeUtils.escapeSql(ts[0]) + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
 
         }
     }
@@ -424,7 +424,7 @@ public class FilterHelper {
      * @param crit {@link Criteria} to extend
      * @param tok part of filter string to use
      ****************************************************************************/
-    protected static String filterIds(String tok) {
+    protected static String filterIds(String tok, boolean negation) {
         /* filtering by ids */
         String answer = "";
         List<Integer> listIds = new ArrayList<Integer>();
@@ -440,7 +440,11 @@ public class FilterHelper {
             }
         }
         if (listIds.size() > 0) {
-            answer = " prozesse.prozesseId in (";
+            if (negation) {
+                answer = " prozesse.prozesseId not in (";
+            } else {
+                answer = " prozesse.prozesseId in (";
+            }
             for (int id : listIds) {
                 answer += id + ", ";
             }
@@ -652,7 +656,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith(FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(FilterHelper.filterIds(tok));
+                filter.append(FilterHelper.filterIds(tok, false));
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
 
@@ -733,18 +737,22 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.WORKPIECE) || tok.toLowerCase().startsWith("-" + FilterString.WERKSTUECK)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
-            }  else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
-                    filter = checkStringBuilder(filter, true);
-                    filter.append(" prozesse.wikifield not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(" prozesse.wikifield not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(FilterHelper.filterIds(tok, true));
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 2)) + "%'");
             }
+
             // USE OR
 
             else if (tok.toLowerCase().startsWith("|" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(FilterHelper.filterIds(tok));
+                filter.append(FilterHelper.filterIds(tok, false));
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSPROPERTY)
                     || tok.toLowerCase().startsWith("|" + FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, false);
@@ -800,9 +808,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterWorkpiece(tok, false));
 
-            } else if (tok.toLowerCase().startsWith("|"  + FilterString.PROCESSLOG)) {
-                    filter = checkStringBuilder(filter, false);
-                    filter.append(" prozesse.wikifield like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(" prozesse.wikifield like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
