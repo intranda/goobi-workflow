@@ -60,7 +60,7 @@ public class ExtendedSearchRow {
         if (fieldName.equals("PROCESSTITLE") && !fieldValue.isEmpty()) {
             value = "\"" + this.fieldOperand + this.fieldValue + "\" ";
         } else if (fieldName.equals("PROCESSID") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.ID + this.fieldValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.ID  + this.fieldValue + "\" ";
         }
 
         else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
