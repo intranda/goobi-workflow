@@ -26,9 +26,9 @@
                 <f:ajax execute="@form" render=":validation :metadatenRechtsWrapp :newElementForm :changeElementForm :addPagionationForm :moveStructForm :copyStructForm :first_imageForm :second_imageForm" />
             </h:commandLink>
             <h:panelGroup>
-                <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.showPhysicalTree}" styleClass="metadataHeaderLinks" rendered="#{Metadaten.physicalTopstruct}">
+                <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.showLogicalTree}" styleClass="metadataHeaderLinks" rendered="#{Metadaten.physicalTopstruct}">
                 </h:commandLink>
-                <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.showLogicalTree}" styleClass="metadataHeaderLinks" rendered="#{not Metadaten.physicalTopstruct}">
+                <h:commandLink action="#{Metadaten.changeTopstruct}" style="padding-left: 5px;" value="#{msgs.showPhysicalTree}" styleClass="metadataHeaderLinks" rendered="#{not Metadaten.physicalTopstruct}">
                 </h:commandLink>
             </h:panelGroup>
         </h:panelGrid>
