@@ -218,7 +218,11 @@ public class StepBean extends BasicBean {
             answer += ", bearbeitungsstatus";
         } else if (this.sortierung.equals("statusDesc")) {
             answer += ", bearbeitungsstatus desc";
-        }
+	     } else if (this.sortierung.equals("idAsc")) {
+	        answer = "prozesse.ProzesseID";
+	    } else if (this.sortierung.equals("idDesc")) {
+	        answer = "prozesse.ProzesseID desc";
+	    }
 
         return answer;
     }
