@@ -374,6 +374,11 @@ public class ConfigurationHelperTest {
     }
 
     @Test
+    public void testGeMetsEditorUseExternalOCR() {
+        assertFalse(ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR());
+    }
+    
+    @Test
     public void testIsMetsEditorShowOCRButton() {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorShowOCRButton());
     }
@@ -388,6 +393,13 @@ public class ConfigurationHelperTest {
         assertEquals("[\\w-]*", ConfigurationHelper.getInstance().getProcessTiteValidationlRegex());
     }
 
+    @Test
+    public void testGetProcessTitleReplacementRegex() {
+        assertEquals("[\\W]", ConfigurationHelper.getInstance().getProcessTitleReplacementRegex());
+    }
+    
+    
+    
     @Test
     public void testGetImagePrefix() {
         assertEquals("\\d{8}", ConfigurationHelper.getInstance().getImagePrefix());
@@ -523,4 +535,26 @@ public class ConfigurationHelperTest {
     public void testIsConfirmLinking() {
         assertFalse(ConfigurationHelper.getInstance().isConfirmLinking());
     }
+    
+    @Test
+    public void testGetDashboardPlugin() {
+        assertNull(ConfigurationHelper.getInstance().getDashboardPlugin()); 
+    }
+    
+    // proxy settings
+    @Test
+    public void testIsUseProxy() {
+        assertFalse(ConfigurationHelper.getInstance().isUseProxy());
+    }
+    
+    @Test
+    public void testGetProxyUrl(){
+       assertNull(ConfigurationHelper.getInstance().getProxyUrl());
+    }
+    
+    @Test
+    public void testGetProxyPort() {
+        assertEquals(8080, ConfigurationHelper.getInstance().getProxyPort());
+    }
+    
 }
