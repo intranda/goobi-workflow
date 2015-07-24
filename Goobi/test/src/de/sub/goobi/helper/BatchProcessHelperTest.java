@@ -131,7 +131,7 @@ public class BatchProcessHelperTest {
         ProcessProperty pp = new ProcessProperty();
         list.add(pp);
         helper.setProcessPropertyList(list);
-        assertEquals(list.size(), helper.getProcessProperties().size());
+        assertEquals(list.size(), helper.getProcessPropertyList().size());
     }
 
     @Test

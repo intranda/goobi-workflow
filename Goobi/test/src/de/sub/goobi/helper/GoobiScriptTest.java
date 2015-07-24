@@ -117,6 +117,7 @@ public class GoobiScriptTest {
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
+        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         
         Ruleset r = new Ruleset();
         r.setTitel("title");

@@ -302,7 +302,7 @@ public class MetadatenTest {
         assertEquals("", fixture.saveGroup());
     }
 
-    @Test
+    
     public void testLoadRightFrame() throws Exception {
         Metadaten fixture = new Metadaten();
         assertEquals("metseditor", fixture.loadRightFrame());

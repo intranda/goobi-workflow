@@ -460,6 +460,12 @@ public class ConfigurationHelperTest {
         assertTrue(ConfigurationHelper.getInstance().isExportValidateImages());
     }
 
+    
+    @Test
+    public void testIsExportInTemporaryFile() {
+        assertFalse(ConfigurationHelper.getInstance().isExportInTemporaryFile());
+    }
+    
     @Test
     public void testGetJobStartTime() {
         assertEquals(-1, ConfigurationHelper.getInstance().getJobStartTime("something"));
@@ -471,6 +477,11 @@ public class ConfigurationHelperTest {
         assertNotEquals(0, list.size());
     }
 
+    @Test
+    public void testIsuseIntrandaUI() {
+        assertTrue(ConfigurationHelper.getInstance().isUseIntrandaUi());
+    }
+    
     @Test
     public void testGetActiveMQHostURL() {
         assertNull(ConfigurationHelper.getInstance().getActiveMQHostURL());

@@ -81,7 +81,12 @@ public class AutomaticDmsExportTest {
     public void testExportFulltext() {
         AutomaticDmsExport exp = new AutomaticDmsExport(false);
         exp.setExportFulltext(false);
-
+    }
+    
+    @Test
+    public void testExportImages() {
+        AutomaticDmsExport exp = new AutomaticDmsExport(false);
+        exp.setExportImages(false);
     }
 
     @Test
