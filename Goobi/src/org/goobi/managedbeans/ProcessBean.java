@@ -204,6 +204,7 @@ public class ProcessBean extends BasicBean {
         searchField.add(new SearchColumn(order++));
 
         stepPluginList = PluginLoader.getListOfPlugins(PluginType.Step);
+        stepPluginList.addAll(PluginLoader.getListOfPlugins(PluginType.Export));
         Collections.sort(stepPluginList);
 
         validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
