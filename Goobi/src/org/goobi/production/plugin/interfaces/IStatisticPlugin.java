@@ -15,4 +15,6 @@ public interface IStatisticPlugin extends IPlugin {
     public void setStartDate(Date date);
     
     public void setEndDate(Date date);
+    
+    public boolean getPermissions();
 }
