@@ -317,6 +317,7 @@ public class UserBean extends BasicBean {
         if (!Speichern().equals("") && getLdapUsage()) {
             LdapKonfigurationSchreiben();
         }
+        displayMode = "tab2";
         return "";
     }
 
