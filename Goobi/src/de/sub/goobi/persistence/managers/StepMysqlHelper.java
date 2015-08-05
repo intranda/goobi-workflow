@@ -521,7 +521,8 @@ class StepMysqlHelper implements Serializable {
                                     .getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
                             o.getBatchStep(), //batchStep
                             (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(),// stepPlugin
-                            (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin() //validationPlugin
+                            (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
+                            (o.isDelayStep())
                     };
             return param;
         } else {
@@ -568,7 +569,8 @@ class StepMysqlHelper implements Serializable {
                                     .getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
                             o.getBatchStep(), //batchStep
                             (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(),// stepPlugin
-                            (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin() //validationPlugin
+                            (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
+                            (o.isDelayStep())
                     };
             return param;
         }
@@ -576,9 +578,9 @@ class StepMysqlHelper implements Serializable {
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        } else {
             return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -594,7 +596,7 @@ class StepMysqlHelper implements Serializable {
                         + "typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, "
                         + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                         + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
-                        + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin)" + " VALUES ";
+                        + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep)" + " VALUES ";
         return answer;
     }
 
@@ -637,7 +639,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" typAutomatischScriptpfad5 = ?,");
         sql.append(" batchStep = ?,");
         sql.append(" stepPlugin = ?,");
-        sql.append(" validationPlugin = ?");
+        sql.append(" validationPlugin = ?,");
+        sql.append(" delayStep = ?");
         sql.append(" WHERE SchritteID = " + o.getId());
 
         Object[] param = generateParameter(o, false);
@@ -711,7 +714,9 @@ class StepMysqlHelper implements Serializable {
         joinQuery.append(" typAutomatischScriptpfad5 = " + tablename + ".typAutomatischScriptpfad5,");
         joinQuery.append(" batchStep = " + tablename + ".batchStep,");
         joinQuery.append(" stepPlugin = " + tablename + ".stepPlugin,");
-        joinQuery.append(" validationPlugin = " + tablename + ".validationPlugin");
+        joinQuery.append(" validationPlugin = " + tablename + ".validationPlugin, ");
+        joinQuery.append(" delayStep = " + tablename + ".delayStep");
+
         joinQuery.append(" WHERE schritte.SchritteID= " + tablename + ".SchritteID;");
 
         String deleteTempTable = "DROP TEMPORARY TABLE " + tablename + ";";
