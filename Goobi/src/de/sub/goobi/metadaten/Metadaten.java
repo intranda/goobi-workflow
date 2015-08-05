@@ -826,7 +826,7 @@ public class Metadaten {
         this.alleSeitenAuswahl_letzteSeite = "";
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
-        this.neuesElementWohin = "1";
+        this.neuesElementWohin = "4";
         this.tree3 = null;
         try {
             String returnvalue = XMLlesenStart();
