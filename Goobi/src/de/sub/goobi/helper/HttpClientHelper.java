@@ -23,15 +23,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
@@ -89,10 +95,41 @@ public class HttpClientHelper {
         }
     };
 
-    public static String getStringFromUrl(String url) {
+    
+    // optional parameter:
+    // * first string: username
+    // * second: password
+    // * third: scope (e.g. "localhost")
+    // * forth: port 
+    public static String getStringFromUrl(String url, String... parameter) {
         String response = "";
-        CloseableHttpClient client = HttpClientBuilder.create().build();
+        CloseableHttpClient client = null;
         HttpGet method = new HttpGet(url);
+        
+        if (parameter != null && parameter.length > 3) {
+            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()), new UsernamePasswordCredentials(parameter[0], parameter[1]));
+            client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+
+        } else {
+            client = HttpClientBuilder.create().build();
+        }
+
+        if (ConfigurationHelper.getInstance().isUseProxy()) {
+            HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+            }
+
+            Builder builder = RequestConfig.custom();
+            builder.setProxy(proxy);
+
+            RequestConfig rc = builder.build();
+
+            method.setConfig(rc);
+        }
+        
+        
         try {
             response = client.execute(method, HttpClientHelper.stringResponseHandler);
         } catch (IOException e) {
@@ -111,13 +148,43 @@ public class HttpClientHelper {
         return response;
     }
 
-    public static OutputStream getStreamFromUrl(String url, OutputStream out) {
+    // optional parameter:
+    // * first string: username
+    // * second: password
+    // * third: scope (e.g. "localhost")
+    // * forth: port 
+    
+    public static OutputStream getStreamFromUrl(String url, OutputStream out, String... parameter) {
         CloseableHttpClient httpclient = null;
         HttpGet method = null;
         InputStream istr = null;
         try {
-            httpclient = HttpClientBuilder.create().build();
+
             method = new HttpGet(url);
+            if (parameter != null && parameter.length > 3) {
+                CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()), new UsernamePasswordCredentials(parameter[0], parameter[1]));
+                httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+
+            } else {
+                httpclient = HttpClientBuilder.create().build();
+
+            }
+
+            if (ConfigurationHelper.getInstance().isUseProxy()) {
+                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                }
+
+                Builder builder = RequestConfig.custom();
+                builder.setProxy(proxy);
+
+                RequestConfig rc = builder.build();
+
+                method.setConfig(rc);
+            }
+
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
             Builder builder = RequestConfig.custom();
             builder.setSocketTimeout(contentServerTimeOut);
