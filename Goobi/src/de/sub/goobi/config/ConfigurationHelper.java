@@ -635,4 +635,12 @@ public class ConfigurationHelper implements Serializable {
             configLocal.setProperty(inParameter, value);
         }
     }
+
+    public String getDatabaseLeftTruncationCharacter() {
+        return getLocalString("DatabaseLeftTruncationCharacter", "%");
+    }
+
+    public String getDatabaseRightTruncationCharacter() {
+        return getLocalString("DatabaseRightTruncationCharacter", "%");
+    }
 }

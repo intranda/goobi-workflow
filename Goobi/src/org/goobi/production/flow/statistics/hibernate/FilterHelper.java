@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
@@ -50,6 +51,12 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 public class FilterHelper {
 
     private static final Logger logger = Logger.getLogger(FilterHelper.class);
+    private static String leftTruncationCharacter = "%";
+    private static String rightTruncationCharacter = "%";
+    static {
+        leftTruncationCharacter = ConfigurationHelper.getInstance().getDatabaseLeftTruncationCharacter();
+        rightTruncationCharacter = ConfigurationHelper.getInstance().getDatabaseRightTruncationCharacter();
+    }
 
     /**
      * limit query to project (formerly part of ProzessverwaltungForm)
@@ -217,12 +224,14 @@ public class FilterHelper {
     protected static String filterStepName(String parameters, StepStatus inStatus, boolean negate) {
 
         if (!negate) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '%" + StringEscapeUtils.escapeSql(parameters)
-                    + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
 
         } else {
-            return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '%"
-                    + StringEscapeUtils.escapeSql(parameters) + "%' AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
 
         }
     }
@@ -307,11 +316,11 @@ public class FilterHelper {
     protected static String filterProject(String tok, boolean negate) {
         /* filter according to linked project */
         if (!negate) {
-            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%"
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
+            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
-            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%"
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%')";
+            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
     }
 
@@ -325,28 +334,34 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' AND vorlageneigenschaften.Titel LIKE '%"
+                        + rightTruncationCharacter
+                        + "' AND vorlageneigenschaften.Titel LIKE '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[0])
-                        + "%'))";
+                        + rightTruncationCharacter + "'))";
 
             } else {
-                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
 
             }
         } else {
             if (ts.length > 1) {
-                return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
+                return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' AND vorlageneigenschaften.Titel LIKE '%"
+                        + rightTruncationCharacter
+                        + "' AND vorlageneigenschaften.Titel LIKE '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[0])
-                        + "%'))";
+                        + rightTruncationCharacter + "'))";
 
             } else {
-                return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
 
             }
         }
@@ -357,21 +372,31 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '%"
-                        + StringEscapeUtils.escapeSql(ts[1]) + "%' " + " AND Titel like '%" + StringEscapeUtils.escapeSql(ts[0]) + "%' ))";
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like ''"
+                        + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1])
+                        + rightTruncationCharacter
+                        + "' "
+                        + " AND Titel like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
             } else {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         } else {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%"
-                        + StringEscapeUtils.escapeSql(ts[1]) + "%' " + " AND Titel like '%" + StringEscapeUtils.escapeSql(ts[0]) + "%' ))";
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
+                        + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1])
+                        + rightTruncationCharacter
+                        + "' "
+                        + " AND Titel like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
             } else {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         }
     }
@@ -382,22 +407,24 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%' AND prozesseeigenschaften.Wert like '%" + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' )";
+                return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter
+                        + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1])
+                        + rightTruncationCharacter + "' )";
 
             } else {
-                return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%' )";
+                return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
             }
         } else {
             if (ts.length > 1) {
-                return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%' AND prozesseeigenschaften.Wert like '%" + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' )";
+                return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter
+                        + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1])
+                        + rightTruncationCharacter + "' )";
             } else {
-                return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%' )";
+                return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
             }
         }
     }
@@ -407,13 +434,15 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
 
-            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%"
-                    + StringEscapeUtils.escapeSql(ts[0]) + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
 
         } else {
 
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%"
-                    + StringEscapeUtils.escapeSql(ts[0]) + "%' AND metadata.value like '%" + StringEscapeUtils.escapeSql(ts[1]) + "%' )";
+            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
 
         }
     }
@@ -465,28 +494,34 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
+                        + rightTruncationCharacter
+                        + "' AND werkstueckeeigenschaften.Titel LIKE '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[0])
-                        + "%'))";
+                        + rightTruncationCharacter + "'))";
             } else {
 
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         } else {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
+                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[1])
-                        + "%' AND werkstueckeeigenschaften.Titel LIKE '%"
+                        + rightTruncationCharacter
+                        + "' AND werkstueckeeigenschaften.Titel LIKE '"
+                        + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(ts[0])
-                        + "%'))";
+                        + rightTruncationCharacter + "'))";
 
             } else {
 
-                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%"
-                        + StringEscapeUtils.escapeSql(ts[0]) + "%'))";
+                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
+                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
 
             }
 
@@ -661,11 +696,13 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
 
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                        + rightTruncationCharacter + "'");
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.wikifield like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.wikifield like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -739,13 +776,15 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.wikifield not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.wikifield not like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel not like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.Titel not like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
             }
 
             // USE OR
@@ -810,10 +849,12 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(" prozesse.wikifield like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.wikifield like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel like '%" + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "%'");
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                        + rightTruncationCharacter + "'");
             }
         }
         if (!inFilter.isEmpty()) {
@@ -841,13 +882,15 @@ public class FilterHelper {
             if (stepTitle.startsWith("-")) {
                 stepTitle = stepTitle.substring(1);
 
-                return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '%"
-                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
 
             } else {
 
-                return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '%"
-                        + StringEscapeUtils.escapeSql(stepTitle) + "%' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
 
             }
         }
