@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpSession;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
@@ -59,7 +61,7 @@ public class SessionForm {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
     private String aktuelleZeit = this.formatter.format(new Date());
     private String bitteAusloggen = "";
-
+    
     private static final String MONITORING_CHECK = "nagios-plugins";
     
     public int getAktiveSessions() {
@@ -247,7 +249,18 @@ public class SessionForm {
     }
 
     public String getDate() {
+    	if (dateFormatter == null){
+    		Locale language = Locale.ENGLISH;
+    		SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
+    		if (sf != null) {
+    			language = sf.getLocale();
+    		}
+    		dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy", language);
+    	}
         return dateFormatter.format(new Date());
     }
 
+   public void setDateFormatter(SimpleDateFormat dateFormatter) {
+	this.dateFormatter = dateFormatter;
+}
 }
