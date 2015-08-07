@@ -978,13 +978,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 logger.debug("current template.xml file type: " + type);
             }
             ff = MetadatenHelper.getFileformatByName(type, regelsatz);
-            //            if (type.equals("mets")) {
-            //                ff = new MetsMods(this.regelsatz.getPreferences());
-            //            } else if (type.equals("xstream")) {
-            //                ff = new XStream(this.regelsatz.getPreferences());
-            //            } else {
-            //                ff = new RDFFile(this.regelsatz.getPreferences());
-            //            }
             ff.read(getTemplateFilePath());
             return ff;
         } else {
