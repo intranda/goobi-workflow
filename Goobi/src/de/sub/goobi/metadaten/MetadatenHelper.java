@@ -745,7 +745,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
     public static Map<String, String> getMetadataOfFileformat(Fileformat gdzfile) {
         //        List<StringPair> metadataList = new ArrayList<>();
-
+// TODO
         Map<String, String> metadataList = new HashMap<String, String>();
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
