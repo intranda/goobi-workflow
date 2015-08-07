@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,14 +52,28 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processid, Map<String, String> metadata) throws SQLException {
+    public static void insertMetadata(int processid, Map<String, List<String>> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO metadata (processid, name, value) VALUES ");
+        
+        sql.append("INSERT INTO metadata (processid, name, value, print) VALUES ");
         List<Object> values = new ArrayList<Object>();
-        for (Entry<String, String> pair : metadata.entrySet()) {
-            sql.append("(" + processid + ", ? , ? ),");
-            values.add(pair.getKey());
-            values.add(StringEscapeUtils.escapeSql(pair.getValue()));
+        for (Entry<String, List<String>> pair : metadata.entrySet()) {
+            String metadataName = pair.getKey();
+            List<String> valueList = pair.getValue();
+            StringBuilder sb = new StringBuilder();
+            Iterator<String> iter = valueList.iterator();
+            while (iter.hasNext()) {
+                sb.append(StringEscapeUtils.escapeSql(iter.next()));
+                if (iter.hasNext()) {
+                    sb.append("; ");
+                }
+            }
+            for (String item : valueList) {
+                sql.append("(" + processid + ", ? , ?, ? ),");
+                values.add(metadataName);
+                values.add(StringEscapeUtils.escapeSql(item));
+                values.add(sb.toString());
+            }
 
         }
         String sqlString = sql.toString().substring(0, sql.toString().length() - 1);
@@ -106,8 +121,7 @@ class MetadataMysqlHelper implements Serializable {
         }
 
     }
-    
-    
+
     public static List<Integer> getAllProcessesWithMetadata(String name, String value) throws SQLException {
         String sql = "SELECT processid FROM metadata WHERE name = ? and value LIKE '%" + StringEscapeUtils.escapeSql(value) + "%'";
         Object[] param = { name };
@@ -119,7 +133,7 @@ class MetadataMysqlHelper implements Serializable {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
-        }    
+        }
     }
 
     public static ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<List<StringPair>>() {
@@ -128,10 +142,10 @@ class MetadataMysqlHelper implements Serializable {
             List<StringPair> answer = new ArrayList<StringPair>();
             try {
                 while (rs.next()) {
-                   String name = rs.getString("name");
-                   String value = rs.getString("value");
-                   StringPair sp = new StringPair(name, value);
-                   answer.add(sp);
+                    String name = rs.getString("name");
+                    String value = rs.getString("value");
+                    StringPair sp = new StringPair(name, value);
+                    answer.add(sp);
                 }
             } finally {
                 if (rs != null) {
