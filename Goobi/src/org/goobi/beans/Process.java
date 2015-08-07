@@ -959,7 +959,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         ff.write(metadataFileName);
 
-       Map<String, String> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+       Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
     }

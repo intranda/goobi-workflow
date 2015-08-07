@@ -743,10 +743,9 @@ public class MetadatenHelper implements Comparator<Object> {
         return null;
     }
 
-    public static Map<String, String> getMetadataOfFileformat(Fileformat gdzfile) {
-        //        List<StringPair> metadataList = new ArrayList<>();
-// TODO
-        Map<String, String> metadataList = new HashMap<String, String>();
+    public static Map<String, List<String>> getMetadataOfFileformat(Fileformat gdzfile) {
+
+        Map<String, List<String>> metadataList = new HashMap<>();
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
 
@@ -754,10 +753,13 @@ public class MetadatenHelper implements Comparator<Object> {
                 for (Metadata md : ds.getAllMetadata()) {
                     if (StringUtils.isNotBlank(md.getValue())) {
                         if (metadataList.containsKey(md.getType().getName())) {
-                            String oldValue = metadataList.get(md.getType().getName());
-                            metadataList.put(md.getType().getName(), oldValue + "; " + md.getValue());
+                            List<String> oldValue = metadataList.get(md.getType().getName());
+                            oldValue.add(md.getValue());
+                            metadataList.put(md.getType().getName(), oldValue);
                         } else {
-                            metadataList.put(md.getType().getName(), md.getValue());
+                            List<String> list = new ArrayList<>();
+                            list.add(md.getValue());
+                            metadataList.put(md.getType().getName(), list);
                         }
                     }
                 }
@@ -766,10 +768,13 @@ public class MetadatenHelper implements Comparator<Object> {
                 for (Person p : ds.getAllPersons()) {
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                         if (metadataList.containsKey(p.getType().getName())) {
-                            String oldValue = metadataList.get(p.getType().getName());
-                            metadataList.put(p.getType().getName(), oldValue + "; " + p.getFirstname() + " " + p.getLastname());
+                            List<String> oldValue = metadataList.get(p.getType().getName());
+                            oldValue.add(p.getFirstname() + " " + p.getLastname());
+                            metadataList.put(p.getType().getName(), oldValue);
                         } else {
-                            metadataList.put(p.getType().getName(), p.getFirstname() + " " + p.getLastname());
+                            List<String> list = new ArrayList<>();
+                            list.add(p.getFirstname() + " " + p.getLastname());
+                            metadataList.put(p.getType().getName(), list);
                         }
                     }
                 }
@@ -781,10 +786,13 @@ public class MetadatenHelper implements Comparator<Object> {
                     for (Metadata md : ds.getAllMetadata()) {
                         if (StringUtils.isNotBlank(md.getValue())) {
                             if (metadataList.containsKey(md.getType().getName())) {
-                                String oldValue = metadataList.get(md.getType().getName());
-                                metadataList.put(md.getType().getName(), oldValue + "; " + md.getValue());
+                                List<String> oldValue = metadataList.get(md.getType().getName());
+                                oldValue.add(md.getValue());
+                                metadataList.put(md.getType().getName(), oldValue);
                             } else {
-                                metadataList.put(md.getType().getName(), md.getValue());
+                                List<String> list = new ArrayList<>();
+                                list.add(md.getValue());
+                                metadataList.put(md.getType().getName(), list);
                             }
                         }
                     }
@@ -793,10 +801,13 @@ public class MetadatenHelper implements Comparator<Object> {
                     for (Person p : ds.getAllPersons()) {
                         if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                             if (metadataList.containsKey(p.getType().getName())) {
-                                String oldValue = metadataList.get(p.getType().getName());
-                                metadataList.put(p.getType().getName(), oldValue + "; " + p.getFirstname() + " " + p.getLastname());
+                                List<String> oldValue = metadataList.get(p.getType().getName());
+                                oldValue.add(p.getFirstname() + " " + p.getLastname());
+                                metadataList.put(p.getType().getName(), oldValue);
                             } else {
-                                metadataList.put(p.getType().getName(), p.getFirstname() + " " + p.getLastname());
+                                List<String> list = new ArrayList<>();
+                                list.add(p.getFirstname() + " " + p.getLastname());
+                                metadataList.put(p.getType().getName(), list);
                             }
                         }
                     }
@@ -807,10 +818,13 @@ public class MetadatenHelper implements Comparator<Object> {
                 for (Metadata md : ds.getAllMetadata()) {
                     if (StringUtils.isNotBlank(md.getValue())) {
                         if (metadataList.containsKey(md.getType().getName())) {
-                            String oldValue = metadataList.get(md.getType().getName());
-                            metadataList.put(md.getType().getName(), oldValue + "; " + md.getValue());
+                            List<String> oldValue = metadataList.get(md.getType().getName());
+                            oldValue.add(md.getValue());
+                            metadataList.put(md.getType().getName(), oldValue);
                         } else {
-                            metadataList.put(md.getType().getName(), md.getValue());
+                            List<String> list = new ArrayList<>();
+                            list.add(md.getValue());
+                            metadataList.put(md.getType().getName(), list);
                         }
                     }
                 }
@@ -820,10 +834,13 @@ public class MetadatenHelper implements Comparator<Object> {
                 for (Person p : ds.getAllPersons()) {
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                         if (metadataList.containsKey(p.getType().getName())) {
-                            String oldValue = metadataList.get(p.getType().getName());
-                            metadataList.put(p.getType().getName(), oldValue + "; " + p.getFirstname() + " " + p.getLastname());
+                            List<String> oldValue = metadataList.get(p.getType().getName());
+                            oldValue.add(p.getFirstname() + " " + p.getLastname());
+                            metadataList.put(p.getType().getName(), oldValue);
                         } else {
-                            metadataList.put(p.getType().getName(), p.getFirstname() + " " + p.getLastname());
+                            List<String> list = new ArrayList<>();
+                            list.add(p.getFirstname() + " " + p.getLastname());
+                            metadataList.put(p.getType().getName(), list);
                         }
                     }
                 }
