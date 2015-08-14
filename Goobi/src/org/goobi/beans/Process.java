@@ -959,7 +959,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         ff.write(metadataFileName);
 
-       Map<String, String> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+       Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
     }
@@ -978,13 +978,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 logger.debug("current template.xml file type: " + type);
             }
             ff = MetadatenHelper.getFileformatByName(type, regelsatz);
-            //            if (type.equals("mets")) {
-            //                ff = new MetsMods(this.regelsatz.getPreferences());
-            //            } else if (type.equals("xstream")) {
-            //                ff = new XStream(this.regelsatz.getPreferences());
-            //            } else {
-            //                ff = new RDFFile(this.regelsatz.getPreferences());
-            //            }
             ff.read(getTemplateFilePath());
             return ff;
         } else {

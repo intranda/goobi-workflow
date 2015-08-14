@@ -20,6 +20,8 @@ package de.sub.goobi.config;
  */
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -29,6 +31,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
+import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -118,6 +121,15 @@ public class ConfigurationHelper implements Serializable {
             logger.error(e.getMessage(), e);
             return inDefault;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Iterator<String> getLocalKeys(String prefix) {
+        Iterator<String> it = configLocal.getKeys(prefix);
+        if (!it.hasNext()) {
+            it = config.getKeys(prefix);
+        }
+        return it;
     }
 
     private String getLocalString(String inPath) {
@@ -469,7 +481,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorUseExternalOCR() {
         return getLocalBoolean("MetsEditorUseExternalOCR", false);
     }
-    
+
     public boolean isMetsEditorShowOCRButton() {
         return getLocalBoolean("showOcrButton", false);
     }
@@ -537,7 +549,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isExportInTemporaryFile() {
         return getLocalBoolean("ExportInTemporaryFile", false);
     }
-    
+
     public long getJobStartTime(String jobname) {
         return getLocalLong(jobname, -1);
     }
@@ -549,24 +561,24 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseIntrandaUi() {
         return getLocalBoolean("ui_useIntrandaUI", false);
     }
-    
+
     public String getDashboardPlugin() {
         return getLocalString("dashboardPlugin", null);
     }
-    
+
     // proxy settings
     public boolean isUseProxy() {
         return getLocalBoolean("http_useProxy", false);
     }
-    
-    public String getProxyUrl(){
+
+    public String getProxyUrl() {
         return getLocalString("http_proxyUrl");
     }
-    
+
     public int getProxyPort() {
         return getLocalInt("http_proxyPort", 8080);
     }
-    
+
     // active mq
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
@@ -619,20 +631,39 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("goobiModuleServerPort");
     }
 
-    
     public boolean isConfirmLinking() {
         return getLocalBoolean("confirmLinking", false);
     }
-    
+
     public boolean isAllowFolderLinkingForProcessList() {
         return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
     }
-    
+
+    public String getDatabaseLeftTruncationCharacter() {
+        return getLocalString("DatabaseLeftTruncationCharacter", "%");
+    }
+
+    public String getDatabaseRightTruncationCharacter() {
+        return getLocalString("DatabaseRightTruncationCharacter", "%");
+    }
+
+    public List<SearchIndexField> getIndexFields() {
+        List<SearchIndexField> list = new ArrayList<>();
+        Iterator<String> it = getLocalKeys("index");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            List<String> values = getLocalList(keyName);
+            SearchIndexField index = new SearchIndexField(keyName, values);
+            list.add(index);
+        }
+        return list;
+    }
+
     // for junit tests    
     public void setParameter(String inParameter, String value) {
         config.setProperty(inParameter, value);
         if (configLocal != null) {
             configLocal.setProperty(inParameter, value);
         }
-    }
+    }    
 }

@@ -24,8 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
+
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class MetadataManager implements Serializable {
 
@@ -42,7 +46,10 @@ public class MetadataManager implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processId, Map<String, String> metadata) {
+    public static void insertMetadata(int processId, Map<String, List<String>> metadata) {
+        
+        generateIndexFields(metadata);
+        
         logger.trace("Insert new metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.insertMetadata(processId, metadata);
@@ -51,11 +58,11 @@ public class MetadataManager implements Serializable {
         }
     }
 
-    public static void updateMetadata(int processId, Map<String, String> metadata) {
+    public static void updateMetadata(int processId, Map<String, List<String>> metadata) {
         logger.trace("Update metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.removeMetadata(processId);
-            MetadataMysqlHelper.insertMetadata(processId, metadata);
+            insertMetadata(processId, metadata);
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -88,4 +95,26 @@ public class MetadataManager implements Serializable {
         return new ArrayList<>();
     }
     
+    
+    private static void generateIndexFields(Map<String,List<String>> metadata) {
+        List<SearchIndexField> fields = ConfigurationHelper.getInstance().getIndexFields();
+        if (!fields.isEmpty()) {
+            for (SearchIndexField index : fields) {
+                String indexName = index.getIndexName();
+                StringBuilder sb = new StringBuilder();
+                for (String metadataName : index.getMetadataList()) {
+                    if (metadata.containsKey(metadataName)) {
+                        sb.append(metadata.get(metadataName));
+                        sb.append(" ");
+                    }
+                }
+                String indexValue = sb.toString();
+                if (StringUtils.isNotBlank(indexValue)) {
+                    List<String> valueList = new ArrayList<>();
+                    valueList.add(indexValue);
+                    metadata.put(indexName, valueList);
+                }
+            }
+        }
+    }
 }

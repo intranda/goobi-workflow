@@ -4,11 +4,11 @@ package de.sub.goobi.forms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *          - http://www.goobi.org
+ *          - http://launchpad.net/goobi-production
+ *          - http://gdz.sub.uni-goettingen.de
+ *          - http://www.intranda.com
+ *          - http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,54 +27,20 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
-import org.goobi.beans.Ruleset;
-import org.goobi.beans.Step;
-import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-import org.goobi.production.flow.jobs.JobManager;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
-import org.quartz.SchedulerException;
-
-import ugh.dl.DocStruct;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Prefs;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-
-import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.BeanHelper;
-import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.UghHelper;
-import de.sub.goobi.helper.XmlArtikelZaehlen;
-import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.RulesetManager;
-import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.UsergroupManager;
 import dubious.sub.goobi.helper.encryption.MD5;
 
 @ManagedBean(name = "AdministrationForm")

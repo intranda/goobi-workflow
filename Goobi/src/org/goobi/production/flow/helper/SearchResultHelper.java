@@ -291,7 +291,7 @@ public class SearchResultHelper {
     @SuppressWarnings("rawtypes")
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ");
+        sb.append("SELECT distinct ");
 
         // add column labels to query
         for (SearchColumn sc : columnList) {

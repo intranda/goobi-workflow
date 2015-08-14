@@ -82,7 +82,7 @@ public class SearchColumn {
         } else if (value.startsWith("prozesse.") || value.startsWith("projekte.")) {
             return value.substring(value.indexOf(".") + 1);
         } else if (value.startsWith("metadata.")) {
-            return "value";
+            return "print";
         } else {
             return "Wert";
         }
