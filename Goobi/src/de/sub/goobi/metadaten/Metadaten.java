@@ -3001,6 +3001,18 @@ public class Metadaten {
         this.bildNummerGeheZu = bildNummerGeheZu;
     }
 
+    public void setBildNummerGeheZuCompleteString(String bildNummerGeheZu) {
+        try {
+			this.bildNummerGeheZu = bildNummerGeheZu.substring(0, bildNummerGeheZu.indexOf(":"));
+		} catch (Exception e) {
+			this.bildNummerGeheZu = bildNummerGeheZu;
+		}
+    }
+    
+    public String getBildNummerGeheZuCompleteString() {
+        return "";
+    }
+
     public boolean isNurLesenModus() {
         return this.nurLesenModus;
     }
