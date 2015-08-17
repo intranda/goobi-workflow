@@ -96,19 +96,21 @@ public class HttpClientHelper {
     };
 
     
-    // optional parameter:
-    // * first string: username
-    // * second: password
-    // * third: scope (e.g. "localhost")
-    // * forth: port 
-    public static String getStringFromUrl(String url, String... parameter) {
+    //  parameter:
+    // * first: url
+    // * second: username
+    // * third: password
+    // * forth: scope (e.g. "localhost")
+    // * fifth: port 
+    public static String getStringFromUrl(String... parameter) {
         String response = "";
         CloseableHttpClient client = null;
+        String url = parameter [0];
         HttpGet method = new HttpGet(url);
         
-        if (parameter != null && parameter.length > 3) {
+        if (parameter != null && parameter.length > 4) {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()), new UsernamePasswordCredentials(parameter[0], parameter[1]));
+            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()), new UsernamePasswordCredentials(parameter[1], parameter[2]));
             client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 
         } else {
@@ -148,22 +150,24 @@ public class HttpClientHelper {
         return response;
     }
 
-    // optional parameter:
-    // * first string: username
-    // * second: password
-    // * third: scope (e.g. "localhost")
-    // * forth: port 
+    //  parameter:
+    // * first: url
+    // * second: username
+    // * third: password
+    // * forth: scope (e.g. "localhost")
+    // * fifth: port 
     
-    public static OutputStream getStreamFromUrl(String url, OutputStream out, String... parameter) {
+    public static OutputStream getStreamFromUrl(OutputStream out, String... parameter) {
         CloseableHttpClient httpclient = null;
         HttpGet method = null;
         InputStream istr = null;
+        String url = parameter [0];
         try {
 
             method = new HttpGet(url);
-            if (parameter != null && parameter.length > 3) {
+            if (parameter != null && parameter.length > 4) {
                 CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()), new UsernamePasswordCredentials(parameter[0], parameter[1]));
+                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()), new UsernamePasswordCredentials(parameter[1], parameter[2]));
                 httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 
             } else {
