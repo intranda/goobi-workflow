@@ -2985,11 +2985,11 @@ public class Metadaten {
     }
 
     public String getAddDocStructType2() {
-        createAddableData();
         return this.addDocStructType2;
     }
 
     public void setAddDocStructType2(String addDocStructType2) {
+        createAddableData();
         this.addDocStructType2 = addDocStructType2;
     }
 
