@@ -485,6 +485,7 @@ public class Metadaten {
 
         return "metseditor";
     }
+
     private boolean docStructIsAllowed(SelectItem[] itemList, String docstruct) {
         if (itemList != null && itemList.length > 0) {
             for (SelectItem item : itemList) {
@@ -496,7 +497,7 @@ public class Metadaten {
         }
         return false;
     }
-    
+
     public String SpeichernPerson() {
         try {
             Person per = new Person(this.myPrefs.getMetadataTypeByName(this.tempPersonRolle));
@@ -2630,10 +2631,8 @@ public class Metadaten {
             }
         } else {
 
-            String index = dataList.get(myBildNummer).substring(0, dataList.get(myBildNummer).lastIndexOf("."));
-            logger.error("index: " + index);
             String ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
-            logger.error("myPicture: " + ocrFile);
+            logger.trace("myPicture: " + ocrFile);
             InputStreamReader inputReader = null;
             BufferedReader in = null;
             FileInputStream fis = null;
@@ -2687,6 +2686,123 @@ public class Metadaten {
 
     }
 
+    public void showOcrResultForElement() {
+        if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
+
+            String myOcrUrl = getOcrAddress();
+            CloseableHttpClient client = null;
+            HttpGet method = new HttpGet(myOcrUrl);
+            InputStream stream = null;
+            try {
+                client = HttpClientBuilder.create().build();
+
+                stream = client.execute(method, HttpClientHelper.streamResponseHandler);
+                if (stream != null) {
+                    this.ocrResult = IOUtils.toString(stream, "UTF-8");
+                } else {
+                    ocrResult = "";
+                }
+                //            this.ocrResult = method.getResponseBodyAsString();
+
+            } catch (IOException e) {
+                this.ocrResult = "Fatal transport error: " + e.getMessage();
+            } finally {
+                method.releaseConnection();
+                if (client != null) {
+                    try {
+                        client.close();
+                    } catch (IOException e) {
+                        client = null;
+                    }
+                }
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        stream = null;
+                    }
+                }
+            }
+        } else {
+
+            //            String index = dataList.get(myBildNummer).substring(0, dataList.get(myBildNummer).lastIndexOf("."));
+            //            logger.trace("index: " + index);
+
+            int startseite = -1;
+            int endseite = -1;
+            if (this.structSeiten != null) {
+                for (int i = 0; i < this.structSeiten.length; i++) {
+                    SelectItem si = this.structSeiten[i];
+                    int temp = Integer.parseInt(si.getLabel().substring(0, si.getLabel().indexOf(":")));
+                    if (startseite == -1 || startseite > temp) {
+                        startseite = temp;
+                    }
+                    if (endseite == -1 || endseite < temp) {
+                        endseite = temp;
+                    }
+                }
+            }
+            StringBuilder response = new StringBuilder();
+            for (int i = startseite; i <= endseite; i++) {
+
+                String imageFileName = dataList.get(i-1);
+                String textFileName = imageFileName.substring(0, imageFileName.lastIndexOf(".")) + ".txt";
+                if (logger.isTraceEnabled()) {
+                    logger.trace("index: " + textFileName);
+                }
+
+                InputStreamReader inputReader = null;
+                BufferedReader in = null;
+                FileInputStream fis = null;
+                try {
+                    File txtfile = new File(myProzess.getTxtDirectory() + textFileName);
+
+                    String line;
+                    if (txtfile.exists() && txtfile.canRead()) {
+
+                        // System.out.println("read file " +
+                        // txtfile.getAbsolutePath());
+                        fis = new FileInputStream(txtfile);
+                        inputReader = new InputStreamReader(fis, getFileEncoding(txtfile));
+                        // inputReader = new InputStreamReader(fis, "ISO-8859-1");
+                        in = new BufferedReader(inputReader);
+                        while ((line = in.readLine()) != null) {
+                            response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
+                        }
+                        response.append("</p>");
+
+                    }
+                } catch (IOException | SwapException | DAOException | InterruptedException e) {
+                    logger.error(e);
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            in = null;
+                        }
+                    }
+                    if (inputReader != null) {
+                        try {
+                            inputReader.close();
+                        } catch (IOException e) {
+                            inputReader = null;
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            fis = null;
+                        }
+                    }
+                }
+                ocrResult = response.toString();
+
+            }
+        }
+    }
+
     private String getFileEncoding(File file) throws IOException {
         byte[] buf = new byte[4096];
         String encoding = null;
@@ -2716,7 +2832,7 @@ public class Metadaten {
         return this.ocrResult;
     }
 
-    public String getOcrAcdress() {
+    public String getOcrAddress() {
         int startseite = -1;
         int endseite = -1;
         if (this.structSeiten != null) {
