@@ -2980,8 +2980,8 @@ public class Metadaten {
     }
 
     public void setAddDocStructType1(String addDocStructType1) {
-        createAddableData();
         this.addDocStructType1 = addDocStructType1;
+        createAddableData();
     }
 
     public String getAddDocStructType2() {
@@ -2989,8 +2989,8 @@ public class Metadaten {
     }
 
     public void setAddDocStructType2(String addDocStructType2) {
-        createAddableData();
         this.addDocStructType2 = addDocStructType2;
+        createAddableData();
     }
 
     public String getBildNummerGeheZu() {
