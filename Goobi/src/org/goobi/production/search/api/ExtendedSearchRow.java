@@ -95,7 +95,7 @@ public class ExtendedSearchRow {
         }
 
         else if (fieldName.equals("PROCESSLOG") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\"";
+            value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
         }
         
         return value;

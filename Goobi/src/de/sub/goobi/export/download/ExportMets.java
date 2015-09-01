@@ -337,15 +337,16 @@ public class ExportMets {
         }
         if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
             File tempFile = File.createTempFile(myProzess.getTitel(), ".xml");
-            mm.write(tempFile.getAbsolutePath());
+            String filename = tempFile.getAbsolutePath();
+            mm.write(filename);
             FileUtils.copyFile(tempFile, new File(targetFileName));
 
-            FileUtils.deleteQuietly(tempFile);
-            File anchorFile = new File(tempFile.getAbsolutePath().replace(".xml", "_anchor.xml"));
+            File anchorFile = new File(filename.replace(".xml", "_anchor.xml"));
             if (anchorFile.exists()) {
-                FileUtils.copyFile(tempFile, new File(targetFileName.replace(".xml", "_anchor.xml")));
+                FileUtils.copyFile(anchorFile, new File(targetFileName.replace(".xml", "_anchor.xml")));
                 FileUtils.deleteQuietly(anchorFile);
             }
+            FileUtils.deleteQuietly(tempFile);
         } else {
             mm.write(targetFileName);
         }
