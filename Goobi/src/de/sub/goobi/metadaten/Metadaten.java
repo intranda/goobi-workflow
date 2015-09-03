@@ -472,14 +472,14 @@ public class Metadaten {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         if (neuesElementWohin.equals("3") || neuesElementWohin.equals("4")) {
-            if (!docStructIsAllowed(getAddableDocStructTypenAlsKind(), addDocStructType2)) {
-                addDocStructType2 = "";
-                createAddableData();
+            if (!docStructIsAllowed(getAddableDocStructTypenAlsKind(), getAddDocStructType2())) {
+                setAddDocStructType2("");
             }
+          
         } else {
-            if (!docStructIsAllowed(getAddableDocStructTypenAlsNachbar(), addDocStructType1)) {
-                addDocStructType1 = "";
-                createAddableData();
+            
+            if (!docStructIsAllowed(getAddableDocStructTypenAlsNachbar(), getAddDocStructType1())) {
+                setAddDocStructType1("");
             }
         }
 
@@ -1350,10 +1350,10 @@ public class Metadaten {
          * -------------------------------- vor das aktuelle Element --------------------------------
          */
         if (this.neuesElementWohin.equals("1")) {
-            if (this.addDocStructType1 == null || this.addDocStructType1.equals("")) {
+            if (getAddDocStructType1() == null || getAddDocStructType1().equals("")) {
                 return "metseditor";
             }
-            DocStructType dst = this.myPrefs.getDocStrctTypeByName(this.addDocStructType1);
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType1());
             ds = this.mydocument.createDocStruct(dst);
             if (this.myDocStruct == null) {
                 return "metseditor";
@@ -1393,7 +1393,7 @@ public class Metadaten {
          * -------------------------------- hinter das aktuelle Element --------------------------------
          */
         if (this.neuesElementWohin.equals("2")) {
-            DocStructType dst = this.myPrefs.getDocStrctTypeByName(this.addDocStructType1);
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType1());
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
@@ -1429,7 +1429,7 @@ public class Metadaten {
          * -------------------------------- als erstes Child --------------------------------
          */
         if (this.neuesElementWohin.equals("3")) {
-            DocStructType dst = this.myPrefs.getDocStrctTypeByName(this.addDocStructType2);
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType2());
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct;
             if (parent == null) {
@@ -1456,7 +1456,7 @@ public class Metadaten {
          * -------------------------------- als letztes Child --------------------------------
          */
         if (this.neuesElementWohin.equals("4")) {
-            DocStructType dst = this.myPrefs.getDocStrctTypeByName(this.addDocStructType2);
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType2());
             ds = this.mydocument.createDocStruct(dst);
             this.myDocStruct.addChild(ds);
         }
@@ -1508,7 +1508,6 @@ public class Metadaten {
      */
     public SelectItem[] getAddableDocStructTypenAlsKind() {
         SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, false);
-        //      addDocStructType2 =  getSelectedStructType(itemList, addDocStructType2);
         return itemList;
     }
 
@@ -1517,22 +1516,21 @@ public class Metadaten {
      */
     public SelectItem[] getAddableDocStructTypenAlsNachbar() {
         SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
-        //      addDocStructType1 =  getSelectedStructType(itemList, addDocStructType1);
         return itemList;
     }
 
-    //    private String getSelectedStructType(SelectItem[] itemList, String docTypeName) {
-    //        if (itemList != null && itemList.length > 0) {
-    //           for (SelectItem item : itemList)  {
-    //               if (item.getValue().equals(docTypeName)) {
-    //                   return docTypeName;
-    //               }
-    //           }
-    //           return itemList[0].getValue().toString();
-    //        } else {
-    //            return "";
-    //        }
-    //    }
+    private String getSelectedStructType(SelectItem[] itemList, String docTypeName) {
+        if (itemList != null && itemList.length > 0) {
+            for (SelectItem item : itemList) {
+                if (item.getValue().toString().equals(docTypeName)) {
+                    return docTypeName;
+                }
+            }
+            return itemList[0].getValue().toString();
+        } else {
+            return "";
+        }
+    }
 
     /*
      * ##################################################### ##################################################### ## ## Strukturdaten: Seiten ##
@@ -2745,7 +2743,7 @@ public class Metadaten {
             StringBuilder response = new StringBuilder();
             for (int i = startseite; i <= endseite; i++) {
 
-                String imageFileName = dataList.get(i-1);
+                String imageFileName = dataList.get(i - 1);
                 String textFileName = imageFileName.substring(0, imageFileName.lastIndexOf(".")) + ".txt";
                 if (logger.isTraceEnabled()) {
                     logger.trace("index: " + textFileName);
@@ -3096,7 +3094,8 @@ public class Metadaten {
     }
 
     public void setAddDocStructType1(String addDocStructType1) {
-        this.addDocStructType1 = addDocStructType1;
+        this.addDocStructType1 =getSelectedStructType(getAddableDocStructTypenAlsNachbar(), addDocStructType1);
+
         createAddableData();
     }
 
@@ -3105,7 +3104,7 @@ public class Metadaten {
     }
 
     public void setAddDocStructType2(String addDocStructType2) {
-        this.addDocStructType2 = addDocStructType2;
+        this.addDocStructType2 =getSelectedStructType(getAddableDocStructTypenAlsKind(), addDocStructType2);
         createAddableData();
     }
 
@@ -3119,12 +3118,12 @@ public class Metadaten {
 
     public void setBildNummerGeheZuCompleteString(String bildNummerGeheZu) {
         try {
-			this.bildNummerGeheZu = bildNummerGeheZu.substring(0, bildNummerGeheZu.indexOf(":"));
-		} catch (Exception e) {
-			this.bildNummerGeheZu = bildNummerGeheZu;
-		}
+            this.bildNummerGeheZu = bildNummerGeheZu.substring(0, bildNummerGeheZu.indexOf(":"));
+        } catch (Exception e) {
+            this.bildNummerGeheZu = bildNummerGeheZu;
+        }
     }
-    
+
     public String getBildNummerGeheZuCompleteString() {
         return "";
     }
@@ -3986,9 +3985,9 @@ public class Metadaten {
         String docstructName = "";
         int selection = new Integer(neuesElementWohin).intValue();
         if (selection < 3) {
-            docstructName = addDocStructType1;
+            docstructName = getAddDocStructType1();
         } else {
-            docstructName = addDocStructType2;
+            docstructName = getAddDocStructType2();
         }
         if (docstructName != null && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
             oldDocstructName = docstructName;
