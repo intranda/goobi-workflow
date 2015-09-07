@@ -175,7 +175,7 @@ public class ExportMets {
 
         ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         mm.setWriteLocal(writeLocalFilegroup);
-        String imageFolderPath = myProzess.getImagesDirectory();
+        String imageFolderPath = myProzess.getImagesTifDirectory(true);
         File imageFolder = new File(imageFolderPath);
         /*
          * before creating mets file, change relative path to absolute -
@@ -229,15 +229,14 @@ public class ExportMets {
                 // If the file's location string shoes no sign of any protocol,
                 // use the file protocol.
                 if (!location.contains("://")) {
-                    if (SystemUtils.IS_OS_WINDOWS) {
-                        location = "file://" + location;
-                    } else {
-                        location = "file:///" + location;
+                    if(!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
+                        //is a relative path
+                        File f = new File(imageFolder, location);
+                        location = f.getAbsolutePath();
                     }
+                    location = "file://" + location;
                 }
-                URL url = new URL(location);
-                File f = new File(imageFolder, url.getFile());
-                cf.setLocation(f.toURI().toString());
+                cf.setLocation(location);
             }
         }
         mm.setDigitalDocument(dd);
