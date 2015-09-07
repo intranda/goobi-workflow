@@ -778,4 +778,10 @@ public class ProjectBean extends BasicBean {
         projectStatImages = null;
         projectStatVolumes = null;
     }
+    
+    public String cloneProject() {
+       myProjekt.clone();
+       return Cancel();
+    }
+    
 }

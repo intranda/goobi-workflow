@@ -34,10 +34,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.StepInformation;
-
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.ProjectHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.UserManager;
 
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
@@ -84,7 +86,6 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     private String metsRightsSponsorSiteURL = "";
     private String metsRightsLicense = "";
 
-    
     public void lazyLoad() {
         //		try {
         //			this.benutzer = null;
@@ -460,4 +461,74 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     public void setMetsRightsSponsor(String metsRightsSponsor) {
         this.metsRightsSponsor = metsRightsSponsor;
     }
+
+    public Project clone() {
+        Project p = new Project();
+        p.setDmsImportCreateProcessFolder(this.isDmsImportCreateProcessFolder());
+        p.setDmsImportErrorPath(this.getDmsImportErrorPath());
+        p.setDmsImportImagesPath(getDmsImportImagesPath());
+        p.setDmsImportRootPath(getDmsImportRootPath());
+        p.setDmsImportSuccessPath(getDmsImportSuccessPath());
+
+        p.setDmsImportTimeOut(getDmsImportTimeOut());
+        p.setEndDate(getEndDate());
+        p.setFileFormatDmsExport(getFileFormatDmsExport());
+        p.setFileFormatInternal(getFileFormatInternal());
+
+        p.setMetsContentIDs(getMetsContentIDs());
+        p.setMetsDigiprovPresentation(metsDigiprovPresentation);
+        p.setMetsDigiprovPresentationAnchor(metsDigiprovPresentationAnchor);
+
+        p.setMetsDigiprovReference(metsDigiprovReference);
+        p.setMetsDigiprovReferenceAnchor(metsDigiprovReferenceAnchor);
+
+        p.setMetsPointerPath(metsPointerPath);
+        p.setMetsPointerPathAnchor(metsPointerPathAnchor);
+
+        p.setMetsPurl(metsPurl);
+        p.setMetsRightsLicense(metsRightsLicense);
+        p.setMetsRightsOwner(metsRightsOwner);
+        p.setMetsRightsOwnerLogo(metsRightsOwnerLogo);
+        p.setMetsRightsOwnerMail(getMetsRightsOwnerMail());
+        p.setMetsRightsOwnerSite(metsRightsOwnerSite);
+        p.setMetsRightsSponsor(metsRightsSponsor);
+        p.setMetsRightsSponsorLogo(metsRightsSponsorLogo);
+        p.setMetsRightsSponsorSiteURL(metsRightsSponsorSiteURL);
+        p.setNumberOfPages(numberOfPages);
+        p.setNumberOfVolumes(numberOfVolumes);
+        p.setProjectIsArchived(projectIsArchived);
+        p.setStartDate(startDate);
+        p.setTitel("new project");
+        p.setUseDmsImport(useDmsImport);
+
+        try {
+            ProjectManager.saveProject(p);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+
+        try {
+            List<User> allUsers = UserManager.getUsers(null, "", null, null);
+            for (User user : allUsers) {
+                if (user.getProjekte().contains(this)) {
+                    user.getProjekte().add(p);
+                    UserManager.addProjectAssignment(user, p.getId());
+                }
+            }
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+
+        p.setFilegroups(getFilegroups());
+        List<ProjectFileGroup> projectFileGroupList = new ArrayList<>();
+        for (ProjectFileGroup pfg : getFilegroups()) {
+            ProjectFileGroup newGroup = pfg.clone();
+            newGroup.setProject(p);
+            projectFileGroupList.add(newGroup);
+        }
+        ProjectManager.saveProjectFileGroups(projectFileGroupList);
+
+        return p;
+    }
+
 }
