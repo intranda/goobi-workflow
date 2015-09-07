@@ -1,4 +1,5 @@
 package org.goobi.beans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,81 +29,89 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
-
-
 public class ProjectFileGroup implements Serializable {
-	private static final long serialVersionUID = -5506252462891480484L;
-	private Integer id;
-	private String name;
-	private String path;
-	private String mimetype; // optional
-	private String suffix; // optional
-	private String folder;
+    private static final long serialVersionUID = -5506252462891480484L;
+    private Integer id;
+    private String name;
+    private String path;
+    private String mimetype; // optional
+    private String suffix; // optional
+    private String folder;
 
-	private Project project;
+    private Project project;
 
-	/*#####################################################
-	 #####################################################
-	 ##																															 
-	 ##				Getter und Setter									
-	 ##                                                   															    
-	 #####################################################
-	 ####################################################*/
+    /*#####################################################
+     #####################################################
+     ##																															 
+     ##				Getter und Setter									
+     ##                                                   															    
+     #####################################################
+     ####################################################*/
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Project getProject() {
-		return this.project;
-	}
+    public Project getProject() {
+        return this.project;
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
-	public String getPath() {
-		return this.path;
-	}
+    public String getPath() {
+        return this.path;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public String getMimetype() {
-		return this.mimetype;
-	}
+    public String getMimetype() {
+        return this.mimetype;
+    }
 
-	public void setMimetype(String mimetype) {
-		this.mimetype = mimetype;
-	}
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
 
-	public String getSuffix() {
-		return this.suffix;
-	}
+    public String getSuffix() {
+        return this.suffix;
+    }
 
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 
-	public String getFolder() {
-		return this.folder;
-	}
+    public String getFolder() {
+        return this.folder;
+    }
 
-	public void setFolder(String folder) {
-		this.folder = folder;
-	}
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public ProjectFileGroup clone() {
+        ProjectFileGroup pfg = new ProjectFileGroup();
+        pfg.setFolder(folder);
+        pfg.setMimetype(mimetype);
+        pfg.setName(name);
+        pfg.setPath(path);
+        pfg.setSuffix(suffix);
+        return pfg;
+    }
 
 }

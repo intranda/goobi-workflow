@@ -784,7 +784,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
+                        + StringEscapeUtils.escapeSql(tok.substring(1)) + rightTruncationCharacter + "'");
             }
 
             // USE OR
