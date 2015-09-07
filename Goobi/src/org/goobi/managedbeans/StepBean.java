@@ -169,6 +169,10 @@ public class StepBean extends BasicBean {
         if (hideCorrectionTasks) {
             sql = sql + " AND Prioritaet != 10 ";
         }
+        if (!sql.isEmpty()) {
+            sql = sql + " AND ";
+        }
+        sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
         return "task_all";
@@ -1095,7 +1099,8 @@ public class StepBean extends BasicBean {
                 logger.error("Can't load export plugin, use default plugin", e);
                 dms = new ExportDms();
             }
-        } if (dms == null) {
+        }
+        if (dms == null) {
             dms = new ExportDms();
         }
         try {
