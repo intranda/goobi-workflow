@@ -27,12 +27,13 @@ package org.goobi.production.flow.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.CopyProcess;
 import org.goobi.production.importer.ImportObject;
@@ -46,6 +47,7 @@ import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -64,29 +66,34 @@ public class JobCreation {
         logger.trace("mets filename is " + metsfilename);
         String basepath = metsfilename.substring(0, metsfilename.length() - 4);
         logger.trace("basepath is " + basepath);
-        File metsfile = new File(metsfilename);
+        Path metsfile = Paths.get(metsfilename);
         Process p = null;
         if (!testTitle(processTitle)) {
             logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
             // removing all data
-            File imagesFolder = new File(basepath);
-            if (imagesFolder.exists() && imagesFolder.isDirectory()) {
+            Path imagesFolder = Paths.get(basepath);
+            if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
                 deleteDirectory(imagesFolder);
             } else {
-                imagesFolder = new File(basepath + "_" + vorlage.DIRECTORY_SUFFIX);
-                if (imagesFolder.exists() && imagesFolder.isDirectory()) {
+                imagesFolder = Paths.get(basepath + "_" + vorlage.DIRECTORY_SUFFIX);
+                if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
                     deleteDirectory(imagesFolder);
                 }
             }
             try {
-                FileUtils.deleteQuietly(metsfile);
+                Files.delete(metsfile);
             } catch (Exception e) {
                 logger.error("Can not delete file " + processTitle, e);
                 return null;
             }
-            File anchor = new File(basepath + "_anchor.xml");
-            if (anchor.exists()) {
-                FileUtils.deleteQuietly(anchor);
+            Path anchor = Paths.get(basepath + "_anchor.xml");
+            if (Files.exists(anchor)) {
+                try {
+                    Files.delete(anchor);
+                } catch (IOException e) {
+                    logger.error("Can not delete file " + processTitle, e);
+                    return null;
+                }
             }
             return null;
         }
@@ -110,7 +117,7 @@ public class JobCreation {
                             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
                             myThread.start();
                         }
-                        FileUtils.deleteQuietly(new File(io.getMetsFilename()));
+                        Files.delete(Paths.get(io.getMetsFilename()));
                     }
                 }
             } catch (ReadException e) {
@@ -156,90 +163,81 @@ public class JobCreation {
     }
 
     @SuppressWarnings({ "static-access", "deprecation" })
-    public static void moveFiles(File metsfile, String basepath, Process p) throws SwapException, DAOException, IOException, InterruptedException {
+    public static void moveFiles(Path metsfile, String basepath, Process p) throws SwapException, DAOException, IOException, InterruptedException {
         if (ConfigurationHelper.getInstance().isImportUseOldConfiguration()) {
-            File imagesFolder = new File(basepath);
-            if (!imagesFolder.exists()) {
-                imagesFolder = new File(basepath + "_" + p.DIRECTORY_SUFFIX);
+            Path imagesFolder = Paths.get(basepath);
+            if (!Files.exists(imagesFolder)) {
+                imagesFolder = Paths.get(basepath + "_" + p.DIRECTORY_SUFFIX);
             }
-            if (imagesFolder.exists() && imagesFolder.isDirectory()) {
-                List<String> imageDir = new ArrayList<String>();
+            if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
+                List<String> imageDir = NIOFileUtils.list(imagesFolder.toString());
 
-                String[] files = imagesFolder.list();
-                for (int i = 0; i < files.length; i++) {
-                    imageDir.add(files[i]);
-                }
                 for (String file : imageDir) {
-                    File image = new File(imagesFolder, file);
-                    File dest = new File(p.getImagesOrigDirectory(false) + image.getName());
-                    FileUtils.moveFile(image, dest);
+                    Path image = Paths.get(imagesFolder.toString(), file);
+                    Path dest = Paths.get(p.getImagesOrigDirectory(false) + image.getFileName());
+                    Files.move(image, dest, NIOFileUtils.STANDARD_COPY_OPTIONS);
                 }
                 deleteDirectory(imagesFolder);
             }
 
             // copy pdf files
-            File pdfs = new File(basepath + "_pdf" + File.separator);
-            if (pdfs.isDirectory()) {
-                FileUtils.moveDirectory(pdfs, new File(p.getPdfDirectory()));
+            Path pdfs = Paths.get(basepath + "_pdf" + FileSystems.getDefault().getSeparator());
+            if (Files.isDirectory(pdfs)) {
+                Files.move(pdfs, Paths.get(p.getPdfDirectory()), NIOFileUtils.STANDARD_COPY_OPTIONS);
             }
 
             // copy fulltext files
 
-            File fulltext = new File(basepath + "_txt");
+            Path fulltext = Paths.get(basepath + "_txt");
 
-            if (fulltext.isDirectory()) {
-
-                FileUtils.moveDirectory(fulltext, new File(p.getTxtDirectory()));
+            if (Files.isDirectory(fulltext)) {
+                Files.move(fulltext, Paths.get(p.getTxtDirectory()), NIOFileUtils.STANDARD_COPY_OPTIONS);
             }
 
             // copy source files
 
-            File sourceDir = new File(basepath + "_src" + File.separator);
-            if (sourceDir.isDirectory()) {
-                FileUtils.moveDirectory(sourceDir, new File(p.getImportDirectory()));
+            Path sourceDir = Paths.get(basepath + "_src" + FileSystems.getDefault().getSeparator());
+            if (Files.isDirectory(sourceDir)) {
+                Files.move(sourceDir, Paths.get(p.getImportDirectory()), NIOFileUtils.STANDARD_COPY_OPTIONS);
             }
 
             try {
-                FileUtils.deleteQuietly(metsfile);
+                Files.delete(metsfile);
             } catch (Exception e) {
-                logger.error("Can not delete file " + metsfile.getName() + " after importing " + p.getTitel() + " into goobi", e);
+                logger.error("Can not delete file " + metsfile.getFileName() + " after importing " + p.getTitel() + " into goobi", e);
 
             }
-            File anchor = new File(basepath + "_anchor.xml");
-            if (anchor.exists()) {
-                FileUtils.deleteQuietly(anchor);
+            Path anchor = Paths.get(basepath + "_anchor.xml");
+            if (Files.exists(anchor)) {
+                Files.delete(anchor);
             }
         }
 
         else {
             // new folder structure for process imports
-            File importFolder = new File(basepath);
-            if (importFolder.exists() && importFolder.isDirectory()) {
-                File[] folderList = importFolder.listFiles();
-                for (File directory : folderList) {
-                    File destination = new File(p.getProcessDataDirectory(), directory.getName());
-                    if (directory.isDirectory()) {
-                        if (!destination.exists()) {
-                            FileUtils.moveDirectory(directory, destination);
+            Path importFolder = Paths.get(basepath);
+            if (Files.exists(importFolder) && Files.isDirectory(importFolder)) {
+                List<Path> folderList = NIOFileUtils.listFiles(basepath);
+                for (Path directory : folderList) {
+                    Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
+                    if (Files.isDirectory(directory)) {
+                        if (!Files.exists(destination)) {
+                            Files.move(directory, destination);
                         } else {
-                            FileUtils.copyDirectory(directory, destination);
-                            FileUtils.deleteDirectory(directory);
+                            NIOFileUtils.copyDirectory(directory, destination);
+                            deleteDirectory(directory);
                         }
 
                     } else {
-                        FileUtils.moveFile(directory, new File(p.getProcessDataDirectory(), directory.getName()));
+                        Files.move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
                     }
                 }
-                FileUtils.deleteDirectory(importFolder);
+                deleteDirectory(importFolder);
             }
         }
     }
 
-    private static void deleteDirectory(File directory) {
-        try {
-            FileUtils.deleteDirectory(directory);
-        } catch (IOException e) {
-            logger.error(e);
-        }
+    private static void deleteDirectory(Path directory) {
+        NIOFileUtils.deleteDir(directory);
     }
 }

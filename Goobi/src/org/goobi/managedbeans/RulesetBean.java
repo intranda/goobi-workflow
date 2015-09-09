@@ -27,7 +27,10 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -68,8 +71,8 @@ public class RulesetBean extends BasicBean {
 	}
 
 	private boolean hasValidRulesetFilePath(Ruleset r, String pathToRulesets) {
-		File rulesetFile = new File(pathToRulesets + r.getDatei());
-		return rulesetFile.exists();
+		Path rulesetFile = Paths.get(pathToRulesets + r.getDatei());
+		return Files.exists(rulesetFile);
 	}
 
 	public String Loeschen() {

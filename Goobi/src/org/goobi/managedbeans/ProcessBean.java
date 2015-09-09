@@ -27,8 +27,9 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -290,12 +291,12 @@ public class ProcessBean extends BasicBean {
                         {
                             // renaming image directories
                             String imageDirectory = myProzess.getImagesDirectory();
-                            File dir = new File(imageDirectory);
-                            if (dir.exists() && dir.isDirectory()) {
-                                File[] subdirs = dir.listFiles();
-                                for (File imagedir : subdirs) {
-                                    if (imagedir.isDirectory()) {
-                                        imagedir.renameTo(new File(imagedir.getAbsolutePath().replace(myProzess.getTitel(), myNewProcessTitle)));
+                            Path dir = Paths.get(imageDirectory);
+                            if (Files.exists(dir) && Files.isDirectory(dir)) {
+                                List<Path> subdirs = NIOFileUtils.listFiles(imageDirectory);
+                                for (Path imagedir : subdirs) {
+                                    if (Files.isDirectory(imagedir)) {
+                                        Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -303,12 +304,12 @@ public class ProcessBean extends BasicBean {
                         {
                             // renaming ocr directories
                             String ocrDirectory = myProzess.getOcrDirectory();
-                            File dir = new File(ocrDirectory);
-                            if (dir.exists() && dir.isDirectory()) {
-                                File[] subdirs = dir.listFiles();
-                                for (File imagedir : subdirs) {
-                                    if (imagedir.isDirectory()) {
-                                        imagedir.renameTo(new File(imagedir.getAbsolutePath().replace(myProzess.getTitel(), myNewProcessTitle)));
+                            Path dir = Paths.get(ocrDirectory);
+                            if (Files.exists(dir) && Files.isDirectory(dir)) {
+                                List<Path> subdirs = NIOFileUtils.listFiles(ocrDirectory);
+                                for (Path imagedir : subdirs) {
+                                    if (Files.isDirectory(imagedir)) {
+                                        Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -363,13 +364,13 @@ public class ProcessBean extends BasicBean {
     public String ContentLoeschen() {
         // deleteMetadataDirectory();
         try {
-            File ocr = new File(this.myProzess.getOcrDirectory());
-            if (ocr.exists()) {
-                NIOFileUtils.deleteDir(ocr.toPath());
+            Path ocr = Paths.get(this.myProzess.getOcrDirectory());
+            if (Files.exists(ocr)) {
+                NIOFileUtils.deleteDir(ocr);
             }
-            File images = new File(this.myProzess.getImagesDirectory());
-            if (images.exists()) {
-                NIOFileUtils.deleteDir(images.toPath());
+            Path images = Paths.get(this.myProzess.getImagesDirectory());
+            if (Files.exists(images)) {
+                NIOFileUtils.deleteDir(images);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -386,9 +387,9 @@ public class ProcessBean extends BasicBean {
         }
         try {
             NIOFileUtils.deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
-            File ocr = new File(this.myProzess.getOcrDirectory());
-            if (ocr.exists()) {
-                NIOFileUtils.deleteDir(ocr.toPath());
+            Path ocr = Paths.get(this.myProzess.getOcrDirectory());
+            if (Files.exists(ocr)) {
+                NIOFileUtils.deleteDir(ocr);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -1872,9 +1873,9 @@ public class ProcessBean extends BasicBean {
 
     public List<String> getXsltList() {
         List<String> answer = new ArrayList<String>();
-        File folder = new File("xsltFolder");
-        if (folder.isDirectory() && folder.exists()) {
-            String[] files = folder.list();
+        Path folder = Paths.get("xsltFolder");
+        if (Files.exists(folder) && Files.isDirectory(folder)) {
+            List<String> files = NIOFileUtils.list(folder.toString());
 
             for (String file : files) {
                 if (file.endsWith(".xslt") || file.endsWith(".xsl")) {

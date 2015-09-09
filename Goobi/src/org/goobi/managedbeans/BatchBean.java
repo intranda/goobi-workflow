@@ -27,8 +27,9 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -261,7 +262,7 @@ public class BatchBean extends BasicBean {
              logger.debug("generate docket for process list");
          }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-        File xsltfile = new File(rootpath, "docket_multipage.xsl");
+        Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         List<Process> docket = new ArrayList<Process>();
         if (this.selectedBatches.size() == 0) {
@@ -289,7 +290,7 @@ public class BatchBean extends BasicBean {
                 try {
                     ServletOutputStream out = response.getOutputStream();
                     ExportDocket ern = new ExportDocket();
-                    ern.startExport(docket, out, xsltfile.getAbsolutePath());
+                    ern.startExport(docket, out, xsltfile.toString());
                     out.flush();
                 } catch (IOException e) {
                     logger.error("IOException while exporting run note", e);

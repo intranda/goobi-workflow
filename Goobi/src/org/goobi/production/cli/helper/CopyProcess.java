@@ -27,8 +27,10 @@ package org.goobi.production.cli.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -872,12 +874,14 @@ public class CopyProcess extends ProzesskopieForm {
             createNewFileformat();
         }
 
-        File f = new File(this.prozessKopie.getProcessDataDirectoryIgnoreSwapping());
-        if (!f.exists() && !f.mkdir()) {
-            Helper.setFehlerMeldung("Could not create process directory");
-            logger.error("Could not create process directory");
-            return this.prozessKopie;
+        Path f = Paths.get(this.prozessKopie.getProcessDataDirectoryIgnoreSwapping());
+        if (!Files.exists(f)) {
+            Files.createDirectories(f);
         }
+//            Helper.setFehlerMeldung("Could not create process directory");
+//            logger.error("Could not create process directory");
+//            return this.prozessKopie;
+//        }
 
         this.prozessKopie.writeMetadataFile(this.myRdf);
 
@@ -1124,7 +1128,7 @@ public class CopyProcess extends ProzesskopieForm {
         this.possibleDigitalCollection = new ArrayList<String>();
         ArrayList<String> defaultCollections = new ArrayList<String>();
         String filename = new Helper().getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-        if (!(new File(filename).exists())) {
+        if (!Files.exists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
@@ -1132,7 +1136,7 @@ public class CopyProcess extends ProzesskopieForm {
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(new File(filename));
+            Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();

@@ -27,8 +27,12 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -43,6 +47,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
@@ -169,7 +174,8 @@ public class LoginBean {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
             SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-            temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false), this.myBenutzer);
+            temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
+                    this.myBenutzer);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
@@ -221,11 +227,11 @@ public class LoginBean {
             temp.setDisplayLocksColumn(myBenutzer.isDisplayLocksColumn());
             temp.setDisplaySwappingColumn(myBenutzer.isDisplaySwappingColumn());
             temp.setDisplayAutomaticTasks(myBenutzer.isDisplayAutomaticTasks());
-            temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());            
+            temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());
             temp.setDisplayOnlySelectedTasks(myBenutzer.isDisplayOnlySelectedTasks());
             temp.setDisplayOnlyOpenTasks(myBenutzer.isDisplayOnlyOpenTasks());
             temp.setEmail(myBenutzer.getEmail());
-            
+
             temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
@@ -240,26 +246,28 @@ public class LoginBean {
         /* Pages-Verzeichnis mit den temporären Images ermitteln */
         String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
-        /* Verzeichnis einlesen */
-        FilenameFilter filter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".png");
-            }
-        };
-        File dir = new File(myPfad);
-        String[] dateien = dir.list(filter);
+        List<String> dateien = NIOFileUtils.list(myPfad, pngfilter);
 
         /* alle Dateien durchlaufen und die alten löschen */
-        if (dateien != null) {
-            for (int i = 0; i < dateien.length; i++) {
-                File file = new File(myPfad + dateien[i]);
-                if ((System.currentTimeMillis() - file.lastModified()) > 7200000) {
-                    file.delete();
+        if (!dateien.isEmpty()) {
+            for (String filename : dateien) {
+                Path file = Paths.get(myPfad + filename);
+                try {
+                    if ((System.currentTimeMillis() - Files.readAttributes(file, BasicFileAttributes.class).lastModifiedTime().toMillis()) > 7200000) {
+                        Files.delete(file);
+                    }
+                } catch (IOException e) {
                 }
             }
         }
     }
+
+    private static final DirectoryStream.Filter<Path> pngfilter = new DirectoryStream.Filter<Path>() {
+        @Override
+        public boolean accept(Path path) {
+            return (path.toString().endsWith(".png"));
+        }
+    };
 
     public String getLogin() {
         return this.login;

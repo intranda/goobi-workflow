@@ -37,9 +37,10 @@ import static junit.framework.Assert.fail;
 
 import org.apache.log4j.BasicConfigurator;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FilesystemHelperTest {
@@ -93,28 +94,28 @@ public class FilesystemHelperTest {
 
 	@SuppressWarnings("deprecation")
     private void assertFileExists(String fileName) {
-		File newFile = new File(fileName);
-		if (!newFile.exists()) {
+		Path newFile = Paths.get(fileName);
+		if (!Files.exists(newFile)) {
 			fail("File " + fileName + " does not exist.");
 		}
 	}
 
 	@SuppressWarnings("deprecation")
     private void assertFileNotExists(String fileName) {
-		File newFile = new File(fileName);
-		if (newFile.exists()) {
+	    Path newFile = Paths.get(fileName);
+        if (!Files.exists(newFile)) {
 			fail("File " + fileName + " should not exist.");
 		}
 	}
 
 	private void createFile(String fileName) throws IOException {
-		File testFile = new File(fileName);
-		FileWriter writer = new FileWriter(testFile);
+	    Path testFile = Paths.get(fileName);
+		FileWriter writer = new FileWriter(testFile.toFile());
 		writer.close();
 	}
 
-	private void deleteFile(String fileName) {
-		File testFile = new File(fileName);
-		testFile.delete();
+	private void deleteFile(String fileName) throws IOException {
+	    Path testFile = Paths.get(fileName);
+		Files.delete(testFile);
 	}
 }

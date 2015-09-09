@@ -17,9 +17,11 @@ package de.sub.goobi.config;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Before;
@@ -35,9 +37,9 @@ public class ConfigProjectsTest {
         if (folder == null) {
             folder = "/opt/digiverso/junit/data/";
         }
-        File template = new File(folder + "goobi_projects.xml");
+        Path template = Paths.get(folder + "goobi_projects.xml");
         ConfigurationHelper.CONFIG_FILE_NAME =folder + "goobi_config.properties";
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + FileSystems.getDefault().getSeparator());
     }
 
     @Test
