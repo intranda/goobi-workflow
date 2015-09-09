@@ -4,11 +4,11 @@ package de.sub.goobi.export.dms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *          - http://www.goobi.org
+ *          - http://launchpad.net/goobi-production
+ *          - http://gdz.sub.uni-goettingen.de
+ *          - http://www.intranda.com
+ *          - http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,92 +28,106 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 
 public class DmsImportThread extends Thread {
-	private static final Logger logger = Logger.getLogger(DmsImportThread.class);
-	private File fileError;
-	private File fileXml;
-	private File fileSuccess;
-	private File folderImages;
-	private long timeFileSuccess;
-	private long timeFileError;
+    private static final Logger logger = Logger.getLogger(DmsImportThread.class);
+    private Path fileError;
+    private Path fileXml;
+    private Path fileSuccess;
+    private Path folderImages;
+    private long timeFileSuccess;
+    private long timeFileError;
 
-	public String rueckgabe = "";
+    public String rueckgabe = "";
 
-	public boolean stop = false;
+    public boolean stop = false;
 
-	public DmsImportThread(Process inProzess, String inAts) {
-		setDaemon(true);
-		/* aus Kompatibilitätsgründen auch noch die Fehlermeldungen an alter Stelle, ansonsten lieber in neuem FehlerOrdner */
-		if (inProzess.getProjekt().getDmsImportErrorPath() == null || inProzess.getProjekt().getDmsImportErrorPath().length() == 0) {
-			this.fileError = new File(inProzess.getProjekt().getDmsImportRootPath(), inAts + ".log");
-		} else {
-			this.fileError = new File(inProzess.getProjekt().getDmsImportErrorPath(), inAts + ".log");
-		}
+    public DmsImportThread(Process inProzess, String inAts) {
+        setDaemon(true);
+        /* aus Kompatibilitätsgründen auch noch die Fehlermeldungen an alter Stelle, ansonsten lieber in neuem FehlerOrdner */
+        if (inProzess.getProjekt().getDmsImportErrorPath() == null || inProzess.getProjekt().getDmsImportErrorPath().length() == 0) {
+            this.fileError = Paths.get(inProzess.getProjekt().getDmsImportRootPath(), inAts + ".log");
+        } else {
+            this.fileError = Paths.get(inProzess.getProjekt().getDmsImportErrorPath(), inAts + ".log");
+        }
 
-		this.fileXml = new File(inProzess.getProjekt().getDmsImportRootPath(), inAts + ".xml");
-		this.fileSuccess = new File(inProzess.getProjekt().getDmsImportSuccessPath(), inAts + ".xml");
-		if (inProzess.getProjekt().isDmsImportCreateProcessFolder()) {
-			this.fileSuccess = new File(inProzess.getProjekt().getDmsImportSuccessPath(), inProzess.getTitel() + File.separator + inAts + ".xml");
-		}
+        this.fileXml = Paths.get(inProzess.getProjekt().getDmsImportRootPath(), inAts + ".xml");
+        this.fileSuccess = Paths.get(inProzess.getProjekt().getDmsImportSuccessPath(), inAts + ".xml");
+        if (inProzess.getProjekt().isDmsImportCreateProcessFolder()) {
+            this.fileSuccess = Paths.get(inProzess.getProjekt().getDmsImportSuccessPath(), inProzess.getTitel(), inAts + ".xml");
+        }
 
-		this.folderImages = new File(inProzess.getProjekt().getDmsImportImagesPath(), inAts + "_tif");
+        this.folderImages = Paths.get(inProzess.getProjekt().getDmsImportImagesPath(), inAts + "_tif");
 
-		if (this.fileError.exists()) {
-			this.timeFileError = this.fileError.getAbsoluteFile().lastModified();
-		}
-		if (this.fileSuccess.exists()) {
-			this.timeFileSuccess = this.fileSuccess.getAbsoluteFile().lastModified();
-		}
-	}
+        if (Files.exists(this.fileError)) {
+            try {
+                this.timeFileError = Files.readAttributes(this.fileError, BasicFileAttributes.class).lastModifiedTime().toMillis();
+            } catch (IOException e) {
+                logger.error(e);
+            }
+        }
+        if (Files.exists(this.fileSuccess)) {
+            try {
+                this.timeFileSuccess = Files.readAttributes(this.fileSuccess, BasicFileAttributes.class).lastModifiedTime().toMillis();
+            } catch (IOException e) {
+                logger.error(e);
+            }
+        }
+    }
 
-	@Override
-	public void run() {
-		while (!this.stop) {
-			try {
-				Thread.sleep(550);
-				if (!this.fileXml.exists() && (this.fileError.exists() || this.fileSuccess.exists())) {
-					if (this.fileError.exists() && this.fileError.getAbsoluteFile().lastModified() > this.timeFileError) {
-						this.stop = true;
-						/* die Logdatei mit der Fehlerbeschreibung einlesen */
-						StringBuffer myBuf = new StringBuffer();
-						myBuf.append("Beim Import ist ein Importfehler aufgetreten: ");
-						BufferedReader r = new BufferedReader(new FileReader(this.fileError));
-						String aLine = r.readLine();
-						while (aLine != null) {
-							myBuf.append(aLine);
-							myBuf.append(" ");
-							aLine = r.readLine();
-						}
-						r.close();
-						this.rueckgabe = myBuf.toString();
+    @Override
+    public void run() {
+        while (!this.stop) {
+            try {
+                Thread.sleep(550);
+                if (!Files.exists(this.fileXml) && (Files.exists(this.fileError) || Files.exists(this.fileSuccess))) {
+                    if (Files.exists(this.fileError)
+                            && Files.readAttributes(this.fileError, BasicFileAttributes.class).lastModifiedTime().toMillis() > this.timeFileError) {
+                        this.stop = true;
+                        /* die Logdatei mit der Fehlerbeschreibung einlesen */
+                        StringBuffer myBuf = new StringBuffer();
+                        myBuf.append("Beim Import ist ein Importfehler aufgetreten: ");
+                        BufferedReader r = new BufferedReader(new FileReader(this.fileError.toFile()));
+                        String aLine = r.readLine();
+                        while (aLine != null) {
+                            myBuf.append(aLine);
+                            myBuf.append(" ");
+                            aLine = r.readLine();
+                        }
+                        r.close();
+                        this.rueckgabe = myBuf.toString();
 
-					}
-					if (this.fileSuccess.exists() && this.fileSuccess.getAbsoluteFile().lastModified() > this.timeFileSuccess) {
-						this.stop = true;
-					}
-				}
-			} catch (Throwable t) {
-				logger.error("Unexception exception", t);
-			}
-		}
-		if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
-			/* Images wieder löschen */
-			Helper.deleteDir(this.folderImages);
-		}
-	}
+                    }
+                    if (Files.exists(this.fileSuccess)
+                            && Files.readAttributes(this.fileSuccess, BasicFileAttributes.class).lastModifiedTime().toMillis() > this.timeFileSuccess) {
+                        this.stop = true;
+                    }
+                }
+            } catch (Throwable t) {
+                logger.error("Unexception exception", t);
+            }
+        }
+        if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
+            /* Images wieder löschen */
+            NIOFileUtils.deleteDir(this.folderImages);
+        }
+    }
 
-	public void stopThread() {
-		this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
-		this.stop = true;
-	}
+    public void stopThread() {
+        this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
+        this.stop = true;
+    }
 
 }

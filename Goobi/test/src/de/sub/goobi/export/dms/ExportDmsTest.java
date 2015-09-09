@@ -19,8 +19,9 @@ package de.sub.goobi.export.dms;
  */
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.goobi.beans.Process;
 import org.goobi.production.enums.PluginType;
@@ -38,6 +39,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -93,20 +95,20 @@ public class ExportDmsTest {
     public void testFulltextDownload() throws SwapException, DAOException, IOException, InterruptedException {
         ExportDms dms = new ExportDms(false);
         dms.setExportFulltext(true);
-        File dest = folder.newFolder("text");
-        dest.mkdir();
+        Path dest = folder.newFolder("text").toPath();
+        Files.createDirectories(dest);
         dms.fulltextDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
-        assertNotNull(dest.list());
+        assertNotNull(NIOFileUtils.list(dest.toString()));
     }
 
     @Test
     public void testImageDownload() throws SwapException, DAOException, IOException, InterruptedException {
         ExportDms dms = new ExportDms(true);
         dms.setExportFulltext(true);
-        File dest = folder.newFolder("images");
-        dest.mkdir();
+        Path dest =folder.newFolder("images").toPath();
+        Files.createDirectories(dest);
         dms.imageDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
-        assertNotNull(dest.list());
+        assertNotNull(NIOFileUtils.list(dest.toString()));
     }
 
     @Test
