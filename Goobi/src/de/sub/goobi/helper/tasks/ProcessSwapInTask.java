@@ -147,7 +147,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 		setStatusProgress(50);
 		try {
 			setStatusMessage("copying process files");
-			Helper.copyDirectoryWithCrc32Check(fileOut.toFile(), fileIn.toFile(), swapPath.length(), root);
+			Helper.copyDirectoryWithCrc32Check(fileOut, fileIn, swapPath.length(), root);
 		} catch (IOException e) {
 			logger.warn("IOException:", e);
 			setStatusMessage("IOException in copyDirectory: " + e.getMessage());

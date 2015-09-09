@@ -29,12 +29,13 @@ package de.sub.goobi.metadaten;
  */
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +56,6 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -476,9 +476,9 @@ public class Metadaten {
             if (!docStructIsAllowed(getAddableDocStructTypenAlsKind(), getAddDocStructType2())) {
                 setAddDocStructType2("");
             }
-          
+
         } else {
-            
+
             if (!docStructIsAllowed(getAddableDocStructTypenAlsNachbar(), getAddDocStructType1())) {
                 setAddDocStructType1("");
             }
@@ -1912,18 +1912,11 @@ public class Metadaten {
 
     public void readAllTifFolders() throws IOException, InterruptedException, SwapException, DAOException {
         this.allTifFolders = new ArrayList<String>();
-        File dir = new File(this.myProzess.getImagesDirectory());
+        Path dir = Paths.get(this.myProzess.getImagesDirectory());
 
-        FilenameFilter filterVerz = new FilenameFilter() {
-            @Override
-            public boolean accept(File indir, String name) {
-                return (new File(indir + File.separator + name).isDirectory());
-            }
-        };
-
-        String[] verzeichnisse = dir.list(filterVerz);
-        for (int i = 0; i < verzeichnisse.length; i++) {
-            this.allTifFolders.add(verzeichnisse[i]);
+        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), NIOFileUtils.folderFilter);
+        for (int i = 0; i < verzeichnisse.size(); i++) {
+            this.allTifFolders.add(verzeichnisse.get(i));
         }
 
         if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
@@ -1937,7 +1930,7 @@ public class Metadaten {
         }
 
         if (!this.allTifFolders.contains(this.currentTifFolder)) {
-            this.currentTifFolder = new File(this.myProzess.getImagesTifDirectory(true)).getName();
+            this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
         }
     }
 
@@ -2047,12 +2040,14 @@ public class Metadaten {
 
                     /* das neue Bild zuweisen */
                     try {
-                        String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + File.separator + this.myBild;
+                        String tiffconverterpfad =
+                                this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator() + this.myBild;
                         logger.trace("tiffconverterpfad: " + tiffconverterpfad);
-                        if (!new File(tiffconverterpfad).exists()) {
+                        if (!Files.exists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
-                                    + this.currentTifFolder + ", using image from " + new File(this.myProzess.getImagesTifDirectory(true)).getName());
+                                    + this.currentTifFolder + ", using image from "
+                                    + Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, this.myImageRotation);
                         logger.trace("scaleFile");
@@ -2072,7 +2067,9 @@ public class Metadaten {
         boolean exists = false;
         try {
             if (this.currentTifFolder != null && this.myBild != null) {
-                exists = (new File(this.myProzess.getImagesDirectory() + this.currentTifFolder + File.separator + this.myBild)).exists();
+                exists =
+                        Files.exists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator()
+                                + this.myBild));
             }
         } catch (Exception e) {
             this.myBildNummer = -1;
@@ -2583,8 +2580,8 @@ public class Metadaten {
             return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
         } else {
             try {
-                File textFolder = new File(myProzess.getTxtDirectory());
-                return textFolder.exists();
+                Path textFolder = Paths.get(myProzess.getTxtDirectory());
+                return Files.exists(textFolder);
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
                 return false;
@@ -2636,15 +2633,15 @@ public class Metadaten {
             BufferedReader in = null;
             FileInputStream fis = null;
             try {
-                File txtfile = new File(myProzess.getTxtDirectory() + ocrFile);
+                Path txtfile = Paths.get(myProzess.getTxtDirectory() + ocrFile);
 
                 StringBuilder response = new StringBuilder();
                 String line;
-                if (txtfile.exists() && txtfile.canRead()) {
+                if (Files.exists(txtfile) && Files.isReadable(txtfile)) {
 
                     // System.out.println("read file " +
-                    // txtfile.getAbsolutePath());
-                    fis = new FileInputStream(txtfile);
+                    // txtfile.toString());
+                    fis = new FileInputStream(txtfile.toFile());
                     inputReader = new InputStreamReader(fis, getFileEncoding(txtfile));
                     // inputReader = new InputStreamReader(fis, "ISO-8859-1");
                     in = new BufferedReader(inputReader);
@@ -2754,14 +2751,14 @@ public class Metadaten {
                 BufferedReader in = null;
                 FileInputStream fis = null;
                 try {
-                    File txtfile = new File(myProzess.getTxtDirectory() + textFileName);
+                    Path txtfile = Paths.get(myProzess.getTxtDirectory() + textFileName);
 
                     String line;
-                    if (txtfile.exists() && txtfile.canRead()) {
+                    if (Files.exists(txtfile) && Files.isReadable(txtfile)) {
 
                         // System.out.println("read file " +
-                        // txtfile.getAbsolutePath());
-                        fis = new FileInputStream(txtfile);
+                        // txtfile.toString());
+                        fis = new FileInputStream(txtfile.toFile());
                         inputReader = new InputStreamReader(fis, getFileEncoding(txtfile));
                         // inputReader = new InputStreamReader(fis, "ISO-8859-1");
                         in = new BufferedReader(inputReader);
@@ -2802,10 +2799,10 @@ public class Metadaten {
         }
     }
 
-    private String getFileEncoding(File file) throws IOException {
+    private String getFileEncoding(Path file) throws IOException {
         byte[] buf = new byte[4096];
         String encoding = null;
-        FileInputStream fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream(file.toFile());
         try {
             UniversalDetector detector = new UniversalDetector(null);
             int nread;
@@ -3095,7 +3092,7 @@ public class Metadaten {
     }
 
     public void setAddDocStructType1(String addDocStructType1) {
-        this.addDocStructType1 =getSelectedStructType(getAddableDocStructTypenAlsNachbar(), addDocStructType1);
+        this.addDocStructType1 = getSelectedStructType(getAddableDocStructTypenAlsNachbar(), addDocStructType1);
 
         createAddableData();
     }
@@ -3105,7 +3102,7 @@ public class Metadaten {
     }
 
     public void setAddDocStructType2(String addDocStructType2) {
-        this.addDocStructType2 =getSelectedStructType(getAddableDocStructTypenAlsKind(), addDocStructType2);
+        this.addDocStructType2 = getSelectedStructType(getAddableDocStructTypenAlsKind(), addDocStructType2);
         createAddableData();
     }
 
@@ -3545,29 +3542,33 @@ public class Metadaten {
             currentImageNo++;
             for (String folder : allTifFolders) {
                 // check if folder is empty, otherwise get extension for folder
-                File currentImageFolder = new File(imageDirectory + folder);
-                String[] files = currentImageFolder.list(Helper.dataFilter);
-                if (files != null && files.length != 0) {
-                    String fileExtension = Metadaten.getFileExtension(files[0]);
-                    File filename = new File(currentImageFolder, filenamePrefix + fileExtension);
-                    File newFileName = new File(currentImageFolder, filenamePrefix + fileExtension + "_bak");
-                    filename.renameTo(newFileName);
+                Path currentImageFolder = Paths.get(imageDirectory + folder);
+                List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
+                if (files != null && !files.isEmpty()) {
+                    String fileExtension = Metadaten.getFileExtension(files.get(0));
+                    Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
+                    Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
+                    try {
+                        Files.move(filename, newFileName);
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
                 }
             }
 
             try {
-                File ocr = new File(myProzess.getOcrDirectory());
-                if (ocr.exists()) {
-                    File[] allOcrFolder = ocr.listFiles();
-                    for (File folder : allOcrFolder) {
+                Path ocr = Paths.get(myProzess.getOcrDirectory());
+                if (Files.exists(ocr)) {
+                    List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
+                    for (Path folder : allOcrFolder) {
 
-                        String[] files = folder.list();
+                        List<String> files = NIOFileUtils.list(folder.toString());
 
-                        if (files != null && files.length != 0) {
-                            String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
-                            File filename = new File(folder, filenamePrefix + fileExtension);
-                            File newFileName = new File(folder, filenamePrefix + fileExtension + "_bak");
-                            filename.renameTo(newFileName);
+                        if (files != null && !files.isEmpty()) {
+                            String fileExtension = Metadaten.getFileExtension(files.get(0).replace("_bak", ""));
+                            Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
+                            Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
+                            Files.move(filename, newFileName);
                         }
                     }
                 }
@@ -3589,29 +3590,33 @@ public class Metadaten {
             String newfilenamePrefix = generateFileName(counter);
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             for (String folder : allTifFolders) {
-                File currentImageFolder = new File(imageDirectory + folder);
-                String[] files = currentImageFolder.list(FileFileFilter.FILE);
-                if (files != null && files.length != 0) {
-                    String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
-                    File tempFileName = new File(currentImageFolder, oldFilenamePrefix + fileExtension + "_bak");
-                    File sortedName = new File(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
-                    tempFileName.renameTo(sortedName);
-                    mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getName());
+                Path currentImageFolder = Paths.get(imageDirectory + folder);
+                List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
+                if (files != null && !files.isEmpty()) {
+                    String fileExtension = Metadaten.getFileExtension(files.get(0).replace("_bak", ""));
+                    Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
+                    Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
+                    try {
+                        Files.move(tempFileName, sortedName);
+                    } catch (IOException e) {
+                        logger.error(e);
+                    }
+                    mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getFileName().toString());
                 }
             }
             try {
 
-                File ocr = new File(myProzess.getOcrDirectory());
-                if (ocr.exists()) {
-                    File[] allOcrFolder = ocr.listFiles();
-                    for (File folder : allOcrFolder) {
+                Path ocr = Paths.get(myProzess.getOcrDirectory());
+                if (Files.exists(ocr)) {
+                    List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
+                    for (Path folder : allOcrFolder) {
 
-                        String[] files = folder.list();
-                        if (files != null && files.length != 0) {
-                            String fileExtension = Metadaten.getFileExtension(files[0].replace("_bak", ""));
-                            File tempFileName = new File(folder, oldFilenamePrefix + fileExtension + "_bak");
-                            File sortedName = new File(folder, newfilenamePrefix + fileExtension.toLowerCase());
-                            tempFileName.renameTo(sortedName);
+                        List<String> files =NIOFileUtils.list( folder.toString());
+                        if (files != null && !files.isEmpty()) {
+                            String fileExtension = Metadaten.getFileExtension(files.get(0).replace("_bak", ""));
+                            Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
+                            Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
+                            Files.move(tempFileName, sortedName);
                         }
                     }
                 }
@@ -3639,28 +3644,28 @@ public class Metadaten {
             // check what happens with .tar.gz
             String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
-                File imageFolder = new File(myProzess.getImagesDirectory() + folder);
-                File[] filesInFolder = imageFolder.listFiles();
-                for (File currentFile : filesInFolder) {
-                    String filename = currentFile.getName();
+                Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
+                List<Path> filesInFolder = NIOFileUtils.listFiles(imageFolder.toString());
+                for (Path currentFile : filesInFolder) {
+                    String filename = currentFile.getFileName().toString();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");
                     if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        currentFile.delete();
+                       Files.delete( currentFile);
                     }
                 }
             }
 
-            File ocr = new File(myProzess.getOcrDirectory());
-            if (ocr.exists()) {
-                File[] folder = ocr.listFiles();
-                for (File dir : folder) {
-                    if (dir.isDirectory() && dir.list().length > 0) {
-                        File[] filesInFolder = dir.listFiles();
-                        for (File currentFile : filesInFolder) {
-                            String filename = currentFile.getName();
+            Path ocr = Paths.get(myProzess.getOcrDirectory());
+            if (Files.exists(ocr)) {
+                List<Path> folder = NIOFileUtils.listFiles(ocr.toString());
+                for (Path dir : folder) {
+                    if (Files.isDirectory(dir) && !NIOFileUtils.list(dir.toString()).isEmpty()) {
+                        List<Path> filesInFolder = NIOFileUtils.listFiles(dir.toString());
+                        for (Path currentFile : filesInFolder) {
+                            String filename = currentFile.getFileName().toString();
                             String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
                             if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                currentFile.delete();
+                                Files.delete(currentFile);
                             }
                         }
                     }

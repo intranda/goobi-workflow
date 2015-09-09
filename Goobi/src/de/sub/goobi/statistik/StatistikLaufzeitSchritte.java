@@ -28,8 +28,8 @@ package de.sub.goobi.statistik;
  * exception statement from your version.
  */
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -103,7 +103,7 @@ public class StatistikLaufzeitSchritte {
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		plot.setBackgroundPaint(Color.white);
 		plot.setForegroundAlpha(0.6f);
-		ChartUtilities.saveChartAsPNG(new File(ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + imageUrl), chart, 800, inProzesse.size() * 50);
+		ChartUtilities.saveChartAsPNG(Paths.get(ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + imageUrl).toFile(), chart, 800, inProzesse.size() * 50);
 
 		return imageUrl;
 	}

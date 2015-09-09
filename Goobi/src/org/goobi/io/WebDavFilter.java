@@ -32,20 +32,12 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 
-public class FileListFilter implements DirectoryStream.Filter<Path> {
+public class WebDavFilter implements DirectoryStream.Filter<Path> {
 
-    private String name;
 
-    public FileListFilter(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("No filter name given.");
-        }
-        this.name = name;
-    }
 
     @Override
     public boolean accept(Path path) throws IOException {
-
-        return path.getFileName().toString().matches(name);
+        return path.getFileName().toString().endsWith("]");
     }
 }

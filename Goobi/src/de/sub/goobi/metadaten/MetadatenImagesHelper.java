@@ -30,14 +30,16 @@ package de.sub.goobi.metadaten;
 import java.awt.Dimension;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -71,6 +73,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -108,16 +111,13 @@ public class MetadatenImagesHelper {
         }
 
         // get image names in directory
-        File folder = new File(myProzess.getImagesTifDirectory(true));
+        Path folder = Paths.get(myProzess.getImagesTifDirectory(true));
 
-        String[] imagenames = folder.list(Helper.imageNameFilter);
-        if (imagenames == null || imagenames.length == 0) {
+        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageNameFilter);
+        if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
             return;
         }
-
-        List<String> imageNamesInDirectory = Arrays.asList(imagenames);
-        Collections.sort(imageNamesInDirectory);
 
         // get image names in nets file
 
@@ -128,8 +128,8 @@ public class MetadatenImagesHelper {
             for (DocStruct page : pages) {
                 String filename = page.getImageName();
                 if (filename != null) {
-                    if (filename.contains(File.separator)) {
-                        filename = filename.substring(filename.lastIndexOf(File.separator));
+                    if (filename.contains(FileSystems.getDefault().getSeparator())) {
+                        filename = filename.substring(filename.lastIndexOf(FileSystems.getDefault().getSeparator()));
                     }
                     imageNamesInMetsFile.put(filename, page);
                 } else {
@@ -139,7 +139,7 @@ public class MetadatenImagesHelper {
         }
 
         // if size differs, create new pagination
-        if (imageNamesInDirectory.size() != imageNamesInMetsFile.size()) {
+        if (imagenames.size() != imageNamesInMetsFile.size()) {
             createPagination(myProzess, null);
             return;
         }
@@ -151,7 +151,7 @@ public class MetadatenImagesHelper {
         for (String imageNameInMets : imageNamesInMetsFile.keySet()) {
             String currentImagePrefix = imageNameInMets.replace(Metadaten.getFileExtension(imageNameInMets), "");
             boolean match = false;
-            for (String imageNameInDirectory : imageNamesInDirectory) {
+            for (String imageNameInDirectory : imagenames) {
                 if (currentImagePrefix.equals(imageNameInDirectory.replace(Metadaten.getFileExtension(imageNameInDirectory), ""))) {
                     match = true;
                     break;
@@ -181,7 +181,7 @@ public class MetadatenImagesHelper {
                 }
             });
 
-            for (String imagename : imageNamesInDirectory) {
+            for (String imagename : imagenames) {
                 String currentImagePrefix = imagename.replace(Metadaten.getFileExtension(imagename), "");
                 boolean match = false;
                 for (String key : imageNamesInMetsFile.keySet()) {
@@ -208,7 +208,7 @@ public class MetadatenImagesHelper {
         for (int i = 0; i < counter; i++) {
             String currentFile = imagesWithoutDocstruct.get(i);
             DocStruct currentPage = pagesWithoutFiles.get(i);
-            currentPage.setImageName(folder.getAbsolutePath() + File.separator + currentFile);
+            currentPage.setImageName(folder.toString() + FileSystems.getDefault().getSeparator() + currentFile);
             if (logger.isDebugEnabled()) {
                 logger.debug("set image " + currentFile + " to docstruct "
                         + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
@@ -300,13 +300,13 @@ public class MetadatenImagesHelper {
         if (physicaldocstruct.getAllChildren() != null && !physicaldocstruct.getAllChildren().isEmpty()) {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 if (page.getImageName() != null) {
-                    File imageFile = null;
+                    Path imageFile = null;
                     if (directory == null) {
-                        imageFile = new File(inProzess.getImagesTifDirectory(true), page.getImageName());
+                        imageFile = Paths.get(inProzess.getImagesTifDirectory(true), page.getImageName());
                     } else {
-                        imageFile = new File(inProzess.getImagesDirectory() + directory, page.getImageName());
+                        imageFile = Paths.get(inProzess.getImagesDirectory() + directory, page.getImageName());
                     }
-                    if (imageFile.exists()) {
+                    if (Files.exists(imageFile)) {
                         assignedImages.put(page.getImageName(), page);
                     } else {
                         try {
@@ -506,7 +506,7 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
+            ImageManager im = new ImageManager(Paths.get(inFileName).toUri().toURL());
             logger.trace("im");
             ImageInterpreter ii = im.getMyInterpreter();
             Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
@@ -608,25 +608,23 @@ public class MetadatenImagesHelper {
          * alle Bilder durchlaufen und dafür
          * die Seiten anlegen 
          * --------------------------------*/
-        File dir = new File(folder);
-        if (dir.exists()) {
-            String[] dateien = dir.list(Helper.dataFilter);
-            if (dateien == null || dateien.length == 0) {
+        Path dir = Paths.get(folder);
+        if (Files.exists(dir)) {
+            List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+            if (dateien == null || dateien.isEmpty()) {
                 String value = Helper.getTranslation("noObjectsFound", title);
 
                 Helper.setFehlerMeldung(value);
                 return false;
             }
 
-            this.myLastImage = dateien.length;
+            this.myLastImage = dateien.size();
             if (ConfigurationHelper.getInstance().getImagePrefix().equals("\\d{8}")) {
-                List<String> filesDirs = Arrays.asList(dateien);
-                Collections.sort(filesDirs);
                 int counter = 1;
                 int myDiff = 0;
                 String curFile = null;
                 try {
-                    for (Iterator<String> iterator = filesDirs.iterator(); iterator.hasNext(); counter++) {
+                    for (Iterator<String> iterator = dateien.iterator(); iterator.hasNext(); counter++) {
                         curFile = iterator.next();
                         int curFileNumber = Integer.parseInt(curFile.substring(0, curFile.indexOf(".")));
                         if (curFileNumber != counter + myDiff) {
@@ -685,54 +683,40 @@ public class MetadatenImagesHelper {
      * @throws InvalidImagesException
      */
 
-    public ArrayList<String> getImageFiles(Process myProzess) throws InvalidImagesException {
-        File dir;
+    public List<String> getImageFiles(Process myProzess) throws InvalidImagesException {
+        Path dir;
         try {
-            dir = new File(myProzess.getImagesTifDirectory(true));
+            dir = Paths.get(myProzess.getImagesTifDirectory(true));
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        String[] dateien = dir.list(Helper.imageNameFilter);
-        ArrayList<String> dataList = new ArrayList<String>();
-        if (dateien != null && dateien.length > 0) {
-            for (int i = 0; i < dateien.length; i++) {
-                String s = dateien[i];
-                dataList.add(s);
-            }
-            /* alle Dateien durchlaufen */
-            if (dataList != null && dataList.size() != 0) {
-                Collections.sort(dataList, new GoobiImageFileComparator());
-            }
-            return dataList;
-        } else {
-            return null;
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+
+        /* alle Dateien durchlaufen */
+        if (dateien != null && !dateien.isEmpty()) {
+            Collections.sort(dateien, new GoobiImageFileComparator());
         }
+        return dateien;
+
     }
 
     public List<String> getDataFiles(Process myProzess) throws InvalidImagesException {
-        File dir;
+        Path dir;
         try {
-            dir = new File(myProzess.getImagesTifDirectory(true));
+            dir = Paths.get(myProzess.getImagesTifDirectory(true));
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        String[] dateien = dir.list(Helper.dataFilter);
-        ArrayList<String> dataList = new ArrayList<String>();
-        if (dateien != null && dateien.length > 0) {
-            for (int i = 0; i < dateien.length; i++) {
-                String s = dateien[i];
-                dataList.add(s);
-            }
-            /* alle Dateien durchlaufen */
-            if (dataList != null && dataList.size() != 0) {
-                Collections.sort(dataList, new GoobiImageFileComparator());
-            }
-            return dataList;
-        } else {
-            return null;
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+
+        /* alle Dateien durchlaufen */
+        if (dateien != null && !dateien.isEmpty()) {
+            Collections.sort(dateien, new GoobiImageFileComparator());
         }
+        return dateien;
+
     }
 
     /**
@@ -744,28 +728,21 @@ public class MetadatenImagesHelper {
      */
 
     public List<String> getImageFiles(Process myProzess, String directory) throws InvalidImagesException {
-        File dir;
+        Path dir;
         try {
-            dir = new File(myProzess.getImagesDirectory() + directory);
+            dir = Paths.get(myProzess.getImagesDirectory() + directory);
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        String[] dateien = dir.list(Helper.imageNameFilter);
-        List<String> dataList = new ArrayList<String>();
-        if (dateien != null && dateien.length > 0) {
-            for (int i = 0; i < dateien.length; i++) {
-                String s = dateien[i];
-                dataList.add(s);
-            }
-            /* alle Dateien durchlaufen */
-        }
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+      
         List<String> orderedFilenameList = new ArrayList<String>();
-        if (dataList != null && dataList.size() != 0) {
+        if (dateien != null && !dateien.isEmpty()) {
             List<DocStruct> pagesList = mydocument.getPhysicalDocStruct().getAllChildren();
             if (pagesList != null) {
                 int pagessize = pagesList.size();
-                int datasize = dataList.size();
+                int datasize = dateien.size();
                 for (int i = 0; i < pagessize; i++) {
                     DocStruct page = pagesList.get(i);
                     //                for (DocStruct page : pagesList) {
@@ -773,7 +750,7 @@ public class MetadatenImagesHelper {
                     String filenamePrefix = filename.replace(Metadaten.getFileExtension(filename), "");
 
                     for (int j = 0; j < datasize; j++) {
-                        String currentImage = dataList.get(j);
+                        String currentImage = dateien.get(j);
                         //                    for (String currentImage : dataList) {
                         String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
                         if (currentImagePrefix.equals(filenamePrefix)) {
@@ -784,12 +761,12 @@ public class MetadatenImagesHelper {
                 }
                 //                    orderedFilenameList.add(page.getImageName());
             }
-            if (orderedFilenameList.size() == dataList.size()) {
+            if (orderedFilenameList.size() == dateien.size()) {
                 return orderedFilenameList;
 
             } else {
-                Collections.sort(dataList, new GoobiImageFileComparator());
-                return dataList;
+                Collections.sort(dateien, new GoobiImageFileComparator());
+                return dateien;
             }
         } else {
             return null;

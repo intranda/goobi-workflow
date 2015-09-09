@@ -27,8 +27,8 @@ package org.goobi.beans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.List;
 
 import jgravatar.Gravatar;
@@ -351,8 +351,8 @@ public class User implements DatabaseObject {
 			return "";
 		}
 
-		if (!rueckgabe.endsWith(File.separator)) {
-			rueckgabe += File.separator;
+		if (!rueckgabe.endsWith(FileSystems.getDefault().getSeparator())) {
+			rueckgabe += FileSystems.getDefault().getSeparator();
 		}
 		/* wenn das Verzeichnis nicht "" ist, aber noch nicht existiert, dann jetzt anlegen */
         FilesystemHelper.createDirectoryForUser(rueckgabe, login);

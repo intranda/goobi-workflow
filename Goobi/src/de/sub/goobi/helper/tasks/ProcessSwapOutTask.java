@@ -129,7 +129,7 @@ public void run() {
       setStatusProgress(50);
       try {
         setStatusMessage("copying process folder");
-        Helper.copyDirectoryWithCrc32Check(fileIn.toFile(), fileOut.toFile(), help.getGoobiDataDirectory().length(), root);
+        Helper.copyDirectoryWithCrc32Check(fileIn, fileOut, help.getGoobiDataDirectory().length(), root);
       } catch (IOException e) {
     	  logger.warn("IOException:", e);
          setStatusMessage("IOException in copyDirectory: " + e.getMessage());

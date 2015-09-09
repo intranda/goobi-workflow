@@ -165,10 +165,10 @@ public class WebDav implements Serializable {
 			 */
 			if (aktuellerBenutzer.isMitMassendownload()) {
                 Path projekt = Paths.get(userHome + myProzess.getProjekt().getTitel());
-                FilesystemHelper.createDirectoryForUser(Paths.get(projekt.toString()), aktuellerBenutzer.getLogin());
+                FilesystemHelper.createDirectoryForUser(projekt.toString(), aktuellerBenutzer.getLogin());
                 
                 projekt = Paths.get(userHome + DONEDIRECTORYNAME);
-                FilesystemHelper.createDirectoryForUser(Paths.get(projekt.toString()), aktuellerBenutzer.getLogin());
+                FilesystemHelper.createDirectoryForUser(projekt.toString(), aktuellerBenutzer.getLogin());
 			}
 
 		} catch (Exception ioe) {

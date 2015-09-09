@@ -32,10 +32,10 @@ import org.apache.log4j.Logger;
 
 import de.sub.goobi.helper.NIOFileUtils;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Creates backup for files in a given directory that match a regular expression.
@@ -53,95 +53,89 @@ import java.nio.file.Paths;
  */
 public class BackupFileRotation {
 
-	private static final Logger logger = Logger.getLogger(BackupFileRotation.class);
+    private static final Logger logger = Logger.getLogger(BackupFileRotation.class);
 
-	private int numberOfBackups;
-	private String format;
-	private String processDataDirectory;
+    private int numberOfBackups;
+    private String format;
+    private String processDataDirectory;
 
-	/**
-	 * Start the configured backup.
-	 * 
-	 * If the maximum backup count is less then 1, nothing happens.
-	 */
-	public void performBackup() {
-		File[] metaFiles;
+    /**
+     * Start the configured backup.
+     * 
+     * If the maximum backup count is less then 1, nothing happens.
+     */
+    public void performBackup() {
+        List<Path> metaFiles;
 
-		if (numberOfBackups < 1) {
-			return;
-		}
+        if (numberOfBackups < 1) {
+            return;
+        }
 
-		metaFiles = generateBackupBaseNameFileList(format, processDataDirectory);
+        metaFiles = generateBackupBaseNameFileList(format, processDataDirectory);
 
-		if (metaFiles.length < 1) {
-			logger.info("No files matching format '" + format + "' in directory " + processDataDirectory + " found.");
-			return;
-		}
+        if (metaFiles.size() < 1) {
+            logger.info("No files matching format '" + format + "' in directory " + processDataDirectory + " found.");
+            return;
+        }
 
-		for (File metaFile : metaFiles) {
-			createBackupForFile(metaFile.getPath());
-		}
-	}
+        for (Path metaFile : metaFiles) {
+            createBackupForFile(metaFile.toString());
+        }
+    }
 
-	/**
-	 * Set the number of backup files to create for each individual original file.
-	 * 
-	 * @param numberOfBackups
-	 *            Maximum number of backup files
-	 */
-	public void setNumberOfBackups(int numberOfBackups) {
-		this.numberOfBackups = numberOfBackups;
-	}
+    /**
+     * Set the number of backup files to create for each individual original file.
+     * 
+     * @param numberOfBackups Maximum number of backup files
+     */
+    public void setNumberOfBackups(int numberOfBackups) {
+        this.numberOfBackups = numberOfBackups;
+    }
 
-	/**
-	 * Set file name matching pattern for original files to create backup files for.
-	 * 
-	 * @param format
-	 *            Java regular expression string.
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
+    /**
+     * Set file name matching pattern for original files to create backup files for.
+     * 
+     * @param format Java regular expression string.
+     */
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
-	/**
-	 * Set the directory to find the original files and to place the backup files.
-	 * 
-	 * @param processDataDirectory
-	 *            A platform specfic filesystem path
-	 */
-	public void setProcessDataDirectory(String processDataDirectory) {
-		this.processDataDirectory = processDataDirectory;
-	}
+    /**
+     * Set the directory to find the original files and to place the backup files.
+     * 
+     * @param processDataDirectory A platform specfic filesystem path
+     */
+    public void setProcessDataDirectory(String processDataDirectory) {
+        this.processDataDirectory = processDataDirectory;
+    }
 
-	private void rename(String oldFileName, String newFileName) {
-		try {
-		 NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
-		} catch (IOException ioe) {
-			logger.trace("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
-		}
+    private void rename(String oldFileName, String newFileName) {
+        try {
+            NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
+        } catch (IOException ioe) {
+            logger.trace("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
+        }
 
-	}
+    }
 
-	private void createBackupForFile(String fileName) {
-		rotateBackupFilesFor(fileName);
+    private void createBackupForFile(String fileName) {
+        rotateBackupFilesFor(fileName);
 
-		String newName = fileName + ".1";
-		rename(fileName, newName);
-	}
+        String newName = fileName + ".1";
+        rename(fileName, newName);
+    }
 
-	private void rotateBackupFilesFor(String fileName) {
-		for (int count = numberOfBackups; count > 1; count--) {
-			String oldName = fileName + "." + (count - 1);
-			String newName = fileName + "." + count;
-			rename(oldName, newName);
-		}
-	}
+    private void rotateBackupFilesFor(String fileName) {
+        for (int count = numberOfBackups; count > 1; count--) {
+            String oldName = fileName + "." + (count - 1);
+            String newName = fileName + "." + count;
+            rename(oldName, newName);
+        }
+    }
 
-	private File[] generateBackupBaseNameFileList(String filterFormat, String directoryOfBackupFiles) {
-		FilenameFilter filter = new FileListFilter(filterFormat);
-		File metaFilePath = new File(directoryOfBackupFiles);
-
-		return metaFilePath.listFiles(filter);
-	}
+    private List<Path> generateBackupBaseNameFileList(String filterFormat, String directoryOfBackupFiles) {
+        return NIOFileUtils.listFiles(directoryOfBackupFiles, new FileListFilter(filterFormat));
+    }
 
 }

@@ -28,8 +28,8 @@ package de.sub.goobi.importer;
  * exception statement from your version.
  */
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -50,7 +50,9 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
+
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.WrongImportFileException;
 
@@ -196,7 +198,7 @@ public class ImportZentralblatt {
 			/*
 			 * -------------------------------- Datei am richtigen Ort speichern --------------------------------
 			 */
-			gdzfile.write(this.help.getGoobiDataDirectory() + prozessID + File.separator + "meta.xml");
+			gdzfile.write(this.help.getGoobiDataDirectory() + prozessID + FileSystems.getDefault().getSeparator() + "meta.xml");
 		} catch (PreferencesException e) {
 			Helper.setFehlerMeldung("Import aborted: ", e.getMessage());
 			logger.error(e);

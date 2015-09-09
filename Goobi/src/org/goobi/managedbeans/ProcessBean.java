@@ -29,6 +29,7 @@ package org.goobi.managedbeans;
  */
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -363,11 +365,11 @@ public class ProcessBean extends BasicBean {
         try {
             File ocr = new File(this.myProzess.getOcrDirectory());
             if (ocr.exists()) {
-                Helper.deleteDir(ocr);
+                NIOFileUtils.deleteDir(ocr.toPath());
             }
             File images = new File(this.myProzess.getImagesDirectory());
             if (images.exists()) {
-                Helper.deleteDir(images);
+                NIOFileUtils.deleteDir(images.toPath());
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -383,10 +385,10 @@ public class ProcessBean extends BasicBean {
             deleteSymlinksFromUserHomes();
         }
         try {
-            Helper.deleteDir(new File(this.myProzess.getProcessDataDirectory()));
+            NIOFileUtils.deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
             File ocr = new File(this.myProzess.getOcrDirectory());
             if (ocr.exists()) {
-                Helper.deleteDir(ocr);
+                NIOFileUtils.deleteDir(ocr.toPath());
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);

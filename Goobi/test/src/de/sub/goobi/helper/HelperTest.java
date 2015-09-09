@@ -66,14 +66,14 @@ public class HelperTest {
     @Test
     public void testDeleteInDir() {
         assertEquals(1, currentFolder.list().length);
-        Helper.deleteInDir(currentFolder);
+        NIOFileUtils.deleteInDir(currentFolder.toPath());
         assertEquals(0, currentFolder.list().length);
     }
 
     @Test
     public void testDeleteDataInDir() throws IOException {
         assertEquals(1, currentFolder.list().length);
-        Helper.deleteDataInDir(currentFolder);
+        NIOFileUtils.deleteDataInDir(currentFolder.toPath());
         assertEquals(0, currentFolder.list().length);
 
     }
@@ -82,7 +82,7 @@ public class HelperTest {
     public void testCopyDirectoryWithCrc32Check() throws IOException {
         File dest = temporaryFolder.newFolder("dest");
         Element element = new Element("test");
-        Helper.copyDirectoryWithCrc32Check(currentFolder, dest, 10, element);
+        Helper.copyDirectoryWithCrc32Check(currentFolder.toPath(), dest.toPath(), 10, element);
         assertTrue(dest.exists());
         assertTrue(!element.getChildren().isEmpty());
     }
