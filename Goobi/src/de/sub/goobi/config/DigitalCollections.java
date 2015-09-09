@@ -22,9 +22,10 @@
 
 package de.sub.goobi.config;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-
 import org.goobi.beans.Process;
 
 public class DigitalCollections {
@@ -43,13 +43,13 @@ public class DigitalCollections {
 		
 		List<String> result = new ArrayList<String>();
 		String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
-		if (!(new File(filename).exists())) {
+		if (!Files.exists(Paths.get(filename))) {
 			throw new FileNotFoundException("File not found: " + filename);
 		}
 		
 		/* Datei einlesen und Root ermitteln */
 		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(new File(filename));
+		Document doc = builder.build(filename);
 		Element root = doc.getRootElement();
 		/* alle Projekte durchlaufen */
 		List<Element> projekte = root.getChildren();

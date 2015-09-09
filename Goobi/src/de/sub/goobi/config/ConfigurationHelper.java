@@ -18,8 +18,11 @@ package de.sub.goobi.config;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.io.File;
 import java.io.Serializable;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,11 +58,11 @@ public class ConfigurationHelper implements Serializable {
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             // Load local config file
             logger.info("Default configuration file loaded.");
-            File fileLocal = new File(getConfigLocalPath(), CONFIG_FILE_NAME);
-            if (fileLocal.exists()) {
-                configLocal = new PropertiesConfiguration(fileLocal);
+            Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
+            if (Files.exists(fileLocal)) {
+                configLocal = new PropertiesConfiguration(fileLocal.toFile());
                 configLocal.setReloadingStrategy(new FileChangedReloadingStrategy());
-                logger.info("Local configuration file '" + fileLocal.getAbsolutePath() + "' loaded.");
+                logger.info("Local configuration file '" + fileLocal.toString() + "' loaded.");
             } else {
                 configLocal = new PropertiesConfiguration();
             }
@@ -175,7 +178,7 @@ public class ConfigurationHelper implements Serializable {
             filename = imagesPath;
         } else {
             HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-            filename = session.getServletContext().getRealPath("/imagesTemp") + File.separator;
+            filename = session.getServletContext().getRealPath("/imagesTemp") + FileSystems.getDefault().getSeparator();
 
             /* den Ordner neu anlegen, wenn er nicht existiert */
             try {
