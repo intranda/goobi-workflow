@@ -34,7 +34,6 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.apache.log4j.Logger;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
@@ -47,11 +46,8 @@ import dubious.sub.goobi.helper.encryption.MD5;
 @SessionScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
-    private static final Logger logger = Logger.getLogger(AdministrationForm.class);
     private String passwort;
     private boolean istPasswortRichtig = false;
-    private boolean rusFullExport = false;
-
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     private List<String> possibleAdministrationPluginNames;

@@ -27,8 +27,9 @@
  */
 package de.sub.goobi.forms;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,7 +54,6 @@ import org.goobi.beans.Step;
 import de.sub.goobi.modul.ExtendedDataImpl;
 import de.sub.goobi.modul.ExtendedProzessImpl;
 import de.sub.goobi.persistence.managers.ProcessManager;
-//import de.sub.goobi.persistence.ProzessDAO;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
@@ -182,13 +182,13 @@ public class ModuleServerForm {
     private List<ModuleDesc> getModulesFromConfigurationFile() {
         List<ModuleDesc> rueckgabe = new ArrayList<ModuleDesc>();
         String filename = help.getGoobiConfigDirectory() + "modules.xml";
-        if (!(new File(filename).exists())) {
+        if (!Files.exists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return rueckgabe;
         }
         try {
             SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(new File(filename));
+            Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Module durchlaufen */
             for (Iterator<Element> iter = root.getChildren().iterator(); iter.hasNext();) {

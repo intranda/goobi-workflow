@@ -27,8 +27,9 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1117,7 +1118,7 @@ public class ProzesskopieForm {
         ArrayList<String> defaultCollections = new ArrayList<String>();
 
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-        if (!(new File(filename).exists())) {
+        if (!Files.exists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
@@ -1125,7 +1126,7 @@ public class ProzesskopieForm {
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(new File(filename));
+            Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();
