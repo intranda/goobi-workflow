@@ -103,7 +103,7 @@ public class ExportPdf extends ExportMets {
              */
             CreatePdfFromServletThread pdf = new CreatePdfFromServletThread();
             pdf.setMetsURL(metsTempFile.toUri().toURL());
-            pdf.setTargetFolder(Paths.get(zielVerzeichnis).toFile());
+            pdf.setTargetFolder(Paths.get(zielVerzeichnis));
             pdf.setInternalServletPath(myBasisUrl);
             if (logger.isDebugEnabled()) {
                 logger.debug("Taget directory: " + zielVerzeichnis);

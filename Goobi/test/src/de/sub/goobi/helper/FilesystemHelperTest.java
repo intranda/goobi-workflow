@@ -40,6 +40,7 @@ import org.apache.log4j.BasicConfigurator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class FilesystemHelperTest {
 
@@ -63,14 +64,14 @@ public class FilesystemHelperTest {
 		String oldFileName = "old.xml";
 		String newFileName = "new.xml";
 
-		FilesystemHelper.renameFile(oldFileName, newFileName);
+		NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
 	}
 
 	@Test
 	public void shouldRenameAFile()
 		throws IOException {
 		createFile("old.xml");
-		FilesystemHelper.renameFile("old.xml", "new.xml");
+		NIOFileUtils.renameTo(Paths.get("old.xml"), "new.xml");
 		assertFileExists("new.xml");
 		assertFileNotExists("old.xml");
 	}
@@ -78,7 +79,7 @@ public class FilesystemHelperTest {
 	@Test
 	public void nothingHappensIfSourceFilenameIsNotSet()
 		throws IOException {
-		FilesystemHelper.renameFile(null, "new.xml");
+	    NIOFileUtils.renameTo(null, "new.xml");
 		assertFileNotExists("new.xml");
 	}
 	
@@ -86,7 +87,7 @@ public class FilesystemHelperTest {
 	public void nothingHappensIfTargetFilenameIsNotSet()
 		throws IOException {
 		createFile("old.xml");
-		FilesystemHelper.renameFile("old.xml", null);
+		NIOFileUtils.renameTo(Paths.get("old.xml"), null);
 		assertFileNotExists("new.xml");
 	}
 

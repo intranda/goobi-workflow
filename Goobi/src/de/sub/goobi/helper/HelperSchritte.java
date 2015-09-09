@@ -28,8 +28,8 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -196,8 +196,8 @@ public class HelperSchritte {
         Process po = ProcessManager.getProcessById(processId);
 
         try {
-            if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true)))) {
-                ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true))), processId);
+            if (po.getSortHelperImages() != NIOFileUtils.getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)))) {
+                ProcessManager.updateImages(NIOFileUtils.getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true))), processId);
             }
         } catch (SwapException e) {
             logger.error(e);

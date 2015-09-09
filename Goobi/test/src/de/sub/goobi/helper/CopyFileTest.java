@@ -33,14 +33,14 @@ public class CopyFileTest {
         File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
         File destFile = folder.newFile("destination");
 
-        CopyFile.copyFile(srcFile, destFile);
+        NIOFileUtils.copyFile(srcFile.toPath(), destFile.toPath());
         assertTrue(destFile.exists());
     }
 
     @Test
     public void testCreateChecksum() throws IOException {
         File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
-        long checksum = CopyFile.createChecksum(srcFile);
+        long checksum = NIOFileUtils.createChecksum(srcFile.toPath());
 
         assertEquals(219427218, checksum);
     }
@@ -52,7 +52,7 @@ public class CopyFileTest {
         File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
         File destFile = folder.newFile("destination");
 
-        CopyFile.start(srcFile, destFile);
+        NIOFileUtils.start(srcFile.toPath(), destFile.toPath());
         assertTrue(destFile.exists());
     }
     
@@ -61,7 +61,7 @@ public class CopyFileTest {
         File srcDir = new File("/opt/digiverso/junit/data/");
         File dstDir = folder.newFolder("dest");
         
-        CopyFile.copyDirectory(srcDir, dstDir);
+        NIOFileUtils.copyDirectory(srcDir.toPath(), dstDir.toPath());
         assertTrue(dstDir.exists());
         assertTrue(dstDir.isDirectory());
         assertTrue(dstDir.list().length > 0);

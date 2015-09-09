@@ -28,14 +28,14 @@
 
 package de.sub.goobi.helper;
 
-import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
@@ -57,8 +57,8 @@ public class FilesystemHelper {
      */
 
     public static void createDirectory(String dirName) throws IOException, InterruptedException {
-        if (!new File(dirName).exists()) {
-            ShellScript createDirScript = new ShellScript(new File(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
+        if (!Files.exists(Paths.get(dirName))) {
+            ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
             createDirScript.run(Arrays.asList(new String[] { dirName }));
         }
     }
@@ -74,8 +74,8 @@ public class FilesystemHelper {
      */
 
     public static void createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
-        if (!new File(dirName).exists()) {
-            ShellScript createDirScript = new ShellScript(new File(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
+        if (!Files.exists(Paths.get(dirName))) {
+            ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
             createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
         }
     }
@@ -84,7 +84,7 @@ public class FilesystemHelper {
         String command = ConfigurationHelper.getInstance().getScriptDeleteSymLink();
         ShellScript deleteSymLinkScript;
         try {
-            deleteSymLinkScript = new ShellScript(new File(command));
+            deleteSymLinkScript = new ShellScript(Paths.get(command));
             deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
         } catch (FileNotFoundException e) {
             logger.error("FileNotFoundException in deleteSymLink()", e);
@@ -98,62 +98,5 @@ public class FilesystemHelper {
         }
     }
 
-    /**
-     * This function implements file renaming. Renaming of files is full of mischief under Windows which unaccountably holds locks on files. Sometimes
-     * running the JVM’s garbage collector puts things right.
-     * 
-     * @param oldFileName File to move or rename
-     * @param newFileName New file name / destination
-     * @throws IOException is thrown if the rename fails permanently
-     * @throws FileNotFoundException is thrown if old file (source file of renaming) does not exists
-     */
-    public static void renameFile(String oldFileName, String newFileName) throws IOException {
-        final int SLEEP_INTERVAL_MILLIS = 20;
-        final int MAX_WAIT_MILLIS = 150000; // 2½ minutes
-        File oldFile;
-        File newFile;
-        boolean success;
-        int millisWaited = 0;
-
-        if ((oldFileName == null) || (newFileName == null)) {
-            return;
-        }
-
-        oldFile = new File(oldFileName);
-        newFile = new File(newFileName);
-
-        if (!oldFile.exists()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("File " + oldFileName + " does not exist for renaming.");
-            }
-            throw new FileNotFoundException(oldFileName + " does not exist for renaming.");
-        }
-
-        do {
-            if (SystemUtils.IS_OS_WINDOWS && millisWaited == SLEEP_INTERVAL_MILLIS) {
-                logger.warn("Renaming " + oldFileName
-                        + " failed. This is Windows. Running the garbage collector may yield good results. Forcing immediate garbage collection now!");
-                System.gc();
-            }
-            success = oldFile.renameTo(newFile);
-            if (!success) {
-                if (millisWaited == 0)
-                    logger.info("Renaming " + oldFileName + " failed. File may be locked. Retrying...");
-                try {
-                    Thread.sleep(SLEEP_INTERVAL_MILLIS);
-                } catch (InterruptedException e) {
-                }
-                millisWaited = SLEEP_INTERVAL_MILLIS;
-            }
-        } while (!success && millisWaited < MAX_WAIT_MILLIS);
-
-        if (!success) {
-            logger.error("Rename " + oldFileName + " failed. This is a permanent error. Giving up.");
-            throw new IOException("Renaming of " + oldFileName + " into " + newFileName + " failed.");
-        }
-
-        if (millisWaited > 0) {
-            logger.info("Rename finally succeeded after" + Integer.toString(millisWaited) + " milliseconds.");
-        }
-    }
+   
 }

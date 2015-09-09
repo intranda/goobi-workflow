@@ -452,4 +452,37 @@ public class NIOFileUtils {
        return false;
    }
    
+   /**
+    * Deletes all files and subdirectories under dir. But not the dir itself
+    */
+   public static boolean deleteInDir(Path dir) {
+       if (Files.exists(dir) && Files.isDirectory(dir)) {
+           List<String> children = NIOFileUtils.list(dir.toString());
+           for (String child : children) {
+               boolean success = deleteDir(Paths.get(dir.toString(), child));
+               if (!success) {
+                   return false;
+               }
+           }
+       }
+       return true;
+   }
+   
+   /**
+    * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
+    */
+   public static boolean deleteDataInDir(Path dir) {
+       if (Files.exists(dir) && Files.isDirectory(dir)) {
+           List<String> children = NIOFileUtils.list(dir.toString());
+           for (String child : children) {
+               if (!child.endsWith(".xml")) {
+                   boolean success = deleteDir(Paths.get(dir.toString(), child));
+                   if (!success) {
+                       return false;
+                   }
+               }
+           }
+       }
+       return true;
+   }
 }

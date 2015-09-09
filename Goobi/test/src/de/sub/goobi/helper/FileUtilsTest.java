@@ -2,9 +2,11 @@ package de.sub.goobi.helper;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,8 +19,8 @@ public class FileUtilsTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    
-    private File currentFolder;
+
+    private Path currentFolder;
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
@@ -28,33 +30,33 @@ public class FileUtilsTest {
             configFolder = "/opt/digiverso/junit/data/";
         }
         ConfigurationHelper.CONFIG_FILE_NAME = configFolder + "goobi_config.properties";
-        currentFolder = folder.newFolder("temp");
-        File tif = new File(currentFolder, "00000001.tif");
-        tif.createNewFile();
+        currentFolder = folder.newFolder("temp").toPath();
+        Path tif = Paths.get(currentFolder.toString(), "00000001.tif");
+        Files.createFile(tif);
     }
 
     @Test
     public void testGetNumberOfFiles() throws IOException {
 
-        File notExistingFile = new File("somewhere");
-        long value = FileUtils.getNumberOfFiles(notExistingFile);
+        Path notExistingFile = Paths.get("somewhere");
+        long value = NIOFileUtils.getNumberOfFiles(notExistingFile);
         assertEquals(0, value);
 
-        File file = new File(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
-        value = FileUtils.getNumberOfFiles(file);
+        Path file = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
+        value = NIOFileUtils.getNumberOfFiles(file);
         assertEquals(0, value);
 
-        value = FileUtils.getNumberOfFiles(currentFolder);
+        value = NIOFileUtils.getNumberOfFiles(currentFolder);
         assertEquals(1, value);
 
     }
 
     @Test
     public void testGetNumberOfFilesString() throws IOException {
-        
-        String folderName = currentFolder.getAbsolutePath();
-        int value = FileUtils.getNumberOfFiles(folderName);
+
+        String folderName = currentFolder.toString();
+        int value = NIOFileUtils.getNumberOfFiles(folderName);
         assertEquals(1, value);
-        
+
     }
 }

@@ -511,7 +511,7 @@ public class Helper implements Serializable, Observer {
                 copyDirectoryWithCrc32Check(new File(srcDir, children[i]), new File(dstDir, children[i]), goobipathlength, inRoot);
             }
         } else {
-            Long crc = CopyFile.start(srcDir, dstDir);
+            Long crc = NIOFileUtils.start(srcDir.toPath(), dstDir.toPath());
             Element file = new Element("file");
             file.setAttribute("path", srcDir.getAbsolutePath().substring(goobipathlength));
             file.setAttribute("crc32", String.valueOf(crc));

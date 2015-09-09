@@ -26,14 +26,15 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.goobi.beans.Process;
+
+import de.sub.goobi.helper.NIOFileUtils;
 
 public class TiffWriterTask extends LongRunningTask {
 
@@ -68,14 +69,14 @@ public void run() {
          return;
       }
 
-      ArrayList<File> myTifs = new ArrayList<File>();
-      listAllTifFiles(new File(imageFolder), myTifs);
+      List<Path> myTifs = new ArrayList<Path>();
+      listAllTifFiles(Paths.get(imageFolder), myTifs);
       logger.trace(myTifs.size());
 
       int progressStepSizePerImage = 50 / myTifs.size();
-      for (File file : myTifs) {
+      for (Path file : myTifs) {
          setStatusProgress(getStatusProgress() + progressStepSizePerImage);
-         logger.trace(getStatusProgress() + ": " + file.getAbsolutePath());
+         logger.trace(getStatusProgress() + ": " + file.toString());
       }
 
       /* ---------------------
@@ -88,26 +89,16 @@ public void run() {
 
    //TODO Make this public and move it to FileUtils
    // Process only files under dir
-   private void listAllTifFiles(File dir, List<File> inFiles) {
-      FilenameFilter tiffilter = new FilenameFilter() {
-         @Override
-		public boolean accept(File dir, String name) {
-            return name.toLowerCase().endsWith(".tif");
-         }
-      };
-      FileFilter folderFilter = new FileFilter() {
-         @Override
-		public boolean accept(File file) {
-            return file.isDirectory();
-         }
-      };
-      File[] folders = dir.listFiles(folderFilter);
-      for (int i = 0; i < folders.length; i++) {
-         listAllTifFiles(folders[i], inFiles);
-      }
+   private void listAllTifFiles(Path dir, List<Path> inFiles) {
 
-      File[] tiffiles = dir.listFiles(tiffilter);
-      inFiles.addAll(Arrays.asList(tiffiles));
+       List<Path> folders = NIOFileUtils.listFiles(dir.toString(), NIOFileUtils.folderFilter);
+       for (Path folder : folders) {
+           listAllTifFiles(folder, inFiles);
+       }
+
+       List<Path> files = NIOFileUtils.listFiles(dir.toString(), NIOFileUtils.imageNameFilter);
+
+       inFiles.addAll(files);
 
    }
 }
