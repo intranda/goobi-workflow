@@ -51,6 +51,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.export.ExportDocket;
 
 import ugh.dl.Fileformat;
@@ -58,9 +59,11 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -70,6 +73,7 @@ import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -103,6 +107,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean selected = false;
     private Docket docket;
 
+    private BeanHelper bhelp = new BeanHelper();
+    
     // temporär
     private Integer projectId;
     private Integer MetadatenKonfigurationID;
@@ -1189,4 +1195,55 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void setDocketId(Integer docketId) {
         this.docketId = docketId;
     }
+    
+    
+    public Process clone() {
+        Process p = new Process();
+        p.setDocket(docket);
+        p.setInAuswahllisteAnzeigen(false);
+        p.setIstTemplate(true);
+        p.setProjekt(projekt);
+        p.setRegelsatz(regelsatz);
+        p.setSortHelperStatus(sortHelperStatus);
+        p.setTitel("new_template");
+        p.setWikifield(wikifield);
+        
+        
+        this.bhelp.SchritteKopieren(this, p);
+        this.bhelp.ScanvorlagenKopieren(this, p);
+        this.bhelp.WerkstueckeKopieren(this, p);
+        this.bhelp.EigenschaftenKopieren(this, p);
+        
+        for (Step step : p.getSchritteList()) {
+
+            step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
+            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            if (loginForm != null) {
+                step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
+            }
+
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                step.setBearbeitungsbeginn(p.getErstellungsdatum());
+                // this concerns steps, which are set as done right on creation
+                // bearbeitungsbeginn is set to creation timestamp of process
+                // because the creation of it is basically begin of work
+                Date myDate = new Date();
+                step.setBearbeitungszeitpunkt(myDate);
+                step.setBearbeitungsende(myDate);
+            }
+
+        }
+
+        try {
+
+            ProcessManager.saveProcess(p);
+        } catch (DAOException e) {
+            logger.error("error on save: ", e);
+        }
+        
+        
+        return p;
+    }
+    
 }

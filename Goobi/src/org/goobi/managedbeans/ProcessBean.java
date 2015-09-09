@@ -2450,8 +2450,12 @@ public class ProcessBean extends BasicBean {
         return stepPluginList;
     }
 
-    
     public List<String> getPossibleValidationPlugins() {
         return validationPluginList;
+    }
+
+    public String cloneProcess() {
+        myProzess.clone();
+        return FilterVorlagen();
     }
 }
