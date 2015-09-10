@@ -28,16 +28,12 @@
 
 package de.sub.goobi.helper;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.*;
 
-import org.apache.log4j.BasicConfigurator;
-
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,77 +41,40 @@ import java.nio.file.Paths;
 
 public class FilesystemHelperTest {
 
-	@BeforeClass
-	public static void oneTimeSetUp() {
-		BasicConfigurator.configure();
-	}
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Test(expected = java.nio.file.NoSuchFileException.class)
+    public void RenamingOfNonExistingFileShouldThrowFileNotFoundException() throws IOException {
+        String oldFileName = "old.xml";
+        String newFileName = "new.xml";
 
-	@After
-	public void tearDown() throws Exception {
-		deleteFile("old.xml");
-		deleteFile("new.xml");
-	}
+        NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
+    }
 
-	@Test(expected = java.io.FileNotFoundException.class)
-	public void RenamingOfNonExistingFileShouldThrowFileNotFoundException () throws IOException {
-		String oldFileName = "old.xml";
-		String newFileName = "new.xml";
+    @Test
+    public void shouldRenameAFile() throws IOException {
+        Path oldPath = createFile();
+        Path newPath = NIOFileUtils.renameTo(oldPath, "new.xml");
+        assertTrue(Files.exists(newPath));
+        assertFalse(Files.exists(oldPath));
+    }
 
-		NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
-	}
+    @Test
+    public void nothingHappensIfSourceFilenameIsNotSet() throws IOException {
+        Path p = NIOFileUtils.renameTo(null, "new.xml");
+        assertNull(p);
+    }
 
-	@Test
-	public void shouldRenameAFile()
-		throws IOException {
-		createFile("old.xml");
-		NIOFileUtils.renameTo(Paths.get("old.xml"), "new.xml");
-		assertFileExists("new.xml");
-		assertFileNotExists("old.xml");
-	}
+    @Test
+    public void nothingHappensIfTargetFilenameIsNotSet() throws IOException {
+        Path path = createFile();
+        Path p = NIOFileUtils.renameTo(path, null);
+        assertNull(p);
+    }
 
-	@Test
-	public void nothingHappensIfSourceFilenameIsNotSet()
-		throws IOException {
-	    NIOFileUtils.renameTo(null, "new.xml");
-		assertFileNotExists("new.xml");
-	}
-	
-	@Test
-	public void nothingHappensIfTargetFilenameIsNotSet()
-		throws IOException {
-		createFile("old.xml");
-		NIOFileUtils.renameTo(Paths.get("old.xml"), null);
-		assertFileNotExists("new.xml");
-	}
-
-	@SuppressWarnings("deprecation")
-    private void assertFileExists(String fileName) {
-		Path newFile = Paths.get(fileName);
-		if (!Files.exists(newFile)) {
-			fail("File " + fileName + " does not exist.");
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-    private void assertFileNotExists(String fileName) {
-	    Path newFile = Paths.get(fileName);
-        if (!Files.exists(newFile)) {
-			fail("File " + fileName + " should not exist.");
-		}
-	}
-
-	private void createFile(String fileName) throws IOException {
-	    Path testFile = Paths.get(fileName);
-		FileWriter writer = new FileWriter(testFile.toFile());
-		writer.close();
-	}
-
-	private void deleteFile(String fileName) throws IOException {
-	    Path testFile = Paths.get(fileName);
-		Files.delete(testFile);
-	}
+    private Path createFile() throws IOException {
+        Path path = folder.newFile().toPath();
+        return path;
+    }
 }

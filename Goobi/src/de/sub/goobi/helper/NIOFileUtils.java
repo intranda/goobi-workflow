@@ -350,139 +350,140 @@ public class NIOFileUtils {
             }
         });
     }
-    
-   public static Path renameTo(Path oldName, String newNameString) throws IOException{
+
+    public static Path renameTo(Path oldName, String newNameString) throws IOException {
+        if (newNameString == null || newNameString.isEmpty() || oldName == null) {
+            return null;
+        }
         return Files.move(oldName, oldName.resolveSibling(newNameString));
     }
 
-// program options initialized to default values
-   private static int bufferSize = 4 * 1024;
+    // program options initialized to default values
+    private static int bufferSize = 4 * 1024;
 
-   public static void copyFile(Path srcFile, Path destFile) throws IOException {
-       Files.copy(srcFile, destFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
-   }
+    public static void copyFile(Path srcFile, Path destFile) throws IOException {
+        Files.copy(srcFile, destFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
+    }
 
-   public static Long createChecksum(Path file) throws IOException {
-       InputStream in = new FileInputStream(file.toString());
-       CRC32 checksum = new CRC32();
-       checksum.reset();
-       byte[] buffer = new byte[bufferSize];
-       int bytesRead;
-       while ((bytesRead = in.read(buffer)) >= 0) {
-           checksum.update(buffer, 0, bytesRead);
-       }
-       in.close();
-       return Long.valueOf(checksum.getValue());
-   }
+    public static Long createChecksum(Path file) throws IOException {
+        InputStream in = new FileInputStream(file.toString());
+        CRC32 checksum = new CRC32();
+        checksum.reset();
+        byte[] buffer = new byte[bufferSize];
+        int bytesRead;
+        while ((bytesRead = in.read(buffer)) >= 0) {
+            checksum.update(buffer, 0, bytesRead);
+        }
+        in.close();
+        return Long.valueOf(checksum.getValue());
+    }
 
-   public static Long start(Path srcFile, Path destFile) throws IOException {
-       // make sure the source file is indeed a readable file
-       if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
-           System.err.println("Not a readable file: " + srcFile.getFileName().toString());
-       }
+    public static Long start(Path srcFile, Path destFile) throws IOException {
+        // make sure the source file is indeed a readable file
+        if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
+            System.err.println("Not a readable file: " + srcFile.getFileName().toString());
+        }
 
-       // copy file, optionally creating a checksum
-       copyFile(srcFile, destFile);
+        // copy file, optionally creating a checksum
+        copyFile(srcFile, destFile);
 
-       // copy timestamp of last modification
-       Files.setLastModifiedTime(destFile, Files.readAttributes(srcFile, BasicFileAttributes.class).lastModifiedTime());
+        // copy timestamp of last modification
+        Files.setLastModifiedTime(destFile, Files.readAttributes(srcFile, BasicFileAttributes.class).lastModifiedTime());
 
-       // verify file
-       long checksumSrc = checksumMappedFile(srcFile.toString());
-       long checksumDest = checksumMappedFile(destFile.toString());
+        // verify file
+        long checksumSrc = checksumMappedFile(srcFile.toString());
+        long checksumDest = checksumMappedFile(destFile.toString());
 
-       if (checksumSrc == checksumDest) {
-           return checksumDest;
-       } else {
-           return Long.valueOf(0);
-       }
+        if (checksumSrc == checksumDest) {
+            return checksumDest;
+        } else {
+            return Long.valueOf(0);
+        }
 
-   }
+    }
 
-   public static long checksumMappedFile(String filepath) throws IOException {
+    public static long checksumMappedFile(String filepath) throws IOException {
 
-       FileInputStream inputStream = null;
-       try {
-           inputStream = new FileInputStream(filepath);
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(filepath);
 
-           FileChannel fileChannel = inputStream.getChannel();
+            FileChannel fileChannel = inputStream.getChannel();
 
-           int len = (int) fileChannel.size();
+            int len = (int) fileChannel.size();
 
-           MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, len);
+            MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, len);
 
-           CRC32 crc = new CRC32();
+            CRC32 crc = new CRC32();
 
-           for (int cnt = 0; cnt < len; cnt++) {
+            for (int cnt = 0; cnt < len; cnt++) {
 
-               int i = buffer.get(cnt);
+                int i = buffer.get(cnt);
 
-               crc.update(i);
+                crc.update(i);
 
-           }
+            }
 
-           return crc.getValue();
-       } finally {
-           if (inputStream != null) {
-               inputStream.close();
-           }
-       }
-   }
-   
-   
+            return crc.getValue();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
 
-   public static boolean deleteDir(Path dir) {
-       if (!Files.exists(dir)) {
-           return true;
-       }
-       if (Files.isDirectory(dir)) {
-           List<Path> children = NIOFileUtils.listFiles(dir.toString());
-           for (Path child : children) {
-               boolean success = deleteDir(child);
-               if (!success) {
-                   return false;
-               }
-           }
-       }
-       // The directory is now empty so delete it
-       try {
-           Files.deleteIfExists(dir);
-       } catch (IOException e) {
-       }
-       return false;
-   }
-   
-   /**
-    * Deletes all files and subdirectories under dir. But not the dir itself
-    */
-   public static boolean deleteInDir(Path dir) {
-       if (Files.exists(dir) && Files.isDirectory(dir)) {
-           List<String> children = NIOFileUtils.list(dir.toString());
-           for (String child : children) {
-               boolean success = deleteDir(Paths.get(dir.toString(), child));
-               if (!success) {
-                   return false;
-               }
-           }
-       }
-       return true;
-   }
-   
-   /**
-    * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
-    */
-   public static boolean deleteDataInDir(Path dir) {
-       if (Files.exists(dir) && Files.isDirectory(dir)) {
-           List<String> children = NIOFileUtils.list(dir.toString());
-           for (String child : children) {
-               if (!child.endsWith(".xml")) {
-                   boolean success = deleteDir(Paths.get(dir.toString(), child));
-                   if (!success) {
-                       return false;
-                   }
-               }
-           }
-       }
-       return true;
-   }
+    public static boolean deleteDir(Path dir) {
+        if (!Files.exists(dir)) {
+            return true;
+        }
+        if (Files.isDirectory(dir)) {
+            List<Path> children = NIOFileUtils.listFiles(dir.toString());
+            for (Path child : children) {
+                boolean success = deleteDir(child);
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        try {
+            Files.deleteIfExists(dir);
+        } catch (IOException e) {
+        }
+        return false;
+    }
+
+    /**
+     * Deletes all files and subdirectories under dir. But not the dir itself
+     */
+    public static boolean deleteInDir(Path dir) {
+        if (Files.exists(dir) && Files.isDirectory(dir)) {
+            List<String> children = NIOFileUtils.list(dir.toString());
+            for (String child : children) {
+                boolean success = deleteDir(Paths.get(dir.toString(), child));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
+     */
+    public static boolean deleteDataInDir(Path dir) {
+        if (Files.exists(dir) && Files.isDirectory(dir)) {
+            List<String> children = NIOFileUtils.list(dir.toString());
+            for (String child : children) {
+                if (!child.endsWith(".xml")) {
+                    boolean success = deleteDir(Paths.get(dir.toString(), child));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }
