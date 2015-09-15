@@ -72,10 +72,10 @@ public class VariableReplacer {
     Prefs prefs;
     UghHelper uhelp;
     // $(meta.abc)
-    private final String namespaceMeta = "\\$\\(meta\\.([\\w.-]*)\\)";
+    private final String namespaceMeta = "\\(meta\\.([\\w.-]*)\\)";
 
     // $(metas.abc)
-    private final String namespaceMetaMultiValue = "\\$\\(metas\\.([\\w.-]*)\\)";
+    private final String namespaceMetaMultiValue = "\\(metas\\.([\\w.-]*)\\)";
 
     private Process process;
     private Step step;
@@ -100,6 +100,7 @@ public class VariableReplacer {
         if (inString == null) {
             return "";
         }
+        inString = inString.replace("$", "");
 
         /*
          * replace metadata, usage: $(meta.firstchild.METADATANAME)
