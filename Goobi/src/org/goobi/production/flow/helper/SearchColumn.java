@@ -41,7 +41,7 @@ public class SearchColumn {
         } else if (value.startsWith("prozesse.")) {
             return "prozesse";
         } else if (value.startsWith("projekte.")) {
-            return "projekte" + order;
+            return "projekte";
         } else if (value.startsWith("prozesseeigenschaften.")) {
             return "prozesseeigenschaften" + order;
         } else if (value.startsWith("vorlageneigenschaften.")) {

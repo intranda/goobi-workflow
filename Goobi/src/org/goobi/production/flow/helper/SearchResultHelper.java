@@ -64,6 +64,9 @@ public class SearchResultHelper {
     public SearchResultHelper() {
         List<String> columnWhiteList = ConfigurationHelper.getInstance().getDownloadColumnWhitelist();
 
+        SelectItem all = new SelectItem("all", Helper.getTranslation("selectAllFields"));
+        possibleColumns.add(all);
+        
         SelectItem processData = new SelectItem("processData", Helper.getTranslation("processData"), Helper.getTranslation("processData"), true);
         // static data
         possibleColumns.add(processData);
