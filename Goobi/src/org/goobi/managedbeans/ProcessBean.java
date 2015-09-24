@@ -60,6 +60,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Project;
@@ -115,6 +116,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -1503,6 +1505,10 @@ public class ProcessBean extends BasicBean {
 
         for (Process proz : inListe) {
             int tempImg = proz.getSortHelperImages();
+            
+            if (tempImg == 0) {
+               tempImg = HistoryManager.getNumberOfImages(proz.getId());
+            }
             int tempMetadata = proz.getSortHelperMetadata();
             int tempDocstructs = proz.getSortHelperDocstructs();
 

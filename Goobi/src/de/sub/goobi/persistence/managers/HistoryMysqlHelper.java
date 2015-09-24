@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -121,6 +122,31 @@ public class HistoryMysqlHelper {
             }
         }
 
+    }
+
+    public static int getNumberOfImages(int processId) throws SQLException {
+        String sql = "SELECT * FROM history WHERE type = 3 and processID = " + processId + " order by date desc";
+        Connection connection = null;
+        int value = 0;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<HistoryEvent> list = new QueryRunner().query(connection, sql, resultSetToHistoryListHandler);
+            if (!list.isEmpty()) {
+                HistoryEvent last = list.get(0);
+                if (last.getNumericValue() < 0.0) {
+                    value = last.getNumericValue().intValue() * -1;
+                } else {
+                    for (HistoryEvent he : list) {
+                        value += he.getNumericValue().intValue();
+                    }
+                }
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+        return value;
     }
 
     public static ResultSetHandler<List<HistoryEvent>> resultSetToHistoryListHandler = new ResultSetHandler<List<HistoryEvent>>() {

@@ -70,4 +70,12 @@ public class HistoryManager implements Serializable {
         }
     }
     
+    public static int getNumberOfImages(int processId) {
+        try {
+          return  HistoryMysqlHelper.getNumberOfImages(processId);
+        } catch (SQLException e) {
+            logger.error("Cannot get number of images", e);
+        }
+        return 0;
+    }
 }
