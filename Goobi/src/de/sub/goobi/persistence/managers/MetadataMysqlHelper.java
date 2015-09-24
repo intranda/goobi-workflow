@@ -54,7 +54,7 @@ class MetadataMysqlHelper implements Serializable {
 
     public static void insertMetadata(int processid, Map<String, List<String>> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("INSERT INTO metadata (processid, name, value, print) VALUES ");
         List<Object> values = new ArrayList<Object>();
         for (Entry<String, List<String>> pair : metadata.entrySet()) {
@@ -92,10 +92,7 @@ class MetadataMysqlHelper implements Serializable {
 
     public static List<String> getDistinctMetadataNames() throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select distinct name from metadata");
-
-        sql.append(" ORDER BY name");
-
+        sql.append("select distinct name from metadata where name like 'index.%' union select distinct name from metadata where name not like 'index.%'");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
