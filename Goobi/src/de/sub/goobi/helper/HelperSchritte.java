@@ -196,9 +196,11 @@ public class HelperSchritte {
         Process po = ProcessManager.getProcessById(processId);
 
         try {
-            if (po.getSortHelperImages() != FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true)))) {
-                ProcessManager.updateImages(FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true))), processId);
+            int numberOfFiles = FileUtils.getNumberOfFiles(new File(po.getImagesOrigDirectory(true)));
+            if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
+                ProcessManager.updateImages(numberOfFiles, processId);
             }
+
         } catch (SwapException e) {
             logger.error(e);
         } catch (DAOException e) {
