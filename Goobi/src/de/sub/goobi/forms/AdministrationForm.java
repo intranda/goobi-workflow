@@ -35,6 +35,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.goobi.production.enums.PluginType;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
@@ -86,7 +87,15 @@ public class AdministrationForm implements Serializable {
         this.passwort = passwort;
     }
 
-   
+    public void startStorageCalculationForAllProcessesNow() {
+        HistoryAnalyserJob job = new HistoryAnalyserJob();
+        if (job.getIsRunning() == false) {
+            job.execute();
+            Helper.setMeldung("scheduler calculation executed");
+        } else {
+            Helper.setMeldung("Job is already running, try again in a few minutes");
+        }
+    }
 
 
     public boolean isIstPasswortRichtig() {

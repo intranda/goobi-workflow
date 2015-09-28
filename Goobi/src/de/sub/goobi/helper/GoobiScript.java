@@ -76,6 +76,7 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -205,6 +206,9 @@ public class GoobiScript {
                 unloadRuleset();
             }
 
+            else if (myParameters.get("action").equalsIgnoreCase("updateFileSize")) {
+                updateFileSize(inProzesse);
+            }
             else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
                 return;
@@ -1103,10 +1107,10 @@ public class GoobiScript {
             if (!metadataValue.equals("")) {
 
                 if (metadataPairs.containsKey(metadataType)) {
-                    List<String>  oldValue = metadataPairs.get(metadataType);
+                    List<String> oldValue = metadataPairs.get(metadataType);
                     oldValue.add(metadataValue);
-                    
-                    metadataPairs.put(metadataType,  oldValue);
+
+                    metadataPairs.put(metadataType, oldValue);
                 } else {
                     List<String> list = new ArrayList<>();
                     list.add(metadataValue);
@@ -1151,6 +1155,18 @@ public class GoobiScript {
                 logger.error("PreferencesException", e);
 
             }
+        }
+    }
+
+    private void updateFileSize(List<Process> processes) {
+        for (Process p : processes) {
+            if (p.getSortHelperImages() == 0) {
+                int value = HistoryManager.getNumberOfImages(p.getId());
+                if (value > 0) {
+                    ProcessManager.updateImages(value, p.getId());
+                }
+            }
+
         }
     }
 }
