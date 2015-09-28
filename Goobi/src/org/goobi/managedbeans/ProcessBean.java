@@ -60,7 +60,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
-import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Project;
@@ -1505,9 +1504,9 @@ public class ProcessBean extends BasicBean {
 
         for (Process proz : inListe) {
             int tempImg = proz.getSortHelperImages();
-            
+
             if (tempImg == 0) {
-               tempImg = HistoryManager.getNumberOfImages(proz.getId());
+                tempImg = HistoryManager.getNumberOfImages(proz.getId());
             }
             int tempMetadata = proz.getSortHelperMetadata();
             int tempDocstructs = proz.getSortHelperDocstructs();
@@ -1946,7 +1945,7 @@ public class ProcessBean extends BasicBean {
         if (addAllColumns) {
             int currentOrder = 0;
             for (SelectItem si : possibleItems) {
-                if (!si.getValue().equals("all") && !si.isDisabled()) {
+                if (!si.getValue().equals("all") && !si.isDisabled() && !((String) si.getValue()).startsWith("index.")) {
                     SearchColumn sc = new SearchColumn(currentOrder++);
                     sc.setValue((String) si.getValue());
                     columnList.add(sc);
