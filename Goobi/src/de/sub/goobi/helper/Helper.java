@@ -231,7 +231,7 @@ public class Helper implements Serializable, Observer {
         }
     }
 
-    public static String getString(Locale language, String key) {
+    private static String getMessage(Locale language, String key) {
         if (commonMessages == null || commonMessages.size() <= 1) {
             loadMsgs();
         }
@@ -248,8 +248,35 @@ public class Helper implements Serializable, Observer {
 
             return commonMessages.get(language).getString(key);
         } catch (RuntimeException irrelevant) {
-            return key;
+            return "";
         }
+    }
+
+    public static String getString(Locale language, String key) {
+        if (commonMessages == null || commonMessages.size() <= 1) {
+            loadMsgs();
+        }
+        String value = getMessage(language, key);
+        if (!value.isEmpty()) {
+            return value;
+        }
+        if (key.startsWith("metadata.")) {
+            value = getMessage(language, key.replace("metadata.", ""));
+        } else if (key.startsWith("prozesseeigenschaften.")) {
+            value = getMessage(language, key.replace("prozesseeigenschaften.", ""));
+        }
+        else if (key.startsWith("vorlageneigenschaften.")) {
+            value = getMessage(language, key.replace("vorlageneigenschaften.", ""));
+        }
+        else if (key.startsWith("werkstueckeeigenschaften.")) {
+            value = getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
+        }
+        
+        
+        if (value.isEmpty()) {
+            value = key;
+        }
+        return value;
     }
 
     public static String getDateAsFormattedString(Date inDate) {
@@ -347,7 +374,7 @@ public class Helper implements Serializable, Observer {
         String[] values = parameterList.toArray(new String[parameterList.size()]);
         return getTranslation(dbTitel, values);
     }
-    
+
     public static String getTranslation(String dbTitel, String... parameterList) {
         String value = "";
         Locale desiredLanguage = null;
@@ -494,8 +521,7 @@ public class Helper implements Serializable, Observer {
         }
         return "";
     }
-    
-    
+
     /**
      * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
      */
