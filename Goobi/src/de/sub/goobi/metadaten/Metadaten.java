@@ -3545,7 +3545,7 @@ public class Metadaten {
                 Path currentImageFolder = Paths.get(imageDirectory + folder);
                 List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
                 if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(files.get(0));
+                    String fileExtension = Metadaten.getFileExtension(imagename);
                     Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
                     Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
                     try {
@@ -3565,7 +3565,7 @@ public class Metadaten {
                         List<String> files = NIOFileUtils.list(folder.toString());
 
                         if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(files.get(0).replace("_bak", ""));
+                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
                             Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
                             Files.move(filename, newFileName);
@@ -3593,7 +3593,7 @@ public class Metadaten {
                 Path currentImageFolder = Paths.get(imageDirectory + folder);
                 List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
                 if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(files.get(0).replace("_bak", ""));
+                    String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                     Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
                     Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
                     try {
@@ -3613,7 +3613,7 @@ public class Metadaten {
 
                         List<String> files =NIOFileUtils.list( folder.toString());
                         if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(files.get(0).replace("_bak", ""));
+                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
                             Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
                             Files.move(tempFileName, sortedName);
