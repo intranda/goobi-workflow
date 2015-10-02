@@ -146,7 +146,7 @@ class TemplateMysqlHelper implements Serializable {
                 template.setId(id);
             } else {
                 sql = "UPDATE vorlagen set Herkunft = ?, ProzesseID = ? WHERE VorlagenID =" + template.getId();
-                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProcessId() };
+                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
                 run.update(connection, sql, param);
             }
         } finally {
