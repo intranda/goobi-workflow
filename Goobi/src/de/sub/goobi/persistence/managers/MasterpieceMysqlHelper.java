@@ -142,7 +142,7 @@ class MasterpieceMysqlHelper implements Serializable {
                 object.setId(id);
             } else {
                 sql = "UPDATE werkstuecke set  ProzesseID = ? WHERE WerkstueckeID =" + object.getId();
-                Object[] param = { object.getProcessId()};
+                Object[] param = { object.getProzess().getId() };
                 run.update(connection, sql, param);
             }
 
