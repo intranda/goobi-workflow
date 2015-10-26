@@ -768,8 +768,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.batchStep = batchStep;
     }
 
-    public boolean getBatchSize() {
-        Integer batchNumber = this.prozess.getBatchID();
+    public boolean isBatchSize() {
+        Integer batchNumber = getProzess().getBatchID();
         if (batchNumber != null) {
             // only steps with same title and batchId
             String sql = "schritte.titel = \"" + titel + "\" and prozesse.batchID = " + batchNumber;
