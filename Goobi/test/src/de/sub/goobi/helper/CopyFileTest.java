@@ -2,9 +2,11 @@ package de.sub.goobi.helper;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,17 +32,17 @@ public class CopyFileTest {
     @Test
     public void testCopyFile() throws IOException {
 
-        File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
-        File destFile = folder.newFile("destination");
+        Path srcFile = Paths.get("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
+        Path destFile = folder.newFile("destination").toPath();
 
-        CopyFile.copyFile(srcFile, destFile);
-        assertTrue(destFile.exists());
+        NIOFileUtils.copyFile(srcFile, destFile);
+        assertTrue(Files.exists(destFile));
     }
 
     @Test
     public void testCreateChecksum() throws IOException {
-        File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
-        long checksum = CopyFile.createChecksum(srcFile);
+        Path srcFile = Paths.get("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
+        long checksum = NIOFileUtils.createChecksum(srcFile);
 
         assertEquals(219427218, checksum);
     }
@@ -49,22 +51,22 @@ public class CopyFileTest {
     @Test
     public void testStart() throws IOException {
 
-        File srcFile = new File("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
-        File destFile = folder.newFile("destination");
+        Path srcFile = Paths.get("/opt/digiverso/junit/data/plugin_JunitImportPluginError.xml");
+        Path destFile = folder.newFile("destination").toPath();
 
-        CopyFile.start(srcFile, destFile);
-        assertTrue(destFile.exists());
+        NIOFileUtils.start(srcFile, destFile);
+        assertTrue(Files.exists(destFile));
     }
     
     @Test
     public void testCopyDirectory() throws IOException {
-        File srcDir = new File("/opt/digiverso/junit/data/");
-        File dstDir = folder.newFolder("dest");
+        Path srcDir = Paths.get("/opt/digiverso/junit/data/");
+        Path dstDir = folder.newFolder("dest").toPath();
         
-        CopyFile.copyDirectory(srcDir, dstDir);
-        assertTrue(dstDir.exists());
-        assertTrue(dstDir.isDirectory());
-        assertTrue(dstDir.list().length > 0);
+        NIOFileUtils.copyDirectory(srcDir, dstDir);
+        assertTrue(Files.exists(dstDir));
+        assertTrue(Files.isDirectory(dstDir));
+        assertTrue(!NIOFileUtils.list(dstDir.toString()).isEmpty());
     }
     
 }

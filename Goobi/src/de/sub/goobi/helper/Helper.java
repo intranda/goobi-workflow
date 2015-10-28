@@ -27,20 +27,19 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
@@ -322,13 +321,13 @@ public class Helper implements Serializable, Observer {
                 } catch (Exception e) {
                     logger.warn("Cannot load messages for language " + language.getLanguage());
                 }
-                File file = new File(ConfigurationHelper.getInstance().getPathForLocalMessages());
-                if (file.exists()) {
+                Path file = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
+                if (Files.exists(file)) {
                     // Load local message bundle from file system only if file exists;
                     // if value not exists in bundle, use default bundle from classpath
 
                     try {
-                        final URL resourceURL = file.toURI().toURL();
+                        final URL resourceURL = file.toUri().toURL();
                         URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
                             @Override
                             public URLClassLoader run() {
@@ -437,80 +436,80 @@ public class Helper implements Serializable, Observer {
         return login.getMyBenutzer();
     }
 
-    /**
-     * Copies src file to dst file. If the dst file does not exist, it is created
-     */
-    public static void copyFile(File src, File dst) throws IOException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
-        }
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
+//    /**
+//     * Copies src file to dst file. If the dst file does not exist, it is created
+//     */
+//    public static void copyFile(File src, File dst) throws IOException {
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
+//        }
+//        InputStream in = new FileInputStream(src);
+//        OutputStream out = new FileOutputStream(dst);
+//
+//        // Transfer bytes from in to out
+//        byte[] buf = new byte[1024];
+//        int len;
+//        while ((len = in.read(buf)) > 0) {
+//            out.write(buf, 0, len);
+//        }
+//        in.close();
+//        out.close();
+//    }
 
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
-
-    /**
-     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
-     * to delete and returns false.
-     */
-    public static boolean deleteDir(File dir) {
-        if (!dir.exists()) {
-            return true;
-        }
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        // The directory is now empty so delete it
-        return dir.delete();
-    }
-
-    /**
-     * Deletes all files and subdirectories under dir. But not the dir itself
-     */
-    public static boolean deleteInDir(File dir) {
-        if (dir.exists() && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
-     */
-    public static boolean deleteDataInDir(File dir) {
-        if (dir.exists() && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                if (!children[i].endsWith(".xml")) {
-                    boolean success = deleteDir(new File(dir, children[i]));
-                    if (!success) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+//    /**
+//     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
+//     * to delete and returns false.
+//     */
+//    public static boolean deleteDir(File dir) {
+//        if (!dir.exists()) {
+//            return true;
+//        }
+//        if (dir.isDirectory()) {
+//            String[] children = dir.list();
+//            for (int i = 0; i < children.length; i++) {
+//                boolean success = deleteDir(Paths.get(dir, children[i]));
+//                if (!success) {
+//                    return false;
+//                }
+//            }
+//        }
+//        // The directory is now empty so delete it
+//        return dir.delete();
+//    }
+//
+//    /**
+//     * Deletes all files and subdirectories under dir. But not the dir itself
+//     */
+//    public static boolean deleteInDir(File dir) {
+//        if (dir.exists() && dir.isDirectory()) {
+//            String[] children = dir.list();
+//            for (int i = 0; i < children.length; i++) {
+//                boolean success = deleteDir(Paths.get(dir, children[i]));
+//                if (!success) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
+//
+//    /**
+//     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
+//     */
+//    public static boolean deleteDataInDir(File dir) {
+//        if (dir.exists() && dir.isDirectory()) {
+//            String[] children = dir.list();
+//            for (int i = 0; i < children.length; i++) {
+//                if (!children[i].endsWith(".xml")) {
+//                    boolean success = deleteDir(Paths.get(dir, children[i]));
+//                    if (!success) {
+//                        return false;
+//                    }
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     public static String getTheme() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -526,93 +525,24 @@ public class Helper implements Serializable, Observer {
      * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
      */
 
-    public static void copyDirectoryWithCrc32Check(File srcDir, File dstDir, int goobipathlength, Element inRoot) throws IOException {
-        if (srcDir.isDirectory()) {
-            if (!dstDir.exists()) {
-                dstDir.mkdir();
-                dstDir.setLastModified(srcDir.lastModified());
+    public static void copyDirectoryWithCrc32Check(Path srcDir, Path dstDir, int goobipathlength, Element inRoot) throws IOException {
+        if (Files.isDirectory(srcDir)) {
+            if (!Files.exists(dstDir)) {
+                Files.createDirectories(dstDir);
+                Files.setLastModifiedTime(dstDir, Files.readAttributes(srcDir, BasicFileAttributes.class).lastModifiedTime());
             }
-            String[] children = srcDir.list();
-            for (int i = 0; i < children.length; i++) {
-                copyDirectoryWithCrc32Check(new File(srcDir, children[i]), new File(dstDir, children[i]), goobipathlength, inRoot);
+            List<String> children = NIOFileUtils.list(srcDir.toString());
+            for (String child : children) {
+                copyDirectoryWithCrc32Check(Paths.get(srcDir.toString(), child), Paths.get(dstDir.toString(), child), goobipathlength, inRoot);
             }
         } else {
-            Long crc = CopyFile.start(srcDir, dstDir);
+            Long crc = NIOFileUtils.start(srcDir, dstDir);
             Element file = new Element("file");
-            file.setAttribute("path", srcDir.getAbsolutePath().substring(goobipathlength));
+            file.setAttribute("path", srcDir.toString().substring(goobipathlength));
             file.setAttribute("crc32", String.valueOf(crc));
             inRoot.addContent(file);
         }
     }
 
-    public static FilenameFilter imageNameFilter = new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-
-            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-                fileOk = true;
-            }
-            return fileOk;
-        }
-    };
-
-    public static FilenameFilter dataFilter = new FilenameFilter() {
-
-        @Override
-        public boolean accept(File dir, String name) {
-            boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP]4")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP]3")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[dD][oO][cC][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX][lL][sS][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][pP][tT][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[tT][xX][tT]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
-                fileOk = true;
-            }
-
-            return fileOk;
-        }
-    };
+  
 }

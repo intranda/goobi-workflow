@@ -29,8 +29,9 @@ package org.goobi.managedbeans;
  */
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -605,9 +606,9 @@ public class ProjectBean extends BasicBean {
             this.projectProgressImage = System.currentTimeMillis() + ".png";
             String localImagePath = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
-            File outputfile = new File(localImagePath + this.projectProgressImage);
+            Path outputfile = Paths.get(localImagePath + this.projectProgressImage);
             try {
-                ImageIO.write(bi, "png", outputfile);
+                ImageIO.write(bi, "png", outputfile.toFile());
             } catch (IOException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("couldn't write project progress chart to file", e);
@@ -676,8 +677,8 @@ public class ProjectBean extends BasicBean {
 
         // write image to temporary file
         String localImagePath = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
-        File outputfile = new File(localImagePath + inName);
-        ImageIO.write(image, "png", outputfile);
+        Path outputfile = Paths.get(localImagePath + inName);
+        ImageIO.write(image, "png", outputfile.toFile());
     }
 
     private StatisticsRenderingElement myCurrentTable;

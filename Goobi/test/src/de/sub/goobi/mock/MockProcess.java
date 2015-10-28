@@ -1,12 +1,14 @@
 package de.sub.goobi.mock;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
@@ -14,6 +16,7 @@ import org.goobi.beans.Ruleset;
 import org.junit.rules.TemporaryFolder;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 
 public class MockProcess {
 
@@ -45,7 +48,7 @@ public class MockProcess {
 
     private static void setUpConfig(TemporaryFolder folder) {
 
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().toString() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("ExportFilesFromOptionalMetsFileGroups", "true");
@@ -57,12 +60,12 @@ public class MockProcess {
         testProcess.setProjekt(project);
         project.setFileFormatInternal("Mets");
         project.setFileFormatDmsExport("Mets");
-        File exportFolder = folder.newFolder("hotfolder");
-        exportFolder.mkdir();
-        project.setDmsImportImagesPath(exportFolder.getAbsolutePath() + File.separator);
-        project.setDmsImportErrorPath(exportFolder.getAbsolutePath() + File.separator);
-        project.setDmsImportSuccessPath(exportFolder.getAbsolutePath() + File.separator);
-        project.setDmsImportRootPath(exportFolder.getAbsolutePath() + File.separator);
+        Path exportFolder = folder.newFolder("hotfolder").toPath();
+        Files.createDirectories(exportFolder);
+        project.setDmsImportImagesPath(exportFolder.toString() + FileSystems.getDefault().getSeparator());
+        project.setDmsImportErrorPath(exportFolder.toString() + FileSystems.getDefault().getSeparator());
+        project.setDmsImportSuccessPath(exportFolder.toString() + FileSystems.getDefault().getSeparator());
+        project.setDmsImportRootPath(exportFolder.toString() + FileSystems.getDefault().getSeparator());
         project.setUseDmsImport(true);
         project.setDmsImportCreateProcessFolder(true);
 
@@ -86,88 +89,88 @@ public class MockProcess {
         list.add(alto);
         project.setFilegroups(list);
 
-        File configFolder = folder.newFolder("config");
-        configFolder.mkdir();
+        Path configFolder = folder.newFolder("config").toPath();
+        Files.createDirectories(configFolder);
         String tempfolder = System.getenv("junitdata");
         if (tempfolder == null) {
             tempfolder = "/opt/digiverso/junit/data/";
         }
-        File digitalCollectionTemplate = new File(tempfolder + "goobi_digitalCollections.xml");
-        File digitalCollection = new File(configFolder, "goobi_digitalCollections.xml");
-        FileUtils.copyFile(digitalCollectionTemplate, digitalCollection);
+        Path digitalCollectionTemplate = Paths.get(tempfolder + "goobi_digitalCollections.xml");
+        Path digitalCollection = Paths.get(configFolder.toString(), "goobi_digitalCollections.xml");
+        NIOFileUtils.copyFile(digitalCollectionTemplate, digitalCollection);
 
-        File projectsTemplate = new File(tempfolder + "goobi_projects.xml");
-        File projects = new File(configFolder, "goobi_projects.xml");
-        FileUtils.copyFile(projectsTemplate, projects);
+        Path projectsTemplate = Paths.get(tempfolder + "goobi_projects.xml");
+        Path projects = Paths.get(configFolder.toString(), "goobi_projects.xml");
+        NIOFileUtils.copyFile(projectsTemplate, projects);
 
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.toString() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("localMessages", "/opt/digiverso/junit/data/");
     }
 
     private static void setUpRuleset(TemporaryFolder folder, Process testProcess) throws IOException, URISyntaxException {
-        File rulesetFolder = folder.newFolder("rulesets");
-        rulesetFolder.mkdir();
+        Path rulesetFolder = folder.newFolder("rulesets").toPath();
+        Files.createDirectories(rulesetFolder);
         String tempfolder = System.getenv("junitdata");
         if (tempfolder == null) {
             tempfolder = "/opt/digiverso/junit/data/";
         }
-        File rulesetTemplate = new File(tempfolder + RULESET_NAME);
-        File rulesetFile = new File(rulesetFolder, RULESET_NAME);
-        FileUtils.copyFile(rulesetTemplate, rulesetFile);
+        Path rulesetTemplate = Paths.get(tempfolder + RULESET_NAME);
+        Path rulesetFile = Paths.get(rulesetFolder.toString(), RULESET_NAME);
+        NIOFileUtils.copyFile(rulesetTemplate, rulesetFile);
         Ruleset ruleset = new Ruleset();
         ruleset.setId(11111);
         ruleset.setOrderMetadataByRuleset(true);
         ruleset.setTitel(RULESET_NAME);
         ruleset.setDatei(RULESET_NAME);
-        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.toString() + FileSystems.getDefault().getSeparator());
         testProcess.setRegelsatz(ruleset);
     }
 
     private static void setUpProcessFolder(TemporaryFolder folder, Process testProcess) throws IOException, URISyntaxException {
-        File processFolder = folder.newFolder("1");
-        processFolder.mkdir();
-        File images = new File(processFolder, "images");
+        Path processFolder = folder.newFolder("1").toPath();
+        Files.createDirectories(processFolder);
+        Path images = Paths.get(processFolder.toString(), "images");
 
-        File masterfolder = new File(images, "master_testprocess_media");
-        File mediafolder = new File(images, "testprocess_media");
-        File sourceFolder = new File(images, "testprocess_source");
-        masterfolder.mkdirs();
-        mediafolder.mkdirs();
-        sourceFolder.mkdirs();
-        File ocr = new File(processFolder, "ocr");
-        File altofolder = new File(ocr, "testprocess_alto");
-        altofolder.mkdirs();
+        Path masterfolder = Paths.get(images.toString(), "master_testprocess_media");
+        Path mediafolder = Paths.get(images.toString(), "testprocess_media");
+        Path sourceFolder = Paths.get(images.toString(), "testprocess_source");
+        Files.createDirectories(masterfolder);
+        Files.createDirectories(mediafolder);
+        Files.createDirectories(sourceFolder);
+        Path ocr = Paths.get(processFolder.toString(), "ocr");
+        Path altofolder = Paths.get(ocr.toString(), "testprocess_alto");
+        Files.createDirectories(altofolder);
 
         String tempfolder = System.getenv("junitdata");
         if (tempfolder == null) {
             tempfolder = "/opt/digiverso/junit/data/";
         }
-        File metsTemplate = new File(tempfolder + "metadata.xml");
+        Path metsTemplate = Paths.get(tempfolder + "metadata.xml");
 
-        File metsFile = new File(processFolder, "meta.xml");
-        FileUtils.copyFile(metsTemplate, metsFile);
+        Path metsFile = Paths.get(processFolder.toString(), "meta.xml");
+        NIOFileUtils.copyFile(metsTemplate, metsFile);
 
-        File imageTemplate = new File(tempfolder, "00000001.tif");
-        
-        File masterfile = new File(masterfolder, "00000001.tif");
-        
-        FileUtils.copyFile(imageTemplate, masterfile);
-        File mediafile = new File(mediafolder, "00000001.tif");
-        FileUtils.copyFile(imageTemplate, mediafile);
-        File altofile = new File(altofolder, "00000001.xml");
-        altofile.createNewFile();
-        File sourcefile = new File(sourceFolder, "source");
-        sourcefile.createNewFile();
+        Path imageTemplate = Paths.get(tempfolder, "00000001.tif");
 
-        File export = new File(processFolder, "export");
-        export.mkdir();
-        File exportFile = new File(export, "junit.txt");
-        exportFile.createNewFile();
+        Path masterfile = Paths.get(masterfolder.toString(), "00000001.tif");
 
-        File subfolder = new File(export, "testprocess_overview");
-        subfolder.mkdir();
-        File fileInSubfolder = new File(subfolder, "testprocess.xml");
-        fileInSubfolder.createNewFile();
+        NIOFileUtils.copyFile(imageTemplate, masterfile);
+        Path mediafile = Paths.get(mediafolder.toString(), "00000001.tif");
+        NIOFileUtils.copyFile(imageTemplate, mediafile);
+        Path altofile = Paths.get(altofolder.toString(), "00000001.xml");
+        Files.createFile(altofile);
+        Path sourcefile = Paths.get(sourceFolder.toString(), "source");
+        Files.createFile(sourcefile);
+
+        Path export = Paths.get(processFolder.toString(), "export");
+        Files.createDirectories(export);
+        Path exportFile = Paths.get(export.toString(), "junit.txt");
+        Files.createFile(exportFile);
+
+        Path subfolder = Paths.get(export.toString(), "testprocess_overview");
+        Files.createDirectories(subfolder);
+        Path fileInSubfolder = Paths.get(subfolder.toString(), "testprocess.xml");
+        Files.createFile(fileInSubfolder);
 
     }
 }

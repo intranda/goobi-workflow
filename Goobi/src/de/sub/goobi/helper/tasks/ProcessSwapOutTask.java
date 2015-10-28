@@ -26,9 +26,12 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import org.jdom2.Document;
@@ -39,6 +42,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -74,8 +78,8 @@ public void run() {
          setStatusProgress(-1);
          return;
       }
-      File swapFile = new File(swapPath);
-      if (!swapFile.exists()) {
+      Path swapFile = Paths.get(swapPath);
+      if (!Files.exists(swapFile)) {
          setStatusMessage("Swap folder does not exist or is not mounted");
          setStatusProgress(-1);
          return;
@@ -91,14 +95,18 @@ public void run() {
          return;
       }
 
-      File fileIn = new File(processDirectory);
-      File fileOut = new File(swapPath + getProzess().getId() + File.separator);
-      if (fileOut.exists()) {
+      Path fileIn = Paths.get(processDirectory);
+      Path fileOut = Paths.get(swapPath + getProzess().getId() +FileSystems.getDefault().getSeparator());
+      if (Files.exists(fileOut)) {
          setStatusMessage(getProzess().getTitel() + ": swappingOutTarget already exists");
          setStatusProgress(-1);
          return;
       }
-      fileOut.mkdir();
+      try {
+        Files.createDirectories(fileOut);
+    } catch (IOException e1) {
+        logger.error(e1);
+    }
 
       /* ---------------------
        * Xml-Datei vorbereiten
@@ -106,8 +114,8 @@ public void run() {
       Document doc = new Document();
       Element root = new Element("goobiArchive");
       doc.setRootElement(root);
-      Element source = new Element("source").setText(fileIn.getAbsolutePath());
-      Element target = new Element("target").setText(fileOut.getAbsolutePath());
+      Element source = new Element("source").setText(fileIn.toString());
+      Element target = new Element("target").setText(fileOut.toString());
       Element title = new Element("title").setText(getProzess().getTitel());
       Element mydate = new Element("date").setText(new Date().toString());
       root.addContent(source);
@@ -129,7 +137,7 @@ public void run() {
          return;
       }
       setStatusProgress(80);
-      Helper.deleteDataInDir(new File(fileIn.getAbsolutePath()));
+      NIOFileUtils.deleteDataInDir(fileIn);
 
       /* ---------------------
        * xml-Datei schreiben
@@ -139,7 +147,7 @@ public void run() {
       try {
          setStatusMessage("writing swapped.xml");
          XMLOutputter xmlOut = new XMLOutputter(format);
-         FileOutputStream fos = new FileOutputStream(processDirectory + File.separator + "swapped.xml");
+         FileOutputStream fos = new FileOutputStream(processDirectory + FileSystems.getDefault().getSeparator() + "swapped.xml");
          xmlOut.output(doc, fos);
          fos.close();
          //TODO: Don't catch Exception (the super class)

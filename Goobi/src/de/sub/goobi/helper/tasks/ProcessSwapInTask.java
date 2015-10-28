@@ -26,8 +26,11 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -38,6 +41,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -72,8 +76,8 @@ public class ProcessSwapInTask extends LongRunningTask {
 			setStatusProgress(-1);
 			return;
 		}
-		File swapFile = new File(swapPath);
-		if (!swapFile.exists()) {
+		Path swapFile = Paths.get(swapPath);
+		if (!Files.exists(swapFile)) {
 			setStatusMessage("Swap folder does not exist or is not mounted");
 			setStatusProgress(-1);
 			return;
@@ -88,15 +92,15 @@ public class ProcessSwapInTask extends LongRunningTask {
 			return;
 		}
 
-		File fileIn = new File(processDirectory);
-		File fileOut = new File(swapPath + getProzess().getId() + File.separator);
+		Path fileIn = Paths.get(processDirectory);
+		Path fileOut = Paths.get(swapPath + getProzess().getId() + FileSystems.getDefault().getSeparator());
 
-		if (!fileOut.exists()) {
+		if (!Files.exists(fileOut)) {
 			setStatusMessage(getProzess().getTitel() + ": swappingOutTarget does not exist");
 			setStatusProgress(-1);
 			return;
 		}
-		if (!fileIn.exists()) {
+		if (!Files.exists(fileIn)) {
 			setStatusMessage(getProzess().getTitel() + ": process data folder does not exist");
 			setStatusProgress(-1);
 			return;
@@ -105,8 +109,8 @@ public class ProcessSwapInTask extends LongRunningTask {
 		SAXBuilder builder = new SAXBuilder();
 		Document docOld;
 		try {
-			File swapLogFile = new File(processDirectory, "swapped.xml");
-			docOld = builder.build(swapLogFile);
+		    Path swapLogFile = Paths.get(processDirectory, "swapped.xml");
+			docOld = builder.build(swapLogFile.toFile());
 			// TODO: Don't catch Exception (the super class)
 		} catch (Exception e) {
 			logger.warn("Exception:", e);
@@ -128,7 +132,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 			Element el = it.next();
 			crcMap.put(el.getAttribute("path").getValue(), el.getAttribute("crc32").getValue());
 		}
-		Helper.deleteDataInDir(fileIn);
+		NIOFileUtils.deleteDataInDir(fileIn);
 
 		/*
 		 * --------------------- Dateien kopieren und Checksummen ermitteln -------------------
@@ -183,7 +187,7 @@ public class ProcessSwapInTask extends LongRunningTask {
 		setStatusProgress(90);
 
 		/* in Prozess speichern */
-		Helper.deleteDir(fileOut);
+		NIOFileUtils.deleteDir(fileOut);
 		try {
 			setStatusMessage("saving process");
 			Process myProzess = ProcessManager.getProcessById(getProzess().getId());

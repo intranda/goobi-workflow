@@ -27,8 +27,10 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,6 +76,7 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -203,6 +206,9 @@ public class GoobiScript {
                 unloadRuleset();
             }
 
+            else if (myParameters.get("action").equalsIgnoreCase("updateFileSize")) {
+                updateFileSize(inProzesse);
+            }
             else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
                 return;
@@ -254,10 +260,10 @@ public class GoobiScript {
 
     private void deleteMetadataDirectory(Process p) {
         try {
-            Helper.deleteDir(new File(p.getProcessDataDirectory()));
-            File ocr = new File(p.getOcrDirectory());
-            if (ocr.exists()) {
-                Helper.deleteDir(ocr);
+            NIOFileUtils.deleteDir(Paths.get(p.getProcessDataDirectory()));
+            Path ocr = Paths.get(p.getOcrDirectory());
+            if (Files.exists(ocr)) {
+                NIOFileUtils.deleteDir(ocr);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -323,25 +329,25 @@ public class GoobiScript {
             return;
         }
 
-        File sourceFolder = new File(this.myParameters.get("sourcefolder"));
-        if (!sourceFolder.exists() || !sourceFolder.isDirectory()) {
+        Path sourceFolder = Paths.get(this.myParameters.get("sourcefolder"));
+        if (!Files.exists(sourceFolder) || !Files.isDirectory(sourceFolder)) {
             Helper.setFehlerMeldung("goobiScriptfield", "Directory " + this.myParameters.get("sourcefolder") + " does not exisist");
             return;
         }
         try {
 
             for (Process p : inProzesse) {
-                File imagesFolder = new File(p.getImagesOrigDirectory(false));
-                if (imagesFolder.list().length > 0) {
+                Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
+                if (NIOFileUtils.list(imagesFolder.toString()).isEmpty()) {
                     Helper.setFehlerMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue()
                             + "] has allready data in image folder");
                 } else {
-                    File sourceFolderProzess = new File(sourceFolder, p.getTitel());
-                    if (!sourceFolderProzess.exists() || !sourceFolder.isDirectory()) {
+                    Path sourceFolderProzess = Paths.get(sourceFolder.toString(), p.getTitel());
+                    if (!Files.exists(sourceFolderProzess) || !Files.isDirectory(sourceFolder)) {
                         Helper.setFehlerMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is not existing");
                     } else {
-                        CopyFile.copyDirectory(sourceFolderProzess, imagesFolder);
+                        NIOFileUtils.copyDirectory(sourceFolderProzess, imagesFolder);
                         Helper.setMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is copied");
                     }
@@ -968,9 +974,9 @@ public class GoobiScript {
     public void deleteTiffHeaderFile(List<Process> inProzesse) {
         for (Process proz : inProzesse) {
             try {
-                File tiffheaderfile = new File(proz.getImagesDirectory() + "tiffwriter.conf");
-                if (tiffheaderfile.exists()) {
-                    tiffheaderfile.delete();
+                Path tiffheaderfile = Paths.get(proz.getImagesDirectory() + "tiffwriter.conf");
+                if (Files.exists(tiffheaderfile)) {
+                    Files.delete(tiffheaderfile);
                 }
                 Helper.setMeldung("goobiScriptfield", "TiffHeaderFile deleted: ", proz.getTitel());
             } catch (Exception e) {
@@ -1041,13 +1047,13 @@ public class GoobiScript {
             try {
                 String metdatdaPath = proz.getMetadataFilePath();
                 String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
-                File metadataFile = new File(metdatdaPath);
-                File anchorFile = new File(anchorPath);
+                Path metadataFile = Paths.get(metdatdaPath);
+                Path anchorFile = Paths.get(anchorPath);
                 Map<String, List<String>> pairs = new HashMap<>();
 
                 pairs = extractMetadata(metadataFile, pairs);
 
-                if (anchorFile.exists()) {
+                if (Files.exists(anchorFile)) {
                     pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
                 MetadataManager.updateMetadata(id, pairs);
@@ -1058,10 +1064,10 @@ public class GoobiScript {
         }
     }
 
-    private Map<String, List<String>> extractMetadata(File metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
+    private Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
 
         SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(metadataFile);
+        Document doc = builder.build(metadataFile.toString());
         Element root = doc.getRootElement();
         try {
             Element goobi =
@@ -1080,7 +1086,7 @@ public class GoobiScript {
             }
 
         } catch (Exception e) {
-            logger.error("cannot extract metadata from " + metadataFile.getAbsolutePath());
+            logger.error("cannot extract metadata from " + metadataFile.toString());
         }
         return metadataPairs;
     }
@@ -1101,10 +1107,10 @@ public class GoobiScript {
             if (!metadataValue.equals("")) {
 
                 if (metadataPairs.containsKey(metadataType)) {
-                    List<String>  oldValue = metadataPairs.get(metadataType);
+                    List<String> oldValue = metadataPairs.get(metadataType);
                     oldValue.add(metadataValue);
-                    
-                    metadataPairs.put(metadataType,  oldValue);
+
+                    metadataPairs.put(metadataType, oldValue);
                 } else {
                     List<String> list = new ArrayList<>();
                     list.add(metadataValue);
@@ -1149,6 +1155,18 @@ public class GoobiScript {
                 logger.error("PreferencesException", e);
 
             }
+        }
+    }
+
+    private void updateFileSize(List<Process> processes) {
+        for (Process p : processes) {
+            if (p.getSortHelperImages() == 0) {
+                int value = HistoryManager.getNumberOfImages(p.getId());
+                if (value > 0) {
+                    ProcessManager.updateImages(value, p.getId());
+                }
+            }
+
         }
     }
 }

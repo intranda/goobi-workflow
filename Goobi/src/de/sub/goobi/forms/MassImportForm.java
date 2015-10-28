@@ -28,10 +28,12 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,7 +99,7 @@ public class MassImportForm {
     private String currentPlugin = "";
     private IImportPlugin plugin;
 
-    private File importFile = null;
+    private Path importFile = null;
     private final Helper help = new Helper();
     // private ImportConfiguration ic = null;
 
@@ -141,7 +143,7 @@ public class MassImportForm {
         this.possibleDigitalCollections = new ArrayList<String>();
         ArrayList<String> defaultCollections = new ArrayList<String>();
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-        if (!(new File(filename).exists())) {
+        if (!Files.exists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
@@ -149,7 +151,7 @@ public class MassImportForm {
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(new File(filename));
+            Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();
@@ -258,7 +260,7 @@ public class MassImportForm {
                 // IImportPlugin plugin = (IImportPlugin)
                 // PluginLoader.getPlugin(PluginType.Import,
                 // this.currentPlugin);
-                this.plugin.setFile(this.importFile);
+                this.plugin.setFile(this.importFile.toFile());
                 List<Record> recordList = this.plugin.generateRecordsFromFile();
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
@@ -340,7 +342,11 @@ public class MassImportForm {
         }
         this.idList = null;
         if (this.importFile != null) {
-            this.importFile.delete();
+           try {
+            Files.delete(this.importFile);
+        } catch (IOException e) {
+            logger.error(e);
+        }
             this.importFile = null;
         }
         if (selectedFilenames != null && !selectedFilenames.isEmpty()) {
@@ -384,7 +390,7 @@ public class MassImportForm {
                 outputStream.write(buf, 0, len);
             }
 
-            this.importFile = new File(filename);
+            this.importFile = Paths.get(filename);
             Helper.setMeldung(Helper.getTranslation("uploadSuccessful", basename));
             // Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
         } catch (IOException e) {
@@ -741,7 +747,7 @@ public class MassImportForm {
             logger.debug("generate docket for process list");
         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-        File xsltfile = new File(rootpath, "docket_multipage.xsl");
+        Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
@@ -755,7 +761,7 @@ public class MassImportForm {
             try {
                 ServletOutputStream out = response.getOutputStream();
                 ExportDocket ern = new ExportDocket();
-                ern.startExport(this.processList, out, xsltfile.getAbsolutePath());
+                ern.startExport(this.processList, out, xsltfile.toString());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting run note", e);

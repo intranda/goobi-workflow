@@ -27,14 +27,13 @@ package de.sub.goobi.export.download;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -59,6 +58,7 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -176,7 +176,7 @@ public class ExportMets {
         ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         mm.setWriteLocal(writeLocalFilegroup);
         String imageFolderPath = myProzess.getImagesTifDirectory(true);
-        File imageFolder = new File(imageFolderPath);
+        Path imageFolder = Paths.get(imageFolderPath);
         /*
          * before creating mets file, change relative path to absolute -
          */
@@ -231,8 +231,8 @@ public class ExportMets {
                 if (!location.contains("://")) {
                     if(!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
                         //is a relative path
-                        File f = new File(imageFolder, location);
-                        location = f.getAbsolutePath();
+                        Path f = Paths.get(imageFolder.toString(), location);
+                        location = f.toString();
                     }
                     location = "file://" + location;
                 }
@@ -256,8 +256,8 @@ public class ExportMets {
                 if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
                     String foldername = myProzess.getMethodFromName(pfg.getFolder());
                     if (foldername != null) {
-                        File folder = new File(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && folder.exists() && folder.list().length > 0) {
+                        Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
+                        if (folder != null && Files.exists(folder) && !NIOFileUtils.list(folder.toString()).isEmpty()) {
                             VirtualFileGroup v = new VirtualFileGroup();
                             v.setName(pfg.getName());
                             v.setPathToFiles(vp.replace(pfg.getPath()));
@@ -335,17 +335,17 @@ public class ExportMets {
 
         }
         if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
-            File tempFile = File.createTempFile(myProzess.getTitel(), ".xml");
-            String filename = tempFile.getAbsolutePath();
+            Path tempFile = Files.createTempFile(myProzess.getTitel(), ".xml");
+            String filename = tempFile.toString();
             mm.write(filename);
-            FileUtils.copyFile(tempFile, new File(targetFileName));
+            Files.copy(tempFile, Paths.get(targetFileName));
 
-            File anchorFile = new File(filename.replace(".xml", "_anchor.xml"));
-            if (anchorFile.exists()) {
-                FileUtils.copyFile(anchorFile, new File(targetFileName.replace(".xml", "_anchor.xml")));
-                FileUtils.deleteQuietly(anchorFile);
+            Path anchorFile = Paths.get(filename.replace(".xml", "_anchor.xml"));
+            if (Files.exists(anchorFile)) {
+                Files.copy(anchorFile, Paths.get(targetFileName.replace(".xml", "_anchor.xml")));
+                Files.delete(anchorFile);
             }
-            FileUtils.deleteQuietly(tempFile);
+            Files.delete(tempFile);
         } else {
             mm.write(targetFileName);
         }

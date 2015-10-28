@@ -1,4 +1,5 @@
 package de.sub.goobi.export.download;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -19,10 +20,10 @@ package de.sub.goobi.export.download;
  */
 import static org.junit.Assert.*;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.goobi.beans.Process;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,30 +32,25 @@ import org.junit.rules.TemporaryFolder;
 import de.sub.goobi.mock.MockProcess;
 
 public class ExportMetsTest {
-    
+
     private Process testProcess = null;
 
-    
-    
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
-    	testProcess = MockProcess.createProcess(folder);
-        
+        testProcess = MockProcess.createProcess(folder);
+
     }
 
-   
-    
-    
     @Test
     public void testStartExport() throws Exception {
-        File destination = folder.newFolder("export");
-        destination.mkdirs();
+        Path destination = folder.newFolder("export").toPath();
+       Files.createDirectories(destination);
         ExportMets exportMets = new ExportMets();
         assertNotNull(exportMets);
-        exportMets.startExport(testProcess, destination.getAbsolutePath());
+        exportMets.startExport(testProcess, destination.toString());
     }
 
 }

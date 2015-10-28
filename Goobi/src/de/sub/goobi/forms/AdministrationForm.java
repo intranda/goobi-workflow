@@ -34,8 +34,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.apache.log4j.Logger;
 import org.goobi.production.enums.PluginType;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
@@ -47,11 +47,8 @@ import dubious.sub.goobi.helper.encryption.MD5;
 @SessionScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
-    private static final Logger logger = Logger.getLogger(AdministrationForm.class);
     private String passwort;
     private boolean istPasswortRichtig = false;
-    private boolean rusFullExport = false;
-
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     private List<String> possibleAdministrationPluginNames;
@@ -90,7 +87,15 @@ public class AdministrationForm implements Serializable {
         this.passwort = passwort;
     }
 
-   
+    public void startStorageCalculationForAllProcessesNow() {
+        HistoryAnalyserJob job = new HistoryAnalyserJob();
+        if (job.getIsRunning() == false) {
+            job.execute();
+            Helper.setMeldung("scheduler calculation executed");
+        } else {
+            Helper.setMeldung("Job is already running, try again in a few minutes");
+        }
+    }
 
 
     public boolean isIstPasswortRichtig() {

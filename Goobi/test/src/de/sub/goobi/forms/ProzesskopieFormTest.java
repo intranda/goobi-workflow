@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -19,14 +20,16 @@ package de.sub.goobi.forms;
  */
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
@@ -50,6 +53,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -80,7 +84,7 @@ public class ProzesskopieFormTest {
             datafolder = "/opt/digiverso/junit/data/";
         }
         ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder + File.separator);
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder + FileSystems.getDefault().getSeparator());
 
         setUpTemplate();
         setUpRuleset();
@@ -138,7 +142,7 @@ public class ProzesskopieFormTest {
 
         form.setOpacKatalog("GBV");
         form.setOpacSuchbegriff("517154005");
-        form.getProzessKopie().setTitel("test");        
+        form.getProzessKopie().setTitel("test");
         assertEquals("", form.OpacAuswerten());
         assertEquals("process_new2", form.GoToSeite2());
 
@@ -146,11 +150,11 @@ public class ProzesskopieFormTest {
 
     @Test
     public void testNeuenProzessAnlegen() throws Exception {
-        File meta = folder.newFolder("metadata");
-        meta.mkdir();
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", meta.getAbsolutePath() + File.separator);
-        File processFolder = new File(meta, "0");
-        processFolder.mkdir();
+        Path meta = folder.newFolder("metadata").toPath();
+        Files.createDirectories(meta);
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", meta.toString() + FileSystems.getDefault().getSeparator());
+        Path processFolder = Paths.get(meta.toString(), "0");
+        Files.createDirectories(processFolder);
 
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -250,35 +254,33 @@ public class ProzesskopieFormTest {
         assertEquals(fixture, form.getDigitalCollections());
     }
 
-   @Test
-   public void testCalcProzesstitel() {
-       ProzesskopieForm form = new ProzesskopieForm();
-       assertNotNull(form);
-       form.setProzessVorlage(template);
-       secondStep.setBenutzer(userList);
-       
-       AdditionalField field1 = new AdditionalField(form);
-       field1.setTitel("TitleDocMain");
-       field1.setWert("Test title");
-       
-       
-       AdditionalField field2 = new AdditionalField(form);
-       field2.setTitel("ListOfCreators");
-       field2.setWert("first author");
-       
-       
-       AdditionalField field3 = new AdditionalField(form);
-       field3.setTitel("Identifier");
-       field3.setWert("123");
-       
-       List<AdditionalField> fixture =  new ArrayList<>();
-       fixture.add(field1);
-       fixture.add(field2);
-       fixture.add(field3);
-       form.setAdditionalFields(fixture);
-       form.CalcProzesstitel();
-       
-   }
+    @Test
+    public void testCalcProzesstitel() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+
+        AdditionalField field1 = new AdditionalField(form);
+        field1.setTitel("TitleDocMain");
+        field1.setWert("Test title");
+
+        AdditionalField field2 = new AdditionalField(form);
+        field2.setTitel("ListOfCreators");
+        field2.setWert("first author");
+
+        AdditionalField field3 = new AdditionalField(form);
+        field3.setTitel("Identifier");
+        field3.setWert("123");
+
+        List<AdditionalField> fixture = new ArrayList<>();
+        fixture.add(field1);
+        fixture.add(field2);
+        fixture.add(field3);
+        form.setAdditionalFields(fixture);
+        form.CalcProzesstitel();
+
+    }
 
     @Test
     public void testUseOpac() {
@@ -377,7 +379,8 @@ public class ProzesskopieFormTest {
 
     private void setUpConfig() {
 
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis",
+                folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
@@ -387,12 +390,11 @@ public class ProzesskopieFormTest {
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
-        File rulesetFolder = folder.newFolder("rulesets");
-        rulesetFolder.mkdir();
-
-        File rulesetTemplate = new File(datafolder + RULESET_NAME);
-        File rulesetFile = new File(rulesetFolder, RULESET_NAME);
-        FileUtils.copyFile(rulesetTemplate, rulesetFile);
+        Path rulesetFolder = folder.newFolder("rulesets").toPath();
+        Files.createDirectories(rulesetFolder);
+        Path rulesetTemplate = Paths.get(datafolder + RULESET_NAME);
+        Path rulesetFile = Paths.get(rulesetFolder.toString(), RULESET_NAME);
+        Files.copy(rulesetTemplate, rulesetFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
         Ruleset ruleset = new Ruleset();
         ruleset.setId(11111);
         ruleset.setOrderMetadataByRuleset(true);
@@ -401,7 +403,7 @@ public class ProzesskopieFormTest {
 
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
-        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.toString() + FileSystems.getDefault().getSeparator());
         template.setRegelsatz(ruleset);
     }
 

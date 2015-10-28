@@ -29,17 +29,19 @@ package de.sub.goobi.helper.tasks;
  */
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -50,8 +52,8 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
@@ -64,7 +66,7 @@ import de.sub.goobi.metadaten.MetadatenVerifizierung;
  *************************************************************************************/
 public class CreatePdfFromServletThread extends LongRunningTask {
     private static final Logger logger = Logger.getLogger(CreatePdfFromServletThread.class);
-    private File targetFolder;
+    private Path targetFolder;
     private String internalServletPath;
     private URL metsURL;
 
@@ -94,9 +96,8 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * --------------------------------*/
             URL goobiContentServerUrl = null;
             String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
-            new File("");
-            File tempPdf = File.createTempFile(this.getProzess().getTitel(), ".pdf");
-            File finalPdf = new File(this.targetFolder, this.getProzess().getTitel() + ".pdf");
+            Path tempPdf = Files.createTempFile(this.getProzess().getTitel(), ".pdf");
+            Path finalPdf = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".pdf");
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 
             /* --------------------------------
@@ -119,13 +120,12 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                     contentServerUrl = this.internalServletPath + "/cs/cs?action=pdf&images=";
                 }
                 String url = "";
-                FilenameFilter filter = Helper.imageNameFilter;
-                File imagesDir = new File(this.getProzess().getImagesTifDirectory(true));
-                File[] meta = imagesDir.listFiles(filter);
+           
+                List<Path> meta = NIOFileUtils.listFiles(this.getProzess().getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
                 ArrayList<String> filenames = new ArrayList<String>();
-                for (File data : meta) {
+                for (Path data : meta) {
                     String file = "";
-                    file += data.toURI().toURL();
+                    file += data.toUri().toURL();
                     filenames.add(file);
                 }
                 Collections.sort(filenames, new MetadatenHelper(null, null));
@@ -156,7 +156,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             try {
                 byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
                 istr = new ByteArrayInputStream(response);
-                ostr = new FileOutputStream(tempPdf);
+                ostr = new FileOutputStream(tempPdf.toFile());
 
                 // Transfer bytes from in to out
                 byte[] buf = new byte[1024];
@@ -188,47 +188,20 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 }
             }
 
-            //                int statusCode = httpclient.executeMethod(method);
-            //                if (statusCode != HttpStatus.SC_OK) {
-            //                    logger.error("HttpStatus nicht ok", null);
-            //                    if (logger.isDebugEnabled()) {
-            //                        logger.debug("Response is:\n" + method.getResponseBodyAsString());
-            //                    }
-            //                    return;
-            //                }
-            //
-            //                InputStream inStream = method.getResponseBodyAsStream();
-            //                BufferedInputStream bis = new BufferedInputStream(inStream);
-            //                FileOutputStream fos = new FileOutputStream(tempPdf);
-            //                byte[] bytes = new byte[8192];
-            //                int count = bis.read(bytes);
-            //                while (count != -1 && count <= 8192) {
-            //                    fos.write(bytes, 0, count);
-            //                    count = bis.read(bytes);
-            //                }
-            //                if (count != -1) {
-            //                    fos.write(bytes, 0, count);
-            //                }
-            //                fos.close();
-            //                bis.close();
-            //                setStatusProgress(80);
-            //            } finally {
-            //                method.releaseConnection();
-            //            }
             /* --------------------------------
              * copy pdf from temp to final destination
              * --------------------------------*/
             if (logger.isDebugEnabled()) {
-                logger.debug("pdf file created: " + tempPdf.getAbsolutePath() + "; now copy it to " + finalPdf.getAbsolutePath());
+                logger.debug("pdf file created: " + tempPdf.toString() + "; now copy it to " + finalPdf.toString());
             }
-            Helper.copyFile(tempPdf, finalPdf);
+           NIOFileUtils.copyFile(tempPdf, finalPdf);
             if (logger.isDebugEnabled()) {
-                logger.debug("pdf copied to " + finalPdf.getAbsolutePath() + "; now start cleaning up");
+                logger.debug("pdf copied to " + finalPdf.toString() + "; now start cleaning up");
             }
-            tempPdf.delete();
+            Files.delete(tempPdf);
             if (this.metsURL != null) {
-                File tempMets = new File(this.metsURL.toString());
-                tempMets.delete();
+                Path tempMets = Paths.get(this.metsURL.toString());
+                Files.delete(tempMets);
             }
         } catch (Exception e) {
             logger.error("Error while creating pdf for " + this.getProzess().getTitel(), e);
@@ -240,13 +213,13 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * --------------------------------*/
             Writer output = null;
             String text = "error while pdf creation: " + e.getMessage();
-            File file = new File(this.targetFolder, this.getProzess().getTitel() + ".PDF-ERROR.log");
+            Path file = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".PDF-ERROR.log");
             try {
-                output = new BufferedWriter(new FileWriter(file));
+                output = new BufferedWriter(new FileWriter(file.toFile()));
                 output.write(text);
                 output.close();
             } catch (IOException e1) {
-                logger.error("Error while reporting error to user in file " + file.getAbsolutePath(), e);
+                logger.error("Error while reporting error to user in file " + file.toString(), e);
             }
             return;
         } finally {
@@ -264,7 +237,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
      * 
      * @param targetFolder the targetFolder to set
      **************************************************************************************/
-    public void setTargetFolder(File targetFolder) {
+    public void setTargetFolder(Path targetFolder) {
         this.targetFolder = targetFolder;
     }
 

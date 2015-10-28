@@ -2,9 +2,11 @@ package de.sub.goobi.helper;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Observer;
 
@@ -21,7 +23,7 @@ public class HelperTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private File currentFolder;
+    private Path currentFolder;
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
@@ -31,10 +33,10 @@ public class HelperTest {
             configFolder = "/opt/digiverso/junit/data/";
         }
         ConfigurationHelper.CONFIG_FILE_NAME = configFolder + "goobi_config.properties";
-        currentFolder = temporaryFolder.newFolder("temp");
-        currentFolder.createNewFile();
-        File tif = new File(currentFolder, "00000001.tif");
-        tif.createNewFile();
+        currentFolder = temporaryFolder.newFolder("temp").toPath();
+        Files.createDirectories(currentFolder);
+        Path tif = Paths.get(currentFolder.toString(), "00000001.tif");
+        Files.createFile(tif);
     }
 
     @Test
@@ -65,25 +67,25 @@ public class HelperTest {
 
     @Test
     public void testDeleteInDir() {
-        assertEquals(1, currentFolder.list().length);
-        Helper.deleteInDir(currentFolder);
-        assertEquals(0, currentFolder.list().length);
+        assertEquals(1, NIOFileUtils.list(currentFolder.toString()).size());
+        NIOFileUtils.deleteInDir(currentFolder);
+        assertEquals(0, NIOFileUtils.list(currentFolder.toString()).size());
     }
 
     @Test
     public void testDeleteDataInDir() throws IOException {
-        assertEquals(1, currentFolder.list().length);
-        Helper.deleteDataInDir(currentFolder);
-        assertEquals(0, currentFolder.list().length);
+        assertEquals(1, NIOFileUtils.list(currentFolder.toString()).size());
+        NIOFileUtils.deleteDataInDir(currentFolder);
+        assertEquals(0, NIOFileUtils.list(currentFolder.toString()).size());
 
     }
 
     @Test
     public void testCopyDirectoryWithCrc32Check() throws IOException {
-        File dest = temporaryFolder.newFolder("dest");
+        Path dest = temporaryFolder.newFolder("dest").toPath();
         Element element = new Element("test");
         Helper.copyDirectoryWithCrc32Check(currentFolder, dest, 10, element);
-        assertTrue(dest.exists());
+        assertTrue(Files.exists(dest));
         assertTrue(!element.getChildren().isEmpty());
     }
 }

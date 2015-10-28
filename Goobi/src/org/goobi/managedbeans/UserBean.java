@@ -28,10 +28,10 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -169,7 +169,7 @@ public class UserBean extends BasicBean {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         String filename =
-                session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator + "goobi_loginBlacklist.txt";
+                session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
             FileInputStream fis = new FileInputStream(filename);

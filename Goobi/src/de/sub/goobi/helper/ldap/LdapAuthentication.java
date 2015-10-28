@@ -28,11 +28,13 @@ package de.sub.goobi.helper.ldap;
  * exception statement from your version.
  */
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -114,7 +116,7 @@ public class LdapAuthentication {
                 logger.debug("HomeVerzeichnis pruefen");
             }
             String homePath = getUserHomeDirectory(inBenutzer);
-            if (!new File(homePath).exists()) {
+            if (!Files.exists(Paths.get(homePath))) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("HomeVerzeichnis existiert noch nicht");
                 }
@@ -625,8 +627,8 @@ public class LdapAuthentication {
 
     private void loadCertificates(String path, String passwd) {
         /* wenn die Zertifikate noch nicht im Keystore sind, jetzt einlesen */
-        File myPfad = new File(path);
-        if (!myPfad.exists()) {
+        Path myPfad = Paths.get(path);
+        if (!Files.exists(myPfad)) {
             try {
                 FileOutputStream ksos = new FileOutputStream(path);
                 // TODO: Rename parameters to something more meaningful, this is quite specific for the GDZ

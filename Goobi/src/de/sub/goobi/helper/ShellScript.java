@@ -28,10 +28,12 @@
 package de.sub.goobi.helper;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,8 +60,8 @@ public class ShellScript {
      * 
      * @return the command
      */
-    public File getCommand() {
-        return new File(command);
+    public Path getCommand() {
+        return Paths.get(command);
     }
 
     /**
@@ -104,10 +106,10 @@ public class ShellScript {
      * @param executable Script to run
      * @throws FileNotFoundException is thrown if the given executable does not exist.
      */
-    public ShellScript(File executable) throws FileNotFoundException {
-        if (!executable.exists())
-            throw new FileNotFoundException("Could not find executable: " + executable.getAbsolutePath());
-        command = executable.getAbsolutePath();
+    public ShellScript(Path executable) throws FileNotFoundException {
+        if (!Files.exists(executable))
+            throw new FileNotFoundException("Could not find executable: " + executable.toString());
+        command = executable.toString();
     }
 
     /**
@@ -226,7 +228,7 @@ public class ShellScript {
             } else {
                 scriptname = nonSpacesafeScriptingCommand;
             }
-            s = new ShellScript(new File(scriptname));
+            s = new ShellScript(Paths.get(scriptname));
 
             List<String> scriptingArgs = new ArrayList<String>();
             if (paramList != null && !paramList.isEmpty()) {

@@ -19,16 +19,18 @@ package de.sub.goobi.forms;
  */
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
@@ -53,6 +55,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.mock.MockUploadedFile;
 
 @RunWith(PowerMockRunner.class)
@@ -91,7 +94,7 @@ public class MassImportFormTest {
     
     private void setUpConfig() {
 
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
 //        ConfigurationHelper.getInstance().setParameter("tempfolder", folder.getRoot().getAbsolutePath() + File.separator);
@@ -99,15 +102,15 @@ public class MassImportFormTest {
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
-        File rulesetFolder = folder.newFolder("rulesets");
-        rulesetFolder.mkdir();
+        Path rulesetFolder = folder.newFolder("rulesets").toPath();
+       Files.createDirectories(rulesetFolder) ;
         datafolder = System.getenv("junitdata");
         if (datafolder == null) {
             datafolder = "/opt/digiverso/junit/data/";
         }
-        File rulesetTemplate = new File(datafolder + RULESET_NAME);
-        File rulesetFile = new File(rulesetFolder, RULESET_NAME);
-        FileUtils.copyFile(rulesetTemplate, rulesetFile);
+        Path rulesetTemplate = Paths.get(datafolder + RULESET_NAME);
+        Path rulesetFile = Paths.get(rulesetFolder.toString(), RULESET_NAME);
+        Files.copy(rulesetTemplate, rulesetFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
         Ruleset ruleset = new Ruleset();
         ruleset.setId(11111);
         ruleset.setOrderMetadataByRuleset(true);
@@ -116,7 +119,7 @@ public class MassImportFormTest {
         ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
-        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.getAbsolutePath() + File.separator);
+        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.toString() + FileSystems.getDefault().getSeparator());
         template.setRegelsatz(ruleset);
     }
 
@@ -464,8 +467,8 @@ public class MassImportFormTest {
         massImportForm.setUploadedFile(file);
         massImportForm.uploadFile();
         
-        File dest = new File(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
-        assertTrue(dest.exists() && dest.isFile());
+        Path dest = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
+        assertTrue(Files.exists(dest) && Files.isRegularFile(dest));
     }
     
     

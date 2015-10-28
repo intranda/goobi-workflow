@@ -27,8 +27,8 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,9 +68,9 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.helper.BatchStepHelper;
-import de.sub.goobi.helper.FileUtils;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.WebDav;
@@ -351,7 +351,7 @@ public class StepBean extends BasicBean {
 
                 if (s.isTypImagesLesen() || s.isTypImagesSchreiben()) {
                     try {
-                        new File(s.getProzess().getImagesOrigDirectory(false));
+                        Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
 
                     }
@@ -465,7 +465,7 @@ public class StepBean extends BasicBean {
         if (this.mySchritt.isTypImagesSchreiben()) {
             try {
                 // this.mySchritt.getProzess().setSortHelperImages(
-                // FileUtils.getNumberOfFiles(new File(this.mySchritt.getProzess().getImagesOrigDirectory())));
+                // FileUtils.getNumberOfFiles(Paths.get(this.mySchritt.getProzess().getImagesOrigDirectory())));
                 HistoryAnalyserJob.updateHistory(this.mySchritt.getProzess());
             } catch (Exception e) {
                 Helper.setFehlerMeldung("Error while calculation of storage and images", e);
@@ -752,7 +752,7 @@ public class StepBean extends BasicBean {
 
     public String DownloadToHome() {
         try {
-            new File(this.mySchritt.getProzess().getImagesOrigDirectory(true));
+            Paths.get(this.mySchritt.getProzess().getImagesOrigDirectory(true));
         } catch (Exception e1) {
 
         }
@@ -909,7 +909,7 @@ public class StepBean extends BasicBean {
                     if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
                         // gesamtAnzahlImages +=
                         // myDav.getAnzahlImages(step.getProzess().getImagesOrigDirectory());
-                        this.gesamtAnzahlImages += FileUtils.getNumberOfFiles(step.getProzess().getImagesOrigDirectory(false));
+                        this.gesamtAnzahlImages += NIOFileUtils.getNumberOfFiles(step.getProzess().getImagesOrigDirectory(false));
                     }
                 } catch (Exception e) {
                     logger.error(e);

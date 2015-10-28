@@ -27,11 +27,13 @@ package org.goobi.production.export;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,8 +97,8 @@ public class ExportXmlLog implements IProcessDataExport {
         startExport(p, new FileOutputStream(destination), null);
     }
 
-    public void startExport(Process p, File dest) throws FileNotFoundException, IOException {
-        startExport(p, new FileOutputStream(dest), null);
+    public void startExport(Process p, Path dest) throws FileNotFoundException, IOException {
+        startExport(p, new FileOutputStream(dest.toFile()), null);
     }
 
     /**
@@ -386,8 +388,8 @@ public class ExportXmlLog implements IProcessDataExport {
             Document metsDoc = new SAXBuilder().build(filename);
             Document anchorDoc = null;
             String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
-            File anchorFile = new File(anchorfilename);
-            if (anchorFile.exists() && anchorFile.canRead()) {
+            Path anchorFile = Paths.get(anchorfilename);
+            if (Files.exists(anchorFile) && Files.isReadable(anchorFile)) {
                 anchorDoc = new SAXBuilder().build(anchorfilename);
             }
 
@@ -545,9 +547,9 @@ public class ExportXmlLog implements IProcessDataExport {
 
         HashMap<String, String> fields = new HashMap<String, String>();
         try {
-            File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
-            if (file.exists() && file.canRead()) {
-                XMLConfiguration config = new XMLConfiguration(file);
+            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            if (Files.exists(file) && Files.isReadable(file)) {
+                XMLConfiguration config = new XMLConfiguration(file.toFile());
                 config.setListDelimiter('&');
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
@@ -567,9 +569,9 @@ public class ExportXmlLog implements IProcessDataExport {
     private List<Namespace> getNamespacesFromConfig() {
         List<Namespace> nss = new ArrayList<Namespace>();
         try {
-            File file = new File(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
-            if (file.exists() && file.canRead()) {
-                XMLConfiguration config = new XMLConfiguration(file);
+            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            if (Files.exists(file) && Files.isReadable(file)) {
+                XMLConfiguration config = new XMLConfiguration(file.toFile());
                 config.setListDelimiter('&');
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 

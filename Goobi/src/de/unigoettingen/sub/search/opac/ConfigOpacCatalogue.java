@@ -27,10 +27,11 @@ package de.unigoettingen.sub.search.opac;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class ConfigOpacCatalogue {
     public Node executeBeautifier(Node myHitlist) {
         /* Ausgabe des Opac-Ergebnissen in Datei */
 
-        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
             debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
         }
 
@@ -144,7 +145,7 @@ public class ConfigOpacCatalogue {
         }
 
         /* Ausgabe des überarbeiteten Opac-Ergebnisses */
-        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && new File(ConfigurationHelper.getInstance().getDebugFolder()).canWrite()) {
+        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
             debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
         }
         return myHitlist;

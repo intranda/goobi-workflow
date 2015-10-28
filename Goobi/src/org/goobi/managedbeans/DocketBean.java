@@ -27,7 +27,10 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -53,7 +56,7 @@ public class DocketBean extends BasicBean {
 
 	public String Speichern() {
 		try {
-			if (hasValidRulesetFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
+			if (hasValidDocketFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
 				DocketManager.saveDocket(myDocket);
 				paginator.load();
 				return FilterKein();
@@ -67,9 +70,9 @@ public class DocketBean extends BasicBean {
 		}
 	}
 
-	private boolean hasValidRulesetFilePath(Docket d, String pathToRulesets) {
-		File rulesetFile = new File(pathToRulesets + d.getFile());
-		return rulesetFile.exists();
+	private boolean hasValidDocketFilePath(Docket d, String pathToRulesets) {
+		Path rulesetFile = Paths.get(pathToRulesets + d.getFile());
+		return Files.exists(rulesetFile);
 	}
 
 	public String Loeschen() {

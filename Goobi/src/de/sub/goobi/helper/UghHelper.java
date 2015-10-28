@@ -28,10 +28,10 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -224,7 +224,7 @@ public class UghHelper {
             if (context != null) {
                 HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
                 filename =
-                        session.getServletContext().getRealPath("/WEB-INF") + File.separator + "classes" + File.separator + "goobi_opacLanguages.txt";
+                        session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems.getDefault().getSeparator() + "goobi_opacLanguages.txt";
             } else {
                 filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacLanguages.txt";
             }

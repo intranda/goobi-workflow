@@ -29,9 +29,10 @@ package org.goobi.production.flow.statistics;
  */
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -117,10 +118,10 @@ public class StatisticsRenderingElement implements Serializable {
 		} else {
 			renderer.setDataTable(dataTable);
 		}
-		File outputfile = new File(localImagePath + imageUrl);
+		Path outputfile = Paths.get(localImagePath + imageUrl);
 		BufferedImage image = (BufferedImage) renderer.getRendering();
 		try {
-			ImageIO.write(image, "png", outputfile);
+			ImageIO.write(image, "png", outputfile.toFile());
 		} catch (IOException e) {
 			logger.error(e);
 		}

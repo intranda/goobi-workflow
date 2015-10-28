@@ -27,8 +27,10 @@ package org.goobi.production.flow.jobs;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,14 +40,13 @@ import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
-//import de.sub.goobi.beans.Schritteigenschaft;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.unigoettingen.sub.commons.util.file.FileUtils;
 
 /**
  * HistoryJob proofs History of {@link Prozess} and creates missing {@link HistoryEvent}s
@@ -101,13 +102,13 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
             updated = true;
         }
         /* imagesWork */
-        Integer numberWork = FileUtils.getNumberOfFiles(new File(inProcess.getImagesTifDirectory(true)), "tif");
+        Integer numberWork = NIOFileUtils.getNumberOfFiles(Paths.get(inProcess.getImagesTifDirectory(true)), ".tif");
         if (updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue())) {
             updated = true;
         }
 
         /* imagesMaster */
-        Integer numberMaster = FileUtils.getNumberOfFiles(new File(inProcess.getImagesOrigDirectory(true)), "tif");
+        Integer numberMaster = NIOFileUtils.getNumberOfFiles(Paths.get(inProcess.getImagesOrigDirectory(true)), ".tif");
         if (updateHistoryEvent(inProcess, HistoryEventType.imagesMasterDiff, numberMaster.longValue())) {
             updated = true;
         }
@@ -403,11 +404,11 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      ***************************************************************************/
     private static long getCurrentStorageSize(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
         String dirAsString = inProcess.getProcessDataDirectory();
-        File directory = new File(dirAsString);
-        if (!directory.isDirectory()) {
+        Path directory = Paths.get(dirAsString);
+        if (!Files.exists(directory)) {
             throw new IOException("History Manager error while calculating size of " + inProcess.getTitel());
         }
-        return org.apache.commons.io.FileUtils.sizeOfDirectory(directory);
+        return Files.size(directory);
     }
 
     /***************************************************************************

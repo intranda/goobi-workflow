@@ -27,8 +27,9 @@ package de.unigoettingen.sub.search.opac;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,7 +46,7 @@ public class ConfigOpac {
    public ConfigOpac() throws IOException {
 	   configPfad = new Helper().getGoobiConfigDirectory() + "goobi_opac.xml";
 
-      if (!(new File(configPfad)).exists()) {
+      if (!Files.exists(Paths.get(configPfad))) {
 		throw new IOException("File not found: " + configPfad);
 	}
       try {

@@ -27,8 +27,8 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -139,29 +139,29 @@ public class VariableReplacer {
             String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
             /* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */
-            if (tifpath.endsWith(File.separator)) {
-                tifpath = tifpath.substring(0, tifpath.length() - File.separator.length()).replace("\\", "/");
+            if (tifpath.endsWith(FileSystems.getDefault().getSeparator())) {
+                tifpath = tifpath.substring(0, tifpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (imagepath.endsWith(File.separator)) {
-                imagepath = imagepath.substring(0, imagepath.length() - File.separator.length()).replace("\\", "/");
+            if (imagepath.endsWith(FileSystems.getDefault().getSeparator())) {
+                imagepath = imagepath.substring(0, imagepath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (origpath.endsWith(File.separator)) {
-                origpath = origpath.substring(0, origpath.length() - File.separator.length()).replace("\\", "/");
+            if (origpath.endsWith(FileSystems.getDefault().getSeparator())) {
+                origpath = origpath.substring(0, origpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (processpath.endsWith(File.separator)) {
-                processpath = processpath.substring(0, processpath.length() - File.separator.length()).replace("\\", "/");
+            if (processpath.endsWith(FileSystems.getDefault().getSeparator())) {
+                processpath = processpath.substring(0, processpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (importPath.endsWith(File.separator)) {
-                importPath = importPath.substring(0, importPath.length() - File.separator.length()).replace("\\", "/");
+            if (importPath.endsWith(FileSystems.getDefault().getSeparator())) {
+                importPath = importPath.substring(0, importPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (sourcePath.endsWith(File.separator)) {
-                sourcePath = sourcePath.substring(0, sourcePath.length() - File.separator.length()).replace("\\", "/");
+            if (sourcePath.endsWith(FileSystems.getDefault().getSeparator())) {
+                sourcePath = sourcePath.substring(0, sourcePath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (ocrBasisPath.endsWith(File.separator)) {
-                ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - File.separator.length()).replace("\\", "/");
+            if (ocrBasisPath.endsWith(FileSystems.getDefault().getSeparator())) {
+                ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
-            if (ocrPlaintextPath.endsWith(File.separator)) {
-                ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - File.separator.length()).replace("\\", "/");
+            if (ocrPlaintextPath.endsWith(FileSystems.getDefault().getSeparator())) {
+                ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
             if (inString.contains("(tifurl)")) {
                 if (SystemUtils.IS_OS_WINDOWS) {

@@ -27,8 +27,12 @@ package de.sub.goobi.export.dms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
+
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -52,6 +56,7 @@ import org.goobi.production.plugin.interfaces.IExportPlugin;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -146,35 +151,35 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
          * -------------------------------- Speicherort vorbereiten und downloaden --------------------------------
          */
         String zielVerzeichnis;
-        File benutzerHome;
+        Path benutzerHome;
 
         zielVerzeichnis = myProzess.getProjekt().getDmsImportImagesPath();
-        benutzerHome = new File(zielVerzeichnis);
+        benutzerHome = Paths.get(zielVerzeichnis);
 
         /* ggf. noch einen Vorgangsordner anlegen */
         if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {
-            benutzerHome = new File(benutzerHome + File.separator + myProzess.getTitel());
-            zielVerzeichnis = benutzerHome.getAbsolutePath();
+            benutzerHome = Paths.get(benutzerHome.toString(), myProzess.getTitel());
+            zielVerzeichnis = benutzerHome.toString();
             /* alte Import-Ordner löschen */
-            if (!Helper.deleteDir(benutzerHome)) {
+            if (!NIOFileUtils.deleteDir(benutzerHome)) {
                 Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Import folder could not be cleared");
                 return false;
             }
             /* alte Success-Ordner löschen */
-            File successFile = new File(myProzess.getProjekt().getDmsImportSuccessPath() + File.separator + myProzess.getTitel());
-            if (!Helper.deleteDir(successFile)) {
+            Path successFile = Paths.get(myProzess.getProjekt().getDmsImportSuccessPath(), myProzess.getTitel());
+            if (!NIOFileUtils.deleteDir(successFile)) {
                 Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Success folder could not be cleared");
                 return false;
             }
             /* alte Error-Ordner löschen */
-            File errorfile = new File(myProzess.getProjekt().getDmsImportErrorPath() + File.separator + myProzess.getTitel());
-            if (!Helper.deleteDir(errorfile)) {
+            Path errorfile = Paths.get(myProzess.getProjekt().getDmsImportErrorPath(), myProzess.getTitel());
+            if (!NIOFileUtils.deleteDir(errorfile)) {
                 Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Error folder could not be cleared");
                 return false;
             }
 
-            if (!benutzerHome.exists()) {
-                benutzerHome.mkdir();
+            if (!Files.exists(benutzerHome)) {
+                Files.createDirectories(benutzerHome);
             }
         }
 
@@ -188,21 +193,21 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
             } else if (this.exportFulltext) {
                 fulltextDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
             }
-            File exportFolder = new File(myProzess.getExportDirectory());
-            if (exportFolder.exists() && exportFolder.isDirectory()) {
-                File[] subdir = exportFolder.listFiles();
-                for (File dir : subdir) {
-                    if (dir.isDirectory() && dir.list().length > 0) {
-                        if (!dir.getName().matches(".+\\.\\d+")) {
-                            String suffix = dir.getName().substring(dir.getName().lastIndexOf("_"));
-                            File destination = new File(benutzerHome + File.separator + atsPpnBand + suffix);
-                            if (!destination.exists()) {
-                                destination.mkdir();
+            Path exportFolder = Paths.get(myProzess.getExportDirectory());
+            if (Files.exists(exportFolder) && Files.isDirectory(exportFolder)) {
+                List<Path> subdir = NIOFileUtils.listFiles(myProzess.getExportDirectory());
+                for (Path dir : subdir) {
+                    if (Files.isDirectory(dir) && !NIOFileUtils.list(dir.toString()).isEmpty()) {
+                        if (!dir.getFileName().toString().matches(".+\\.\\d+")) {
+                            String suffix = dir.getFileName().toString().substring(dir.getFileName().toString().lastIndexOf("_"));
+                            Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
+                            if (!Files.exists(destination)) {
+                                Files.createDirectories(destination);
                             }
-                            File[] files = dir.listFiles();
-                            for (int i = 0; i < files.length; i++) {
-                                File target = new File(destination + File.separator + files[i].getName());
-                                Helper.copyFile(files[i], target);
+                            List<Path> files = NIOFileUtils.listFiles(dir.toString());
+                            for (Path file : files) {
+                                Path target = Paths.get(destination.toString(), file.getFileName().toString());
+                                Files.copy(file, target);
                             }
                         }
                     }
@@ -223,10 +228,10 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
         if (myProzess.getProjekt().isUseDmsImport()) {
             if (externalExport) {
                 /* Wenn METS, dann per writeMetsFile schreiben... */
-                writeMetsFile(myProzess, benutzerHome + File.separator + atsPpnBand + ".xml", gdzfile, false);
+                writeMetsFile(myProzess, benutzerHome + FileSystems.getDefault().getSeparator() + atsPpnBand + ".xml", gdzfile, false);
             } else {
                 /* ...wenn nicht, nur ein Fileformat schreiben. */
-                gdzfile.write(benutzerHome + File.separator + atsPpnBand + ".xml");
+                gdzfile.write(benutzerHome + FileSystems.getDefault().getSeparator() + atsPpnBand + ".xml");
             }
 
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "DMS-Export started");
@@ -235,8 +240,8 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
 
                 /* Success-Ordner wieder löschen */
                 if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {
-                    File successFile = new File(myProzess.getProjekt().getDmsImportSuccessPath() + File.separator + myProzess.getTitel());
-                    Helper.deleteDir(successFile);
+                    Path successFile = Paths.get(myProzess.getProjekt().getDmsImportSuccessPath(), myProzess.getTitel());
+                    NIOFileUtils.deleteDir(successFile);
                 }
             }
         }
@@ -265,64 +270,66 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
         }
     }
 
-    public void fulltextDownload(Process myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
+    public void fulltextDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
             InterruptedException, SwapException, DAOException {
 
         // Helper help = new Helper();
         // File tifOrdner = new File(myProzess.getImagesTifDirectory());
 
         // download sources
-        File sources = new File(myProzess.getSourceDirectory());
-        if (sources.exists() && sources.list().length > 0) {
-            File destination = new File(benutzerHome + File.separator + atsPpnBand + "_src");
-            if (!destination.exists()) {
-                destination.mkdir();
+        Path sources = Paths.get(myProzess.getSourceDirectory());
+        if (Files.exists(sources) && !NIOFileUtils.list(myProzess.getSourceDirectory()).isEmpty()) {
+            Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + "_src");
+            if (!Files.exists(destination)) {
+                Files.createDirectories(destination);
             }
-            File[] dateien = sources.listFiles();
-            for (int i = 0; i < dateien.length; i++) {
-                File meinZiel = new File(destination + File.separator + dateien[i].getName());
-                Helper.copyFile(dateien[i], meinZiel);
+            List<Path> dateien = NIOFileUtils.listFiles(myProzess.getSourceDirectory());
+            for (Path dir : dateien) {
+                Path meinZiel = Paths.get(destination.toString(), dir.getFileName().toString());
+                Files.copy(dir, meinZiel);
             }
         }
 
-        File ocr = new File(myProzess.getOcrDirectory());
-        if (ocr.exists()) {
-            File[] folder = ocr.listFiles();
-            for (File dir : folder) {
-                if (dir.isDirectory() && dir.list().length > 0) {
-                    String suffix = dir.getName().substring(dir.getName().lastIndexOf("_"));
-                    File destination = new File(benutzerHome + File.separator + atsPpnBand + suffix);
-                    if (!destination.exists()) {
-                        destination.mkdir();
+        Path ocr = Paths.get(myProzess.getOcrDirectory());
+        if (Files.exists(ocr)) {
+
+            List<Path> folder = NIOFileUtils.listFiles(myProzess.getOcrDirectory());
+            for (Path dir : folder) {
+
+                if (Files.isDirectory(dir) && !NIOFileUtils.list(dir.toString()).isEmpty()) {
+                    String suffix = dir.getFileName().toString().substring(dir.getFileName().toString().lastIndexOf("_"));
+                    Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
+                    if (!Files.exists(destination)) {
+                        Files.createDirectories(destination);
                     }
-                    File[] files = dir.listFiles();
-                    for (int i = 0; i < files.length; i++) {
-                        File target = new File(destination + File.separator + files[i].getName());
-                        Helper.copyFile(files[i], target);
+                    List<Path> files = NIOFileUtils.listFiles(dir.toString());
+                    for (Path file : files) {
+                        Path target = Paths.get(destination.toString(), file.getFileName().toString());
+                        Files.copy(file, target);
                     }
                 }
             }
         }
     }
 
-    public void imageDownload(Process myProzess, File benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
+    public void imageDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
             InterruptedException, SwapException, DAOException {
 
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
          */
-        File tifOrdner = new File(myProzess.getImagesTifDirectory(true));
+        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(true));
 
         /*
          * -------------------------------- jetzt die Ausgangsordner in die Zielordner kopieren --------------------------------
          */
-        File zielTif = new File(benutzerHome + File.separator + atsPpnBand + ordnerEndung);
-        if (tifOrdner.exists() && tifOrdner.list().length > 0) {
+        Path zielTif = Paths.get(benutzerHome.toString(), atsPpnBand + ordnerEndung);
+        if (Files.exists(tifOrdner) && !NIOFileUtils.list(tifOrdner.toString()).isEmpty()) {
 
             /* bei Agora-Import einfach den Ordner anlegen */
             if (myProzess.getProjekt().isUseDmsImport()) {
-                if (!zielTif.exists()) {
-                    zielTif.mkdir();
+                if (!Files.exists(zielTif)) {
+                    Files.createDirectories(zielTif);
                 }
             } else {
                 /*
@@ -330,7 +337,7 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
                  */
                 User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 try {
-                    FilesystemHelper.createDirectoryForUser(zielTif.getAbsolutePath(), myBenutzer.getLogin());
+                    FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");
                     logger.error("could not create destination directory", e);
@@ -338,12 +345,15 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
             }
 
             /* jetzt den eigentlichen Kopiervorgang */
-
-            File[] dateien = tifOrdner.listFiles(Helper.dataFilter);
-            for (int i = 0; i < dateien.length; i++) {
-                File meinZiel = new File(zielTif + File.separator + dateien[i].getName());
-                Helper.copyFile(dateien[i], meinZiel);
+            List<Path> files = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
+            for (Path file : files) {
+                Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
+                Files.copy(file, target);
             }
+            //            for (int i = 0; i < dateien.length; i++) {
+            //                File meinZiel = new File(zielTif + File.separator + dateien[i].getName());
+            //                Helper.copyFile(dateien[i], meinZiel);
+            //            }
         }
 
         if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {
@@ -353,12 +363,13 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
                 for (ProjectFileGroup pfg : myFilegroups) {
                     // check if source files exists
                     if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
-                        File folder = new File(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && folder.exists() && folder.list().length > 0) {
-                            File[] files = folder.listFiles();
-                            for (int i = 0; i < files.length; i++) {
-                                File meinZiel = new File(zielTif + File.separator + files[i].getName());
-                                Helper.copyFile(files[i], meinZiel);
+                        Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
+                        if (folder != null && java.nio.file.Files.exists(folder) && !NIOFileUtils.list(folder.toString()).isEmpty()) {
+                            List<Path> files = NIOFileUtils.listFiles(folder.toString());
+                            for (Path file : files) {
+                                Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
+
+                                Files.copy(file, target);
                             }
                         }
                     }

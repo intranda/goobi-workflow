@@ -1,5 +1,3 @@
-package de.sub.goobi.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,66 +26,18 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 
-import java.io.File;
+package org.goobi.io;
 
-/**
- * File Utils collection
- * 
- * @author Steffen Hankiewicz
- */
-public class FileUtils {
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Path;
 
-	/**
-	 * calculate all files with given file extension at specified directory
-	 * recursivly
-	 * 
-	 * @param inDir
-	 *            the directory to run through
-	 * @param ext
-	 *            the file extension to use for counting, not case sensitive
-	 * @return number of files as Integer
-	 */
-	public static Integer getNumberOfFiles(File inDir) {
-		int anzahl = 0;
-		if (inDir.isDirectory()) {
-			/* --------------------------------
-			 * die Images zählen
-			 * --------------------------------*/
-			anzahl = inDir.list(Helper.dataFilter).length;
+public class WebDavFilter implements DirectoryStream.Filter<Path> {
 
-			/* --------------------------------
-			 * die Unterverzeichnisse durchlaufen
-			 * --------------------------------*/
-			String[] children = inDir.list();
-			for (int i = 0; i < children.length; i++) {
-				anzahl += getNumberOfFiles(new File(inDir, children[i]));
-				}
-		}
-		return anzahl;
-	}
-	
-	public static Integer getNumberOfFiles(String inDir) {
-		return getNumberOfFiles(new File(inDir));
-	}
-	
 
-	
-	
-	
-	
-//	public static class FileListFilter implements FilenameFilter {
-//		  private String name; 
-//		  public FileListFilter(String name) {
-//		    this.name = name;
-//		  }
-//		  @Override
-//		public boolean accept(File directory, String filename) {
-//		    boolean fileOK = true;
-//		    if (this.name != null) {
-//		      fileOK &= filename.matches(this.name);
-//		    }
-//		    return fileOK;
-//		  }
-//		}
 
+    @Override
+    public boolean accept(Path path) throws IOException {
+        return path.getFileName().toString().endsWith("]");
+    }
 }

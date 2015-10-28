@@ -26,8 +26,9 @@ package de.sub.goobi.config;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -49,7 +50,7 @@ public class ConfigProjects {
 	}
 
 	public ConfigProjects(String projectTitle, String configPfad) throws IOException {
-		if (!(new File(configPfad)).exists()) {
+		if (!Files.exists(Paths.get(configPfad))) {
 			throw new IOException("File not found: " + configPfad);
 		}
 		try {

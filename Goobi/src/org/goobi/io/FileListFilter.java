@@ -28,21 +28,24 @@
 
 package org.goobi.io;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Path;
 
-public class FileListFilter implements FilenameFilter {
+public class FileListFilter implements DirectoryStream.Filter<Path> {
 
-	private String name;
+    private String name;
 
-	public FileListFilter(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("No filter name given.");
-		}
-		this.name = name;
-	}
+    public FileListFilter(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("No filter name given.");
+        }
+        this.name = name;
+    }
 
-	public boolean accept(File directory, String filename) {
-		return filename.matches(name);
-	}
+    @Override
+    public boolean accept(Path path) throws IOException {
+
+        return path.getFileName().toString().matches(name);
+    }
 }
