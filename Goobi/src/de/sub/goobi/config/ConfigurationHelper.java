@@ -500,6 +500,10 @@ public class ConfigurationHelper implements Serializable {
     public String getProcessTitleReplacementRegex() {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
+    
+    public boolean isRestProcesslog() {
+        return getLocalBoolean("ProcessCreationResetLog", false);
+    }
 
     public String getImagePrefix() {
         return getLocalString("ImagePrefix", "\\d{8}");
@@ -582,23 +586,28 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("http_proxyPort", 8080);
     }
 
-    // active mq
+    // active mq, unused, remove it
+    @Deprecated
     public String getActiveMQHostURL() {
         return getLocalString("activeMQ.hostURL", null);
     }
 
+    @Deprecated
     public String getActiveMQResultsTopic() {
         return getLocalString("activeMQ.results.topic", null);
     }
 
+    @Deprecated
     public String getActiveMQNewProcessQueue() {
         return getLocalString("activeMQ.createNewProcess.queue", null);
     }
 
+    @Deprecated
     public String getActiveMQFinalizeProcessQueue() {
         return getLocalString("activeMQ.finaliseStep.queue", null);
     }
 
+    @Deprecated
     public long getActiveMQTTL() {
         return getLocalLong("activeMQ.results.timeToLive", 604800000);
     }
