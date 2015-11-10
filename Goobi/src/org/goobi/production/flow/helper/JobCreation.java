@@ -169,12 +169,12 @@ public class JobCreation {
             for (Path directory : folderList) {
                 Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
                 if (Files.isDirectory(directory)) {
-                    if (!Files.exists(destination)) {
-                        Files.move(directory, destination);
-                    } else {
+//                    if (!Files.exists(destination)) {
+//                        Files.move(directory, destination);
+//                    } else {
                         NIOFileUtils.copyDirectory(directory, destination);
                         deleteDirectory(directory);
-                    }
+//                    }
 
                 } else {
                     Files.move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
