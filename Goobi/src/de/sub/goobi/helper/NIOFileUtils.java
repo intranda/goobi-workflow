@@ -439,15 +439,28 @@ public class NIOFileUtils {
         if (Files.isDirectory(dir)) {
             List<Path> children = NIOFileUtils.listFiles(dir.toString());
             for (Path child : children) {
-                boolean success = deleteDir(child);
-                if (!success) {
-                    return false;
+                if (Files.isDirectory(child)) {
+                    boolean success = deleteDir(child);
+                    if (!success) {
+                        return false;
+                    }
+                } else if (Files.isRegularFile(child)) {
+                    try {
+                        Files.delete(child);
+                    } catch (IOException e) {
+                    }
+
                 }
+            }
+        } else if (Files.isRegularFile(dir)) {
+            try {
+                Files.delete(dir);
+            } catch (IOException e) {
             }
         }
         // The directory is now empty so delete it
         try {
-            Files.deleteIfExists(dir);
+            return Files.deleteIfExists(dir);
         } catch (IOException e) {
         }
         return false;
