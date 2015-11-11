@@ -37,8 +37,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/el-impl-2.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fontbox-1.7.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fop-0.9.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geronimo-jms_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/goobi-api.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/htmLib.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/intrandaChart_1.4.jar"/>
@@ -68,7 +66,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lucene-core-3.0.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mail.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/marc4j.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.1.6.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/oscache-2.3.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/pdfbox-1.7.1.jar"/>
@@ -148,5 +145,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geronimo-j2ee-management_1.1_spec-1.0.1.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geronimo-jms_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
