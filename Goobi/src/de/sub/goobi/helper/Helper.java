@@ -66,13 +66,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.mq.WebServiceResult;
-//import org.hibernate.Session;
 import org.jdom2.Element;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SpracheForm;
-import de.sub.goobi.helper.enums.ReportLevel;
 
 @SuppressWarnings("deprecation")
 public class Helper implements Serializable, Observer {
@@ -98,8 +95,6 @@ public class Helper implements Serializable, Observer {
     private String myConfigVerzeichnis;
     private static Map<Locale, ResourceBundle> commonMessages = null;
     private static Map<Locale, ResourceBundle> localMessages = null;
-
-    public static Map<String, String> activeMQReporting = null;
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
@@ -216,10 +211,7 @@ public class Helper implements Serializable, Observer {
         }
 
         String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
-        if (activeMQReporting != null) {
-            new WebServiceResult(activeMQReporting.get("queueName"), activeMQReporting.get("id"), nurInfo ? ReportLevel.INFO : ReportLevel.ERROR,
-                    compoundMessage).send();
-        }
+        
         if (context != null) {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
