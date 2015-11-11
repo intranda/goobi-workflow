@@ -333,7 +333,7 @@ public class NIOFileUtils {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.copy(file, target.resolve(source.relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
+                Files.copy(file, target.resolve(source.relativize(file)), STANDARD_COPY_OPTIONS);
                 return FileVisitResult.CONTINUE;
             }
 
@@ -362,7 +362,7 @@ public class NIOFileUtils {
     private static int bufferSize = 4 * 1024;
 
     public static void copyFile(Path srcFile, Path destFile) throws IOException {
-        Files.copy(srcFile, destFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
+        Files.copy(srcFile, destFile, STANDARD_COPY_OPTIONS);
     }
 
     public static Long createChecksum(Path file) throws IOException {
