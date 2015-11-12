@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.cli.helper.CopyProcess;
 import org.goobi.production.importer.ImportObject;
@@ -172,7 +173,8 @@ public class JobCreation {
 //                    if (!Files.exists(destination)) {
 //                        Files.move(directory, destination);
 //                    } else {
-                        NIOFileUtils.copyDirectory(directory, destination);
+                    FileUtils.copyDirectory(directory.toFile(), destination.toFile());
+//                        NIOFileUtils.copyDirectory(directory, destination);
                         deleteDirectory(directory);
 //                    }
 
