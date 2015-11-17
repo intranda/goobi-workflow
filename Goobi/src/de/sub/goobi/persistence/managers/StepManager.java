@@ -20,6 +20,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -221,6 +222,17 @@ public class StepManager implements IManager, Serializable {
             logger.error(e);
         }
         return 0.0;
+    }
+
+    @Override
+    public List<Integer> getIdList(String filter) {
+        List<Integer> idList = new LinkedList<>();
+        try {
+            idList = StepMysqlHelper.getIDList(filter);
+        } catch (SQLException e) {
+            logger.error("error while getting id list", e);
+        }
+        return idList;
     }
 
 }

@@ -206,4 +206,24 @@ class LdapMysqlHelper implements Serializable {
             }
         }
     }
+
+    public static List<Integer> getIdList( String filter) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ldapgruppenID FROM ldapgruppen");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" WHERE " + filter);
+        }
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isDebugEnabled()) {
+                logger.debug(sql.toString());
+            }
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }
