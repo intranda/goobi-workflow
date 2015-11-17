@@ -26,8 +26,10 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 9;
+    public static final int EXPECTED_VERSION = 10;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
+
+    // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
     public static int getCurrentVersion() {
 
@@ -99,6 +101,12 @@ public class DatabaseVersion {
                     logger.debug("Update database to version 9.");
                 }
                 updateToVersion9();
+
+            case 9:
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Update database to version 10.");
+                }
+                updateToVersion10();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -107,6 +115,27 @@ public class DatabaseVersion {
                 }
         }
     }
+
+    private static void updateToVersion10() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table benutzer add column shortcut varchar(255) default null;");
+            runner.update(connection, "alter table projekte add column srurl varchar(255) default null;");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+
     private static void updateToVersion9() {
         Connection connection = null;
         try {
@@ -126,8 +155,7 @@ public class DatabaseVersion {
             }
         }
     }
-    
-    
+
     private static void updateToVersion8() {
         Connection connection = null;
         try {
@@ -150,8 +178,7 @@ public class DatabaseVersion {
             }
         }
     }
-    
-    
+
     private static void updateToVersion6() {
         Connection connection = null;
         try {
@@ -192,9 +219,9 @@ public class DatabaseVersion {
                     logger.error(e);
                 }
             }
-        }     
+        }
     }
-    
+
     private static void updateDatabaseVersion(int currentVersion) {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -334,7 +361,6 @@ public class DatabaseVersion {
     private static void updateToVersion5() {
         String utf8 = "ALTER TABLE metadata MODIFY value text CHARACTER SET utf8 COLLATE utf8_general_ci";
         String index = "ALTER TABLE metadata ADD index id(processid), ADD index metadataname(name)";
-        // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

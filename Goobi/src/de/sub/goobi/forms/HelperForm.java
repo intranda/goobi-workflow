@@ -225,7 +225,7 @@ public class HelperForm {
         String contextPath = request.getContextPath();
         return contextPath;
     }
-    
+
     public boolean getMessagesExist() {
         return FacesContextHelper.getCurrentFacesContext().getMessages().hasNext();
     }
@@ -277,5 +277,16 @@ public class HelperForm {
 
     public void setShowError(boolean showError) {
         this.showError = showError;
+    }
+
+    public List<String> getPossibleShortcuts() {
+        List<String> ret = new ArrayList<>();
+        ret.add("ctrl");
+        ret.add("alt");
+        ret.add("ctrl+shift");
+        ret.add("alt+shift");
+        ret.add("ctrl+alt");
+
+        return ret;
     }
 }
