@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -21,6 +22,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -157,5 +159,16 @@ public class LdapManager implements IManager, Serializable {
             return answer;
         }
     };
+
+    @Override
+    public List<Integer> getIdList(String filter) {
+        List<Integer> idList = new LinkedList<>();
+        try {
+            idList = LdapMysqlHelper.getIdList(filter);
+        } catch (SQLException e) {
+            logger.error("error while getting id list", e);
+        }
+        return idList;
+    }
 
 }

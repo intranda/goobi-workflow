@@ -49,7 +49,7 @@ public class DatabasePaginator implements Serializable {
     private String filter = new String();
     private IManager manager;
     private String returnPage;
-    
+    private List<Integer> idList;
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
         this.page = 0;
@@ -64,6 +64,7 @@ public class DatabasePaginator implements Serializable {
         this.manager = manager;
         try {
             totalResults = manager.getHitSize(order, filter);
+            idList = manager.getIdList(filter);
             load();
         } catch (DAOException e) {
             logger.error("Failed to count results", e);
@@ -209,5 +210,9 @@ public class DatabasePaginator implements Serializable {
         load();
         return returnPage;
     }
-    
+
+    public List<Integer> getIdList() {
+        return idList;
+    }
+
 }

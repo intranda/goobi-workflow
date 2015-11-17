@@ -163,4 +163,10 @@ public class UsergroupManager implements IManager, Serializable {
         return userGroupList;
     }
 
+    @Override
+    public List<Integer> getIdList( String filter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

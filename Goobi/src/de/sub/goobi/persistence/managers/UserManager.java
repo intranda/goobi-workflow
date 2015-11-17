@@ -196,7 +196,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplaySwappingColumn(rs.getBoolean("displaySwappingColumn"));
         r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));
         r.setEmail(rs.getString("email"));
-        
+
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
@@ -277,6 +277,12 @@ public class UserManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
+    }
+
+    @Override
+    public List<Integer> getIdList(String filter) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
