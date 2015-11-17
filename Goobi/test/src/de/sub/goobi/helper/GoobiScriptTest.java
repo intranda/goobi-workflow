@@ -1,4 +1,5 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -47,13 +48,14 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 @PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class })
 public class GoobiScriptTest {
 
-    private List<Process> processList;
+    private List<Integer> processList;
+    private Process process;
 
     @Before
     public void setUp() throws Exception {
         processList = new ArrayList<>();
         // process
-        Process process = new Process();
+        process = new Process();
         process.setTitel("process");
         process.setId(1);
         process.setDocket(new Docket());
@@ -76,12 +78,13 @@ public class GoobiScriptTest {
 
         stepList.add(second);
         process.setSchritte(stepList);
-        processList.add(process);
-        
+        processList.add(process.getId());
+
         prepareMocking();
     }
 
     private void prepareMocking() throws Exception {
+
         // swapSteps
         PowerMock.mockStatic(StepManager.class);
         StepManager.saveStep(EasyMock.anyObject(Step.class));
@@ -109,6 +112,7 @@ public class GoobiScriptTest {
                 usergroupList).anyTimes();
 
         PowerMock.mockStatic(ProcessManager.class);
+        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
@@ -118,7 +122,7 @@ public class GoobiScriptTest {
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        
+
         Ruleset r = new Ruleset();
         r.setTitel("title");
         r.setDatei("file");
@@ -145,21 +149,21 @@ public class GoobiScriptTest {
     @Test
     public void testExecuteEmptyGoobiScript() {
         GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Process>(), "");
+        script.execute(new ArrayList<Integer>(), "");
         assertNull(script.myParameters);
     }
 
     @Test
     public void testExecuteWrongSyntax() {
         GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Process>(), "action");
+        script.execute(new ArrayList<Integer>(), "action");
         assertEquals(0, script.myParameters.size());
     }
 
     @Test
     public void testExecuteUnknownAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Process>(), "action:test");
+        script.execute(new ArrayList<Integer>(), "action:test");
         assertEquals(1, script.myParameters.size());
     }
 
@@ -231,7 +235,7 @@ public class GoobiScriptTest {
         script.execute(processList, "action:setStepStatus steptitle:first status:NotANumber");
         script.execute(processList, "action:setStepStatus steptitle:first status:1");
     }
-    
+
     @Test
     public void testSetStepNumberAction() {
         GoobiScript script = new GoobiScript();
@@ -249,7 +253,7 @@ public class GoobiScriptTest {
         script.execute(processList, "action:addStep steptitle:third number:NotANumber");
         script.execute(processList, "action:addStep steptitle:third number:3");
     }
-    
+
     @Test
     public void testDeleteStepAction() {
         GoobiScript script = new GoobiScript();
@@ -266,44 +270,42 @@ public class GoobiScriptTest {
         script.execute(processList, "action:addShellScriptToStep steptitle:first label:label");
         script.execute(processList, "action:addShellScriptToStep steptitle:first label:label script:script");
     }
-    
+
     @Test
     public void testAddModuleToStepAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "action:addModuleToStep");
-        script.execute(processList, "action:addModuleToStep steptitle:first"); 
-        script.execute(processList, "action:addModuleToStep steptitle:first module:module"); 
+        script.execute(processList, "action:addModuleToStep steptitle:first");
+        script.execute(processList, "action:addModuleToStep steptitle:first module:module");
     }
-    
+
     @Test
     public void testSetRulesetAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "action:setRuleset");
         script.execute(processList, "action:setRuleset ruleset:ruleset.xml");
     }
-    
+
     @Test
     public void testDeleteProcessAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "action:deleteProcess");
-    
+
         script.execute(processList, "action:deleteProcess contentOnly:true");
         script.execute(processList, "action:deleteProcess contentOnly:false");
     }
-    
-    
+
     @Test
     public void testAddPluginToStep() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "action:addPluginToStep");
-        
+
         script.execute(processList, "action:addPluginToStep steptitle:");
         script.execute(processList, "action:addPluginToStep  steptitle:first");
 
         script.execute(processList, "action:addPluginToStep  steptitle:first plugin:");
         script.execute(processList, "action:addPluginToStep  steptitle:first plugin:plugin");
 
-        
     }
-    
+
 }

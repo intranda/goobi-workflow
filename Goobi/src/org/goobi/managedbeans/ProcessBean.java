@@ -325,8 +325,8 @@ public class ProcessBean extends BasicBean {
                     if (!this.myProzess.isIstTemplate()) {
                         /* Tiffwriter-Datei löschen */
                         GoobiScript gs = new GoobiScript();
-                        List<Process> pro = new ArrayList<Process>();
-                        pro.add(this.myProzess);
+                        List<Integer> pro = new ArrayList<>();
+                        pro.add(this.myProzess.getId());
                         gs.deleteTiffHeaderFile(pro);
                         gs.updateImagePath(pro);
                     }
@@ -1584,10 +1584,9 @@ public class ProcessBean extends BasicBean {
     /**
      * Starte GoobiScript über alle Treffer
      */
-    @SuppressWarnings("unchecked")
     public void GoobiScriptHits() {
         GoobiScript gs = new GoobiScript();
-        gs.execute((List<Process>) this.paginator.getCompleteList(), this.goobiScript);
+        gs.execute(this.paginator.getIdList(), this.goobiScript);
     }
 
     /**
@@ -1596,7 +1595,11 @@ public class ProcessBean extends BasicBean {
     @SuppressWarnings("unchecked")
     public void GoobiScriptPage() {
         GoobiScript gs = new GoobiScript();
-        gs.execute((List<Process>) this.paginator.getList(), this.goobiScript);
+        List<Integer> idList = new ArrayList<>();
+        for (Process p : (List<Process>) paginator.getList()) {
+            idList.add(p.getId());
+        }
+        gs.execute(idList, this.goobiScript);
     }
 
     /**
@@ -1604,14 +1607,14 @@ public class ProcessBean extends BasicBean {
      */
     @SuppressWarnings("unchecked")
     public void GoobiScriptSelection() {
-        ArrayList<Process> auswahl = new ArrayList<Process>();
+        List<Integer> idList = new ArrayList<>();
         for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
-                auswahl.add(p);
+                idList.add(p.getId());
             }
         }
         GoobiScript gs = new GoobiScript();
-        gs.execute(auswahl, this.goobiScript);
+        gs.execute(idList, this.goobiScript);
     }
 
     /*

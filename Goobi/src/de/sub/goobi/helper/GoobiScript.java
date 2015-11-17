@@ -46,6 +46,7 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
+import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
@@ -67,6 +68,7 @@ import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 
 import de.sub.goobi.export.dms.ExportDms;
+import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -99,7 +101,8 @@ public class GoobiScript {
     /**
      * Starten des Scripts ================================================================
      */
-    public void execute(List<Process> inProzesse, String inScript) {
+    public void execute(List<Integer> inProzesse, String inScript) {
+
         StrTokenizer scriptTokenizer = new StrTokenizer(inScript, ';');
 
         while (scriptTokenizer.hasNext()) {
@@ -208,8 +211,9 @@ public class GoobiScript {
 
             else if (myParameters.get("action").equalsIgnoreCase("updateFileSize")) {
                 updateFileSize(inProzesse);
-            }
-            else {
+            } else if (myParameters.get("action").equalsIgnoreCase("countMetadata")) {
+                countMetadata(inProzesse);
+            } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
                 return;
             }
@@ -222,8 +226,9 @@ public class GoobiScript {
         Ruleset.resetLoadedPrefs();
     }
 
-    private void updateContentFiles(List<Process> inProzesse) {
-        for (Process proz : inProzesse) {
+    private void updateContentFiles(List<Integer> inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             try {
                 Fileformat myRdf = proz.readMetadataFile();
                 myRdf.getDigitalDocument().addAllContentFiles();
@@ -239,9 +244,10 @@ public class GoobiScript {
         Helper.setMeldung("goobiScriptfield", "", "updateContentFiles finished");
     }
 
-    private void deleteProcess(List<Process> inProzesse, boolean contentOnly) {
+    private void deleteProcess(List<Integer> inProzesse, boolean contentOnly) {
 
-        for (Process p : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process p = ProcessManager.getProcessById(processId);
             String title = p.getTitel();
             deleteMetadataDirectory(p);
             if (contentOnly) {
@@ -270,9 +276,10 @@ public class GoobiScript {
         }
     }
 
-    private void runScript(List<Process> inProzesse, String stepname, String scriptname) {
+    private void runScript(List<Integer> inProzesse, String stepname, String scriptname) {
         HelperSchritte hs = new HelperSchritte();
-        for (Process p : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process p = ProcessManager.getProcessById(processId);
             for (Step step : p.getSchritteList()) {
                 if (step.getTitel().equalsIgnoreCase(stepname)) {
                     Step so = StepManager.getStepById(step.getId());
@@ -293,8 +300,9 @@ public class GoobiScript {
     /**
      * Prozesse auslagern ================================================================
      */
-    private void swapOutProzesses(List<Process> inProzesse) {
-        for (Process p : inProzesse) {
+    private void swapOutProzesses(List<Integer> inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process p = ProcessManager.getProcessById(processId);
 
             ProcessSwapOutTask task = new ProcessSwapOutTask();
             task.initialize(p);
@@ -307,8 +315,9 @@ public class GoobiScript {
     /**
      * Prozesse wieder einlagern ================================================================
      */
-    private void swapInProzesses(List<Process> inProzesse) {
-        for (Process p : inProzesse) {
+    private void swapInProzesses(List<Integer> inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process p = ProcessManager.getProcessById(processId);
 
             ProcessSwapInTask task = new ProcessSwapInTask();
             task.initialize(p);
@@ -320,7 +329,7 @@ public class GoobiScript {
     /**
      * voll allen gewählten Prozessen die Daten aus einem Verzeichnis einspielen ================================================================
      */
-    private void importFromFileSystem(List<Process> inProzesse) {
+    private void importFromFileSystem(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -336,7 +345,8 @@ public class GoobiScript {
         }
         try {
 
-            for (Process p : inProzesse) {
+            for (Integer processId : inProzesse) {
+                Process p = ProcessManager.getProcessById(processId);
                 Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
                 if (NIOFileUtils.list(imagesFolder.toString()).isEmpty()) {
                     Helper.setFehlerMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue()
@@ -363,7 +373,7 @@ public class GoobiScript {
     /**
      * Regelsatz setzen ================================================================
      */
-    private void setRuleset(List<Process> inProzesse) {
+    private void setRuleset(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -381,7 +391,8 @@ public class GoobiScript {
             }
             Ruleset regelsatz = rulesets.get(0);
 
-            for (Process p : inProzesse) {
+            for (Integer processId : inProzesse) {
+                Process p = ProcessManager.getProcessById(processId);
                 p.setRegelsatz(regelsatz);
                 ProcessManager.saveProcess(p);
             }
@@ -394,7 +405,7 @@ public class GoobiScript {
     /**
      * Tauschen zweier Schritte gegeneinander ================================================================
      */
-    private void swapSteps(List<Process> inProzesse) {
+    private void swapSteps(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -428,7 +439,8 @@ public class GoobiScript {
         /*
          * -------------------------------- Durchführung der Action --------------------------------
          */
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             /*
              * -------------------------------- Swapsteps --------------------------------
              */
@@ -468,7 +480,7 @@ public class GoobiScript {
     /**
      * Schritte löschen ================================================================
      */
-    private void deleteStep(List<Process> inProzesse) {
+    private void deleteStep(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -481,7 +493,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
         //		ProzessDAO sdao = new ProzessDAO();
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             if (proz.getSchritte() != null) {
                 for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
                     Step s = iterator.next();
@@ -502,7 +515,7 @@ public class GoobiScript {
     /**
      * Schritte hinzufuegen ================================================================
      */
-    private void addStep(List<Process> inProzesse) {
+    private void addStep(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -524,7 +537,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
         //		ProzessDAO sdao = new ProzessDAO();
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             Step s = new Step();
             s.setTitel(this.myParameters.get("steptitle"));
             s.setReihenfolge(Integer.parseInt(this.myParameters.get("number")));
@@ -547,7 +561,7 @@ public class GoobiScript {
     /**
      * ShellScript an Schritt hängen ================================================================
      */
-    private void addShellScriptToStep(List<Process> inProzesse) {
+    private void addShellScriptToStep(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -570,7 +584,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
         //		ProzessDAO sdao = new ProzessDAO();
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             if (proz.getSchritte() != null) {
                 for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
                     Step s = iterator.next();
@@ -596,7 +611,7 @@ public class GoobiScript {
     /**
      * ShellScript an Schritt hängen ================================================================
      */
-    private void addModuleToStep(List<Process> inProzesse) {
+    private void addModuleToStep(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -614,7 +629,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
         //		ProzessDAO sdao = new ProzessDAO();
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             if (proz.getSchritte() != null) {
                 for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
                     Step s = iterator.next();
@@ -635,7 +651,7 @@ public class GoobiScript {
         Helper.setMeldung("goobiScriptfield", "", "addModuleToStep finished: ");
     }
 
-    private void addPluginToStep(List<Process> inProzesse) {
+    private void addPluginToStep(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -652,7 +668,8 @@ public class GoobiScript {
         /*
          * -------------------------------- Durchführung der Action --------------------------------
          */
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             if (proz.getSchritte() != null) {
                 for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
                     Step s = iterator.next();
@@ -676,7 +693,7 @@ public class GoobiScript {
     /**
      * Flag von Schritten setzen ================================================================
      */
-    private void setTaskProperty(List<Process> inProzesse) {
+    private void setTaskProperty(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -714,7 +731,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
         //		ProzessDAO sdao = new ProzessDAO();
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             if (proz.getSchritte() != null) {
                 for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
                     Step s = iterator.next();
@@ -760,7 +778,7 @@ public class GoobiScript {
     /**
      * Schritte auf bestimmten Status setzen ================================================================
      */
-    private void setStepStatus(List<Process> inProzesse) {
+    private void setStepStatus(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -784,7 +802,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
 
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
                 if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
@@ -806,7 +825,7 @@ public class GoobiScript {
     /**
      * Schritte auf bestimmten Reihenfolge setzen ================================================================
      */
-    private void setStepNumber(List<Process> inProzesse) {
+    private void setStepNumber(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -829,7 +848,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
 
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
                 if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
@@ -851,7 +871,7 @@ public class GoobiScript {
     /**
      * Benutzer zu Schritt hinzufügen ================================================================
      */
-    private void adduser(List<Process> inProzesse) {
+    private void adduser(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -883,7 +903,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
 
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
                 if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
@@ -912,7 +933,7 @@ public class GoobiScript {
     /**
      * Benutzergruppe zu Schritt hinzufügen ================================================================
      */
-    private void addusergroup(List<Process> inProzesse) {
+    private void addusergroup(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
@@ -943,7 +964,8 @@ public class GoobiScript {
          * -------------------------------- Durchführung der Action --------------------------------
          */
 
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
                 if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
@@ -971,8 +993,9 @@ public class GoobiScript {
     /**
      * TiffHeader von den Prozessen löschen ================================================================
      */
-    public void deleteTiffHeaderFile(List<Process> inProzesse) {
-        for (Process proz : inProzesse) {
+    public void deleteTiffHeaderFile(List<Integer> inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             try {
                 Path tiffheaderfile = Paths.get(proz.getImagesDirectory() + "tiffwriter.conf");
                 if (Files.exists(tiffheaderfile)) {
@@ -989,9 +1012,9 @@ public class GoobiScript {
     /**
      * TiffHeader von den Prozessen neu schreiben ================================================================
      */
-    private void writeTiffHeader(List<Process> inProzesse) {
-        for (Iterator<Process> iter = inProzesse.iterator(); iter.hasNext();) {
-            Process proz = iter.next();
+    private void writeTiffHeader(List<Integer> inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             TiffWriterTask task = new TiffWriterTask();
             task.initialize(proz);
             LongRunningTaskManager.getInstance().addTask(task);
@@ -1001,8 +1024,9 @@ public class GoobiScript {
     /**
      * Imagepfad in den Metadaten neu setzen (evtl. vorhandene zunächst löschen) ================================================================
      */
-    public void updateImagePath(List<Process> inProzesse) {
-        for (Process proz : inProzesse) {
+    public void updateImagePath(List<Integer> inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             try {
 
                 Fileformat myRdf = proz.readMetadataFile();
@@ -1039,9 +1063,10 @@ public class GoobiScript {
         Helper.setMeldung("goobiScriptfield", "", "updateImagePath finished");
     }
 
-    private void updateMetadataTable(List<Process> inProzesse) {
+    private void updateMetadataTable(List<Integer> inProzesse) {
 
-        for (Process proz : inProzesse) {
+        for (Integer processId : inProzesse) {
+            Process proz = ProcessManager.getProcessById(processId);
             int id = proz.getId();
 
             try {
@@ -1121,8 +1146,9 @@ public class GoobiScript {
         return metadataPairs;
     }
 
-    private void exportDms(List<Process> processes, String exportImages, boolean exportFulltext) {
-        for (Process prozess : processes) {
+    private void exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
+        for (Integer processId : processes) {
+            Process prozess = ProcessManager.getProcessById(processId);
             IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(prozess.getId());
             if (StringUtils.isNotEmpty(pluginName)) {
@@ -1158,14 +1184,36 @@ public class GoobiScript {
         }
     }
 
-    private void updateFileSize(List<Process> processes) {
-        for (Process p : processes) {
+    private void updateFileSize(List<Integer> processes) {
+        for (Integer processId : processes) {
+            Process p = ProcessManager.getProcessById(processId);
             if (p.getSortHelperImages() == 0) {
                 int value = HistoryManager.getNumberOfImages(p.getId());
                 if (value > 0) {
                     ProcessManager.updateImages(value, p.getId());
                 }
             }
+
+        }
+    }
+
+    private void countMetadata(List<Integer> processes) {
+        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+        for (Integer processId : processes) {
+            Process p = ProcessManager.getProcessById(processId);
+
+            try {
+                DocStruct
+                logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+                p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
+                p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
+                
+                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
+                ProcessManager.saveProcess(p);
+            } catch (Exception  e) {
+                logger.error(e);
+            }
+
 
         }
     }
