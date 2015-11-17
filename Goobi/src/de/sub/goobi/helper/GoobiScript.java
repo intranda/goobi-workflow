@@ -1208,7 +1208,7 @@ public class GoobiScript {
                 p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
                 p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
                 
-                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
+//                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
                 ProcessManager.saveProcess(p);
             } catch (Exception  e) {
                 logger.error(e);
