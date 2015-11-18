@@ -28,15 +28,12 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
-import ugh.fileformats.mets.MetsMods;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class Ruleset implements Serializable, DatabaseObject {
@@ -48,7 +45,7 @@ public class Ruleset implements Serializable, DatabaseObject {
     private Boolean orderMetadataByRuleset = false;
     private static final Logger logger = Logger.getLogger(Ruleset.class);
 
-//    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
+    //    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
 
     public void lazyLoad() {
         // nothing to load lazy here
@@ -79,34 +76,34 @@ public class Ruleset implements Serializable, DatabaseObject {
     }
 
     public Prefs getPreferences() {
-//        if (loadedPrefs.containsKey(id)) {
-//            mypreferences = loadedPrefs.get(id);
-//            validateRuleset();
-//            return mypreferences;
-//        }
+        //        if (loadedPrefs.containsKey(id)) {
+        //            mypreferences = loadedPrefs.get(id);
+        //            validateRuleset();
+        //            return mypreferences;
+        //        }
         this.mypreferences = new Prefs();
         try {
             this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
         } catch (PreferencesException e) {
             logger.error(e);
         }
-//        loadedPrefs.put(id, mypreferences);
+        //        loadedPrefs.put(id, mypreferences);
         return this.mypreferences;
     }
 
-//    private void validateRuleset() {
-//        try {
-//            new MetsMods(mypreferences);
-//        } catch (Exception e) {
-//            try {
-//                this.mypreferences = new Prefs();
-//                mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
-//                loadedPrefs.put(id, mypreferences);
-//            } catch (PreferencesException e1) {
-//                logger.error(e1);
-//            }
-//        }
-//    }
+    //    private void validateRuleset() {
+    //        try {
+    //            new MetsMods(mypreferences);
+    //        } catch (Exception e) {
+    //            try {
+    //                this.mypreferences = new Prefs();
+    //                mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
+    //                loadedPrefs.put(id, mypreferences);
+    //            } catch (PreferencesException e1) {
+    //                logger.error(e1);
+    //            }
+    //        }
+    //    }
 
     public boolean isOrderMetadataByRuleset() {
         return orderMetadataByRuleset;
@@ -117,6 +114,6 @@ public class Ruleset implements Serializable, DatabaseObject {
     }
 
     public static void resetLoadedPrefs() {
-//        loadedPrefs = new HashMap<Integer, Prefs>();
+        //        loadedPrefs = new HashMap<Integer, Prefs>();
     }
 }

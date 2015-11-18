@@ -125,7 +125,7 @@ class UserMysqlHelper implements Serializable {
                 String propNames =
                         "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
-                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email";
+                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut";
 
                 String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
                 Object[] param =
@@ -140,7 +140,7 @@ class UserMysqlHelper implements Serializable {
                                 ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
                                 ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
                                 ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
-                                ro.getEmail() == null ? null : ro.getEmail() };
+                                ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix()  == null ? "ctrl+shift" : ro.getShortcutPrefix() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -185,7 +185,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displaySelectBoxes =  ?, ");
                 sql.append("displaySwappingColumn =  ?, ");
                 sql.append("hideCorrectionTasks =  ?, ");
-                sql.append("email =  ? ");
+                sql.append("email =  ?, ");
+                sql.append("shortcut =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -199,7 +200,7 @@ class UserMysqlHelper implements Serializable {
                                 ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
                                 ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
                                 ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
-                                ro.getEmail() == null ? null : ro.getEmail() };
+                                ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix()  == null ? "ctrl+shift" : ro.getShortcutPrefix() };
                 if (logger.isDebugEnabled()) {
                     logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 }

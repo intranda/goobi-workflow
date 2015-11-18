@@ -196,7 +196,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplaySwappingColumn(rs.getBoolean("displaySwappingColumn"));
         r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));
         r.setEmail(rs.getString("email"));
-
+        r.setShortcutPrefix(rs.getString("shortcut"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {

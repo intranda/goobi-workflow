@@ -71,7 +71,7 @@ public class User implements DatabaseObject {
 	private Ldap ldapGruppe;
 	private String css;
 	private String email;
-	
+	private String shortcutPrefix = "ctrl+shift";
 	
 	private boolean displayDeactivatedProjects = false;
 	private boolean displayFinishedProcesses = false;
@@ -639,6 +639,14 @@ public class User implements DatabaseObject {
             return url; 
         }        
         return null;
+    }
+
+    public String getShortcutPrefix() {
+        return shortcutPrefix;
+    }
+
+    public void setShortcutPrefix(String shortcutPrefix) {
+        this.shortcutPrefix = shortcutPrefix;
     }
 }
 
