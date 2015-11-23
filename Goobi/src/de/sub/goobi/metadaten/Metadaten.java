@@ -3088,6 +3088,12 @@ public class Metadaten {
     }
 
     public String getAddDocStructType1() {
+        if (addDocStructType1 == null || addDocStructType1.isEmpty()) {
+            SelectItem[] list = getAddableDocStructTypenAlsNachbar();
+            if (list.length > 0) {
+                addDocStructType1 = ((DocStructType)list[0].getValue()).getName();
+            }
+        }
         return this.addDocStructType1;
     }
 
@@ -3098,6 +3104,13 @@ public class Metadaten {
     }
 
     public String getAddDocStructType2() {
+        if (addDocStructType2 == null || addDocStructType2.isEmpty()) {
+            SelectItem[] list = getAddableDocStructTypenAlsKind();
+            if (list.length > 0) {
+                addDocStructType2 = ((DocStructType)list[0].getValue()).getName();
+            }
+        }
+        
         return this.addDocStructType2;
     }
 
@@ -3153,7 +3166,20 @@ public class Metadaten {
         if (inNeuesElementWohin == null || inNeuesElementWohin.equals("")) {
             this.neuesElementWohin = "1";
         } else {
-            this.neuesElementWohin = inNeuesElementWohin;
+            if (!inNeuesElementWohin.equals(neuesElementWohin)) {
+                if ((neuesElementWohin.equals("1") || neuesElementWohin.equals("2")) &&   (inNeuesElementWohin.equals("3") || inNeuesElementWohin.equals("4"))) {
+                    this.neuesElementWohin = inNeuesElementWohin;
+                    getAddDocStructType2();
+                    createAddableData();
+                } else if((neuesElementWohin.equals("3") || neuesElementWohin.equals("4")) &&   (inNeuesElementWohin.equals("1") || inNeuesElementWohin.equals("2"))) {
+                    this.neuesElementWohin = inNeuesElementWohin;
+                    getAddDocStructType1();
+                    createAddableData();
+                    
+                } else {
+                    this.neuesElementWohin = inNeuesElementWohin;
+                }
+            }
         }
     }
 
