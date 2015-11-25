@@ -130,7 +130,6 @@ public class Metadaten {
     String ocrResult = "";
     private Fileformat gdzfile;
     private DocStruct myDocStruct;
-    // private DocStruct docStructFromFilteredProcess;
     private DocStruct tempStrukturelement;
     private List<MetadatumImpl> myMetadaten = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> myPersonen = new LinkedList<MetaPerson>();
@@ -146,14 +145,12 @@ public class Metadaten {
     private DigitalDocument mydocument;
     private Process myProzess;
     private Prefs myPrefs;
-    // private String myProzesseID;
     private String myBenutzerID;
     private String tempTyp;
     private String tempWert;
     private String tempPersonVorname;
     private String tempPersonNachname;
     private String tempPersonRolle;
-    // private String myProzessTitel;
     private String currentTifFolder;
     private List<String> allTifFolders;
     /* Variablen für die Zuweisung der Seiten zu Strukturelementen */
@@ -245,8 +242,7 @@ public class Metadaten {
     private Image image = null;
     private List<String> imageSizes;
     private int containerWidth = 600;;
-
-    //    private ExecutorService executor;
+ 
 
     /**
      * Konstruktor ================================================================
@@ -258,6 +254,7 @@ public class Metadaten {
         this.treeProperties.put("fullexpanded", Boolean.valueOf(true));
         this.treeProperties.put("showfirstpagenumber", Boolean.valueOf(false));
         this.treeProperties.put("showpagesasajax", Boolean.valueOf(false));
+        this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
     }
 
     /**
