@@ -226,13 +226,7 @@ public class StepManager implements IManager, Serializable {
 
     @Override
     public List<Integer> getIdList(String filter) {
-        List<Integer> idList = new LinkedList<>();
-        try {
-            idList = StepMysqlHelper.getIDList(filter);
-        } catch (SQLException e) {
-            logger.error("error while getting id list", e);
-        }
-        return idList;
+        return null;
     }
 
 }
