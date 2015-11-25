@@ -29,12 +29,10 @@ package de.sub.goobi.metadaten;
  */
 
 import java.awt.Dimension;
-import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,11 +50,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.faces.bean.ManagedBean;
@@ -66,7 +59,6 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
@@ -118,10 +110,6 @@ import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
-import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
-import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
@@ -204,15 +192,17 @@ public class Metadaten {
     private TreeNodeStruct3 tree3;
     private String myBild;
 
+    // old image parameter
     private int myBildNummer = 0;
     private int myBildLetztes = 0;
     private int myBildCounter = 0;
     private int myBildGroesse = 30;
     private int myImageRotation = 0; // entspricht myBildRotation
+    private String bildNummerGeheZu = "";
+    private int numberOfNavigation = 0;
 
     private boolean bildAnzeigen = true;
     private boolean bildZuStrukturelement = false;
-    private String bildNummerGeheZu = "";
     private String addDocStructType1;
     private String addDocStructType2;
     private String zurueck = "Main";
@@ -243,11 +233,9 @@ public class Metadaten {
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
-    private int numberOfNavigation = 0;
-
-    // TODO new parameter, remove old
-    private int NUMBER_OF_IMAGES_PER_PAGE = 10;
-    private int THUMBNAIL_SIZE_IN_PIXEL = 200;
+    // new parameter image parameter for OpenSeadragon
+    private static int NUMBER_OF_IMAGES_PER_PAGE = 10;
+    private static int THUMBNAIL_SIZE_IN_PIXEL = 200;
     private String THUMBNAIL_FORMAT = "png";
     private String MAINIMAGE_FORMAT = "jpg";
     private int pageNo = 0;
@@ -256,7 +244,9 @@ public class Metadaten {
     private List<Image> allImages;
     private Image image = null;
     private List<String> imageSizes;
-    private ExecutorService executor;
+    private int containerWidth = 600;;
+
+    //    private ExecutorService executor;
 
     /**
      * Konstruktor ================================================================
@@ -950,14 +940,14 @@ public class Metadaten {
         // check filenames, correct them
         checkImageNames();
         retrieveAllImages();
-        // TODO initialize image list
+        // TODO use old mechanism if in old UI
+        //                BildErmitteln(0);
+
+        // initialize image list
         NUMBER_OF_IMAGES_PER_PAGE = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
         THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
         imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
-        executor = Executors.newFixedThreadPool(imageSizes.size());
         loadCurrentImages();
-
-//        BildErmitteln(0);
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
@@ -984,7 +974,7 @@ public class Metadaten {
         return "metseditor";
     }
 
-    private void loadCurrentImages()  {
+    private void loadCurrentImages() {
         allImages = new ArrayList<Image>();
         try {
             List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
@@ -1935,8 +1925,8 @@ public class Metadaten {
         } catch (Exception e) {
             eingabe = this.myBildNummer;
         }
+        setImageIndex(eingabe - 1);
 
-        BildErmitteln(eingabe - this.myBildNummer);
         return "";
     }
 
@@ -1954,13 +1944,13 @@ public class Metadaten {
         return "";
     }
 
-    //    public String getBild() {
-    //        BildPruefen();
-    //        /* Session ermitteln */
-    //        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-    //        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-    //        return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
-    //    }
+    public String getBild() {
+        BildPruefen();
+        /* Session ermitteln */
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
+    }
 
     public List<String> getAllTifFolders() {
         return this.allTifFolders;
@@ -2683,7 +2673,7 @@ public class Metadaten {
             }
         } else {
 
-            String ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
+            String ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
             logger.trace("myPicture: " + ocrFile);
             InputStreamReader inputReader = null;
             BufferedReader in = null;
@@ -3413,7 +3403,7 @@ public class Metadaten {
         if (!this.currentTifFolder.equals(currentTifFolder)) {
             tiffFolderHasChanged = true;
             this.currentTifFolder = currentTifFolder;
-            
+
             loadCurrentImages();
         }
     }
@@ -4220,75 +4210,6 @@ public class Metadaten {
         return url.toString();
     }
 
-    private Dimension scaleFile(String inFileName, String outFileName, List<String> sizes) throws IOException, ContentLibImageException {
-
-        final ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
-        Dimension originalImageSize = new Dimension(im.getMyInterpreter().getWidth(), im.getMyInterpreter().getHeight());
-        String outputFilePath = FilenameUtils.getFullPath(outFileName);
-        String outputFileBasename = FilenameUtils.getBaseName(outFileName);
-        String outputFileSuffix = FilenameUtils.getExtension(outFileName);
-        List<Future<File>> createdFiles = new ArrayList<>();
-        for (String sizeString : sizes) {
-            int size = Integer.parseInt(sizeString);
-            final Dimension dim = new Dimension();
-            dim.setSize(size, size);
-            final String filename = outputFilePath + outputFileBasename + "_" + size + "." + outputFileSuffix;
-            createdFiles.add(executor.submit(new Callable<File>() {
-
-                @Override
-                public File call() throws Exception {
-                    return scaleToSize(im, dim, filename, false);
-                }
-            }));
-        }
-        while (!oneImageFinished(createdFiles)) {
-
-        }
-        logger.debug("First image finished generation");
-        return originalImageSize;
-
-    }
-
-    private boolean allImagesFinished(List<Future<File>> createdFiles) {
-        for (Future<File> future : createdFiles) {
-            try {
-                if (!future.isDone() || future.get() == null) {
-                    return false;
-                }
-            } catch (InterruptedException | ExecutionException e) {
-            }
-        }
-        return true;
-    }
-
-    private boolean oneImageFinished(List<Future<File>> createdFiles) {
-        for (Future<File> future : createdFiles) {
-            try {
-                if (future.isDone() && future.get() != null) {
-                    return true;
-                }
-            } catch (InterruptedException | ExecutionException e) {
-            }
-        }
-        return false;
-    }
-
-    private File scaleToSize(ImageManager im, Dimension dim, String filename, boolean overwrite) throws ImageManipulatorException,
-            FileNotFoundException, ImageManagerException, IOException {
-        File outputFile = new File(filename);
-        if (!overwrite && outputFile.isFile()) {
-            return outputFile;
-        }
-        try (FileOutputStream outputFileStream = new FileOutputStream(outputFile);) {
-            RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_TO_BOX, 0);
-            JpegInterpreter pi = new JpegInterpreter(ri);
-            pi.writeToStream(null, outputFileStream);
-            outputFileStream.close();
-            logger.debug("Written file " + outputFile);
-            return outputFile;
-        }
-    }
-
     public List<Image> getAllImages() {
         return allImages;
     }
@@ -4309,7 +4230,7 @@ public class Metadaten {
         setImage(allImages.get(this.imageIndex));
     }
 
-    public String getBild() {
+    public String getImageUrl() {
         if (image == null) {
             return null;
         } else {
@@ -4342,22 +4263,6 @@ public class Metadaten {
         } else {
             return image.getSize().height;
         }
-    }
-
-    private String getImageUrl(Image image, String size) {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        String currentImageURL =
-                session.getServletContext().getContextPath() + ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + image.getImageName()
-                        + "_large_" + size + ".jpg";
-        return currentImageURL;
-    }
-
-    private String getImagePath(Image image) {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        String path = ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + session.getId() + "_" + image.getImageName() + "_large" + ".jpg";
-        return path;
     }
 
     public void setImage(final Image image) {
@@ -4457,6 +4362,24 @@ public class Metadaten {
     }
 
     public void setThumbnailSize(int value) {
-
     }
+
+    public int getContainerWidth() {
+        return containerWidth;
+    }
+
+    public void setContainerWidth(int containerWidth) {
+        this.containerWidth = containerWidth;
+    }
+
+    public void increaseContainerWidth() {
+        containerWidth = containerWidth + 100;
+    }
+
+    public void reduceContainerWidth() {
+        if (containerWidth > 200) {
+            containerWidth = containerWidth - 100;
+        }
+    }
+
 }
