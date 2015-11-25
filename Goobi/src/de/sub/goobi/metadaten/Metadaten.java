@@ -28,11 +28,17 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
+import java.awt.Dimension;
+import java.awt.image.RenderedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +52,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.faces.bean.ManagedBean;
@@ -55,7 +66,9 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -104,6 +117,12 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
+import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
+import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 
@@ -225,6 +244,19 @@ public class Metadaten {
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
     private int numberOfNavigation = 0;
+
+    // TODO new parameter, remove old
+    private int NUMBER_OF_IMAGES_PER_PAGE = 10;
+    private int THUMBNAIL_SIZE_IN_PIXEL = 200;
+    private String THUMBNAIL_FORMAT = "png";
+    private String MAINIMAGE_FORMAT = "jpg";
+    private int pageNo = 0;
+    private int imageIndex = 0;
+    private String imageFolderName = "";
+    private List<Image> allImages;
+    private Image image = null;
+    private List<String> imageSizes;
+    private ExecutorService executor;
 
     /**
      * Konstruktor ================================================================
@@ -918,7 +950,14 @@ public class Metadaten {
         // check filenames, correct them
         checkImageNames();
         retrieveAllImages();
-        BildErmitteln(0);
+        // TODO initialize image list
+        NUMBER_OF_IMAGES_PER_PAGE = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
+        THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
+        imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
+        executor = Executors.newFixedThreadPool(imageSizes.size());
+        loadCurrentImages();
+
+//        BildErmitteln(0);
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
@@ -943,6 +982,23 @@ public class Metadaten {
             this.modusAnsicht = "Paginierung";
         }
         return "metseditor";
+    }
+
+    private void loadCurrentImages()  {
+        allImages = new ArrayList<Image>();
+        try {
+            List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
+            imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
+            int order = 1;
+            for (String imagename : imageNames) {
+                Image currentImage = new Image(imagename, order++, "", imagename);
+                allImages.add(currentImage);
+            }
+            setImageIndex(0);
+
+        } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
+            logger.error(e1);
+        }
     }
 
     private void createDefaultValues(DocStruct element) {
@@ -1898,13 +1954,13 @@ public class Metadaten {
         return "";
     }
 
-    public String getBild() {
-        BildPruefen();
-        /* Session ermitteln */
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
-    }
+    //    public String getBild() {
+    //        BildPruefen();
+    //        /* Session ermitteln */
+    //        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+    //        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+    //        return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
+    //    }
 
     public List<String> getAllTifFolders() {
         return this.allTifFolders;
@@ -3091,7 +3147,7 @@ public class Metadaten {
         if (addDocStructType1 == null || addDocStructType1.isEmpty()) {
             SelectItem[] list = getAddableDocStructTypenAlsNachbar();
             if (list.length > 0) {
-                addDocStructType1 = ((DocStructType)list[0].getValue()).getName();
+                addDocStructType1 = ((DocStructType) list[0].getValue()).getName();
             }
         }
         return this.addDocStructType1;
@@ -3107,10 +3163,10 @@ public class Metadaten {
         if (addDocStructType2 == null || addDocStructType2.isEmpty()) {
             SelectItem[] list = getAddableDocStructTypenAlsKind();
             if (list.length > 0) {
-                addDocStructType2 = ((DocStructType)list[0].getValue()).getName();
+                addDocStructType2 = ((DocStructType) list[0].getValue()).getName();
             }
         }
-        
+
         return this.addDocStructType2;
     }
 
@@ -3167,15 +3223,17 @@ public class Metadaten {
             this.neuesElementWohin = "1";
         } else {
             if (!inNeuesElementWohin.equals(neuesElementWohin)) {
-                if ((neuesElementWohin.equals("1") || neuesElementWohin.equals("2")) &&   (inNeuesElementWohin.equals("3") || inNeuesElementWohin.equals("4"))) {
+                if ((neuesElementWohin.equals("1") || neuesElementWohin.equals("2"))
+                        && (inNeuesElementWohin.equals("3") || inNeuesElementWohin.equals("4"))) {
                     this.neuesElementWohin = inNeuesElementWohin;
                     getAddDocStructType2();
                     createAddableData();
-                } else if((neuesElementWohin.equals("3") || neuesElementWohin.equals("4")) &&   (inNeuesElementWohin.equals("1") || inNeuesElementWohin.equals("2"))) {
+                } else if ((neuesElementWohin.equals("3") || neuesElementWohin.equals("4"))
+                        && (inNeuesElementWohin.equals("1") || inNeuesElementWohin.equals("2"))) {
                     this.neuesElementWohin = inNeuesElementWohin;
                     getAddDocStructType1();
                     createAddableData();
-                    
+
                 } else {
                     this.neuesElementWohin = inNeuesElementWohin;
                 }
@@ -3355,6 +3413,8 @@ public class Metadaten {
         if (!this.currentTifFolder.equals(currentTifFolder)) {
             tiffFolderHasChanged = true;
             this.currentTifFolder = currentTifFolder;
+            
+            loadCurrentImages();
         }
     }
 
@@ -3637,7 +3697,7 @@ public class Metadaten {
                     List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
-                        List<String> files =NIOFileUtils.list( folder.toString());
+                        List<String> files = NIOFileUtils.list(folder.toString());
                         if (files != null && !files.isEmpty()) {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
@@ -3676,7 +3736,7 @@ public class Metadaten {
                     String filename = currentFile.getFileName().toString();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");
                     if (filenamePrefix.equals(fileToDeletePrefix)) {
-                       Files.delete( currentFile);
+                        Files.delete(currentFile);
                     }
                 }
             }
@@ -4094,4 +4154,309 @@ public class Metadaten {
         return currentTopstruct.getType().getName().equals(physicalTopstruct.getType().getName());
     }
 
+    public List<Image> getPaginatorList() {
+        List<Image> subList = new ArrayList<Image>();
+        if (allImages.size() > (pageNo * NUMBER_OF_IMAGES_PER_PAGE) + NUMBER_OF_IMAGES_PER_PAGE) {
+            subList = allImages.subList(pageNo * NUMBER_OF_IMAGES_PER_PAGE, (pageNo * NUMBER_OF_IMAGES_PER_PAGE) + NUMBER_OF_IMAGES_PER_PAGE);
+        } else {
+            subList = allImages.subList(pageNo * NUMBER_OF_IMAGES_PER_PAGE, allImages.size());
+        }
+        for (Image currentImage : subList) {
+            if (StringUtils.isEmpty(currentImage.getThumbnailUrl())) {
+                createImage(currentImage);
+            }
+        }
+        return subList;
+    }
+
+    private void createImage(Image currentImage) {
+
+        if (currentImage.getSize() == null) {
+            currentImage.setSize(getActualImageSize(currentImage));
+        }
+
+        String thumbUrl = createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL, THUMBNAIL_FORMAT, "");
+        currentImage.setThumbnailUrl(thumbUrl);
+
+        String contextPath = getContextPath();
+        for (String sizeString : imageSizes) {
+            try {
+                int size = Integer.parseInt(sizeString);
+                String imageUrl = createImageUrl(currentImage, size, MAINIMAGE_FORMAT, contextPath);
+                currentImage.addImageLevel(imageUrl, size);
+            } catch (NullPointerException | NumberFormatException e) {
+                logger.error("Cannot build image with size " + sizeString);
+            }
+        }
+        Collections.sort(currentImage.getImageLevels());
+    }
+
+    private String getContextPath() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        String baseUrl = session.getServletContext().getContextPath();
+        return baseUrl;
+    }
+
+    private Dimension getActualImageSize(Image image) {
+        Dimension dim;
+        try {
+            String imagePath = imageFolderName + image.getImageName();
+            String dimString = new GetImageDimensionAction().getDimensions(imagePath);
+            int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
+            int height = Integer.parseInt(dimString.replaceAll(".*::", ""));
+            dim = new Dimension(width, height);
+        } catch (NullPointerException | NumberFormatException | ContentLibImageException | URISyntaxException | IOException e) {
+            logger.error("Could not retrieve actual image size", e);
+            dim = new Dimension(0, 0);
+        }
+        return dim;
+    }
+
+    private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
+        StringBuilder url = new StringBuilder(baseUrl);
+        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=").append(
+                "file://" + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size);
+        return url.toString();
+    }
+
+    private Dimension scaleFile(String inFileName, String outFileName, List<String> sizes) throws IOException, ContentLibImageException {
+
+        final ImageManager im = new ImageManager(new File(inFileName).toURI().toURL());
+        Dimension originalImageSize = new Dimension(im.getMyInterpreter().getWidth(), im.getMyInterpreter().getHeight());
+        String outputFilePath = FilenameUtils.getFullPath(outFileName);
+        String outputFileBasename = FilenameUtils.getBaseName(outFileName);
+        String outputFileSuffix = FilenameUtils.getExtension(outFileName);
+        List<Future<File>> createdFiles = new ArrayList<>();
+        for (String sizeString : sizes) {
+            int size = Integer.parseInt(sizeString);
+            final Dimension dim = new Dimension();
+            dim.setSize(size, size);
+            final String filename = outputFilePath + outputFileBasename + "_" + size + "." + outputFileSuffix;
+            createdFiles.add(executor.submit(new Callable<File>() {
+
+                @Override
+                public File call() throws Exception {
+                    return scaleToSize(im, dim, filename, false);
+                }
+            }));
+        }
+        while (!oneImageFinished(createdFiles)) {
+
+        }
+        logger.debug("First image finished generation");
+        return originalImageSize;
+
+    }
+
+    private boolean allImagesFinished(List<Future<File>> createdFiles) {
+        for (Future<File> future : createdFiles) {
+            try {
+                if (!future.isDone() || future.get() == null) {
+                    return false;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+            }
+        }
+        return true;
+    }
+
+    private boolean oneImageFinished(List<Future<File>> createdFiles) {
+        for (Future<File> future : createdFiles) {
+            try {
+                if (future.isDone() && future.get() != null) {
+                    return true;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+            }
+        }
+        return false;
+    }
+
+    private File scaleToSize(ImageManager im, Dimension dim, String filename, boolean overwrite) throws ImageManipulatorException,
+            FileNotFoundException, ImageManagerException, IOException {
+        File outputFile = new File(filename);
+        if (!overwrite && outputFile.isFile()) {
+            return outputFile;
+        }
+        try (FileOutputStream outputFileStream = new FileOutputStream(outputFile);) {
+            RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_TO_BOX, 0);
+            JpegInterpreter pi = new JpegInterpreter(ri);
+            pi.writeToStream(null, outputFileStream);
+            outputFileStream.close();
+            logger.debug("Written file " + outputFile);
+            return outputFile;
+        }
+    }
+
+    public List<Image> getAllImages() {
+        return allImages;
+    }
+
+    public int getImageIndex() {
+        return imageIndex;
+    }
+
+    public void setImageIndex(int imageIndex) {
+
+        this.imageIndex = imageIndex;
+        if (this.imageIndex < 0) {
+            this.imageIndex = 0;
+        }
+        if (this.imageIndex >= getSizeOfImageList()) {
+            this.imageIndex = getSizeOfImageList() - 1;
+        }
+        setImage(allImages.get(this.imageIndex));
+    }
+
+    public String getBild() {
+        if (image == null) {
+            return null;
+        } else {
+            FacesContext context = FacesContextHelper.getCurrentFacesContext();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            String currentImageURL =
+                    session.getServletContext().getContextPath() + ConfigurationHelper.getTempImagesPath() + session.getId() + "_"
+                            + image.getImageName() + "_large_" + ".jpg";
+            return currentImageURL;
+        }
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public int getImageWidth() {
+        if (image == null) {
+            logger.error("Must set image before querying image size");
+            return 0;
+        } else {
+            return image.getSize().width;
+        }
+    }
+
+    public int getImageHeight() {
+        if (image == null) {
+            logger.error("Must set image before querying image size");
+            return 0;
+        } else {
+            return image.getSize().height;
+        }
+    }
+
+    private String getImageUrl(Image image, String size) {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        String currentImageURL =
+                session.getServletContext().getContextPath() + ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + image.getImageName()
+                        + "_large_" + size + ".jpg";
+        return currentImageURL;
+    }
+
+    private String getImagePath(Image image) {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        String path = ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + session.getId() + "_" + image.getImageName() + "_large" + ".jpg";
+        return path;
+    }
+
+    public void setImage(final Image image) {
+        this.image = image;
+        createImage(image);
+    }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public String cmdMoveFirst() {
+        if (this.pageNo != 0) {
+            this.pageNo = 0;
+            getPaginatorList();
+        }
+        return "";
+    }
+
+    public String cmdMovePrevious() {
+        if (!isFirstPage()) {
+            this.pageNo--;
+            getPaginatorList();
+        }
+        return "";
+    }
+
+    public String cmdMoveNext() {
+        if (!isLastPage()) {
+            this.pageNo++;
+            getPaginatorList();
+        }
+        return "";
+    }
+
+    public String cmdMoveLast() {
+        if (this.pageNo != getLastPageNumber()) {
+            this.pageNo = getLastPageNumber();
+            getPaginatorList();
+        }
+        return "";
+    }
+
+    public void setTxtMoveTo(int neueSeite) {
+        if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
+            this.pageNo = neueSeite - 1;
+            getPaginatorList();
+        }
+    }
+
+    public int getTxtMoveTo() {
+        return this.pageNo + 1;
+    }
+
+    public int getLastPageNumber() {
+        int ret = new Double(Math.floor(this.allImages.size() / NUMBER_OF_IMAGES_PER_PAGE)).intValue();
+        if (this.allImages.size() % NUMBER_OF_IMAGES_PER_PAGE == 0) {
+            ret--;
+        }
+        return ret;
+    }
+
+    public boolean isFirstPage() {
+        return this.pageNo == 0;
+    }
+
+    public boolean isLastPage() {
+        return this.pageNo >= getLastPageNumber();
+    }
+
+    public boolean hasNextPage() {
+        return this.allImages.size() > NUMBER_OF_IMAGES_PER_PAGE;
+    }
+
+    public boolean hasPreviousPage() {
+        return this.pageNo > 0;
+    }
+
+    public Long getPageNumberCurrent() {
+        return Long.valueOf(this.pageNo + 1);
+    }
+
+    public Long getPageNumberLast() {
+        return Long.valueOf(getLastPageNumber() + 1);
+    }
+
+    public int getSizeOfImageList() {
+        return allImages.size();
+    }
+
+    public int getThumbnailSize() {
+        return THUMBNAIL_SIZE_IN_PIXEL;
+    }
+
+    public void setThumbnailSize(int value) {
+
+    }
 }

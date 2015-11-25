@@ -500,7 +500,7 @@ public class ConfigurationHelper implements Serializable {
     public String getProcessTitleReplacementRegex() {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
-    
+
     public boolean isRestProcesslog() {
         return getLocalBoolean("ProcessCreationResetLog", false);
     }
@@ -677,5 +677,19 @@ public class ConfigurationHelper implements Serializable {
         if (configLocal != null) {
             configLocal.setProperty(inParameter, value);
         }
-    }    
+    }
+
+    public int getMetsEditorNumberOfImagesPerPage() {
+        return getLocalInt("MetsEditorNumberOfImagesPerPage", 50);
+    }
+
+    public int getMetsEditorThumbnailSize() {
+        return getLocalInt("MetsEditorThumbnailsize", 200);
+    }
+
+    public List<String> getMetsEditorImageSizes() {
+        return getLocalList("MetsEditorImageSize");
+
+    }
+
 }
