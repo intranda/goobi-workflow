@@ -122,6 +122,7 @@ public class DatabaseVersion {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table benutzer add column shortcut varchar(255) default null;");
+            runner.update(connection, "alter table benutzer add column metseditortime int(11) default null");
             runner.update(connection, "alter table projekte add column srurl varchar(255) default null;");
         } catch (SQLException e) {
             logger.error(e);

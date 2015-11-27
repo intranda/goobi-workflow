@@ -233,6 +233,7 @@ public class LoginBean {
             temp.setEmail(myBenutzer.getEmail());
             temp.setShortcutPrefix(myBenutzer.getShortcutPrefix());
             temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
+            temp.setMetsEditorTime(myBenutzer.getMetsEditorTime());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

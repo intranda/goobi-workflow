@@ -88,6 +88,8 @@ public class User implements DatabaseObject {
 	private boolean displayOnlySelectedTasks = false;
 	private boolean displayOnlyOpenTasks = false;
 	
+	private Integer metsEditorTime;
+	
 	private static final int IMAGE_SIZE = 27;
 	
 
@@ -647,6 +649,14 @@ public class User implements DatabaseObject {
 
     public void setShortcutPrefix(String shortcutPrefix) {
         this.shortcutPrefix = shortcutPrefix;
+    }
+
+    public Integer getMetsEditorTime() {
+        return metsEditorTime;
+    }
+
+    public void setMetsEditorTime(Integer metsEditorTime) {
+        this.metsEditorTime = metsEditorTime;
     }
 }
 

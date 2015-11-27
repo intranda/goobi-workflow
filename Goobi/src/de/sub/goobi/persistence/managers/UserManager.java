@@ -197,6 +197,7 @@ public class UserManager implements IManager, Serializable {
         r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));
         r.setEmail(rs.getString("email"));
         r.setShortcutPrefix(rs.getString("shortcut"));
+        r.setMetsEditorTime(rs.getInt("metseditortime"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
