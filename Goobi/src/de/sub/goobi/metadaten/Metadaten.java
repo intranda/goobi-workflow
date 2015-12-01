@@ -242,7 +242,6 @@ public class Metadaten {
     private Image image = null;
     private List<String> imageSizes;
     private int containerWidth = 600;;
- 
 
     /**
      * Konstruktor ================================================================
@@ -978,7 +977,7 @@ public class Metadaten {
             imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
             int order = 1;
             for (String imagename : imageNames) {
-                Image currentImage = new Image(imagename, order++, "", imagename);
+                Image currentImage = new Image(imagename, order++, "", "", imagename);
                 allImages.add(currentImage);
             }
             setImageIndex(0);
@@ -4164,7 +4163,8 @@ public class Metadaten {
 
         String thumbUrl = createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
-
+        // TODO 
+        currentImage.setLargeThumnailUrl(createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL * 2, THUMBNAIL_FORMAT, ""));
         String contextPath = getContextPath();
         for (String sizeString : imageSizes) {
             try {
