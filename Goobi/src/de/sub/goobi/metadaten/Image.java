@@ -10,16 +10,16 @@ public @Data class Image {
     private String imageName;
     private int order;
     private String thumbnailUrl;
-    private String largeThumnailUrl;
+    private String largeThumbnailUrl;
     private List<ImageLevel> imageLevels = new ArrayList<ImageLevel>();
     private String tooltip;
     private Dimension size = null;
 
-    public Image(String imageName, int order, String thumbnailUrl, String largeThumnailUrl, String tooltip) {
+    public Image(String imageName, int order, String thumbnailUrl, String largeThumbnailUrl, String tooltip) {
         this.imageName = imageName;
         this.order = order;
         this.thumbnailUrl = thumbnailUrl;
-        this.largeThumnailUrl = largeThumnailUrl;
+        this.largeThumbnailUrl = largeThumbnailUrl;
         this.tooltip = tooltip;
     }
 
