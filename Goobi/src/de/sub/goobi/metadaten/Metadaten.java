@@ -32,7 +32,6 @@ import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -95,6 +94,7 @@ import org.goobi.beans.Process;
 import org.mozilla.universalchardet.UniversalDetector;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.NavigationForm.Theme;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
@@ -242,6 +242,7 @@ public class Metadaten {
     private Image image = null;
     private List<String> imageSizes;
     private int containerWidth = 600;;
+    private Theme currentTheme = Theme.ui;
 
     /**
      * Konstruktor ================================================================
@@ -895,6 +896,12 @@ public class Metadaten {
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
             WriteException {
+        try {
+            currentTheme = (Theme) Helper.getManagedBeanValue("#{NavigationForm.theme}");
+
+        } catch (Exception e) {
+
+        }
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusAnsicht = "Metadaten";
@@ -903,8 +910,7 @@ public class Metadaten {
         this.modusStrukturelementVerschieben = false;
         this.modusCopyDocstructFromOtherProcess = false;
         this.myBild = null;
-        this.myBildNummer = 1;
-        this.myImageRotation = 0;
+
         this.currentTifFolder = null;
         readAllTifFolders();
         this.bildZuStrukturelement = false;
@@ -934,11 +940,14 @@ public class Metadaten {
         }
 
         // check filenames, correct them
-        checkImageNames();
-        retrieveAllImages();
-        // TODO use old mechanism if in old UI
-        //                BildErmitteln(0);
-
+        if (currentTheme == Theme.uii) {
+            checkImageNames();
+            retrieveAllImages();
+        } else {
+            this.myBildNummer = 1;
+            this.myImageRotation = 0;
+            BildErmitteln(0);
+        }
         // initialize image list
         NUMBER_OF_IMAGES_PER_PAGE = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
         THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
@@ -1751,7 +1760,11 @@ public class Metadaten {
          * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
         if (this.bildZuStrukturelement) {
-            BildErmitteln(imageNr - this.myBildNummer);
+            if (currentTheme == Theme.ui) {
+                BildErmitteln(imageNr - this.myBildNummer);
+            } else {
+                setImageIndex(imageNr - 1);
+            }
         }
     }
 
@@ -1925,8 +1938,11 @@ public class Metadaten {
         } catch (Exception e) {
             eingabe = this.myBildNummer;
         }
-        setImageIndex(eingabe - 1);
-
+        if (currentTheme == Theme.ui) {
+            BildErmitteln(eingabe - this.myBildNummer);
+        } else {
+            setImageIndex(eingabe - 1);
+        }
         return "";
     }
 
@@ -2535,7 +2551,11 @@ public class Metadaten {
         }
         try {
             int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
-            BildErmitteln(pageNumber);
+            if (currentTheme == Theme.ui) {
+                BildErmitteln(pageNumber);
+            } else {
+                setImageIndex(pageNumber - 1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2558,7 +2578,11 @@ public class Metadaten {
         }
         try {
             int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_letzteSeite) - this.myBildNummer + 1;
-            BildErmitteln(pageNumber);
+            if (currentTheme == Theme.ui) {
+                BildErmitteln(pageNumber);
+            } else {
+                setImageIndex(pageNumber - 1);
+            }
         } catch (Exception e) {
 
         }
@@ -2672,8 +2696,12 @@ public class Metadaten {
                 }
             }
         } else {
-
-            String ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+            String ocrFile = "";
+            if (currentTheme == Theme.ui) {
+                ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
+            } else {
+                ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+            }
             logger.trace("myPicture: " + ocrFile);
             InputStreamReader inputReader = null;
             BufferedReader in = null;
@@ -3125,7 +3153,9 @@ public class Metadaten {
         this.bildAnzeigen = !this.bildAnzeigen;
         if (this.bildAnzeigen) {
             try {
-                BildErmitteln(0);
+                if (currentTheme == Theme.ui) {
+                    BildErmitteln(0);
+                }
             } catch (Exception e) {
                 Helper.setFehlerMeldung("Error while generating image", e.getMessage());
                 logger.error(e);
@@ -3404,7 +3434,9 @@ public class Metadaten {
             tiffFolderHasChanged = true;
             this.currentTifFolder = currentTifFolder;
 
-            loadCurrentImages();
+            if (currentTheme == Theme.uii) {
+                loadCurrentImages();
+            }
         }
     }
 
@@ -3483,9 +3515,10 @@ public class Metadaten {
         }
 
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
-
         retrieveAllImages();
-        BildErmitteln(0);
+        if (currentTheme == Theme.ui) {
+            BildErmitteln(0);
+        }
     }
 
     public void moveSeltectedPagesDown() {
@@ -3514,7 +3547,9 @@ public class Metadaten {
 
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-        BildErmitteln(0);
+        if (currentTheme == Theme.ui) {
+            BildErmitteln(0);
+        }
     }
 
     public void deleteSeltectedPages() {
@@ -3577,13 +3612,16 @@ public class Metadaten {
             }
         }
         retrieveAllImages();
-
         // current image was deleted, load first image
         if (selectedPages.contains(myBildNummer - 1)) {
 
             BildErsteSeiteAnzeigen();
         } else {
-            BildErmitteln(0);
+            if (currentTheme == Theme.ui) {
+                BildErmitteln(0);
+            } else {
+                setImageIndex(myBildNummer - 1);
+            }
         }
     }
 
@@ -3708,11 +3746,15 @@ public class Metadaten {
             }
             counter++;
         }
+
         retrieveAllImages();
         progress = null;
         totalImageNo = 0;
         currentImageNo = 0;
-        BildErmitteln(0);
+
+        if (currentTheme == Theme.ui) {
+            BildErmitteln(0);
+        }
     }
 
     private void removeImage(String fileToDelete) {
@@ -4167,7 +4209,6 @@ public class Metadaten {
 
         String thumbUrl = createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
-        // TODO 
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL * 5, THUMBNAIL_FORMAT, ""));
         String contextPath = getContextPath();
         for (String sizeString : imageSizes) {
@@ -4220,7 +4261,7 @@ public class Metadaten {
     }
 
     public void setImageIndex(int imageIndex) {
-ocrResult = "";
+        ocrResult = "";
         this.imageIndex = imageIndex;
         if (this.imageIndex < 0) {
             this.imageIndex = 0;

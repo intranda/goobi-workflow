@@ -42,6 +42,20 @@ import de.sub.goobi.helper.FacesContextHelper;
 @ManagedBean(name = "NavigationForm")
 @SessionScoped
 public class NavigationForm {
+    public enum Theme {
+        ui("ui"),
+        uii("uii"); 
+        private String id;
+
+        private Theme (String id) {
+            this.id = id;
+        }
+        public String getId() {
+            return id;
+        }
+        
+    };
+
     private String aktuell = "0";
     private boolean showHelp = false;
     private boolean showExpertView = false;
@@ -50,7 +64,7 @@ public class NavigationForm {
     private String activeImportTab = "recordImport";
     private HashMap<String, String> uiStatus = new HashMap<String, String>();
     private String currentTheme = "/uii";
-    
+
     public String getAktuell() {
         return this.aktuell;
     }
@@ -124,10 +138,10 @@ public class NavigationForm {
     public void setActiveImportTab(String activeImportTab) {
         this.activeImportTab = activeImportTab;
     }
-    
+
     public HashMap<String, String> getUiStatus() {
-		return uiStatus;
-	}
+        return uiStatus;
+    }
 
     public String changeTheme() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -143,5 +157,19 @@ public class NavigationForm {
         }
         return currentTheme + completePath + "?faces-redirect=true";
     }
-    
+
+    public Theme getTheme() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        String completePath = context.getExternalContext().getRequestServletPath();
+        if (StringUtils.isNotBlank(completePath)) {
+            String[] parts = completePath.split("/");
+            if (parts[1].equalsIgnoreCase("ui")) {
+                return Theme.ui;
+            } else {
+                return Theme.uii;
+            }
+        }
+        return Theme.ui;
+    }
+
 }
