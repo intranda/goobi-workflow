@@ -943,6 +943,9 @@ public class Metadaten {
         NUMBER_OF_IMAGES_PER_PAGE = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
         THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
         imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
+
+        pageNo = 0;
+        imageIndex = 0;
         loadCurrentImages();
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
@@ -974,14 +977,15 @@ public class Metadaten {
         allImages = new ArrayList<Image>();
         try {
             List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
-            imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
-            int order = 1;
-            for (String imagename : imageNames) {
-                Image currentImage = new Image(imagename, order++, "", "", imagename);
-                allImages.add(currentImage);
+            if (imageNames != null && !imageNames.isEmpty()) {
+                imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
+                int order = 1;
+                for (String imagename : imageNames) {
+                    Image currentImage = new Image(imagename, order++, "", "", imagename);
+                    allImages.add(currentImage);
+                }
+                setImageIndex(0);
             }
-            setImageIndex(0);
-
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);
         }
@@ -4216,7 +4220,7 @@ public class Metadaten {
     }
 
     public void setImageIndex(int imageIndex) {
-
+ocrResult = "";
         this.imageIndex = imageIndex;
         if (this.imageIndex < 0) {
             this.imageIndex = 0;
