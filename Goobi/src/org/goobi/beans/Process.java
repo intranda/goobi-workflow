@@ -113,7 +113,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Docket docket;
 
     private BeanHelper bhelp = new BeanHelper();
-    
+
     // temporär
     private Integer projectId;
     private Integer MetadatenKonfigurationID;
@@ -299,13 +299,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return (name.endsWith("_" + "source"));
         }
     };
-    
+
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         Path dir = Paths.get(getImagesDirectory());
         DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
         DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         /* nur die _tif-Ordner anzeigen, die nicht mir orig_ anfangen */
-       
 
         String tifOrdner = "";
         List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterMediaFolder);
@@ -376,7 +375,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         } catch (DAOException e) {
             return false;
         }
-      
+
         if (Files.exists(testMe) && !NIOFileUtils.list(testMe.toString()).isEmpty()) {
             return true;
         } else {
@@ -417,10 +416,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
             DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
             /* nur die _tif-Ordner anzeigen, die mit orig_ anfangen */
-           
 
             String origOrdner = "";
-           List< String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterMasterFolder);
+            List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterMasterFolder);
             for (int i = 0; i < verzeichnisse.size(); i++) {
                 origOrdner = verzeichnisse.get(i);
             }
@@ -442,9 +440,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
                     Path tif = Paths.get(origOrdner);
-                   List< String> files =  NIOFileUtils.list(tif.toString());
+                    List<String> files = NIOFileUtils.list(tif.toString());
                     if (files == null || files.isEmpty()) {
-                        List<String> folderList =  NIOFileUtils.list(dir.toString());
+                        List<String> folderList = NIOFileUtils.list(dir.toString());
                         for (String folder : folderList) {
                             if (folder.endsWith(suffix)) {
                                 origOrdner = folder;
@@ -477,13 +475,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getSourceDirectory() throws IOException, InterruptedException, SwapException, DAOException {
         Path dir = Paths.get(getImagesDirectory());
-       
+
         Path sourceFolder = null;
-        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(),filterSourceFolder );
+        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterSourceFolder);
         if (verzeichnisse == null || verzeichnisse.isEmpty()) {
             sourceFolder = Paths.get(dir.toString(), titel + "_source");
             if (ConfigurationHelper.getInstance().isCreateSourceFolder()) {
-               Files.createDirectory(sourceFolder);
+                Files.createDirectory(sourceFolder);
             }
         } else {
             sourceFolder = Paths.get(dir.toString(), verzeichnisse.get(0));
@@ -847,13 +845,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
+        // TODO check for younger temp files
+
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
         if (logger.isDebugEnabled()) {
             logger.debug("current meta.xml file type for id " + getId() + ": " + type);
         }
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
-
         if (ff == null) {
             String[] parameter = { titel, type };
             Helper.setFehlerMeldung(Helper.getTranslation("MetadataFormatNotAvailable", parameter));
@@ -977,9 +976,21 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         ff.write(metadataFileName);
 
-       Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
+    }
+
+    public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException,
+            PreferencesException, WriteException {
+
+        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
+        String metadataFileName = getProcessDataDirectory() + "temp.xml";
+        createBackup(9, "temp.*\\.xml.*+");
+
+        ff.setDigitalDocument(gdzfile.getDigitalDocument());
+
+        ff.write(metadataFileName);
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
@@ -1207,8 +1218,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void setDocketId(Integer docketId) {
         this.docketId = docketId;
     }
-    
-    
+
     public Process clone() {
         Process p = new Process();
         p.setDocket(docket);
@@ -1219,13 +1229,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         p.setSortHelperStatus(sortHelperStatus);
         p.setTitel("new_template");
         p.setWikifield(wikifield);
-        
-        
+
         this.bhelp.SchritteKopieren(this, p);
         this.bhelp.ScanvorlagenKopieren(this, p);
         this.bhelp.WerkstueckeKopieren(this, p);
         this.bhelp.EigenschaftenKopieren(this, p);
-        
+
         for (Step step : p.getSchritteList()) {
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
@@ -1253,9 +1262,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         } catch (DAOException e) {
             logger.error("error on save: ", e);
         }
-        
-        
+
         return p;
     }
-    
+
 }

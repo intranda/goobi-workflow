@@ -320,6 +320,8 @@ public class Metadaten {
             try {
 
                 this.myProzess.writeMetadataFile(this.gdzfile);
+                // TODO remove temp files
+                // check for files, remove them
             } catch (Exception e) {
                 Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
                 logger.error(e);
@@ -327,6 +329,22 @@ public class Metadaten {
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             return "";
         }
+    }
+
+    // 
+    public String automaticSave() {
+
+        try {
+
+            this.myProzess.saveTemporaryMetsFile(this.gdzfile);
+
+        } catch (Exception e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+            logger.error(e);
+        }
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
+        return "";
+
     }
 
     public String CopyGroup() {
