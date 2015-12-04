@@ -320,8 +320,7 @@ public class Metadaten {
             try {
 
                 this.myProzess.writeMetadataFile(this.gdzfile);
-                // TODO remove temp files
-                // check for files, remove them
+
             } catch (Exception e) {
                 Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
                 logger.error(e);
@@ -1106,6 +1105,8 @@ public class Metadaten {
             logger.error(e);
             return "Metadaten";
         }
+        myProzess.removeTemporaryMetadataFiles();
+        
         SperrungAufheben();
         return this.zurueck;
     }
@@ -2203,8 +2204,19 @@ public class Metadaten {
      * zurück gehen
      */
     public String goZurueck() {
+        // TODO check if newer temp file than mets file exists
+        
+        if (myProzess.checkForNewerTemporaryMetadataFiles()) {
+            
+        }
+        
         SperrungAufheben();
         return this.zurueck;
+    }
+    
+    
+    public boolean isCheckForNewerTemporaryMetadataFiles() {
+        return myProzess.checkForNewerTemporaryMetadataFiles();
     }
 
     /*

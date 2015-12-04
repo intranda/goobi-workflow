@@ -1014,6 +1014,39 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
+    public void removeTemporaryMetadataFiles() {
+        DirectoryStream.Filter<Path> filter = new FileListFilter("temp.*\\.xml.*+");
+
+        try {
+            List<Path> temporaryFiles = NIOFileUtils.listFiles(getProcessDataDirectory(), filter);
+            if (!temporaryFiles.isEmpty()) {
+                for (Path file : temporaryFiles) {
+                    Files.delete(file);
+                }
+            }
+        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            logger.error(e);
+        }
+    }
+
+    public boolean checkForNewerTemporaryMetadataFiles() {
+
+        try {
+            Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
+            Path metadataFile = Paths.get(getMetadataFilePath());
+            if (Files.exists(temporaryFile) && Files.exists(metadataFile)) {
+                FileTime tempTime = (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
+                FileTime metaTime = (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
+                return tempTime.toMillis() > metaTime.toMillis();
+                
+            }
+        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            logger.error(e);
+        }
+
+        return false;
+    }
+
     /**
      * prüfen, ob der Vorgang Schritte enthält, die keinem Benutzer und keiner Benutzergruppe zugewiesen ist
      * ================================================================
