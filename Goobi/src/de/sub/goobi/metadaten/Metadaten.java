@@ -827,6 +827,7 @@ public class Metadaten {
     public String XMLlesen() {
         // myBild="";
         // this.myBildNummer = 1;
+
         String result = "";
         if (xmlReadingLock.tryLock()) {
             try {
@@ -868,6 +869,14 @@ public class Metadaten {
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
         this.tree3 = null;
+
+        if (Helper.getRequestParameter("discardChanges").equals("true")) {
+            myProzess.removeTemporaryMetadataFiles();
+        } else if (Helper.getRequestParameter("overwriteChanges").equals("true")) {
+            myProzess.overwriteMetadata();
+            myProzess.removeTemporaryMetadataFiles();
+        }
+
         try {
             String returnvalue = XMLlesenStart();
             if (returnvalue == null) {

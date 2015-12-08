@@ -1029,16 +1029,42 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-    public boolean checkForNewerTemporaryMetadataFiles() {
-
+    public boolean getTemporaryMetadataFiles() {
+        return checkForNewerTemporaryMetadataFiles();
+    }
+    
+    public void setTemporaryMetadataFiles(boolean value) {
+    }
+    
+    
+    public void overwriteMetadata() {
         try {
             Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
-            Path metadataFile = Paths.get(getMetadataFilePath());
-            if (Files.exists(temporaryFile) && Files.exists(metadataFile)) {
+            Path temporaryAnchorFile = Paths.get(getProcessDataDirectory(), "temp_anchor.xml");
+
+            if (Files.exists(temporaryFile)) {
+                Path meta = Paths.get(getProcessDataDirectory(), "meta.xml");
+                NIOFileUtils.copyFile(temporaryFile, meta);
+            }
+            if (Files.exists(temporaryAnchorFile)) {
+                Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
+                NIOFileUtils.copyFile(temporaryAnchorFile, metaAnchor);
+            }
+        
+        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            logger.error(e);
+        }        
+    }
+
+    public boolean checkForNewerTemporaryMetadataFiles() {
+        try {
+            Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
+            if (Files.exists(temporaryFile)) {
+                Path metadataFile = Paths.get(getMetadataFilePath());
                 FileTime tempTime = (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
                 FileTime metaTime = (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
                 return tempTime.toMillis() > metaTime.toMillis();
-                
+
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
             logger.error(e);
