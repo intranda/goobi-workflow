@@ -243,6 +243,7 @@ public class Metadaten {
     private List<String> imageSizes;
     private int containerWidth = 600;;
     private Theme currentTheme = Theme.ui;
+    private boolean processHasNewTemporaryMetadataFiles = false;
 
     /**
      * Konstruktor ================================================================
@@ -318,7 +319,7 @@ public class Metadaten {
             return "metseditor_timeout";
         } else {
             try {
-
+                processHasNewTemporaryMetadataFiles = false;
                 this.myProzess.writeMetadataFile(this.gdzfile);
 
             } catch (Exception e) {
@@ -334,7 +335,7 @@ public class Metadaten {
     public String automaticSave() {
 
         try {
-
+            processHasNewTemporaryMetadataFiles = true;
             this.myProzess.saveTemporaryMetsFile(this.gdzfile);
 
         } catch (Exception e) {
@@ -859,6 +860,7 @@ public class Metadaten {
             // Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
             // return Helper.getRequestParameter("zurueck");
         }
+        processHasNewTemporaryMetadataFiles = false;
         this.myBenutzerID = Helper.getRequestParameter("BenutzerID");
         this.alleSeitenAuswahl_ersteSeite = "";
         this.alleSeitenAuswahl_letzteSeite = "";
@@ -1106,7 +1108,7 @@ public class Metadaten {
             return "Metadaten";
         }
         myProzess.removeTemporaryMetadataFiles();
-        
+
         SperrungAufheben();
         return this.zurueck;
     }
@@ -2204,19 +2206,17 @@ public class Metadaten {
      * zurück gehen
      */
     public String goZurueck() {
-        // TODO check if newer temp file than mets file exists
-        
-        if (myProzess.checkForNewerTemporaryMetadataFiles()) {
-            
-        }
-        
         SperrungAufheben();
         return this.zurueck;
     }
-    
-    
+
+    public String discard() {
+        myProzess.removeTemporaryMetadataFiles();
+        return this.zurueck;
+    }
+
     public boolean isCheckForNewerTemporaryMetadataFiles() {
-        return myProzess.checkForNewerTemporaryMetadataFiles();
+        return processHasNewTemporaryMetadataFiles;
     }
 
     /*
