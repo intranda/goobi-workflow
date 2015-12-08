@@ -233,7 +233,7 @@ public class Metadaten {
     // new parameter image parameter for OpenSeadragon
     private static int NUMBER_OF_IMAGES_PER_PAGE = 10;
     private static int THUMBNAIL_SIZE_IN_PIXEL = 200;
-    private String THUMBNAIL_FORMAT = "png";
+    private String THUMBNAIL_FORMAT = "jpg";
     private String MAINIMAGE_FORMAT = "jpg";
     private int pageNo = 0;
     private int imageIndex = 0;
