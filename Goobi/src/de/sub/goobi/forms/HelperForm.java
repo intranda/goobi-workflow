@@ -29,6 +29,7 @@ package de.sub.goobi.forms;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -49,9 +50,11 @@ import org.goobi.production.plugin.PluginLoader;
 import org.reflections.Reflections;
 
 import ugh.dl.Fileformat;
+import ugh.dl.MetadataType;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -279,14 +282,13 @@ public class HelperForm {
         this.showError = showError;
     }
 
-    public List<String> getPossibleShortcuts() {
-        List<String> ret = new ArrayList<>();
-        ret.add("ctrl");
-        ret.add("alt");
-        ret.add("ctrl+shift");
-        ret.add("alt+shift");
-        ret.add("ctrl+alt");
-
+    public List<SelectItem> getPossibleShortcuts() {
+        List<SelectItem> ret = new ArrayList<>();
+        ret.add(new SelectItem("ctrl", Helper.getTranslation("mets_key_ctrl")));
+        ret.add(new SelectItem("alt", Helper.getTranslation("mets_key_alt")));
+        ret.add(new SelectItem("ctrl+shift", Helper.getTranslation("mets_key_ctrlShift")));
+        ret.add(new SelectItem("alt+shift", Helper.getTranslation("mets_key_altShift")));
+        ret.add(new SelectItem("ctrl+alt", Helper.getTranslation("mets_key_ctrlAlt")));
         return ret;
     }
 }
