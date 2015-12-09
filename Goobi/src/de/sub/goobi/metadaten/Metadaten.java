@@ -869,7 +869,7 @@ public class Metadaten {
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
         this.tree3 = null;
-
+        image = null;
         if (Helper.getRequestParameter("discardChanges").equals("true")) {
             myProzess.removeTemporaryMetadataFiles();
         } else if (Helper.getRequestParameter("overwriteChanges").equals("true")) {
