@@ -4250,6 +4250,7 @@ public class Metadaten {
         currentImage.setThumbnailUrl(thumbUrl);
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL * 5, THUMBNAIL_FORMAT, ""));
         String contextPath = getContextPath();
+        currentImage.setImageLevels(new ArrayList<ImageLevel>());
         for (String sizeString : imageSizes) {
             try {
                 int size = Integer.parseInt(sizeString);
