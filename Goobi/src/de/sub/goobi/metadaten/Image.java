@@ -1,9 +1,13 @@
 package de.sub.goobi.metadaten;
 
 import java.awt.Dimension;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
+import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import lombok.Data;
 
 public @Data class Image {
@@ -29,6 +33,10 @@ public @Data class Image {
         Dimension dim = new Dimension((int) (getSize().width * scale), (int) (getSize().height * scale));
         ImageLevel layer = new ImageLevel(imageUrl, dim);
         imageLevels.add(layer);
+    }
+
+    public boolean hasImageLevels() {
+        return !imageLevels.isEmpty();
     }
 
 }
