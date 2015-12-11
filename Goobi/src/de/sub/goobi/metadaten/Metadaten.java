@@ -2224,6 +2224,7 @@ public class Metadaten {
 
     public String discard() {
         myProzess.removeTemporaryMetadataFiles();
+        SperrungAufheben();
         return this.zurueck;
     }
 
