@@ -330,6 +330,14 @@ public class Metadaten {
             return "";
         }
     }
+    
+    public String toggleImageView() {
+        if (treeProperties.get("showThumbnails")) {
+            pageNo = ((imageIndex ) /  NUMBER_OF_IMAGES_PER_PAGE) ;
+        }
+        return "";
+    }
+    
 
     // 
     public String automaticSave() {
@@ -871,6 +879,7 @@ public class Metadaten {
 
         this.tree3 = null;
         image = null;
+        treeProperties.put("showThumbnails", false);
         if (Helper.getRequestParameter("discardChanges").equals("true")) {
             myProzess.removeTemporaryMetadataFiles();
         } else if (Helper.getRequestParameter("overwriteChanges").equals("true")) {
