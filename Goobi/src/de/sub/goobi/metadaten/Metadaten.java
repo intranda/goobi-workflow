@@ -829,6 +829,7 @@ public class Metadaten {
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
+
         this.tree3 = null;
         try {
             String returnvalue = XMLlesenStart();
@@ -857,6 +858,8 @@ public class Metadaten {
             Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
             return Helper.getRequestParameter("zurueck");
         }
+        getAddDocStructType2();
+        createAddableData();
 
         TreeExpand();
         this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
@@ -3157,7 +3160,7 @@ public class Metadaten {
 
     public String getNeuesElementWohin() {
         if (this.neuesElementWohin == null || this.neuesElementWohin == "") {
-            this.neuesElementWohin = "1";
+            this.neuesElementWohin = "4";
         }
         return this.neuesElementWohin;
     }
