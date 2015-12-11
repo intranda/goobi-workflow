@@ -198,7 +198,7 @@ public class Metadaten {
     private String zurueck = "Main";
     private MetadatenSperrung sperrung = new MetadatenSperrung();
     private boolean nurLesenModus;
-    private String neuesElementWohin = "1";
+    private String neuesElementWohin = "4";
     private boolean modusStrukturelementVerschieben = false;
     private String additionalOpacPpns;
     private String opacSuchfeld = "12";
@@ -827,7 +827,7 @@ public class Metadaten {
         this.alleSeitenAuswahl_letzteSeite = "";
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
-        this.neuesElementWohin = "1";
+       
         this.tree3 = null;
         try {
             String returnvalue = XMLlesenStart();
@@ -856,6 +856,8 @@ public class Metadaten {
             Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
             return Helper.getRequestParameter("zurueck");
         }
+        getAddDocStructType2();
+        createAddableData();
 
         TreeExpand();
         this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
@@ -3159,7 +3161,7 @@ public class Metadaten {
 
     public String getNeuesElementWohin() {
         if (this.neuesElementWohin == null || this.neuesElementWohin == "") {
-            this.neuesElementWohin = "1";
+            this.neuesElementWohin = "4";
         }
         return this.neuesElementWohin;
     }
