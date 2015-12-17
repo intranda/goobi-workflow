@@ -101,8 +101,6 @@
 	<classpathentry kind="lib" path="lib-test/unboundid-ldapsdk-se.jar"/>
 	<classpathentry kind="lib" path="lib-test/catalina.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/itext-rtf-2.1.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-dbcp2-2.0.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-pool2-2.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jgravatar.jar"/>
@@ -139,6 +137,8 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lombok-1.12.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-collections-3.2.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
