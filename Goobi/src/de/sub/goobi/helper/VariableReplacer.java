@@ -345,9 +345,9 @@ public class VariableReplacer {
                     break;
 
                 case ALL:
-                    if (resultFirst != null) {
+                    if (resultFirst != null && !resultFirst.isEmpty()) {
                         result = resultFirst;
-                    } else if (resultTop != null) {
+                    } else if (resultTop!= null && !resultTop.isEmpty()) {
                         result = resultTop;
                     } else {
                         result = "";
