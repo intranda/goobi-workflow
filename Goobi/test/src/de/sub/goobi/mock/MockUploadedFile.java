@@ -19,12 +19,15 @@ package de.sub.goobi.mock;
  */
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+
+import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.myfaces.custom.fileupload.StorageStrategy;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
-public class MockUploadedFile implements UploadedFile{
+public class MockUploadedFile implements Part{
 
  
     private static final long serialVersionUID = -1271567035180962097L;
@@ -38,10 +41,9 @@ public class MockUploadedFile implements UploadedFile{
         this.name = name;
     }
     
-    @Override
-    public byte[] getBytes() throws IOException {
-        return IOUtils.toByteArray(stream);
-    }
+    
+    
+   
 
     @Override
     public String getContentType() {
@@ -63,9 +65,43 @@ public class MockUploadedFile implements UploadedFile{
         return 0;
     }
 
+
     @Override
-    public StorageStrategy getStorageStrategy() {
+    public void delete() throws IOException {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+
+    @Override
+    public String getHeader(String arg0) {
+        // TODO Auto-generated method stub
+        return "";
+    }
+
+
+
+    @Override
+    public Collection<String> getHeaderNames() {
+        // TODO Auto-generated method stub
         return null;
+    }
+
+
+
+    @Override
+    public Collection<String> getHeaders(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+
+    @Override
+    public void write(String arg0) throws IOException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -23,8 +23,8 @@
                     <td class="eingabeBoxen_row2">
                         <h:panelGrid columns="2">
                             <h:outputLabel value="#{msgs.filename}:" for="fileupload" />
-                            <x:inputFileUpload id="fileupload" value="#{Metadaten.fileManipulation.uploadedFile}" storage="file" styleClass="fileUploadInput" required="false" />
-
+                            <!-- <x:inputFileUpload id="fileupload" value="#{Metadaten.fileManipulation.uploadedFile}" storage="file" styleClass="fileUploadInput" required="false" /> -->
+                            <h:inputFile id="fileupload" value="#{Metadaten.fileManipulation.uploadedFile}" storage="file" styleClass="form-control form-control-file" required="false" />
                             <h:outputText value="#{msgs.aktuellerOrdner}:" />
                             <h:selectOneMenu style="width:220px" value="#{Metadaten.fileManipulation.currentFolder}">
                                 <f:selectItems value="#{Metadaten.allTifFolders}" var="folder" itemLabel="#{folder}" itemValue="#{folder}" />

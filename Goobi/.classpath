@@ -76,7 +76,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk-sandbox20-1.1.13.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/truezip-6.6.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-1.10.jar" sourcepath="/ugh_new"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/util-0.0.1-SNAPSHOT.jar"/>
@@ -89,7 +88,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xpp3-1.1.3.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xstream-1.3.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/reflections-0.9.9-RC1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
 	<classpathentry kind="lib" path="test/lib/easymock-3.2.jar"/>
 	<classpathentry kind="lib" path="test/lib/powermock-easymock-1.5.1-full.jar"/>
 	<classpathentry kind="lib" path="test/lib/cglib-nodep-2.2.2.jar"/>
@@ -139,6 +137,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-collections-3.2.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>

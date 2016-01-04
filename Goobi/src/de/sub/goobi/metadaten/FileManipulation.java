@@ -23,7 +23,6 @@ package de.sub.goobi.metadaten;
  * This copyright notice MUST APPEAR in all copies of this file!
  ***************************************************************/
 
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,10 +38,10 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
@@ -79,7 +78,7 @@ public class FileManipulation {
     // mode of insert (uncounted or into pagination sequence)
     private String insertMode = "uncounted";
 
-    private UploadedFile uploadedFile = null;
+    private Part uploadedFile = null;
 
     private String uploadedFileName = null;
 
@@ -97,7 +96,7 @@ public class FileManipulation {
      * File upload with binary copying.
      */
     public void uploadFile() {
-        ByteArrayInputStream inputStream = null;
+        InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
             if (this.uploadedFile == null) {
@@ -105,7 +104,7 @@ public class FileManipulation {
                 return;
             }
 
-            String basename = this.uploadedFile.getName();
+            String basename = getFileName(this.uploadedFile);
             if (basename.startsWith(".")) {
                 basename = basename.substring(1);
             }
@@ -136,7 +135,7 @@ public class FileManipulation {
                 return;
             }
 
-            inputStream = new ByteArrayInputStream(this.uploadedFile.getBytes());
+            inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(filename);
 
             byte[] buf = new byte[1024];
@@ -176,6 +175,16 @@ public class FileManipulation {
         }
         metadataBean.retrieveAllImages();
         metadataBean.BildErmitteln(0);
+    }
+    
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(
+                        content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 
     public String getUploadedFileName() {
@@ -268,11 +277,11 @@ public class FileManipulation {
         }
     }
 
-    public UploadedFile getUploadedFile() {
+    public Part getUploadedFile() {
         return this.uploadedFile;
     }
 
-    public void setUploadedFile(UploadedFile uploadedFile) {
+    public void setUploadedFile(Part uploadedFile) {
         this.uploadedFile = uploadedFile;
     }
 

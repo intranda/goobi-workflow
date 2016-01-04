@@ -27,9 +27,9 @@ package de.sub.goobi.forms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,10 +44,10 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
@@ -103,7 +103,7 @@ public class MassImportForm {
     private final Helper help = new Helper();
     // private ImportConfiguration ic = null;
 
-    private UploadedFile uploadedFile = null;
+    private Part uploadedFile = null;
 
     private List<Process> processList;
 
@@ -360,15 +360,15 @@ public class MassImportForm {
      * File upload with binary copying.
      */
     public void uploadFile() {
-        ByteArrayInputStream inputStream = null;
+        InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
             if (this.uploadedFile == null) {
                 Helper.setFehlerMeldung("noFileSelected");
                 return;
             }
-
-            String basename = this.uploadedFile.getName();
+         
+            String basename = getFileName(this.uploadedFile);
             if (basename.startsWith(".")) {
                 basename = basename.substring(1);
             }
@@ -381,7 +381,7 @@ public class MassImportForm {
 
             String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
 
-            inputStream = new ByteArrayInputStream(this.uploadedFile.getBytes());
+            inputStream =this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(filename);
 
             byte[] buf = new byte[1024];
@@ -416,11 +416,21 @@ public class MassImportForm {
 
     }
 
-    public UploadedFile getUploadedFile() {
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(
+                        content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
+    }
+    
+    public Part getUploadedFile() {
         return this.uploadedFile;
     }
 
-    public void setUploadedFile(UploadedFile uploadedFile) {
+    public void setUploadedFile(Part uploadedFile) {
         this.uploadedFile = uploadedFile;
     }
 

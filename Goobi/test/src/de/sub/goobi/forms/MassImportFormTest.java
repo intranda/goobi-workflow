@@ -31,7 +31,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.myfaces.custom.fileupload.UploadedFile;
+import javax.servlet.http.Part;
+
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Process;
@@ -446,7 +447,7 @@ public class MassImportFormTest {
     @Test
     public void testUploadedFile() throws FileNotFoundException {
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/metadata.xml");
-        UploadedFile file = new MockUploadedFile(stream, "junit");
+        Part file = new MockUploadedFile(stream, "junit");
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
         massImportForm.setTemplate(template);
@@ -459,7 +460,7 @@ public class MassImportFormTest {
     @Test
     public void testUploadFile() throws FileNotFoundException {
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/metadata.xml");
-        UploadedFile file = new MockUploadedFile(stream, "./some/path\\junit.xml");
+        Part file = new MockUploadedFile(stream, "./some/path\\junit.xml");
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
         massImportForm.setTemplate(template);
@@ -475,7 +476,7 @@ public class MassImportFormTest {
     @Test
     public void testConvertWithFileUpload() throws FileNotFoundException {
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/metadata.xml");
-        UploadedFile file = new MockUploadedFile(stream, "./some/path\\junit.xml");
+        Part file = new MockUploadedFile(stream, "./some/path\\junit.xml");
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
         massImportForm.setTemplate(template);

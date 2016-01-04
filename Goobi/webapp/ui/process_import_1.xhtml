@@ -119,7 +119,7 @@
 
 									<h:outputLabel for="fileupload3" value="#{msgs.uploadImport}:"></h:outputLabel>
 									<h:panelGroup>
-										<x:inputFileUpload id="fileupload3" value="#{MassImportForm.uploadedFile}" storage="file" styleClass="fileUploadInput" required="false" />
+                                        <h:inputFile id="fileupload3" value="#{MassImportForm.uploadedFile}" storage="file" styleClass="form-control form-control-file" required="false" />
 										<h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{MassImportForm.uploadFile}">
 										</h:commandButton>
 									</h:panelGroup>

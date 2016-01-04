@@ -15,6 +15,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.easymock.EasyMock;
@@ -70,7 +71,7 @@ public class FileManipulationTest {
     public void testGetUploadedFile() throws FileNotFoundException {
         FileManipulation fixture = new FileManipulation(metadataBean);
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
         fixture.setUploadedFile(uploadedFile);
         assertEquals(uploadedFile, fixture.getUploadedFile());
     }
@@ -101,7 +102,7 @@ public class FileManipulationTest {
     public void testUploadFile() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
         fixture.setUploadedFileName("fixture");
@@ -136,7 +137,7 @@ public class FileManipulationTest {
     public void testDownloadFile() throws FileNotFoundException {
         FileManipulation fixture = new FileManipulation(metadataBean);
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
         fixture.setUploadedFileName("fixture");
@@ -181,7 +182,7 @@ public class FileManipulationTest {
 
         // first upload file
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
         fixture.setUploadedFileName("fixture.tif");
@@ -212,7 +213,7 @@ public class FileManipulationTest {
 
         // first upload file
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        UploadedFile uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
+        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
         fixture.setUploadedFileName("fixture.tif");
