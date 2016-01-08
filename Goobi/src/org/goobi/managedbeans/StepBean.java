@@ -178,6 +178,13 @@ public class StepBean extends BasicBean {
         return "task_all";
     }
 
+	public DatabasePaginator getPaginator() {
+		if (paginator == null){
+			FilterAlleStart();
+		}
+		return paginator;
+	}
+	
     private String sortList() {
         if (sortierung == null) {
             return "prioritaet desc";
