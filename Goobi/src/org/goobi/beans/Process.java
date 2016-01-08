@@ -1286,7 +1286,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         p.setProjekt(projekt);
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
-        p.setTitel("new_template");
+        p.setTitel(this.getTitel() + "_copy");
         p.setWikifield(wikifield);
 
         this.bhelp.SchritteKopieren(this, p);
