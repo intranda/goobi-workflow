@@ -498,7 +498,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         p.setNumberOfVolumes(numberOfVolumes);
         p.setProjectIsArchived(projectIsArchived);
         p.setStartDate(startDate);
-        p.setTitel("new project");
+        p.setTitel(this.getTitel() + "_copy");
         p.setUseDmsImport(useDmsImport);
 
         try {

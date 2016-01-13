@@ -782,7 +782,8 @@ public class ProjectBean extends BasicBean {
     
     public String cloneProject() {
        myProjekt.clone();
-       return Cancel();
+       Cancel();
+       return FilterKein();
     }
     
 }
