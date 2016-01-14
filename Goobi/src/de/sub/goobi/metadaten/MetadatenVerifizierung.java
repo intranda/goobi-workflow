@@ -48,6 +48,7 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigProjects;
@@ -194,6 +195,14 @@ public class MetadatenVerifizierung {
             for (Iterator<String> iter = configuredList.iterator(); iter.hasNext();) {
                 String temp = iter.next();
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataInvalidData"), temp);
+            }
+            ergebnis = false;
+        }
+
+        List<String> expressionList = validateMetadatValues(dd.getLogicalDocStruct(), metadataLanguage);
+        if (!expressionList.isEmpty()) {
+            for (String text : expressionList) {
+                Helper.setFehlerMeldung(text);
             }
             ergebnis = false;
         }
@@ -565,6 +574,30 @@ public class MetadatenVerifizierung {
                 }
             }
         }
+    }
+
+    private List<String> validateMetadatValues(DocStruct inStruct, String lang) {
+        List<String> errorList = new ArrayList<>();
+        List<Metadata> metadataList = inStruct.getAllMetadata();
+
+        for (Metadata md : metadataList) {
+            if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
+                String regularExpression = md.getType().getValidationExpression();
+                if (!md.getValue().matches(regularExpression)) {
+                    errorList.add( Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(), regularExpression));
+
+                }
+
+            }
+        }
+
+        if (inStruct.getAllChildren() != null) {
+            for (DocStruct child : inStruct.getAllChildren()) {
+                errorList.addAll(validateMetadatValues(child, lang));
+            }
+        }
+
+        return errorList;
     }
 
     /**
