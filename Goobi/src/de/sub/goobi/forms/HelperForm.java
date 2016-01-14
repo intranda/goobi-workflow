@@ -29,7 +29,6 @@ package de.sub.goobi.forms;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -50,11 +49,9 @@ import org.goobi.production.plugin.PluginLoader;
 import org.reflections.Reflections;
 
 import ugh.dl.Fileformat;
-import ugh.dl.MetadataType;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
