@@ -1089,7 +1089,7 @@ public class GoobiScript {
         }
     }
 
-    private Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
+    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
 
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(metadataFile.toString());
@@ -1116,7 +1116,7 @@ public class GoobiScript {
         return metadataPairs;
     }
 
-    private Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
+    private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
 
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");

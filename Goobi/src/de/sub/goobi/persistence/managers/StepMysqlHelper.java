@@ -221,6 +221,7 @@ class StepMysqlHelper implements Serializable {
         s.setStepPlugin(rs.getString("stepPlugin"));
         s.setValidationPlugin(rs.getString("validationPlugin"));
         s.setDelayStep(rs.getBoolean("delayStep"));
+        s.setUpdateMetadataIndex(rs.getBoolean("updateMetadataIndex"));
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
@@ -522,7 +523,8 @@ class StepMysqlHelper implements Serializable {
                             o.getBatchStep(), //batchStep
                             (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(),// stepPlugin
                             (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                            (o.isDelayStep())
+                            (o.isDelayStep()),
+                            (o.isUpdateMetadataIndex())
                     };
             return param;
         } else {
@@ -570,7 +572,8 @@ class StepMysqlHelper implements Serializable {
                             o.getBatchStep(), //batchStep
                             (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(),// stepPlugin
                             (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                            (o.isDelayStep())
+                            (o.isDelayStep()),
+                            (o.isUpdateMetadataIndex())
                     };
             return param;
         }
@@ -578,9 +581,9 @@ class StepMysqlHelper implements Serializable {
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        } else {
             return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -596,7 +599,7 @@ class StepMysqlHelper implements Serializable {
                         + "typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, "
                         + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                         + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
-                        + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep)" + " VALUES ";
+                        + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex)" + " VALUES ";
         return answer;
     }
 
@@ -640,7 +643,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" batchStep = ?,");
         sql.append(" stepPlugin = ?,");
         sql.append(" validationPlugin = ?,");
-        sql.append(" delayStep = ?");
+        sql.append(" delayStep = ?,");
+        sql.append(" updateMetadataIndex = ?");
         sql.append(" WHERE SchritteID = " + o.getId());
 
         Object[] param = generateParameter(o, false);

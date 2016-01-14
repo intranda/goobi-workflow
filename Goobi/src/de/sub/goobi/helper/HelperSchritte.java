@@ -29,10 +29,14 @@ package de.sub.goobi.helper;
  */
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -44,6 +48,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
+import org.jdom2.JDOMException;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
@@ -63,7 +68,9 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -119,6 +126,28 @@ public class HelperSchritte {
         } catch (DAOException e) {
             logger.error(e);
         }
+
+        if (currentStep.isUpdateMetadataIndex()) {
+
+            try {
+                String metdatdaPath = currentStep.getProzess().getMetadataFilePath();
+                String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
+                Path metadataFile = Paths.get(metdatdaPath);
+                Path anchorFile = Paths.get(anchorPath);
+                Map<String, List<String>> pairs = new HashMap<>();
+
+                pairs = GoobiScript.extractMetadata(metadataFile, pairs);
+
+                if (Files.exists(anchorFile)) {
+                    pairs.putAll(GoobiScript.extractMetadata(anchorFile, pairs));
+                }
+                MetadataManager.updateMetadata(processId, pairs);
+
+            } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
+                logger.error("process id : " + processId, e1);
+            }
+        }
+
         List<Step> automatischeSchritte = new ArrayList<Step>();
         List<Step> stepsToFinish = new ArrayList<Step>();
         if (logger.isDebugEnabled()) {

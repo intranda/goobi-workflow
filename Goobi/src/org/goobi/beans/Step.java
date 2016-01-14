@@ -100,6 +100,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String stepPlugin;
     private String validationPlugin;
     private boolean delayStep;
+    
+    private boolean updateMetadataIndex;
 
     public Step() {
         this.titel = "";
@@ -853,6 +855,14 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setDelayStep(boolean delayStep) {
         this.delayStep = delayStep;
+    }
+    
+    public boolean isUpdateMetadataIndex() {
+        return updateMetadataIndex;
+    }
+    
+    public void setUpdateMetadataIndex(boolean updateMetadataIndex) {
+        this.updateMetadataIndex = updateMetadataIndex;
     }
 
 }
