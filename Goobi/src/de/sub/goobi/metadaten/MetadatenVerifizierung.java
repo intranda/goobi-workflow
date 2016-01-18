@@ -579,15 +579,16 @@ public class MetadatenVerifizierung {
     private List<String> validateMetadatValues(DocStruct inStruct, String lang) {
         List<String> errorList = new ArrayList<>();
         List<Metadata> metadataList = inStruct.getAllMetadata();
+        if (metadataList != null) {
+            for (Metadata md : metadataList) {
+                if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
+                    String regularExpression = md.getType().getValidationExpression();
+                    if (!md.getValue().matches(regularExpression)) {
+                        errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                regularExpression));
 
-        for (Metadata md : metadataList) {
-            if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
-                String regularExpression = md.getType().getValidationExpression();
-                if (!md.getValue().matches(regularExpression)) {
-                    errorList.add( Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(), regularExpression));
-
+                    }
                 }
-
             }
         }
 
