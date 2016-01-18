@@ -140,6 +140,10 @@ class ProcessMysqlHelper implements Serializable {
                 MasterpieceManager.deleteMasterpiece(object);
             }
 
+            for (Step object : o.getSchritte()) {
+                StepManager.deleteStep(object);
+            }
+            
             // delete process
             String sql = "DELETE FROM prozesse WHERE ProzesseID = ?";
             Object[] param = { o.getId() };

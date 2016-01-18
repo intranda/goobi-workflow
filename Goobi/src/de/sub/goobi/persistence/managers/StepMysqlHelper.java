@@ -310,13 +310,18 @@ class StepMysqlHelper implements Serializable {
                 deleteErrorProperty(property);
             }
 
-            String sql = "DELETE FROM schritte WHERE SchritteID = ?";
+            String schritteberechtigtebenutzer = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID = ?";
+            String schritteberechtigtegruppen = "DELETE FROM schritteberechtigtegruppen WHERE schritteID = ?";
+            String schritte = "DELETE FROM schritte WHERE SchritteID = ?";
+            
             Object[] param = { o.getId() };
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, sql, param);
+                run.update(connection, schritteberechtigtebenutzer, param);
+                run.update(connection, schritteberechtigtegruppen, param);
+                run.update(connection, schritte, param);
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
