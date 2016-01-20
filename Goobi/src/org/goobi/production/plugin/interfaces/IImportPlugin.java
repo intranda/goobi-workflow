@@ -35,8 +35,8 @@ import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.properties.ImportProperty;
 
+import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.exceptions.ImportPluginException;
-
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 
@@ -53,6 +53,8 @@ public interface IImportPlugin extends IPlugin {
 	public String getProcessTitle();
 
 	public List<ImportObject> generateFiles(List<Record> records);
+	
+	public void setForm(MassImportForm form);
 	
 	public void setImportFolder(String folder);
 	
