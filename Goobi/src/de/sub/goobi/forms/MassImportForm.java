@@ -107,6 +107,11 @@ public class MassImportForm {
 
     private List<Process> processList;
 
+    // progress bar
+    private Integer progress = 0;
+    private Integer currentProcessNo = 0;
+    private Integer totalProcessNo = 0;
+    
     public MassImportForm() {
 
         // usablePlugins = ipl.getTitles();
@@ -231,6 +236,8 @@ public class MassImportForm {
             return "";
         }
         if (testForData()) {
+
+
             List<ImportObject> answer = new ArrayList<ImportObject>();
             Integer batchId = null;
 
@@ -239,7 +246,8 @@ public class MassImportForm {
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
             this.plugin.setImportFolder(tempfolder);
             this.plugin.setPrefs(prefs);
-
+            plugin.setForm(this);
+            
             if (StringUtils.isNotEmpty(this.idList)) {
                 // IImportPlugin plugin = (IImportPlugin)
                 // PluginLoader.getPlugin(PluginType.Import,
@@ -253,7 +261,7 @@ public class MassImportForm {
                     r.setCollections(this.digitalCollections);
                     recordList.add(r);
                 }
-
+                totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
             } else if (this.importFile != null) {
                 // uploaded file
@@ -265,6 +273,7 @@ public class MassImportForm {
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
                 }
+                totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
             } else if (StringUtils.isNotEmpty(this.records)) {
                 // found list with records
@@ -275,12 +284,14 @@ public class MassImportForm {
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
                 }
+                totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
             } else if (this.selectedFilenames.size() > 0) {
                 List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
                 }
+                totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
 
             }
@@ -296,6 +307,7 @@ public class MassImportForm {
 
             }
             for (ImportObject io : answer) {
+                currentProcessNo = currentProcessNo + 1;
                 if (batchId != null) {
                     io.setBatchId(batchId);
                 }
@@ -318,7 +330,7 @@ public class MassImportForm {
                         this.processList.add(p);
                     }
                 } else {
-                    String[] parameter = {io.getProcessTitle(), io.getErrorMessage()};
+                    String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
                     Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", parameter));
                     // Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
                     if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
@@ -334,19 +346,19 @@ public class MassImportForm {
                 return "";
             }
         }
-
         // missing data
         else {
             Helper.setFehlerMeldung("missingData");
             return "";
         }
+        currentProcessNo = 0;
         this.idList = null;
         if (this.importFile != null) {
-           try {
-            Files.delete(this.importFile);
-        } catch (IOException e) {
-            logger.error(e);
-        }
+            try {
+                Files.delete(this.importFile);
+            } catch (IOException e) {
+                logger.error(e);
+            }
             this.importFile = null;
         }
         if (selectedFilenames != null && !selectedFilenames.isEmpty()) {
@@ -367,7 +379,7 @@ public class MassImportForm {
                 Helper.setFehlerMeldung("noFileSelected");
                 return;
             }
-         
+
             String basename = getFileName(this.uploadedFile);
             if (basename.startsWith(".")) {
                 basename = basename.substring(1);
@@ -381,7 +393,7 @@ public class MassImportForm {
 
             String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
 
-            inputStream =this.uploadedFile.getInputStream();
+            inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(filename);
 
             byte[] buf = new byte[1024];
@@ -419,13 +431,12 @@ public class MassImportForm {
     private String getFileName(final Part part) {
         for (String content : part.getHeader("content-disposition").split(";")) {
             if (content.trim().startsWith("filename")) {
-                return content.substring(
-                        content.indexOf('=') + 1).trim().replace("\"", "");
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
         return null;
     }
-    
+
     public Part getUploadedFile() {
         return this.uploadedFile;
     }
@@ -804,5 +815,47 @@ public class MassImportForm {
     @Deprecated
     public String getInclude() {
         return "plugins/" + plugin.getTitle() + ".jsp";
+    }
+
+    public Integer getProgress() {
+        if (progress == null) {
+            progress = 0;
+        } else if (totalProcessNo == 0) {
+            progress = 100;
+        } else {
+            progress = (int) (currentProcessNo * 100 / totalProcessNo);
+
+            if (progress > 100)
+                progress = 100;
+        }
+
+        return progress;
+    }
+
+    public void setCurrentProcess(Integer number) {
+        currentProcessNo = number;
+    }
+
+    public void setTotalProcessNo(Integer totalProcessNo) {
+        this.totalProcessNo = totalProcessNo;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
+    public void onComplete() {
+        progress = null;
+    }
+
+    public boolean isShowProgressBar() {
+        if (progress == null || progress == 100 || progress == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public void addProcessToProgressBar() {
+        currentProcessNo = currentProcessNo + 1;
     }
 }
