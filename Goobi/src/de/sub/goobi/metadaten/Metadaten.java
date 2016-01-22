@@ -3567,7 +3567,9 @@ public class Metadaten {
 		retrieveAllImages();
 		if (currentTheme == Theme.ui) {
 			BildErmitteln(0);
-		}
+		} else {
+            loadCurrentImages();
+        }
 	}
 
 	public void moveSelectedPages(String inDirection, long inTimes) {
@@ -3613,7 +3615,9 @@ public class Metadaten {
 		retrieveAllImages();
 		if (currentTheme == Theme.ui) {
 			BildErmitteln(0);
-		}
+		} else {
+            loadCurrentImages();
+        }
 	}
 
 	public void deleteSeltectedPages() {
