@@ -195,7 +195,11 @@ class StepMysqlHelper implements Serializable {
         s.setTypBeimAnnehmenModul(rs.getBoolean("typBeimAnnehmenModul"));
         s.setTypBeimAnnehmenAbschliessen(rs.getBoolean("typBeimAnnehmenAbschliessen"));
         s.setTypBeimAnnehmenModulUndAbschliessen(rs.getBoolean("typBeimAnnehmenModulUndAbschliessen"));
-        s.setTypAutomatischScriptpfad(rs.getString("typAutomatischScriptpfad"));
+        String script = rs.getString("typAutomatischScriptpfad");
+        if (script != null) {
+            script = script.trim();
+        }
+        s.setTypAutomatischScriptpfad(script);
         s.setTypBeimAbschliessenVerifizieren(rs.getBoolean("typBeimAbschliessenVerifizieren"));
         s.setTypModulName(rs.getString("typModulName"));
         s.setTypBeimAnnehmenModul(rs.getBoolean("typBeimAnnehmenModul"));
@@ -210,13 +214,30 @@ class StepMysqlHelper implements Serializable {
         s.setTypScriptStep(rs.getBoolean("typScriptStep"));
         s.setScriptname1(rs.getString("scriptName1"));
         s.setScriptname2(rs.getString("scriptName2"));
-        s.setTypAutomatischScriptpfad2(rs.getString("typAutomatischScriptpfad2"));
+
+        script = rs.getString("typAutomatischScriptpfad2");
+        if (script != null) {
+            script = script.trim();
+        }
+        s.setTypAutomatischScriptpfad2(script);
         s.setScriptname3(rs.getString("scriptName3"));
-        s.setTypAutomatischScriptpfad3(rs.getString("typAutomatischScriptpfad3"));
+        script = rs.getString("typAutomatischScriptpfad3");
+        if (script != null) {
+            script = script.trim();
+        }
+        s.setTypAutomatischScriptpfad3(script);
         s.setScriptname4(rs.getString("scriptName4"));
-        s.setTypAutomatischScriptpfad4(rs.getString("typAutomatischScriptpfad4"));
+        script = rs.getString("typAutomatischScriptpfad4");
+        if (script != null) {
+            script = script.trim();
+        }
+        s.setTypAutomatischScriptpfad4(script);
         s.setScriptname5(rs.getString("scriptName5"));
-        s.setTypAutomatischScriptpfad5(rs.getString("typAutomatischScriptpfad5"));
+        script = rs.getString("typAutomatischScriptpfad5");
+        if (script != null) {
+            script = script.trim();
+        }
+        s.setTypAutomatischScriptpfad5(script);
         s.setBatchStep(rs.getBoolean("batchStep"));
         s.setStepPlugin(rs.getString("stepPlugin"));
         s.setValidationPlugin(rs.getString("validationPlugin"));
@@ -313,7 +334,7 @@ class StepMysqlHelper implements Serializable {
             String schritteberechtigtebenutzer = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID = ?";
             String schritteberechtigtegruppen = "DELETE FROM schritteberechtigtegruppen WHERE schritteID = ?";
             String schritte = "DELETE FROM schritte WHERE SchritteID = ?";
-            
+
             Object[] param = { o.getId() };
             Connection connection = null;
             try {
@@ -528,9 +549,7 @@ class StepMysqlHelper implements Serializable {
                             o.getBatchStep(), //batchStep
                             (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(),// stepPlugin
                             (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                            (o.isDelayStep()),
-                            (o.isUpdateMetadataIndex())
-                    };
+                            (o.isDelayStep()), (o.isUpdateMetadataIndex()) };
             return param;
         } else {
             Object[] param =
@@ -577,9 +596,7 @@ class StepMysqlHelper implements Serializable {
                             o.getBatchStep(), //batchStep
                             (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(),// stepPlugin
                             (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                            (o.isDelayStep()),
-                            (o.isUpdateMetadataIndex())
-                    };
+                            (o.isDelayStep()), (o.isUpdateMetadataIndex()) };
             return param;
         }
     }
@@ -604,7 +621,8 @@ class StepMysqlHelper implements Serializable {
                         + "typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, "
                         + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                         + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
-                        + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex)" + " VALUES ";
+                        + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex)"
+                        + " VALUES ";
         return answer;
     }
 
