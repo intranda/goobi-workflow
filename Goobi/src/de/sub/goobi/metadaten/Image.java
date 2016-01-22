@@ -36,6 +36,7 @@ public @Data class Image {
     private String thumbnailUrl;
     private String largeThumbnailUrl;
     private List<ImageLevel> imageLevels = new ArrayList<ImageLevel>();
+    private String bookmarkUrl;
     private String tooltip;
     private Dimension size = null;
 

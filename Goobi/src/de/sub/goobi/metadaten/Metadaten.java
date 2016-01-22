@@ -4274,7 +4274,8 @@ public class Metadaten {
         String thumbUrl = createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL * 3, THUMBNAIL_FORMAT, ""));
-
+        currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
+        
         if (createImageLevels && !currentImage.hasImageLevels()) {
             if (currentImage.getSize() == null) {
                 currentImage.setSize(getActualImageSize(currentImage));
