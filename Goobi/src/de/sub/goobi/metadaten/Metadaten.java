@@ -977,24 +977,25 @@ public class Metadaten {
         if (this.logicalTopstruct == null) {
             throw new ReadException(Helper.getTranslation("metaDataError"));
         }
-
+        checkImageNames();
+        retrieveAllImages();
         // check filenames, correct them
         if (currentTheme == Theme.uii) {
-            checkImageNames();
-            retrieveAllImages();
+          
+            // initialize image list
+            numberOfImagesPerPage = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
+            THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
+            imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
+
+            pageNo = 0;
+            imageIndex = 0;
+            loadCurrentImages();
         } else {
             this.myBildNummer = 1;
             this.myImageRotation = 0;
             BildErmitteln(0);
         }
-        // initialize image list
-        numberOfImagesPerPage = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
-        THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
-        imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
 
-        pageNo = 0;
-        imageIndex = 0;
-        loadCurrentImages();
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
