@@ -104,4 +104,14 @@ public class MockUploadedFile implements Part{
         
     }
 
+
+
+
+
+	@Override
+	public String getSubmittedFileName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
