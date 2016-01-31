@@ -180,15 +180,33 @@ public class WebInterface extends HttpServlet {
 	private void generateAnswer(HttpServletResponse resp, CommandResponse cr) throws IOException {
 		resp.setStatus(cr.getStatus());
 		String answer = "";
-		answer += "<html><head></head><body>";
-		answer += "<h3>";
+		answer += "<!DOCTYPE HTML>";
+		answer += "<html>";
+		answer += "<head>";
+		answer += "<title>Goobi</title>";
+		answer += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>";
+		answer += "<style type=\"text/css\">";
+		answer += "body{font-family: Helvetica, sans-serif;background:white;padding:10px;}";
+		answer += "h1{font-size:34px;color:#FF7A00;text-align:center;margin-top:25px;}";
+		answer += "h4{border-bottom: solid #448BC8 1px;margin-bottom: 10px; padding-bottom: 10px;}";
+		answer += ".img1{position:fixed;left:15px;top:15px;}";
+		answer += ".img2{position:fixed;right:15px;bottom:15px;}";
+		answer += ".content{background: #f9f9f9; border:solid #ddd 1px; padding: 20px; color:#999;font-size:14x;margin:0px auto;text-align:center;width:60%;}";
+		answer += "</style>";
+		answer += "</head>";
+		answer += "<body>";
+		answer += "<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"ui/images/webapi_1.png\"></a>";
+		answer += "<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"ui/images/webapi_2.png\"></a>";
+		answer += "<h1>";
 		answer += cr.getTitle();
-		answer += "</h3>";
+		answer += "</h1>";
+		answer += "<div class=\"content\">";
 		answer += cr.getMessage();
-		answer += "</body></html>";
+		answer += " </div>";
+		answer += "</body>";
+		answer += "</html>";
 		resp.getOutputStream().print(answer);
 	}
-
 	
 	private static Comparator<IPlugin> pluginComparator = new Comparator<IPlugin>() {
 
