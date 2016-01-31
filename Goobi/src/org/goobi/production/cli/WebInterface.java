@@ -177,6 +177,9 @@ public class WebInterface extends HttpServlet {
 				allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";				
 			}
 		}
+		if (forCommand==null){
+			allHelp += "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>";				
+		}
 		generateAnswer(resp, 200, "Goobi Web API Help", allHelp);
 	}
 
