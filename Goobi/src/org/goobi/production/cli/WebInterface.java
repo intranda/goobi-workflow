@@ -111,18 +111,6 @@ public class WebInterface extends HttpServlet {
 				return;
 			}
 
-			if (this.command.equals("help")) {
-				generateHelp(resp);
-				return;
-			}
-
-			// get correct plugin from list
-			ICommandPlugin myCommandPlugin = (ICommandPlugin) PluginLoader.getPluginByTitle(PluginType.Command, this.command);
-			if (myCommandPlugin == null) {
-				generateAnswer(resp, 400, "invalid command", "command not found in list of command plugins");
-				return;
-			}
-
 			// hand parameters over to command
 			Map<String, String[]> map = req.getParameterMap();
 			HashMap<String, String> params = new HashMap<String, String>();
@@ -133,6 +121,23 @@ public class WebInterface extends HttpServlet {
 					params.put(entry.getKey(), entry.getValue()[0]);
 				}
 			}
+
+			if (this.command.equals("help")) {
+				if (!params.containsKey("for")) {
+					generateHelp(resp, null);
+				}else{
+					generateHelp(resp, params.get("for"));
+				}
+				return;
+			}
+
+			// get correct plugin from list
+			ICommandPlugin myCommandPlugin = (ICommandPlugin) PluginLoader.getPluginByTitle(PluginType.Command, this.command);
+			if (myCommandPlugin == null) {
+				generateAnswer(resp, 400, "invalid command", "command not found in list of command plugins");
+				return;
+			}
+
 			myCommandPlugin.setParameterMap(params);
 
 			// let command validate if all parameters are correct: null means
@@ -162,13 +167,15 @@ public class WebInterface extends HttpServlet {
 		doGet(req, resp);
 	}
 
-	private void generateHelp(HttpServletResponse resp) throws IOException {
+	private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {
 		String allHelp = "";
 		List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
 		Collections.sort(mycommands, pluginComparator);
 		for (IPlugin iPlugin : mycommands) {
 			ICommandPlugin icp = (ICommandPlugin) iPlugin;
-			allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";
+			if (forCommand==null || forCommand.equals(icp.help().getTitle()) || ("Command " + forCommand).equals(icp.help().getTitle())){
+				allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";				
+			}
 		}
 		generateAnswer(resp, 200, "Goobi Web API Help", allHelp);
 	}
