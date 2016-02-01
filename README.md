@@ -52,3 +52,12 @@ At present, Goobi supports the following metadata formats:</p>
 </ul>
 <p></p></div></div></div>
 </div>
+
+<h2 class="title"><span>You are searching for more information?</span></h2>
+If you are searching for more information please get in touch with the development team of intranda. You can contact them using the web form here: <br/>http://www.intranda.com/en/contact/
+<br/><br/>
+If you are interested in more details you can find the release notes here at GitHub unter the following url:<br/>
+https://github.com/intranda/goobi/releases
+<br/><br/>
+A complete German and English documentation regarding Goobi can be found using this URL:<br/>
+http://www.intranda.com/en/digiverso/documentation/
