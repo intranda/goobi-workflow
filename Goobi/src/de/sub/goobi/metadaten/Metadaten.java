@@ -232,7 +232,7 @@ public class Metadaten {
 
     // new parameter image parameter for OpenSeadragon
     private int numberOfImagesPerPage = 12;
-    private static int THUMBNAIL_SIZE_IN_PIXEL = 200;
+    private int thumbnailSizeInPixel = 200;
     private String THUMBNAIL_FORMAT = "jpg";
     private String MAINIMAGE_FORMAT = "jpg";
     private int pageNo = 0;
@@ -244,6 +244,7 @@ public class Metadaten {
     private int containerWidth = 600;;
     private Theme currentTheme = Theme.ui;
     private boolean processHasNewTemporaryMetadataFiles = false;
+    private boolean sizeChanged = false;
 
     /**
      * Konstruktor ================================================================
@@ -984,7 +985,7 @@ public class Metadaten {
           
             // initialize image list
             numberOfImagesPerPage = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
-            THUMBNAIL_SIZE_IN_PIXEL = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
+            thumbnailSizeInPixel = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
             imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
 
             pageNo = 0;
@@ -4262,7 +4263,7 @@ public class Metadaten {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
         }
         for (Image currentImage : subList) {
-            if (StringUtils.isEmpty(currentImage.getThumbnailUrl())) {
+            if (StringUtils.isEmpty(currentImage.getThumbnailUrl()) || sizeChanged) {
                 createImage(currentImage, false);
             }
         }
@@ -4271,9 +4272,9 @@ public class Metadaten {
 
     private void createImage(Image currentImage, boolean createImageLevels) {
 
-        String thumbUrl = createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL, THUMBNAIL_FORMAT, "");
+        String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
-        currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, THUMBNAIL_SIZE_IN_PIXEL * 3, THUMBNAIL_FORMAT, ""));
+        currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
         currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
         
         if (createImageLevels && !currentImage.hasImageLevels()) {
@@ -4471,10 +4472,19 @@ public class Metadaten {
     }
 
     public int getThumbnailSize() {
-        return THUMBNAIL_SIZE_IN_PIXEL;
+        return thumbnailSizeInPixel;
     }
 
     public void setThumbnailSize(int value) {
+        if (value == 0) {
+            return;
+        }
+        if (thumbnailSizeInPixel != value) {
+            sizeChanged = true;
+            thumbnailSizeInPixel = value;
+            getPaginatorList();
+            sizeChanged = false;
+        }
     }
 
     public int getContainerWidth() {
