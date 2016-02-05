@@ -58,6 +58,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.zip.CRC32;
 
+import lombok.extern.log4j.Log4j;
 import de.sub.goobi.config.ConfigurationHelper;
 
 /**
@@ -65,6 +66,7 @@ import de.sub.goobi.config.ConfigurationHelper;
  * 
  * @author Steffen Hankiewicz
  */
+@Log4j
 public class NIOFileUtils {
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING,
@@ -381,7 +383,7 @@ public class NIOFileUtils {
     public static Long start(Path srcFile, Path destFile) throws IOException {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
-            System.err.println("Not a readable file: " + srcFile.getFileName().toString());
+            log.error("Not a readable file: " + srcFile.getFileName().toString());
         }
 
         // copy file, optionally creating a checksum

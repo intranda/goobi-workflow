@@ -377,7 +377,7 @@ public class GetOpac {
             if (picaPlusLong != null) {
                 result.appendChild(picaPlusRaw.importNode(picaPlusLong, true));
             } else {
-                System.err.println("Could not retrieve data for hit nr:" + i);
+               logger.error("Could not retrieve data for hit nr:" + i);
             }
         }
 

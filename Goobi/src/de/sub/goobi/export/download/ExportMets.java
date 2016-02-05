@@ -195,7 +195,7 @@ public class ExportMets {
          * get the topstruct element of the digital document depending on anchor property
          */
         DocStruct topElement = dd.getLogicalDocStruct();
-        if (this.myPrefs.getDocStrctTypeByName(topElement.getType().getName()).isAnchor()) {
+        if (topElement.getType().isAnchor()) {
             if (topElement.getAllChildren() == null || topElement.getAllChildren().size() == 0) {
                 throw new PreferencesException(myProzess.getTitel()
                         + ": the topstruct element is marked as anchor, but does not have any children for physical docstrucs");
