@@ -8,7 +8,7 @@
 <ul>
 <li>Flexible import from various OPACs (e.g. using PICA+, MARC21, MAB2, Dublin Core, MODS, LIDO, EAD)</li>
 <li>Flexible data export (e.g. as METS/MODS, METS/MARC, Dublin Core, OAI, MARC, LIDO, EAD)</li>
-<li>Support for different image file formats (e.g. TIF, JPEG, JPEG 2000, PNG)</li>
+<li>Support for different image file formats (e.g. TIF, JPEG, JPEG 2000, PNG, DjVu)</li>
 <li>OCR integration using ABBYY Finereader SDK, Tesseract and ABBYY Recognition Server</li>
 <li>Editor to capture pagination data, structure data and metadata to whatever depth is required</li>
 <li>Integration and control of various scanning devices from different manufacturers</li>
