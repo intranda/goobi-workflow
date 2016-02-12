@@ -87,7 +87,8 @@ public class User implements DatabaseObject {
 	private boolean hideCorrectionTasks = false;
 	private boolean displayOnlySelectedTasks = false;
 	private boolean displayOnlyOpenTasks = false;
-
+	private boolean displayOtherTasks = false;
+	
 	private boolean metsDisplayTitle = false;
 	private boolean metsLinkImage = false;
 	private boolean metsDisplayPageAssignments = false;
@@ -694,6 +695,14 @@ public class User implements DatabaseObject {
     
     public void setMetsLinkImage(boolean metsLinkImage) {
         this.metsLinkImage = metsLinkImage;
+    }
+    
+    public boolean isDisplayOtherTasks() {
+        return displayOtherTasks;
+    }
+    
+    public void setDisplayOtherTasks(boolean displayOtherTasks) {
+        this.displayOtherTasks = displayOtherTasks;
     }
 }
 

@@ -198,6 +198,7 @@ public class UserManager implements IManager, Serializable {
         r.setEmail(rs.getString("email"));
         r.setShortcutPrefix(rs.getString("shortcut"));
         r.setMetsEditorTime(rs.getInt("metseditortime"));
+        r.setDisplayOtherTasks(rs.getBoolean("displayOtherTasks"));
         r.setMetsDisplayHierarchy(rs.getBoolean("metsDisplayHierarchy"));
         r.setMetsDisplayPageAssignments(rs.getBoolean("metsDisplayPageAssignments"));
         r.setMetsDisplayTitle(rs.getBoolean("metsDisplayTitle"));

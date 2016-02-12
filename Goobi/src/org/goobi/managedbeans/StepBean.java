@@ -140,6 +140,7 @@ public class StepBean extends BasicBean {
             nurEigeneSchritte = login.getMyBenutzer().isDisplayOnlySelectedTasks();
             showAutomaticTasks = login.getMyBenutzer().isDisplayAutomaticTasks();
             hideCorrectionTasks = login.getMyBenutzer().isHideCorrectionTasks();
+            hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
 
         } else {
             this.anzeigeAnpassen.put("lockings", false);

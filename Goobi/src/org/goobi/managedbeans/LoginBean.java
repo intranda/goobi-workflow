@@ -238,6 +238,7 @@ public class LoginBean {
             temp.setMetsDisplayPageAssignments(myBenutzer.isMetsDisplayPageAssignments());
             temp.setMetsDisplayTitle(myBenutzer.isMetsDisplayTitle());
             temp.setMetsLinkImage(myBenutzer.isMetsLinkImage());
+            temp.setDisplayOtherTasks(myBenutzer.isDisplayOtherTasks());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

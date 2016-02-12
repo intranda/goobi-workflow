@@ -131,6 +131,7 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table benutzer add column displayOtherTasks boolean default false;");
             runner.update(connection, "alter table benutzer add column metsDisplayTitle boolean default false;");
             runner.update(connection, "alter table benutzer add column metsLinkImage boolean default false;");
             runner.update(connection, "alter table benutzer add column metsDisplayPageAssignments boolean default false;");
