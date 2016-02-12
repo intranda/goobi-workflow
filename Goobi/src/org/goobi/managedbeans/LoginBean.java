@@ -234,6 +234,10 @@ public class LoginBean {
             temp.setShortcutPrefix(myBenutzer.getShortcutPrefix());
             temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
             temp.setMetsEditorTime(myBenutzer.getMetsEditorTime());
+            temp.setMetsDisplayHierarchy(myBenutzer.isMetsDisplayHierarchy());
+            temp.setMetsDisplayPageAssignments(myBenutzer.isMetsDisplayPageAssignments());
+            temp.setMetsDisplayTitle(myBenutzer.isMetsDisplayTitle());
+            temp.setMetsLinkImage(myBenutzer.isMetsLinkImage());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

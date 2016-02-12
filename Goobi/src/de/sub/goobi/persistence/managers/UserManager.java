@@ -198,6 +198,10 @@ public class UserManager implements IManager, Serializable {
         r.setEmail(rs.getString("email"));
         r.setShortcutPrefix(rs.getString("shortcut"));
         r.setMetsEditorTime(rs.getInt("metseditortime"));
+        r.setMetsDisplayHierarchy(rs.getBoolean("metsDisplayHierarchy"));
+        r.setMetsDisplayPageAssignments(rs.getBoolean("metsDisplayPageAssignments"));
+        r.setMetsDisplayTitle(rs.getBoolean("metsDisplayTitle"));
+        r.setMetsLinkImage(rs.getBoolean("metsLinkImage"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {

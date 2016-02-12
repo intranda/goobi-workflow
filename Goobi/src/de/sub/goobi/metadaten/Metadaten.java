@@ -65,6 +65,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.ConfigDisplayRules;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
@@ -251,12 +252,25 @@ public class Metadaten {
      */
     public Metadaten() {
         this.treeProperties = new HashMap<String, Boolean>();
-        this.treeProperties.put("showtreelevel", Boolean.valueOf(false));
-        this.treeProperties.put("showtitle", Boolean.valueOf(false));
-        this.treeProperties.put("fullexpanded", Boolean.valueOf(true));
-        this.treeProperties.put("showfirstpagenumber", Boolean.valueOf(false));
-        this.treeProperties.put("showpagesasajax", Boolean.valueOf(false));
-        this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
+
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (login != null && login.getMyBenutzer() != null) {
+            this.treeProperties.put("showtreelevel", login.getMyBenutzer().isMetsDisplayHierarchy());
+            this.treeProperties.put("showtitle", login.getMyBenutzer().isMetsDisplayTitle());
+            bildZuStrukturelement = login.getMyBenutzer().isMetsLinkImage();
+            this.treeProperties.put("showfirstpagenumber", login.getMyBenutzer().isMetsDisplayPageAssignments());
+            this.treeProperties.put("fullexpanded", Boolean.valueOf(true));
+            this.treeProperties.put("showpagesasajax", Boolean.valueOf(false));
+            this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
+        } else {
+            this.treeProperties = new HashMap<String, Boolean>();
+            this.treeProperties.put("showtreelevel", Boolean.valueOf(false));
+            this.treeProperties.put("showtitle", Boolean.valueOf(false));
+            this.treeProperties.put("fullexpanded", Boolean.valueOf(true));
+            this.treeProperties.put("showfirstpagenumber", Boolean.valueOf(false));
+            this.treeProperties.put("showpagesasajax", Boolean.valueOf(false));
+            this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
+        }
     }
 
     /**
@@ -953,7 +967,6 @@ public class Metadaten {
 
         this.currentTifFolder = null;
         readAllTifFolders();
-        this.bildZuStrukturelement = false;
 
         /*
          * -------------------------------- Dokument einlesen --------------------------------
@@ -982,7 +995,7 @@ public class Metadaten {
         retrieveAllImages();
         // check filenames, correct them
         if (currentTheme == Theme.uii) {
-          
+
             // initialize image list
             numberOfImagesPerPage = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
             thumbnailSizeInPixel = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
@@ -996,7 +1009,6 @@ public class Metadaten {
             this.myImageRotation = 0;
             BildErmitteln(0);
         }
-
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
@@ -4276,7 +4288,7 @@ public class Metadaten {
         currentImage.setThumbnailUrl(thumbUrl);
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
         currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
-        
+
         if (createImageLevels && !currentImage.hasImageLevels()) {
             if (currentImage.getSize() == null) {
                 currentImage.setSize(getActualImageSize(currentImage));

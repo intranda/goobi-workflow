@@ -87,6 +87,11 @@ public class User implements DatabaseObject {
 	private boolean hideCorrectionTasks = false;
 	private boolean displayOnlySelectedTasks = false;
 	private boolean displayOnlyOpenTasks = false;
+
+	private boolean metsDisplayTitle = false;
+	private boolean metsLinkImage = false;
+	private boolean metsDisplayPageAssignments = false;
+    private boolean metsDisplayHierarchy = false;
 	
 	private Integer metsEditorTime;
 	
@@ -657,6 +662,38 @@ public class User implements DatabaseObject {
 
     public void setMetsEditorTime(Integer metsEditorTime) {
         this.metsEditorTime = metsEditorTime;
+    }
+    
+    public boolean isMetsDisplayHierarchy() {
+        return metsDisplayHierarchy;
+    }
+    
+    public boolean isMetsDisplayPageAssignments() {
+        return metsDisplayPageAssignments;
+    }
+    
+    public boolean isMetsDisplayTitle() {
+        return metsDisplayTitle;
+    }
+    
+    public boolean isMetsLinkImage() {
+        return metsLinkImage;
+    }
+    
+    public void setMetsDisplayHierarchy(boolean metsDisplayHierarchy) {
+        this.metsDisplayHierarchy = metsDisplayHierarchy;
+    }
+    
+    public void setMetsDisplayPageAssignments(boolean metsDisplayPageAssignments) {
+        this.metsDisplayPageAssignments = metsDisplayPageAssignments;
+    }
+    
+    public void setMetsDisplayTitle(boolean metsDisplayTitle) {
+        this.metsDisplayTitle = metsDisplayTitle;
+    }
+    
+    public void setMetsLinkImage(boolean metsLinkImage) {
+        this.metsLinkImage = metsLinkImage;
     }
 }
 

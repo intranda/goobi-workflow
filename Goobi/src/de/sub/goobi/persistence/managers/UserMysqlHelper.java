@@ -124,9 +124,10 @@ class UserMysqlHelper implements Serializable {
                 String propNames =
                         "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
-                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime";
+                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
+                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage";
 
-                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                                 ro.getLogin() == null ? null : ro.getLogin(), ro.getPasswort() == null ? null : ro.getPasswort(), ro.isIstAktiv(),
@@ -140,7 +141,8 @@ class UserMysqlHelper implements Serializable {
                                 ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
                                 ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
                                 ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime() };
+                                ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                                ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -187,8 +189,14 @@ class UserMysqlHelper implements Serializable {
                 sql.append("hideCorrectionTasks =  ?, ");
                 sql.append("email =  ?, ");
                 sql.append("shortcut =  ?, ");
-                sql.append("metseditortime =  ? ");
+                sql.append("metseditortime =  ?, ");
+                sql.append("metsDisplayHierarchy =  ?, ");
+                sql.append("metsDisplayPageAssignments =  ?, ");
+                sql.append("metsDisplayTitle =  ?, ");
+                sql.append(" metsLinkImage =? ");
+
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
+
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                                 ro.getLogin() == null ? null : ro.getLogin(), ro.getPasswort() == null ? null : ro.getPasswort(), ro.isIstAktiv(),
@@ -202,7 +210,8 @@ class UserMysqlHelper implements Serializable {
                                 ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
                                 ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
                                 ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                        ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime()     };
+                                ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                                ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage() };
                 if (logger.isDebugEnabled()) {
                     logger.debug(sql.toString() + ", " + Arrays.toString(param));
                 }
