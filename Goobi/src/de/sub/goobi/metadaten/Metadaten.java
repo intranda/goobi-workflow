@@ -1818,7 +1818,9 @@ public class Metadaten {
             if (currentTheme == Theme.ui) {
                 BildErmitteln(imageNr - this.myBildNummer);
             } else {
-                setImageIndex(imageNr - 1);
+                if (!allImages.isEmpty()) {
+                    setImageIndex(imageNr - 1);
+                }
             }
         }
     }
