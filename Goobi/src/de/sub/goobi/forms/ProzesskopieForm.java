@@ -43,6 +43,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
@@ -248,7 +250,9 @@ public class ProzesskopieForm {
             /*
              * -------------------------------- prüfen, ob das aktuelle Item eine Auswahlliste werden soll --------------------------------
              */
-            int selectItemCount = cp.getParamList("createNewProcess.itemlist.item(" + i + ").select").size();
+            
+            List<HierarchicalConfiguration> parameterList = cp.getList("createNewProcess.itemlist.item(" + i + ").select");
+            int selectItemCount = parameterList.size();
             /* Children durchlaufen und SelectItems erzeugen */
 
             if (selectItemCount ==1) {
@@ -263,11 +267,14 @@ public class ProzesskopieForm {
                 }
                 fa.setSelectList(new ArrayList<SelectItem>());
             }
-            for (int j = 0; j < selectItemCount; j++) {
-                String svalue = cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(" + j + ")[@label]");
-                String sid = cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(" + j + ")");
+            for (HierarchicalConfiguration hc : parameterList) {
+                ConfigurationNode node = hc.getRootNode();
+                String svalue = (String) ((ConfigurationNode) node.getAttributes("label").get(0)).getValue();
+                
+                String sid = (String) node.getValue();
                 fa.getSelectList().add(new SelectItem(sid, svalue, null));
             }
+            
             this.additionalFields.add(fa);
         }
     }

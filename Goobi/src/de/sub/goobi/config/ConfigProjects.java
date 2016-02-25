@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
@@ -168,6 +169,16 @@ public class ConfigProjects {
 			logger.error(e);
 			return new ArrayList<String>();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+    public List<HierarchicalConfiguration> getList(String inParameter) {
+	    try {
+	        return config.configurationsAt(this.projektTitel + inParameter);
+	    } catch (RuntimeException e) {
+            logger.error(e);
+            return new ArrayList<HierarchicalConfiguration>();
+        }
 	}
 
 }
