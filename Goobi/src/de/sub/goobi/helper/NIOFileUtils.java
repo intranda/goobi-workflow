@@ -280,6 +280,8 @@ public class NIOFileUtils {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
                 fileOk = true;
+            } else if (name.matches(prefix + "\\.[oO][bB][jJ]")) {
+                fileOk = true;
             }
 
             return fileOk;
