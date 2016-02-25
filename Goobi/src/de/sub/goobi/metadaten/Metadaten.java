@@ -2373,6 +2373,24 @@ public class Metadaten {
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
 
+                    // remove empty default elements
+                    List<Metadata> metadataList = this.myDocStruct.getAllMetadata();
+                    if (metadataList != null) {
+                        for (Metadata md : metadataList) {
+                            if (md.getValue().isEmpty()) {
+                                this.myDocStruct.removeMetadata(md);
+                            }
+                        }
+                    }
+                    List<Person> personList = myDocStruct.getAllPersons();
+                    if (personList != null) {
+                        for (Person p : personList) {
+                            if (p.getFirstname().isEmpty() && p.getLastname().isEmpty()) {
+                                myDocStruct.removePerson(p);
+                            }
+                        }
+                    }
+
                     /* die Liste aller erlaubten Metadatenelemente erstellen */
                     List<String> erlaubte = new ArrayList<String>();
                     for (Iterator<MetadataType> it = this.myDocStruct.getAddableMetadataTypes().iterator(); it.hasNext();) {
