@@ -2,7 +2,6 @@
     <wb-module deploy-name="Goobi1.9">
         <wb-resource deploy-path="/" source-path="/web" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src_merge"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src-dubious"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/src"/>
         <property name="context-root" value="Goobi1.9"/>

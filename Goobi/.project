@@ -57,13 +57,6 @@
 		<nature>org.zeroturnaround.eclipse.jrebelNature</nature>
 		<nature>com.instantiations.assist.eclipse.coverage.codeCoverageNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src_merge</name>
-			<type>2</type>
-			<locationURI>GIT_DIR/goobi-private/Goobi-Configuration/src_merge</locationURI>
-		</link>
-	</linkedResources>
 	<variableList>
 		<variable>
 			<name>GIT_DIR</name>
