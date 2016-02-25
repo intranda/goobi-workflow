@@ -475,9 +475,9 @@ public class Metadaten {
             if (!docStructIsAllowed(getAddableDocStructTypenAlsKind(), getAddDocStructType2())) {
                 setAddDocStructType2("");
             }
-          
+
         } else {
-            
+
             if (!docStructIsAllowed(getAddableDocStructTypenAlsNachbar(), getAddDocStructType1())) {
                 setAddDocStructType1("");
             }
@@ -827,7 +827,7 @@ public class Metadaten {
         this.alleSeitenAuswahl_letzteSeite = "";
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
-       
+
         this.tree3 = null;
         try {
             String returnvalue = XMLlesenStart();
@@ -2248,6 +2248,24 @@ public class Metadaten {
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
 
+                    // remove empty default elements
+                    List<Metadata> metadataList = this.myDocStruct.getAllMetadata();
+                    if (metadataList != null) {
+                        for (Metadata md : metadataList) {
+                            if (md.getValue().isEmpty()) {
+                                this.myDocStruct.removeMetadata(md);
+                            }
+                        }
+                    }
+                    List<Person> personList = myDocStruct.getAllPersons();
+                    if (personList != null) {
+                        for (Person p : personList) {
+                            if (p.getFirstname().isEmpty() && p.getLastname().isEmpty()) {
+                                myDocStruct.removePerson(p);
+                            }
+                        }
+                    }
+
                     /* die Liste aller erlaubten Metadatenelemente erstellen */
                     List<String> erlaubte = new ArrayList<String>();
                     for (Iterator<MetadataType> it = this.myDocStruct.getAddableMetadataTypes().iterator(); it.hasNext();) {
@@ -3095,14 +3113,14 @@ public class Metadaten {
         if (addDocStructType1 == null || addDocStructType1.isEmpty()) {
             SelectItem[] list = getAddableDocStructTypenAlsNachbar();
             if (list.length > 0) {
-                addDocStructType1 = ((DocStructType)list[0].getValue()).getName();
+                addDocStructType1 = ((DocStructType) list[0].getValue()).getName();
             }
         }
         return this.addDocStructType1;
     }
 
     public void setAddDocStructType1(String addDocStructType1) {
-        this.addDocStructType1 =getSelectedStructType(getAddableDocStructTypenAlsNachbar(), addDocStructType1);
+        this.addDocStructType1 = getSelectedStructType(getAddableDocStructTypenAlsNachbar(), addDocStructType1);
 
         createAddableData();
     }
@@ -3111,15 +3129,15 @@ public class Metadaten {
         if (addDocStructType2 == null || addDocStructType2.isEmpty()) {
             SelectItem[] list = getAddableDocStructTypenAlsKind();
             if (list.length > 0) {
-                addDocStructType2 = ((DocStructType)list[0].getValue()).getName();
+                addDocStructType2 = ((DocStructType) list[0].getValue()).getName();
             }
         }
-        
+
         return this.addDocStructType2;
     }
 
     public void setAddDocStructType2(String addDocStructType2) {
-        this.addDocStructType2 =getSelectedStructType(getAddableDocStructTypenAlsKind(), addDocStructType2);
+        this.addDocStructType2 = getSelectedStructType(getAddableDocStructTypenAlsKind(), addDocStructType2);
         createAddableData();
     }
 
@@ -3171,15 +3189,17 @@ public class Metadaten {
             this.neuesElementWohin = "1";
         } else {
             if (!inNeuesElementWohin.equals(neuesElementWohin)) {
-                if ((neuesElementWohin.equals("1") || neuesElementWohin.equals("2")) &&   (inNeuesElementWohin.equals("3") || inNeuesElementWohin.equals("4"))) {
+                if ((neuesElementWohin.equals("1") || neuesElementWohin.equals("2"))
+                        && (inNeuesElementWohin.equals("3") || inNeuesElementWohin.equals("4"))) {
                     this.neuesElementWohin = inNeuesElementWohin;
                     getAddDocStructType2();
                     createAddableData();
-                } else if((neuesElementWohin.equals("3") || neuesElementWohin.equals("4")) &&   (inNeuesElementWohin.equals("1") || inNeuesElementWohin.equals("2"))) {
+                } else if ((neuesElementWohin.equals("3") || neuesElementWohin.equals("4"))
+                        && (inNeuesElementWohin.equals("1") || inNeuesElementWohin.equals("2"))) {
                     this.neuesElementWohin = inNeuesElementWohin;
                     getAddDocStructType1();
                     createAddableData();
-                    
+
                 } else {
                     this.neuesElementWohin = inNeuesElementWohin;
                 }
