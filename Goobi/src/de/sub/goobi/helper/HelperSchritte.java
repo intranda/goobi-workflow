@@ -322,7 +322,7 @@ public class HelperSchritte {
         if (script == null || script.length() == 0) {
             return -1;
         }
-        script = script.replace("{", "(").replace("}", ")");
+       
         DigitalDocument dd = null;
         Process po = step.getProzess();
         Prefs prefs = null;

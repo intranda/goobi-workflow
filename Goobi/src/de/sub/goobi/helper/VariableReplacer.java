@@ -100,8 +100,7 @@ public class VariableReplacer {
         if (inString == null) {
             return "";
         }
-        inString = inString.replace("$", "");
-
+        inString = inString.replace("$", "").replace("{", "(").replace("}", ")");
         /*
          * replace metadata, usage: $(meta.firstchild.METADATANAME)
          */
