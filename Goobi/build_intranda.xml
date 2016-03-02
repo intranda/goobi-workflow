@@ -11,7 +11,7 @@
 	<property name="dir.build" location="./build" />
 	<property name="dir.build.src" location="${dir.build}/src" />
 	<property name="build.classes.test" value="${dir.build}/test-classes" />
-	<property name="dir.config" location="./config" />
+	<property name="dir.config" location="./install/config" />
 	<property name="dir.tests" location="./test/src" />
 	<property name="dir.src" location="./src" />
 	<property name="dir.src-dubious" location="./src-dubious" />
