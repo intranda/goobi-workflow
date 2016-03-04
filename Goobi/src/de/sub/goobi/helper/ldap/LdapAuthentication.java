@@ -65,7 +65,7 @@ import org.goobi.beans.User;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import dubious.sub.goobi.helper.encryption.MD4;
+import de.sub.goobi.helper.encryption.MD4;
 
 public class LdapAuthentication {
     private static final Logger logger = Logger.getLogger(LdapAuthentication.class);

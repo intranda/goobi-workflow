@@ -63,12 +63,12 @@ public class DelayJob extends AbstractGoobiJob {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
-                    ProcessManager.addLogfile(WikiFieldHelper.getWikiMessage(step.getProzess().getWikifield(), "debug", Helper
+                    ProcessManager.addLogfile(WikiFieldHelper.getWikiMessage(step.getProzess().getWikifield(), "trace", Helper
                             .getTranslation("blockingDelayIsExhausted")), step.getProzess().getId());
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
                     }
                 }
             }

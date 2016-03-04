@@ -50,8 +50,8 @@ class DocketMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
             return ret;
@@ -71,8 +71,8 @@ class DocketMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
@@ -89,8 +89,8 @@ class DocketMysqlHelper implements Serializable {
         sql.append("SELECT * FROM dockets WHERE docketID = " + id);
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             Docket ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler);
             return ret;
@@ -118,8 +118,8 @@ class DocketMysqlHelper implements Serializable {
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql.toString());
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql.toString());
                 }
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
                 if (id != null) {
@@ -130,8 +130,8 @@ class DocketMysqlHelper implements Serializable {
                 sql.append("name = '" + ro.getName() + "', ");
                 sql.append("file = '" + ro.getFile() + "' ");
                 sql.append(" WHERE docketID = " + ro.getId() + ";");
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql.toString());
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql.toString());
                 }
                 run.update(connection, sql.toString());
             }
@@ -149,8 +149,8 @@ class DocketMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM dockets WHERE docketID = " + ro.getId() + ";";
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql);
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql);
                 }
                 run.update(connection, sql);
             } finally {
@@ -168,8 +168,8 @@ class DocketMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
             return ret;

@@ -41,7 +41,7 @@ import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import dubious.sub.goobi.helper.encryption.MD5;
+import de.sub.goobi.helper.encryption.MD5;
 
 @ManagedBean(name = "AdministrationForm")
 @SessionScoped

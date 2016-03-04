@@ -14,7 +14,6 @@
 	<property name="dir.config" location="./install/config" />
 	<property name="dir.tests" location="./test/src" />
 	<property name="dir.src" location="./src" />
-	<property name="dir.src-dubious" location="./src-dubious" />
 	<property name="dir.build.classes" value="${dir.build}/WEB-INF/classes" />
 	<property name="test.report.dir" value="./testreports" />
 	<available file=".git" type="dir" property="git.present" />
@@ -100,7 +99,6 @@
 	<target name="copySources" depends="createDirs, resources, copyConfig" description="Copy the sources to the build directory">
 		<copy todir="${dir.build.src}">
 			<fileset dir="${dir.src}" />
-			<fileset dir="${dir.src-dubious}" />
 		</copy>
 		<copy todir="${dir.build}/WEB-INF">
 			<fileset file="webapp/WEB-INF/faces-config.xml" />

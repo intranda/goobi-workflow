@@ -70,8 +70,8 @@ public class ConnectionManager {
      */
     @Override
     protected void finalize() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Finalizing ConnectionManager");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Finalizing ConnectionManager");
         }
         try {
             super.finalize();
@@ -81,14 +81,14 @@ public class ConnectionManager {
     }
 
     private void connectToDB() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Trying to connect to database...");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Trying to connect to database...");
         }
         try {
             Context ctx = new InitialContext();
             ds = (DataSource) ctx.lookup("java:comp/env/goobi");
-            if (logger.isDebugEnabled()) {
-                logger.debug("Connection attempt to database succeeded.");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Connection attempt to database succeeded.");
             }
         } catch (Exception e) {
             logger.error("Error when attempting to connect to DB ", e);
@@ -98,9 +98,9 @@ public class ConnectionManager {
     @SuppressWarnings("rawtypes")
     public static void printDriverStats() throws Exception {
         ObjectPool connectionPool = ConnectionManager._pool;
-        if (logger.isDebugEnabled()) {
-            logger.debug("NumActive: " + connectionPool.getNumActive());
-            logger.debug("NumIdle: " + connectionPool.getNumIdle());
+        if (logger.isTraceEnabled()) {
+            logger.trace("NumActive: " + connectionPool.getNumActive());
+            logger.trace("NumIdle: " + connectionPool.getNumIdle());
         }
     }
 
@@ -124,8 +124,8 @@ public class ConnectionManager {
                 }
             }
         } catch (Exception e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Failed to get get Locked Connections - Exception: " + e.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Failed to get get Locked Connections - Exception: " + e.toString());
             }
         } finally {
             try {

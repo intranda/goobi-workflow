@@ -1,0 +1,87 @@
+ ============================================================================
+                   The Blue Oxygen License, Version 0.1a
+ ============================================================================
+
+ Copyright (C) 2001 The Blue Oxygen.org. All rights reserved.
+
+ IMPORTANT - READ CAREFULLY
+ This license statement and limited warranty constitutes a legal agreement 
+ ("License Agreement") between you (either as an individual or a single entity) 
+ and Blue Oxygen Foundation ("BlueOxygen") for the software product 
+ ("Software") identified above, including any software, media, and accompanying 
+ on-line or printed documentation.
+ 
+ BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND 
+ BY ALL OF THE TERMS AND CONDITIONS OF THIS LICENSE AGREEMENT.  
+ 
+ If you are accepting this License Agreement on behalf of a corporation, 
+ partnership or other legal entity, the use of the terms "you" and "your" in 
+ this License Agreement will refer to such entity.
+
+ GENERAL LICENSE
+ 
+ The Product is licensed, not sold. The Product is protected by copyright 
+ law and international copyright treaty provisions, as well as other 
+ intellectual property laws and treaties. You must not allow copies of the 
+ Product or any part of it to be made or distributed to anyone else without 
+ permission except your product is an Open Source project.
+
+ Redistribution and use in source and binary forms, with or without modifica-
+ tion, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of  source code must  retain the above copyright  notice,
+    this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. You may not translate, reverse engineer, decompile, or disassemble the 
+    Product and put in your commercial product without permission.
+
+ 4. The end-user documentation included with the redistribution, if any, must
+    include  the following  acknowledgment:  "This product includes  software
+    developed  by the  Blue Oxygen  (http://www.blueoxygen.org/)."
+    Alternately, this  acknowledgment may  appear in the software itself,  if
+    and wherever such third-party acknowledgments normally appear.
+
+ 5. Products derived from this Software may not be called "Cimande Project" nor 
+    may "Cimande" appear in their names without prior written permission of 
+    Blue Oxygen. Cimande and Kahiji are trademarks of Blue Oxygen.
+
+ 6. The names "Cimande Project" and  "Blue Oxygen"  must not be used to
+    endorse  or promote  products derived  from this  software without  prior
+    written permission. 
+
+ 7. Products  derived from this software may not  be called "Blue Oxygen", nor may
+    "Blue Oxygen" appear  in their name,  without prior written permission  of the
+    Blue Oxygen. 
+    
+ for written permission, please contact legal@blueoxygen.org.
+
+ DISCLAIMER OF WARRANTIES: USER ACKNOWLEDGES THAT THE PRODUCT IS A  PRE-RELEASE PRODUCT 
+ AND IS  PROVIDED ON AN "AS IS" BASIS AND WITHOUT WARRANTY.  
+ 
+ THE PRODUCT MAY CONTAIN BUGS, ERRORS AND OTHER PROBLEMS THAT COULD CAUSE SYSTEM 
+ FAILURES OR MAY NOT PERFORM ALL FUNCTIONS FOR WHICH IT IS INTENDED OR REPRESENTED 
+ AND THE USE OF THE PRODUCT IS ENTIRELY AT THE USER'S RISK. THIS DISCLAIMER IS IN 
+ LIEU OF ALL WARRANTIES WHETHER EXPRESS OR IMPLIED, ARISING BY STATUTE, OPERATION 
+ OF LAW OR OTHERWISE, INCLUDING IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY, 
+ MERCHANTABLE QUALITY, SATISFACTORY QUALITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ BLUE OXYGEN OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR  PROFITS; 
+ OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON ANY  THEORY OF LIABILITY,  
+ WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT (INCLUDING  NEGLIGENCE OR  
+ OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF THIS SOFTWARE, EVEN IF ADVISED 
+ OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ This software  consists of voluntary contributions made  by many individuals
+ on  behalf of the Blue Oxygen Software and was  originally created by
+ Frans Thamura <frans@blueoxygen.org>. For more  information on the 
+ Blue Oxygen, please see <http://www.blueoxygen.org/>.
+
