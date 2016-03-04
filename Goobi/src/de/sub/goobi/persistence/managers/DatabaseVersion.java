@@ -38,8 +38,8 @@ public class DatabaseVersion {
         sql.append("SELECT * FROM databaseversion");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             int currentValue = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             return currentValue;
@@ -60,68 +60,68 @@ public class DatabaseVersion {
     public static void updateDatabase(int currentVersion) {
         switch (currentVersion) {
             case 0:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 1.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 1.");
                 }
                 updateToVersion1();
                 currentVersion = 1;
             case 1:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 2.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 2.");
                 }
                 updateToVersion2();
             case 2:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 3.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 3.");
                 }
                 updateToVersion3();
             case 3:
             case 4:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 5.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 5.");
                 }
                 updateToVersion5();
             case 5:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 6.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 6.");
                 }
                 updateToVersion6();
             case 6:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 7.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 7.");
                 }
                 updateToVersion7();
             case 7:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 8.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 8.");
                 }
                 updateToVersion8();
             case 8:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 9.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 9.");
                 }
                 updateToVersion9();
 
             case 9:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 10.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 10.");
                 }
                 updateToVersion10();
             case 10:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 11.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 11.");
                 }
                 updateToVersion11();
             case 11:
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Update database to version 11.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 11.");
                 }
                 updateToVersion12();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Database is up to date.");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Database is up to date.");
                 }
         }
     }
@@ -336,8 +336,8 @@ public class DatabaseVersion {
         sql.append("INSERT INTO databaseversion (version)  VALUES  (1)");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "CREATE TABLE databaseversion (version int(11))");
@@ -395,8 +395,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(tableMetadata);
+            if (logger.isTraceEnabled()) {
+                logger.trace(tableMetadata);
             }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, tableMetadata);
@@ -419,8 +419,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(utf8);
+            if (logger.isTraceEnabled()) {
+                logger.trace(utf8);
             }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, utf8);

@@ -57,8 +57,8 @@ class UserMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
             return ret;
@@ -78,8 +78,8 @@ class UserMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
@@ -95,8 +95,8 @@ class UserMysqlHelper implements Serializable {
         sql.append("SELECT * FROM benutzer WHERE BenutzerID = " + id);
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler);
             return ret;
@@ -149,8 +149,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append(prop);
                 sql.append(")");
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
@@ -212,8 +212,8 @@ class UserMysqlHelper implements Serializable {
                                 ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
                                 ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
                                 ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks() };
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
                 run.update(connection, sql.toString(), param);
             }
@@ -232,8 +232,8 @@ class UserMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "UPDATE benutzer SET isVisible = 'deleted' WHERE BenutzerID = " + ro.getId() + ";";
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql);
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql);
                 }
                 run.update(connection, sql);
             } finally {
@@ -251,8 +251,8 @@ class UserMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM benutzer WHERE BenutzerID = " + ro.getId() + ";";
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql);
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql);
                 }
                 run.update(connection, sql);
             } finally {
@@ -270,8 +270,8 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { userId };
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             List<String> answer = new QueryRunner().query(connection, sql.toString(), resultSetToFilterListtHandler, param);
             return answer;
@@ -291,8 +291,8 @@ class UserMysqlHelper implements Serializable {
             String propNames = "Titel, Wert, IstObligatorisch, DatentypenID, Auswahl, creationDate, BenutzerID";
             Object[] param = { "_filter", filter, false, 5, null, datetime, userId };
             String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES ( ?, ?,? ,? ,? ,?,? )";
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             run.update(connection, sql, param);
         } finally {
@@ -309,8 +309,8 @@ class UserMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             Object[] param = { userId, filter };
             String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ? AND Wert = ?";
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             run.update(connection, sql, param);
         } finally {
@@ -333,8 +333,8 @@ class UserMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString() + ", " + Arrays.toString(param));
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             return run.query(connection, sql, UserManager.resultSetToUserListHandler, param);
         } finally {

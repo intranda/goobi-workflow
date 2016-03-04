@@ -51,8 +51,8 @@ class LdapMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapListHandler);
             return ret;
@@ -72,8 +72,8 @@ class LdapMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
@@ -89,8 +89,8 @@ class LdapMysqlHelper implements Serializable {
         sql.append("SELECT * FROM ldapgruppen WHERE ldapgruppenID = " + id);
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             Ldap ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapHandler);
             return ret;
@@ -129,8 +129,8 @@ class LdapMysqlHelper implements Serializable {
 
                 sql.append("INSERT INTO ldapgruppen (" + propNames + ") VALUES (" + values + ")");
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
@@ -176,8 +176,8 @@ class LdapMysqlHelper implements Serializable {
                                 ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
                                 ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql.toString() + ", " + Arrays.toString(param));
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
                 run.update(connection, sql.toString(), param);
             }
@@ -195,8 +195,8 @@ class LdapMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM ldapgruppen WHERE ldapgruppenID = " + ro.getId() + ";";
-                if (logger.isDebugEnabled()) {
-                    logger.debug(sql);
+                if (logger.isTraceEnabled()) {
+                    logger.trace(sql);
                 }
                 run.update(connection, sql);
             } finally {
@@ -216,8 +216,8 @@ class LdapMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug(sql.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
         } finally {
