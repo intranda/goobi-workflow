@@ -61,7 +61,7 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import dubious.sub.goobi.helper.encryption.MD4;
+import de.sub.goobi.helper.encryption.MD4;
 
 /**
  * This class is used by the DirObj example. It is a DirContext class that can be stored by service providers like the LDAP system providers.

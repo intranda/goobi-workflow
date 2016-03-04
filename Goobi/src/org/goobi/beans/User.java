@@ -39,12 +39,12 @@ import org.apache.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.encryption.DesEncrypter;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-import dubious.sub.goobi.helper.encryption.DesEncrypter;
 
 public class User implements DatabaseObject {
 

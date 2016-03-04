@@ -73,18 +73,6 @@ public class ExceptionTest {
     }
 
     @Test
-    public void testShellException() {
-        ShellException exception = new ShellException();
-        assertNotNull(exception);
-    }
-
-    @Test
-    public void testShellExceptionString() {
-        ShellException exception = new ShellException("test");
-        assertEquals("test", exception.getMessage());
-    }
-
-    @Test
     public void testSwapException() {
         SwapException exception = new SwapException();
         assertNotNull(exception);
@@ -107,17 +95,4 @@ public class ExceptionTest {
         UghHelperException exception = new UghHelperException("test");
         assertEquals("test", exception.getMessage());
     }
-
-    @Test
-    public void testWrongImportFileException() {
-        WrongImportFileException exception = new WrongImportFileException();
-        assertNotNull(exception);
-    }
-
-    @Test
-    public void testWrongImportFileExceptionString() {
-        WrongImportFileException exception = new WrongImportFileException("test");
-        assertEquals("test", exception.getMessage());
-    }
-
 }

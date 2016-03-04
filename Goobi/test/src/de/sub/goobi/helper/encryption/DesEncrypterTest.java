@@ -34,8 +34,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import dubious.sub.goobi.helper.encryption.DesEncrypter;
-
 public class DesEncrypterTest {
 	static Map<String, String> testData;  
 	
