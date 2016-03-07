@@ -209,8 +209,8 @@ public class GoobiScript {
                 unloadRuleset();
             }
 
-            else if (myParameters.get("action").equalsIgnoreCase("updateFileSize")) {
-                updateFileSize(inProzesse);
+            else if (myParameters.get("action").equalsIgnoreCase("countImages")) {
+                countImages(inProzesse);
             } else if (myParameters.get("action").equalsIgnoreCase("countMetadata")) {
                 countMetadata(inProzesse);
             } else {
@@ -1184,7 +1184,7 @@ public class GoobiScript {
         }
     }
 
-    private void updateFileSize(List<Integer> processes) {
+    private void countImages(List<Integer> processes) {
         for (Integer processId : processes) {
             Process p = ProcessManager.getProcessById(processId);
             if (p.getSortHelperImages() == 0) {
