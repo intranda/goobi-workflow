@@ -120,8 +120,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          */
         Fileformat gdzfile;
         //      Fileformat newfile;
-        ExportFileformat newfile =
-                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
+        ExportFileformat newfile = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess
+                .getRegelsatz());
         try {
             gdzfile = myProzess.readMetadataFile();
 
@@ -240,8 +240,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          * Benutzerhome anschliessend den Import-Thread starten
          * --------------------------------
          */
-        boolean externalExport =
-                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz()) != null;
+        boolean externalExport = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess
+                .getRegelsatz()) != null;
         if (myProzess.getProjekt().isUseDmsImport()) {
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "DMS-Export started");
             if (externalExport) {
@@ -423,7 +423,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         return "ExportDms";
     }
 
-    @Override
     public String getDescription() {
         return getTitle();
     }
