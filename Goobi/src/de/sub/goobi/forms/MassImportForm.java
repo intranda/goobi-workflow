@@ -246,7 +246,6 @@ public class MassImportForm {
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
             this.plugin.setImportFolder(tempfolder);
             this.plugin.setPrefs(prefs);
-            plugin.setForm(this);
             
             if (StringUtils.isNotEmpty(this.idList)) {
                 // IImportPlugin plugin = (IImportPlugin)
@@ -639,6 +638,7 @@ public class MassImportForm {
                 this.allFilenames = this.plugin.getAllFilenames();
             }
             plugin.setPrefs(template.getRegelsatz().getPreferences());
+            plugin.setForm(this);
         }
     }
 
