@@ -33,7 +33,7 @@
          *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <imageTypeSettings>
     	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
-    		<settings allowRenderWithJAI="false" allowSubSampling="false" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
+    		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
     	</type>
     </imageTypeSettings>
     
