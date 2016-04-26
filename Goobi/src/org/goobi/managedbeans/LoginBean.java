@@ -242,6 +242,7 @@ public class LoginBean {
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
+            Helper.setMeldung("changesAfterLogout");
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not save", e.getMessage());
         }
