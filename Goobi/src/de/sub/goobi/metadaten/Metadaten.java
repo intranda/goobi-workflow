@@ -3856,6 +3856,8 @@ public class Metadaten {
         if (currentTheme == Theme.ui) {
             BildErmitteln(0);
         }
+        
+        Helper.setMeldung("finishedFileRenaming");
     }
 
     private void removeImage(String fileToDelete) {
