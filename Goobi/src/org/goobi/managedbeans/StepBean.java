@@ -789,7 +789,7 @@ public class StepBean extends BasicBean {
             String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
 
             String sql = FilterHelper.criteriaBuilder("id:" + myID, false, false, false, false, false, true);
-            List<Step> stepList = StepManager.getSteps(getSortierung(), sql);
+            List<Step> stepList = StepManager.getSteps(sortList(), sql);
 
             for (Step step : stepList) {
                 if (step.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
