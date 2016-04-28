@@ -808,6 +808,23 @@ public class MassImportForm {
         return new ArrayList<DocstructElement>();
     }
 
+    public String getPagePath() {
+        java.lang.reflect.Method method;
+        try {
+            method = this.plugin.getClass().getMethod("getPagePath");
+            Object o = method.invoke(this.plugin);
+           if (o != null) {
+               String path = (String) o;
+               return path;
+           }
+            
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    
+    
+    
     public int getDocstructssize() {
         return getDocstructs().size();
     }
