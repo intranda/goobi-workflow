@@ -309,10 +309,10 @@ public class StepBean extends BasicBean {
     }
 
     public String EditStep() {
+        mySchritt = StepManager.getStepById(mySchritt.getId());
+        mySchritt.lazyLoad();
 
-        //		Helper.getHibernateSession().refresh(mySchritt);
-
-        return "AktuelleSchritteBearbeiten";
+        return "task_edit";
     }
 
     public String TakeOverBatch() {
