@@ -35,6 +35,7 @@ import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.NavigationForm.Theme;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.mock.MockProcess;
 
@@ -189,7 +190,7 @@ public class MetadatenTest {
         fixture.XMLlesenStart();
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, Theme.ui, null);
         fixture.setCurrentGroup(mdg);
 
         String value = fixture.CopyGroup();
@@ -209,7 +210,7 @@ public class MetadatenTest {
 
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
         m.setAutorityFile("id", "uri", "value");
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, Theme.ui, null);
 
         fixture.setCurMetadatum(md);
 
@@ -268,7 +269,7 @@ public class MetadatenTest {
         fixture.setTempTyp("junitMetadata");
 
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, Theme.ui, null);
         md.setValue("test");
 
         fixture.setSelectedMetadatum(md);
@@ -292,7 +293,7 @@ public class MetadatenTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, Theme.ui, null);
         fixture.setSelectedGroup(mdg);
 
         MetadatenSperrung locking = new MetadatenSperrung();
@@ -334,7 +335,7 @@ public class MetadatenTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, Theme.ui, null);
         fixture.setSelectedGroup(mdg);
         fixture.saveGroup();
 
@@ -357,7 +358,7 @@ public class MetadatenTest {
         fixture.setTempTyp("junitMetadata");
 
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process);
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, Theme.ui, null);
         md.setValue("test");
 
         fixture.setSelectedMetadatum(md);

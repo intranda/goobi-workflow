@@ -3,12 +3,8 @@ package org.goobi.api.display.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * Visit the websites for more information. - http://www.goobi.org - http://launchpad.net/goobi-production - http://gdz.sub.uni-goettingen.de -
+ * http://www.intranda.com - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,33 +25,42 @@ package org.goobi.api.display.enums;
  */
 public enum DisplayType {
 
-	
-	input("0","input"),select("1","select"),select1("2","select1"),textarea("3","textarea"), readonly("4", "readonly"); 
-	
-	private String id;
-	private String title;
+    input("0", "input", "InputPlugin"),
+    select("1", "select", "MultiSelectPlugin"),
+    select1("2", "select1", "SingleSelectPlugin"),
+    textarea("3", "textarea", "TextAreaPlugin"),
+    readonly("4", "readonly", "ReadOnlyPlugin");
 
-	private DisplayType(String myId, String myTitle) {
-		this.id = myId;
-		this.title = myTitle;
-	}
+    private String id;
+    private String title;
+    private String pluginName;
 
-	public String getId() {
-		return this.id;
-	}
-	
-	public String getTitle() {
-		return this.title;
-	}
-	
-	public static DisplayType getByTitle(String inTitle){
-		if (inTitle != null) {
-			for (DisplayType type : DisplayType.values()) {
-				if (type.getTitle().equals(inTitle)) {
-					return type;
-				}
-			}
-		} 
-		return textarea; // textarea is default
-	}
+    private DisplayType(String myId, String myTitle, String pluginName) {
+        this.id = myId;
+        this.title = myTitle;
+        this.pluginName = pluginName;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getPluginName() {
+        return pluginName;
+    }
+
+    public static DisplayType getByTitle(String inTitle) {
+        if (inTitle != null) {
+            for (DisplayType type : DisplayType.values()) {
+                if (type.getTitle().equals(inTitle)) {
+                    return type;
+                }
+            }
+        }
+        return textarea; // textarea is default
+    }
 }

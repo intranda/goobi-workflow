@@ -1,5 +1,7 @@
 package de.sub.goobi.helper;
 
+import java.io.File;
+import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -66,6 +68,8 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
@@ -1217,4 +1221,36 @@ public class GoobiScript {
 
         }
     }
+    public static void main(String[] args) throws JDOMException, IOException {
+        Namespace xlink = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
+        
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build("/home/robert/meta.xml");
+        Element root = doc.getRootElement();
+        
+        Element fileSec = root.getChild("fileSec", mets);
+        Element fileGrp = fileSec.getChild("fileGrp", mets);
+        List<Element> files = fileGrp.getChildren();
+        int i = 1;
+        for (Element file : files) {
+            Element flocat = file.getChild("FLocat", mets);
+            flocat.setAttribute("href", "file:///opt/digiverso/goobi/metadata/18309/images/ortnklin_PPN627455409_0003_tif/" + filename(i++) , xlink);
+        }
+        
+        XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
+        xmlOutput.output(doc, new FileOutputStream(new File("/home/robert/meta.xml")));
+        
+    }
+    
+    private static String filename (int i) {
+        if (i < 10) {
+            return "0000000" + i + ".tif";
+        } else if (i< 100) {
+            return "000000" + i + ".tif";
+        } else {
+            return "00000" + i + ".tif";
+        }
+    }
+    
+    
 }
