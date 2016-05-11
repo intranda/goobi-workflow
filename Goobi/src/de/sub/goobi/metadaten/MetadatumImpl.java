@@ -34,15 +34,17 @@ import javax.faces.model.SelectItem;
 
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
+import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
-
 
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 
 import org.goobi.beans.Process;
+import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
+import de.sub.goobi.forms.NavigationForm.Theme;
 import de.sub.goobi.helper.Helper;
 
 /**
@@ -60,18 +62,57 @@ public class MetadatumImpl implements Metadatum {
     private DisplayCase myValues;
     private List<SelectItem> items;
     private List<String> selectedItems;
+    private Theme theme;
+    private IMetadataPlugin plugin;
 
     /**
      * Allgemeiner Konstruktor ()
      */
-    public MetadatumImpl(Metadata m, int inID, Prefs inPrefs, Process inProcess) {
+    public MetadatumImpl(Metadata m, int inID, Prefs inPrefs, Process inProcess, Theme theme, Metadaten bean) {
         this.md = m;
         this.identifier = inID;
         this.myPrefs = inPrefs;
         this.myProcess = inProcess;
-
+        this.theme = theme;
         myValues = new DisplayCase(this.myProcess, this.md.getType().getName());
+        if (this.theme == Theme.uii) {
+            try {
+                plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + myValues.getDisplayType().getPluginName()).newInstance();
+                if (plugin != null) {
+                    plugin.setMetadata(md);
+                    plugin.setBean(bean);
+                    initializeValues();
+                }
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                plugin = null;
+            }
+        }
 
+    }
+
+    private void initializeValues() {
+        if (myValues.getDisplayType() == DisplayType.select || myValues.getDisplayType() == DisplayType.select1) {
+            List<String> selectedItems = new ArrayList<String>();
+            List<SelectItem> items = new ArrayList<SelectItem>();
+            for (Item i : this.myValues.getItemList()) {
+                items.add(new SelectItem(i.getLabel(), i.getValue()));
+                if (i.getIsSelected()) {
+                    selectedItems.add(i.getValue());
+                }
+            }
+            plugin.setPossibleItems(items);
+            plugin.setDefaultItems(selectedItems);
+            if (selectedItems.size() == 1) {
+                plugin.setDefaultValue(selectedItems.get(0));
+            }
+        } else {
+            if (myValues.getItemList().size() == 1) {
+                Item item = myValues.getItemList().get(0);
+                if (item.getIsSelected()) {
+                    plugin.setDefaultValue(item.getValue());                    
+                }
+            }
+        }
     }
 
     public List<Item> getWert() {
@@ -260,7 +301,7 @@ public class MetadatumImpl implements Metadatum {
             abbrev.add(norm.getAbbreviation());
         }
         return abbrev;
-    }  
+    }
 
     public String getNormdataValue() {
         return md.getAuthorityValue();
@@ -287,5 +328,13 @@ public class MetadatumImpl implements Metadatum {
 
     public boolean isNormdata() {
         return md.getType().isAllowNormdata();
+    }
+
+    public IMetadataPlugin getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(IMetadataPlugin plugin) {
+        this.plugin = plugin;
     }
 }

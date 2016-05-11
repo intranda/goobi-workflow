@@ -16,7 +16,7 @@ public abstract class AbstractStatisticsPlugin implements IStatisticPlugin {
         return PluginType.Statistics;
     }
 
-    @Override
+    
     public String getDescription() {
         return "Statistics Plugin";
     }

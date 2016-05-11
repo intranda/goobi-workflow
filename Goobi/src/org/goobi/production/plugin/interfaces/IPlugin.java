@@ -34,7 +34,6 @@ public interface IPlugin extends Plugin {
 	
 	public PluginType getType();
 	public String getTitle();
-	@Deprecated
-	public String getDescription();
+	
 	
 }

@@ -59,7 +59,7 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
         return this.name + " v" + this.version;
     }
 
-    @Override
+    
     public String getDescription() {
         return this.description;
     }

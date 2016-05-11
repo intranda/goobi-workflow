@@ -33,6 +33,7 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
+import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IServletPlugin;
@@ -52,7 +53,8 @@ public enum PluginType {
     Export(8, "export", IExportPlugin.class),
     Statistics(9, "statistics", IStatisticPlugin.class),
     Dashboard(10, "dashboard", IDashboardPlugin.class),
-    Administration(11, "administration", IAdministrationPlugin.class);
+    Administration(11, "administration", IAdministrationPlugin.class),
+    Metadata(12, "metadata", IMetadataPlugin.class);
 
     private int id;
     private String name;

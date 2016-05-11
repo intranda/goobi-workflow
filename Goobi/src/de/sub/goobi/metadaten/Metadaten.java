@@ -142,6 +142,9 @@ public class Metadaten {
     private String tempGroupType;
 
     private MetadatumImpl curMetadatum;
+    
+    private Metadata currentMetadata;
+    
     private MetaPerson curPerson;
     private DigitalDocument mydocument;
     private Process myProzess;
@@ -418,6 +421,30 @@ public class Metadaten {
         return "";
     }
 
+    public String Copy() {
+        Metadata md;
+        try {
+            md = new Metadata(currentMetadata.getType());
+
+            md.setValue(currentMetadata.getValue());
+
+            if (currentMetadata.getAuthorityID() != null && currentMetadata.getAuthorityURI() != null
+                    && currentMetadata.getAuthorityValue() != null) {
+                md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata
+                        .getAuthorityValue());
+            }
+
+            this.myDocStruct.addMetadata(md);
+        } catch (MetadataTypeNotAllowedException e) {
+            logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
+        }
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
+    
     public String KopierenPerson() {
         Person per;
         try {
@@ -599,6 +626,15 @@ public class Metadaten {
         }
         return "";
     }
+    
+    public String delete() {
+        this.myDocStruct.removeMetadata(currentMetadata);
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
 
     public String LoeschenPerson() {
         this.myDocStruct.removePerson(this.curPerson.getP());
@@ -687,7 +723,7 @@ public class Metadaten {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadatatypeLanguage(mdt)));
             try {
                 Metadata md = new Metadata(mdt);
-                MetadatumImpl mdum = new MetadatumImpl(md, counter, this.myPrefs, this.myProzess);
+                MetadatumImpl mdum = new MetadatumImpl(md, counter, this.myPrefs, this.myProzess, currentTheme, this);
                 counter++;
                 this.tempMetadatumList.add(mdum);
 
@@ -727,7 +763,7 @@ public class Metadaten {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, currentTheme, this);
                 this.tempMetadataGroups.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
@@ -1166,7 +1202,7 @@ public class Metadaten {
                         .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
-                MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
+                MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, currentTheme, this);
                 meta.getSelectedItem();
                 lsMeta.add(meta);
             }
@@ -1189,7 +1225,7 @@ public class Metadaten {
                         .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
         if (groups != null) {
             for (MetadataGroup mg : groups) {
-                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg));
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, currentTheme, this));
             }
         }
 
@@ -1747,7 +1783,7 @@ public class Metadaten {
             for (DocStruct mySeitenDocStruct : meineListe) {
                 List<? extends Metadata> mySeitenDocStructMetadaten = mySeitenDocStruct.getAllMetadataByType(mdt);
                 for (Metadata meineSeite : mySeitenDocStructMetadaten) {
-                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess);
+                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, currentTheme, this);
                     this.alleSeiten[zaehler] =
                             new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
                                     + meineSeite.getValue());
@@ -1835,7 +1871,7 @@ public class Metadaten {
             return;
         }
         for (Metadata meineSeite : listMetadaten) {
-            this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess);
+            this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, currentTheme, this);
             this.structSeiten[inZaehler] =
                     new SelectItem(String.valueOf(inZaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": "
                             + meineSeite.getValue());
@@ -3060,7 +3096,7 @@ public class Metadaten {
         MetadataType mdt = this.myPrefs.getMetadataTypeByName(tempTyp);
         try {
             Metadata md = new Metadata(mdt);
-            this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess);
+            this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess, currentTheme, this);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e.getMessage());
         }
@@ -3092,7 +3128,7 @@ public class Metadaten {
         MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
         try {
             MetadataGroup md = new MetadataGroup(mdt);
-            this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md);
+            this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, currentTheme, this);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e.getMessage());
         }
@@ -3438,6 +3474,10 @@ public class Metadaten {
         this.myMetadaten = myMetadaten;
     }
 
+    public MetadatumImpl getMetadata() {
+        return myMetadaten.get(0);
+    }
+    
     public List<MetaPerson> getMyPersonen() {
         return this.myPersonen;
     }
@@ -4231,7 +4271,7 @@ public class Metadaten {
                                     .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
-                            MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess);
+                            MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, currentTheme, this);
                             // meta.getSelectedItem();
                             addableMetadata.add(meta);
                         }
@@ -4572,6 +4612,14 @@ public class Metadaten {
             this.numberOfImagesPerPage = numberOfImagesPerPage;
             getPaginatorList();
         }
+    }
+
+    public void setCurrentMetadata(Metadata currentMetadata) {
+        this.currentMetadata = currentMetadata;
+    }
+    
+    public Metadata getCurrentMetadata() {
+        return currentMetadata;
     }
 
 }
