@@ -66,9 +66,6 @@
 				</patternset>
 			</fileset>
 		</copy>
-		<copy todir="${dir.build.classes}" overwrite="true" failonerror="false">
-			<fileset dir="${private.dir}" />
-		</copy>
 		<move tofile="${dir.build.classes}/goobi_config.properties" file="${dir.build.classes}/template.properties"  failonerror="false"/>
 	</target>
 
