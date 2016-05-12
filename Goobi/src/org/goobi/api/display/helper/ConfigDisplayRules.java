@@ -34,8 +34,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.DefaultConfigurationNode;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 
@@ -47,8 +50,8 @@ public final class ConfigDisplayRules {
     private static XMLConfiguration config;
     private static String configPfad;
     private final Helper helper = new Helper();
-    private final HashMap<String, HashMap<String, HashMap<String, ArrayList<Item>>>> allValues =
-            new HashMap<String, HashMap<String, HashMap<String, ArrayList<Item>>>>();
+    private final HashMap<String, Map<String, Map<String, List<Item>>>> allValues =
+            new HashMap<String, Map<String, Map<String, List<Item>>>>();
 
     /**
      * 
@@ -62,6 +65,7 @@ public final class ConfigDisplayRules {
         try {
             config = new XMLConfiguration(configPfad);
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
+            config.setExpressionEngine(new XPathExpressionEngine());
             getDisplayItems();
         } catch (ConfigurationException e) {
             /*
@@ -78,208 +82,59 @@ public final class ConfigDisplayRules {
      * 
      * creates hierarchical HashMap with values for each element of given data
      */
+    @SuppressWarnings("unchecked")
     private synchronized void getDisplayItems() {
         if (this.allValues.isEmpty() && config != null) {
-            int countRuleSet = config.getMaxIndex("ruleSet");
-            for (int i = 0; i <= countRuleSet; i++) {
-                int projectContext = config.getMaxIndex("ruleSet(" + i + ").context");
-                for (int j = 0; j <= projectContext; j++) {
-                    HashMap<String, HashMap<String, ArrayList<Item>>> itemsByType = new HashMap<String, HashMap<String, ArrayList<Item>>>();
 
-                    String projectName = config.getString("ruleSet(" + i + ").context(" + j + ")[@projectName]");
-                    int countSelect1 = config.getMaxIndex("ruleSet(" + i + ").context(" + j + ").select1");
-                    int countSelect = config.getMaxIndex("ruleSet(" + i + ").context(" + j + ").select");
-                    int countTextArea = config.getMaxIndex("ruleSet(" + i + ").context(" + j + ").textarea");
-                    int countInput = config.getMaxIndex("ruleSet(" + i + ").context(" + j + ").input");
-                    int countReadOnly = config.getMaxIndex("ruleSet(" + i + ").context(" + j + ").readonly");
-                    HashMap<String, ArrayList<Item>> select1 = new HashMap<String, ArrayList<Item>>();
-                    HashMap<String, ArrayList<Item>> select = new HashMap<String, ArrayList<Item>>();
-                    HashMap<String, ArrayList<Item>> input = new HashMap<String, ArrayList<Item>>();
-                    HashMap<String, ArrayList<Item>> textarea = new HashMap<String, ArrayList<Item>>();
-                    HashMap<String, ArrayList<Item>> readonly = new HashMap<String, ArrayList<Item>>();
-                    for (int k = 0; k <= countSelect1; k++) {
-                        String elementName = config.getString("ruleSet(" + i + ").context(" + j + ").select1(" + k + ")[@ref]");
-                        ArrayList<Item> items = getSelect1ByElementName(projectName, elementName);
-                        select1.put(elementName, items);
-                    }
-                    for (int k = 0; k <= countSelect; k++) {
-                        String elementName = config.getString("ruleSet(" + i + ").context(" + j + ").select(" + k + ")[@ref]");
-                        ArrayList<Item> items = getSelectByElementName(projectName, elementName);
-                        select.put(elementName, items);
-                    }
-                    for (int k = 0; k <= countTextArea; k++) {
-                        String elementName = config.getString("ruleSet(" + i + ").context(" + j + ").textarea(" + k + ")[@ref]");
-                        ArrayList<Item> items = getTextareaByElementName(projectName, elementName);
-                        textarea.put(elementName, items);
-                    }
-                    for (int k = 0; k <= countInput; k++) {
-                        String elementName = config.getString("ruleSet(" + i + ").context(" + j + ").input(" + k + ")[@ref]");
-                        ArrayList<Item> items = getInputByElementName(projectName, elementName);
-                        input.put(elementName, items);
-                    }
-                    for (int k = 0; k <= countReadOnly; k++) {
-                        String elementName = config.getString("ruleSet(" + i + ").context(" + j + ").readonly(" + k + ")[@ref]");
-                        ArrayList<Item> items = getReadOnlyByElementName(projectName, elementName);
-                        readonly.put(elementName, items);
-                    }
+            List<HierarchicalConfiguration> sub = config.configurationsAt("ruleSet/context");
+            for (HierarchicalConfiguration hc : sub) {
 
-                    itemsByType.put("select1", select1);
-                    itemsByType.put("select", select);
-                    itemsByType.put("input", input);
-                    itemsByType.put("textarea", textarea);
-                    itemsByType.put("readonly", readonly);
-                    this.allValues.put(projectName, itemsByType);
+                String projectName = hc.getString("@projectName");
 
-                }
-            }
-        }
+                List<DefaultConfigurationNode> metadataList = hc.getRoot().getChildren();
+                for (DefaultConfigurationNode metadata : metadataList) {
+                    DisplayType type = DisplayType.getByTitle(metadata.getName());
+                    String metadataName = (String) metadata.getAttribute(0).getValue();
 
-    }
+                    HierarchicalConfiguration metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
 
-    /**
-     * 
-     * @param project name of project as String
-     * @param bind create or edit
-     * @param elementName name of the select1 element
-     * @return ArrayList with all items and its values of given select1 element.
-     */
-
-    private ArrayList<Item> getSelect1ByElementName(String project, String elementName) {
-        ArrayList<Item> listOfItems = new ArrayList<Item>();
-        int count = config.getMaxIndex("ruleSet.context");
-        for (int i = 0; i <= count; i++) {
-            String myProject = config.getString("ruleSet.context(" + i + ")[@projectName]");
-            if (myProject.equals(project)) {
-                int type = config.getMaxIndex("ruleSet.context(" + i + ").select1");
-                for (int j = 0; j <= type; j++) {
-                    String myElementName = config.getString("ruleSet.context(" + i + ").select1(" + j + ")[@ref]");
-                    if (myElementName.equals(elementName)) {
-                        int item = config.getMaxIndex("ruleSet.context(" + i + ").select1(" + j + ").item");
-                        for (int k = 0; k <= item; k++) {
-                            Item myItem = new Item(config.getString("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ").label"), 
-                                    config.getString("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ").value"), 
-                                    config.getBoolean("ruleSet.context(" + i + ").select1(" + j + ").item(" + k + ")[@selected]", false)); 
+                    List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+                    List<Item> listOfItems = new ArrayList<>();
+                    if (items != null) {
+                        for (HierarchicalConfiguration item : items) {
+                            Item myItem = new Item(item.getString("label"), item.getString("value"), item.getBoolean("@selected"));
                             listOfItems.add(myItem);
                         }
+                    } else {
+                        String defaultValue = metadataConfiguration.getString("label");
+                        Item myItem = new Item(defaultValue, defaultValue, true);
+                        listOfItems.add(myItem);
                     }
-                }
-            }
-        }
-        return listOfItems;
-    }
-
-    /**
-     * 
-     * @param project name of project as String
-     * @param bind create or edit
-     * @param elementName name of the select element
-     * @return ArrayList with all items and its values of given select1 element.
-     */
-    private ArrayList<Item> getSelectByElementName(String project, String elementName) {
-        ArrayList<Item> listOfItems = new ArrayList<Item>();
-        int count = config.getMaxIndex("ruleSet.context");
-        for (int i = 0; i <= count; i++) {
-            String myProject = config.getString("ruleSet.context(" + i + ")[@projectName]");
-
-            if (myProject.equals(project)) {
-                int type = config.getMaxIndex("ruleSet.context(" + i + ").select");
-
-                for (int j = 0; j <= type; j++) {
-                    String myElementName = config.getString("ruleSet.context(" + i + ").select(" + j + ")[@ref]");
-                    if (myElementName.equals(elementName)) {
-                        int item = config.getMaxIndex("ruleSet.context(" + i + ").select(" + j + ").item");
-
-                        for (int k = 0; k <= item; k++) {
-                            Item myItem = new Item(config.getString("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ").label"), 
-                                    config.getString("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ").value"),
-                                    config.getBoolean("ruleSet.context(" + i + ").select(" + j + ").item(" + k + ")[@selected]", false)); 
-                            listOfItems.add(myItem);
+                    if (allValues.containsKey(projectName)) {
+                        Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
+                        if (typeList.containsKey(type)) {
+                            Map<String, List<Item>> currentType = typeList.get(type); 
+                            currentType.put(metadataName, listOfItems);
+                        } else {
+                            Map<String, List<Item>> currentType = new HashMap<>();
+                            currentType.put(metadataName, listOfItems);
+                            typeList.put(type.getTitle(), currentType);
                         }
+                    } else {
+                        Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
+                        Map<String, List<Item>> currentType = new HashMap<>();
+                        currentType.put(metadataName, listOfItems);
+                        typeList.put(type.getTitle(), currentType);
+                        allValues.put(projectName, typeList);
                     }
+
                 }
             }
+
         }
-        return listOfItems;
     }
 
-    /**
-     * 
-     * @param project name of project as String
-     * @param bind create or edit
-     * @param elementName name of the input element
-     * @return item of given input element.
-     */
-
-    private ArrayList<Item> getInputByElementName(String project, String elementName) {
-        ArrayList<Item> listOfItems = new ArrayList<Item>();
-        int count = config.getMaxIndex("ruleSet.context");
-        for (int i = 0; i <= count; i++) {
-            String myProject = config.getString("ruleSet.context(" + i + ")[@projectName]");
-
-            if (myProject.equals(project)) {
-                int type = config.getMaxIndex("ruleSet.context(" + i + ").input");
-
-                for (int j = 0; j <= type; j++) {
-                    String myElementName = config.getString("ruleSet.context(" + i + ").input(" + j + ")[@ref]");
-                    if (myElementName.equals(elementName)) {
-                        Item myItem = new Item(config.getString("ruleSet.context(" + i + ").input(" + j + ").label"),
-                                config.getString("ruleSet.context(" + i + ").input(" + j + ").label"), true);
-                        listOfItems.add(myItem);
-                    }
-                }
-            }
-        }
-        return listOfItems;
-    }
-
-    /**
-     * @param project name of project as String
-     * @param bind create or edit
-     * @param elementName name of the textarea element
-     * @return item of given textarea element.
-     */
-
-    private ArrayList<Item> getTextareaByElementName(String project, String elementName) {
-        ArrayList<Item> listOfItems = new ArrayList<Item>();
-        int count = config.getMaxIndex("ruleSet.context");
-        for (int i = 0; i <= count; i++) {
-            String myProject = config.getString("ruleSet.context(" + i + ")[@projectName]");
-            if (myProject.equals(project)) {
-                int type = config.getMaxIndex("ruleSet.context(" + i + ").textarea");
-
-                for (int j = 0; j <= type; j++) {
-                    String myElementName = config.getString("ruleSet.context(" + i + ").textarea(" + j + ")[@ref]");
-                    if (myElementName.equals(elementName)) {
-                        Item myItem = new Item(config.getString("ruleSet.context(" + i + ").textarea(" + j + ").label"), 
-                                config.getString("ruleSet.context(" + i + ").textarea(" + j + ").label"), true);
-                        listOfItems.add(myItem);
-                    }
-                }
-            }
-        }
-        return listOfItems;
-    }
-
-    private ArrayList<Item> getReadOnlyByElementName(String project, String elementName) {
-        ArrayList<Item> listOfItems = new ArrayList<Item>();
-        int count = config.getMaxIndex("ruleSet.context");
-        for (int i = 0; i <= count; i++) {
-            String myProject = config.getString("ruleSet.context(" + i + ")[@projectName]");
-            if (myProject.equals(project)) {
-                int type = config.getMaxIndex("ruleSet.context(" + i + ").readonly");
-
-                for (int j = 0; j <= type; j++) {
-                    String myElementName = config.getString("ruleSet.context(" + i + ").readonly(" + j + ")[@ref]");
-                    if (myElementName.equals(elementName)) {
-                        Item myItem = new Item(config.getString("ruleSet.context(" + i + ").readonly(" + j + ").label"), 
-                                config.getString("ruleSet.context(" + i + ").readonly(" + j + ").label"), true);
-                        listOfItems.add(myItem);
-                    }
-                }
-            }
-        }
-        return listOfItems;
-    }
+   
 
     /**
      * 
@@ -296,7 +151,7 @@ public final class ConfigDisplayRules {
             } else if (config == null) {
                 return DisplayType.input;
             }
-            HashMap<String, HashMap<String, ArrayList<Item>>> itemsByType = this.allValues.get(myproject);
+            Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
             if (itemsByType == null) {
                 if (myproject.equals("*")) {
                     return DisplayType.input;
@@ -306,7 +161,7 @@ public final class ConfigDisplayRules {
             }
             Set<String> itemTypes = itemsByType.keySet();
             for (String type : itemTypes) {
-                HashMap<String, ArrayList<Item>> typeList = itemsByType.get(type);
+                Map<String, List<Item>> typeList = itemsByType.get(type);
                 Set<String> names = typeList.keySet();
                 for (String name : names) {
                     if (name.equals(myelementName)) {
@@ -333,7 +188,7 @@ public final class ConfigDisplayRules {
 
     public List<Item> getElementsForMetadata(String projectTitle, DisplayType displayType, String elementName) {
         List<Item> values = new ArrayList<Item>();
-        Map<String, HashMap<String, ArrayList<Item>>> itemsByType = this.allValues.get(projectTitle);
+        Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
             if (projectTitle.equals("*")) {
                 values.add(new Item(projectTitle, "", false));
@@ -343,7 +198,7 @@ public final class ConfigDisplayRules {
             }
         }
         if (itemsByType.containsKey(displayType.getTitle())) {
-            Map<String, ArrayList<Item>> typeList = itemsByType.get(displayType.getTitle());
+            Map<String, List<Item>> typeList = itemsByType.get(displayType.getTitle());
             if (typeList.containsKey(elementName)) {
                 values = typeList.get(elementName);
 
