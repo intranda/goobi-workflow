@@ -286,7 +286,7 @@ public class LdapAuthentication {
                 ctx.reconnect(null);
 
                 Attributes attrs = ctx.getAttributes(getUserDN(inBenutzer));
-                Attribute la = attrs.get("homeDirectory");
+                Attribute la = attrs.get(ConfigurationHelper.getInstance().getLdapHomeDirectory());
                 return (String) la.get(0);
 
                 // Perform search for privileged attributes under authenticated context
@@ -329,7 +329,7 @@ public class LdapAuthentication {
         try {
             ctx = new InitialDirContext(env);
             Attributes attrs = ctx.getAttributes(getUserDN(inBenutzer));
-            Attribute la = attrs.get("homeDirectory");
+            Attribute la = attrs.get(ConfigurationHelper.getInstance().getLdapHomeDirectory());
             rueckgabe = (String) la.get(0);
             ctx.close();
         } catch (NamingException e) {
@@ -388,7 +388,7 @@ public class LdapAuthentication {
                     cn = " ";
                 }
                 try {
-                    hd = attrs.get("homeDirectory").toString();
+                    hd = attrs.get(ConfigurationHelper.getInstance().getLdapHomeDirectory()).toString();
                 } catch (Exception e4) {
                     hd = " ";
                 }

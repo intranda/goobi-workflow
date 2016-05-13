@@ -113,7 +113,7 @@ public class LdapUser implements DirContext {
             this.myAttrs.put("gecos", ReplaceVariables(lp.getGecos(), inUser, inUidNumber));
             this.myAttrs.put("loginShell", ReplaceVariables(lp.getLoginShell(), inUser, inUidNumber));
             this.myAttrs.put("sn", ReplaceVariables(lp.getSn(), inUser, inUidNumber));
-            this.myAttrs.put("homeDirectory", ReplaceVariables(lp.getHomeDirectory(), inUser, inUidNumber));
+            this.myAttrs.put(ConfigurationHelper.getInstance().getLdapHomeDirectory(), ReplaceVariables(lp.getHomeDirectory(), inUser, inUidNumber));
 
             this.myAttrs.put("sambaAcctFlags", ReplaceVariables(lp.getSambaAcctFlags(), inUser, inUidNumber));
             this.myAttrs.put("sambaLogonScript", ReplaceVariables(lp.getSambaLogonScript(), inUser, inUidNumber));
