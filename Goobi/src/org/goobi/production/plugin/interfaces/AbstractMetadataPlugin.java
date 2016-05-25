@@ -36,4 +36,16 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
         bean.delete();
         return "";
     }
+    
+    public String filter(String str) {
+        StringBuilder filtered = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            char current = str.charAt(i);
+            // current != 0x152 && current != 0x156
+            if (current != 0x98  && current != 0x9C ) {
+                filtered.append(current);
+            }
+        }
+        return filtered.toString();
+    }
 }

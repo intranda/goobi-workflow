@@ -34,6 +34,8 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
 
+import ugh.dl.MetadataType;
+
 public class DisplayCase {
     private DisplayType displayType = null;
     private List<Item> itemList = new ArrayList<Item>();
@@ -48,25 +50,28 @@ public class DisplayCase {
      * @param metaType
      */
 
-    public DisplayCase(Process inProcess, String metaType) {
-        metaName = metaType;
-        myProcess = inProcess;
-        try {
-            configDisplay = ConfigDisplayRules.getInstance();
-            if (configDisplay != null) {
-                displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
-                itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
-            } else {
-                // no ruleset file
+    public DisplayCase(Process inProcess, MetadataType metaType) {
+        if (metaType.getIsPerson()) {
+            displayType = DisplayType.person;
+        } else {
+            metaName = metaType.getName();
+            myProcess = inProcess;
+            try {
+                configDisplay = ConfigDisplayRules.getInstance();
+                if (configDisplay != null) {
+                    displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
+                    itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
+                } else {
+                    // no ruleset file
+                    displayType = DisplayType.getByTitle("input");
+                    itemList.add(new Item(metaName, "", false));
+                }
+            } catch (Exception e) {
+                // incorrect ruleset file
                 displayType = DisplayType.getByTitle("input");
                 itemList.add(new Item(metaName, "", false));
             }
-        } catch (Exception e) {
-            // incorrect ruleset file
-            displayType = DisplayType.getByTitle("input");
-            itemList.add(new Item(metaName, "", false));
         }
-
     }
 
     /**
@@ -76,7 +81,7 @@ public class DisplayCase {
      * @param bind
      * @param metaType
      */
-
+    @Deprecated
     public DisplayCase(Process inProcess, String bind, String metaType) {
         metaName = metaType;
         myProcess = inProcess;

@@ -30,7 +30,8 @@ public enum DisplayType {
     select1("2", "select1", "SingleSelectPlugin"),
     textarea("3", "textarea", "TextAreaPlugin"),
     readonly("4", "readonly", "ReadOnlyPlugin"),
-    gnd("5", "gnd", "GndInputPlugin");
+    gnd("5", "gnd", "GndInputPlugin"),
+    person("6", "person", "PersonPlugin");
 
     private String id;
     private String title;

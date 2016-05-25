@@ -74,7 +74,7 @@ public class MetadatumImpl implements Metadatum {
         this.myPrefs = inPrefs;
         this.myProcess = inProcess;
         this.theme = theme;
-        myValues = new DisplayCase(this.myProcess, this.md.getType().getName());
+        myValues = new DisplayCase(this.myProcess, this.md.getType());
         if (this.theme == Theme.uii) {
             try {
                 plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + myValues.getDisplayType().getPluginName()).newInstance();
@@ -115,6 +115,7 @@ public class MetadatumImpl implements Metadatum {
         }
     }
 
+   
     public List<Item> getWert() {
         String value = this.md.getValue();
         if (value != null) {
@@ -129,10 +130,12 @@ public class MetadatumImpl implements Metadatum {
         return this.myValues.getItemList();
     }
 
+   
     public void setWert(String inWert) {
         this.md.setValue(inWert.trim());
     }
 
+   
     public String getTyp() {
         String label = this.md.getType().getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
@@ -141,6 +144,7 @@ public class MetadatumImpl implements Metadatum {
         return label;
     }
 
+   
     public void setTyp(String inTyp) {
         MetadataType mdt = this.myPrefs.getMetadataTypeByName(inTyp);
         this.md.setType(mdt);
@@ -151,18 +155,22 @@ public class MetadatumImpl implements Metadatum {
      * ##################################################### ####################################################
      */
 
+   
     public int getIdentifier() {
         return this.identifier;
     }
 
+   
     public void setIdentifier(int identifier) {
         this.identifier = identifier;
     }
 
+   
     public Metadata getMd() {
         return this.md;
     }
 
+   
     public void setMd(Metadata md) {
         this.md = md;
     }
@@ -173,10 +181,12 @@ public class MetadatumImpl implements Metadatum {
      * 
      *****************************************************/
 
+   
     public String getOutputType() {
         return this.myValues.getDisplayType().getTitle();
     }
 
+   
     public List<SelectItem> getItems() {
         this.items = new ArrayList<SelectItem>();
         this.selectedItems = new ArrayList<String>();
@@ -189,6 +199,7 @@ public class MetadatumImpl implements Metadatum {
         return this.items;
     }
 
+   
     public void setItems(List<SelectItem> items) {
         for (Item i : this.myValues.getItemList()) {
             i.setIsSelected(false);
@@ -205,6 +216,7 @@ public class MetadatumImpl implements Metadatum {
         setWert(val);
     }
 
+   
     public List<String> getSelectedItems() {
         this.selectedItems = new ArrayList<String>();
         String values = this.md.getValue();
@@ -243,6 +255,7 @@ public class MetadatumImpl implements Metadatum {
         return this.selectedItems;
     }
 
+   
     public void setSelectedItems(List<String> selectedItems) {
 
         String val = "";
@@ -257,6 +270,7 @@ public class MetadatumImpl implements Metadatum {
         setWert(val);
     }
 
+   
     public String getSelectedItem() {
         String value = this.md.getValue();
         if (value != null && value.length() != 0) {
@@ -277,6 +291,7 @@ public class MetadatumImpl implements Metadatum {
         return "";
     }
 
+   
     public void setSelectedItem(String selectedItem) {
 
         for (Item i : this.myValues.getItemList()) {
@@ -286,14 +301,17 @@ public class MetadatumImpl implements Metadatum {
         }
     }
 
+   
     public void setValue(String value) {
         setWert(value);
     }
 
+   
     public String getValue() {
         return this.md.getValue();
     }
 
+   
     public List<String> getPossibleDatabases() {
         List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
         List<String> abbrev = new ArrayList<String>();
@@ -303,20 +321,24 @@ public class MetadatumImpl implements Metadatum {
         return abbrev;
     }
 
+   
     public String getNormdataValue() {
         return md.getAuthorityValue();
     }
 
+   
     public void setNormdataValue(String normdata) {
         md.setAuthorityValue(normdata);
     }
 
+   
     public void setNormDatabase(String abbrev) {
         NormDatabase database = NormDatabase.getByAbbreviation(abbrev);
         md.setAuthorityID(database.getAbbreviation());
         md.setAuthorityURI(database.getPath());
     }
 
+   
     public String getNormDatabase() {
         if (md.getAuthorityURI() != null && md.getAuthorityID() != null) {
             NormDatabase ndb = NormDatabase.getByAbbreviation(md.getAuthorityID());
@@ -326,14 +348,17 @@ public class MetadatumImpl implements Metadatum {
         }
     }
 
+   
     public boolean isNormdata() {
         return md.getType().isAllowNormdata();
     }
 
+   
     public IMetadataPlugin getPlugin() {
         return plugin;
     }
 
+   
     public void setPlugin(IMetadataPlugin plugin) {
         this.plugin = plugin;
     }

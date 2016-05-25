@@ -232,7 +232,7 @@ public class MetadatenTest {
         Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
 
         p.setAutorityFile("id", "uri", "value");
-        MetaPerson md = new MetaPerson(p, 0, prefs, null);
+        MetaPerson md = new MetaPerson(p, 0, prefs, null, process, Theme.ui, null);
 
         p.addNamePart(new NamePart("type", "value"));
 

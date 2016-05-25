@@ -506,31 +506,42 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = new ImageManager(Paths.get(inFileName).toUri().toURL());
-            logger.trace("im");
-            ImageInterpreter ii = im.getMyInterpreter();
-            Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
-            logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
-            Dimension outputResolution = new Dimension(144, 144);
-            logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-            Dimension dim =
-                    new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
-                            / inputResolution.height);
-            logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
-            RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
-            logger.trace("ri");
-            JpegInterpreter pi = new JpegInterpreter(ri);
-            logger.trace("pi");
-            pi.setXResolution(outputResolution.width);
-            logger.trace("xres = " + pi.getXResolution());
-            pi.setYResolution(outputResolution.height);
-            logger.trace("yres = " + pi.getYResolution());
-            FileOutputStream outputFileStream = new FileOutputStream(outFileName);
-            logger.trace("output");
-            pi.writeToStream(null, outputFileStream);
-            logger.trace("write stream");
-            outputFileStream.close();
-            logger.trace("close stream");
+            ImageManager im = null;
+            JpegInterpreter pi = null;
+            try {
+                im = new ImageManager(Paths.get(inFileName).toUri().toURL());
+                logger.trace("im");
+                ImageInterpreter ii = im.getMyInterpreter();
+                Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
+                logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
+                Dimension outputResolution = new Dimension(144, 144);
+                logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
+                Dimension dim =
+                        new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
+                                / inputResolution.height);
+                logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
+                RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
+                logger.trace("ri");
+                 pi = new JpegInterpreter(ri);
+                logger.trace("pi");
+                pi.setXResolution(outputResolution.width);
+                logger.trace("xres = " + pi.getXResolution());
+                pi.setYResolution(outputResolution.height);
+                logger.trace("yres = " + pi.getYResolution());
+                FileOutputStream outputFileStream = new FileOutputStream(outFileName);
+                logger.trace("output");
+                pi.writeToStream(null, outputFileStream);
+                logger.trace("write stream");
+                outputFileStream.close();
+                logger.trace("close stream");
+            } finally {
+                if (im != null) {
+                    im.close();
+                }
+                if (pi != null) {
+                    pi.close();
+                }
+            }
         } else {
             String cs =
                     ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
@@ -736,7 +747,7 @@ public class MetadatenImagesHelper {
         }
         /* Verzeichnis einlesen */
         List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
-      
+
         List<String> orderedFilenameList = new ArrayList<String>();
         if (dateien != null && !dateien.isEmpty()) {
             List<DocStruct> pagesList = mydocument.getPhysicalDocStruct().getAllChildren();

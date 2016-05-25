@@ -54,7 +54,7 @@ public class MetadataGroupImpl {
             metadataList.add(mdum);
         }
         for (Person p : metadataGroup.getPersonList()) {
-            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct());
+            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct(), myProcess, theme, bean);
             personList.add(mp);
         }
     }

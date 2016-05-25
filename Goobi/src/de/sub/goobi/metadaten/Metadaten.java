@@ -65,6 +65,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.ConfigDisplayRules;
+import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -142,10 +143,13 @@ public class Metadaten {
     private String tempGroupType;
 
     private MetadatumImpl curMetadatum;
-    
+
     private Metadata currentMetadata;
-    
+
     private MetaPerson curPerson;
+
+    private Person currentPerson;
+
     private DigitalDocument mydocument;
     private Process myProzess;
     private Prefs myPrefs;
@@ -249,6 +253,8 @@ public class Metadaten {
     private Theme currentTheme = Theme.ui;
     private boolean processHasNewTemporaryMetadataFiles = false;
     private boolean sizeChanged = false;
+    
+   private List<String> normdataList = new ArrayList<String>();
 
     /**
      * Konstruktor ================================================================
@@ -428,10 +434,8 @@ public class Metadaten {
 
             md.setValue(currentMetadata.getValue());
 
-            if (currentMetadata.getAuthorityID() != null && currentMetadata.getAuthorityURI() != null
-                    && currentMetadata.getAuthorityValue() != null) {
-                md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata
-                        .getAuthorityValue());
+            if (currentMetadata.getAuthorityID() != null && currentMetadata.getAuthorityURI() != null && currentMetadata.getAuthorityValue() != null) {
+                md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata.getAuthorityValue());
             }
 
             this.myDocStruct.addMetadata(md);
@@ -444,7 +448,7 @@ public class Metadaten {
         }
         return "";
     }
-    
+
     public String KopierenPerson() {
         Person per;
         try {
@@ -462,6 +466,37 @@ public class Metadaten {
             if (curPerson.getP().getAuthorityID() != null && curPerson.getP().getAuthorityURI() != null
                     && curPerson.getP().getAuthorityValue() != null) {
                 per.setAutorityFile(curPerson.getP().getAuthorityID(), curPerson.getP().getAuthorityURI(), curPerson.getP().getAuthorityValue());
+            }
+
+            this.myDocStruct.addPerson(per);
+        } catch (IncompletePersonObjectException e) {
+            logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
+        } catch (MetadataTypeNotAllowedException e) {
+            logger.error("Fehler beim Kopieren von Personen (MetadataTypeNotAllowedException): " + e.getMessage());
+        }
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
+
+    public String CopyPerson() {
+        Person per;
+        try {
+            per = new Person(this.myPrefs.getMetadataTypeByName(currentPerson.getRole()));
+            per.setFirstname(currentPerson.getFirstname());
+            per.setLastname(currentPerson.getLastname());
+            per.setRole(currentPerson.getRole());
+
+            if (currentPerson.getAdditionalNameParts() != null && !currentPerson.getAdditionalNameParts().isEmpty()) {
+                for (NamePart np : curPerson.getAdditionalNameParts()) {
+                    NamePart newNamePart = new NamePart(np.getType(), np.getValue());
+                    per.addNamePart(newNamePart);
+                }
+            }
+            if (currentPerson.getAuthorityID() != null && currentPerson.getAuthorityURI() != null && currentPerson.getAuthorityValue() != null) {
+                per.setAutorityFile(currentPerson.getAuthorityID(), currentPerson.getAuthorityURI(), currentPerson.getAuthorityValue());
             }
 
             this.myDocStruct.addPerson(per);
@@ -626,9 +661,18 @@ public class Metadaten {
         }
         return "";
     }
-    
+
     public String delete() {
         this.myDocStruct.removeMetadata(currentMetadata);
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
+
+    public String deletePerson() {
+        this.myDocStruct.removePerson(currentPerson);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1216,7 +1260,7 @@ public class Metadaten {
                         .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
-                lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement));
+                lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, currentTheme, this));
             }
         }
 
@@ -3477,7 +3521,7 @@ public class Metadaten {
     public MetadatumImpl getMetadata() {
         return myMetadaten.get(0);
     }
-    
+
     public List<MetaPerson> getMyPersonen() {
         return this.myPersonen;
     }
@@ -3896,7 +3940,7 @@ public class Metadaten {
         if (currentTheme == Theme.ui) {
             BildErmitteln(0);
         }
-        
+
         Helper.setMeldung("finishedFileRenaming");
     }
 
@@ -4292,7 +4336,7 @@ public class Metadaten {
                                     .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
-                            MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds);
+                            MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, currentTheme, this);
 
                             addablePersondata.add(meta);
                         }
@@ -4617,9 +4661,35 @@ public class Metadaten {
     public void setCurrentMetadata(Metadata currentMetadata) {
         this.currentMetadata = currentMetadata;
     }
-    
+
     public Metadata getCurrentMetadata() {
         return currentMetadata;
     }
 
+    public void setCurrentPerson(Person currentPerson) {
+        this.currentPerson = currentPerson;
+    }
+
+    public Person getCurrentPerson() {
+        return currentPerson;
+    }
+
+    public List<String> getPossibleDatabases() {
+        if (normdataList.isEmpty()) {
+            List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
+            for (NormDatabase norm : databaseList) {
+                normdataList.add(norm.getAbbreviation());
+            }
+        }
+        return normdataList;
+    }
+
+    public List<String> getPossibleNamePartTypes() {
+        // TODO configurable?
+        List<String> possibleNamePartTypes = new ArrayList<String>();
+        possibleNamePartTypes.add("date");
+        possibleNamePartTypes.add("termsOfAddress");
+        return possibleNamePartTypes;
+    }
+    
 }
