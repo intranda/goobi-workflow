@@ -116,13 +116,13 @@
 
 								<!-- Bearbeitung abbrechen-Schaltknopf -->
 								<h:commandLink id="action11" action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
-									title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return false">
+									title="#{msgs.cancelBatchEdition}" onclick="if (!confirm('#{msgs.bearbeitungDiesesSchrittesWirklichAbgeben}')) return false">
 									<h:graphicImage value="images/buttons/cancel3.gif" style="margin-right:3px;vertical-align:middle" />
-									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
+									<h:outputText value="#{msgs.cancelBatchEdition}" />
 								</h:commandLink>
 								<!-- Abschliessen-Schaltknopf -->
 								<h:commandLink id="action15" action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
-									title="#{msgs.diesenSchrittAbschliessen}" onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}')) return false">
+									title="#{msgs.finishBatchEdition}" onclick="if (!confirm('#{msgs.diesenSchrittAbschliessen}')) return false">
 									<h:graphicImage value="images/buttons/ok.gif" style="margin-right:3px;vertical-align:middle" />
 									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
 								</h:commandLink>
