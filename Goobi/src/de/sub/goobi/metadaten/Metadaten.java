@@ -238,6 +238,7 @@ public class Metadaten {
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
+    private int pageNumber = 0;
     // new parameter image parameter for OpenSeadragon
     private int numberOfImagesPerPage = 12;
     private int thumbnailSizeInPixel = 200;
@@ -253,8 +254,8 @@ public class Metadaten {
     private Theme currentTheme = Theme.ui;
     private boolean processHasNewTemporaryMetadataFiles = false;
     private boolean sizeChanged = false;
-    
-   private List<String> normdataList = new ArrayList<String>();
+
+    private List<String> normdataList = new ArrayList<String>();
 
     /**
      * Konstruktor ================================================================
@@ -2587,7 +2588,12 @@ public class Metadaten {
         }
     }
 
-    private int pageNumber = 0;
+    public void setPages() {
+        this.ajaxSeiteStart = this.pagesStart;
+        this.ajaxSeiteEnde = this.pagesEnd;
+
+        AjaxSeitenStartUndEndeSetzen();
+    }
 
     public int getPageNumber() {
         return this.pageNumber;
@@ -4691,5 +4697,5 @@ public class Metadaten {
         possibleNamePartTypes.add("termsOfAddress");
         return possibleNamePartTypes;
     }
-    
+
 }
