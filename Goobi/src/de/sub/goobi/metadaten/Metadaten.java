@@ -3175,14 +3175,16 @@ public class Metadaten {
     }
 
     public void setTempMetadataGroupType(String tempTyp) {
-        MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
-        try {
-            MetadataGroup md = new MetadataGroup(mdt);
-            this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, currentTheme, this);
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e.getMessage());
+        if (!selectedGroup.getMetadataGroup().getType().getName().equals(tempTyp)) {
+            MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
+            try {
+                MetadataGroup md = new MetadataGroup(mdt);
+                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, currentTheme, this);
+            } catch (MetadataTypeNotAllowedException e) {
+                logger.error(e.getMessage());
+            }
+            this.tempGroupType = tempTyp;
         }
-        this.tempGroupType = tempTyp;
     }
 
     public MetadataGroupImpl getSelectedGroup() {
