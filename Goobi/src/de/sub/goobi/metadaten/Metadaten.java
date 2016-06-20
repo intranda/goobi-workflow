@@ -224,7 +224,6 @@ public class Metadaten {
     private String pagesStart = "";
     private String pagesEnd = "";
     private HashMap<String, Boolean> treeProperties;
-    private ReentrantLock xmlReadingLock = new ReentrantLock();
     private int treeWidth = 180;
     private FileManipulation fileManipulation;
 
@@ -932,17 +931,8 @@ public class Metadaten {
         // this.myBildNummer = 1;
 
         String result = "";
-        if (xmlReadingLock.tryLock()) {
-            try {
-                result = readXmlAndBuildTree();
-            } catch (RuntimeException rte) {
-                throw rte;
-            } finally {
-                xmlReadingLock.unlock();
-            }
-        } else {
-            Helper.setFehlerMeldung("metadatenEditorThreadLock");
-        }
+
+        result = readXmlAndBuildTree();
 
         return result;
     }
