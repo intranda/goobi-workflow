@@ -49,7 +49,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -223,6 +222,10 @@ public class Metadaten {
     private String ajaxSeiteEnde = "";
     private String pagesStart = "";
     private String pagesEnd = "";
+    
+    private String pagesStartCurrentElement = "";
+    private String pagesEndCurrentElement = "";
+    
     private HashMap<String, Boolean> treeProperties;
     private int treeWidth = 180;
     private FileManipulation fileManipulation;
@@ -2578,13 +2581,47 @@ public class Metadaten {
         }
     }
 
+    public void startpage() {
+        for (int i = 0; i < this.alleSeiten.length; i++) {
+            SelectItem si = this.alleSeiten[i];
+            if (si.getValue().equals(String.valueOf(this.pageNumber))) {
+                this.pagesStartCurrentElement = si.getLabel();
+            }
+        }
+    }
+
+    public void endpage() {
+        for (int i = 0; i < this.alleSeiten.length; i++) {
+            SelectItem si = this.alleSeiten[i];
+            if (si.getValue().equals(String.valueOf(this.pageNumber))) {
+                this.pagesEndCurrentElement = si.getLabel();
+            }
+        }
+    }
+    
     public void setPages() {
-        this.ajaxSeiteStart = this.pagesStart;
-        this.ajaxSeiteEnde = this.pagesEnd;
+        this.ajaxSeiteStart = this.pagesStartCurrentElement;
+        this.ajaxSeiteEnde = this.pagesEndCurrentElement;
 
         AjaxSeitenStartUndEndeSetzen();
     }
 
+    public String getPagesEndCurrentElement() {
+        return pagesEndCurrentElement;
+    }
+    
+    public String getPagesStartCurrentElement() {
+        return pagesStartCurrentElement;
+    }
+    
+    public void setPagesEndCurrentElement(String pagesEndCurrentElement) {
+        this.pagesEndCurrentElement = pagesEndCurrentElement;
+    }
+    
+    public void setPagesStartCurrentElement(String pagesStartCurrentElement) {
+        this.pagesStartCurrentElement = pagesStartCurrentElement;
+    }
+    
     public int getPageNumber() {
         return this.pageNumber;
     }
