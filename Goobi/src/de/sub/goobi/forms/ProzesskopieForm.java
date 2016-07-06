@@ -917,6 +917,18 @@ public class ProzesskopieForm {
                 ds.addChild(dsvolume);
                 this.myRdf = ff;
             }
+            
+            /* Zettelkatalog (Kassel) */
+            if (this.docType.equals("Catalogue")) {
+                DocStructType dsty = myPrefs.getDocStrctTypeByName("Catalogue");
+                DocStruct ds = dd.createDocStruct(dsty);
+                dd.setLogicalDocStruct(ds);
+
+                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("Section");
+                DocStruct dsvolume = dd.createDocStruct(dstyvolume);
+                ds.addChild(dsvolume);
+                this.myRdf = ff;
+            }
 
         } catch (TypeNotAllowedForParentException e) {
             logger.error(e);
