@@ -31,7 +31,9 @@ public enum DisplayType {
     textarea("3", "textarea", "TextAreaPlugin"),
     readonly("4", "readonly", "ReadOnlyPlugin"),
     gnd("5", "gnd", "GndInputPlugin"),
-    person("6", "person", "PersonPlugin");
+    person("6", "person", "PersonPlugin"),
+    geonames("7", "geonames", "GeonamesPlugin")
+    ;
 
     private String id;
     private String title;
