@@ -438,13 +438,17 @@ public class ConfigurationHelper implements Serializable {
     public boolean isLdapUseLocalDirectory() {
         return getLocalBoolean("useLocalDirectory", false);
     }
-    
+
     public String getLdapHomeDirectory() {
         return getLocalString("ldap_homeDirectory", "homeDirectory");
     }
 
     public boolean isLdapUseTLS() {
         return getLocalBoolean("ldap_useTLS", false);
+    }
+
+    public String getGeonamesCredentials() {
+        return getLocalString("genonames_account", null);
     }
 
     // mets editor
