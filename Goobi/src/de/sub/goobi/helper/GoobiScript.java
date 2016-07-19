@@ -132,9 +132,7 @@ public class GoobiScript {
              * -------------------------------- die passende Methode mit den richtigen Parametern übergeben --------------------------------
              */
             if (this.myParameters.get("action") == null) {
-                Helper.setFehlerMeldung(
-                        "goobiScriptfield",
-                        "missing action",
+                Helper.setFehlerMeldung("goobiScriptfield", "missing action",
                         " - possible: 'action:swapsteps, action:adduser, action:addusergroup, action:swapprozessesout, action:swapprozessesin, action:deleteTiffHeaderFile, action:importFromFileSystem'");
                 return;
             }
@@ -253,17 +251,25 @@ public class GoobiScript {
         for (Integer processId : inProzesse) {
             Process p = ProcessManager.getProcessById(processId);
             String title = p.getTitel();
-            deleteMetadataDirectory(p);
             if (contentOnly) {
+                try {
+                    Path ocr = Paths.get(p.getOcrDirectory());
+                    if (Files.exists(ocr)) {
+                        NIOFileUtils.deleteDir(ocr);
+                    }
+                    Path images = Paths.get(p.getImagesDirectory());
+                    if (Files.exists(images)) {
+                        NIOFileUtils.deleteDir(images);
+                    }
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("Can not delete metadata directory", e);
+                }
                 Helper.setMeldung("Content deleted for " + title);
-            }
-            if (!contentOnly) {
-                //				try {
+            } else {
+
+                deleteMetadataDirectory(p);
                 ProcessManager.deleteProcess(p);
                 Helper.setMeldung("Process " + title + " deleted.");
-                //				} catch (DAOException e) {
-                //					Helper.setFehlerMeldung("could not delete process " + p.getTitel(), e);
-                //				}
             }
         }
     }
@@ -435,8 +441,8 @@ public class GoobiScript {
             reihenfolge1 = Integer.parseInt(this.myParameters.get("swap1nr"));
             reihenfolge2 = Integer.parseInt(this.myParameters.get("swap2nr"));
         } catch (NumberFormatException e1) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", this.myParameters.get("swap1nr") + " - "
-                    + this.myParameters.get("swap2nr"));
+            Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", this.myParameters.get("swap1nr") + " - " + this.myParameters
+                    .get("swap2nr"));
             return;
         }
 
@@ -469,8 +475,8 @@ public class GoobiScript {
                     StepManager.saveStep(s1);
                     StepManager.saveStep(s2);
                 } catch (DAOException e) {
-                    Helper.setFehlerMeldung("goobiScriptfield", "Error on save while swapping steps in process: ", proz.getTitel() + " - "
-                            + s1.getTitel() + " : " + s2.getTitel());
+                    Helper.setFehlerMeldung("goobiScriptfield", "Error on save while swapping steps in process: ", proz.getTitel() + " - " + s1
+                            .getTitel() + " : " + s2.getTitel());
                     logger.error("Error on save while swapping process: " + proz.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
                 }
 
@@ -796,8 +802,8 @@ public class GoobiScript {
             return;
         }
 
-        if (!this.myParameters.get("status").equals("0") && !this.myParameters.get("status").equals("1")
-                && !this.myParameters.get("status").equals("2") && !this.myParameters.get("status").equals("3")) {
+        if (!this.myParameters.get("status").equals("0") && !this.myParameters.get("status").equals("1") && !this.myParameters.get("status").equals(
+                "2") && !this.myParameters.get("status").equals("3")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ", "(possible: 0=closed, 1=open, 2=in work, 3=finished");
             return;
         }
@@ -1093,22 +1099,21 @@ public class GoobiScript {
         }
     }
 
-    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
+    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,
+            IOException {
 
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(metadataFile.toString());
         Element root = doc.getRootElement();
         try {
-            Element goobi =
-                    root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild(
-                            "extension", mods).getChild("goobi", goobiNamespace);
+            Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
+                    .getChild("extension", mods).getChild("goobi", goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
             metadataPairs = getMetadata(metadataList, metadataPairs);
             for (Element el : root.getChildren("dmdSec", mets)) {
                 if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
-                    Element phys =
-                            el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
-                                    "goobi", goobiNamespace);
+                    Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
+                            "goobi", goobiNamespace);
                     List<Element> physList = phys.getChildren();
                     metadataPairs = getMetadata(physList, metadataPairs);
                 }
@@ -1207,50 +1212,48 @@ public class GoobiScript {
             Process p = ProcessManager.getProcessById(processId);
 
             try {
-                DocStruct
-                logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+                DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
                 p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
                 p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
-                
-//                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
+
+                //                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
                 ProcessManager.saveProcess(p);
-            } catch (Exception  e) {
+            } catch (Exception e) {
                 logger.error(e);
             }
 
-
         }
     }
+
     public static void main(String[] args) throws JDOMException, IOException {
         Namespace xlink = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
-        
+
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build("/home/robert/meta.xml");
         Element root = doc.getRootElement();
-        
+
         Element fileSec = root.getChild("fileSec", mets);
         Element fileGrp = fileSec.getChild("fileGrp", mets);
         List<Element> files = fileGrp.getChildren();
         int i = 1;
         for (Element file : files) {
             Element flocat = file.getChild("FLocat", mets);
-            flocat.setAttribute("href", "file:///opt/digiverso/goobi/metadata/18309/images/ortnklin_PPN627455409_0003_tif/" + filename(i++) , xlink);
+            flocat.setAttribute("href", "file:///opt/digiverso/goobi/metadata/18309/images/ortnklin_PPN627455409_0003_tif/" + filename(i++), xlink);
         }
-        
+
         XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
         xmlOutput.output(doc, new FileOutputStream(new File("/home/robert/meta.xml")));
-        
+
     }
-    
-    private static String filename (int i) {
+
+    private static String filename(int i) {
         if (i < 10) {
             return "0000000" + i + ".tif";
-        } else if (i< 100) {
+        } else if (i < 100) {
             return "000000" + i + ".tif";
         } else {
             return "00000" + i + ".tif";
         }
     }
-    
-    
+
 }
