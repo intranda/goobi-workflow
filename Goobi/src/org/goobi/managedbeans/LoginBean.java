@@ -40,6 +40,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -90,7 +91,7 @@ public class LoginBean {
             /* prüfen, ob schon ein Benutzer mit dem Login existiert */
             List<User> treffer;
             try {
-                treffer = UserManager.getUsers(null, "login='" + this.login + "'", null, null);
+                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("could not read database", e.getMessage());
                 return "";
