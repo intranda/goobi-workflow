@@ -220,7 +220,7 @@ public class MetadatenVerifizierung {
 
             try {
                 List<String> images = mih.getDataFiles(myProzess);
-                if (images != null) {
+                if (images != null && !images.isEmpty()) {
                     int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                     int sizeOfImages = images.size();
                     if (sizeOfPagination != sizeOfImages) {
