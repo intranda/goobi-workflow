@@ -2428,6 +2428,7 @@ public class Metadaten {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
             } catch (Exception e) {
+            	logger.error("Error while importing from catalogue: " + e.getMessage());
             }
         }
         return "Metadaten3links";
@@ -2450,15 +2451,17 @@ public class Metadaten {
                     // remove empty default elements
                     List<Metadata> metadataList = this.myDocStruct.getAllMetadata();
                     if (metadataList != null) {
-                        for (Metadata md : metadataList) {
-                            if (md.getValue().isEmpty()) {
+                    	List<Metadata> metadataListClone = new ArrayList<Metadata>(metadataList);
+                        for (Metadata md : metadataListClone) {
+                            if (md.getValue()== null || md.getValue().isEmpty()) {
                                 this.myDocStruct.removeMetadata(md);
                             }
                         }
                     }
                     List<Person> personList = myDocStruct.getAllPersons();
                     if (personList != null) {
-                        for (Person p : personList) {
+                    	List<Person> personListClone = new ArrayList<Person>(personList);
+                        for (Person p : personListClone) {
                             if (p.getFirstname().isEmpty() && p.getLastname().isEmpty()) {
                                 myDocStruct.removePerson(p);
                             }
@@ -2504,7 +2507,7 @@ public class Metadaten {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
             } catch (Exception e) {
-
+            	logger.error("Error while importing from catalogue: " + e.getMessage());
             }
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
