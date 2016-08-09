@@ -259,9 +259,6 @@ public class ProzesskopieForm {
             int selectItemCount = parameterList.size();
             /* Children durchlaufen und SelectItems erzeugen */
 
-            if (selectItemCount == 1) {
-                fa.setWert(cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(0)"));
-            }
 
             if (selectItemCount > 0) {
                 if (cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@multiselect]", "true").equals("true")) {
@@ -271,6 +268,12 @@ public class ProzesskopieForm {
                 }
                 fa.setSelectList(new ArrayList<SelectItem>());
             }
+            
+            if (selectItemCount == 1) {
+                fa.setWert(cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(0)"));
+                fa.setMultiselect(false);
+            }
+            
             for (HierarchicalConfiguration hc : parameterList) {
                 ConfigurationNode node = hc.getRootNode();
                 String svalue = (String) ((ConfigurationNode) node.getAttributes("label").get(0)).getValue();
