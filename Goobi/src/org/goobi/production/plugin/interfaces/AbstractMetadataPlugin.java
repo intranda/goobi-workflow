@@ -6,9 +6,12 @@ import javax.faces.model.SelectItem;
 
 import lombok.Data;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.geonames.Toponym;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
+import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.sub.goobi.metadaten.Metadaten;
 import ugh.dl.Metadata;
 
@@ -47,5 +50,78 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
             }
         }
         return filtered.toString();
+    }
+
+    @Override
+    public String getPagePath() {
+        return "";
+    }
+
+    @Override
+    public String getTitle() {
+        return "";
+    }
+
+    @Override
+    public String search() {
+        return "";
+    }
+
+    @Override
+    public String getData() {
+        return "";
+    }
+
+    @Override
+    public String getUrl() {
+        return "";
+    }
+
+    @Override
+    public List<List<NormData>> getDataList() {
+        return null;
+    }
+
+    @Override
+    public List<NormData> getCurrentData() {
+        return null;
+    }
+
+    @Override
+    public String getSearchValue() {
+        return "";
+    }
+
+    @Override
+    public String getSearchOption() {
+        return "";
+    }
+
+    @Override
+    public void setSelectedItems(List<String> selectedItems) {
+        
+    }
+
+    @Override
+    public List<String> getSelectedItems() {
+        return null;
+    }
+
+    @Override
+    public void setSelectedItem(String selectedItem) {
+        
+    }
+
+    @Override
+    public String getSelectedItem() {
+        return null;
+    }
+    
+    public List<Toponym> getResultList(){
+        return null;
+    }
+    
+    public int getTotalResults() {
+        return 0;
     }
 }
