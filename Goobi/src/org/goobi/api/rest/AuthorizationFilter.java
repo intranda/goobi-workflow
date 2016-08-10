@@ -34,7 +34,12 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         //  check against configured ip range
         if (!checkPermissions(ip, token)) {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the resource from ip " + ip)
+//        	 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
+//                     .build());
+        	ErrorResponse er = new ErrorResponse();
+        	er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
+        	er.setResult("Error");
+        	requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er)
                     .build());
         }
     }
