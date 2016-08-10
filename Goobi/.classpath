@@ -138,6 +138,8 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/normdataimporter.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geonames-1.1.13.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-jaxrs-json-provider-2.6.3.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-jaxrs-base-2.6.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
