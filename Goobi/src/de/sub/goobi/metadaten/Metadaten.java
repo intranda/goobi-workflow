@@ -179,6 +179,9 @@ public class Metadaten {
     // 3=nur jede zweite Seite hat
     // Seitennummer
     private boolean fictitious = false;
+    
+    private String paginationPrefix;
+    private String paginationSuffix;
 
     private SelectItem structSeiten[];
     private MetadatumImpl structSeitenNeu[];
@@ -1992,6 +1995,8 @@ public class Metadaten {
             Paginator p =
                     new Paginator().setPageSelection(pageSelection).setPagesToPaginate(alleSeitenNeu).setPaginationScope(scope).setPaginationType(
                             type).setPaginationMode(mode).setFictitious(fictitious).setPaginationStartValue(paginierungWert);
+            p.setPrefix(paginationPrefix);
+            p.setSuffix(paginationSuffix);
             p.run();
         } catch (IllegalArgumentException iae) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", iae.getMessage());
@@ -4730,4 +4735,20 @@ public class Metadaten {
         return possibleNamePartTypes;
     }
 
+    public String getPaginationPrefix() {
+        return paginationPrefix;
+    }
+    
+    public String getPaginationSuffix() {
+        return paginationSuffix;
+    }
+    
+    public void setPaginationPrefix(String paginationPrefix) {
+        this.paginationPrefix = paginationPrefix;
+    }
+    
+    public void setPaginationSuffix(String paginationSuffix) {
+        this.paginationSuffix = paginationSuffix;
+    }
+    
 }
