@@ -101,13 +101,11 @@ public class SessionForm {
         if (context != null) {
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
-            String address = request.getRemoteAddr();
-            if (address != null && (address.startsWith("127.0.0.1") || address.startsWith("0:0:0:0:0:0:0:1"))) {
-                address = request.getHeader("x-forwarded-for");
-                if (address == null) {
-                    address = "127.0.0.1";
-                }
+            String address = request.getHeader("x-forwarded-for");
+            if (address == null) {
+                address = request.getRemoteAddr();
             }
+
             map.put("address", address);
 
             String mybrowser = request.getHeader("User-Agent");

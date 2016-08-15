@@ -1,6 +1,7 @@
 package org.goobi.api.rest;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -25,30 +26,39 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             token = req.getParameter("token");
         }
 
-        String ip = req.getRemoteHost();
-        if (ip.startsWith("127.0.0.1")) {
-            ip = req.getHeader("x-forwarded-for");
-            if (ip == null) {
-                ip = "127.0.0.1";
-            }
+        String pathInfo = req.getPathInfo();
+
+        String ip = req.getHeader("x-forwarded-for");
+        if (ip == null) {
+            ip = req.getRemoteAddr();
         }
         //  check against configured ip range
-        if (!checkPermissions(ip, token)) {
-//        	 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
-//                     .build());
-        	ErrorResponse er = new ErrorResponse();
-        	er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
-        	er.setResult("Error");
-        	requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er)
-                    .build());
+        if (!checkPermissions(ip, token, pathInfo)) {
+//            ErrorResponse er = new ErrorResponse();
+//            er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
+//            er.setResult("Error");
+//            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er).build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
+                                         .build());
         }
     }
 
-    private boolean checkPermissions(String ip, String token) {
+    private boolean checkPermissions(String ip, String token, String pathInfo) {
         if (token == null) {
             return false;
-        } else
-            return !WebInterfaceConfig.getCredencials(ip, token).isEmpty();
+        } else {
+            List<String> commandList = WebInterfaceConfig.getCredencials(ip, token);
+            if (commandList.isEmpty()) {
+                return false;
+            }
+
+            for (String command : commandList) {
+                if (pathInfo.startsWith(command)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
 }
