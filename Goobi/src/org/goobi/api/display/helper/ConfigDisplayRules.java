@@ -112,8 +112,8 @@ public final class ConfigDisplayRules {
                     }
                     if (allValues.containsKey(projectName)) {
                         Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
-                        if (typeList.containsKey(type)) {
-                            Map<String, List<Item>> currentType = typeList.get(type); 
+                        if (typeList.containsKey(type.getTitle())) {
+                            Map<String, List<Item>> currentType = typeList.get(type.getTitle()); 
                             currentType.put(metadataName, listOfItems);
                         } else {
                             Map<String, List<Item>> currentType = new HashMap<>();

@@ -6,7 +6,6 @@ import javax.faces.model.SelectItem;
 
 import lombok.Data;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.geonames.Toponym;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
