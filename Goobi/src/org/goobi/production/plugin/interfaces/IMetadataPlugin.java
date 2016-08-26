@@ -58,5 +58,9 @@ public interface IMetadataPlugin extends IPlugin {
     
     public int getTotalResults();
     
+    public void setSearchValue(String value);
+    
+    public void setSearchOption(String value);
+    
 
 }

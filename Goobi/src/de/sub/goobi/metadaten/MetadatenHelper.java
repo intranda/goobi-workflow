@@ -425,7 +425,7 @@ public class MetadatenHelper implements Comparator<Object> {
             for (MetadataType mdt : displayMetadataTypes) {
                 // check, if mdt is already in the allMDs Metadata list, if not
                 // - add it
-                if (!(inStruct.getAllMetadataByType(mdt) != null && inStruct.getAllMetadataByType(mdt).size() != 0)) {
+                if (inStruct.getAllMetadataByType(mdt) == null || inStruct.getAllMetadataByType(mdt).isEmpty()) {
                     try {
                         if (mdt.getIsPerson()) {
                             Person p = new Person(mdt);

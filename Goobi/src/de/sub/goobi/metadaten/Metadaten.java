@@ -68,6 +68,7 @@ import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import ugh.dl.DigitalDocument;
@@ -261,6 +262,13 @@ public class Metadaten {
     private boolean sizeChanged = false;
 
     private List<String> normdataList = new ArrayList<String>();
+    private String rowIndex;
+    private String rowType;
+    private String gndSearchValue;
+    private String geonamesSearchValue;
+    private String searchOption;
+
+    private IMetadataPlugin currentPlugin;
 
     /**
      * Konstruktor ================================================================
@@ -3572,6 +3580,21 @@ public class Metadaten {
         return this.curMetadatum;
     }
 
+    public String search() {
+        if (currentPlugin != null) {
+            if (StringUtils.isNotBlank(gndSearchValue)) {
+                currentPlugin.setSearchOption(searchOption);
+                currentPlugin.setSearchValue(gndSearchValue);
+            } else {
+                currentPlugin.setSearchValue(geonamesSearchValue);
+            }
+            currentPlugin.search();
+            gndSearchValue = "";
+            geonamesSearchValue = "";
+        }
+        return "";
+    }
+
     public void setCurMetadatum(MetadatumImpl curMetadatum) {
         this.curMetadatum = curMetadatum;
     }
@@ -3713,7 +3736,7 @@ public class Metadaten {
             newSelectionList.add(String.valueOf(pageIndex - positions));
         }
         setPhysicalOrder(allPages);
-        
+
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
         if (currentTheme == Theme.ui) {
@@ -4727,7 +4750,6 @@ public class Metadaten {
     }
 
     public List<String> getPossibleNamePartTypes() {
-        // TODO configurable?
         List<String> possibleNamePartTypes = new ArrayList<String>();
         possibleNamePartTypes.add("date");
         possibleNamePartTypes.add("termsOfAddress");
@@ -4750,4 +4772,64 @@ public class Metadaten {
         this.paginationSuffix = paginationSuffix;
     }
 
+    public String getRowType() {
+        return rowType;
+    }
+
+    public void setRowType(String rowType) {
+        this.rowType = rowType;
+    }
+
+    public String getRowIndex() {
+        return rowIndex;
+    }
+
+    public void setRowIndex(String rowIndex) {
+        if (this.rowIndex == null || !this.rowIndex.equals(rowIndex)) {
+            this.rowIndex = rowIndex;
+            loadCurrentPlugin();
+        }
+    }
+
+    private void loadCurrentPlugin() {
+        if (rowIndex != null) {
+            if (rowType.equals("metadata")) {
+                currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
+            } else if (rowType.equals("person")) {
+                currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
+            }
+        }
+    }
+
+    public String getSearchOption() {
+        return searchOption;
+    }
+
+    public void setSearchOption(String searchOption) {
+        this.searchOption = searchOption;
+    }
+
+    public String getGndSearchValue() {
+        return gndSearchValue;
+    }
+
+    public void setGndSearchValue(String searchValue) {
+        this.gndSearchValue = searchValue;
+    }
+
+    public String getGeonamesSearchValue() {
+        return geonamesSearchValue;
+    }
+
+    public void setGeonamesSearchValue(String geonamesSearchValue) {
+        this.geonamesSearchValue = geonamesSearchValue;
+    }
+
+    public IMetadataPlugin getCurrentPlugin() {
+        return currentPlugin;
+    }
+
+    public void setCurrentPlugin(IMetadataPlugin currentPlugin) {
+        this.currentPlugin = currentPlugin;
+    }
 }

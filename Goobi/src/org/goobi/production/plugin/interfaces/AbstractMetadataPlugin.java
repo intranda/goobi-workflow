@@ -22,7 +22,18 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
     protected List<SelectItem> possibleItems;
     protected List<String> defaultItems;
     protected String defaultValue;
-    
+
+    private String pagePath;
+    private String title;
+    private String data;
+    private String url;
+    private List<List<NormData>> dataList;
+    private List<NormData> currentData;
+    private String searchValue;
+    private String searchOption;
+    private List<String> selectedItems;
+    private String selectedItem;
+
     public PluginType getType() {
         return PluginType.Metadata;
     }
@@ -38,88 +49,27 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
         bean.delete();
         return "";
     }
-    
+
     public String filter(String str) {
         StringBuilder filtered = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char current = str.charAt(i);
             // current != 0x152 && current != 0x156
-            if (current != 0x98  && current != 0x9C ) {
+            if (current != 0x98 && current != 0x9C) {
                 filtered.append(current);
             }
         }
         return filtered.toString();
     }
 
-    @Override
-    public String getPagePath() {
-        return "";
-    }
-
-    @Override
-    public String getTitle() {
-        return "";
-    }
-
-    @Override
     public String search() {
         return "";
     }
 
-    @Override
-    public String getData() {
-        return "";
-    }
-
-    @Override
-    public String getUrl() {
-        return "";
-    }
-
-    @Override
-    public List<List<NormData>> getDataList() {
+    public List<Toponym> getResultList() {
         return null;
     }
 
-    @Override
-    public List<NormData> getCurrentData() {
-        return null;
-    }
-
-    @Override
-    public String getSearchValue() {
-        return "";
-    }
-
-    @Override
-    public String getSearchOption() {
-        return "";
-    }
-
-    @Override
-    public void setSelectedItems(List<String> selectedItems) {
-        
-    }
-
-    @Override
-    public List<String> getSelectedItems() {
-        return null;
-    }
-
-    @Override
-    public void setSelectedItem(String selectedItem) {
-        
-    }
-
-    @Override
-    public String getSelectedItem() {
-        return null;
-    }
-    
-    public List<Toponym> getResultList(){
-        return null;
-    }
-    
     public int getTotalResults() {
         return 0;
     }

@@ -65,6 +65,6 @@ public enum DisplayType {
                 }
             }
         }
-        return textarea; // textarea is default
+        return input; // textarea is default
     }
 }
