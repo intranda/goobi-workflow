@@ -548,7 +548,11 @@ public class Metadaten {
         try {
             Metadata md = new Metadata(this.myPrefs.getMetadataTypeByName(this.tempTyp));
             md.setValue(this.selectedMetadatum.getValue());
-
+            
+            if (StringUtils.isNotBlank(selectedMetadatum.getNormdataValue())) {
+                md.setAutorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(), selectedMetadatum.getMd().getAuthorityValue());
+            }
+            
             this.myDocStruct.addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
@@ -3185,6 +3189,7 @@ public class Metadaten {
         try {
             Metadata md = new Metadata(mdt);
             this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess, currentTheme, this);
+            currentPlugin = selectedMetadatum.getPlugin();
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e.getMessage());
         }
