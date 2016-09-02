@@ -73,4 +73,8 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
     public int getTotalResults() {
         return 0;
     }
+    
+    public boolean isShowNoHitFound() {
+        return false;
+    }
 }
