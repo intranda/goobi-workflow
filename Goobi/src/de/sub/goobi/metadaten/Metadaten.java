@@ -4802,7 +4802,13 @@ public class Metadaten {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("person")) {
                 currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
+            } else if (rowType.equals("addablePerson")) {
+                currentPlugin = addablePersondata.get(Integer.parseInt(rowIndex)).getPlugin();
+            } else if (rowType.equals("addableMetadata")) {
+                currentPlugin = addableMetadata.get(Integer.parseInt(rowIndex)).getPlugin();
             }
+            
+
         }
     }
 
