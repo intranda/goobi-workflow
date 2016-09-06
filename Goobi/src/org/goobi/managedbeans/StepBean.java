@@ -623,7 +623,7 @@ public class StepBean extends BasicBean {
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer") + temp.getTitel() + ": " + this.problemMessage);
+                seg.setWert(Helper.getTranslation("KorrekturFuer")  + " " + temp.getTitel() + ": " + this.problemMessage);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
                 seg.setCreationDate(new Date());
