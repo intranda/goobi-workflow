@@ -1665,7 +1665,11 @@ public class Metadaten {
                 try {
                     Metadata md = new Metadata(mdi.getMd().getType());
                     md.setValue(mdi.getValue());
+                    md.setAuthorityID(mdi.getMd().getAuthorityID());
+                    md.setAuthorityURI(mdi.getMd().getAuthorityURI());
+                    md.setAuthorityValue(mdi.getMd().getAuthorityValue());
                     ds.addMetadata(md);
+                    
                 } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
                     logger.error(e);
                 }
