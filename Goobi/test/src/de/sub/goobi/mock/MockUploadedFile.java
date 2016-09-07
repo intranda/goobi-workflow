@@ -19,26 +19,26 @@ package de.sub.goobi.mock;
  */
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.servlet.http.Part;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.myfaces.custom.fileupload.StorageStrategy;
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 
-public class MockUploadedFile implements Part{
+public class MockUploadedFile implements Part , Serializable{
 
  
     private static final long serialVersionUID = -1271567035180962097L;
 
     private InputStream stream;
     private String name;
+    private String header;
     
     public MockUploadedFile (InputStream stream, String name) {
         super();
         this.stream = stream;
         this.name = name;
+        header = "filename=" +name;
     }
     
     
@@ -76,8 +76,8 @@ public class MockUploadedFile implements Part{
 
     @Override
     public String getHeader(String arg0) {
-        // TODO Auto-generated method stub
-        return "";
+      
+        return header;
     }
 
 

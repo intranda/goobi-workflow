@@ -39,7 +39,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
-import de.sub.goobi.helper.Helper;
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class PropertyParser {
     private static final Logger logger = Logger.getLogger(PropertyParser.class);
@@ -60,7 +60,7 @@ public class PropertyParser {
             return properties;
         }
 
-        String path = new Helper().getGoobiConfigDirectory() + "goobi_processProperties.xml";
+        String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
         XMLConfiguration config;
         try {
             config = new XMLConfiguration(path);
@@ -181,7 +181,7 @@ public class PropertyParser {
             }
             return properties;
         }
-        String path = new Helper().getGoobiConfigDirectory() + "goobi_processProperties.xml";
+        String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
         XMLConfiguration config;
         try {
             config = new XMLConfiguration(path);
@@ -297,7 +297,7 @@ public class PropertyParser {
     private void readConfigAsSample() {
         ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
 
-        String path = new Helper().getGoobiConfigDirectory() + "goobi_processProperties.xml";
+        String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
         XMLConfiguration config;
         try {
             config = new XMLConfiguration(path);

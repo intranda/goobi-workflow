@@ -37,6 +37,7 @@ import org.goobi.beans.Project;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.Type;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
@@ -47,6 +48,14 @@ public class BatchProcessHelperTest {
 
     @Before
     public void setUp() throws Exception {
+        String datafolder = System.getenv("junitdata");
+        if (datafolder == null) {
+            datafolder = "/opt/digiverso/junit/data/";
+        }
+        ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
+
+        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
+        
         processList = new ArrayList<>();
         Process process = new Process();
         process.setTitel("process");

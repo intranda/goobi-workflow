@@ -117,7 +117,7 @@ public class HelperFormTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getVersion();
-        assertEquals("2.1", fixture);
+        assertEquals("2.2", fixture);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class HelperFormTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getApplicationWebsiteMsg();
-        assertEquals("http://www.goobi.org/", fixture);
+        assertEquals("goobiWebseite", fixture);
     }
 
     @Test
