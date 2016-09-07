@@ -26,8 +26,9 @@
 	<!-- Testing classpath -->
 	<path id="test.classpath">
 		<fileset dir="/opt/digiverso/libs" />
-		<fileset dir="${dir.lib}" includes="**/*.jar" />
-		<fileset dir="${dir.lib.test}" includes="**/*.jar" />
+		<fileset dir="${dir.lib}" />
+	    <fileset dir="./test/lib" />
+		<fileset dir="${dir.lib.test}" />
 		<pathelement location="${dir.build}" />
 	</path>
 
@@ -183,33 +184,20 @@
 
 	<!-- JUnit tests -->
 	<target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
+
 		<javac destdir="${dir.build}" includeantruntime="false" debug="true" target="7" encoding="UTF8" source="7">
+
 			<classpath refid="test.classpath" />
-			<compilerarg value="-Xlint:-path" />
+			<compilerarg value="-Xlint" />
 			<src path="${dir.build.src}" />
 			<src path="${dir.tests}" />
 		</javac>
 
-
-
-		    <junit printsummary="on" haltonerror="false" haltonfailure="false" tempdir="/tmp" >
-		    			<classpath refid="test.classpath" />
-		    			<formatter type="xml" usefile="true" />
-		    			<batchtest todir="${test.report.dir}">
-		    				<fileset dir="${dir.build}" includes="**/FileManipulationTest.class" excludes="**/*All.class" />
-		    			</batchtest>
-		       
-		    		</junit>
-
-	    
-	      
-<!-- 
 		<junit haltonerror="false" haltonfailure="false" tempdir="/tmp">
 			<classpath refid="test.classpath" />
 			<formatter type="xml" usefile="true" />
-			<test name="de.sub.goobi.metadaten.FileManipulationTest.class" todir="${test.report.dir}" />
+			<test name="de.sub.goobi.TestAll" todir="${test.report.dir}" />
 		</junit>
-	    -->
 	</target>
 
 
