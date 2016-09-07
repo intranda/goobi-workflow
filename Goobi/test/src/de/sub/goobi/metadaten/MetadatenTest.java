@@ -289,7 +289,7 @@ public class MetadatenTest {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
         fixture.XMLlesenStart();
-
+        fixture.getTempMetadataGroupType();
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
@@ -331,7 +331,7 @@ public class MetadatenTest {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
         fixture.XMLlesenStart();
-
+        fixture.getTempMetadataGroupType();
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));

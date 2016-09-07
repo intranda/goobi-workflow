@@ -3217,6 +3217,7 @@ public class Metadaten {
         if (this.selectedGroup == null) {
             getAddableMetadataGroupTypes();
             this.selectedGroup = this.tempMetadataGroups.get(0);
+            this.tempGroupType = selectedGroup.getMetadataGroup().getType().getName();
         }
         return this.selectedGroup.getMetadataGroup().getType().getName();
     }
