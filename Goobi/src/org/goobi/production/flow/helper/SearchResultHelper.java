@@ -22,6 +22,7 @@ package org.goobi.production.flow.helper;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -36,6 +37,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
@@ -66,7 +68,7 @@ public class SearchResultHelper {
 
         SelectItem all = new SelectItem("all", Helper.getTranslation("selectAllFields"));
         possibleColumns.add(all);
-        
+
         SelectItem processData = new SelectItem("processData", Helper.getTranslation("processData"), Helper.getTranslation("processData"), true);
         // static data
         possibleColumns.add(processData);
@@ -124,8 +126,8 @@ public class SearchResultHelper {
                 }
             }
             if (!subList.isEmpty()) {
-                SelectItem templateData =
-                        new SelectItem("templateData", Helper.getTranslation("templateData"), Helper.getTranslation("templateData"), true);
+                SelectItem templateData = new SelectItem("templateData", Helper.getTranslation("templateData"), Helper.getTranslation("templateData"),
+                        true);
                 possibleColumns.add(templateData);
                 possibleColumns.addAll(subList);
             }
@@ -142,8 +144,8 @@ public class SearchResultHelper {
                 }
             }
             if (!subList.isEmpty()) {
-                SelectItem masterpieceData =
-                        new SelectItem("masterpieceData", Helper.getTranslation("masterpieceData"), Helper.getTranslation("masterpieceData"), true);
+                SelectItem masterpieceData = new SelectItem("masterpieceData", Helper.getTranslation("masterpieceData"), Helper.getTranslation(
+                        "masterpieceData"), true);
                 possibleColumns.add(masterpieceData);
                 possibleColumns.addAll(subList);
             }
@@ -161,15 +163,16 @@ public class SearchResultHelper {
             }
 
             if (!subList.isEmpty()) {
-                SelectItem metadataData =
-                        new SelectItem("metadataData", Helper.getTranslation("metadataData"), Helper.getTranslation("metadataData"), true);
+                SelectItem metadataData = new SelectItem("metadataData", Helper.getTranslation("metadataData"), Helper.getTranslation("metadataData"),
+                        true);
                 possibleColumns.add(metadataData);
                 possibleColumns.addAll(subList);
             }
         }
     }
 
-    public XWPFDocument getResultAsWord(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
+    public XWPFDocument getResultAsWord(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
+            boolean showArchivedProjects) {
         @SuppressWarnings("rawtypes")
         List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
@@ -248,7 +251,8 @@ public class SearchResultHelper {
         return;
     }
 
-    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
+    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
+            boolean showArchivedProjects) {
         @SuppressWarnings("rawtypes")
         List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
@@ -295,10 +299,14 @@ public class SearchResultHelper {
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct ");
-
+        boolean useMetadata = false;
         // add column labels to query
         for (SearchColumn sc : columnList) {
-            sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
+            if (sc.getTableName().startsWith("metadata")) {
+                useMetadata = true;
+            } else {
+                sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
+            }
         }
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
@@ -308,14 +316,16 @@ public class SearchResultHelper {
         boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
-            String clause = sc.getJoinClause();
-            if (!clause.isEmpty()) {
-                if (!leftJoin) {
-                    sb.append(" LEFT JOIN ");
-                } else {
-                    sb.append(" JOIN ");
+            if (!sc.getTableName().startsWith("metadata")) {
+                String clause = sc.getJoinClause();
+                if (!clause.isEmpty()) {
+                    if (!leftJoin) {
+                        sb.append(" LEFT JOIN ");
+                    } else {
+                        sb.append(" JOIN ");
+                    }
+                    sb.append(clause);
                 }
-                sb.append(clause);
             }
         }
 
@@ -344,6 +354,48 @@ public class SearchResultHelper {
             sb.append(" ORDER BY " + order);
         }
         List list = ProcessManager.runSQL(sb.toString());
+
+        if (useMetadata) {
+            // add metadata columns
+            StringBuilder idQuery = new StringBuilder("SELECT ProzesseID from prozesse WHERE ");
+            idQuery.append(sql);
+            if (order != null && !order.isEmpty()) {
+                idQuery.append(" ORDER BY " + order);
+            }
+            // get id list
+            List idlist = ProcessManager.runSQL(idQuery.toString());
+
+            for (int i = 0; i < idlist.size(); i++) {
+                // get metadata for each id
+                Object[] o = (Object[]) idlist.get(i);
+                String s = (String) o[0];
+
+                List<StringPair> metadata = MetadataManager.getMetadata(Integer.parseInt(s));
+                List<String> additionalColumns = new ArrayList<>();
+                for (SearchColumn sc : columnList) {
+                    if (sc.getTableName().startsWith("metadata")) {
+                        String value = "";
+                        for (StringPair sp : metadata) {
+                            if (sc.getValue().equalsIgnoreCase("metadata." + sp.getOne())) {
+                                value = sp.getTwo();
+                                break;
+                            }
+                        }
+                        additionalColumns.add(value);
+                    }
+                }
+            
+                Object[] currentEntry = (Object[]) list.get(i);
+                List<Object> values = Arrays.asList(currentEntry);
+                List newList = new ArrayList<>();
+                newList.addAll(values);
+                newList.addAll(additionalColumns);
+              
+                list.set(i, newList.toArray());
+            }
+
+        }
+
         return list;
     }
 }
