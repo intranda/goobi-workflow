@@ -37,7 +37,6 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
@@ -298,13 +297,10 @@ public class SearchResultHelper {
     @SuppressWarnings("rawtypes")
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT distinct ");
-        boolean useMetadata = false;
+        sb.append("SELECT distinct prozesse.ProzesseID, ");
         // add column labels to query
         for (SearchColumn sc : columnList) {
-            if (sc.getTableName().startsWith("metadata")) {
-                useMetadata = true;
-            } else {
+            if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
             }
         }
@@ -355,47 +351,40 @@ public class SearchResultHelper {
         }
         List list = ProcessManager.runSQL(sb.toString());
 
-        if (useMetadata) {
-            // add metadata columns
-            StringBuilder idQuery = new StringBuilder("SELECT ProzesseID from prozesse WHERE ");
-            idQuery.append(sql);
-            if (order != null && !order.isEmpty()) {
-                idQuery.append(" ORDER BY " + order);
-            }
-            // get id list
-            List idlist = ProcessManager.runSQL(idQuery.toString());
+        for (int i = 0; i < list.size(); i++) {
+            // get metadata for each id
+            Object[] o = (Object[]) list.get(i);
+            String s = (String) o[0];
 
-            for (int i = 0; i < idlist.size(); i++) {
-                // get metadata for each id
-                Object[] o = (Object[]) idlist.get(i);
-                String s = (String) o[0];
+            String metadataQuery = "select name, print from metadata where processid = " + s;
+            List<Object[]> metadataList = ProcessManager.runSQL(metadataQuery);
 
-                List<StringPair> metadata = MetadataManager.getMetadata(Integer.parseInt(s));
-                List<String> additionalColumns = new ArrayList<>();
-                for (SearchColumn sc : columnList) {
-                    if (sc.getTableName().startsWith("metadata")) {
-                        String value = "";
-                        for (StringPair sp : metadata) {
-                            if (sc.getValue().equalsIgnoreCase("metadata." + sp.getOne())) {
-                                value = sp.getTwo();
-                                break;
-                            }
+            List<String> additionalColumns = new ArrayList<>();
+            for (SearchColumn sc : columnList) {
+                if (sc.getTableName().startsWith("metadata")) {
+                    String value = "";
+                    for (Object[] metadataRow : metadataList) {
+                        String metadataName = (String) metadataRow[0];
+                        String metadataValue = (String) metadataRow[1];
+                        if (sc.getValue().equalsIgnoreCase("metadata." + metadataName)) {
+
+                            value = metadataValue;
+                            break;
                         }
-                        additionalColumns.add(value);
                     }
+                    additionalColumns.add(value);
                 }
-            
-                Object[] currentEntry = (Object[]) list.get(i);
-                List<Object> values = Arrays.asList(currentEntry);
-                List newList = new ArrayList<>();
-                newList.addAll(values);
-                newList.addAll(additionalColumns);
-              
-                list.set(i, newList.toArray());
             }
 
+            Object[] currentEntry = (Object[]) list.get(i);
+            List<Object> values = Arrays.asList(currentEntry);
+            List newList = new ArrayList<>();
+            newList.addAll(values);
+            newList.addAll(additionalColumns);
+            newList.remove(0);
+            list.set(i, newList.toArray());
         }
-
+        
         return list;
     }
 }
