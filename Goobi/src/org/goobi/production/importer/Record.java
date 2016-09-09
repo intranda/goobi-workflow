@@ -36,6 +36,7 @@ public class Record {
 	private List<String> collections = new ArrayList<String>();
 	private String data = "";
 	private String id = "";
+	private Object object;
 
 	/**
 	 * @param data
@@ -74,4 +75,12 @@ public class Record {
 	public List<String> getCollections() {
 		return this.collections;
 	}	
+	
+	public void setObject(Object object) {
+        this.object = object;
+    }
+	
+	public Object getObject() {
+        return object;
+    }
 }
