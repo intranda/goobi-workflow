@@ -160,8 +160,8 @@ public class HelperSchritte {
         List<Step> allehoeherenSchritte = new ArrayList<Step>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge() && !so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
-                    && so.getId() != currentStep.getId()) {
+            if (so.getReihenfolge() == currentStep.getReihenfolge() && !so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) && so
+                    .getId() != currentStep.getId()) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
                 allehoeherenSchritte.add(so);
@@ -179,8 +179,8 @@ public class HelperSchritte {
                     reihenfolge = myStep.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
-                        && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+                if (reihenfolge == myStep.getReihenfolge() && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) && !myStep
+                        .getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
                     /*
                      * den Schritt aktivieren, wenn es kein vollautomatischer ist
                      */
@@ -193,8 +193,8 @@ public class HelperSchritte {
                     if (logger.isDebugEnabled()) {
                         logger.debug("create history events for next step");
                     }
-                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
-                            HistoryEventType.stepOpen.getValue(), processId);
+                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
+                            .getValue(), processId);
                     /* wenn es ein automatischer Schritt mit Script ist */
                     if (logger.isDebugEnabled()) {
                         logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
@@ -246,6 +246,18 @@ public class HelperSchritte {
             logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
         }
         for (Step automaticStep : automatischeSchritte) {
+            automaticStep.setBearbeitungsbeginn(new Date());
+            automaticStep.setBearbeitungsbenutzer(null);
+            automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
+            automaticStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+            HistoryManager.addHistory(automaticStep.getBearbeitungsbeginn(), automaticStep.getReihenfolge().doubleValue(), automaticStep.getTitel(),
+                    HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
+            try {
+                StepManager.saveStep(automaticStep);
+            } catch (DAOException e) {
+                logger.error(e);
+            }
+            // save 
             if (logger.isDebugEnabled()) {
                 logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
@@ -322,7 +334,7 @@ public class HelperSchritte {
         if (script == null || script.length() == 0) {
             return -1;
         }
-       
+
         DigitalDocument dd = null;
         Process po = step.getProzess();
         Prefs prefs = null;
