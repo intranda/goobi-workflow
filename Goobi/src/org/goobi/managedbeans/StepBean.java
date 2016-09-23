@@ -51,12 +51,14 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginGuiType;
+import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
+import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
@@ -179,13 +181,13 @@ public class StepBean extends BasicBean {
         return "task_all";
     }
 
-	public DatabasePaginator getPaginator() {
-		if (paginator == null){
-			FilterAlleStart();
-		}
-		return paginator;
-	}
-	
+    public DatabasePaginator getPaginator() {
+        if (paginator == null) {
+            FilterAlleStart();
+        }
+        return paginator;
+    }
+
     private String sortList() {
         if (sortierung == null) {
             return "prioritaet desc";
@@ -230,11 +232,11 @@ public class StepBean extends BasicBean {
             answer += ", bearbeitungsstatus";
         } else if (this.sortierung.equals("statusDesc")) {
             answer += ", bearbeitungsstatus desc";
-	     } else if (this.sortierung.equals("idAsc")) {
-	        answer = "prozesse.ProzesseID";
-	    } else if (this.sortierung.equals("idDesc")) {
-	        answer = "prozesse.ProzesseID desc";
-	    }
+        } else if (this.sortierung.equals("idAsc")) {
+            answer = "prozesse.ProzesseID";
+        } else if (this.sortierung.equals("idDesc")) {
+            answer = "prozesse.ProzesseID desc";
+        }
 
         return answer;
     }
@@ -323,8 +325,8 @@ public class StepBean extends BasicBean {
         Integer batchNumber = this.mySchritt.getProzess().getBatchID();
         if (batchNumber != null) {
             // only steps with same title
-            currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = \"" + steptitle + "\" and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE);
+            currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = \"" + steptitle + "\" and prozesse.batchID = " + batchNumber, 0,
+                    Integer.MAX_VALUE);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
@@ -394,10 +396,9 @@ public class StepBean extends BasicBean {
         Integer batchNumber = this.mySchritt.getProzess().getBatchID();
         if (batchNumber != null) {
             // only steps with same title
-            currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = \"" + steptitle
-                            + "\"  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")", 0, Integer.MAX_VALUE);
+            currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = \"" + steptitle
+                    + "\"  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = " + batchNumber
+                    + ")", 0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
             //			Criteria crit = session.createCriteria(Step.class);
@@ -508,10 +509,10 @@ public class StepBean extends BasicBean {
         }
         if (processPropertyList != null) {
             for (ProcessProperty prop : processPropertyList) {
-                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
-                        && (prop.getValue() == null || prop.getValue().equals(""))) {
-                    Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " "
-                            + Helper.getTranslation("requiredValue"));
+                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue().equals(
+                        ""))) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " " + Helper.getTranslation(
+                            "requiredValue"));
                     return "";
                 } else if (!prop.isValid()) {
                     Helper.setFehlerMeldung(Helper.getTranslation("PropertyValidation", prop.getName()));
@@ -551,9 +552,8 @@ public class StepBean extends BasicBean {
      */
 
     public List<Step> getPreviousStepsForProblemReporting() {
-        List<Step> alleVorherigenSchritte =
-                StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < "
-                        + this.mySchritt.getReihenfolge(), 0, Integer.MAX_VALUE);
+        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+                + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0, Integer.MAX_VALUE);
 
         //		List<Step> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
         //				.add(Restrictions.lt("reihenfolge", this.mySchritt.getReihenfolge())).addOrder(Order.desc("reihenfolge")).createCriteria("prozess")
@@ -594,10 +594,10 @@ public class StepBean extends BasicBean {
             se.setType(PropertyType.messageError);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
-            String message =
-                    Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben.getNachVorname() + ")";
-            this.mySchritt.getProzess().setWikifield(
-                    WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "error", message));
+            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben.getNachVorname()
+                    + ")";
+            this.mySchritt.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess()
+                    .getWikifield(), "error", message));
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
             HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
@@ -609,9 +609,9 @@ public class StepBean extends BasicBean {
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
 
-            List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+            List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess()
+                    .getId() + " AND Reihenfolge <= " + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
+                    Integer.MAX_VALUE);
 
             //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
             //					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
@@ -623,7 +623,7 @@ public class StepBean extends BasicBean {
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer")  + " " + temp.getTitel() + ": " + this.problemMessage);
+                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
                 seg.setCreationDate(new Date());
@@ -654,9 +654,8 @@ public class StepBean extends BasicBean {
 
     public List<Step> getNextStepsForProblemSolution() {
 
-        List<Step> alleNachfolgendenSchritte =
-                StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge > "
-                        + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+                + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
         //		List<Step> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
         //				.add(Restrictions.gt("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.eq("prioritaet", 10))
@@ -686,9 +685,9 @@ public class StepBean extends BasicBean {
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
-            List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+            List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+                    + " AND Reihenfolge >= " + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
+                    Integer.MAX_VALUE);
 
             //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
             //			       .add(Restrictions.ge("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.le("reihenfolge", temp.getReihenfolge()))
@@ -711,8 +710,8 @@ public class StepBean extends BasicBean {
                 if (ben != null) {
                     step.setBearbeitungsbenutzer(ben);
                 }
-                seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                        + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + Helper.getTranslation(
+                        "KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
                 seg.setCreationDate(new Date());
@@ -723,11 +722,10 @@ public class StepBean extends BasicBean {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-            String message =
-                    Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben.getNachVorname()
-                            + ")";
-            this.mySchritt.getProzess().setWikifield(
-                    WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "info", message));
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben
+                    .getNachVorname() + ")";
+            this.mySchritt.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess()
+                    .getWikifield(), "info", message));
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
 
@@ -1176,8 +1174,8 @@ public class StepBean extends BasicBean {
         if (addToWikiField != null && addToWikiField.length() > 0) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
             String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-            this.mySchritt.getProzess().setWikifield(
-                    WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess().getWikifield(), "user", message));
+            this.mySchritt.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess()
+                    .getWikifield(), "user", message));
             this.addToWikiField = "";
             try {
                 ProcessManager.saveProcess(this.mySchritt.getProzess());
@@ -1473,7 +1471,12 @@ public class StepBean extends BasicBean {
         if (mySchritt.getStepPlugin() != null && mySchritt.getStepPlugin().length() > 0) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
             isp.initialize(mySchritt, "");
-            isp.execute();
+            if (isp instanceof IStepPluginVersion2) {
+                IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
+                PluginReturnValue val = plugin.run();
+            } else {
+                isp.execute();
+            }
         }
         return "";
     }
