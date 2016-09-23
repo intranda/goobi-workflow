@@ -36,6 +36,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
+
 public class ScriptThreadWithoutHibernate extends Thread {
     HelperSchritte hs = new HelperSchritte();
     private Step step;
@@ -66,12 +67,16 @@ public class ScriptThreadWithoutHibernate extends Thread {
             idp.initialize(step, "");
             if (idp.execute()) {
                 hs.CloseStepObjectAutomatic(step);
+            } else {
+                hs.errorStep(step);
             }
         } else if (this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
             isp.initialize(step, "");
             if (isp.execute()) {
                 hs.CloseStepObjectAutomatic(step);
+            } else {
+                hs.errorStep(step);
             }
         }
     }
@@ -80,4 +85,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
         this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
         this.stop = true;
     }
+
+  
 }
