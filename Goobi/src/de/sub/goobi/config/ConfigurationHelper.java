@@ -688,7 +688,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public int getMetsEditorNumberOfImagesPerPage() {
-        return getLocalInt("MetsEditorNumberOfImagesPerPage", 50);
+        return getLocalInt("MetsEditorNumberOfImagesPerPage", 96);
     }
 
     public int getMetsEditorThumbnailSize() {
