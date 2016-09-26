@@ -306,7 +306,7 @@ public class MassImportForm {
 
             }
             for (ImportObject io : answer) {
-                currentProcessNo = currentProcessNo + 1;
+               
                 if (batchId != null) {
                     io.setBatchId(batchId);
                 }
@@ -339,6 +339,7 @@ public class MassImportForm {
                         }
                     }
                 }
+                currentProcessNo = currentProcessNo + 1;
             }
             if (answer.size() != this.processList.size()) {
                 // some error on process generation, don't go to next page
