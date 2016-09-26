@@ -68,8 +68,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9-dom.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/simplemets-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/slf4j-api-1.5.8.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/truezip-6.6.jar"/>
@@ -140,6 +138,14 @@
 	<classpathentry kind="lib" path="test/lib/powermock-easymock-1.6.5-full.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-fileupload-1.3.2.jar"/>
+	<classpathentry kind="lib" path="lib-test/servlet-api-3.1.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/log4j-over-slf4j-1.7.21.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-server-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-webapp-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-util-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-servlet-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-plus-9.3.12.v20160915.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
