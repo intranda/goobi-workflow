@@ -240,7 +240,7 @@ public class Metadaten {
 
     private int pageNumber = 0;
     // new parameter image parameter for OpenSeadragon
-    private int numberOfImagesPerPage = 12;
+    private int numberOfImagesPerPage = 96;
     private int thumbnailSizeInPixel = 200;
     private String THUMBNAIL_FORMAT = "jpg";
     private String MAINIMAGE_FORMAT = "jpg";
@@ -4622,6 +4622,7 @@ public class Metadaten {
         }
         if (this.numberOfImagesPerPage != numberOfImagesPerPage) {
             this.numberOfImagesPerPage = numberOfImagesPerPage;
+            pageNo = 0;
             getPaginatorList();
         }
     }
