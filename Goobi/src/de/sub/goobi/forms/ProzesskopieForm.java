@@ -147,7 +147,7 @@ public class ProzesskopieForm {
         if (ConfigurationHelper.getInstance().isRestProcesslog()) {
             addToWikiField = "";
         }
-        
+
         //      Helper.getHibernateSession().refresh(this.prozessVorlage);
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             if (this.prozessVorlage.getSchritteList().size() == 0) {
@@ -254,11 +254,10 @@ public class ProzesskopieForm {
             /*
              * -------------------------------- prüfen, ob das aktuelle Item eine Auswahlliste werden soll --------------------------------
              */
-            
+
             List<HierarchicalConfiguration> parameterList = cp.getList("createNewProcess.itemlist.item(" + i + ").select");
             int selectItemCount = parameterList.size();
             /* Children durchlaufen und SelectItems erzeugen */
-
 
             if (selectItemCount > 0) {
                 if (cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@multiselect]", "true").equals("true")) {
@@ -268,20 +267,20 @@ public class ProzesskopieForm {
                 }
                 fa.setSelectList(new ArrayList<SelectItem>());
             }
-            
+
             if (selectItemCount == 1) {
                 fa.setWert(cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(0)"));
                 fa.setMultiselect(false);
             }
-            
+
             for (HierarchicalConfiguration hc : parameterList) {
                 ConfigurationNode node = hc.getRootNode();
                 String svalue = (String) ((ConfigurationNode) node.getAttributes("label").get(0)).getValue();
-                
+
                 String sid = (String) node.getValue();
                 fa.getSelectList().add(new SelectItem(sid, svalue, null));
             }
-            
+
             this.additionalFields.add(fa);
         }
     }
@@ -311,9 +310,8 @@ public class ProzesskopieForm {
              */
             if (loginForm.getMaximaleBerechtigung() > 1) {
 
-                filter +=
-                        " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                                + aktuellerNutzer.getId() + ")";
+                filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
+                        .getId() + ")";
 
                 //              Hibernate.initialize(aktuellerNutzer);
                 //              Disjunction dis = Restrictions.disjunction();
@@ -424,7 +422,7 @@ public class ProzesskopieForm {
                         field.setWert(field.getWert().replace("&amp;", "&"));
                     }
                 } // end if ughbinding
-            }// end for
+            } // end for
         } // end if myrdf==null
     }
 
@@ -572,11 +570,11 @@ public class ProzesskopieForm {
          * -------------------------------- Prüfung der additional-Eingaben, die angegeben werden müssen --------------------------------
          */
         for (AdditionalField field : this.additionalFields) {
-            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype()
-                    && (StringUtils.isBlank(field.getWert()))) {
+            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype() && (StringUtils
+                    .isBlank(field.getWert()))) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
-                        + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
+                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " " + Helper.getTranslation(
+                        "ProcessCreationErrorFieldIsEmpty"));
 
             }
         }
@@ -722,7 +720,7 @@ public class ProzesskopieForm {
 
                     }
                 } // end if ughbinding
-            }// end for
+            } // end for
 
             /*
              * -------------------------------- Collectionen hinzufügen --------------------------------
@@ -867,67 +865,24 @@ public class ProzesskopieForm {
             DocStruct dsBoundBook = dd.createDocStruct(dst);
             dd.setPhysicalDocStruct(dsBoundBook);
 
+            ConfigOpacDoctype configOpacDoctype = co.getDoctypeByName(this.docType);
+
             /* Monographie */
-            if (!this.co.getDoctypeByName(this.docType).isPeriodical() && !this.co.getDoctypeByName(this.docType).isMultiVolume()) {
-                DocStructType dsty = myPrefs.getDocStrctTypeByName(this.co.getDoctypeByName(this.docType).getRulesetType());
+            if (!configOpacDoctype.isPeriodical() && !configOpacDoctype.isMultiVolume()) {
+                DocStructType dsty = myPrefs.getDocStrctTypeByName(configOpacDoctype.getRulesetType());
                 DocStruct ds = dd.createDocStruct(dsty);
                 dd.setLogicalDocStruct(ds);
                 this.myRdf = ff;
             }
 
-            /* Zeitschrift */
-            else if (this.co.getDoctypeByName(this.docType).isPeriodical()) {
-                DocStructType dsty = myPrefs.getDocStrctTypeByName("Periodical");
-                DocStruct ds = dd.createDocStruct(dsty);
+            /* periodica */
+            else if (configOpacDoctype.isPeriodical() || configOpacDoctype.isMultiVolume()) {
+
+                DocStructType anchor = myPrefs.getDocStrctTypeByName(configOpacDoctype.getRulesetType());
+                DocStruct ds = dd.createDocStruct(anchor);
                 dd.setLogicalDocStruct(ds);
 
-                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("PeriodicalVolume");
-                DocStruct dsvolume = dd.createDocStruct(dstyvolume);
-                ds.addChild(dsvolume);
-                this.myRdf = ff;
-            }
-
-            /* MultivolumeBand */
-            else if (this.co.getDoctypeByName(this.docType).isMultiVolume()) {
-                DocStructType dsty = myPrefs.getDocStrctTypeByName("MultiVolumeWork");
-                DocStruct ds = dd.createDocStruct(dsty);
-                dd.setLogicalDocStruct(ds);
-
-                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("Volume");
-                DocStruct dsvolume = dd.createDocStruct(dstyvolume);
-                ds.addChild(dsvolume);
-                this.myRdf = ff;
-            }
-            if (this.docType.equals("volumerun")) {
-                DocStructType dsty = myPrefs.getDocStrctTypeByName("VolumeRun");
-                DocStruct ds = dd.createDocStruct(dsty);
-                dd.setLogicalDocStruct(ds);
-
-                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("Record");
-                DocStruct dsvolume = dd.createDocStruct(dstyvolume);
-                ds.addChild(dsvolume);
-                this.myRdf = ff;
-            }
-
-            /* Newspaper */
-            if (this.docType.equals("Newspaper")) {
-                DocStructType dsty = myPrefs.getDocStrctTypeByName("Newspaper");
-                DocStruct ds = dd.createDocStruct(dsty);
-                dd.setLogicalDocStruct(ds);
-
-                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("NewspaperVolume");
-                DocStruct dsvolume = dd.createDocStruct(dstyvolume);
-                ds.addChild(dsvolume);
-                this.myRdf = ff;
-            }
-            
-            /* Zettelkatalog (Kassel) */
-            if (this.docType.equals("Catalogue")) {
-                DocStructType dsty = myPrefs.getDocStrctTypeByName("Catalogue");
-                DocStruct ds = dd.createDocStruct(dsty);
-                dd.setLogicalDocStruct(ds);
-
-                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName("Section");
+                DocStructType dstyvolume = myPrefs.getDocStrctTypeByName(configOpacDoctype.getRulesetChildType());
                 DocStruct dsvolume = dd.createDocStruct(dstyvolume);
                 ds.addChild(dsvolume);
                 this.myRdf = ff;
@@ -1357,8 +1312,8 @@ public class ProzesskopieForm {
             }
 
             /* wenn beides angegeben wurde */
-            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)
-                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils
+                    .containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 break;
             }
@@ -1392,8 +1347,8 @@ public class ProzesskopieForm {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype()
-                            && (myField.getWert() == null || myField.getWert().equals(""))) {
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
+                            .getWert() == null || myField.getWert().equals(""))) {
                         if (atstsl == null || atstsl.length() == 0) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
                         }
@@ -1490,15 +1445,15 @@ public class ProzesskopieForm {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
                     AdditionalField myField = it2.next();
-                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null
-                            && !myField.getWert().equals("")) {
+                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null && !myField.getWert()
+                            .equals("")) {
                         title = myField.getWert();
                     }
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype()
-                            && (myField.getWert() == null || myField.getWert().equals(""))) {
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
+                            .getWert() == null || myField.getWert().equals(""))) {
                         myField.setWert(this.atstsl);
                     }
 

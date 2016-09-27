@@ -30,76 +30,81 @@ package de.unigoettingen.sub.search.opac;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import de.sub.goobi.helper.FacesContextHelper;
 
 public class ConfigOpacDoctype {
-	private String title = "";
-	private String rulesetType = "";
-	private String tifHeaderType = "";
-	private boolean periodical = false;
-	private boolean multiVolume = false;
-	private boolean containedWork = false;
-	private HashMap<String, String> labels;
-	private ArrayList<String> mappings;
+    private String title = "";
+    private String rulesetType = "";
+    private String tifHeaderType = "";
+    private boolean periodical = false;
+    private boolean multiVolume = false;
+    private boolean containedWork = false;
+    private HashMap<String, String> labels;
+    private ArrayList<String> mappings;
+    private String rulesetChildType;
 
-	public ConfigOpacDoctype(String inTitle, String inRulesetType, String inTifHeaderType, boolean inPeriodical, boolean inMultiVolume,
-			boolean inContainedWork, HashMap<String, String> inLabels, ArrayList<String> inMappings) {
-		this.title = inTitle;
-		this.rulesetType = inRulesetType;
-		this.tifHeaderType = inTifHeaderType;
-		this.periodical = inPeriodical;
-		this.multiVolume = inMultiVolume;
-		this.containedWork = inContainedWork;
-		this.labels = inLabels;
-		this.mappings = inMappings;
-	}
+    public ConfigOpacDoctype(String inTitle, String inRulesetType, String inTifHeaderType, boolean inPeriodical, boolean inMultiVolume,
+            boolean inContainedWork, HashMap<String, String> inLabels, ArrayList<String> inMappings, String rulesetChildType) {
+        this.title = inTitle;
+        this.rulesetType = inRulesetType;
+        this.tifHeaderType = inTifHeaderType;
+        this.periodical = inPeriodical;
+        this.multiVolume = inMultiVolume;
+        this.containedWork = inContainedWork;
+        this.labels = inLabels;
+        this.mappings = inMappings;
+        this.rulesetChildType = rulesetChildType;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getTitle() {
+        return this.title;
+    }
 
-	public String getRulesetType() {
-		return this.rulesetType;
-	}
+    public String getRulesetType() {
+        return this.rulesetType;
+    }
 
-	public String getTifHeaderType() {
-		return this.tifHeaderType;
-	}
+    public String getTifHeaderType() {
+        return this.tifHeaderType;
+    }
 
-	public boolean isPeriodical() {
-		return this.periodical;
-	}
+    public boolean isPeriodical() {
+        return this.periodical;
+    }
 
-	public boolean isMultiVolume() {
-		return this.multiVolume;
-	}
+    public boolean isMultiVolume() {
+        return this.multiVolume;
+    }
 
-	public boolean isContainedWork() {
-		return this.containedWork;
-	}
+    public boolean isContainedWork() {
+        return this.containedWork;
+    }
 
-	public HashMap<String, String> getLabels() {
-		return this.labels;
-	}
+    public HashMap<String, String> getLabels() {
+        return this.labels;
+    }
 
-	public ArrayList<String> getMappings() {
-		return this.mappings;
-	}
+    public ArrayList<String> getMappings() {
+        return this.mappings;
+    }
 
-	public void setMappings(ArrayList<String> mappings) {
-		this.mappings = mappings;
-	}
+    public void setMappings(ArrayList<String> mappings) {
+        this.mappings = mappings;
+    }
 
-	public String getLocalizedLabel() {
-		String currentLocale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale().getLanguage();
-		if (currentLocale != null && !currentLocale.equals("")) {
-			String answer = this.labels.get(currentLocale);
-			if (answer != null && !answer.equals("")) {
-				return answer;
-			}
-		}
-		return this.labels.get(this.labels.keySet().iterator().next());
-	}
+    public String getRulesetChildType() {
+        return rulesetChildType;
+    }
+    
+    public String getLocalizedLabel() {
+        String currentLocale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale().getLanguage();
+        if (currentLocale != null && !currentLocale.equals("")) {
+            String answer = this.labels.get(currentLocale);
+            if (answer != null && !answer.equals("")) {
+                return answer;
+            }
+        }
+        return this.labels.get(this.labels.keySet().iterator().next());
+    }
 
 }

@@ -146,6 +146,11 @@
 	<classpathentry kind="lib" path="lib-test/jetty-util-9.3.12.v20160915.jar"/>
 	<classpathentry kind="lib" path="lib-test/jetty-servlet-9.3.12.v20160915.jar"/>
 	<classpathentry kind="lib" path="lib-test/jetty-plus-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-http-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-io-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-security-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-jndi-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-xml-9.3.12.v20160915.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>

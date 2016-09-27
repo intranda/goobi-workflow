@@ -40,187 +40,184 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import de.sub.goobi.helper.Helper;
 
 public class ConfigOpac {
-   private XMLConfiguration config;
-   private static String configPfad;
+    private XMLConfiguration config;
+    private static String configPfad;
 
-   public ConfigOpac() throws IOException {
-	   configPfad = new Helper().getGoobiConfigDirectory() + "goobi_opac.xml";
+    public ConfigOpac() throws IOException {
+        configPfad = new Helper().getGoobiConfigDirectory() + "goobi_opac.xml";
 
-      if (!Files.exists(Paths.get(configPfad))) {
-		throw new IOException("File not found: " + configPfad);
-	}
-      try {
-         this.config = new XMLConfiguration(configPfad);
-      } catch (ConfigurationException e) {
-         e.printStackTrace();
-         this.config = new XMLConfiguration();
-      }
-      this.config.setListDelimiter('&');
-      this.config.setReloadingStrategy(new FileChangedReloadingStrategy());
-   }
+        if (!Files.exists(Paths.get(configPfad))) {
+            throw new IOException("File not found: " + configPfad);
+        }
+        try {
+            this.config = new XMLConfiguration(configPfad);
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+            this.config = new XMLConfiguration();
+        }
+        this.config.setListDelimiter('&');
+        this.config.setReloadingStrategy(new FileChangedReloadingStrategy());
+    }
 
-   /**
-    * find Catalogue in Opac-Configurationlist
-   * ================================================================*/
-   public ConfigOpacCatalogue getCatalogueByName(String inTitle) {
-      int countCatalogues = this.config.getMaxIndex("catalogue");
-      for (int i = 0; i <= countCatalogues; i++) {
-         String title = this.config.getString("catalogue(" + i + ")[@title]");
-         if (title.equals(inTitle)) {
-            String description = this.config.getString("catalogue(" + i + ").config[@description]");
-            String address = this.config.getString("catalogue(" + i + ").config[@address]");
-            String database = this.config.getString("catalogue(" + i + ").config[@database]");
-            String iktlist = this.config.getString("catalogue(" + i + ").config[@iktlist]");
-            String cbs = this.config.getString("catalogue(" + i + ").config[@ucnf]", "");
-            if (!cbs.equals("")) {
-            	cbs = "&" + cbs;
+    /**
+     * find Catalogue in Opac-Configurationlist ================================================================
+     */
+    public ConfigOpacCatalogue getCatalogueByName(String inTitle) {
+        int countCatalogues = this.config.getMaxIndex("catalogue");
+        for (int i = 0; i <= countCatalogues; i++) {
+            String title = this.config.getString("catalogue(" + i + ")[@title]");
+            if (title.equals(inTitle)) {
+                String description = this.config.getString("catalogue(" + i + ").config[@description]");
+                String address = this.config.getString("catalogue(" + i + ").config[@address]");
+                String database = this.config.getString("catalogue(" + i + ").config[@database]");
+                String iktlist = this.config.getString("catalogue(" + i + ").config[@iktlist]");
+                String cbs = this.config.getString("catalogue(" + i + ").config[@ucnf]", "");
+                if (!cbs.equals("")) {
+                    cbs = "&" + cbs;
+                }
+                int port = this.config.getInt("catalogue(" + i + ").config[@port]");
+                String charset = "iso-8859-1";
+                if (this.config.getString("catalogue(" + i + ").config[@charset]") != null) {
+                    charset = this.config.getString("catalogue(" + i + ").config[@charset]");
+                }
+                String protocol = "http://";
+                if (this.config.getString("catalogue(" + i + ").config[@protocol]") != null) {
+                    protocol = config.getString("catalogue(" + i + ").config[@protocol]");
+                }
+
+                String opacType = this.config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
+                /* ---------------------
+                 * Opac-Beautifier einlesen und in Liste zu jedem Catalogue packen
+                 * -------------------*/
+                ArrayList<ConfigOpacCatalogueBeautifier> beautyList = new ArrayList<ConfigOpacCatalogueBeautifier>();
+                for (int j = 0; j <= this.config.getMaxIndex("catalogue(" + i + ").beautify.setvalue"); j++) {
+                    /* Element, dessen Wert geändert werden soll */
+                    String tempJ = "catalogue(" + i + ").beautify.setvalue(" + j + ")";
+                    ConfigOpacCatalogueBeautifierElement oteChange = new ConfigOpacCatalogueBeautifierElement(this.config.getString(tempJ + "[@tag]"),
+                            this.config.getString(tempJ + "[@subtag]"), this.config.getString(tempJ + "[@value]"));
+                    /* Elemente, die bestimmte Werte haben müssen, als Prüfung, ob das zu ändernde Element geändert werden soll */
+                    ArrayList<ConfigOpacCatalogueBeautifierElement> proofElements = new ArrayList<ConfigOpacCatalogueBeautifierElement>();
+                    for (int k = 0; k <= this.config.getMaxIndex(tempJ + ".condition"); k++) {
+                        String tempK = tempJ + ".condition(" + k + ")";
+                        ConfigOpacCatalogueBeautifierElement oteProof = new ConfigOpacCatalogueBeautifierElement(this.config.getString(tempK
+                                + "[@tag]"), this.config.getString(tempK + "[@subtag]"), this.config.getString(tempK + "[@value]"));
+                        proofElements.add(oteProof);
+                    }
+                    beautyList.add(new ConfigOpacCatalogueBeautifier(oteChange, proofElements));
+                }
+
+                ConfigOpacCatalogue coc = new ConfigOpacCatalogue(title, description, address, database, iktlist, port, charset, cbs, beautyList,
+                        opacType, protocol);
+                return coc;
             }
-            int port = this.config.getInt("catalogue(" + i + ").config[@port]");
-            String charset = "iso-8859-1";
-            if (this.config.getString("catalogue(" + i + ").config[@charset]") != null) {
-            	charset = this.config.getString("catalogue(" + i + ").config[@charset]");
+        }
+        return null;
+    }
+
+    /**
+     * return all configured Catalogue-Titles from Configfile ================================================================
+     */
+    public ArrayList<String> getAllCatalogueTitles() {
+        ArrayList<String> myList = new ArrayList<String>();
+        int countCatalogues = this.config.getMaxIndex("catalogue");
+        for (int i = 0; i <= countCatalogues; i++) {
+            String title = this.config.getString("catalogue(" + i + ")[@title]");
+            myList.add(title);
+        }
+        return myList;
+    }
+
+    /**
+     * return all configured Doctype-Titles from Configfile ================================================================
+     */
+    public ArrayList<String> getAllDoctypeTitles() {
+        ArrayList<String> myList = new ArrayList<String>();
+        int countTypes = this.config.getMaxIndex("doctypes.type");
+        for (int i = 0; i <= countTypes; i++) {
+            String title = this.config.getString("doctypes.type(" + i + ")[@title]");
+            myList.add(title);
+        }
+        return myList;
+    }
+
+    /**
+     * return all configured Doctype-Titles from Configfile ================================================================
+     */
+    public ArrayList<ConfigOpacDoctype> getAllDoctypes() {
+        ArrayList<ConfigOpacDoctype> myList = new ArrayList<ConfigOpacDoctype>();
+        for (String title : getAllDoctypeTitles()) {
+            myList.add(getDoctypeByName(title));
+        }
+        return myList;
+    }
+
+    /**
+     * get doctype from mapping of opac response first check if there is a special mapping for this
+     * ================================================================
+     */
+    public ConfigOpacDoctype getDoctypeByMapping(String inMapping, String inCatalogue) {
+        int countCatalogues = this.config.getMaxIndex("catalogue");
+        for (int i = 0; i <= countCatalogues; i++) {
+            String title = this.config.getString("catalogue(" + i + ")[@title]");
+            if (title.equals(inCatalogue)) {
+                /* ---------------------
+                 * alle speziell gemappten DocTypes eines Kataloges einlesen
+                 * -------------------*/
+                HashMap<String, String> labels = new HashMap<String, String>();
+                int countLabels = this.config.getMaxIndex("catalogue(" + i + ").specialmapping");
+                for (int j = 0; j <= countLabels; j++) {
+                    String type = this.config.getString("catalogue(" + i + ").specialmapping[@type]");
+                    String value = this.config.getString("catalogue(" + i + ").specialmapping");
+                    labels.put(value, type);
+                }
+                if (labels.containsKey(inMapping)) {
+                    return getDoctypeByName(labels.get(inMapping));
+                }
             }
-            String protocol = "http://";
-            if (this.config.getString("catalogue(" + i + ").config[@protocol]") != null) {
-                protocol = config.getString("catalogue(" + i + ").config[@protocol]");
+        }
+
+        /* ---------------------
+         * falls der Katalog kein spezielles Mapping für den Doctype hat, jetzt in den Doctypes suchen
+         * -------------------*/
+        for (String title : getAllDoctypeTitles()) {
+            ConfigOpacDoctype tempType = getDoctypeByName(title);
+            if (tempType.getMappings().contains(inMapping)) {
+                return tempType;
             }
-            
-            String opacType = this.config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
-            /* ---------------------
-             * Opac-Beautifier einlesen und in Liste zu jedem Catalogue packen
-             * -------------------*/
-            ArrayList<ConfigOpacCatalogueBeautifier> beautyList = new ArrayList<ConfigOpacCatalogueBeautifier>();
-            for (int j = 0; j <= this.config.getMaxIndex("catalogue(" + i + ").beautify.setvalue"); j++) {
-               /* Element, dessen Wert geändert werden soll */
-               String tempJ = "catalogue(" + i + ").beautify.setvalue(" + j + ")";
-               ConfigOpacCatalogueBeautifierElement oteChange = new ConfigOpacCatalogueBeautifierElement(
-                     this.config.getString(tempJ + "[@tag]"), this.config.getString(tempJ + "[@subtag]"), this.config
-                           .getString(tempJ + "[@value]"));
-               /* Elemente, die bestimmte Werte haben müssen, als Prüfung, ob das zu ändernde Element geändert werden soll */
-               ArrayList<ConfigOpacCatalogueBeautifierElement> proofElements = new ArrayList<ConfigOpacCatalogueBeautifierElement>();
-               for (int k = 0; k <= this.config.getMaxIndex(tempJ + ".condition"); k++) {
-                  String tempK = tempJ + ".condition(" + k + ")";
-                  ConfigOpacCatalogueBeautifierElement oteProof = new ConfigOpacCatalogueBeautifierElement(
-                        this.config.getString(tempK + "[@tag]"), this.config.getString(tempK + "[@subtag]"), this.config
-                              .getString(tempK + "[@value]"));
-                  proofElements.add(oteProof);
-               }
-               beautyList.add(new ConfigOpacCatalogueBeautifier(oteChange, proofElements));
+        }
+        return null;
+    }
+
+    /**
+     * get doctype from title ================================================================
+     */
+    @SuppressWarnings("unchecked")
+    public ConfigOpacDoctype getDoctypeByName(String inTitle) {
+        int countCatalogues = this.config.getMaxIndex("doctypes.type");
+        for (int i = 0; i <= countCatalogues; i++) {
+            String title = this.config.getString("doctypes.type(" + i + ")[@title]");
+            if (title.equals(inTitle)) {
+                /* Sprachen erfassen */
+                HashMap<String, String> labels = new HashMap<String, String>();
+                int countLabels = this.config.getMaxIndex("doctypes.type(" + i + ").label");
+                for (int j = 0; j <= countLabels; j++) {
+                    String language = this.config.getString("doctypes.type(" + i + ").label(" + j + ")[@language]");
+                    String value = this.config.getString("doctypes.type(" + i + ").label(" + j + ")");
+                    labels.put(language, value);
+                }
+                String inRulesetType = this.config.getString("doctypes.type(" + i + ")[@rulesetType]");
+                String inTifHeaderType = this.config.getString("doctypes.type(" + i + ")[@tifHeaderType]");
+                boolean periodical = this.config.getBoolean("doctypes.type(" + i + ")[@isPeriodical]");
+                boolean multiVolume = this.config.getBoolean("doctypes.type(" + i + ")[@isMultiVolume]");
+                boolean containedWork = this.config.getBoolean("doctypes.type(" + i + ")[@isContainedWork]");
+                ArrayList<String> mappings = (ArrayList<String>) this.config.getList("doctypes.type(" + i + ").mapping");
+                String rulesetChildType = this.config.getString("doctypes.type(" + i + ")[@rulesetChildType]");
+                ConfigOpacDoctype cod = new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
+                        mappings, rulesetChildType);
+                return cod;
             }
-
-            ConfigOpacCatalogue coc = new ConfigOpacCatalogue(title, description, address, database, iktlist,
-                  port, charset, cbs, beautyList, opacType,  protocol);
-            return coc;
-         }
-      }
-      return null;
-   }
-
-   /**
-    * return all configured Catalogue-Titles from Configfile
-    * ================================================================*/
-   public ArrayList<String> getAllCatalogueTitles() {
-      ArrayList<String> myList = new ArrayList<String>();
-      int countCatalogues = this.config.getMaxIndex("catalogue");
-      for (int i = 0; i <= countCatalogues; i++) {
-         String title = this.config.getString("catalogue(" + i + ")[@title]");
-         myList.add(title);
-      }
-      return myList;
-   }
-
-   /**
-    * return all configured Doctype-Titles from Configfile
-    * ================================================================*/
-   public ArrayList<String> getAllDoctypeTitles() {
-      ArrayList<String> myList = new ArrayList<String>();
-      int countTypes = this.config.getMaxIndex("doctypes.type");
-      for (int i = 0; i <= countTypes; i++) {
-         String title = this.config.getString("doctypes.type(" + i + ")[@title]");
-         myList.add(title);
-      }
-      return myList;
-   }
-
-   /**
-    * return all configured Doctype-Titles from Configfile
-    * ================================================================*/
-   public ArrayList<ConfigOpacDoctype> getAllDoctypes() {
-      ArrayList<ConfigOpacDoctype> myList = new ArrayList<ConfigOpacDoctype>();
-      for (String title : getAllDoctypeTitles()) {
-         myList.add(getDoctypeByName(title));
-      }
-      return myList;
-   }
-
-   /**
-    * get doctype from mapping of opac response
-    * first check if there is a special mapping for this
-   * ================================================================*/
-   public ConfigOpacDoctype getDoctypeByMapping(String inMapping, String inCatalogue) {
-      int countCatalogues = this.config.getMaxIndex("catalogue");
-      for (int i = 0; i <= countCatalogues; i++) {
-         String title = this.config.getString("catalogue(" + i + ")[@title]");
-         if (title.equals(inCatalogue)) {
-            /* ---------------------
-             * alle speziell gemappten DocTypes eines Kataloges einlesen
-             * -------------------*/
-            HashMap<String, String> labels = new HashMap<String, String>();
-            int countLabels = this.config.getMaxIndex("catalogue(" + i + ").specialmapping");
-            for (int j = 0; j <= countLabels; j++) {
-               String type = this.config.getString("catalogue(" + i + ").specialmapping[@type]");
-               String value = this.config.getString("catalogue(" + i + ").specialmapping");
-               labels.put(value, type);
-            }
-            if (labels.containsKey(inMapping)) {
-				return getDoctypeByName(labels.get(inMapping));
-			}
-         }
-      }
-
-      /* ---------------------
-       * falls der Katalog kein spezielles Mapping für den Doctype hat, jetzt in den Doctypes suchen
-       * -------------------*/
-      for (String title : getAllDoctypeTitles()) {
-         ConfigOpacDoctype tempType = getDoctypeByName(title);
-         if (tempType.getMappings().contains(inMapping)) {
-			return tempType;
-		}
-      }
-      return null;
-   }
-
-   /**
-    * get doctype from title
-   * ================================================================*/
-   @SuppressWarnings("unchecked")
-   public ConfigOpacDoctype getDoctypeByName(String inTitle) {
-      int countCatalogues = this.config.getMaxIndex("doctypes.type");
-      for (int i = 0; i <= countCatalogues; i++) {
-         String title = this.config.getString("doctypes.type(" + i + ")[@title]");
-         if (title.equals(inTitle)) {
-            /* Sprachen erfassen */
-            HashMap<String, String> labels = new HashMap<String, String>();
-            int countLabels = this.config.getMaxIndex("doctypes.type(" + i + ").label");
-            for (int j = 0; j <= countLabels; j++) {
-               String language = this.config.getString("doctypes.type(" + i + ").label(" + j + ")[@language]");
-               String value = this.config.getString("doctypes.type(" + i + ").label(" + j + ")");
-               labels.put(language, value);
-            }
-            String inRulesetType = this.config.getString("doctypes.type(" + i + ")[@rulesetType]");
-            String inTifHeaderType = this.config.getString("doctypes.type(" + i + ")[@tifHeaderType]");
-            boolean periodical = this.config.getBoolean("doctypes.type(" + i + ")[@isPeriodical]");
-            boolean multiVolume = this.config.getBoolean("doctypes.type(" + i + ")[@isMultiVolume]");
-            boolean containedWork = this.config.getBoolean("doctypes.type(" + i + ")[@isContainedWork]");
-            ArrayList<String> mappings = (ArrayList<String>) this.config.getList("doctypes.type(" + i
-                  + ").mapping");
-
-            ConfigOpacDoctype cod = new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType,
-                  periodical, multiVolume, containedWork, labels, mappings);
-            return cod;
-         }
-      }
-      return null;
-   }
+        }
+        return null;
+    }
 
 }
