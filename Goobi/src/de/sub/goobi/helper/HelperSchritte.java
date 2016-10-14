@@ -279,7 +279,7 @@ public class HelperSchritte {
         int abgeschlossen = 0;
         List<Step> stepsForProcess = StepManager.getStepsForProcess(processId);
         for (Step step : stepsForProcess) {
-            if (step.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+            if (step.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
                 offen++;
