@@ -257,7 +257,7 @@ public class StepBean extends BasicBean {
         mySchritt = StepManager.getStepById(mySchritt.getId());
         mySchritt.lazyLoad();
 
-        if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.OPEN) {
+        if (!(this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.OPEN || this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.ERROR)) {
             Helper.setFehlerMeldung("stepInWorkError");
             //					this.flagWait = false;
             return "";

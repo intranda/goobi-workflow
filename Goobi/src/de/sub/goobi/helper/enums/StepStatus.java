@@ -56,9 +56,9 @@ public enum StepStatus {
 
     // TODO add new color
     
-    ERROR(4, "statusError", "red_10.gif", "red_15a.gif", "steperror", "grey"),
+    ERROR(4, "statusError", "red_10.gif", "red_15a.gif", "steperror", "blue"),
 
-    DEACTIVATED(5, "statusDeactivated", "red_10.gif", "red_15a.gif", "stepdeactivated", "blue");
+    DEACTIVATED(5, "statusDeactivated", "red_10.gif", "red_15a.gif", "stepdeactivated", "lightgrey");
 
     private int value;
     private String title;

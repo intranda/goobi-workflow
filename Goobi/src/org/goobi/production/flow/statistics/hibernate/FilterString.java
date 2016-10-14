@@ -47,6 +47,9 @@ public class FilterString {
 	public static final String STEPAUTOMATIC = "stepautomatic:";
 	public static final String METADATA = "meta:";
 	public static final String PROCESSLOG = "log:";
+	public static final String STEPERROR = "steperror:";
+	public static final String STEPDEACTIVATED = "stepdeactivated:";
+	
 	
 	// german
 	public static final String PROZESSEIGENSCHAFT = "prozesseigenschaft:";
