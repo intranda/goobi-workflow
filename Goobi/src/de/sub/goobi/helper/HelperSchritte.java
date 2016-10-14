@@ -159,7 +159,7 @@ public class HelperSchritte {
         List<Step> allehoeherenSchritte = new ArrayList<Step>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge() && !so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) && so
+            if (so.getReihenfolge() == currentStep.getReihenfolge() && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) ||so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && so
                     .getId() != currentStep.getId()) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
@@ -178,7 +178,7 @@ public class HelperSchritte {
                     reihenfolge = myStep.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) && !myStep
+                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && !myStep
                         .getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
                     /*
                      * den Schritt aktivieren, wenn es kein vollautomatischer ist
