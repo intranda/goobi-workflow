@@ -195,10 +195,15 @@ public class HelperForm {
 
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
-
+        SelectItem error = new SelectItem("4", Helper.getTranslation("statusError"));
+        ssl.add(error);
+        
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
 
+        SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
+        ssl.add(deactivated);
+        
         return ssl;
     }
 
