@@ -1,9 +1,6 @@
 package de.sub.goobi.mock;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.Map.Entry;
+
 
 import javax.naming.NamingException;
 
@@ -19,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class JettyServer {
 
     private Server server;
@@ -45,7 +43,7 @@ public class JettyServer {
 //                "org.eclipse.jetty.webapp.FragmentConfiguration" });
         try {
             org.eclipse.jetty.plus.jndi.Resource mydatasource = new org.eclipse.jetty.plus.jndi.Resource(wac, "java:comp/env/goobi", dataSource);
-//            server.setAttribute("java:comp/env/goobi", mydatasource);
+            server.setAttribute("java:comp/env/goobi", mydatasource);
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -62,11 +60,12 @@ public class JettyServer {
 
     @Test
     public void shouldRun() throws Exception {
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings({  "resource" })
         HttpClient client = new DefaultHttpClient();
         HttpGet mockRequest = new HttpGet("http://localhost:8080/Goobi");
         HttpResponse mockResponse = client.execute(mockRequest);
-
+mockResponse.getEntity();
+        
     }
 
     @After

@@ -415,7 +415,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setBearbeitungsstatusUp() {
-        if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
+        if (getBearbeitungsstatusEnum() != StepStatus.DONE && getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
             this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() + 1);
         }
     }

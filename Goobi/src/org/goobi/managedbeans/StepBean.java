@@ -51,7 +51,6 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginGuiType;
-import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -1473,7 +1472,7 @@ public class StepBean extends BasicBean {
             isp.initialize(mySchritt, "");
             if (isp instanceof IStepPluginVersion2) {
                 IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
-                PluginReturnValue val = plugin.run();
+                 plugin.run();
             } else {
                 isp.execute();
             }

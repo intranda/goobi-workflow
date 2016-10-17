@@ -1080,7 +1080,7 @@ public class ProcessBean extends BasicBean {
         List<Step> stepList = new ArrayList<Step>(proz.getSchritteList());
 
         for (Step so : stepList) {
-            if (!so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+            if (!(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
                 so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
                 so.setEditTypeEnum(StepEditType.ADMIN);
                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
@@ -1097,18 +1097,10 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    private void debug(String message, List<Step> bla) {
-        for (Step s : bla) {
-            logger.warn(message + " " + s.getTitel() + "   " + s.getReihenfolge());
-        }
-    }
-
     private void stepStatusDown(Process proz) throws DAOException {
         List<Step> tempList = new ArrayList<Step>(proz.getSchritteList());
-        debug("templist: ", tempList);
 
         Collections.reverse(tempList);
-        debug("reverse: ", tempList);
 
         for (Step step : tempList) {
             if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
@@ -1149,7 +1141,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void SchrittStatusUp() {
-        if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE) {
+        if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE && this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
