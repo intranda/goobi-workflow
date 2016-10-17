@@ -1029,8 +1029,8 @@ public class ProcessBean extends BasicBean {
                 if (!proz.isImageFolderInUse()) {
                     myDav.DownloadToHome(proz, 0, false);
                 } else {
-                    Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + proz.getTitel() + " " + Helper.getTranslation("isInUse"),
-                            proz.getImageFolderInUseUser().getNachVorname());
+                    Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + proz.getTitel() + " " + Helper.getTranslation("isInUse"), proz
+                            .getImageFolderInUseUser().getNachVorname());
                     myDav.DownloadToHome(proz, 0, true);
                 }
             }
@@ -1614,46 +1614,45 @@ public class ProcessBean extends BasicBean {
      */
 
     public void StatisticsStatusVolumes() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot()
+                .getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsUsergroups() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot()
+                .getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsRuntimeSteps() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                        filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContextHelper.getCurrentFacesContext().getViewRoot()
+                .getLocale(), filter);
     }
 
     public void StatisticsProduction() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot()
+                .getLocale(), filter);
     }
 
     public void StatisticsStorage() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                filter);
     }
 
     public void StatisticsCorrection() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot()
+                .getLocale(), filter);
     }
 
     public void StatisticsTroughput() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot()
+                .getLocale(), filter);
     }
 
     public void StatisticsProject() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                filter);
         this.statisticsManager.calculate();
     }
 
@@ -1971,8 +1970,8 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb =
-                        sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
+                        this.showArchivedProjects);
 
                 List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
@@ -2036,8 +2035,8 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb =
-                        sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
+                HSSFWorkbook wb = sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
+                        this.showArchivedProjects);
 
                 wb.write(out);
                 out.flush();
@@ -2064,8 +2063,8 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.doc\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                XWPFDocument wb =
-                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
+                XWPFDocument wb = sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
+                        this.showArchivedProjects);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2251,7 +2250,8 @@ public class ProcessBean extends BasicBean {
             }
             this.processProperty.transfer();
 
-            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
+            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty
+                    .getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
 
