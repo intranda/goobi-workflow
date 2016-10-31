@@ -102,10 +102,10 @@ public class ProjectHelper {
         for (String title : stepTitleList) {
             Double averageStepOrder =
                     StepManager.getAverageOfFieldValue("schritte.reihenfolge", projectFilter + " AND schritte.titel = '" + title + "'",
-                            "schritte.reihenfolge", "schritte.titel");
+                            null, "schritte.titel");
             Long numberOfSteps =
                     StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
-                            "schritte.reihenfolge", "schritte.titel");
+                            null, "schritte.titel");
 
             //		Criteria critSteps = session.createCriteria(Step.class);
             //
@@ -174,10 +174,10 @@ public class ProjectHelper {
         for (String stepDoneTitle : stepDoneTitleList) {
             Long numberOfSteps =
                     StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '"
-                            + stepDoneTitle + "'", "schritte.reihenfolge", "schritte.titel");
+                            + stepDoneTitle + "'", null, "schritte.titel");
             Long numberOfImages =
                     StepManager.getSumOfFieldValue("prozesse.sortHelperImages", projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '"
-                            + stepDoneTitle + "'", "schritte.reihenfolge", "schritte.titel");
+                            + stepDoneTitle + "'", null, "schritte.titel");
 
             //			title = (String) (row[FieldList.stepName.fieldLocation]);
             //			numberOfSteps = (Long) (row[FieldList.stepCount.fieldLocation]);
@@ -277,10 +277,10 @@ public class ProjectHelper {
         for (String title : stepTitleList) {
             Double averageStepOrder =
                     StepManager.getAverageOfFieldValue("schritte.reihenfolge", projectFilter + " AND schritte.titel = '" + title + "'",
-                            "schritte.reihenfolge", "schritte.titel");
+                            null, "schritte.titel");
             Long numberOfSteps =
                     StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
-                            "schritte.reihenfolge", "schritte.titel");
+                            null, "schritte.titel");
 
             //      Criteria critSteps = session.createCriteria(Step.class);
             //

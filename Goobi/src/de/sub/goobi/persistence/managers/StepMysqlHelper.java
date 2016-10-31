@@ -855,7 +855,7 @@ class StepMysqlHelper implements Serializable {
 
     public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select distinct schritte.titel from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
+        sql.append("select distinct schritte.titel, schritte.reihenfolge from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
