@@ -991,6 +991,10 @@ public class StepBean extends BasicBean {
         return myPlugin;
     }
 
+    public void setMyPlugin(IStepPlugin myPlugin) {
+        this.myPlugin = myPlugin;
+    }
+    
     public void setStep(Step step) {
         this.mySchritt = step;
         loadProcessProperties();
