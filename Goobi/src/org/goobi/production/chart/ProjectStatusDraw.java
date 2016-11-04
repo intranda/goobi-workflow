@@ -34,6 +34,8 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +44,7 @@ import org.apache.log4j.Logger;
 
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
+import de.sub.goobi.helper.FacesContextHelper;
 
 /*************************************************************************************
  * ProjectStatusDraw class creates and paints the chart depending on given parameters. The value parameters are transfered as
@@ -174,7 +177,9 @@ public class ProjectStatusDraw {
             drawHorizontalBar(borderLeft, y, t.getStepsCompleted() * chartWidth / nonNullMaxSteps, BARWIDTH, chartcolor.getColor());
 
             // Print number of steps completed
-            String stepsCompletedString = t.getStepsCompleted().toString() + "/" + t.getStepsMax().toString();
+            NumberFormat formatter = DecimalFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
+           
+            String stepsCompletedString =  formatter.format(t.getStepsCompleted()) +" (" + ( formatter.format(t.getStepsCompleted() - t.getStepsMax())) + ")";
             if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight() + fm.stringWidth(
                     stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);
