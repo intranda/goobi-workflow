@@ -274,6 +274,10 @@ public class HelperForm {
     public boolean isShowError() {
         return showError;
     }
+    
+    public boolean isUseUii(){
+    	return ConfigurationHelper.getInstance().isUseIntrandaUi();
+    }
 
     public void setShowError(boolean showError) {
         this.showError = showError;

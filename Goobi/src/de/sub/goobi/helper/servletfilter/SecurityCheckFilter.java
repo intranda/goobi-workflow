@@ -63,13 +63,13 @@ public class SecurityCheckFilter implements Filter {
         HttpServletResponse hres = (HttpServletResponse) response;
         String url = hreq.getRequestURI();
         LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
-        String destination = "ui/index.xhtml";
-        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
-			destination = "uii/index.xhtml";
-        }
+        String destination = "index.xhtml";
+//        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
+//			destination = "uii/index.xhtml";
+//        }
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains(destination)) {
-            hres.sendRedirect("../" + destination);
+            hres.sendRedirect("" + destination);
         } else {
             chain.doFilter(request, response);
         }
