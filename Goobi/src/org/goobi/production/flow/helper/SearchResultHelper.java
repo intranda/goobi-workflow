@@ -326,7 +326,7 @@ public class SearchResultHelper {
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
 
-        sb.append(" FROM projekte, prozesse ");
+        sb.append(" FROM prozesse ");
 
         boolean leftJoin = false;
 
