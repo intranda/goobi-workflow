@@ -316,18 +316,23 @@ public class SearchResultHelper {
         if (StringUtils.isNotBlank(order)) {
             sb.append(order.replace(" desc", "") + ", ");
         }
-
+        boolean includeProjects = false;
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
+                if (sc.getTableName().startsWith("projekte")) {
+                    includeProjects = true;
+                }
             }
         }
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
-
-        sb.append(" FROM prozesse ");
-
+        if (order.startsWith("projekte") && !includeProjects) {
+            sb.append(" FROM projekte, prozesse ");
+        } else {
+            sb.append(" FROM prozesse ");
+        }
         boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
