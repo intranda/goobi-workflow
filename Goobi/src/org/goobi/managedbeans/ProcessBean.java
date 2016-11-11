@@ -74,6 +74,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.SearchColumn;
@@ -84,6 +85,7 @@ import org.goobi.production.flow.statistics.enums.StatisticsMode;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
+import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
@@ -116,7 +118,9 @@ import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -128,6 +132,12 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 @ManagedBean(name = "ProzessverwaltungForm")
 @SessionScoped
@@ -179,6 +189,7 @@ public class ProcessBean extends BasicBean {
     private List<String> validationPluginList = new ArrayList<String>();
 
     public ProcessBean() {
+
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
 
         this.sortierung = "titel";
@@ -2480,5 +2491,51 @@ public class ProcessBean extends BasicBean {
     public String cloneProcess() {
         myProzess.clone();
         return FilterVorlagen();
+    }
+
+    private IStepPlugin currentPlugin;
+
+    public String startPlugin() {
+        if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+            if (mySchritt.isTypExportDMS()) {
+                IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
+                try {
+                    dms.startExport(mySchritt.getProzess());
+                } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
+                        | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException
+                        | SwapException | DAOException e) {
+                    logger.error(e);
+                }
+            } else if (mySchritt.isDelayStep()) {
+                Helper.setFehlerMeldung("cannotStartPlugin");
+            } else {
+                currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
+                if (currentPlugin != null) {
+                    currentPlugin.initialize(mySchritt, "/process_edit");
+                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
+                        if (bean == null) {
+                            bean = new StepBean();
+                            requestMap.put("AktuelleSchritteForm", bean);
+                        }
+                        bean.setMyPlugin(currentPlugin);
+                        String mypath = currentPlugin.getPagePath();
+                        currentPlugin.execute();
+                        return mypath;
+                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
+                        currentPlugin.execute();
+                        currentPlugin.finish();
+                        return "";
+                    } else {
+                        Helper.setFehlerMeldung("cannotStartPlugin");
+                    }
+
+                }
+            }
+        }
+
+        return "";
     }
 }

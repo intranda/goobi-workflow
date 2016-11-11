@@ -34,6 +34,8 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +44,7 @@ import org.apache.log4j.Logger;
 
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
+import de.sub.goobi.helper.FacesContextHelper;
 
 /*************************************************************************************
  * ProjectStatusDraw class creates and paints the chart depending on given parameters. The value parameters are transfered as
@@ -51,7 +54,7 @@ import de.intranda.commons.chart.results.DataTable;
  * @author Hendrik Söhnholz
  * @author Steffen Hankiewicz
  * @version 27.10.2009
- * *************************************************************************************/
+ *************************************************************************************/
 
 public class ProjectStatusDraw {
     private static final Logger logger = Logger.getLogger(ProjectStatusDraw.class);
@@ -157,7 +160,10 @@ public class ProjectStatusDraw {
             if (nonNullMaxSteps == 0) {
                 nonNullMaxSteps = 1;
             }
-            if (Math.abs((1.0 * t.getStepsCompleted() / nonNullMaxSteps) - (1.0 * datePosition / duration)) < 0.01) {
+
+            if (t.getStepsCompleted() == t.getStepsMax()) {
+                chartcolor = ChartColor.green;
+            } else if (Math.abs((1.0 * t.getStepsCompleted() / nonNullMaxSteps) - (1.0 * datePosition / duration)) < 0.01) {
                 // Deviation of max 1.0 percent leads to a yellow bar
                 chartcolor = ChartColor.yellow;
             } else if (t.getStepsCompleted() * duration / nonNullMaxSteps < datePosition) {
@@ -171,9 +177,11 @@ public class ProjectStatusDraw {
             drawHorizontalBar(borderLeft, y, t.getStepsCompleted() * chartWidth / nonNullMaxSteps, BARWIDTH, chartcolor.getColor());
 
             // Print number of steps completed
-            String stepsCompletedString = t.getStepsCompleted().toString() + "/" + t.getStepsMax().toString();
-            if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight() + fm.stringWidth(stepsCompletedString)) >= borderLeft
-                    + chartWidth) {
+            NumberFormat formatter = DecimalFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
+           
+            String stepsCompletedString =  formatter.format(t.getStepsCompleted()) +" (" + ( formatter.format(t.getStepsCompleted() - t.getStepsMax())) + ")";
+            if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight() + fm.stringWidth(
+                    stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);
                 drawRightAlignedString(stepsCompletedString, borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps - fm.getHeight(), y);
             } else {

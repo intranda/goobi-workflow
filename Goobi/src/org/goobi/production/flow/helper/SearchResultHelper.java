@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -252,6 +253,19 @@ public class SearchResultHelper {
 
     public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
+        List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
+        for (SearchColumn sc : columnList) {
+            if (!sc.getTableName().startsWith("metadata")) {
+                sortedList.add(sc);
+            }
+        }
+        for (SearchColumn sc : columnList) {
+            if (sc.getTableName().startsWith("metadata")) {
+                sortedList.add(sc);
+            }
+        }
+        columnList = sortedList;
+
         @SuppressWarnings("rawtypes")
         List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
@@ -298,17 +312,27 @@ public class SearchResultHelper {
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct prozesse.ProzesseID, ");
+
+        if (StringUtils.isNotBlank(order)) {
+            sb.append(order.replace(" desc", "") + ", ");
+        }
+        boolean includeProjects = false;
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
+                if (sc.getTableName().startsWith("projekte")) {
+                    includeProjects = true;
+                }
             }
         }
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
-
-        sb.append(" FROM prozesse ");
-
+        if (order.startsWith("projekte") && !includeProjects) {
+            sb.append(" FROM projekte, prozesse ");
+        } else {
+            sb.append(" FROM prozesse ");
+        }
         boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
@@ -343,7 +367,11 @@ public class SearchResultHelper {
             }
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
-        sb.append(" WHERE ");
+        if (order.startsWith("projekte") && !includeProjects) {
+        sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
+        } else {
+            sb.append(" WHERE ");
+        }
         sb.append(sql);
 
         if (order != null && !order.isEmpty()) {
@@ -382,9 +410,11 @@ public class SearchResultHelper {
             newList.addAll(values);
             newList.addAll(additionalColumns);
             newList.remove(0);
+            if (StringUtils.isNotBlank(order)) {
+                newList.remove(0);
+            }
             list.set(i, newList.toArray());
         }
-        
         return list;
     }
 }
