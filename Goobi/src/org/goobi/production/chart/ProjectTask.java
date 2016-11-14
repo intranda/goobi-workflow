@@ -31,12 +31,13 @@ public class ProjectTask implements IProjectTask {
 	private String taskTitle;
 	private Integer taskStepsCompleted;
 	private Integer taskStepsMax;
-
+	private Integer taskConfiguredSteps;
 	
-	public ProjectTask(String title, Integer stepsCompleted, Integer stepsMax) {
+	public ProjectTask(String title, Integer stepsCompleted, Integer stepsMax, Integer taskConfiguredSteps) {
 		taskTitle = title;
 		taskStepsCompleted = stepsCompleted;
 		taskStepsMax = stepsMax;
+		this.taskConfiguredSteps = taskConfiguredSteps;
 		checkSizes();
 	}
 
@@ -60,6 +61,10 @@ public class ProjectTask implements IProjectTask {
 		taskStepsMax = stepsMax;
 	}
 
+	public Integer getConfiguredMax() {
+	    return taskConfiguredSteps;
+	}
+	
 	private void checkSizes() {
 		if (taskStepsCompleted > taskStepsMax) {
 			taskStepsMax = taskStepsCompleted;

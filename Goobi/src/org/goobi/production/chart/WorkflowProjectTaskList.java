@@ -86,7 +86,7 @@ public class WorkflowProjectTaskList implements IProvideProjectTaskList {
 					usedMax = inMax;
 				}
 
-				pt = new ProjectTask(title, Integer.parseInt(imagesCompleted), usedMax);
+				pt = new ProjectTask(title, Integer.parseInt(imagesCompleted), usedMax, inMax);
 			} else {
 				usedMax = step.getNumberOfTotalSteps();
 				if (usedMax > inMax) {
@@ -95,7 +95,7 @@ public class WorkflowProjectTaskList implements IProvideProjectTaskList {
 					usedMax = inMax;
 				}
 
-				pt = new ProjectTask(title, Integer.parseInt(stepsCompleted), usedMax);
+				pt = new ProjectTask(title, Integer.parseInt(stepsCompleted), usedMax, inMax);
 			}
 			myTaskList.add(pt);
 

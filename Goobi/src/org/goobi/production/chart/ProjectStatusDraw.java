@@ -161,7 +161,7 @@ public class ProjectStatusDraw {
                 nonNullMaxSteps = 1;
             }
 
-            if (t.getStepsCompleted() == t.getStepsMax()) {
+            if (t.getStepsCompleted().equals(t.getStepsMax())) {
                 chartcolor = ChartColor.green;
             } else if (Math.abs((1.0 * t.getStepsCompleted() / nonNullMaxSteps) - (1.0 * datePosition / duration)) < 0.01) {
                 // Deviation of max 1.0 percent leads to a yellow bar
@@ -179,7 +179,7 @@ public class ProjectStatusDraw {
             // Print number of steps completed
             NumberFormat formatter = DecimalFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
            
-            String stepsCompletedString =  formatter.format(t.getStepsCompleted()) +" (" + ( formatter.format(t.getStepsCompleted() - t.getStepsMax())) + ")";
+            String stepsCompletedString =  formatter.format(t.getStepsCompleted()) +" (" + ( formatter.format(t.getStepsCompleted() - t.getConfiguredMax())) + ")";
             if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight() + fm.stringWidth(
                     stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);

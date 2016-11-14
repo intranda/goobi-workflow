@@ -100,7 +100,7 @@ public class ProjectStatusDataTable implements Serializable {
 	 ************************************************************************************/
 	public void addTask(IProjectTask inTask) {
 		if (!(taskTitles.contains(inTask.getTitle()))) {
-			projectTasks.add(new ProjectTask(inTask.getTitle(), inTask.getStepsCompleted(), inTask.getStepsMax()));
+			projectTasks.add(new ProjectTask(inTask.getTitle(), inTask.getStepsCompleted(), inTask.getStepsMax(), inTask.getConfiguredMax()));
 			taskTitles.add(inTask.getTitle());
 
 		} else {

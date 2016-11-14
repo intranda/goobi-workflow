@@ -59,4 +59,6 @@ public interface IProjectTask {
 	 */
 	public abstract void setStepsMax(Integer stepsMax);
 
+	
+	public abstract Integer getConfiguredMax();
 }
