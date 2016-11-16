@@ -101,7 +101,7 @@
 			<fileset file="webapp/WEB-INF/faces-config.xml" />
 		</copy>
 		<copy todir="${dir.build}">
-			<fileset file="webapp/index.html" />
+			<fileset file="webapp/index.xhtml" />
 		</copy>
 	</target>
 
