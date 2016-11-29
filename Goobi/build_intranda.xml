@@ -132,7 +132,7 @@
 		<war destfile="${dir.build}/${dist.name}.war" webxml="webapp/WEB-INF/web.xml">
 			<classes dir="${dir.build.classes}" />
 			<lib dir="webapp/WEB-INF/lib" />
-			<fileset file="${dir.build}/index.html" />
+			<fileset file="${dir.build}/index.xhtml" />
 			<fileset dir="." includes="WEB-INF/*.*, index.html" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
 			<fileset dir="." includes="js/**/*.*" />
 			<zipfileset dir="WEB-INF" file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
