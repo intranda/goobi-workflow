@@ -295,43 +295,58 @@ public class NIOFileUtils {
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes sourceBasic) throws IOException {
                 Path targetDir = Files.createDirectories(target.resolve(source.relativize(dir)));
                 AclFileAttributeView acl = Files.getFileAttributeView(dir, AclFileAttributeView.class);
-                if (acl != null)
-                    Files.getFileAttributeView(targetDir, AclFileAttributeView.class).setAcl(acl.getAcl());
+                if (acl != null) {
+                    AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
+                    if (aclFileAttributeView != null) {
+                        aclFileAttributeView.setAcl(acl.getAcl());
+                    }
+                }
+
                 DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
                 if (dosAttrs != null) {
                     DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
                     DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
-                    targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
-                    targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
-                    targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
-                    targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
+                    if (targetDosAttrs != null) {
+                        targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+                        targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+                        targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+                        targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
+                    }
                 }
                 FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
                 if (ownerAttrs != null) {
                     FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                    targetOwner.setOwner(ownerAttrs.getOwner());
+                    if (targetOwner != null) {
+                        targetOwner.setOwner(ownerAttrs.getOwner());
+                    }
                 }
                 PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
                 if (posixAttrs != null) {
                     PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
                     PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                    targetPosix.setPermissions(sourcePosix.permissions());
-                    targetPosix.setGroup(sourcePosix.group());
+                    if (targetPosix != null) {
+                        targetPosix.setPermissions(sourcePosix.permissions());
+                        targetPosix.setGroup(sourcePosix.group());
+                    }
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {
                     UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
-                    for (String key : userAttrs.list()) {
-                        ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
-                        userAttrs.read(key, buffer);
-                        buffer.flip();
-                        targetUser.write(key, buffer);
+                    if (targetUser != null) {
+                        for (String key : userAttrs.list()) {
+                            ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
+                            userAttrs.read(key, buffer);
+                            buffer.flip();
+                            targetUser.write(key, buffer);
+                        }
                     }
                 }
                 // Must be done last, otherwise last-modified time may be
                 // wrong
                 BasicFileAttributeView targetBasic = Files.getFileAttributeView(targetDir, BasicFileAttributeView.class);
-                targetBasic.setTimes(sourceBasic.lastModifiedTime(), sourceBasic.lastAccessTime(), sourceBasic.creationTime());
+                if (targetBasic != null) {
+                    targetBasic.setTimes(sourceBasic.lastModifiedTime(), sourceBasic.lastAccessTime(), sourceBasic.creationTime());
+                }
                 return FileVisitResult.CONTINUE;
             }
 
