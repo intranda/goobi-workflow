@@ -36,6 +36,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileStore;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -294,10 +295,11 @@ public class NIOFileUtils {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes sourceBasic) throws IOException {
                 Path targetDir = Files.createDirectories(target.resolve(source.relativize(dir)));
+                FileStore fileStore = Files.getFileStore(targetDir);
                 AclFileAttributeView acl = Files.getFileAttributeView(dir, AclFileAttributeView.class);
                 if (acl != null) {
-                    AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
-                    if (aclFileAttributeView != null) {
+                    if (fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
+                        AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
                         aclFileAttributeView.setAcl(acl.getAcl());
                     }
                 }
@@ -305,8 +307,8 @@ public class NIOFileUtils {
                 DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
                 if (dosAttrs != null) {
                     DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
-                    DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
-                    if (targetDosAttrs != null) {
+                    if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
+                        DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
                         targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
                         targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
                         targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
@@ -315,24 +317,24 @@ public class NIOFileUtils {
                 }
                 FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
                 if (ownerAttrs != null) {
-                    FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                    if (targetOwner != null) {
+                    if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                        FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
                         targetOwner.setOwner(ownerAttrs.getOwner());
                     }
                 }
                 PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
                 if (posixAttrs != null) {
                     PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                    PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                    if (targetPosix != null) {
+                    if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                        PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
                         targetPosix.setPermissions(sourcePosix.permissions());
                         targetPosix.setGroup(sourcePosix.group());
                     }
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {
-                    UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
-                    if (targetUser != null) {
+                    if (fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
+                        UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
                         for (String key : userAttrs.list()) {
                             ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
                             userAttrs.read(key, buffer);
