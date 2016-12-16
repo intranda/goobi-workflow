@@ -47,6 +47,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -60,6 +61,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
@@ -178,6 +180,8 @@ public class GoobiScript {
                 updateContentFiles(inProzesse);
             } else if (this.myParameters.get("action").equals("deleteTiffHeaderFile")) {
                 deleteTiffHeaderFile(inProzesse);
+            } else if (this.myParameters.get("action").equals("addToProcessLog")) {
+                addToProcessLog(inProzesse);
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 setRuleset(inProzesse);
             } else if (this.myParameters.get("action").equals("exportDms")) {
@@ -412,6 +416,38 @@ public class GoobiScript {
         }
     }
 
+	private void addToProcessLog(List<Integer> inProzesse) {
+		if (this.myParameters.get("message") == null || this.myParameters.get("message").equals("")) {
+			Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "message");
+			return;
+		}
+
+		if (this.myParameters.get("type") == null || this.myParameters.get("type").equals("")) {
+			Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "type");
+			return;
+		}
+		if (!this.myParameters.get("type").equals("debug") && !this.myParameters.get("type").equals("info")
+				&& !this.myParameters.get("type").equals("error") && !this.myParameters.get("type").equals("warn") && !this.myParameters.get("type").equals("user")) {
+			Helper.setFehlerMeldung("goobiScriptfield", "Wrong parameter for type. Allowed values are: ",
+					"error, warn, info, debug, user");
+			return;
+		}
+
+		try {
+			LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+			String user = login.getMyBenutzer().getNachVorname();
+			for (Integer processId : inProzesse) {
+				Process process = ProcessManager.getProcessById(processId);
+				String logMessage = WikiFieldHelper.getWikiMessage(process.getWikifield(), this.myParameters.get("type"), this.myParameters.get("message")  + " (" + user + ")");
+				ProcessManager.addLogfile(logMessage, process.getId());
+			}
+		} catch (Exception e) {
+			Helper.setFehlerMeldung(e);
+			logger.error(e);
+		}
+	}
+    
+    
     /**
      * Tauschen zweier Schritte gegeneinander ================================================================
      */
