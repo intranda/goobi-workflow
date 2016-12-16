@@ -550,6 +550,10 @@ public class Metadaten {
                 setAddDocStructType1("");
             }
         }
+        if (!tempMetadatumList.isEmpty()) {
+            tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
+            selectedMetadatum = tempMetadatumList.get(0);
+        }
 
         return "metseditor";
     }
@@ -702,6 +706,11 @@ public class Metadaten {
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
+        }
+        
+        if (StringUtils.isBlank(tempTyp)) {
+            tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
+            selectedMetadatum = tempMetadatumList.get(0);
         }
         return myList;
     }
