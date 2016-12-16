@@ -548,11 +548,12 @@ public class Metadaten {
         try {
             Metadata md = new Metadata(this.myPrefs.getMetadataTypeByName(this.tempTyp));
             md.setValue(this.selectedMetadatum.getValue());
-            
+
             if (StringUtils.isNotBlank(selectedMetadatum.getNormdataValue())) {
-                md.setAutorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(), selectedMetadatum.getMd().getAuthorityValue());
+                md.setAutorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(), selectedMetadatum.getMd()
+                        .getAuthorityValue());
             }
-            
+
             this.myDocStruct.addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
@@ -623,6 +624,10 @@ public class Metadaten {
             if (!docStructIsAllowed(getAddableDocStructTypenAlsNachbar(), getAddDocStructType1())) {
                 setAddDocStructType1("");
             }
+        }
+        if (!tempMetadatumList.isEmpty()) {
+            tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
+            selectedMetadatum = tempMetadatumList.get(0);
         }
 
         return "metseditor";
@@ -794,6 +799,10 @@ public class Metadaten {
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
+        }
+        if (StringUtils.isBlank(tempTyp)) {
+            tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
+            selectedMetadatum = tempMetadatumList.get(0);
         }
         return myList;
     }
@@ -1669,7 +1678,7 @@ public class Metadaten {
                     md.setAuthorityURI(mdi.getMd().getAuthorityURI());
                     md.setAuthorityValue(mdi.getMd().getAuthorityValue());
                     ds.addMetadata(md);
-                    
+
                 } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
                     logger.error(e);
                 }
@@ -4813,7 +4822,6 @@ public class Metadaten {
             } else if (rowType.equals("addableMetadata")) {
                 currentPlugin = addableMetadata.get(Integer.parseInt(rowIndex)).getPlugin();
             }
-            
 
         }
     }
