@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
@@ -2442,7 +2443,7 @@ public class Metadaten {
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
                 IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
 
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
@@ -2468,7 +2469,7 @@ public class Metadaten {
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
                 IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
@@ -3651,11 +3652,22 @@ public class Metadaten {
     }
 
     public String getOpacKatalog() {
+        if (StringUtils.isBlank(opacKatalog)) {
+            opacKatalog = getAllOpacCatalogues().get(0);
+        }
         return this.opacKatalog;
     }
 
     public void setOpacKatalog(String opacKatalog) {
         this.opacKatalog = opacKatalog;
+    }
+    
+    public Map<String, String>  getAllSearchFields() {
+        return ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog()).getSearchFields();
+     }
+    
+    public List<String> getAllOpacCatalogues() {
+        return ConfigOpac.getInstance().getAllCatalogueTitles();
     }
 
     public String getOpacSuchfeld() {

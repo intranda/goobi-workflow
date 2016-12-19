@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
@@ -163,13 +164,7 @@ public class ProzesskopieForm {
         }
 
         clearValues();
-        try {
-            this.co = new ConfigOpac();
-        } catch (IOException e) {
-            logger.error("Error while reading von opac-config", e);
-            Helper.setFehlerMeldung("Error while reading von opac-config", e);
-            return null;
-        }
+        this.co =  ConfigOpac.getInstance();
         readProjectConfigs();
         this.myRdf = null;
         this.prozessKopie = new Process();
@@ -338,7 +333,7 @@ public class ProzesskopieForm {
         clearValues();
         readProjectConfigs();
         try {
-            ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+            ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
 
             myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
 
@@ -1165,24 +1160,16 @@ public class ProzesskopieForm {
         }
     }
 
+   public Map<String, String>  getAllSearchFields() {
+      return co.getCatalogueByName(opacKatalog).getSearchFields();
+   }
+    
     public List<String> getAllOpacCatalogues() {
-        try {
-            return new ConfigOpac().getAllCatalogueTitles();
-        } catch (IOException e) {
-            logger.error("Error while reading von opac-config", e);
-            Helper.setFehlerMeldung("Error while reading von opac-config", e);
-            return new ArrayList<String>();
-        }
+        return co.getAllCatalogueTitles();
     }
 
     public List<ConfigOpacDoctype> getAllDoctypes() {
-        try {
-            return new ConfigOpac().getAllDoctypes();
-        } catch (IOException e) {
-            logger.error("Error while reading von opac-config", e);
-            Helper.setFehlerMeldung("Error while reading von opac-config", e);
-            return new ArrayList<ConfigOpacDoctype>();
-        }
+        return co.getAllDoctypes();
     }
 
     /*

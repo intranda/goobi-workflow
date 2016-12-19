@@ -27,7 +27,7 @@ package de.unigoettingen.sub.search.opac;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * die OpacBeautifier dienen zur Manipulation des Ergebnisses, was 
@@ -37,9 +37,9 @@ import java.util.ArrayList;
  * ================================================================*/
 public class ConfigOpacCatalogueBeautifier {
  private  ConfigOpacCatalogueBeautifierElement tagElementToChange;
-   private ArrayList<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
+   private List<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
    
-   public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement, ArrayList<ConfigOpacCatalogueBeautifierElement> inProofElements) {
+   public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement, List<ConfigOpacCatalogueBeautifierElement> inProofElements) {
       this.tagElementToChange = inChangeElement;
       this.tagElementsToProof = inProofElements;
    }
@@ -48,7 +48,7 @@ public class ConfigOpacCatalogueBeautifier {
       return this.tagElementToChange;
    }
 
-   public ArrayList<ConfigOpacCatalogueBeautifierElement> getTagElementsToProof() {
+   public List<ConfigOpacCatalogueBeautifierElement> getTagElementsToProof() {
       return this.tagElementsToProof;
    }
    

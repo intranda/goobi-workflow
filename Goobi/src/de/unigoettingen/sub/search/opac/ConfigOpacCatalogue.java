@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
@@ -45,7 +46,9 @@ import org.jdom2.output.XMLOutputter;
 import org.w3c.dom.Node;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.Getter;
 
+@Getter
 public class ConfigOpacCatalogue {
     private static final Logger logger = Logger.getLogger(ConfigOpacCatalogue.class);
     private String title = "";
@@ -56,12 +59,13 @@ public class ConfigOpacCatalogue {
     private int port = 80;
     private String cbs;
     private String charset = "iso-8859-1";
-    private ArrayList<ConfigOpacCatalogueBeautifier> beautifySetList;
+    private List<ConfigOpacCatalogueBeautifier> beautifySetList;
     private String opacType;
     private String protocol = "http://";
+    private  Map<String, String> searchFields;
 
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
-            ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType) {
+           List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, Map<String, String> searchFields) {
         this.title = title;
         this.description = desciption;
         this.address = address;
@@ -70,45 +74,46 @@ public class ConfigOpacCatalogue {
         this.port = port;
         this.beautifySetList = inBeautifySetList;
         this.opacType = opacType;
+        this.searchFields = searchFields;
     }
 
     // Constructor that also takes a charset, a quick hack for DPD-81
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port, String charset,
-            String cbs, ArrayList<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, String protocol) {
+            String cbs, List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, String protocol, Map<String, String> searchFields) {
         // Call the contructor above
-        this(title, desciption, address, database, iktlist, port, inBeautifySetList, opacType);
+        this(title, desciption, address, database, iktlist, port, inBeautifySetList, opacType, searchFields);
         this.charset = charset;
-        this.setCbs(cbs);
+        this.cbs = cbs;
         this.protocol = protocol;
     }
 
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public String getAddress() {
-        return this.address;
-    }
-
-    public String getDatabase() {
-        return this.database;
-    }
-
-    public String getIktlist() {
-        return this.iktlist;
-    }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public String getCharset() {
-        return this.charset;
-    }
+//    public String getTitle() {
+//        return this.title;
+//    }
+//
+//    public String getDescription() {
+//        return this.description;
+//    }
+//
+//    public String getAddress() {
+//        return this.address;
+//    }
+//
+//    public String getDatabase() {
+//        return this.database;
+//    }
+//
+//    public String getIktlist() {
+//        return this.iktlist;
+//    }
+//
+//    public int getPort() {
+//        return this.port;
+//    }
+//
+//    public String getCharset() {
+//        return this.charset;
+//    }
 
     public Node executeBeautifier(Node myHitlist) {
         /* Ausgabe des Opac-Ergebnissen in Datei */
@@ -259,34 +264,34 @@ public class ConfigOpacCatalogue {
 
     }
 
-    /**
-     * @param cbs the cbs to set
-     */
-    public void setCbs(String cbs) {
-        this.cbs = cbs;
-    }
-
-    /**
-     * @return the cbs
-     */
-    public String getCbs() {
-        return this.cbs;
-    }
-
-    public String getOpacType() {
-        return opacType;
-    }
-
-    public void setOpacType(String opacType) {
-        this.opacType = opacType;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
+//    /**
+//     * @param cbs the cbs to set
+//     */
+//    public void setCbs(String cbs) {
+//        this.cbs = cbs;
+//    }
+//
+//    /**
+//     * @return the cbs
+//     */
+//    public String getCbs() {
+//        return this.cbs;
+//    }
+//
+//    public String getOpacType() {
+//        return opacType;
+//    }
+//
+//    public void setOpacType(String opacType) {
+//        this.opacType = opacType;
+//    }
+//
+//    public String getProtocol() {
+//        return protocol;
+//    }
+//
+//    public void setProtocol(String protocol) {
+//        this.protocol = protocol;
+//    }
 
 }
