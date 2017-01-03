@@ -21,7 +21,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-discovery-0.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-el-1.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-jxpath-1.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-net-3.2.jar"/>
@@ -136,6 +135,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-io-2.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
