@@ -32,12 +32,15 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -143,7 +146,7 @@ class ProcessMysqlHelper implements Serializable {
             for (Step object : o.getSchritte()) {
                 StepManager.deleteStep(object);
             }
-            
+
             // delete process
             String sql = "DELETE FROM prozesse WHERE ProzesseID = ?";
             Object[] param = { o.getId() };
@@ -165,7 +168,7 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
-        if (filter != null && !filter.isEmpty() ) {
+        if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
         try {
@@ -173,11 +176,11 @@ class ProcessMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-//            if (filter != null && !filter.isEmpty()) {
-//                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-//            } else {
-                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-//            }
+            //            if (filter != null && !filter.isEmpty()) {
+            //                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            //            } else {
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            //            }
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -358,21 +361,18 @@ class ProcessMysqlHelper implements Serializable {
 
         Timestamp datetime = new Timestamp(d.getTime());
         if (!includeProcessID) {
-            Object[] param =
-                    { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
-                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
-                            o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
-                            o.getWikifield() == null || o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
-                            o.getDocket() == null ? null : o.getDocket().getId() };
+            Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(), o
+                    .getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
+                    o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getWikifield() == null || o.getWikifield().equals("") ? " " : o
+                            .getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
         } else {
-            Object[] param =
-                    { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
-                            o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(),
-                            o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
-                            o.getWikifield() == null || o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(),
-                            o.getDocket() == null ? null : o.getDocket().getId() };
+            Object[] param = { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o
+                    .isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o
+                            .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o
+                                    .getWikifield() == null || o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o
+                                            .getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
         }
@@ -593,9 +593,8 @@ class ProcessMysqlHelper implements Serializable {
 
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && login.getMaximaleBerechtigung() > 1) {
-            sql +=
-                    " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = "
-                            + login.getMyBenutzer().getId() + ")";
+            sql += " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = " + login.getMyBenutzer()
+                    .getId() + ")";
         }
 
         sql += " ORDER BY batchID desc ";
@@ -786,9 +785,8 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     public static String getExportPluginName(int processId) throws SQLException {
-        String sql =
-                "SELECT stepPlugin FROM schritte WHERE schritte.stepPlugin != '' AND schritte.typExportDMS = true AND schritte.ProzesseID = "
-                        + processId + " LIMIT 1";
+        String sql = "SELECT stepPlugin FROM schritte WHERE schritte.stepPlugin != '' AND schritte.typExportDMS = true AND schritte.ProzesseID = "
+                + processId + " LIMIT 1";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -799,4 +797,127 @@ class ProcessMysqlHelper implements Serializable {
             }
         }
     }
+
+    public static LogEntry saveMasterpieceLogEntry(LogEntry logEntry) throws SQLException {
+
+        if (logEntry.getId() == null) {
+            return inserLogEntry(logEntry);
+        } else {
+            updateLogEntry(logEntry);
+            return logEntry;
+        }
+    }
+
+    private static void updateLogEntry(LogEntry logEntry) throws SQLException {
+        String sql =
+                "UPDATE processlog set processID =?, creationDate = ?, userName = ?, type = ? , content = ?, secondContent = ?, thirdContent = ? WHERE id = ?";
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            run.update(connection, sql, logEntry.getProcessId(), logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate()
+                    .getTime()), logEntry.getUserName(), logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry
+                            .getThirdContent(), logEntry.getId());
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    private static LogEntry inserLogEntry(LogEntry logEntry) throws SQLException {
+        String sql =
+                "INSERT INTO processlog (processID, creationDate, userName, type , content, secondContent, thirdContent ) VALUES (?, ?,  ?, ?, ?, ?, ?);";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getProcessId(), logEntry.getCreationDate() == null
+                    ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(), logEntry.getType().getTitle(), logEntry
+                            .getContent(), logEntry.getSecondContent(), logEntry.getThirdContent()
+
+            );
+            logEntry.setId(id);
+            return logEntry;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteLogEntry(LogEntry logEntry) throws SQLException {
+        if (logEntry.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                String sql = "DELETE FROM processlog WHERE id = " + logEntry.getId();
+                run.update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
+    public static List<LogEntry> getLogEntriesProcess(int processId) throws SQLException {
+        Connection connection = null;
+
+        String sql = " SELECT * from werkstuecke WHERE ProzesseID = " + processId;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<LogEntry> ret = new QueryRunner().query(connection, sql.toString(), resultSetToLogEntryListHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static ResultSetHandler<List<LogEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<LogEntry>>() {
+        @Override
+        public List<LogEntry> handle(ResultSet rs) throws SQLException {
+            List<LogEntry> answer = new ArrayList<LogEntry>();
+            try {
+                while (rs.next()) {
+
+                    int id = rs.getInt("id");
+                    int processId = rs.getInt("processID");
+                    Timestamp time = rs.getTimestamp("creationDate");
+                    Date creationDate = null;
+                    if (time != null) {
+                        creationDate = new Date(time.getTime());
+                    }
+                    String userName = rs.getString("userName");
+                    LogType type = LogType.getByTitle(rs.getString("type"));
+                    String content = rs.getString("content");
+                    String secondContent = rs.getString("secondContent");
+                    String thirdContent = rs.getString("thirdContent");
+
+                    LogEntry entry = new LogEntry();
+                    entry.setId(id);
+                    entry.setProcessId(processId);
+                    entry.setCreationDate(creationDate);
+                    entry.setUserName(userName);
+                    entry.setType(type);
+                    entry.setContent(content);
+                    entry.setSecondContent(secondContent);
+                    entry.setThirdContent(thirdContent);
+                    answer.add(entry);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
+
 }
