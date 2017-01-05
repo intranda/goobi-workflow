@@ -111,6 +111,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean panelAusgeklappt = false;
     private Boolean selected = false;
     private Docket docket;
+    
+    // TODO
+    private List<LogEntry> logfile;
 
     private BeanHelper bhelp = new BeanHelper();
 
