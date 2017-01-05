@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.helper.Helper;
 import lombok.Data;
 
 @Data
@@ -34,4 +35,7 @@ public class LogEntry {
     private String secondContent;
     private String thirdContent;
 
+    public String getDate() {
+      return Helper.getDateAsFormattedString(creationDate);
+    }
 }
