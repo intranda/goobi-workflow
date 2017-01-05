@@ -34,7 +34,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -115,6 +114,11 @@ class ProcessMysqlHelper implements Serializable {
             for (Template template : templates) {
                 TemplateManager.saveTemplate(template);
             }
+
+            for (LogEntry logEntry : o.getProcessLog()) {
+                saveLogEntry(logEntry);
+            }
+
         } catch (SQLException e) {
             //            logger.error("Error while saving process " + o.getTitel(), e);
             throw new DAOException(e);
@@ -440,6 +444,9 @@ class ProcessMysqlHelper implements Serializable {
         p.setBatchID(batchID);
 
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
+
+        p.setProcessLog(getLogEntriesForProcess(p.getId()));
+
         return p;
     }
 
@@ -518,20 +525,6 @@ class ProcessMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
-    }
-
-    public static void main(String[] args) throws SQLException {
-        // born digital
-        Process p1 = ProcessMysqlHelper.getProcessById(28);
-        // MOH
-        Process p2 = ProcessMysqlHelper.getProcessById(31);
-
-        List<Process> pl = new ArrayList<Process>();
-        pl.add(p1);
-        pl.add(p2);
-        ProcessMysqlHelper.updateBatchList(pl);
-        //        updateBatchList
-
     }
 
     public static int getMaxBatchNumber() throws SQLException {
@@ -798,7 +791,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static LogEntry saveMasterpieceLogEntry(LogEntry logEntry) throws SQLException {
+    public static LogEntry saveLogEntry(LogEntry logEntry) throws SQLException {
 
         if (logEntry.getId() == null) {
             return inserLogEntry(logEntry);
@@ -863,10 +856,10 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<LogEntry> getLogEntriesProcess(int processId) throws SQLException {
+    public static List<LogEntry> getLogEntriesForProcess(int processId) throws SQLException {
         Connection connection = null;
 
-        String sql = " SELECT * from werkstuecke WHERE ProzesseID = " + processId;
+        String sql = " SELECT * from processlog WHERE processId = " + processId + " ORDER BY creationDate";
 
         try {
             connection = MySQLHelper.getInstance().getConnection();

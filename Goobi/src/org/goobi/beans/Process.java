@@ -112,8 +112,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean selected = false;
     private Docket docket;
     
-    // TODO
-    private List<LogEntry> logfile;
+    private List<LogEntry> processLog;
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -1328,4 +1327,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return p;
     }
 
+    
+    public void setProcessLog(List<LogEntry> processLog) {
+        this.processLog = processLog;
+    }
+    
+    public List<LogEntry> getProcessLog() {
+        return processLog;
+    }
 }
