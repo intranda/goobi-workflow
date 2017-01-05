@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 12;
+    public static final int EXPECTED_VERSION = 13;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -114,9 +114,14 @@ public class DatabaseVersion {
                 updateToVersion11();
             case 11:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 11.");
+                    logger.trace("Update database to version 12.");
                 }
                 updateToVersion12();
+            case 12:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 13.");
+                }
+                updateToVersion13();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -124,6 +129,29 @@ public class DatabaseVersion {
                     logger.trace("Database is up to date.");
                 }
         }
+    }
+
+    private static void updateToVersion13() {
+        Connection connection = null;
+        String sqlStatement = "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`data` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            
+            
+            runner.update(connection, sqlStatement);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+        
     }
 
     private static void updateToVersion12() {

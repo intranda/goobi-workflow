@@ -25,6 +25,8 @@ import lombok.Data;
 @Data
 public class LogEntry {
 
+    private Integer id;
+    private Integer processId;
     private Date creationDate;
     private String userName;
     private LogType type;
