@@ -192,7 +192,8 @@ public class ProzesskopieFormTest {
     public void testGetAllOpacCatalogues() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
-
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
         form.Prepare();
         List<String> fixture = form.getAllOpacCatalogues();
 
@@ -203,7 +204,8 @@ public class ProzesskopieFormTest {
     public void testGetAllDoctypes() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
-
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
         form.Prepare();
         List<ConfigOpacDoctype> fixture = form.getAllDoctypes();
 
@@ -225,7 +227,7 @@ public class ProzesskopieFormTest {
         assertEquals("", form.OpacAuswerten());
         form.setDocType("monograph");
         form.setDocType("periodical");
-        form.setDocType("multivolume");
+//        form.setDocType("multivolume");
 
     }
 

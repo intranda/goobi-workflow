@@ -151,6 +151,10 @@
 	<classpathentry kind="lib" path="lib-test/jetty-jndi-9.3.12.v20160915.jar"/>
 	<classpathentry kind="lib" path="lib-test/jetty-xml-9.3.12.v20160915.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="lib-test/commons-dbcp2-2.0.1.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.1.39-bin.jar"/>
+	<classpathentry kind="lib" path="lib-test/commons-pool2-2.3.jar"/>
+	<classpathentry kind="lib" path="lib-test/jetty-servlets-9.3.12.v20160915.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>

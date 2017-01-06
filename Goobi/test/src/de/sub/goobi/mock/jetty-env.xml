@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" 
+"http://www.eclipse.org/jetty/configure.dtd">
+<Configure id="goobi" class="org.eclipse.jetty.server.Server">
+    <New id="goobidb" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>
+            <Ref refid="goobi" />
+        </Arg>
+        <Arg>"goobi"</Arg>
+        <Arg>
+            <New class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource">
+                <Set name="Url">jdbc:mysql://localhost/goobi</Set>
+                <Set name="User">goobi</Set>
+                <Set name="Password">goobi</Set>
+            </New>
+            
+            
+<!--              <New class="org.apache.commons.dbcp2.BasicDataSource"> -->
+<!--                 <Set name="driverClassName">com.mysql.jdbc.Driver</Set> -->
+<!--                 <Set name="url">jdbc:mysql://localhost/goobi</Set> -->
+<!--                 <Set name="username">goobi</Set> -->
+<!--                 <Set name="password">goobi</Set> -->
+<!--                 <Set name="validationQuery">SELECT 1</Set> -->
+<!--             </New> -->
+        </Arg>
+    </New>
+
+</Configure>
