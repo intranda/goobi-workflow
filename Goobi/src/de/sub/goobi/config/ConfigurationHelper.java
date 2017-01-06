@@ -700,4 +700,15 @@ public class ConfigurationHelper implements Serializable {
 
     }
 
+    public boolean isShowSecondLogField() {
+     return getLocalBoolean("ProcessLogShowSecondField", false);
+        
+    }
+
+    
+
+    public boolean isShowThirdLogField() {
+     return getLocalBoolean("ProcessLogShowThirdField", false);
+        
+    }
 }

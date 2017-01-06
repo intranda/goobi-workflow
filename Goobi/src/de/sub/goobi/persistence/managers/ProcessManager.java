@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -305,6 +306,14 @@ public class ProcessManager implements IManager, Serializable {
             logger.error("error while getting id list", e);
         }
         return idList;
+    }
+
+    public static void saveLogEntry(LogEntry entry) {
+        try {
+            ProcessMysqlHelper.saveLogEntry(entry);
+        } catch (SQLException e) {
+            logger.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
+        }
     }
 
 }

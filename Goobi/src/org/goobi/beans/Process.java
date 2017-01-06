@@ -1354,12 +1354,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         entry.setContent(content);
         content = "";
         
-        entry.setContent(secondContent);
+        entry.setSecondContent(secondContent);
         secondContent = "";
         
-        entry.setContent(thirdContent);
+        entry.setThirdContent(thirdContent);
         thirdContent = "";
         processLog.add(entry);
+        
+        ProcessManager.saveLogEntry(entry);
     }
 
 }
