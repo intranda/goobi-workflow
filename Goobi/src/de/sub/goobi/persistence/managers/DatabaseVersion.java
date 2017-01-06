@@ -195,7 +195,6 @@ public class DatabaseVersion {
                             try {
                                 date = new Date(dateString.substring(0, dateString.length() - 1));
                             } catch (Exception e) {
-                                System.out.println("cannot convert date: " + date);
                             }
                         }
 
