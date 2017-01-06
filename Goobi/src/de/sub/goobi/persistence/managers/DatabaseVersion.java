@@ -156,7 +156,7 @@ public class DatabaseVersion {
             if (rawData != null && !rawData.isEmpty()) {
                 String header = "INSERT INTO processlog (processID, creationDate, userName, type , content) VALUES ";
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i <= rawData.size(); i++) {
+                for (int i = 0; i < rawData.size(); i++) {
                     Object[] rowData = (Object[]) rawData.get(i);
                     String processId = (String) rowData[0];
                     String oldLog = (String) rowData[1];
@@ -164,70 +164,73 @@ public class DatabaseVersion {
                     String[] entries = oldLog.split("<br/>");
 
                     for (String entry : entries) {
-                        LogType type;
-                        if (entry.startsWith("<font color=\"#FF0000\">")) {
-                            type = LogType.ERROR;
-                        } else if (entry.startsWith("<font color=\"#FF6600\">")) {
-                            type = LogType.WARN;
-                        } else if (entry.startsWith("<font color=\"#CCCCCC\">")) {
-                            type = LogType.DEBUG;
-                        } else if (entry.startsWith("<font color=\"#006600\">")) {
-                            type = LogType.USER;
-                        }
+                        if (!entry.trim().isEmpty()) {
+                            LogType type;
+                            if (entry.startsWith("<font color=\"#FF0000\">")) {
+                                type = LogType.ERROR;
+                            } else if (entry.startsWith("<font color=\"#FF6600\">")) {
+                                type = LogType.WARN;
+                            } else if (entry.startsWith("<font color=\"#CCCCCC\">")) {
+                                type = LogType.DEBUG;
+                            } else if (entry.startsWith("<font color=\"#006600\">")) {
+                                type = LogType.USER;
+                            }
 
-                        else {
-                            type = LogType.INFO;
-                        }
-                        entry = entry.replaceAll("<font color.*?>", "").replaceAll("</font>", "");
-                        String dateString = "";
-                        String username = "";
-                        Date date = null;
-                        for (MatchResult r : findRegexMatches(".*\\d{2}:\\d{2}:\\d{2}:", entry)) {
-                            dateString = r.group();
-                            entry = entry.replace(r.group(), "");
-                        }
-                        for (MatchResult r : findRegexMatches("\\((.*?)\\)", entry)) {
-                            username = r.group(1);
-                            entry = entry.replace(r.group(), "");
-                        }
+                            else {
+                                type = LogType.INFO;
+                            }
+                            entry = entry.replaceAll("<font color.*?>", "").replaceAll("</font>", "");
+                            String dateString = "";
+                            String username = "automatic";
+                            Date date = null;
+                            for (MatchResult r : findRegexMatches(".*\\d{2}:\\d{2}:\\d{2}:", entry)) {
+                                dateString = r.group();
+                                entry = entry.replace(r.group(), "");
+                            }
+                            for (MatchResult r : findRegexMatches("\\((.*?)\\)", entry)) {
+                                username = r.group(1);
+                                entry = entry.replace(r.group(), "");
+                            }
 
-                        if (!dateString.isEmpty()) {
-                            try {
-                                date = new Date(dateString.substring(0, dateString.length() - 1));
-                            } catch (Exception e) {
+                            if (!dateString.isEmpty()) {
+                                try {
+                                    date = new Date(dateString.substring(0, dateString.length() - 1));
+                                } catch (Exception e) {
+                                    if (logger.isDebugEnabled())
+                                        logger.debug("Process " + processId + ": cannot convert date " + dateString);
+                                }
+                            }
+
+                            sb.append("(");
+                            sb.append(processId);
+                            sb.append(",");
+                            //date
+                            if (date == null) {
+                                String s = null;
+                                sb.append(s);
+                            } else {
+                                sb.append("\"" + new Timestamp(date.getTime()) + "\"");
+                            }
+
+                            sb.append(",\"");
+                            sb.append(username);
+                            sb.append("\",\"");
+                            sb.append(type.getTitle());
+                            sb.append("\",\"");
+
+                            sb.append(StringEscapeUtils.escapeSql(entry.replace("\"", "'")));
+                            sb.append("\")");
+
+                            if (i % 50 == 0 || i == rawData.size()) {
+                                sb.append(";");
+                                runner.update(connection, header + sb.toString());
+
+                                sb = new StringBuilder();
+                            } else {
+                                sb.append(",");
                             }
                         }
-
-                        sb.append("(");
-                        sb.append(processId);
-                        sb.append(",");
-                        //date
-                        if (date == null) {
-                            String s = null;
-                            sb.append(s);
-                        } else {
-                            sb.append("\"" + new Timestamp(date.getTime()) + "\"");
-                        }
-
-                        sb.append(",\"");
-                        sb.append(username);
-                        sb.append("\",\"");
-                        sb.append(type.getTitle());
-                        sb.append("\",\"");
-
-                        sb.append(StringEscapeUtils.escapeSql(entry.replace("\"", "'")));
-                        sb.append("\")");
-
-                        if (i % 50 == 0 || i == rawData.size()) {
-                            sb.append(";");
-                            runner.update(connection, header + sb.toString());
-
-                            sb = new StringBuilder();
-                        } else {
-                            sb.append(",");
-                        }
                     }
-
                 }
             }
             logger.info("Finished conversion of old wikifield to new process log.");
