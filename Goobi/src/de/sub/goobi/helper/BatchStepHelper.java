@@ -42,11 +42,12 @@ import javax.faces.model.SelectItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.StepBean;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
@@ -186,7 +187,8 @@ public class BatchStepHelper {
                     p.getEigenschaften().remove(pe);
                 }
             }
-            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
+            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty
+                    .getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
@@ -470,29 +472,30 @@ public class BatchStepHelper {
                 se.setType(PropertyType.messageError);
                 se.setCreationDate(myDate);
                 se.setSchritt(temp);
-                String message =
-                        Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben.getNachVorname()
-                                + ")";
-                this.currentStep.getProzess()
-                        .setWikifield(
-                                WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "error",
-                                        message));
+                String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben
+                        .getNachVorname() + ")";
+                LogEntry logEntry = new LogEntry();
+                logEntry.setContent(message);
+                logEntry.setCreationDate(new Date());
+                logEntry.setProcessId(currentStep.getProzess().getId());
+                logEntry.setType(LogType.ERROR);
+
+                logEntry.setUserName(ben.getNachVorname());
+
+                ProcessManager.saveLogEntry(logEntry);
 
                 temp.getEigenschaften().add(se);
                 StepManager.saveStep(temp);
                 HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
                         .getProzess().getId());
-                //                this.currentStep.getProzess().getHistory()
-                //                        .add(new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp
-                //                                .getProzess()));
+
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
 
-                List<Step> alleSchritteDazwischen =
-                        StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId()
-                                + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
-                                Integer.MAX_VALUE);
+                List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess()
+                        .getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
+                        Integer.MAX_VALUE);
 
                 //				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
                 //						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
@@ -506,7 +509,7 @@ public class BatchStepHelper {
                     step.setBearbeitungsende(null);
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                    seg.setWert(Helper.getTranslation("KorrekturFuer")  + " " + temp.getTitel() + ": " + this.problemMessage);
+                    seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.messageImportant);
                     seg.setCreationDate(new Date());
@@ -524,9 +527,8 @@ public class BatchStepHelper {
 
     public List<SelectItem> getPreviousStepsForProblemReporting() {
         List<SelectItem> answer = new ArrayList<SelectItem>();
-        List<Step> alleVorherigenSchritte =
-                StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < "
-                        + this.currentStep.getReihenfolge(), 0, Integer.MAX_VALUE);
+        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
+                + " AND Reihenfolge < " + this.currentStep.getReihenfolge(), 0, Integer.MAX_VALUE);
 
         for (Step s : alleVorherigenSchritte) {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -536,9 +538,8 @@ public class BatchStepHelper {
 
     public List<SelectItem> getNextStepsForProblemSolution() {
         List<SelectItem> answer = new ArrayList<SelectItem>();
-        List<Step> alleNachfolgendenSchritte =
-                StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge > "
-                        + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
+                + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
         for (Step s : alleNachfolgendenSchritte) {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -592,10 +593,9 @@ public class BatchStepHelper {
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
-                List<Step> alleSchritteDazwischen =
-                        StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
-                                + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
-                                Integer.MAX_VALUE);
+                List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess()
+                        .getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
+                        Integer.MAX_VALUE);
 
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
@@ -610,8 +610,8 @@ public class BatchStepHelper {
                     }
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + Helper.getTranslation(
+                            "KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.messageImportant);
                     seg.setCreationDate(new Date());
@@ -619,11 +619,19 @@ public class BatchStepHelper {
                     StepManager.saveStep(step);
                 }
             }
-            String message =
-                    Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben.getNachVorname()
-                            + ")";
-            this.currentStep.getProzess().setWikifield(
-                    WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "info", message));
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben
+                    .getNachVorname() + ")";
+
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(message);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(currentStep.getProzess().getId());
+            logEntry.setType(LogType.INFO);
+
+            logEntry.setUserName(ben.getNachVorname());
+
+            ProcessManager.saveLogEntry(logEntry);
+
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
@@ -670,13 +678,13 @@ public class BatchStepHelper {
      * @param inString
      */
 
-    public void setWikiField(String inString) {
-        this.currentStep.getProzess().setWikifield(inString);
-    }
-
-    public String getWikiField() {
-        return this.currentStep.getProzess().getWikifield();
-    }
+    //    public void setWikiField(String inString) {
+    //        this.currentStep.getProzess().setWikifield(inString);
+    //    }
+    //
+    //    public String getWikiField() {
+    //        return this.currentStep.getProzess().getWikifield();
+    //    }
 
     public String getAddToWikiField() {
         return this.addToWikiField;
@@ -687,31 +695,30 @@ public class BatchStepHelper {
     }
 
     public void addToWikiField() {
-        if (addToWikiField != null && addToWikiField.length() > 0) {
+        if (StringUtils.isNotBlank(addToWikiField)) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-            this.currentStep.getProzess().setWikifield(
-                    WikiFieldHelper.getWikiMessage(this.currentStep.getProzess(), this.currentStep.getProzess().getWikifield(), "user", message));
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(addToWikiField);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(currentStep.getProzess().getId());
+            logEntry.setType(LogType.USER);
+            logEntry.setUserName(user.getNachVorname());
+            ProcessManager.saveLogEntry(logEntry);
             this.addToWikiField = "";
-            try {
-                ProcessManager.saveProcess(this.currentStep.getProzess());
-            } catch (DAOException e) {
-                logger.error(e);
-            }
         }
     }
 
     public void addToWikiFieldForAll() {
         if (addToWikiField != null && addToWikiField.length() > 0) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
             for (Step s : this.steps) {
-                s.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(s.getProzess(), s.getProzess().getWikifield(), "user", message));
-                try {
-                    ProcessManager.saveProcess(s.getProzess());
-                } catch (DAOException e) {
-                    logger.error(e);
-                }
+                LogEntry logEntry = new LogEntry();
+                logEntry.setContent(addToWikiField);
+                logEntry.setCreationDate(new Date());
+                logEntry.setProcessId(s.getProzess().getId());
+                logEntry.setType(LogType.USER);
+                logEntry.setUserName(user.getNachVorname());
+                ProcessManager.saveLogEntry(logEntry);
             }
             this.addToWikiField = "";
         }
@@ -843,8 +850,8 @@ public class BatchStepHelper {
 
                 for (ProcessProperty prop : processPropertyList) {
 
-                    if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
-                            && (prop.getValue() == null || prop.getValue().equals(""))) {
+                    if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue()
+                            .equals(""))) {
                         String[] parameter = { prop.getName(), s.getProzess().getTitel() };
                         Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
                         error = true;

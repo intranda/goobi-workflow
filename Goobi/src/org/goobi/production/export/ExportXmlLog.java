@@ -59,6 +59,7 @@ import org.jdom2.transform.XSLTransformException;
 import org.jdom2.transform.XSLTransformer;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -170,43 +171,15 @@ public class ExportXmlLog implements IProcessDataExport {
         processElements.add(ruleset);
 
         Element comment = new Element("comments", xmlns);
-        String wikifield = process.getWikifield();
-        if (wikifield != null && !wikifield.isEmpty()) {
-            String[] logmessages = wikifield.split("<br/>");
-            for (String message : logmessages) {
-                if (message != null && !message.isEmpty()) {
-                    message = message.trim();
-                    if (message.startsWith("<font color=\"#FF0000")) {
-
-                        Element error = new Element("comment", xmlns);
-                        error.setAttribute("type", "error");
-                        error.setText(message.replace("<font color=\"#FF0000\">", "").replace("</font>", ""));
-                        comment.addContent(error);
-                    } else if (message.startsWith("<font color=\"#FF6600\">")) {
-                        Element warn = new Element("comment", xmlns);
-                        warn.setAttribute("type", "warn");
-                        warn.setText(message.replace("<font color=\"#FF6600\">", "").replace("</font>", ""));
-                        comment.addContent(warn);
-                    } else if (message.startsWith("<font color=\"#0033CC\">")) {
-                        Element info = new Element("comment", xmlns);
-                        info.setAttribute("type", "info");
-                        info.setText(message.replace("<font color=\"#0033CC\">", "").replace("</font>", ""));
-                        comment.addContent(info);
-                    } else if (message.startsWith("<font color=\"#CCCCCC\">")) {
-                        Element debug = new Element("comment", xmlns);
-                        debug.setAttribute("type", "debug");
-                        debug.setText(message.replace("<font color=\"#CCCCCC\">", "").replace("</font>", ""));
-                        comment.addContent(debug);
-                    } else if (message.startsWith("<font color=\"#006600\">")) {
-                        Element user = new Element("comment", xmlns);
-                        user.setAttribute("type", "user");
-                        user.setText(message.replace("<font color=\"#006600\">", "").replace("</font>", ""));
-                        comment.addContent(user);
-                    }
-                }
-            }
-
+        List<LogEntry> log = process.getProcessLog();
+        for (LogEntry entry : log) {
+            Element commentLine = new Element("comment", xmlns);
+            commentLine.setAttribute("type", entry.getType().getTitle());
+            commentLine.setAttribute("user", entry.getUserName());
+            commentLine.setText(entry.getContent());
+            comment.addContent(commentLine);
         }
+        
         processElements.add(comment);
 
         if (process.getBatchID() != null) {

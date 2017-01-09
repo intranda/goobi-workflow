@@ -131,13 +131,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public static String DIRECTORY_PREFIX = "orig";
     public static String DIRECTORY_SUFFIX = "images";
 
-    private String wikifield = "";
     
     @Getter @Setter private String content ="";
     @Getter @Setter private String secondContent ="";
     @Getter @Setter private String thirdContent ="";
-
-    //    private static final String TEMPORARY_FILENAME_PREFIX = "temporary_";
 
     public Process() {
         this.swappedOut = false;
@@ -1146,14 +1143,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
-    public String getWikifield() {
-        return this.wikifield;
-    }
-
-    public void setWikifield(String wikifield) {
-        this.wikifield = wikifield;
-    }
-
     public String downloadDocket() {
 
         if (logger.isDebugEnabled()) {
@@ -1296,7 +1285,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
         p.setTitel(this.getTitel() + "_copy");
-        p.setWikifield(wikifield);
 
         this.bhelp.SchritteKopieren(this, p);
         this.bhelp.ScanvorlagenKopieren(this, p);

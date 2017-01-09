@@ -336,19 +336,19 @@ class ProcessMysqlHelper implements Serializable {
         if (!includeProcessId) {
             return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID)" + " VALUES ";
         } else {
             return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, wikifield, batchID, docketID)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID)" + " VALUES ";
         }
     }
 
     private static String generateValueQuery(boolean includeProcessId) {
         if (!includeProcessId) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
     }
 
@@ -367,15 +367,13 @@ class ProcessMysqlHelper implements Serializable {
         if (!includeProcessID) {
             Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(), o
                     .getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
-                    o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getWikifield() == null || o.getWikifield().equals("") ? " " : o
-                            .getWikifield(), o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
+                    o.getSortHelperDocstructs(), o.getSortHelperMetadata(),  o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
         } else {
             Object[] param = { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o
                     .isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o
-                            .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o
-                                    .getWikifield() == null || o.getWikifield().equals("") ? " " : o.getWikifield(), o.getBatchID(), o
+                            .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatchID(), o
                                             .getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
@@ -398,7 +396,7 @@ class ProcessMysqlHelper implements Serializable {
         sql.append(" MetadatenKonfigurationID = ?,");
         sql.append(" sortHelperDocstructs = ?,");
         sql.append(" sortHelperMetadata = ?,");
-        sql.append(" wikifield = ?,");
+//        sql.append(" wikifield = ?,");
         sql.append(" batchID = ?,");
         sql.append(" docketID = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
@@ -436,7 +434,7 @@ class ProcessMysqlHelper implements Serializable {
         p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
         p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
         p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
-        p.setWikifield(rs.getString("wikifield"));
+//        p.setWikifield(rs.getString("wikifield"));
         Integer batchID = rs.getInt("batchID");
         if (rs.wasNull()) {
             batchID = null;
@@ -638,26 +636,6 @@ class ProcessMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
             Object[] param = { numberOfFiles, processId };
             sql.append("UPDATE prozesse SET sortHelperImages = ? WHERE ProzesseID = ?");
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
-            }
-            run.update(connection, sql.toString(), param);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static void updateProcessLog(String logValue, int processId) throws SQLException {
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            StringBuilder sql = new StringBuilder();
-            Object[] param = { logValue, processId };
-
-            sql.append("UPDATE prozesse SET wikifield = ? WHERE ProzesseID = ?");
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString() + ", " + Arrays.toString(param));
             }

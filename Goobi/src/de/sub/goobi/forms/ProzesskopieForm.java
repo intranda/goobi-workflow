@@ -50,6 +50,7 @@ import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
@@ -59,7 +60,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
@@ -164,7 +165,7 @@ public class ProzesskopieForm {
         }
 
         clearValues();
-        this.co =  ConfigOpac.getInstance();
+        this.co = ConfigOpac.getInstance();
         readProjectConfigs();
         this.myRdf = null;
         this.prozessKopie = new Process();
@@ -1160,10 +1161,10 @@ public class ProzesskopieForm {
         }
     }
 
-   public Map<String, String>  getAllSearchFields() {
-      return co.getCatalogueByName(opacKatalog).getSearchFields();
-   }
-    
+    public Map<String, String> getAllSearchFields() {
+        return co.getCatalogueByName(opacKatalog).getSearchFields();
+    }
+
     public List<String> getAllOpacCatalogues() {
         return co.getAllCatalogueTitles();
     }
@@ -1491,12 +1492,15 @@ public class ProzesskopieForm {
     }
 
     public void setAddToWikiField(String addToWikiField) {
-        this.prozessKopie.setWikifield(prozessVorlage.getWikifield());
         this.addToWikiField = addToWikiField;
         if (addToWikiField != null && !addToWikiField.equals("")) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-            this.prozessKopie.setWikifield(WikiFieldHelper.getWikiMessage(prozessKopie.getWikifield(), "info", message));
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(addToWikiField);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(prozessKopie.getId());
+            logEntry.setType(LogType.INFO);
+            logEntry.setUserName(user.getNachVorname());
         }
     }
 

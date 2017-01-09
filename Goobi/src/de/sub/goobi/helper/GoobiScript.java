@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,8 +61,9 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
@@ -94,7 +96,6 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 //TODO: Delete me, this should be part of the Plugins...
 //TODO: Break this up into multiple classes with a common interface
-//TODO: add funny observer pattern here for more complexity
 
 public class GoobiScript {
     HashMap<String, String> myParameters;
@@ -437,9 +438,16 @@ public class GoobiScript {
 			LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 			String user = login.getMyBenutzer().getNachVorname();
 			for (Integer processId : inProzesse) {
-				Process process = ProcessManager.getProcessById(processId);
-				String logMessage = WikiFieldHelper.getWikiMessage(process.getWikifield(), this.myParameters.get("type"), this.myParameters.get("message")  + " (" + user + ")");
-				ProcessManager.addLogfile(logMessage, process.getId());
+				
+                LogEntry logEntry = new LogEntry();
+                logEntry.setContent(myParameters.get("message"));
+                logEntry.setCreationDate(new Date());
+                logEntry.setProcessId(processId);
+                logEntry.setType(LogType.getByTitle(myParameters.get("type")));
+                logEntry.setUserName(user);
+
+                ProcessManager.saveLogEntry(logEntry);
+
 			}
 		} catch (Exception e) {
 			Helper.setFehlerMeldung(e);

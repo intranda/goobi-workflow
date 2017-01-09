@@ -260,14 +260,6 @@ public class ProcessManager implements IManager, Serializable {
 
     }
 
-    public static void addLogfile(String value, int processId) {
-        try {
-            ProcessMysqlHelper.updateProcessLog(value, processId);
-        } catch (SQLException e) {
-            logger.error("Cannot not update status for process with id " + processId, e);
-        }
-    }
-
     public static void updateProcessStatus(String value, int processId) {
         try {
             ProcessMysqlHelper.updateProcessStatus(value, processId);
