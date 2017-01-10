@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:param name="myPageTitle" value="#{msgs.einenNeuenProzessAnlegen}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb label="#{msgs.prozessvorlagen}" action="process_all" navId="a1" />
+        <intranda:breadcrumb label="#{msgs.einenNeuenProzessAnlegen}" action="process_new2" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form styleClass="form-horizontal form-bordered">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color box-bordered">
+                        <div class="box-title">
+                            <h3>
+                            	<i class="fa fa-tasks"></i>
+								<h:outputText value="#{msgs.zusaetzlicheDetails}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
+                            <x:dataList var="item" value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
+
+                                <intranda:formInputText label="#{item.titel}" field="#{item.wert}" help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
+                                    fieldStyle="form-control" required="true" />
+
+                            </x:dataList>
+
+                            <div class="form-actions">
+
+                                <h:commandLink styleClass="btn btn-success font-size-s pull-right" id="absenden" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+                                    <i class="fa fa-save margin-right-5"></i>
+                                    <h:outputText value="#{msgs.speichern}" />
+                                </h:commandLink>
+
+								<!-- Cancel -->
+                                <h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" action="process_all" value="#{msgs.abbrechen}"
+                                    immediate="true">
+                                </h:commandLink>
+
+								<!-- back -->
+                                <h:commandLink styleClass="btn font-size-s" id="back" action="#{ProzesskopieForm.GoToSeite1}">
+                                    <i class="fa fa-arrow-circle-o-left margin-right-5"></i>
+                                    <h:outputText value="#{msgs.zurueck}" />
+                                </h:commandLink>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+
+
+
+
+

@@ -1,0 +1,584 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template_metadata.html" xmlns:p="http://primefaces.org/ui">
+
+    <ui:param name="myPageTitle" value="#{Metadaten.myProzess.titel}" />
+
+    <ui:define name="sidebar">
+        <ui:include src="includes/metseditor/metseditor_structure.xhtml" />
+    </ui:define>
+
+    <ui:define name="menu">
+        <ui:include src="includes/metseditor/metseditor_menu.xhtml" />
+    </ui:define>
+    
+    <ui:define name="menu_mobile">
+        <ui:include src="includes/metseditor/metseditor_menu_mobile.xhtml" />
+    </ui:define>
+
+    <ui:define name="content">
+
+
+        <h:form id="progressform" prependId="false">
+
+            <!-- Modal -->
+            <div class="modal fade" id="unsavedChanges" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+							 <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                                 <i class="fa fa-times"></i>
+                             </a>
+                                                        
+                            <h4 class="modal-title" id="myModalLabel">
+                                <h:outputText value="#{msgs.metseditorFinish}" />
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <h:outputText value="#{msgs.metseditorSaveExplanation}" />
+                        </div>
+                        <div class="modal-footer">
+
+                           <h:commandLink styleClass="btn btn-lightred pull-left" action="#{Metadaten.discard}" title="#{msgs.discard}">
+                                <i class="fa fa-trash-o margin-right-5"></i>
+                                <h:outputText value="#{msgs.discard}" />
+                            </h:commandLink>
+
+                            <h:commandLink styleClass="btn btn-green" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.overwrite}">
+                                <i class="fa fa-floppy-o margin-right-5"></i>
+                                <h:outputText value="#{msgs.overwrite}" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h:panelGroup style="display: none" id="progressPanel">
+                <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2" id="progressbutton" style="display: none;" />
+
+                <p:progressBar widgetVar="pbAjax" ajax="true" value="#{Metadaten.progress}" labelTemplate="{value}%" styleClass="animated" global="false">
+                    <p:ajax event="complete" listener="#{Metadaten.onComplete}" />
+                </p:progressBar>
+
+            </h:panelGroup>
+            <script type="text/javascript">
+				function displayProgressBar() {
+				    var element = document.getElementById('progressPanel');
+				    if (element.style.display == 'block') {
+				        element.style.display = 'none';
+				    } else {
+				        element.style.display = 'block';
+				    }
+				    document.getElementById('progressbutton').click();
+				}
+				
+				function start() {
+					window['progress'] = setInterval(
+					        function() {
+					            var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
+					
+					            pbClient.setValue(pbClient.getValue() + 10);
+					
+					            if (newValue === 100) {
+					                clearInterval(window['progress']);
+					                
+					            }
+					        },
+					        1000);
+				}
+             </script>
+        </h:form>
+
+        <div class="row">
+
+
+            <div id="contentArea" class="col-sm-5 col-lg-5" style="height: auto;">
+
+                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block margin-top-regular" style="line-height:40px;font-size:24px;">
+                    <i class="fa fa-exclamation-triangle margin-right-10 " />
+                    <h:outputText value="#{SessionForm.bitteAusloggen}" />
+                </h:panelGroup>
+
+                <h:messages id="messages" escape="false" globalOnly="true" errorClass="alert alert-danger alert-dismissable" infoClass="alert alert-info " warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages " />
+
+                <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
+                    <ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
+                    <ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Strukturdaten'}">
+                    <ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{Metadaten.modusAnsicht =='File'}">
+                    <ui:include src="includes/metseditor/metseditor_file.xhtml" />
+                </h:panelGroup>
+            </div>
+
+            <div id="metseditorImage" class="col-sm-7 col-lg-7 pull-right">
+                <ui:include src="includes/metseditor/metseditor_image.xhtml" />
+            </div>
+        </div>
+
+
+        <script type="text/javascript">
+        	function fitResizeHandle() {
+            	var resizeHandle = $( '#left .ui-resizable-handle' );
+            	var tableHeight = $( '#tabelle' ).outerHeight();
+            	
+            	console.log(tableHeight);
+            	
+        	    resizeHandle.css( 'height', tableHeight );
+        	}
+
+        	
+        
+			function isIE() {
+				var agent = navigator.userAgent.toLowerCase();
+				var name = 'MSIE';
+				if (agent.indexOf(name.toLowerCase()) > -1) {
+					return true;
+				}
+	
+				return false;
+			}	
+		
+			
+
+            function styleAnpassen2(element) {
+		 		var galleryLinks;
+				galleryLinks = document.getElementsByClassName('documentSelected');
+				for (var i = 0; i &lt; galleryLinks.length; i++)
+					galleryLinks[i].className = "document";
+				element.className = "documentSelected";
+				return true;
+			}
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
+            	var myButton = document.getElementById("imageNext");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {            	
+            	var myButton = document.getElementById("imageBack");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+up', function() {            	
+            	var myButton = document.getElementById("imageNext20");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+down', function() {            	
+            	var myButton = document.getElementById("imageBack20");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+home', function() {            	
+            	var myButton = document.getElementById("imageFirst");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+end', function() {            	
+            	var myButton = document.getElementById("imageLast");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+return', function() {  
+            	var myButton = document.getElementById("menu-form:saveMetsFileButtonAjax");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+space', function() {  
+				var hiddenImageNo =$("#hiddenImageNo").val();
+				if (hiddenImageNo == null){
+					hiddenImageNo =$("#hiddenImageNoThumb").val();
+				}
+				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
+					if (i == hiddenImageNo ) {
+					    var checkbox = document.getElementsByName("myCheckboxes")[i];
+					    if (checkbox.checked) {
+					        checkbox.checked = false;
+					    } else {
+					        checkbox.checked = true;
+					    }
+					    checkbox.focus();
+					    checkbox.blur();
+					}
+				}
+			});
+            
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
+            	var myButton = document.getElementById("imageNext");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {            	
+            	var myButton = document.getElementById("imageBack");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+up', function() {            	
+            	var myButton = document.getElementById("imageNext20");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+down', function() {            	
+            	var myButton = document.getElementById("imageBack20");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+home', function() {            	
+            	var myButton = document.getElementById("imageFirst");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+end', function() {            	
+            	var myButton = document.getElementById("imageLast");
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+return', function() {  
+    			
+            	var myButton = document.getElementById("menu-form:saveMetsFileButtonAjax");
+            	console.log(myButton);
+            	if (myButton!=null) {
+            		myButton.click();
+            	} 
+            });
+            
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+space', function() {  
+				var hiddenImageNo =$("#hiddenImageNo").val();
+				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
+					if (i == hiddenImageNo ) {
+					    var checkbox = document.getElementsByName("myCheckboxes")[i];
+					    if (checkbox.checked) {
+					        checkbox.checked = false;
+					    } else {
+					        checkbox.checked = true;
+					    }
+					}
+				}
+			});
+            
+            
+            var readOnlyMode = '#{Metadaten.nurLesenModus}';
+            var autoSave = function() {
+
+            
+            var interval = parseInt('#{LoginForm.myBenutzer.metsEditorTime}');
+//             	 TODO check if mets editor was opened read only
+            	if (interval > 0) {
+                	setInterval( function() {
+                 		var myButton = document.getElementById("menu-form:automaticSave");
+                     	if (myButton!=null) {
+                     		myButton.click();
+                     	} 
+
+                	}, interval*1000*60);
+                	
+            		
+            	}
+
+            };
+            
+            if (readOnlyMode === 'false') {
+                    autoSave();
+            }
+            
+            $(document).ready(function (){fitResizeHandle();});
+         </script>
+         
+         <h:form id="normdataForm" prependId="false">
+            <h:inputHidden id="rowType" value="#{Metadaten.rowType}" />
+            <h:inputHidden id="rowIndex" value="#{Metadaten.rowIndex}" />
+                     <!-- Modal -->
+            <div class="modal fade" id="gndSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                            </a>
+
+                            <h4 class="modal-title" id="myModalLabel">
+                                <h:outputText value="#{msgs.NORM_gndSearch}" />
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <h:outputText value="#{msgs.NORM_helpGndSearch}" escape="false" />
+
+                            <br />
+
+                            <div class="row" style="margin-top: 15px;">
+                                <div class="col-sm-4 control-label">
+                                    <h:selectOneMenu value="#{Metadaten.searchOption}" styleClass="form-control">
+                                        <f:selectItem itemLabel="#{msgs.NORM_identifier}" itemValue="" />
+                                        <f:selectItem itemLabel="#{msgs.NORM_person}" itemValue="Tp*" />
+                                        <f:selectItem itemLabel="#{msgs.NORM_organisation}" itemValue="Tb*" />
+                                        <f:selectItem itemLabel="#{msgs.NORM_keyword}" itemValue="Ts*" />
+                                        <f:selectItem itemLabel="#{msgs.NORM_geografika}" itemValue="Tg*" />
+                                    </h:selectOneMenu>
+                                </div>
+
+                                <div class="col-sm-8">
+                                    <!-- search button? -->
+                                    <x:inputText value="#{Metadaten.gndSearchValue}" styleClass="form-control input" id="input" />
+                                </div>
+
+                                <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+                                    <i class="fa fa-search margin-right-5"></i>
+                                    <h:outputText value="#{msgs.search}" />
+                                    <f:ajax execute="@form" render="list" />
+                                </h:commandLink>
+
+                                <script>
+                                $('input[id*="input"]' ).on('focus',function() {
+                                    $(this ).on('keyup',function(event ) {
+                                        event.preventDefault();
+                                        if ( event.keyCode == 13 ) {
+                                            $(this ).parent().next().click();
+                                        }
+                                    } );
+                                } );
+                                </script>
+                            </div>
+
+
+                            <h:panelGroup layout="block" id="list" class="row pre-scrollable">
+                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">
+                                    <hr />
+                                    <div class="row" style="margin: 20px;">
+
+
+                                        <div class="col-sm-11">
+
+                                            <x:dataList value="#{normdataList}" var="normdata">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <h:outputText value="#{msgs[normdata.key]}" />
+                                                    </div>
+
+                                                    <div class="col-sm-8">
+                                                        <x:dataList value="#{normdata.values}" var="value">
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <h:outputLink rendered="#{value.url != null}" target="_blank" value="#{value.url}">
+                                                                        <h:outputText value="#{value.text}" />
+                                                                        <h:outputText rendered="#{value.identifier != null}" value=" (#{value.identifier})" />
+                                                                    </h:outputLink>
+
+                                                                    <h:outputText value="#{value.text}" rendered="#{value.url == null}" />
+                                                                </div>
+                                                            </div>
+                                                        </x:dataList>
+                                                    </div>
+                                                </div>
+                                            </x:dataList>
+                                        </div>
+                                        <h:panelGroup layout="block" class="col-sm-1">
+                                            <h:commandLink styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
+                                                <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentPlugin.currentData}" />
+                                                <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
+                                                <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
+                                                <i class="fa fa-check" />
+                                            </h:commandLink>
+                                        </h:panelGroup>
+                                    </div>
+                                </x:dataList>
+                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
+
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- geonames modal -->
+            <div class="modal fade" id="geonamesSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                            </a>
+
+                            <h4 class="modal-title" id="myModalLabel">
+                                <h:outputText value="#{msgs.NORM_geonamesSearch}" />
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <h:outputText value="#{msgs.NORM_helpGeonamesSearch}" escape="false" />
+
+                            <br />
+
+                            <div class="row" style="margin-top: 15px;">
+
+
+                                <div class="col-sm-12">
+                                    <x:inputText value="#{Metadaten.geonamesSearchValue}" styleClass="form-control input" id="geonamesSearch" />
+                                </div>
+
+
+                                <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+                                    <i class="fa fa-search margin-right-5"></i>
+                                    <h:outputText value="#{msgs.search}" />
+                                    <f:ajax execute="@form" render="geonamesList" />
+                                </h:commandLink>
+
+                                <script>
+                                    $('input[id*="geonamesSearch"]' ).on('focus',function() {
+                                        $(this ).on('keyup',function(event ) {
+                                            event.preventDefault();
+                                            if ( event.keyCode == 13 ) {
+                                                $(this ).parent().next().click();
+                                            }
+                                        } );
+                                    } );
+                                </script>
+                            </div>
+
+
+                            <h:panelGroup id="geonamesList" layout="block" styleClass="row pre-scrollable">
+
+                                <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="geonames">
+                                    <hr />
+                                    <div class="row" style="margin: 20px;">
+
+
+                                        <div class="col-sm-11">
+
+                                            <div class="row">
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.geoNameId !=''}">
+                                                    <h:outputText value="#{msgs.geoNameId}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.geoNameId !=''}">
+                                                    <h:outputText value="#{geonames.geoNameId}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.name !=''}">
+                                                    <h:outputText value="#{msgs.name}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.name !=''}">
+                                                    <h:outputText value="#{geonames.name}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.alternateNames !=''}">
+                                                    <h:outputText value="#{msgs.alternateNames}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.alternateNames !=''}">
+                                                    <h:outputText value="#{geonames.alternateNames}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.countryName !=''}">
+                                                    <h:outputText value="#{msgs.countryName}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.countryName !=''}">
+                                                    <h:outputText value="#{msgs[geonames.countryName]}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.latitude !=''}">
+                                                    <h:outputText value="#{msgs.latitude}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.latitude !=''}">
+                                                    <h:outputText value="#{geonames.latitude}" />
+                                                </h:panelGroup>
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.longitude !=''}">
+                                                    <h:outputText value="#{msgs.longitude}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.longitude !=''}">
+                                                    <h:outputText value="#{geonames.longitude}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.population !=''}">
+                                                    <h:outputText value="#{msgs.population}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.population !=''}">
+                                                    <h:outputText value="#{geonames.population}" />
+                                                </h:panelGroup>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <h:commandLink action="#{Metadaten.currentPlugin.getData}" styleClass="btn btn-green margin-left-5">
+                                                <f:setPropertyActionListener value="#{geonames}" target="#{Metadaten.currentPlugin.currentToponym}" />
+                                                <f:setPropertyActionListener value="" target="#{Metadaten.geonamesSearchValue}" />
+                                                <i class="fa fa-check" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                </x:dataList>
+
+                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
+
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+            
+		
+            
+                                                    $( 'a[id*="geonamesIndexTrigger-"]' ).on( 'click', function() {
+                                                        var currIndex = $( this ).attr( 'data-row' );
+                                                        var currType = $( this ).attr( 'data-datatype' );
+                                                        $( '#rowIndex' ).val( currIndex );
+                                                        $( '#rowType' ).val( currType );
+                                                    } );
+                                                    
+                                                    $( 'a[id*="gndIndexTrigger-"]' ).on( 'click', function() {
+                                                        var currIndex = $( this ).attr( 'data-row' );
+                                                        var currType = $( this ).attr( 'data-datatype' );
+                                                        $( '#rowIndex' ).val( currIndex );
+                                                        $( '#rowType' ).val( currType );
+                                                    } );
+                                                    
+                                                    $( 'a[id*="gndPersonIndexTrigger-"]' ).on( 'click', function() {
+                                                        var currIndex = $( this ).attr( 'data-row' );
+                                                        var currType = $( this ).attr( 'data-datatype' );
+                                                        $( '#rowIndex' ).val( currIndex );
+                                                        $( '#rowType' ).val( currType );
+                                                    } );
+          </script>
+         </h:form>
+    </ui:define>
+
+</ui:composition>

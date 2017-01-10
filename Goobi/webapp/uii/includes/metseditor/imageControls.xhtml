@@ -1,0 +1,207 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <style>
+.viewer-control {
+    display: inline-block;
+    width: 2.8rem;
+    min-height: 2.8rem;
+    background-image: url(#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/icons/viewer-controls-sprite.png);
+    background-repeat: no-repeat;
+    margin: 0 .4rem;
+}
+
+.viewer-control.viewer-control-start {
+    background-position: 0px 0px;
+}
+
+.viewer-control.viewer-control-back {
+    background-position: -28px 0px;
+}
+
+.viewer-control.viewer-control-back5 {
+    background-position: -56px 0px;
+}
+
+.viewer-control.viewer-control-back20 {
+    background-position: -84px 0px;
+}
+
+.viewer-control.viewer-control-back50 {
+    background-position: -112px 0px;
+}
+
+.viewer-control.viewer-control-reset {
+    background-position: -140px 0px;
+}
+
+.viewer-control.viewer-control-rotate-left {
+    background-position: -168px 0px;
+}
+
+.viewer-control.viewer-control-rotate-right {
+    background-position: -196px 0px;
+}
+
+.viewer-control.viewer-control-end {
+    background-position: 0px -28px;
+}
+
+.viewer-control.viewer-control-forward {
+    background-position: -28px -28px;
+}
+
+.viewer-control.viewer-control-forward5 {
+    background-position: -56px -28px;
+}
+
+.viewer-control.viewer-control-forward20 {
+    background-position: -84px -28px;
+}
+
+.viewer-control.viewer-control-forward50 {
+    background-position: -112px -28px;
+}
+
+.viewer-control.viewer-control-fullscreen {
+    background-position: -140px -28px;
+}
+
+.viewer-control.viewer-control-toc {
+    background-position: -168px -28px;
+}
+
+.viewer-control.viewer-control-pdf {
+    background-position: -196px -28px;
+}
+
+#viewer_controls_nav {
+    float: left;
+    width: 100%;
+    min-height: 2.8rem;
+    overflow: hidden;
+}
+
+#viewer_controls_nav ul {
+    position: relative;
+    padding-left: 0;
+}
+
+#viewer_controls_nav ul li {
+    display: inline-block;
+    position: relative;
+    float: left;
+    min-height: 40px;
+    margin: 0 0 5px;
+}
+
+#viewer_controls_nav ul li .btn2 {
+    display: inline;
+}
+
+#viewer_controls_nav ul li .control-select-box {
+    height: 28px;
+    line-height: 1.3125rem;
+    border: 0.0625rem solid #6f6f6f;
+}
+
+#viewer_controls_nav ul li .control-select-box select {
+    height: 1.625rem;
+    border: none;
+}
+
+#viewer_controls_nav ul li #zoomSlider {
+    width: 12rem;
+    height: 1.5rem;
+    margin-top: 0.6rem;
+    margin-right: 0;
+    margin-left: .4rem;
+    border: 1px solid #6f6f6f;
+}
+
+#viewer_controls_nav ul li #zoomSlider .zoomslider-handle {
+    top: -0.4rem;
+    height: 2.2rem;
+    width: 1rem;
+    background-color: #6f6f6f;
+}
+
+#viewer_controls_nav ul li #zoomSlider a {
+    width: 1.45rem;
+    height: 1.45rem;
+    margin: 0;
+    background: #6f6f6f;
+}
+
+#image-control-wrapper {}
+</style>
+        <div id="image-control-wrapper">
+            <nav id="viewer_controls_nav">
+                <ul>
+                    <li>
+                        <span onclick="viewImage.controls.rotateLeft();" title="#{msg.rotateLeft}" class="viewer-control viewer-control-rotate-left" />
+                    </li>
+                    <li>
+                        <span onclick="viewImage.controls.rotateRight();" title="#{msg.rotateRight}" class="viewer-control viewer-control-rotate-right" />
+                    </li>
+                    <li>
+                        <span onclick="viewImage.controls.goHome(true);" class="viewer-control viewer-control-reset" title="#{msg.resetImage}" />
+                    </li>
+           
+                    <li>
+                        <div id="zoomSlider">
+                            <span class="zoomslider-handle"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <!-- OCR -->
+                        <h:commandLink id="ocrButton" action="#{Metadaten.showOcrResult}" rendered="#{Metadaten.showOcrButton}" title="#{msgs.mets_showOcrForCurrentImage}" styleClass="btn2 font-bigger">
+                            <i class="fa fa-file-text-o"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            <f:ajax execute="@form" render="@form :bigimage" />
+                        </h:commandLink>
+                        <!-- //OCR -->
+                    </li>
+
+                    <li>
+                        <!-- gehezu-Schaltknopf -->
+                        <h:outputText value="#{msgs.geheZuBild}:" styleClass="margin-left-10 margin-right-10" title="#{msgs.geheZuImage}" />
+                      
+                        <p:autoComplete id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('goButton',event)" />
+                        <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
+                            <f:ajax execute="@form" render="@form :bigimage" />
+                        </h:commandButton>
+                    </li>
+
+                    <li>
+                        <h:commandLink action="#{Metadaten.reduceContainerWidth}" title="#{msgs.mets_zoomOut}" id="zoomMinus" styleClass="btn2 font-bigger">
+                            <i class="fa fa-search-minus" />
+                            <f:ajax execute="@form" render="@form :bigimage" />
+                        </h:commandLink>
+                        <!-- change Zoom -->
+                        <x:outputText id="txtZoom1" forceId="true" value="#{Metadaten.containerWidth}px" onclick="document.getElementById('txtZoom2').style.display='inline';
+                                       document.getElementById('txtZoom1').style.display='none'; 
+                                       document.getElementById('txtZoom2').focus();
+                                       document.getElementById('txtZoom2').select();" />
+
+                        <!-- Zoom direkt eingeben -->
+                        <x:inputText id="txtZoom2" forceId="true" value="#{Metadaten.containerWidth}" required="true" onblur="document.getElementById('txtZoom2').style.display='none';
+                                    document.getElementById('txtZoom1').style.display='inline';" onkeypress="return submitEnter('cmdZoom',event)" />
+                        <x:commandButton action="#{Metadaten.AnsichtAendern}" id="cmdZoom" forceId="true" value="go" style="display:none" />
+
+                        <h:commandLink action="#{Metadaten.increaseContainerWidth}" title="#{msgs.mets_zoomIn}" id="zoomPlus" styleClass="btn2 font-bigger">
+                            <i class="fa fa-search-plus" />
+                            <f:ajax execute="@form" render="@form :bigimage" />
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </composite:implementation>
+</ui:composition>
+
+

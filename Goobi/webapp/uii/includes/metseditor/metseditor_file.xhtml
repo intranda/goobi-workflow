@@ -1,0 +1,321 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<h:form id="fileUpload" enctype="multipart/form-data">
+			<div class="box box-bordered box-small box-color lightgrey">
+				<div class="box-title">
+					<h3>
+						<i class="fa fa-bars"/>
+						<h:outputText value="#{msgs.fileUpload}" />
+					</h3>
+					<div class="actions">
+						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
+                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea1}" value="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'down':'up'}" />
+                       		<f:ajax render="@form" />
+                        </h:commandLink>
+					</div>
+				</div>
+				<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'none':'block'}">
+	
+					<div class="row">
+						<div class="col-sm-3">
+							<label class="control-label">#{msgs.filename}:</label>
+						</div>
+						<div class="col-sm-9">
+							<h:inputFile id="fileupload"
+								value="#{Metadaten.fileManipulation.uploadedFile}"
+								storage="file" styleClass="form-control form-control-file" required="false" />
+						</div>
+					</div>
+					
+					<div class="row margin-top-regular">
+						<div class="col-sm-3">
+							<label class="control-label">#{msgs.aktuellerOrdner}:</label>
+						</div>
+						<div class="col-sm-9">
+							<h:selectOneMenu styleClass="form-control"
+								value="#{Metadaten.fileManipulation.currentFolder}">
+								<f:selectItems value="#{Metadaten.allTifFolders}" var="folder"
+									itemLabel="#{folder}" itemValue="#{folder}" />
+							</h:selectOneMenu>
+						</div>
+					</div>
+					
+					<h:panelGroup rendered="#{Metadaten.alleSeiten != null}">
+						<div class="row margin-top-regular">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.position}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}"
+									id="paginationSelection" styleClass="form-control" >
+									<f:selectItems value="#{Metadaten.alleSeiten}" />
+									<f:selectItem itemLabel="#{msgs.asLastPage}"
+										itemValue="#{msgs.asLastPage}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</h:panelGroup>
+					
+					<div class="row margin-top-regular">
+						<div class="col-sm-3">
+							<label class="control-label">#{msgs.newFileName}:</label>
+						</div>
+						<div class="col-sm-9">
+                            <h:inputText value="#{Metadaten.fileManipulation.uploadedFileName}"  styleClass="form-control"/>
+						</div>
+					</div>
+					
+					<div class="row margin-top-regular">
+						<div class="col-sm-3">
+							<label class="control-label">#{msgs.paginierung}:</label>
+						</div>
+						<div class="col-sm-9">
+							<h:selectOneRadio value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection" styleClass="select-radio">
+								<f:selectItem itemValue="uncounted"
+									itemLabel="#{msgs.insertAsUncounted}" />
+								<f:selectItem itemValue="insertIntoPagination"
+									itemLabel="#{msgs.insertIntoPagination}" />
+							</h:selectOneRadio>
+						</div>
+					</div>
+					
+					<hr class="margin-top-regular margin-bottom-regular"/>
+	
+					<div class="margin-top-regular">
+						<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.uploadFile}"
+							action="#{Metadaten.fileManipulation.uploadFile}" onclick="setScrollPosition();"/>
+					</div>
+					
+				</div>
+			</div>
+  		</h:form>
+
+		<h:form id="fileDownload" rendered="#{Metadaten.alleSeiten != null}">
+			<div class="box box-bordered box-small box-color lightgrey">
+					<div class="box-title">
+						<h3>
+							<i class="fa fa-bars"/>
+							<h:outputText value="#{msgs.fileDownload}" />
+						</h3>
+						<div class="actions">
+						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
+                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea2}" value="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'down':'up'}" />
+                       		<f:ajax render="@form" />
+                        </h:commandLink>
+           			</div>
+					</div>
+					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'none':'block'}">
+
+						<div class="row">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.aktuellerOrdner}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectOneMenu styleClass="form-control"
+									value="#{Metadaten.fileManipulation.currentFolder}">
+									<f:selectItems value="#{Metadaten.allTifFolders}" var="folder"
+										itemLabel="#{folder}" itemValue="#{folder}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						
+						<div class="row margin-top-regular">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.imageSelection}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectOneMenu styleClass="form-control"
+									value="#{Metadaten.fileManipulation.imageSelection}"
+									id="imageSelection">
+									<f:selectItems value="#{Metadaten.alleSeiten}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						
+						<hr class="margin-top-regular margin-bottom-regular"/>
+
+						<div class="margin-top-regular">
+							<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.fileDownload}"
+								action="#{Metadaten.fileManipulation.downloadFile}" onclick="setScrollPosition();"/>
+						</div>
+					</div>
+				</div>
+		</h:form>
+
+		<h:form rendered="#{Metadaten.alleSeiten != null}">
+			
+			<div class="box box-bordered box-small box-color lightgrey">
+					<div class="box-title">
+						<h3>
+							<i class="fa fa-bars"/>
+							<h:outputText value="#{msgs.serversideUpload}" />
+						</h3>
+						<div class="actions">
+						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
+                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea3}" value="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'down':'up'}" />
+                       		<f:ajax render="@form" />
+                        </h:commandLink>
+					</div>
+					</div>
+					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'none':'block'}">
+
+						<div class="row">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.imageSelection}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectManyListbox id="filenames" styleClass="form-control metsEditorSelectManyListbox"
+									value="#{Metadaten.fileManipulation.selectedFiles}">
+									<f:selectItems value="#{Metadaten.alleSeiten}" />
+								</h:selectManyListbox>
+							</div>
+						</div>
+						
+						<div class="row margin-top-regular">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.deleteAfterMove}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectBooleanCheckbox id="deleteAfter" 
+									value="#{Metadaten.fileManipulation.deleteFilesAfterMove}" />
+							</div>
+						</div>
+						
+<!-- 						<div class="row margin-top-regular"> -->
+<!-- 							<div class="col-sm-3"> -->
+<!-- 								<label class="control-label">#{msgs.moveFilesInAllFolder}:</label> -->
+<!-- 							</div> -->
+<!-- 							<div class="col-sm-9"> -->
+<!-- 								<h:selectBooleanCheckbox id="moveFilesInAllFolder" value="#{Metadaten.fileManipulation.moveFilesInAllFolder}" />  -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+						
+						<hr class="margin-top-regular margin-bottom-regular"/>
+
+						<div class="margin-top-regular">
+							<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.exportFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+								action="#{Metadaten.fileManipulation.exportFiles}"/>
+						</div>
+						
+					</div>
+				</div>
+		</h:form>
+
+		<h:form>
+			<div class="box box-bordered box-small box-color lightgrey">
+					<div class="box-title">
+						<h3>
+							<i class="fa fa-bars"/>
+							<h:outputText value="#{msgs.serversideDownload}" />
+						</h3>
+						<div class="actions">
+						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
+                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea4}" value="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'down':'up'}" />
+                       		<f:ajax render="@form" />
+                        </h:commandLink>
+					</div>
+					</div>
+					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'none':'block'}">
+
+						<div class="row">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.dateien}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectManyListbox id="folderToImport" styleClass="form-control metsEditorSelectManyListbox"
+									value="#{Metadaten.fileManipulation.selectedFiles}">
+									<f:selectItems itemLabel="#{folder}" itemValue="#{folder}"
+										var="folder" value="#{Metadaten.fileManipulation.allImportFolder}" />
+								</h:selectManyListbox>
+							</div>
+						</div>
+						
+						<div class="row margin-top-regular">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.position}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}"
+									id="paginationSelection2" styleClass="form-control" rendered="#{Metadaten.alleSeiten != null}">
+									<f:selectItems value="#{Metadaten.alleSeiten}" />
+									<f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="#{msgs.asLastPage}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						
+						<div class="row margin-top-regular">
+							<div class="col-sm-3">
+								<label class="control-label">#{msgs.paginierung}:</label>
+							</div>
+							<div class="col-sm-9">
+								<h:selectOneRadio value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection" styleClass="select-radio">
+									<f:selectItem itemValue="uncounted"
+										itemLabel="#{msgs.insertAsUncounted}" />
+									<f:selectItem itemValue="insertIntoPagination"
+										itemLabel="#{msgs.insertIntoPagination}" />
+								</h:selectOneRadio>
+							</div>
+						</div>
+						
+						<hr class="margin-top-regular margin-bottom-regular"/>
+
+						<div class="margin-top-regular">
+							<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.importFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+							action="#{Metadaten.fileManipulation.importFiles}"/>
+						</div>
+						
+					</div>
+				</div>	
+		</h:form>
+        
+         <script>
+                                                    var height = null;
+                                                    var totalwidth = null;
+                                                    var width = null;
+                                                    $( document ).ready( function() {
+                                                        height = $( '#left' ).height();
+                                                        totalwidth = $( window ).width();
+                                                        width = ( totalwidth - $( '#left' ).width() ) / 13 * 5;
+                                                        
+                                                        $( '#contentArea' ).css( {
+                                                            'height': height + 'px',
+                                                            'width': width + 'px'
+                                                        } );
+                                                        $( '#metseditorImage' ).css( {
+                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
+                                                        } );
+                                                        
+                                                    } );
+                                                    
+                                                    $( window ).on( 'resize', function() {
+                                                        height = $( '#left' ).height();
+                                                        totalwidth = $( window ).width();
+                                                        width = ( totalwidth - $( '#left' ).width() ) / 12 * 5;
+                                                        $( '#contentArea' ).css( {
+                                                            'height': height + 'px',
+                                                            'width': width + 'px'
+                                                        } );
+                                                        $( '#metseditorImage' ).css( {
+                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
+                                                        } );
+                                                        
+                                                    } )
+                                                </script>
+	</composite:implementation>
+</ui:composition>
+
+

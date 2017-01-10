@@ -1,0 +1,240 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <!-- ===================== GROSSE SCHRITT BOX IM GELADENEN PROZESS ====================== -->
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="box box-color box-bordered">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-list"></i>
+                            <h:outputText value="#{msgs.arbeitsschritte}" />
+                        </h3>
+                    </div>
+                    <div class="box-content nopadding">
+
+                        <div class="dataTables_wrapper">
+
+                            <x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" id="steps" width="100%" cellspacing="1px" var="item" value="#{ProzessverwaltungForm.myProzess.schritteList}">
+
+                                <!-- ===================== Reihenfolge ====================== -->
+                                <h:column id="ordercolumn">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.nr}" />
+                                    </f:facet>
+                                    <h:outputText value="#{item.reihenfolge}" />
+                                    <!-- Schaltknopf: Reihenfolge nach oben -->
+                                    <h:commandLink action="#{ProzessverwaltungForm.reihenfolgeUp}" title="#{msgs.moveTaskUp}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                        <i class="fa fa-chevron-up font-light margin-left-10" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </h:commandLink>
+                                    <!-- Schaltknopf: Reihenfolge nach unten -->
+                                    <h:commandLink action="#{ProzessverwaltungForm.reihenfolgeDown}" title="#{msgs.moveTaskDown}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                        <i class="fa fa-chevron-down font-light" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </h:commandLink>
+                                </h:column>
+                                <!-- ===================== // Reihenfolge ====================== -->
+
+                                <!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.titel}" />
+                                    </f:facet>
+
+                                    <h:panelGroup id="possibleActions1">
+
+                                        <h:commandLink id="expandbutton1" styleClass="font-black">
+                                            <h:panelGroup rendered="#{!item.panelAusgeklappt}">
+                                                <i class="fa fa-angle-right margin-right-5" />
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{item.panelAusgeklappt}">
+                                                <i class="fa fa-angle-down margin-right-5" />
+                                            </h:panelGroup>
+                                            <x:updateActionListener value="#{item.panelAusgeklappt?false:true}" property="#{item.panelAusgeklappt}" />
+                                            <f:ajax render="possibleActions1" />
+                                            <h:outputText value="#{item.titelLokalisiert}" />
+                                        </h:commandLink>
+
+                                        <h:panelGroup styleClass="margin-top-10 block" rendered="#{item.panelAusgeklappt}">
+
+                                            <div class="box box-small box-color box-bordered">
+                                                <div class="box-title">
+                                                    <h3>
+                                                        <i class="fa fa-table"></i>
+                                                        #{msgs.eigenschaften}
+                                                    </h3>
+                                                </div>
+                                                <div class="box-content nopadding">
+
+                                                    <h:panelGrid columns="2" class="table table-hover table-bordered">
+
+                                                        <h:outputText value="#{msgs.titel}:" />
+                                                        <h:outputText value="#{item.titelLokalisiert}" />
+
+                                                        <h:outputText value="#{msgs.prioritaet}:" />
+                                                        <h:panelGroup>
+                                                            <h:panelGroup rendered="#{item.prioritaet == 0}">
+                                                                <span class="badge badge-intranda-light"> #{msgs.badgePriority0} </span>
+                                                            </h:panelGroup>
+
+                                                            <h:panelGroup rendered="#{item.prioritaet == 1}">
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
+                                                                    #{msgs.badgePriority1}
+                                                                </span>
+                                                            </h:panelGroup>
+
+                                                            <h:panelGroup rendered="#{item.prioritaet == 2}">
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o" />
+                                                                    #{msgs.badgePriority2}
+                                                                </span>
+                                                            </h:panelGroup>
+
+                                                            <h:panelGroup rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
+                                                                    #{msgs.badgePriority3}
+                                                                </span>
+                                                            </h:panelGroup>
+
+                                                            <h:panelGroup rendered="#{item.prioritaet gt 9}">
+                                                                <span class="badge badge-intranda-red">
+                                                                    <i class="fa fa-exclamation-triangle"></i>
+                                                                    #{msgs.badgeCorrection}
+                                                                </span>
+                                                            </h:panelGroup>
+                                                        </h:panelGroup>
+
+                                                        <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+
+                                                        <h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungszeitpunktAsFormattedString}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+
+                                                        <h:outputText value="#{msgs.letzteAktualisierungDurch}:" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungsbenutzer.nachVorname}" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+
+                                                        <h:outputText value="#{msgs.aktualisierungstyp}:" />
+                                                        <h:outputText value="#{item.editTypeEnum.title}" />
+
+                                                        <h:outputText value="#{msgs.automatischerSchritt}:" rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}" />
+                                                        <h:panelGroup rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
+                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad}" rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}" />
+                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad2}" rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}" />
+                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad3}" rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}" />
+                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad4}" rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}" />
+                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad5}" rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}" />
+                                                        </h:panelGroup>
+
+                                                        <h:outputText value="#{msgs.module}:" rendered="#{item.typModulName != null and item.typModulName != ''}" />
+                                                        <h:outputText value="#{item.typModulName}" rendered="#{item.typModulName != null and item.typModulName != ''}" />
+
+                                                    </h:panelGrid>
+
+                                                </div>
+                                            </div>
+
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </h:column>
+                                <!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.status}" />
+                                    </f:facet>
+
+                                    <ul class="colors small">
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}">
+                                            <li class="red" title="#{msgs.statusGesperrt}" rel="tooltip" />
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}">
+                                            <li class="orange" title="#{msgs.statusOffen}" rel="tooltip" />
+                                        </h:panelGroup>
+
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
+                                            <li class="green" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
+                                            <li class="yellow" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
+                                        </h:panelGroup>
+
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
+                                            <li class="green" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
+                                            <li class="yellow" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                        </h:panelGroup>
+                                    </ul>
+
+                                    <!-- Bearbeitungsstatus hoch und runter -->
+                                    <h:commandLink action="#{ProzessverwaltungForm.SchrittStatusDown}" rel="tooltip" title="#{msgs.statusRunterSetzen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                        <i class="fa fa-chevron-left font-light margin-left-5" title="#{msgs.statusRunterSetzen}" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </h:commandLink>
+
+                                    <!-- Bearbeitungsstatus hoch und runter -->
+                                    <h:commandLink action="#{ProzessverwaltungForm.SchrittStatusUp}" rel="tooltip" title="#{msgs.statusHoeherSetzen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                        <i class="fa fa-chevron-right font-light margin-left-5" title="#{msgs.statusHoeherSetzen}" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </h:commandLink>
+
+
+                                </h:column>
+
+                                <h:column rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.auswahl}" />
+                                    </f:facet>
+                                    <!-- Bearbeiten-Schaltknopf -->
+                                    <h:commandLink action="process_edit_step" title="#{msgs.detailsDesSchritts}">
+                                        <i class="btn fa fa-pencil margin-right-5" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                    </h:commandLink>
+
+                                    <h:commandLink rendered="#{item.stepPlugin != '' and item.stepPlugin != null}" action="#{ProzessverwaltungForm.startPlugin}">
+                                        <span class="btn fa fa-puzzle-piece margin-right-5" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
+                                    </h:commandLink>
+                                </h:column>
+
+                            </x:dataTable>
+
+                            <div class="dataTables_info">
+                                <!-- Neu-Schaltknopf -->
+                                <h:commandLink id="addStepLink" styleClass="btn btn-primary font-size-s margin-right-5" action="#{ProzessverwaltungForm.SchrittNeu}" title="#{msgs.schrittHinzufuegen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2) and (ProzessverwaltungForm.myProzess.titel != '')}">
+                                    <i class="fa fa-plus margin-right-5"></i>
+                                    <h:outputText value="#{msgs.schrittHinzufuegen}" />
+                                </h:commandLink>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </composite:implementation>
+
+</ui:composition>

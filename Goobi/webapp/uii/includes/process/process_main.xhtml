@@ -1,0 +1,333 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <div class="row">
+            <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='prozess'}">
+                <div class="col-sm-6">
+                    <!-- Box für die Darstellung der Details -->
+                    <h:form id="processdetails">
+                        <div class="box box-color box-bordered">
+                            <div class="box-title">
+                                <h3 class="tableColumnMaxWidthLonger">
+                                    <i class="fa fa-table"></i>
+                                    <h:outputText value="#{msgs.prozess}" class="margin-right-5" />
+
+                                </h3>
+
+                                <div class="actions">
+
+                                    <h:commandLink title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}" styleClass="btn btn-mini" rel="tooltip">
+                                        <i class="fa fa-pencil" title="#{msgs.prozessdetailsBearbeiten}"></i>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="prozess" />
+                                    </h:commandLink>
+
+                                    <h:commandLink action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
+                                        <i class="fa fa-refresh" title="#{msgs.reload}" rel="tooltip" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
+
+                                    <!-- Metadaten-Schaltknopf -->
+                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{(LoginForm.maximaleBerechtigung != 1) and (LoginForm.maximaleBerechtigung != 2) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                                        <i class="fa fa-book" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <f:param name="nurLesen" value="true" />
+                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
+                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                        <f:param name="zurueck" value="process_edit" />
+                                    </h:commandLink>
+
+                                    <!-- Metadaten-Schaltknopf -->
+                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action15" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2) and !item.temporaryMetadataFiles}">
+                                        <i class="fa fa-book " />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
+                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                        <f:param name="zurueck" value="process_edit" />
+                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                    </h:commandLink>
+
+                                    <!--  modal rendern  -->
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2) and item.temporaryMetadataFiles}">
+                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" data-toggle="modal" data-target="#myModal-#{count}">
+                                            <i class="btn fa fa-book " />
+                                        </a>
+                                    </h:panelGroup>
+                                    <div class="modal fade" id="myModal-#{count}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+
+                                                    <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                    <h4 class="modal-title" id="myModalLabel">
+                                                        <h:outputText value="#{msgs.metseditorOpen}" />
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h:outputText value="#{msgs.metseditorTemporaryDataExplanation}" />
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
+                                                        <i class="fa fa-trash-o margin-right-10"></i>
+                                                        <h:outputText value="#{msgs.discard}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
+                                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                        <f:param name="zurueck" value="process_edit" />
+                                                        <f:param name="discardChanges" value="true" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                    </h:commandLink>
+
+                                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">
+                                                        <i class="fa fa-floppy-o margin-right-10"></i>
+                                                        <h:outputText value="#{msgs.overwrite}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
+                                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                        <f:param name="zurueck" value="process_edit" />
+                                                        <f:param name="overwriteChanges" value="true" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                    </h:commandLink>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- DMS-Export-Schaltknopf -->
+                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" styleClass="btn btn-mini font-light" title="#{msgs.importDms}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                        <i class="fa fa-globe" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
+
+                                    <!-- DMS-Export-Schaltknopf greyed -->
+                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" styleClass="btn btn-mini" disabled="true" title="#{msgs.importDms}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.maximaleBerechtigung == 2 or LoginForm.maximaleBerechtigung == 1) and !ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                        <i class="font-light fa fa-globe" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
+
+
+                                </div>
+
+                            </div>
+                            <div class="box-content nopadding">
+
+                                <!-- CommandLink zum editieren -->
+                                <h:panelGrid columns="2" styleClass="table table-hover table-bordered" columnClasses="visible, tableColumnMaxWidthLong">
+
+                                    <h:outputText value="#{msgs.prozessTitel}:" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.titel}" />
+
+                                    <h:outputText value="#{msgs.projekt}:" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.projekt.titel}" />
+
+                                    <h:outputText value="#{msgs.erstellungsdatum}:" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.erstellungsdatum}" />
+
+                                    <h:outputText value="#{msgs.regelsatz}:" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}" />
+
+                                    <h:outputText value="#{msgs.docket}:" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />
+
+                                    <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
+                                    <i class="fa #{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
+
+                                    <h:outputText value="#{msgs.istTemplate}:" />
+                                    <i class="fa #{ProzessverwaltungForm.myProzess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+
+                                    <h:outputText value="#{msgs.id}:" styleClass="font-light" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.id}" styleClass="font-light" />
+
+                                    <h:outputText value="#{msgs.batch}:" styleClass="font-light" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batchID}" styleClass="font-light" />
+
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+
+                <div class="col-sm-6">
+                    <!-- Box for process log -->
+                    <div class="box thin-margin box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-comment"></i>
+                                <h:outputText value="#{msgs.processLog}" />
+                            </h3>
+                        </div>
+                        <h:form styleClass="form-vertical form-bordered">
+                            <div class="box-content nopadding">
+                                <div class="form-group nopadding">
+                                    <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
+                                        <x:dataTable var="entry" value="#{ProzessverwaltungForm.myProzess.processLog}" width="100%" styleClass="table table-hover table-bordered">
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.creationDate}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.date}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.userName}" />
+                                                </f:facet>
+                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.logType}" />
+                                                </f:facet>
+                                                <h:outputText value="#{msgs[entry.type.title]}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.firstContent}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.content}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column rendered="#{NavigationForm.showSecondLogField}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.secondContent}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.secondContent}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+                                            <x:column rendered="#{NavigationForm.showThirdLogField}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.thirdContent}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.thirdContent}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                        </x:dataTable>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <h:panelGroup styleClass="col-sm-4">
+                                                <h:outputText value="#{msgs.firstContent}" />
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="col-sm-8">
+                                                <h:inputText id="addToTextArea" styleClass="form-control" value="#{ProzessverwaltungForm.myProzess.content}" />
+                                            </h:panelGroup>
+
+
+                                            <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
+                                                <h:outputText value="#{msgs.secondContent}" />
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
+                                                <h:inputText id="addToTextArea2" styleClass="form-control" value="#{ProzessverwaltungForm.myProzess.secondContent}" />
+                                            </h:panelGroup>
+
+
+                                            <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
+                                                <h:outputText value="#{msgs.thirdContent}" />
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
+                                                <h:inputText id="addToTextArea3" styleClass="form-control" value="#{ProzessverwaltungForm.myProzess.thirdContent}" />
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h:commandButton type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{ProzessverwaltungForm.myProzess.addLogEntry}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </h:form>
+                    </div>
+                    <!-- // Box for process log -->
+                </div>
+
+            </h:panelGroup>
+
+
+            <h:form rendered="#{ProzessverwaltungForm.modusBearbeiten=='prozess'}" styleClass="form-horizontal form-bordered">
+                <!-- Box für die Bearbeitung der Details -->
+                <div class="col-sm-12">
+
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-table"></i>
+                                <h:outputText value="#{msgs.prozess}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
+
+                            <intranda:formInputText name="titel" label="#{msgs.prozessTitel}" field="#{ProzessverwaltungForm.myNewProcessTitle}" help="#{msgs.helpProcessTitle}" fieldStyle="form-control" required="true" />
+
+                            <intranda:formInputDropDown label="#{msgs.projekt}" field="#{ProzessverwaltungForm.projektAuswahl}" help="#{msgs.helpProcessProject}" name="prozess" selectItems="#{ProzessverwaltungForm.projektAuswahlListe}" fieldStyle="form-control" required="true" />
+
+                            <intranda:formInputDropDown label="#{msgs.regelsatz}" field="#{ProzessverwaltungForm.rulesetSelection}" help="#{msgs.helpProcessRuleset}" name="Regelsatz" selectItems="#{ProzessverwaltungForm.rulesetSelectionList}" fieldStyle="form-control" required="true" />
+
+                            <intranda:formInputDropDown label="#{msgs.docket}" field="#{ProzessverwaltungForm.docketSelection}" help="#{msgs.helpProcessDocket}" name="docket" selectItems="#{ProzessverwaltungForm.docketSelectionList}" fieldStyle="form-control" required="true" />
+
+                            <intranda:formInputCheckBox label="#{msgs.inAuswahllisteAnzeigen}" field="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" help="#{msgs.helpProcessSelectionList}" name="check" disabled="#{not ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" />
+
+                            <intranda:formInputCheckBox label="#{msgs.istTemplate}" field="#{ProzessverwaltungForm.myProzess.istTemplate}" help="#{msgs.helpProcessTemplate}" name="template" />
+
+
+                            <h:panelGroup>
+                                <div class="form-actions">
+
+                                    <!-- Save -->
+                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{ProzessverwaltungForm.Speichern}">
+                                        <i class="fa fa-save margin-right-5"></i>
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                        <h:outputText value="#{msgs.speichern}" />
+                                    </h:commandLink>
+
+                                    <h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                        <h:outputText value="#{msgs.abbrechen}" />
+                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                    </h:commandLink>
+
+                                    <h:commandLink styleClass="btn btn-danger font-size-s margin-right-5" action="#{ProzessverwaltungForm.ContentLoeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                        <i class="fa fa-trash-o margin-right-5" />
+                                        <h:outputText value="#{msgs.contentLoeschen}" />
+                                    </h:commandLink>
+                                    <h:commandLink styleClass="btn btn-danger font-size-s" action="#{ProzessverwaltungForm.Loeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                        <i class="fa fa-trash-o margin-right-5" />
+                                        <h:outputText value="#{msgs.loeschen}" />
+                                    </h:commandLink>
+
+                                </div>
+                            </h:panelGroup>
+
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+            <!-- // Box für die Bearbeitung der Details -->
+        </div>
+    </composite:implementation>
+
+</ui:composition>
+
+

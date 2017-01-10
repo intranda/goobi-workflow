@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle"
+		value="#{LdapGruppenForm.myLdapGruppe.id == null?msgs.neueLdapgruppeAnlegen:msgs.ldapgruppeBearbeiten}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb label="#{msgs.ldapgruppen}"
+			action="#{LdapGruppenForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="ldap_edit" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			window.onload = function() {
+				document.getElementById('titel').focus();
+			}
+		</script>
+		<h:form id="myform" styleClass="form-horizontal form-bordered"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.maximaleBerechtigung == 1}">											
+											
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color orange box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="glyphicon-keys box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+								<h:outputText value=": #{LdapGruppenForm.myLdapGruppe.titel}" rendered="#{LdapGruppenForm.myLdapGruppe.id != null}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+
+							<intranda:formInputText label="#{msgs.ldapTitel}"
+								field="#{LdapGruppenForm.myLdapGruppe.titel}" help="#{msgs.helpLdapTitle}" name="titel"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="userDN" label="#{msgs.ldapUserDN}"
+								field="#{LdapGruppenForm.myLdapGruppe.userDN}" help="#{msgs.helpLdapUserDn}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="homeDirectory" label="#{msgs.ldapHomeDirectory}"
+								field="#{LdapGruppenForm.myLdapGruppe.homeDirectory}" help="#{msgs.helpLdapHomeDirectory}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="gidNumber" label="#{msgs.ldapGidNumber}"
+								field="#{LdapGruppenForm.myLdapGruppe.gidNumber}" help="#{msgs.helpLdapGidNumber}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="objectClasses" label="#{msgs.ldapObjectClasses}"
+								field="#{LdapGruppenForm.myLdapGruppe.objectClasses}" help="#{msgs.helpLdapObjectClasses}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaSID" label="#{msgs.ldapSambaSID}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaSID}" help="#{msgs.helpLdapSambaSID}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="sn" label="#{msgs.ldapSn}"
+								field="#{LdapGruppenForm.myLdapGruppe.sn}" help="#{msgs.helpLdapSn}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="uid" label="#{msgs.ldapUid}"
+								field="#{LdapGruppenForm.myLdapGruppe.uid}" help="#{msgs.helpLdapUid}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="description" label="#{msgs.ldapDescription}"
+								field="#{LdapGruppenForm.myLdapGruppe.description}" help="#{msgs.helpLdapDescription}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="displayName" label="#{msgs.ldapDisplayName}"
+								field="#{LdapGruppenForm.myLdapGruppe.displayName}" help="#{msgs.helpLdapDisplayName}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="gecos" label="#{msgs.ldapGecos}"
+								field="#{LdapGruppenForm.myLdapGruppe.gecos}" help="#{msgs.helpLdapGecos}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="loginShell" label="#{msgs.ldapLoginShell}"
+								field="#{LdapGruppenForm.myLdapGruppe.loginShell}" help="#{msgs.helpLdapLoginShell}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaAcctFlags" label="#{msgs.ldapSambaAcctFlags}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaAcctFlags}" help="#{msgs.helpLdapSambaAcctFlags}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaLogonScript" label="#{msgs.ldapSambaLogonScript}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaLogonScript}"
+								help="#{msgs.helpLdapSambaLogonScript}" fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaPrimaryGroupSID" label="#{msgs.ldapSambaPrimaryGroupSID}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaPrimaryGroupSID}"
+								help="#{msgs.helpLdapSambaPrimaryGroupSID}" fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaPwdMustChange" label="#{msgs.ldapSambaPwdMustChange}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaPwdMustChange}"
+								help="#{msgs.helpLdapSambaPwdMustChange}" fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaPasswordHistory" label="#{msgs.ldapSambaPasswordHistory}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaPasswordHistory}"
+								help="#{msgs.helpLdapSambaPasswordHistory}" fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaLogonHours" label="#{msgs.ldapSambaLogonHours}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaLogonHours}"
+								help="#{msgs.helpLdapSambaLogonHours}" fieldStyle="form-control" />
+
+							<intranda:formInputText name="sambaKickoffTime" label="#{msgs.ldapSambaKickoffTime}"
+								field="#{LdapGruppenForm.myLdapGruppe.sambaKickoffTime}"
+								help="#{msgs.helpLdapSambaKickoffTime}" fieldStyle="form-control" />
+
+							<intranda:formButtonArea form="#{LdapGruppenForm}"
+								object="#{LdapGruppenForm.myLdapGruppe.id}" actionCancel="ldap_all" />
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

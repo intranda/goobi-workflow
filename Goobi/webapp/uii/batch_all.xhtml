@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle" value="#{msgs.batches}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="batch_all" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form id="myform"
+			rendered="#{((LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2))}">
+
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-archive"></i>
+								<h:outputText value="#{msgs.batches}" />
+							</h3>
+						</div>
+						<div class="box-content">
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-9">
+										<h:inputText value="#{BatchForm.batchfilter}" styleClass="form-control" />
+									</div>
+									<div class="col-sm-3">
+										<h:commandLink action="#{BatchForm.filterBatches}" styleClass="btn btn-primary font-size-s"
+											title="#{msgs.filter}">
+											<i class="fa fa-search margin-right-5"></i>
+											<h:outputText value="#{msgs.filter}" />
+										</h:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<h:selectManyListbox value="#{BatchForm.selectedBatches}" styleClass="form-control"
+											size="20">
+											<f:selectItems var="batch" value="#{BatchForm.currentBatches}"
+												itemLabel="#{batch.batchLabel}" itemValue="#{batch.batchId}" />
+										</h:selectManyListbox>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<h:panelGrid columns="1">
+											<h:commandLink action="#{BatchForm.loadProcessData}">
+												<h:outputText value="#{msgs.loadProcessesOfBatch}" />
+											</h:commandLink>
+
+											<h:commandLink action="#{BatchForm.downloadDocket}">
+												<h:outputText value="#{msgs.laufzettelDrucken}" />
+											</h:commandLink>
+
+											<h:commandLink action="#{BatchForm.editProperties}">
+												<h:outputText value="#{msgs.eigenschaftBearbeiten}" />
+											</h:commandLink>
+
+											<h:commandLink action="#{BatchForm.deleteBatch}">
+												<h:outputText value="#{msgs.deleteBatch}" />
+											</h:commandLink>
+
+										</h:panelGrid>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-tasks"></i>
+								<h:outputText value="#{msgs.prozesse}" />
+							</h3>
+						</div>
+						<div class="box-content">
+
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-9">
+										<h:inputText value="#{BatchForm.processfilter}" styleClass="form-control" />
+									</div>
+									<div class="col-sm-3">
+										<h:commandLink action="#{BatchForm.filterProcesses}" styleClass="btn btn-primary font-size-s"
+											title="#{msgs.filter}">
+											<i class="fa fa-search margin-right-5"></i>
+											<h:outputText value="#{msgs.filter}" />
+										</h:commandLink>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<h:selectManyListbox value="#{BatchForm.selectedProcessIds}" styleClass="form-control"
+											size="20">
+											<f:selectItems value="#{BatchForm.currentProcessesAsSelectItems}" />
+										</h:selectManyListbox>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+										<h:panelGrid columns="1">
+											<h:messages globalOnly="false" for="loadBatchData" />
+											<h:commandLink action="#{BatchForm.loadBatchData}" id="loadBatchData">
+												<h:outputText value="#{msgs.loadAssociatedBatchOfProcess}" />
+											</h:commandLink>
+
+											<h:commandLink action="#{BatchForm.addProcessesToBatch}">
+												<h:outputText value="#{msgs.addToSelectedBatch}" />
+											</h:commandLink>
+
+											<h:commandLink action="#{BatchForm.removeProcessesFromBatch}">
+												<h:outputText value="#{msgs.removeFromAssociatedBatch}" />
+											</h:commandLink>
+
+											<h:commandLink action="#{BatchForm.createNewBatch}">
+												<h:outputText value="#{msgs.createNewBatchFromSelectedProcesses}" />
+											</h:commandLink>
+										</h:panelGrid>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

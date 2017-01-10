@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/template/template.html"
+	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle"
+		value="#{BenutzergruppenForm.myBenutzergruppe.id == null?msgs.neueBenutzergruppeAnlegen:msgs.benutzergruppeBearbeiten}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index"
+			navId="a0" />
+		<intranda:breadcrumb label="#{msgs.benutzergruppen}"
+			action="#{BenutzergruppenForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="usergroup_edit"
+			noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			window.onload = function() {
+				document.getElementById('titel').focus();
+			}
+		</script>
+		<h:form id="myform" styleClass="form-horizontal form-bordered"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.maximaleBerechtigung == 1}">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="glyphicon-group box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+								<h:outputText value=": #{BenutzergruppenForm.myBenutzergruppe.titel}" rendered="#{BenutzergruppenForm.myBenutzergruppe.id != null}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+
+							<intranda:formInputText label="#{msgs.titel}"
+								field="#{BenutzergruppenForm.myBenutzergruppe.titel}"
+								help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
+
+							<div class="form-group">
+								<h:outputLabel for="berechtigung" styleClass="control-label col-sm-3"
+									value="#{msgs.berechtigung}" />
+								<div class="col-sm-9">
+									<h:selectOneMenu id="berechtigung" styleClass="form-control"
+										value="#{BenutzergruppenForm.myBenutzergruppe.berechtigungAsString}">
+										<f:selectItem itemValue="1" itemLabel="#{msgs.administration}" />
+										<f:selectItem itemValue="2"
+											itemLabel="#{msgs.prozessverwaltung}" />
+										<!--        <f:selectItem id="id18" itemValue="3"
+                                                            itemLabel="#{msgs.erweiterteNutzerBerechtigung}" />-->
+										<f:selectItem itemValue="4"
+											itemLabel="#{msgs.normaleNutzerBerechtigung}" />
+									</h:selectOneMenu>
+									<h:message for="berechtigung" showDetail="true"
+										styleClass="help-inline font-danger" />
+									<h:outputText styleClass="help-block font-light"
+										value="#{msgs.helpBerechtigung}" rendered="#{NavigationForm.showHelp}"/>
+								</div>
+							</div>
+
+							<intranda:formButtonArea form="#{BenutzergruppenForm}"
+								object="#{BenutzergruppenForm.myBenutzergruppe.id}"
+								actionCancel="usergroup_all" />
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

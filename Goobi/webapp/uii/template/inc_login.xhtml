@@ -1,0 +1,92 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<div class="wrapper">
+			<h1>
+				<a href="index.xhtml"><h:outputText value="#{HelperForm.applicationHeaderTitle} #{HelperForm.version}" /></a>
+			</h1>
+			<div class="login-body">
+				<h2>
+					<h:outputText value="#{msgs.login}" />
+				</h2>
+				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);">
+                   
+                    <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
+						warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
+						styleClass="messagesLogin" />
+				
+					<h:panelGroup rendered="#{!LoginForm.schonEingeloggt}">
+						<script type="text/javascript">
+							window.onload = function() {
+								document.getElementById('login').focus();
+							}
+						</script>
+						<div class="form-group">
+							<div class="email controls">
+								<x:inputText id="login" forceId="true" styleClass="form-control"
+									value="#{LoginForm.login}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="pw controls">
+								<x:inputSecret id="passwort" forceId="true" styleClass="form-control"
+									value="#{LoginForm.passwort}"  />
+							</div>
+						</div>
+						<div class="submit">
+							<h:commandLink action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
+								styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
+								<h:outputText value="#{msgs.einloggen}" rendered="#{!LoginForm.schonEingeloggt}" />
+								<h:outputText value="#{msgs.dennochEinloggen}" rendered="#{LoginForm.schonEingeloggt}" />
+								<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
+							</h:commandLink>
+						</div>
+						<x:commandButton id="LoginAbsenden2" forceId="true" style="display:none" type="submit"
+							action="#{LoginForm.Einloggen}" value="#{msgs.einloggen}">
+							<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
+						</x:commandButton>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{LoginForm.schonEingeloggt}">
+
+						<h:outputText value="#{msgs.sieSindBereitsEingeloggt}" />
+						<br />
+						<br />
+
+						<h:commandLink value="#{msgs.alteSessionsAufraeumen}" id="login-clean"
+							styleClass="btn btn-danger font-size-s" action="#{LoginForm.EigeneAlteSessionsAufraeumen}" />
+
+						<h:commandLink value="#{msgs.dennochEinloggen}" id="login-go"
+							styleClass="btn btn-success font-size-s pull-right" action="#{LoginForm.NochmalEinloggen}" />
+
+						<br />
+						<br />
+
+						<h:commandLink value="#{msgs.abbrechen}" styleClass="" id="login-cancel"
+							action="#{LoginForm.Ausloggen}" style="margin-bottom:20px;" />
+						<br />
+						<br />
+					</h:panelGroup>
+
+
+				</h:form>
+			</div>
+			<a style="color: #FFFFFF;" href="http://www.intranda.com/digiverso/goobi/history/">Goobi - intranda
+				edition</a>
+			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{HelperForm.version}" />
+
+		</div>
+
+	</composite:implementation>
+
+</ui:composition>
+
+
+

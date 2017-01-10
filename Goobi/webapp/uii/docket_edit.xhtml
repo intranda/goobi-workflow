@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle"
+		value="#{DocketForm.myDocket.id == null?msgs.createNewDocket:msgs.editDocket}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb label="#{msgs.dockets}" action="#{DocketForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="docket_edit" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			window.onload = function() {
+				document.getElementById('titel').focus();
+			}
+		</script>
+		<h:form id="myform" styleClass="form-horizontal form-bordered"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.maximaleBerechtigung == 1}">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color orange box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-print box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+								<h:outputText value=": #{DocketForm.myDocket.name}" rendered="#{DocketForm.myDocket.id != null}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+
+							<intranda:formInputText name="titel" label="#{msgs.docketTitle}"
+								field="#{DocketForm.myDocket.name}" help="#{msgs.helpDocketTitle}"
+								fieldStyle="form-control" />
+
+							<intranda:formInputText name="file" label="#{msgs.docketFile}"
+								field="#{DocketForm.myDocket.file}" help="#{msgs.helpDocketFile}" fieldStyle="form-control" />
+
+							<intranda:formButtonArea form="#{DocketForm}" object="#{DocketForm.myDocket.id}"
+								actionCancel="docket_all" />
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

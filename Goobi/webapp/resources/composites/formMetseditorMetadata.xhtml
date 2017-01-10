@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <composite:interface>
+        <composite:attribute name="metadata" />
+        <composite:attribute name="fieldStyle" />
+        <composite:attribute name="required" default="false" />
+        <composite:attribute name="style" />
+        <composite:attribute name="renderDuplicate" default="true" />
+        <composite:attribute name="renderDelete" default="true" />
+        <composite:attribute name="index" />
+        <composite:attribute name="datatype" default="metadata"/>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <div class="row">
+            <!-- ++++++++++++++++++ Label ++++++++++++++++++ -->
+            <h:outputText styleClass="control-label col-sm-3" value="#{cc.attrs.metadata.typ}" />
+
+            <!-- ++++++++++++++++++ Metadata value ++++++++++++++++++ -->
+            <div class="col-sm-8 nopadding">
+
+                <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
+                <x:inputTextarea value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                    <f:ajax execute="@form" event="valueChange" />
+                </x:inputTextarea>
+
+                <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
+                <x:inputText value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'}">
+                    <f:ajax execute="@form" event="valueChange" />
+                </x:inputText>
+
+                <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
+                <h:selectManyListbox value="#{cc.attrs.metadata.selectedItems}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                    <f:ajax execute="@form" event="valueChange" />
+                    <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
+                </h:selectManyListbox>
+
+                <!-- ++++++++++++++++++ Select One ++++++++++++++++++ -->
+                <h:selectOneMenu value="#{cc.attrs.metadata.selectedItem}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                    <f:ajax execute="@form" event="valueChange" />
+                    <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
+                </h:selectOneMenu>
+
+                <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
+                <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
+
+                <!-- ++++++++++++++++++ Authority data ++++++++++++++++++ -->
+                <h:panelGroup rendered="#{cc.attrs.metadata.normdata}">
+                    <div class="row" style="margin-top: 5px;">
+                        <div class="col-sm-6">
+                            <h:selectOneMenu value="#{cc.attrs.metadata.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                                <f:ajax execute="@form" event="valueChange" />
+                                <f:selectItems value="#{cc.attrs.metadata.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-sm-6">
+                            <h:inputText value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                                <f:ajax execute="@form" event="valueChange" />
+                            </h:inputText>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
+
+            <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
+            <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
+                <h:commandLink tabindex="-1" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}" rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
+                    <i class="fa fa-copy" />
+                    <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                    <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
+                    <f:ajax execute="@form" render="@form" />
+                </h:commandLink>
+                <h:commandLink tabindex="-1" action="#{Metadaten.Loeschen}" title="#{msgs.metadatenLoeschen}" rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
+                    <i class="fa fa-trash-o" style="margin-left: 3px" />
+                    <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                    <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
+                    <f:ajax execute="@form" render="@form" />
+                </h:commandLink>
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
+                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="geonamesIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}" 
+                    data-datatype="#{cc.attrs.datatype}"
+                    data-target="#geonamesSearchBox">
+                        <i class="fa fa-search" style="margin-left: 3px" />
+                    </a>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
+                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                    data-datatype="#{cc.attrs.datatype}"
+                     data-target="#gndSearchBox">
+                        <i class="fa fa-search" style="margin-left: 3px" />
+                    </a>
+                </h:panelGroup>
+            </div>
+        </div>
+
+
+
+
+
+
+    </composite:implementation>
+
+</ui:composition>

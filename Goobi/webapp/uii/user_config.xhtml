@@ -1,0 +1,379 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/template/template.html"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle" value="#{msgs.benutzerkonfiguration}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index" navId="a0" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="user_config"
+			noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			window.onload = function() {
+				document.getElementById('timeoutForSession').focus();
+			}
+		</script>
+
+		<h:form id="myform" styleClass="form-horizontal form-bordered"
+			onkeypress="submitOnEnter(event);">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-cog box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+							<ul class="tabs">
+								<li
+									class="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5'?'active':''}">
+									<h:commandLink action="#{NavigationForm.Reload}"
+										value="#{msgs.uebersicht}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}" value="" />
+										<f:ajax render=":myform" execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="#{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}">
+									<h:commandLink action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_display_general}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}" value="tab2" />
+										<f:ajax render=":myform" execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="#{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}">
+									<h:commandLink action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_display_processes}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}" value="tab3" />
+										<f:ajax render=":myform" execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="#{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}">
+									<h:commandLink action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_display_tasks}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}" value="tab4" />
+										<f:ajax render=":myform" execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="#{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}">
+									<h:commandLink action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_metseditor}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}" value="tab5" />
+										<f:ajax render=":myform" execute=":myform" />
+									</h:commandLink>
+								</li>
+							</ul>
+						</div>
+						<div class="box-content nopadding">
+
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5'}">
+
+								<intranda:formInputText label="#{msgs.vorname}"
+									field="#{LoginForm.myBenutzer.vorname}"
+									help="#{msgs.helpVorname}" name="vorname"
+									fieldStyle="form-control" readonly="true" />
+
+								<intranda:formInputText label="#{msgs.nachname}"
+									field="#{LoginForm.myBenutzer.nachname}"
+									help="#{msgs.helpNachname}" name="nachname"
+									fieldStyle="form-control" readonly="true" />
+
+								<intranda:formInputText label="#{msgs.standort}"
+									field="#{LoginForm.myBenutzer.standort}"
+									help="#{msgs.helpStandort}" name="standort"
+									fieldStyle="form-control" readonly="true" />
+
+								<intranda:formInputText label="#{msgs.email}"
+									field="#{LoginForm.myBenutzer.email}" help="#{msgs.helpEmail}"
+									required="false" name="email" fieldStyle="form-control" />
+
+								<div class="form-group" style="">
+									<h:outputLabel for="up" styleClass="control-label col-sm-3"
+										value="#{msgs.projekte}" />
+									<div class="col-sm-9">
+										<x:dataList id="up" var="intern"
+											styleClass="form-control metsEditorTextArea"
+											style=" background-color: #eee;cursor: not-allowed;opacity: 1;"
+											value="#{LoginForm.myBenutzer.projekte}"
+											layout="ordered list" rowCountVar="rowCount"
+											rowIndexVar="rowIndex">
+											<h:outputText value="#{intern.titel}" />
+											<h:outputText value=","
+												rendered="#{rowIndex + 1 lt rowCount}" />
+										</x:dataList>
+										<h:outputText styleClass="help-block font-light"
+											rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpProjects}" />
+									</div>
+								</div>
+
+								<div class="form-group" style="">
+									<h:outputLabel for="ug" styleClass="control-label col-sm-3"
+										value="#{msgs.benutzergruppen}" />
+									<div class="col-sm-9">
+										<x:dataList id="ug" var="intern"
+											styleClass="form-control metsEditorTextArea"
+											style=" background-color: #eee;cursor: not-allowed;opacity: 1;"
+											value="#{LoginForm.myBenutzer.benutzergruppen}"
+											layout="ordered list" rowCountVar="rowCount"
+											rowIndexVar="rowIndex">
+											<h:outputText value="#{intern.titel}" />
+											<h:outputText value=","
+												rendered="#{rowIndex + 1 lt rowCount}" />
+										</x:dataList>
+										<h:outputText styleClass="help-block font-light"
+											rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpUsergroups}" />
+									</div>
+								</div>
+
+							</h:panelGroup>
+
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab2'}">
+
+								<intranda:formInputText label="#{msgs.timeoutForSession}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.sessiontimeoutInMinutes}"
+									help="#{msgs.helpTimeoutForSession}" name="timeoutForSession"
+									fieldStyle="form-control" />
+
+								<intranda:formInputText label="#{msgs.tabellengroesse}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.tabellengroesse}"
+									help="#{msgs.helpTabellengroesse}" name="tabellengroesse"
+									fieldStyle="form-control" />
+
+							</h:panelGroup>
+
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab3'}">
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayDeactivatedProjects}"
+									field="#{LoginForm.myBenutzer.displayDeactivatedProjects}"
+									help="#{msgs.helpDisplayDeactivatedProjects}"
+									name="displayDeactivatedProjects" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayFinishedProcesses}"
+									field="#{LoginForm.myBenutzer.displayFinishedProcesses}"
+									help="#{msgs.helpDisplayFinishedProcesses}"
+									name="displayFinishedProcesses" />
+
+								<intranda:formInputCheckBox label="#{msgs.displaySelectBoxes}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.displaySelectBoxes}"
+									help="#{msgs.helpDisplaySelectBoxes}" name="displaySelectBoxes" />
+
+								<intranda:formInputCheckBox label="#{msgs.displayIdColumn}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.displayIdColumn}"
+									help="#{msgs.helpDisplayIdColumn}" name="displayIdColumn" />
+
+								<intranda:formInputCheckBox 
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayBatchColumn}"
+									field="#{LoginForm.myBenutzer.displayBatchColumn}"
+									help="#{msgs.helpDisplayBatchColumn}" name="displayBatchColumn" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayProcessDateColumn}"
+									field="#{LoginForm.myBenutzer.displayProcessDateColumn}"
+									help="#{msgs.helpDisplayProcessDateColumn}"
+									name="displayProcessDateColumn" />
+
+								<intranda:formInputCheckBox 
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayLocksColumn}"
+									field="#{LoginForm.myBenutzer.displayLocksColumn}"
+									help="#{msgs.helpDisplayLocksColumn}" name="displayLocksColumn" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displaySwappingColumn}"
+									field="#{LoginForm.myBenutzer.displaySwappingColumn}"
+									help="#{msgs.helpDisplaySwappingColumn}"
+									name="displaySwappingColumn" />
+
+							</h:panelGroup>
+
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab4'}">
+
+								<intranda:formInputCheckBox label="#{msgs.hideCorrectionTasks}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.hideCorrectionTasks}"
+									help="#{msgs.helpHideCorrectionTasks}"
+									name="hideCorrectionTasks" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayOnlySelectedTasks}"
+									field="#{LoginForm.myBenutzer.displayOnlySelectedTasks}"
+									help="#{msgs.helpDisplayOnlySelectedTasks}"
+									name="displayOnlySelectedTasks" />
+
+								<intranda:formInputCheckBox label="#{msgs.displayOnlyOpenTasks}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.displayOnlyOpenTasks}"
+									help="#{msgs.helpDisplayOnlyOpenTasks}"
+									name="displayOnlyOpenTasks" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.showTasksFromOtherUsers}"
+									field="#{LoginForm.myBenutzer.displayOtherTasks}"
+									help="#{msgs.helpDisplayOtherTasks}"
+									name="displayOnlyOpenTasks" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.displayAutomaticTasks}"
+									field="#{LoginForm.myBenutzer.displayAutomaticTasks}"
+									help="#{msgs.helpDisplayAutomaticTasks}"
+									name="displayAutomaticTasks" />
+
+							</h:panelGroup>
+
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab5'}">
+
+								<intranda:formInputText label="#{msgs.spracheFuerMetadaten}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.metadatenSprache}"
+									help="#{msgs.helpSpracheFuerMetadaten}"
+									name="spracheFuerMetadaten" fieldStyle="form-control" />
+
+								<!-- <intranda:formInputText label="#{msgs.metadataSaveTime}" field="#{LoginForm.myBenutzer.metsEditorTime}" help="#{msgs.helpMetadataSaveTime}" name="metadataSaveTime" fieldStyle="form-control" /> -->
+
+								<div class="form-group" style="">
+									<div class="col-sm-5 control-label">
+										<h:outputLabel for="metadataSaveTime"
+											value="#{msgs.metadataSaveTime}" />
+										<h:panelGroup>
+											<i class="fa fa-asterisk pull-right font-asterisk" />
+										</h:panelGroup>
+									</div>
+									<div class="col-sm-7">
+										<x:inputText id="metadataSaveTime" forceId="true"
+											styleClass="form-control"
+											value="#{LoginForm.myBenutzer.metsEditorTime}"
+											required="true">
+											<f:validator validatorId="org.goobi.validator.TimeValidator" />
+										</x:inputText>
+										<h:message for="metadataSaveTime" showDetail="true"
+											styleClass="help-inline font-danger" />
+										<h:outputText styleClass="help-block font-light"
+											rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpMetadataSaveTime}" />
+
+									</div>
+								</div>
+
+								<intranda:formInputDropDown label="#{msgs.metadataShortcut}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.shortcutPrefix}"
+									help="#{msgs.helpMetseditorShortcut}" name="shortcut"
+									selectItems="#{HelperForm.possibleShortcuts}" required="false"
+									fieldStyle="form-control" />
+
+								<intranda:formInputCheckBox label="#{msgs.mets_treeTitle}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.metsDisplayTitle}"
+									help="#{msgs.helpMetsDisplayTitle}" name="metsDisplayTitle" />
+
+								<intranda:formInputCheckBox
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									label="#{msgs.verlinkungDesBildesMitStrukturelement}"
+									field="#{LoginForm.myBenutzer.metsLinkImage}"
+									help="#{msgs.helpMetsLinkImage}" name="metsLinkImage" />
+
+								<intranda:formInputCheckBox label="#{msgs.mets_treePageNumber}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.metsDisplayPageAssignments}"
+									help="#{msgs.helpMetsDisplayPageAssignments}"
+									name="metsDisplayPageAssignments" />
+
+								<intranda:formInputCheckBox label="#{msgs.mets_treelevel}"
+									classLeft="col-sm-5"
+									classRight="col-sm-7"
+									field="#{LoginForm.myBenutzer.metsDisplayHierarchy}"
+									help="#{msgs.helpMetsDisplayHierarchy}"
+									name="metsDisplayHierarchy" />
+
+							</h:panelGroup>
+
+							<div class="form-actions">
+								<!-- Save -->
+								<h:commandLink
+									styleClass="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
+									id="absenden"
+									action="#{LoginForm.BenutzerkonfigurationSpeichern}">
+									<i class="fa fa-save margin-right-5"></i>
+									<h:outputText value="#{msgs.speichern}" />
+								</h:commandLink>
+
+								<!-- Cancel -->
+								<h:link styleClass="btn margin-sides-10 pull-right font-size-s"
+									outcome="index" value="#{msgs.abbrechen}" />
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

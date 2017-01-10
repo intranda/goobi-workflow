@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle" value="#{msgs.projekte}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="project_all" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form  id="myform" rendered="#{LoginForm.maximaleBerechtigung == 1}">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="glyphicon-compass box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+							<div class="dataTables_wrapper">
+								<div class="dataTables_length" >
+									<h:outputText value="#{msgs.treffer}: #{ProjekteForm.paginator.totalResults}" />
+								</div>
+
+								<!-- Datentabelle -->
+								<x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
+									value="#{ProjekteForm.paginator.list}">
+
+									<x:column styleClass="tableColumnMaxWidthLong" style="min-width:280px;">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.projekt}" />
+										</f:facet>
+										<h:outputText value="#{item.titel}" />
+									</x:column>
+
+									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs" style="max-width:180px;">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.internesSpeicherformat}" />
+										</f:facet>
+										<h:outputText value="#{item.fileFormatInternal}" />
+									</x:column>
+
+									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs"  style="max-width:180px;">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.dmsExportformat}" />
+										</f:facet>
+										<h:outputText value="#{item.fileFormatDmsExport}" />
+									</x:column>
+
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.status}" />
+										</f:facet>
+										<h:panelGroup  rendered="#{item.projectIsArchived}"  class="badge badge-intranda-red">
+											<i class="fa fa-lock"></i> #{msgs.inactive}	
+										</h:panelGroup>
+                                        <h:panelGroup class="badge badge-intranda-green" rendered="#{!item.projectIsArchived}">
+                                            <i class="fa fa-unlock"></i> #{msgs.active}
+                                        </h:panelGroup>
+									</h:column>
+
+									<x:column >
+										<f:facet name="header">
+											<h:outputText value="#{msgs.auswahl}" />
+										</f:facet>
+										<!-- Bearbeiten-Schaltknopf -->
+										<h:commandLink styleClass="btn margin-right-5" rel="tooltip" action="project_edit" title="#{msgs.projektBearbeiten}">
+											<i class="fa fa-pencil"></i>
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
+											<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
+										</h:commandLink>
+										
+										<!-- Duplicate project -->
+										<h:commandLink action="#{ProjekteForm.cloneProject}" styleClass="btn" 
+											title="#{msgs.duplicateProject}" rel="tooltip"
+											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" rel="tooltip"/>
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
+										</h:commandLink>
+									</x:column>
+
+								</x:dataTable>
+
+								<div class="dataTables_info">
+									<!-- Neu-Schaltknopf -->
+									<h:commandLink styleClass="btn btn-primary font-size-s" action="#{ProjekteForm.Neu}" immediate="true">
+										<i class="fa fa-plus margin-right-5"></i>
+										<h:outputText value="#{msgs.neuesProjektAnlegen}" />
+										<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
+									</h:commandLink>
+								</div>
+								<div class="dataTables_paginate">
+									<!-- paginator -->
+									<intranda:tablePaginator paginator="#{ProjekteForm.paginator}" />
+									<!-- /paginator -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

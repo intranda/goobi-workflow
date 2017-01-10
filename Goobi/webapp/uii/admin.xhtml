@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb label="#{msgs.administrationsaufgaben}" action="admin.xhtml" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <h:panelGroup rendered="#{not AdministrationForm.istPasswortRichtig and (LoginForm.maximaleBerechtigung == 1)}">
+                        <div class="box box-bordered box-small box-color lightgrey">
+                            <div class="box-title">
+                                <h3>
+                                    <i class="fa fa-wrench"></i>
+                                    <h:outputText value="#{msgs.administrationsaufgaben}" />
+                                </h3>
+                            </div>
+                            <div class="box-content">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="control-label">#{msgs.passwort}:</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <h:inputSecret id="pw" value="#{AdministrationForm.passwort}" styleClass="form-control" />
+                                        <h:message for="pw" />
+                                    </div>
+                                </div>
+
+                                <hr class="margin-top-regular margin-bottom-regular" />
+
+                                <div class="margin-top-regular">
+                                    <h:commandLink styleClass="btn btn-primary font-size-s pull-right" id="button2" value="#{msgs.weiter}" type="submit" action="#{AdministrationForm.Weiter}" />
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{AdministrationForm.istPasswortRichtig and (LoginForm.maximaleBerechtigung == 1) }">
+
+                        <div class="box box-bordered box-small box-color lightgrey">
+                            <div class="box-title">
+                                <h3>
+                                    <i class="fa fa-wrench"></i>
+                                    <h:outputText id="id6" value="#{msgs.administrationsaufgaben}" />
+                                </h3>
+                            </div>
+                            <div class="box-content">
+
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="control-label">#{msgs.benutzerZumAusloggenAuffordern}:</label>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <h:inputTextarea styleClass="form-control" value="#{SessionForm.bitteAusloggen}" />
+                                    </div>
+                                </div>
+
+                                <hr class="margin-top-regular margin-bottom-regular" />
+
+                                <div class="margin-top-regular">
+                                    <h:commandLink styleClass="btn btn-primary font-size-s pull-right" value="#{msgs.uebernehmen}" action="admin.xhtml" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="box box-bordered box-small lightgrey">
+                            <div class="box-title">
+                                <h3>
+                                    <i class="fa fa-wrench"></i>
+                                    <h:outputText value="#{msgs.administrationsaufgaben}" />
+                                </h3>
+                            </div>
+                            <div class="box-content">
+
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <label class="control-label">Test of messages</label>
+                                    </div>
+                                    <div class="col-sm-3">
+
+
+                                        <h:commandLink styleClass="btn font-size-s pull-right" value="#{msgs.uebernehmen}" action="#{AdministrationForm.test}" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="box-content">
+
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <label class="control-label">History update</label>
+                                    </div>
+                                    <div class="col-sm-3">
+
+                                        <h:commandLink styleClass="btn font-size-s pull-right" action="#{AdministrationForm.startStorageCalculationForAllProcessesNow}" immediate="true" value="Run complete history analyser job now" />
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

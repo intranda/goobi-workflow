@@ -1,0 +1,386 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <!-- Step of another user -->
+        <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id}">
+
+            <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10 margin-top-10 margin-left-10 margin-right-10" value="#{msgs.workflowStepOfAnotherUser}" />
+
+
+        </h:panelGroup>
+
+        <!-- Step of the current user -->
+        <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+
+            <!-- Sperrung der Metadaten anzeigen -->
+            <h:form rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null}" styleClass="padding-all-more">
+                <h:outputText value="#{msgs.gesperrt}" />
+
+                <h:panelGrid columns="2" styleClass="alert alert-danger alert-dismissable margin-top-regular margin-bottom-regular block">
+                    <h:outputText value="#{msgs.benutzer}: " class="margin-sides-10" />
+                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.nachVorname}" />
+                    <h:outputText value="#{msgs.standort}: " class="margin-sides-10" />
+                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.standort}" />
+                    <h:outputText value="#{msgs.lebenszeichen} " class="margin-sides-10" />
+                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.minutenGesperrt} min #{AktuelleSchritteForm.mySchritt.prozess.sekundenGesperrt} sec" />
+                </h:panelGrid>
+                <h:outputText value="#{msgs.spaeter} " />
+
+                <!-- Bei Sperrung durch eigenen Benutzer: Sperrung aufheben können -->
+                <h:commandLink id="action1" rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}" action="#{AktuelleSchritteForm.SperrungAufheben}" title="#{msgs.oderSperrungAufheben}">
+                    <h:outputText value="#{msgs.oderSperrungAufheben}" />
+                </h:commandLink>
+
+            </h:form>
+
+            <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}">
+
+                <!-- ++++++++++++++++     Action      ++++++++++++++++ -->
+
+                <h:panelGroup id="actionform">
+
+                    <!-- tabs -->
+                    <ul class="tabs tabs-inline tabs-top">
+                        <li class="active">
+                            <a data-toggle="tab" href="#firsttab">
+                                <i class="fa fa-cog margin-right-5"></i>
+                                #{msgs.executeTask}
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#secondtab">
+                                <i class="fa fa-exclamation-triangle margin-right-5"></i>
+                                #{msgs.reportError}
+                            </a>
+                        </li>
+                        <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
+                            <li class="">
+                                <a data-toggle="tab" href="#thirdtab">
+                                    <i class="fa fa-check-circle margin-right-5"></i>
+                                    #{msgs.reportSolution}
+                                </a>
+                            </li>
+                        </h:panelGroup>
+                    </ul>
+                    <!-- // tabs -->
+
+                    <div class="tab-content nopadding tab-content-inline tab-content-bottom">
+                        <div id="firsttab" class="tab-pane active">
+
+                            <!-- 							<h:form styleClass="margin-sides-10 margin-top-10" enctype="multipart/form-data" rendered="#{AktuelleSchritteForm.modusBearbeiten=='' and AktuelleSchritteForm.mySchritt.typImportFileUpload}"> -->
+                            <!-- 								<ul class="action-ul"> -->
+                            <!-- 									++++++++++++++++     Import      ++++++++++++++++ -->
+                            <!-- 									<li class="action-li"> -->
+                            <!-- 										Import-Upload -->
+                            <!-- 										<h:panelGroup rendered="#{Import.importMeldung !='' and Import.importMeldung ne null}"> -->
+                            <!-- 											<h:outputText value="#{Import.importMeldung}" styleClass="alert alert-info alert-dismissable margin-bottom-10" /> -->
+                            <!-- 										</h:panelGroup> -->
+                            <!-- 										<h:panelGroup rendered="#{Import.importFehler !='' and Import.importFehler ne null}"> -->
+                            <!-- 											<h:outputText value="#{Import.importFehler}" styleClass="alert alert-danger alert-dismissable margin-bottom-10" escape="false" /> -->
+                            <!-- 										</h:panelGroup> -->
+
+                            <!-- 											<x:inputFileUpload id="fileupload" accept="image/*" value="#{Import.upDatei}" storage="file" -->
+                            <!-- 												required="false" styleClass="margin-bottom-regular" /> -->
+                            <!-- 											<h:commandLink id="button1" action="#{Import.Start}"> -->
+                            <!-- 												<span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" /> -->
+                            <!-- 												<h:outputText value="#{msgs.metadatenImportieren}"></h:outputText> -->
+                            <!-- 												<f:setPropertyActionListener target="#{Import.mySchritt}" -->
+                            <!-- 													value="#{AktuelleSchritteForm.mySchritt}" /> -->
+                            <!-- 											</h:commandLink> -->
+
+                            <!-- 									</li> -->
+                            <!-- 									++++++++++++++++     // Import      ++++++++++++++++ -->
+                            <!-- 								</ul> -->
+                            <!-- 							</h:form> -->
+
+                            <h:form styleClass="margin-sides-10 margin-top-10">
+
+                                <ul class="action-ul">
+
+                                    <!-- Plugin - FULL -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
+                                        <li class="action-li">
+                                            <!-- Plugin Button only for Plugins without any gui or with full gui -->
+                                            <h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+                                                <!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+                                                <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Plugin - NONE -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+                                                <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Modul-Schaltknopf -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
+                                                <h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Script 1 -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}">
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Script 2 -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}">
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Script 3 -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}">
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Script 4 -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}">
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Script 5 -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}">
+                                        <li class="action-li">
+                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}">
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Import in das DMS-Schaltknopf -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typExportDMS}">
+                                        <li class="action-li">
+                                            <!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
+                                            <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
+
+                                            <!-- Upload-Schaltknopf -->
+                                            <h:commandLink action="#{AktuelleSchritteForm.ExportDMS}" title="#{msgs.importDms}">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
+                                                <h:outputText value="#{msgs.importDms}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Metadaten-Schaltknopf -->
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typMetadaten}">
+                                        <li class="action-li">
+
+
+                                            <h:commandLink action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" />
+                                                <h:outputText value="#{msgs.metadatenBearbeiten}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+                                                <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                <f:param name="zurueck" value="task_edit" />
+                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                            </h:commandLink>
+
+
+
+
+                                            <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
+                                                <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" data-toggle="modal" data-target="#myModal">
+                                                    <span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" />
+                                                    <h:outputText value="#{msgs.metadatenBearbeiten}" />
+                                                </a>
+                                            </h:panelGroup>
+                                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+															<a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+	                                                            <i class="fa fa-times"></i>
+	                                                        </a>
+                                                            <h4 class="modal-title" id="myModalLabel">
+                                                                <h:outputText value="#{msgs.metseditorOpen}" />
+                                                            </h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h:outputText value="#{msgs.metseditorTemporaryDataExplanation}" />
+                                                        </div>
+                                                        <div class="modal-footer">
+
+                                                            <h:commandLink action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
+                                                                <i class="fa fa-trash-o margin-right-5"></i>
+                                                                <h:outputText value="#{msgs.discard}" />
+                                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+                                                                <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+                                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                                <f:param name="zurueck" value="task_edit" />
+                                                                <f:param name="discardChanges" value="true" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                            </h:commandLink>
+
+
+
+                                                            <h:commandLink action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">
+                                                                <i class="fa fa-floppy-o margin-right-5"></i>
+                                                                <h:outputText value="#{msgs.overwrite}" />
+                                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+                                                                <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+                                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                                <f:param name="zurueck" value="task_edit" />
+                                                                <f:param name="overwriteChanges" value="true" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                            </h:commandLink>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </li>
+                                    </h:panelGroup>
+
+
+                                    <!-- Bearbeitung abbrechen-Schaltknopf -->
+                                    <li class="action-li">
+                                        <h:commandLink action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}" title="#{msgs.bearbeitungDiesesSchrittesAbgeben}">
+                                            <span class="btn btn-lightred margin-right-10 fa fa-reply fa-lg width-40" />
+                                            <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
+                                        </h:commandLink>
+                                    </li>
+
+                                    <!-- Abschliessen-Schaltknopf -->
+                                    <li class="action-li">
+                                        <h:commandLink action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}">
+                                            <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
+                                            <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
+                                        </h:commandLink>
+                                    </li>
+                                     
+                                </ul>
+                            </h:form>
+
+                        </div>
+
+                        <!-- Problem melden -->
+                        <div id="secondtab" class="tab-pane">
+                            <h:form styleClass="form-vertical form-bordered">
+
+                                <div class="form-group">
+                                    <label class="control-label">#{msgs.korrekturmeldungAnVorherigeStationSenden}</label>
+                                    <div class="controls">
+                                        <h:selectOneMenu styleClass="form-control" value="#{AktuelleSchritteForm.myProblemID}">
+                                            <f:selectItems value="#{AktuelleSchritteForm.previousStepsForProblemReporting}" var="step1" itemLabel="#{step1.titelMitBenutzername}" itemValue="#{step1.id}" />
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">#{msgs.bemerkung}</label>
+                                    <div class="controls">
+                                        <h:inputTextarea id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.problemMessage}" />
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <h:commandButton type="submit" action="#{AktuelleSchritteForm.ReportProblem}" value="#{msgs.korrekturmeldungSenden}" title="#{msgs.korrekturmeldungSenden}" styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
+                                    </h:commandButton>
+                                </div>
+                            </h:form>
+
+                        </div>
+
+                        <!-- Schritt weitergeben an nachfolgende Station für KorrekturBehobenZwecke -->
+                        <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
+                            <div id="thirdtab" class="tab-pane">
+
+                                <h:form styleClass="form-vertical form-bordered">
+
+                                    <div class="form-group">
+                                        <label class="control-label">#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}</label>
+                                        <div class="controls">
+                                            <h:selectOneMenu styleClass="form-control" value="#{AktuelleSchritteForm.mySolutionID}">
+                                                <f:selectItems value="#{AktuelleSchritteForm.nextStepsForProblemSolution}" var="step2" itemLabel="#{step2.titelMitBenutzername}" itemValue="#{step2.id}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">#{msgs.bemerkung}</label>
+                                        <div class="controls">
+                                            <h:inputTextarea id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.solutionMessage}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <h:commandButton type="submit" action="#{AktuelleSchritteForm.SolveProblem}" value="#{msgs.meldungUeberProblemloesungSenden}" title="#{msgs.meldungUeberProblemloesungSenden}" styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
+                                        </h:commandButton>
+                                    </div>
+                                </h:form>
+
+
+                            </div>
+                        </h:panelGroup>
+                    </div>
+
+
+                    <!-- ++++++++++++++++     // Action      ++++++++++++++++ -->
+
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </h:panelGroup>
+    </composite:implementation>
+
+</ui:composition>
+
+

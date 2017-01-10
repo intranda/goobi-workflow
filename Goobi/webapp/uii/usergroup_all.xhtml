@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle" value="#{msgs.benutzergruppen}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index"
+			navId="a0" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="usergroup_all"
+			noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form id="myform" rendered="#{LoginForm.maximaleBerechtigung == 1}">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="glyphicon-group box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+							<div class="dataTables_wrapper">
+								<div class="dataTables_length">
+									<h:outputText
+										value="#{msgs.treffer}: #{BenutzergruppenForm.paginator.totalResults}" />
+								</div>
+
+								<!-- Datentabelle -->
+								<x:dataTable
+									styleClass="table table-hover dataTable table-bordered responsive"
+									var="item" value="#{BenutzergruppenForm.paginator.list}">
+
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.benutzergruppe}" />
+										</f:facet>
+
+										<ui:include src="includes/ajaxPlusMinusButton.xhtml" />
+
+										<h:panelGroup rendered="#{item.panelAusgeklappt}">
+											<div class="box box-small box-color box-bordered">
+												<div class="box-title">
+													<h3>
+														<i class="glyphicon-user"></i> #{msgs.benutzer}
+													</h3>
+												</div>
+
+												<div class="box-content nopadding">
+													<x:dataTable var="step" value="#{item.benutzer}"
+														styleClass="table table-hover table-bordered ">
+														<h:column>
+
+															<h:outputText value="#{step.nachVorname}" />
+														</h:column>
+													</x:dataTable>
+												</div>
+
+											</div>
+										</h:panelGroup>
+
+									</h:column>
+
+									<x:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.auswahl}" />
+										</f:facet>
+
+										<!-- Bearbeiten-Schaltknopf -->
+										<h:commandLink styleClass="btn margin-right-5" rel="tooltip"
+											action="usergroup_edit"
+											title="#{msgs.benutzergruppeBearbeiten}">
+											<i class="fa fa-pencil"></i>
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:setPropertyActionListener
+												target="#{BenutzergruppenForm.myBenutzergruppe}"
+												value="#{item}" />
+										</h:commandLink>
+
+									</x:column>
+
+								</x:dataTable>
+								<div class="dataTables_info" style="float: left;">
+									<!-- Neu-Schaltknopf -->
+									<h:commandLink styleClass="btn btn-primary font-size-s"
+										action="#{BenutzergruppenForm.Neu}" immediate="true">
+										<i class="fa fa-plus margin-right-5"></i>
+										<h:outputText value="#{msgs.neueBenutzergruppeAnlegen}" />
+									</h:commandLink>
+								</div>
+								<div class="dataTables_paginate">
+									<!-- paginator -->
+									<intranda:tablePaginator
+										paginator="#{BenutzergruppenForm.paginator}" />
+									<!-- /paginator -->
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

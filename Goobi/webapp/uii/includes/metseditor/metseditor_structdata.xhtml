@@ -1,0 +1,941 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <h:form id="structureform" prependId="false" style="height: auto;">
+
+            <h:panelGroup layout="block" rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}" id="structdata" style="padding-right: 10px">
+
+                <div class="box box-bordered box-small box-color lightgrey" id="struct">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-bars" />
+                            <h:outputText value="#{msgs.neuesStrukturelement}" />
+                        </h3>
+                        <div class="actions">
+                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_struct_new eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                                <i class="fa #{NavigationForm.uiStatus.mets_struct_new eq 'up'?'fa-angle-down':'fa-angle-up'}" />
+                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_struct_new}" value="#{NavigationForm.uiStatus.mets_struct_new eq 'up'?'down':'up'}" />
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_struct_new eq 'up'?'none':'block'}">
+
+                        <h:selectOneRadio id="auswahlElementWohin" forceId="true" layout="pageDirection" styleClass="select-radio" value="#{Metadaten.neuesElementWohin}">
+                            <f:selectItem itemValue="1" itemLabel="#{msgs.vorDasAktuelleElement}" />
+                            <f:selectItem itemValue="2" itemLabel="#{msgs.hinterDasAktuelleElement}" />
+                            <f:selectItem itemValue="3" itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
+                            <f:selectItem itemValue="4" itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
+                            <f:ajax render="@form" event="change" execute="@form" />
+                        </h:selectOneRadio>
+
+                        <hr style="margin: 7px" />
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="control-label">#{msgs.ersteSeite}:</label>
+                            </div>
+                            <div class="col-sm-5 nopadding">
+                                <p:autoComplete id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                            </div>
+                            <div class="col-sm-4">
+                                <h:commandLink action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                    <f:ajax render="pagestart1" />
+                                    <i class="fa fa-angle-left" style="margin-right: 3px;" />
+                                    <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
+                                </h:commandLink>
+                                <h:commandLink action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                    <f:ajax render="pagestart1" />
+                                    <i class="fa fa-picture-o" />
+                                    <x:updateActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" />
+                                </h:commandLink>
+                                <h:commandLink action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                    <f:ajax render="pagestart1" />
+                                    <i class="fa fa-angle-right" />
+                                    <x:updateActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" />
+                                </h:commandLink>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="control-label">#{msgs.letzteSeite}:</label>
+                            </div>
+                            <div class="col-sm-5 nopadding">
+                                <p:autoComplete id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                            </div>
+                            <div class="col-sm-4">
+                                <h:commandLink action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                    <f:ajax render="pageend1" />
+                                    <i class="fa fa-angle-left" style="margin-right: 3px;" />
+                                    <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
+                                </h:commandLink>
+                                <h:commandLink action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                    <f:ajax render="pageend1" />
+                                    <i class="fa fa-picture-o" />
+                                    <x:updateActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" />
+                                </h:commandLink>
+                                <h:commandLink action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                    <f:ajax render="pageend1" />
+                                    <i class="fa fa-angle-right" />
+                                    <x:updateActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" />
+                                </h:commandLink>
+                            </div>
+                        </div>
+
+                        <hr style="margin: 7px" />
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="control-label">#{msgs.typ}:</label>
+                            </div>
+                            <div class="col-sm-8 nopadding">
+                                <x:selectOneMenu id="auswahlAddable1" forceId="true" styleClass="form-control" value="#{Metadaten.addDocStructType1}" rendered="#{Metadaten.neuesElementWohin lt 3}">
+                                    <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item" />
+                                    <f:ajax render="@form" event="change" execute="@form" />
+                                </x:selectOneMenu>
+                                <x:selectOneMenu id="auswahlAddable2" forceId="true" styleClass="form-control" value="#{Metadaten.addDocStructType2}" rendered="#{Metadaten.neuesElementWohin gt 2}">
+                                    <f:selectItems value="#{Metadaten.addableDocStructTypenAlsKind}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item" />
+                                    <f:ajax render="@form" event="change" execute="@form" />
+                                </x:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <h:panelGroup rendered="#{Metadaten.addablePersondata.size() > 0 || Metadaten.addableMetadata.size() > 0}">
+                            <hr style="margin: 7px" />
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{Metadaten.addablePersondata.size() > 0}">
+                            <x:dataList var="addablePersondata" value="#{Metadaten.addablePersondata}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+
+                                <intranda:formMetseditorPerson person="#{addablePersondata}" fieldStyle="form-control" renderDelete="false" index="#{rowIndex}" 
+                                datatype="addablePerson"
+                                />
+                                <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
+                                    <hr style="margin: 7px" />
+                                </h:panelGroup>
+                            </x:dataList>
+                            <hr style="margin: 7px" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{Metadaten.addableMetadata.size() > 0}">
+                            <x:dataList var="Item" value="#{Metadaten.addableMetadata}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                                <intranda:formMetseditorMetadata metadata="#{Item}" 
+                                 datatype="addableMetadata"
+                                fieldStyle="form-control" renderDelete="false" renderDuplicate="false" index="#{rowIndex}"/>
+                                <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
+                                    <hr class="margin-top-regular margin-bottom-regular" />
+                                </h:panelGroup>
+                            </x:dataList>
+                            <hr style="margin: 7px" />
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{Metadaten.addablePersondata.size() == 0 and Metadaten.addableMetadata.size() == 0}">
+                            <hr style="margin: 7px" />
+                        </h:panelGroup>
+
+                        <div class="pull-right margin-top-10">
+                            <h:commandLink styleClass="btn btn-primary font-size-s" action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}" onclick="setScrollPosition();">
+                                <f:ajax render="@form :treeform" execute="@form" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ++++++++++++++++     Personen des aktuellen Elements anzeigen     ++++++++++++++++ -->
+
+                <div class="box box-small box-bordered thin-margin">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-bars"></i>
+                            <h:outputText value="#{msgs.mets_personsOfCurrentDocStruct}" class="margin-right-5" />
+                        </h3>
+                        <div class="actions">
+                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?msgs.showBoxDetailsOff:msgs.showBoxDetailsOn}">
+                                <i class="fa #{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'fa-angle-up':'fa-angle-down'}" />
+                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_structPersons_edit}" value="#{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'up':'down'}" />
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+
+						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'block':'none'}">
+                        <h:outputText value="#{msgs.mets_no_persons_assigned}" rendered="#{empty Metadaten.myPersonen}" />
+                        <x:dataList var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorPerson person="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
+                            <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
+                                <hr style="margin: 7px" />
+                            </h:panelGroup>
+                        </x:dataList>
+                    </div>
+                </div>
+
+                <!-- ++++++++++++++++     // Personen des aktuellen Elements anzeigen   ++++++++++++++++ -->
+
+                <!-- ++++++++++++++++     Metadaten des aktuellen Elements anzeigen     ++++++++++++++++ -->
+
+                <div class="box box-small box-bordered thin-margin">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-bars"></i>
+                            <h:outputText value="#{msgs.mets_metadataOfCurrentDocStruct}" class="margin-right-5" />
+                        </h3>
+                        <div class="actions">
+                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?msgs.showBoxDetailsOff:msgs.showBoxDetailsOn}">
+                                <i class="fa #{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'fa-angle-up':'fa-angle-down'}" />
+                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_structMetadata_edit}" value="#{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'up':'down'}" />
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+
+						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'block':'none'}">
+                        <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
+                        <x:dataList var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorMetadata metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
+                            <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
+                                <hr class="margin-top-regular margin-bottom-regular" />
+                            </h:panelGroup>
+                        </x:dataList>
+                    </div>
+                </div>
+
+                <!-- ++++++++++++++++     // Metadaten des aktuellen Elements anzeigen   ++++++++++++++++ -->
+
+                <!-- ++++++++++++++++     Strukturelement verschieben oder loeschen     ++++++++++++++++ -->
+
+
+                <div class="box box-small box-bordered thin-margin">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-bars"></i>
+                            <h:outputText value="#{msgs.ausgewaehltesStrukturelement}" class="margin-right-5" />
+                        </h3>
+                        <div class="actions">
+                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_struct_edit eq 'down'?msgs.showBoxDetailsOff:msgs.showBoxDetailsOn}">
+                                <i class="fa #{NavigationForm.uiStatus.mets_struct_edit eq 'down'?'fa-angle-up':'fa-angle-down'}" />
+                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_struct_edit}" value="#{NavigationForm.uiStatus.mets_struct_edit eq 'down'?'up':'down'}" />
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+
+                    <div class="box-content" style="display: #{NavigationForm.uiStatus.mets_struct_edit eq 'down'?'block':'none'}">
+
+                        <ul class="action-ul">
+                            <!-- Knoten nach oben -->
+                            <li class="action-li">
+                                <h:commandLink action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
+                                    <span class="btn margin-right-10 fa fa-chevron-up fa-lg width-40" />
+                                    <h:outputText value="#{msgs.docstructNachObenSchieben}" />
+                                    <f:ajax execute="@form" render="@form :treeform" />
+                                </h:commandLink>
+                            </li>
+                            <!-- Knoten nach unten -->
+                            <li class="action-li">
+                                <h:commandLink action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
+                                    <span class="btn margin-right-10 fa fa-chevron-down fa-lg width-40" />
+                                    <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
+                                    <f:ajax execute="@form" render="@form :treeform" />
+                                </h:commandLink>
+                            </li>
+                            <!-- Knoten an andere Stelle schieben -->
+                            <li class="action-li">
+                                <h:commandLink action="metseditor" title="#{msgs.docstructAnAndereStelleSchieben}" onclick="setScrollPosition();">
+                                    <span class="btn margin-right-10 fa fa-arrows fa-lg width-40" />
+                                    <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
+                                    <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
+                                </h:commandLink>
+                            </li>
+                            <!-- copy structure element from somewhere else -->
+                            <li class="action-li">
+                                <h:commandLink action="metseditor" title="#{msgs.copyDocstructFromOtherProcess}" onclick="setScrollPosition();">
+                                    <span class="btn margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+                                    <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
+                                    <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
+                                </h:commandLink>
+                            </li>
+
+                            <h:panelGroup rendered="#{Metadaten.isNotRootElement}">
+                                <!-- DocstructType aendern -->
+                                <li class="action-li">
+                                    <h:commandLink id="expandbutton1" title="#{msgs.docstructTypeAendern}" onclick="toggle('possibleActions1')">
+                                        <span class="btn margin-right-10 fa fa-exchange fa-lg width-40" />
+                                        <h:outputText value="#{msgs.docstructTypeAendern}" />
+                                        <f:ajax render="expandbutton1" />
+                                    </h:commandLink>
+
+                                    <x:div id="possibleActions1" styleClass="row" style="display:none;margin-left:50px;margin-top:10px;">
+                                        <!-- Auswahlliste -->
+                                        <div class="col-sm-9" style="padding: 0px;">
+                                            <h:selectOneMenu value="#{Metadaten.tempWert}" styleClass="form-control">
+                                                <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <!-- Action -->
+                                        <div class="col-sm-3">
+                                            <h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" styleClass="btn" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                <i class="fa fa-check-circle-o" />
+                                            </h:commandLink>
+                                        </div>
+                                    </x:div>
+                                </li>
+                                <!-- Knoten loeschen -->
+                                <li class="action-li">
+                                    <h:commandLink action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
+                                        <span class="btn margin-right-10 fa fa-trash fa-lg width-40" />
+                                        <h:outputText value="#{msgs.strukturelementLoeschen}" />
+                                        <f:ajax execute="@form" render="@form :treeform" />
+                                    </h:commandLink>
+                                </li>
+                                <!-- duplicate node -->
+                                <li class="action-li">
+                                    <h:commandLink action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}">
+                                        <span class="btn margin-right-10 fa fa-files-o fa-lg width-40" />
+                                        <h:outputText value="#{msgs.duplicateStructureElement}" />
+                                        <f:ajax execute="@form" render="@form :treeform" />
+                                    </h:commandLink>
+                                </li>
+                            </h:panelGroup>
+                            <li class="action-li">
+                                <h:commandLink id="expandbutton2" title="#{msgs.strukturelementeAusOpacHinzufuegen}" onclick="toggle('possibleActions2')">
+                                    <span class="btn margin-right-10 fa fa-download fa-lg width-40" />
+                                    <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
+                                    <f:ajax render="expandbutton2" />
+                                </h:commandLink>
+
+                                <x:div id="possibleActions2" style="display:none">
+
+                                    <div class="row" style="margin-left: 40px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label" for="textfield">
+                                                <h:outputText value="#{msgs.katalog}:" />
+                                            </label>
+                                        </div>
+                                        <!-- Auswahlliste -->
+                                        <div class="col-sm-9">
+                                            <h:selectOneMenu id="katalogauswahl" value="#{Metadaten.opacKatalog}" styleClass="form-control">
+                                                <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                                <f:ajax render=":feldauswahl"></f:ajax>
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-left: 40px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label" for="textfield">
+                                                <h:outputText value="#{msgs.feld}:" />
+                                            </label>
+                                        </div>
+                                        <!-- Auswahlliste -->
+                                        <div class="col-sm-9">
+                                            <h:selectOneMenu id="feldauswahl" value="#{Metadaten.opacSuchfeld}" styleClass="form-control margin-sides-10 inline width-100">
+                                                <f:selectItems value="#{Metadaten.allSearchFields}" var="step" itemLabel="#{step.label}" itemValue="#{step.value}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="margin-left: 40px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label" for="textfield">
+                                                <h:outputText value="#{msgs.suchbegriffe}:" />
+                                            </label>
+                                        </div>
+                                        <!-- Auswahlliste -->
+                                        <div class="col-sm-9">
+                                            <h:inputTextarea styleClass="form-control" value="#{Metadaten.additionalOpacPpns}" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Action -->
+                                    <div class="row" style="margin-left: 40px; margin-top: 10px;">
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9">
+                                            <h:commandLink immediate="false" styleClass="btn margin-right-10 font-size-s" action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                <h:outputText value="#{msgs.nurMetadaten}" />
+                                            </h:commandLink>
+
+                                            <h:commandLink immediate="false" styleClass="btn font-size-s" action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                <h:outputText value="#{msgs.alsUnterelemente}" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+
+                                </x:div>
+                            </li>
+                            <!-- Seitenzuweisung -->
+                            <li class="action-li">
+                                <h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}" title="#{msgs.seitenVonUnterelementenZuweisen}">
+                                    <span class="btn margin-right-10 fa fa-sort-numeric-asc fa-lg width-40" />
+                                    <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
+                                    <f:ajax execute="@form" render="@form :treeform" />
+                                </h:commandLink>
+                            </li>
+                            <!-- OCR-Button -->
+                            <h:panelGroup rendered="#{Metadaten.showOcrButton}">
+                                <li class="action-li">
+                                    <h:commandLink action="#{Metadaten.showOcrResultForElement}" title="#{msgs.ocr}">
+                                        <span class="btn margin-right-10 fa fa-file-text-o fa-lg width-40" />
+                                        <h:outputText value="#{msgs.ocr}" />
+                                        <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform :imagenavigation" />
+                                    </h:commandLink>
+                                </li>
+                            </h:panelGroup>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ++++++++++++++++     // Strukturelement verschieben oder loeschen   ++++++++++++++++ -->
+
+
+                <!-- ++++++++++++++++     vorhandene Seiten   ++++++++++++++++ -->
+
+                <h:panelGroup rendered="#{Metadaten.alleSeiten !=null}" id="pageallocation">
+
+                    <div class="box box-bordered box-small lightgrey thin-margin">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-bars"></i>
+                                <h:outputText value="#{msgs.seitenzuordnung}" class="margin-right-5" />
+                            </h3>
+                            <div class="actions">
+                                <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_struct_pages eq 'down'?msgs.showBoxDetailsOff:msgs.showBoxDetailsOn}">
+                                    <i class="fa #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'fa-angle-up':'fa-angle-down'}" />
+                                    <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_struct_pages}" value="#{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'up':'down'}" />
+                                    <f:ajax render="pageallocation" />
+                                </h:commandLink>
+                            </div>
+
+                            <ul class="tabs tab-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}">
+                                <li class="#{(NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null || NavigationForm.uiStatus.pageassignment eq 'tab0')?'active':''}">
+                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_overview}" onclick="setScrollPosition();">
+                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab0" />
+                                        <f:ajax render="pageallocation" />
+                                    </h:commandLink>
+                                </li>
+
+                                <li class="#{NavigationForm.uiStatus.pageassignment eq 'tab1'?'active':''}">
+                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_allPages}" onclick="setScrollPosition();">
+                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab1" />
+                                        <f:ajax render="pageallocation" />
+                                    </h:commandLink>
+                                </li>
+                                <li class="#{NavigationForm.uiStatus.pageassignment eq 'tab2'?'active':''}">
+                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_quickassign}" onclick="setScrollPosition();">
+                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab2" />
+                                        <f:ajax render="pageallocation" />
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+
+
+
+
+                        </div>
+                        <div class="box-content thin-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}">
+                            <div class="tab-content">
+                                <div id="t0" class="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null || NavigationForm.uiStatus.pageassignment == 'tab0'?'tab-pane active':'tab-pane'}">
+                                    <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label">#{msgs.ersteSeite}:</label>
+                                        </div>
+                                        <div class="col-sm-6 nopadding">
+                                            <p:autoComplete id="pagestart2" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h:commandLink action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                                <f:ajax render="pagestart2" />
+                                                <i class="fa fa-angle-left" style="margin-right: 3px;" />
+                                                <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
+                                            </h:commandLink>
+                                            <h:commandLink action="#{Metadaten.startpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                                <f:ajax render="pagestart2" />
+                                                <i class="fa fa-picture-o" />
+                                                <x:updateActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" />
+                                            </h:commandLink>
+                                            <h:commandLink action="#{Metadaten.startpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                                <f:ajax render="pagestart2" />
+                                                <i class="fa fa-angle-right" />
+                                                <x:updateActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label">#{msgs.letzteSeite}:</label>
+                                        </div>
+                                        <div class="col-sm-6 nopadding">
+                                            <p:autoComplete id="pageend2" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h:commandLink action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                                <f:ajax render="pageend2" />
+                                                <i class="fa fa-angle-left" style="margin-right: 3px;" />
+                                                <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
+                                            </h:commandLink>
+                                            <h:commandLink action="#{Metadaten.endpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                                <f:ajax render="pageend2" />
+                                                <i class="fa fa-picture-o" />
+                                                <x:updateActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" />
+                                            </h:commandLink>
+                                            <h:commandLink action="#{Metadaten.endpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                                <f:ajax render="pageend2" />
+                                                <i class="fa fa-angle-right" />
+                                                <x:updateActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                    <div class="pull-right margin-top-10">
+                                        <h:commandLink action="#{Metadaten.setPages}" styleClass="btn btn-lightgrey font-size-s" onclick="setScrollPosition();">
+                                            <h:outputText value="#{msgs.seitenZuweisen}" />
+                                            <f:ajax render="pageallocation" />
+                                        </h:commandLink>
+                                    </div>
+
+                                </div>
+
+
+
+
+                                <div id="t1" class="#{NavigationForm.uiStatus.pageassignment eq 'tab1'?'tab-pane active':'tab-pane'}">
+                                    <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
+                                        <div class="col-sm-5">
+                                            <h:outputText value="#{msgs.alleSeiten}" />
+                                            <x:selectManyListbox value="#{Metadaten.alleSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
+                                                <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                            </x:selectManyListbox>
+                                        </div>
+                                        <div class="col-sm-2" style="margin-top: 100px;">
+                                            <h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}" styleClass="btn margin-top-5 block" title="#{msgs.mets_addTheseImages}">
+                                                <i class="fa fa-arrow-right" />
+                                                <f:ajax execute="@form" render="@form" />
+                                            </h:commandLink>
+                                            <h:commandLink id="s2" action="#{Metadaten.SeitenWeg}" styleClass="btn margin-top-5 block" title="#{msgs.mets_removeTheseImages}">
+                                                <i class="fa fa-arrow-left" />
+                                                <f:ajax execute="@form" render="@form" />
+                                            </h:commandLink>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <h:outputText value="#{msgs.zugehoerigeSeiten}" />
+                                            <x:selectManyListbox value="#{Metadaten.structSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
+                                                <f:selectItems value="#{Metadaten.structSeiten}" />
+                                            </x:selectManyListbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="t2" class="#{NavigationForm.uiStatus.pageassignment eq 'tab2'?'tab-pane active':'tab-pane'}">
+                                    <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label" for="textfield">
+                                                <h:outputText value="#{msgs.ersteSeite}:" />
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <h:selectOneMenu rendered="#{Metadaten.treeProperties.showpagesasajax==false}" value="#{Metadaten.alleSeitenAuswahl_ersteSeite}" styleClass="form-control">
+                                                <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <h:commandLink styleClass="btn" action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
+                                                <i class="fa fa-eye" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
+                                        <div class="col-sm-3">
+                                            <label class="control-label" for="textfield">
+                                                <h:outputText value="#{msgs.letzteSeite}:" />
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <h:selectOneMenu rendered="#{Metadaten.treeProperties.showpagesasajax==false}" value="#{Metadaten.alleSeitenAuswahl_letzteSeite}" styleClass="form-control">
+                                                <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <h:commandLink styleClass="btn" action="#{Metadaten.BildLetzteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
+                                                <i class="fa fa-eye" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-left: 5px; margin-top: 10px;">
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9">
+
+                                            <div class="pull-right">
+                                                <h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" onclick="setScrollPosition();">
+                                                    <h:outputText value="#{msgs.seitenZuweisen}" />
+                                                </h:commandLink>
+                                                <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==true}" onclick="setScrollPosition();">
+                                                    <h:outputText value="#{msgs.seitenZuweisen}" />
+                                                </h:commandLink>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </h:panelGroup>
+                <!-- ++++++++++++++++     // Zuweisung der ersten und letzten Seite   ++++++++++++++++ -->
+
+            </h:panelGroup>
+
+
+            <script>
+                                                    var height = null;
+                                                    var totalwidth = null;
+                                                    var width = null;
+                                                    $( document ).ready( function() {
+                                                        height = $( '#left' ).height();
+                                                        totalwidth = $( window ).width();
+                                                        width = ( totalwidth - $( '#left' ).width() ) / 13 * 5;
+                                                        
+                                                        $( '#structdata' ).css( {
+                                                            'height': height + 'px',
+                                                            'width': width + 'px'
+                                                        } );
+                                                        $( '#metseditorImage' ).css( {
+                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
+                                                        } );
+                                                        
+                                                    } );
+                                                    
+                                                    $( window ).on( 'resize', function() {
+                                                        height = $( '#left' ).height();
+                                                        totalwidth = $( window ).width();
+                                                        width = ( totalwidth - $( '#left' ).width() ) / 12 * 5;
+                                                        $( '#structdata' ).css( {
+                                                            'height': height + 'px',
+                                                            'width': width + 'px'
+                                                        } );
+                                                        $( '#metseditorImage' ).css( {
+                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
+                                                        } );
+                                                        
+                                                    } )
+                                                </script>
+
+            <!-- ########################################
+
+				           Strukturelement verschieben
+				
+				#########################################-->
+
+            <h:panelGroup rendered="#{Metadaten.modusStrukturelementVerschieben}">
+
+                <div class="box box-color lightgrey box-small box-bordered">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-bars" />
+                            <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" class="margin-right-5" />
+                        </h3>
+                    </div>
+                    <div class="box-content">
+
+                        <h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}" class="margin-right-5" />
+
+                        <hr style="margin: 7px" />
+
+                        <h:dataTable value="#{Metadaten.strukturBaum3Alle}" var="item">
+                            <h:column>
+
+                                <h:outputText value="&amp;nbsp;" escape="false" style="margin-left:#{item.niveau * 12}px;margin-right:9px;" />
+
+
+                                <h:panelGroup style="margin-right:5px;" styleClass="font-light">
+                                    <i class="fa fa-file-o" />
+                                </h:panelGroup>
+
+                                <h:commandLink styleClass="document" action="#{Metadaten.KnotenVerschieben}" rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
+
+
+                                    <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" />
+
+
+                                    <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+                                    <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
+
+                                    <f:passThroughAttribute name="data-trigger" value="hover" />
+                                    <f:passThroughAttribute name="data-container" value="body" />
+                                    <f:passThroughAttribute name="data-toggle" value="popover" />
+                                    <f:passThroughAttribute name="data-placement" value="right" />
+                                    <f:passThroughAttribute name="data-html" value="true" />
+                                    <f:passThroughAttribute name="data-content"
+                                        value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+												#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+												&lt;&#47;ul&gt;" />
+                                </h:commandLink>
+
+                                <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
+
+                                    <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="#{item.node.selected?'color:green;':'color:#999999;'}">
+
+                                        <f:passThroughAttribute name="data-trigger" value="hover" />
+                                        <f:passThroughAttribute name="data-container" value="body" />
+                                        <f:passThroughAttribute name="data-toggle" value="popover" />
+                                        <f:passThroughAttribute name="data-placement" value="right" />
+                                        <f:passThroughAttribute name="data-html" value="true" />
+                                        <f:passThroughAttribute name="data-content"
+                                            value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+												#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+												&lt;&#47;ul&gt;" />
+                                    </h:outputText>
+                                </h:panelGroup>
+
+
+                            </h:column>
+                        </h:dataTable>
+
+                        <hr style="margin: 7px" />
+
+                        <h:commandLink styleClass="btn pull-right margin-right-10 font-size-s" immediate="true" action="#{NavigationForm.Reload}" onclick="setScrollPosition();">
+                            <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
+                            <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+                        </h:commandLink>
+
+                    </div>
+                </div>
+
+            </h:panelGroup>
+
+            <!-- ########################################
+
+				           copy from other process
+				
+				#########################################-->
+
+            <h:panelGroup rendered="#{Metadaten.modusCopyDocstructFromOtherProcess}">
+
+                <div class="box box-color lightgrey box-small box-bordered">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-bars" />
+                            <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
+                        </h3>
+                    </div>
+                    <div class="box-content ">
+
+                        <h:panelGroup rendered="#{!Metadaten.displayInsertion}">
+
+                            <div class="row padding-all-more">
+                                <div class="col-sm-12">
+                                    <h4>
+                                        <h:outputText value="#{msgs.findProcess}" />
+                                    </h4>
+                                    <h:outputText value="#{msgs.copyDocstructFromOtherProcessDescription1}" />
+                                </div>
+                            </div>
+                            <div class="row padding-all-more">
+                                <div class="col-sm-3 margin-top-5">
+                                    <label class="control-label">#{msgs.title}:</label>
+                                </div>
+                                <div class="col-sm-9 margin-top-5">
+                                    <x:inputText value="#{Metadaten.filterProcessTitle}" styleClass="form-control" />
+                                </div>
+                            </div>
+
+                            <h:commandLink styleClass="btn btn-primary pull-right margin-right-10 margin-top-5 font-size-s margin-bottom-5" id="filterProcess" action="#{Metadaten.filterMyProcess}" onclick="setScrollPosition();">
+                                <i class="fa fa-search margin-right-5" />
+                                <h:outputText value="#{msgs.findProcess}" />
+                            </h:commandLink>
+
+                            <h:commandLink styleClass="btn pull-right margin-right-10 margin-top-5 font-size-s margin-bottom-5" action="#{NavigationForm.Reload}" title="#{msgs.verschiebenAbbrechen}" onclick="setScrollPosition();">
+                                <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
+                                <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
+                            </h:commandLink>
+
+
+                            <h:panelGroup rendered="#{Metadaten.filteredProcess != null}" style="margin-top:50px;display:block;">
+
+                                <hr style="margin: 7px" />
+
+                                <h:dataTable rendered="#{Metadaten.filteredProcess != null}" value="#{Metadaten.struktureTreeAsTableForFilteredProcess}" var="item">
+                                    <h:column>
+
+                                        <h:outputText value="&amp;nbsp;" escape="false" style="margin-left:#{item.niveau * 12}px;margin-right:9px;" />
+
+                                        <h:panelGroup style="margin-right:5px;" styleClass="font-light">
+                                            <i class="fa fa-file-o" />
+                                        </h:panelGroup>
+
+                                        <h:commandLink styleClass="document" action="#{Metadaten.updateAllSubNodes}" rendered="#{item.node.einfuegenErlaubt}" onclick="setScrollPosition();">
+
+
+                                            <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="#{item.node.selected?'color:red;':''}" />
+
+
+                                            <f:passThroughAttribute name="data-trigger" value="hover" />
+                                            <f:passThroughAttribute name="data-container" value="body" />
+                                            <f:passThroughAttribute name="data-toggle" value="popover" />
+                                            <f:passThroughAttribute name="data-placement" value="right" />
+                                            <f:passThroughAttribute name="data-html" value="true" />
+                                            <f:passThroughAttribute name="data-content"
+                                                value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+											#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+											&lt;&#47;ul&gt;" />
+                                            <!--     <x:updateActionListener property="#{Metadaten.docStructFromFilteredProcess}" value="#{item.node.struct}" /> -->
+                                            <x:updateActionListener property="#{item.node.selected}" value="#{!item.node.selected}" />
+                                        </h:commandLink>
+
+                                        <h:outputText rendered="#{!item.node.einfuegenErlaubt}" value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="color:grey">
+
+                                            <f:passThroughAttribute name="data-trigger" value="hover" />
+                                            <f:passThroughAttribute name="data-container" value="body" />
+                                            <f:passThroughAttribute name="data-toggle" value="popover" />
+                                            <f:passThroughAttribute name="data-placement" value="right" />
+                                            <f:passThroughAttribute name="data-html" value="true" />
+                                            <f:passThroughAttribute name="data-content"
+                                                value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+											#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+											&lt;&#47;ul&gt;" />
+                                        </h:outputText>
+
+
+
+                                    </h:column>
+
+                                </h:dataTable>
+
+                                <hr style="margin: 7px" />
+
+                                <div class="form-actions">
+                                    <h:commandLink styleClass="btn btn-primary pull-right font-size-s margin-bottom-5" id="nextPage" action="#{Metadaten.rememberFilteredProcessStruct}" onclick="setScrollPosition();">
+                                        <h:outputText value="#{msgs.weiter}" />
+                                        <x:updateActionListener value="true" property="#{Metadaten.displayInsertion}" />
+                                    </h:commandLink>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <!-- ########################################
+			
+			            copy structure from other process into my own structure
+			
+			            #########################################-->
+                        <h:panelGroup rendered="#{Metadaten.displayInsertion}">
+
+                            <div class="row padding-all-more">
+                                <div class="col-sm-12">
+                                    <h4>
+                                        <h:outputText value="#{msgs.selectTarget}" />
+                                    </h4>
+                                    <h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}" />
+                                </div>
+                            </div>
+
+                            <hr style="margin: 7px" />
+
+                            <h:dataTable rendered="#{Metadaten.filteredProcess != null}" value="#{Metadaten.strukturBaum3Alle}" var="item">
+                                <h:column>
+
+                                    <h:outputText value="&amp;nbsp;" escape="false" style="margin-left:#{item.niveau * 12}px;margin-right:9px;" />
+
+                                    <h:panelGroup style="margin-right:5px;" styleClass="font-light">
+                                        <i class="fa fa-file-o" />
+                                    </h:panelGroup>
+
+                                    <h:commandLink styleClass="document" action="#{Metadaten.importFilteredProcessStruct}" rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
+
+                                        <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="#{item.node.selected?'color:red;':''}" />
+
+                                        <f:passThroughAttribute name="data-trigger" value="hover" />
+                                        <f:passThroughAttribute name="data-container" value="body" />
+                                        <f:passThroughAttribute name="data-toggle" value="popover" />
+                                        <f:passThroughAttribute name="data-placement" value="right" />
+                                        <f:passThroughAttribute name="data-html" value="true" />
+                                        <f:passThroughAttribute name="data-content"
+                                            value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+											#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+											#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+											&lt;&#47;ul&gt;" />
+                                        <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                        <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
+                                    </h:commandLink>
+
+                                    <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
+
+                                        <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="#{item.node.selected?'color:green;':'color:#999999;'}">
+
+
+                                            <f:passThroughAttribute name="data-trigger" value="hover" />
+                                            <f:passThroughAttribute name="data-container" value="body" />
+                                            <f:passThroughAttribute name="data-toggle" value="popover" />
+                                            <f:passThroughAttribute name="data-placement" value="right" />
+                                            <f:passThroughAttribute name="data-html" value="true" />
+                                            <f:passThroughAttribute name="data-content"
+                                                value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+												#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+												#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+												&lt;&#47;ul&gt;" />
+                                        </h:outputText>
+                                    </h:panelGroup>
+
+
+
+                                </h:column>
+
+                            </h:dataTable>
+
+                            <hr style="margin: 7px" />
+
+                            <div class="form-actions">
+
+                                <!-- Cancel -->
+                                <h:commandLink styleClass="btn margin-sides-10 pull-right font-size-s margin-bottom-5" action="#{NavigationForm.Reload}" value="#{msgs.abbrechen}" onclick="setScrollPosition();">
+                                    <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                    <x:updateActionListener property="#{Metadaten.displayInsertion}" value="false" />
+                                </h:commandLink>
+                                <!-- Back -->
+                                <h:commandLink styleClass="btn margin-sides-10 pull-right font-size-s margin-bottom-5" id="goBack" action="#{NavigationForm.Reload}" onclick="setScrollPosition();">
+                                    <h:outputText value="#{msgs.zurueck}" />
+                                    <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
+                                </h:commandLink>
+                            </div>
+                        </h:panelGroup>
+                    </div>
+                </div>
+            </h:panelGroup>
+
+        </h:form>
+
+    </composite:implementation>
+
+</ui:composition>
+
+

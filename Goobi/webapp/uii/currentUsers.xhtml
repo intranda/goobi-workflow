@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+	<ui:param name="myPageTitle" value="#{msgs.aktiveBenutzer}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb label="#{myPageTitle}" action="currentUsers" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="activeUser" prependId="false">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="glyphicon-parents box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+							<div class="dataTables_wrapper">
+								<div class="dataTables_length">
+									<h:panelGrid columns="2">
+										<h:outputText value="#{msgs.aktiveBenutzer}:" />
+										<h:outputText value="#{SessionForm.aktiveSessions}" />
+										<h:outputText value="#{msgs.aktuelleZeit}:" />
+										<h:outputText value="#{SessionForm.aktuelleZeit}" />
+									</h:panelGrid>
+								</div>
+
+								<!-- Datentabelle -->
+								<x:dataTable id="userTable" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{SessionForm.alleSessions}">
+
+									<h:column rendered="#{LoginForm.maximaleBerechtigung gt 0}">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.benutzer}" />
+										</f:facet>
+										<h:outputText value="#{item.user}" />
+									</h:column>
+
+									<h:column rendered="#{LoginForm.maximaleBerechtigung == 1}">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.ip}" />
+										</f:facet>
+										<h:outputText value="#{item.address}" />
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.browser}" />
+										</f:facet>
+										<h:graphicImage styleClass="margin-right-5" value="template/img/browser/#{item.browserIcon}" />
+										<h:outputText value="#{item.browser}" />
+									</h:column>
+
+									<h:column rendered="#{LoginForm.maximaleBerechtigung == 1}">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.aktivSeit}" />
+										</f:facet>
+										<h:outputText value="#{item.created}" />
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.letzterZugriff}" />
+										</f:facet>
+										<h:outputText value="#{item.last}" />
+									</h:column>
+
+								</x:dataTable>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+        
+        <script type="text/javascript">
+         setInterval(function() {
+        	$('#activeUser').load('currentUsers.xhtml #activeUser');
+        }, 10000); 
+        </script>
+	</ui:define>
+
+</ui:composition>

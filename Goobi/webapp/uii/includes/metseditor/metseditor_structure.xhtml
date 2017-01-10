@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+
+
+        <h:form id="treeform">
+
+            <h:inputText id="hiddenwidth" value="#{Metadaten.treeWidth}" style="display:none;" />
+            <h:commandLink id="hiddenwidthbutton" action="#{NavigationForm.Reload}" style="display:none;">
+                <i class="fa fa-floppy-o" />
+<!--                 <f:ajax render="@all" execute="@form" /> -->
+            </h:commandLink>
+
+            <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
+            <h:commandLink action="#{Metadaten.BildBlaettern}" title="#{msgs.verlinkungDesBildesMitStrukturelement}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:5px;padding-left: 5px;padding-right: 5px;">
+                <i class="#{Metadaten.bildZuStrukturelement?'fa fa-chain':'fa fa-chain-broken font-light'} fa-lg btn " />
+                <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}" />
+                <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform :imagenavigation" />
+            </h:commandLink>
+            
+            <h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:30px;padding-left: 5px;padding-right: 5px;"
+				title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
+				<i class="#{Metadaten.treeProperties.showtitle?'':'font-light'} fa fa-list fa-lg btn" />
+				<x:updateActionListener value="#{Metadaten.treeProperties.showtitle?false:true}"
+					property="#{Metadaten.treeProperties.showtitle}" />
+			</h:commandLink>
+
+            <h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:55px;padding-left: 5px;padding-right: 5px;"
+				title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
+				<i class="#{Metadaten.treeProperties.showfirstpagenumber?'':'font-light'} fa fa-exchange fa-lg btn" />
+				<x:updateActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
+					property="#{Metadaten.treeProperties.showfirstpagenumber}" />
+			</h:commandLink>
+			
+            <h:commandLink onclick="printpage()"  style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:80px;padding-left: 5px;padding-right: 5px;" title="#{msgs.mets_printThisPage}">
+                <i class="fa fa-print fa-lg btn font-light" />
+                <f:ajax render="@this"></f:ajax>
+            </h:commandLink>
+
+            <x:dataTable id="tabelle" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" style="margin-right:30px;">
+
+                <h:column>
+                    <h:outputText value="&amp;nbsp;" escape="false" rendered="#{not item.node.hasChildren}" style="margin-left:#{item.niveau * 12}px;margin-right:9px;" />
+
+                    <h:commandLink action="#{NavigationForm.Reload}" style="margin-left:#{item.niveau * 12}px;#{item.node.expanded?'margin-right:3px;':'margin-right:7px;'}" styleClass="font-light" rendered="#{item.node.hasChildren}">
+
+                        <i class="#{item.node.expanded?'fa fa-caret-down fa-lg':'fa fa-caret-right fa-lg'}" />
+                        <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
+                    </h:commandLink>
+
+                    <h:commandLink id="link" immediate="true" styleClass="#{item.node.selected ? 'documentSelected':'document'}" action="#{Metadaten.loadRightFrame}" onclick="setScrollPosition(); styleAnpassen2(this)">
+                        <h:panelGroup style="margin-right:5px;" styleClass="font-light">
+                            <i class="fa fa-file-o" />
+                        </h:panelGroup>
+
+                        <h:outputText value="#{item.niveau}" style="color:grey;margin-right:4px" rendered="#{Metadaten.treeProperties.showtreelevel}" />
+
+                        <f:passThroughAttribute name="data-trigger" value="hover" />
+                        <f:passThroughAttribute name="data-container" value="body" />
+                        <f:passThroughAttribute name="data-toggle" value="popover" />
+                        <f:passThroughAttribute name="data-placement" value="right" />
+                        <f:passThroughAttribute name="data-html" value="true" />                        
+                        <f:passThroughAttribute name="data-content" value="&lt;ul class=&quot;metseditorpopup-ul&quot;&gt; 
+                         													#{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
+                         													#{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
+                         													#{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
+                         													#{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
+                         													#{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
+                         													#{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
+                         													&lt;&#47;ul&gt;" />
+                        <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
+                        <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
+                        <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
+                        <f:ajax execute="@form" render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :imagenavigation :bigimage ':''} :structureform :metadataform" />
+                      
+                    </h:commandLink>
+
+                    <h:outputText value="(#{item.node.firstImage}" style="color:grey;margin-left:4px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
+
+                    <h:outputText value="-#{item.node.lastImage})" style="color:grey;margin-left:0px" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
+
+                </h:column>
+
+            </x:dataTable>
+
+        </h:form>
+        <h:form id="formWarn" style="display:none">
+            <h:inputHidden id="Warnmeldung" value="#{msgs.esGibtUngespeicherteDaten}" />
+        </h:form>
+        <script>
+    		$(function() {
+    			$("[data-toggle='popover']").popover({
+    				html : true
+    			});
+    		});
+		</script>
+    </composite:implementation>
+
+</ui:composition>
+
+
