@@ -87,6 +87,8 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @ManagedBean(name = "AktuelleSchritteForm")
 @SessionScoped
@@ -121,7 +123,16 @@ public class StepBean extends BasicBean {
     private Integer container;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
-    private String addToWikiField;
+
+    @Getter
+    @Setter
+    private String content = "";
+    @Getter
+    @Setter
+    private String secondContent = "";
+    @Getter
+    @Setter
+    private String thirdContent = "";
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
@@ -1164,30 +1175,22 @@ public class StepBean extends BasicBean {
         this.anzeigeAnpassen = anzeigeAnpassen;
     }
 
-    public String getAddToWikiField() {
-        return this.addToWikiField;
-    }
-
-    public void setAddToWikiField(String addToWikiField) {
-        this.addToWikiField = addToWikiField;
-    }
-
-    public void addToWikiField() {
-        if (addToWikiField != null && addToWikiField.length() > 0) {
+    public void addLogEntry() {
+        if (StringUtils.isNotBlank(content)) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
             LogEntry logEntry = new LogEntry();
-            logEntry.setContent(addToWikiField);
+            logEntry.setContent(content);
+            logEntry.setSecondContent(secondContent);
+            logEntry.setThirdContent(thirdContent);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());
             logEntry.setType(LogType.USER);
             logEntry.setUserName(user.getNachVorname());
             ProcessManager.saveLogEntry(logEntry);
-            this.addToWikiField = "";
-            try {
-                ProcessManager.saveProcess(this.mySchritt.getProzess());
-            } catch (DAOException e) {
-                logger.error(e);
-            }
+            mySchritt.getProzess().getProcessLog().add(logEntry);
+            this.content = "";
+            secondContent = "";
+            thirdContent = "";
         }
     }
 
