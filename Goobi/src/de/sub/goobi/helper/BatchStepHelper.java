@@ -4,11 +4,11 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *          - http://www.goobi.org
+ *          - http://launchpad.net/goobi-production
+ *          - http://gdz.sub.uni-goettingen.de
+ *          - http://www.intranda.com
+ *          - http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -71,6 +71,8 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class BatchStepHelper {
 
@@ -87,7 +89,10 @@ public class BatchStepHelper {
     private String problemMessage;
     private String solutionMessage;
     private String processName = "";
-    private String addToWikiField = "";
+    @Getter @Setter private String content = "";
+    @Getter @Setter private String secondContent = "";
+    @Getter @Setter private String thirdContent = "";
+    
     private String script;
     private WebDav myDav = new WebDav();
     private List<String> processNameList = new ArrayList<String>();
@@ -497,10 +502,10 @@ public class BatchStepHelper {
                         .getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
                         Integer.MAX_VALUE);
 
-                //				List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-                //						.add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
-                //						.add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
-                //						.add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
+                //              List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
+                //                      .add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
+                //                      .add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
+                //                      .add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
                     step.setPrioritaet(Integer.valueOf(10));
@@ -678,49 +683,44 @@ public class BatchStepHelper {
      * @param inString
      */
 
-    //    public void setWikiField(String inString) {
-    //        this.currentStep.getProzess().setWikifield(inString);
-    //    }
-    //
-    //    public String getWikiField() {
-    //        return this.currentStep.getProzess().getWikifield();
-    //    }
 
-    public String getAddToWikiField() {
-        return this.addToWikiField;
-    }
-
-    public void setAddToWikiField(String addToWikiField) {
-        this.addToWikiField = addToWikiField;
-    }
-
-    public void addToWikiField() {
-        if (StringUtils.isNotBlank(addToWikiField)) {
+    public void addLogEntry() {
+        if (StringUtils.isNotBlank(content)) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
             LogEntry logEntry = new LogEntry();
-            logEntry.setContent(addToWikiField);
+            logEntry.setContent(content);
+            logEntry.setSecondContent(secondContent);
+            logEntry.setThirdContent(thirdContent);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(currentStep.getProzess().getId());
             logEntry.setType(LogType.USER);
             logEntry.setUserName(user.getNachVorname());
             ProcessManager.saveLogEntry(logEntry);
-            this.addToWikiField = "";
+            currentStep.getProzess().getProcessLog().add(logEntry);
+            this.content = "";
+            secondContent = "";
+            thirdContent = "";
         }
     }
 
-    public void addToWikiFieldForAll() {
-        if (addToWikiField != null && addToWikiField.length() > 0) {
+    public void addLogEntryForAll() {
+        if (StringUtils.isNotBlank(content)) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
             for (Step s : this.steps) {
                 LogEntry logEntry = new LogEntry();
-                logEntry.setContent(addToWikiField);
+                logEntry.setContent(content);
+                logEntry.setSecondContent(secondContent);
+                logEntry.setThirdContent(thirdContent);
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(s.getProzess().getId());
                 logEntry.setType(LogType.USER);
                 logEntry.setUserName(user.getNachVorname());
+                s.getProzess().getProcessLog().add(logEntry);
                 ProcessManager.saveLogEntry(logEntry);
             }
-            this.addToWikiField = "";
+            this.content = "";
+            secondContent = "";
+            thirdContent = "";
         }
     }
 

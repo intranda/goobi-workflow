@@ -223,24 +223,99 @@
             </div>
             <h:form class="form-vertical form-bordered">
             	<div class="box-content nopadding">
-                    <div class="form-group nopadding">
-                        <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="270" style="overflow: hidden; width: auto; height: 270px;">
-                            <h:outputText escape="false" value="#{AktuelleSchritteForm.batchHelper.wikiField}" />
-                        </div>
-                    </div>
+                 <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
+                                        <x:dataTable var="entry" value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess.processLog}" width="100%" styleClass="table table-hover table-bordered">
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.creationDate}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.date}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.userName}" />
+                                                </f:facet>
+                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.logType}" />
+                                                </f:facet>
+                                                <h:outputText value="#{msgs[entry.type.title]}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.firstContent}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.content}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                            <x:column rendered="#{NavigationForm.showSecondLogField}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.secondContent}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.secondContent}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+                                            <x:column rendered="#{NavigationForm.showThirdLogField}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.thirdContent}" />
+                                                </f:facet>
+                                                <h:outputText value="#{entry.thirdContent}" styleClass="log_#{entry.type.title}" />
+                                            </x:column>
+
+                                        </x:dataTable>
+
+                                    </div>
+
+
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h:panelGroup styleClass="col-sm-4">
+                                                <h:outputText value="#{msgs.firstContent}" />
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="col-sm-8">
+                                                <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.content}" />
+                                            </h:panelGroup>
+
+
+                                            <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
+                                                <h:outputText value="#{msgs.secondContent}" />
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
+                                                <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.secondContent}" />
+                                            </h:panelGroup>
+
+
+                                            <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
+                                                <h:outputText value="#{msgs.thirdContent}" />
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
+                                                <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.thirdContent}" />
+                                            </h:panelGroup>
+                                        </div>
+                                        
+                                        
+
+                                    </div>
+                                </div>
+                
+
                     <div class="form-actions">
                     	<div class="row">
                         	<div class="col-sm-12">
-                            	<h:inputTextarea id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.addToWikiField}" />
+	                            <h:commandButton type="submit" styleClass="btn btn-primary margin-left-5 margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegenForAll}"
+	                                action="#{AktuelleSchritteForm.batchHelper.addLogEntryForAll}" />
+	                            <h:commandButton type="submit" styleClass="btn btn-primary margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.batchHelper.addLogEntry}" />
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-sm-12">
-	                            <h:commandButton type="submit" styleClass="btn btn-primary margin-left-5 margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegenForAll}"
-	                                action="#{AktuelleSchritteForm.batchHelper.addToWikiFieldForAll}" />
-	                            <h:commandButton type="submit" styleClass="btn btn-primary margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.batchHelper.addToWikiField}" />
-	                        </div>
-                        </div>
+<!-- 						<div class="row"> -->
+<!-- 							<div class="col-sm-12"> -->
+<!-- 	                        </div> -->
+<!--                         </div> -->
                     </div>
             	</div>
            	</h:form>
