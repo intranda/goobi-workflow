@@ -12,7 +12,7 @@
 	<composite:interface />
 
 	<composite:implementation>
-		<h:form>
+		<h:form id="menu">
 			<a href="index.xhtml" id="brand">&#160;</a>
 
 			<ul class='main-nav'>
@@ -22,7 +22,7 @@
 				<!-- aktuelle Schritte -->
 				<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
 					<li class="#{NavigationForm.aktuell == 'a20'?'active':''}">
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}" id="steps">
 							<span><i class="#{cc.attrs.icon}"></i> #{msgs.aktuelleSchritte}</span>
 							<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a20" />
 							<f:setPropertyActionListener target="#{AktuelleSchritteForm.filter}" value="" />
@@ -140,7 +140,7 @@
 
 							<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}">
 								<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
-									<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}">
+									<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="plugin">
 										<span>
 											<i class="fa fa-plug box-icon-fix-menu-up3"></i>
 											<span class="margin-left-10">#{msgs[plugin]}</span>
@@ -167,7 +167,7 @@
 	
 							<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}">
 								<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
-									<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}">
+									<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="statistics">
 										<span>
 											<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
 											<span class="margin-left-10">#{msgs[statistics]}</span>
@@ -193,7 +193,7 @@
 							</p:themeSwitcher>
 						</li>
 						<li>
-							<h:commandLink action="#{NavigationForm.Reload}" title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" rel="tooltip">
+							<h:commandLink id="showHelp" action="#{NavigationForm.Reload}" title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" rel="tooltip">
 								<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
 								<!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
 								<f:setPropertyActionListener target="#{NavigationForm.showHelp}" value="#{not NavigationForm.showHelp}" />
@@ -208,7 +208,7 @@
 							<ul class="dropdown-menu pull-right">
 								<ui:repeat var="availableLanguage" value="#{SpracheForm.supportedLocales}">
 									<li>
-										<h:commandLink styleClass="text_head" action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
+										<h:commandLink id="locale" styleClass="text_head" action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
 											<f:param name="locale" value="#{availableLanguage.id}" />
 											<f:setPropertyActionListener value="#{null}" target="#{SessionForm.dateFormatter}"/>
 											<h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />

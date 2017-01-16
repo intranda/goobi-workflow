@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:form styleClass="form-horizontal form-bordered">
+        <h:form styleClass="form-horizontal form-bordered" id="myform">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered">
@@ -26,9 +26,9 @@
                             </h3>
                         </div>
                         <div class="box-content nopadding">
-                            <x:dataList var="item" value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
+                            <x:dataList var="item" value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}" id="properties">
 
-                                <intranda:formInputText label="#{item.titel}" field="#{item.wert}" help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
+                                <intranda:formInputText id="property" label="#{item.titel}" field="#{item.wert}" help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
                                     fieldStyle="form-control" required="true" />
 
                             </x:dataList>
@@ -41,7 +41,7 @@
                                 </h:commandLink>
 
 								<!-- Cancel -->
-                                <h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" action="process_all" value="#{msgs.abbrechen}"
+                                <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" action="process_all" value="#{msgs.abbrechen}"
                                     immediate="true">
                                 </h:commandLink>
 

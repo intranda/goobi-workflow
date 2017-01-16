@@ -20,7 +20,7 @@
 				<!-- aktuelle Schritte -->
 				<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
 					<li class="#{NavigationForm.aktuell == 'a20'?'active':''}">
-						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}" id="tasks">
 							<i class="#{cc.attrs.icon}"></i> #{msgs.aktuelleSchritte}
 							<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a20" />
 							<f:setPropertyActionListener target="#{AktuelleSchritteForm.filter}" value="" />
@@ -130,7 +130,7 @@
 
 							<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}">
 								<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
-									<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}">
+									<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="openPlugin">
 										<span>
 											<i class="fa fa-plug box-icon-fix-menu-up3"></i>
 											<span class="margin-left-10">#{msgs[plugin]}</span>
@@ -154,7 +154,7 @@
 	
 							<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}">
 								<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
-									<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}">
+									<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="openStatistics">
 										<span>
 											<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
 											<span class="margin-left-10">#{msgs[statistics]}</span>

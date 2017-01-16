@@ -102,7 +102,7 @@
                 <div id="main" style="margin-right: 0px;">
                     <div class="container-fluid">
 
-                        <h:form>
+                        <h:form id="header">
                             <div class="page-header">
                                 <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
                                     <i class="fa fa-exclamation-triangle margin-right-10" />
@@ -126,7 +126,7 @@
 
                                         <h:panelGroup rendered="#{!HelperForm.anonymized}">
                                             <li class='background-color-A'>
-                                                <h:commandLink action="currentUsers">
+                                                <h:commandLink action="currentUsers" id="currentUsers">
                                                     <i class="glyphicon-parents box-icon-fix-down"></i>
                                                     <div class="details">
                                                         <span class="big">#{SessionForm.aktiveSessions}</span>
@@ -152,7 +152,7 @@
                                 </div>
                             </div>
                         </h:form>
-                        <h:form style="margin:0px;">
+                        <h:form style="margin:0px;" id="breadcrumb">
 
                             <div class="breadcrumbs">
                                 <ul>

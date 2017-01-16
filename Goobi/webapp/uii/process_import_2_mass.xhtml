@@ -12,7 +12,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:form styleClass="form-horizontal form-bordered" prependId="false">
+        <h:form styleClass="form-horizontal form-bordered" prependId="false" id="importForm">
 
             <style>
 .ui-progressbar {
@@ -69,10 +69,10 @@
                             </h3>
                         </div>
                         <div class="box-content nopadding">
-                            <x:dataList forceId="true" var="property" id="processProperties" value="#{MassImportForm.properties}">
+                            <x:dataList forceId="true" var="property" id="processProperties" value="#{MassImportForm.properties}" >
 
                                 <h:panelGroup rendered="#{(property.type.name == 'text') or (property.type.name == 'link')}">
-                                    <intranda:formInputText label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}" name="inputText" fieldStyle="form-control" required="#{property.required}" />
+                                    <intranda:formInputText id="property" label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}" name="inputText" fieldStyle="form-control" required="#{property.required}" />
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{property.type.name == 'integer' || property.type.name == 'number'}">
@@ -87,20 +87,20 @@
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{(property.type.name == 'list')}">
-                                    <intranda:formInputDropDown2 label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}" name="selectMenu" selectItems="#{property.possibleValues}" fieldStyle="form-control" required="#{property.required}" var="propertys" itemLabel="#{propertys}" itemValue="#{propertys}" />
+                                    <intranda:formInputDropDown2 id="list" label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}" name="selectMenu" selectItems="#{property.possibleValues}" fieldStyle="form-control" required="#{property.required}" var="propertys" itemLabel="#{propertys}" itemValue="#{propertys}" />
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{(property.type.name == 'listmultiselect')}">
-                                    <intranda:formInputSelectMany label="#{property.name}" field="#{property.valueList}" help="#{msgs.helpProperty}" name="selectManyMenu" selectItems="#{property.possibleValues}" fieldStyle="form-control" required="#{property.required}" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputSelectMany id="selectMany" label="#{property.name}" field="#{property.valueList}" help="#{msgs.helpProperty}" name="selectManyMenu" selectItems="#{property.possibleValues}" fieldStyle="form-control" required="#{property.required}" var="step" itemLabel="#{step}" itemValue="#{step}" />
                                 </h:panelGroup>
 
 
                                 <h:panelGroup rendered="#{(property.type.name == 'boolean')}">
-                                    <intranda:formInputCheckBox label="#{property.name}" field="#{property.booleanValue}" help="#{msgs.helpProperty}" name="checkbox" required="#{property.required}" />
+                                    <intranda:formInputCheckBox id="checkbox" label="#{property.name}" field="#{property.booleanValue}" help="#{msgs.helpProperty}" name="checkbox" required="#{property.required}" />
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{(property.type.name == 'date')}">
-                                    <intranda:formInputCalendar2 name="calendar" label="#{property.name}" field="#{property.dateValue}" required="#{property.required}" />
+                                    <intranda:formInputCalendar2 id="calendar" name="calendar" label="#{property.name}" field="#{property.dateValue}" required="#{property.required}" />
                                 </h:panelGroup>
 
                             </x:dataList>
@@ -128,10 +128,10 @@
                                 </h:commandLink>
 
                                 <!-- Cancel -->
-                                <h:link styleClass="btn pull-right font-size-s margin-sides-10" outcome="process_all" value="#{msgs.abbrechen}" />
+                                <h:link id="cancel" styleClass="btn pull-right font-size-s margin-sides-10" outcome="process_all" value="#{msgs.abbrechen}" />
 
                                 <!-- Back -->
-                                <h:commandLink styleClass="btn font-size-s" action="process_import_1" immediate="true">
+                                <h:commandLink id="back" styleClass="btn font-size-s" action="process_import_1" immediate="true">
                                     <i class="fa fa-arrow-circle-o-left margin-right-5" />
                                     <h:outputText value="#{msgs.zurueck}" />
                                 </h:commandLink>

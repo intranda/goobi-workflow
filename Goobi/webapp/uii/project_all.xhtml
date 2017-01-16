@@ -31,7 +31,7 @@
 								</div>
 
 								<!-- Datentabelle -->
-								<x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
+								<x:dataTable id="projectList" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
 									value="#{ProjekteForm.paginator.list}">
 
 									<x:column styleClass="tableColumnMaxWidthLong" style="min-width:280px;">
@@ -72,7 +72,7 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink styleClass="btn margin-right-5" rel="tooltip" action="project_edit" title="#{msgs.projektBearbeiten}">
+										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="project_edit" title="#{msgs.projektBearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
@@ -80,7 +80,7 @@
 										</h:commandLink>
 										
 										<!-- Duplicate project -->
-										<h:commandLink action="#{ProjekteForm.cloneProject}" styleClass="btn" 
+										<h:commandLink id="clone" action="#{ProjekteForm.cloneProject}" styleClass="btn" 
 											title="#{msgs.duplicateProject}" rel="tooltip"
 											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" rel="tooltip"/>

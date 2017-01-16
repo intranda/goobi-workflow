@@ -16,7 +16,7 @@
 				<h2>
 					<h:outputText value="#{msgs.login}" />
 				</h2>
-				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);">
+				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm">
                    
                     <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
 						warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
@@ -41,7 +41,7 @@
 							</div>
 						</div>
 						<div class="submit">
-							<h:commandLink action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
+							<h:commandLink id="login" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
 								styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
 								<h:outputText value="#{msgs.einloggen}" rendered="#{!LoginForm.schonEingeloggt}" />
 								<h:outputText value="#{msgs.dennochEinloggen}" rendered="#{LoginForm.schonEingeloggt}" />

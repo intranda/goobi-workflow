@@ -7,8 +7,8 @@
 	<ui:param name="myPageTitle" value="#{msgs.ldapgruppen}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<intranda:breadcrumb label="#{myPageTitle}" action="ldap_all" noSeparator="#{true}" />
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb id="ldapAll" label="#{myPageTitle}" action="ldap_all" noSeparator="#{true}" />
 	</ui:define>
 
 	<ui:define name="info">
@@ -33,7 +33,7 @@
 								</div>
 
 								<!-- Datentabelle -->
-								<x:dataTable
+								<x:dataTable id="ldaps"
 									styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 									var="item" value="#{LdapGruppenForm.paginator.list}">
 
@@ -63,7 +63,7 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink styleClass="btn margin-right-5" rel="tooltip" action="ldap_edit"
+										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="ldap_edit"
 											title="#{msgs.ldapgruppeBearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -75,7 +75,7 @@
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink styleClass="btn btn-primary font-size-s" action="#{LdapGruppenForm.Neu}"
+									<h:commandLink id="new" styleClass="btn btn-primary font-size-s" action="#{LdapGruppenForm.Neu}"
 										immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.neueLdapgruppeAnlegen}" />
@@ -83,7 +83,7 @@
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->
-									<intranda:tablePaginator paginator="#{LdapGruppenForm.paginator}" />
+									<intranda:tablePaginator id="ldap" paginator="#{LdapGruppenForm.paginator}" />
 									<!-- /paginator -->
 								</div>
 							</div>
