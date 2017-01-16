@@ -31,12 +31,12 @@
 								
 								<div class="actions">
 	
-									<h:commandLink action="#{ProzessverwaltungForm.Reload}" 
+									<h:commandLink action="#{ProzessverwaltungForm.Reload}" id="editTemplate"
 										styleClass="btn btn-mini" title="#{msgs.reload}"  rel="tooltip">
 										<i class="fa fa-refresh"></i>
 									</h:commandLink>
 									
-									<h:commandLink title="#{msgs.loeschen}" styleClass="btn btn-mini" action="#{ProzessverwaltungForm.WerkstueckLoeschen}" rel="tooltip">
+									<h:commandLink id="deleteTemplate" title="#{msgs.loeschen}" styleClass="btn btn-mini" action="#{ProzessverwaltungForm.WerkstueckLoeschen}" rel="tooltip">
 											<i class="fa fa-trash-o"></i>
 										</h:commandLink>
 									
@@ -73,7 +73,7 @@
 							<div class="box-content nopadding">
 <div class="dataTables_wrapper">
 								<x:dataTable styleClass="table table-hover table-bordered" var="item"
-									value="#{ProzessverwaltungForm.myWerkstueck.eigenschaftenList}">
+									value="#{ProzessverwaltungForm.myWerkstueck.eigenschaftenList}" id="items">
 				
 									<h:column>
 										<f:facet name="header">
@@ -94,7 +94,7 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink styleClass="btn" action="process_edit_workpiece" title="#{msgs.bearbeiten}" rel="tooltip">
+										<h:commandLink id="editProperty" styleClass="btn" action="process_edit_workpiece" title="#{msgs.bearbeiten}" rel="tooltip">
 											<i class="fa fa-pencil" title="#{msgs.bearbeiten}"></i>
 											<x:updateActionListener property="#{ProzessverwaltungForm.myWerkstueckEigenschaft}" value="#{item}" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="werkstueckeigenschaft" />
@@ -104,7 +104,7 @@
 								
 								<div class="dataTables_info">
 								<!-- Neu-Schaltknopf -->
-				<h:commandLink action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}"
+				<h:commandLink action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}" id="newProperty"
 					styleClass="btn btn-primary font-size-s margin-top-5"
 					title="#{msgs.eigenschaftHinzufuegen}">
 					<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="werkstueckeigenschaft" />
@@ -136,27 +136,27 @@
 					</div>
 					<div class="box-content nopadding">
 
-						<intranda:formInputText name="title" label="#{msgs.titel}" field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.titel}"
+						<intranda:formInputText id="title" name="title" label="#{msgs.titel}" field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.titel}"
 							help="#{msgs.helpPropertyTitle}" fieldStyle="form-control" required="true" />
-						<intranda:formInputText name="value" label="#{msgs.wert}" field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.wert}"
+						<intranda:formInputText id="value" name="value" label="#{msgs.wert}" field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.wert}"
 							help="#{msgs.helpPropertyValue}" fieldStyle="form-control" required="true" />
 
 						<h:panelGroup>
 							<div class="form-actions">
 
 								<!-- Save -->
-								<h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">
+								<h:commandLink id="saveProperty" styleClass="btn btn-success pull-right font-size-s margin-bottom-most" action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">
 									<i class="fa fa-save margin-right-5"></i>
 									<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 									<h:outputText value="#{msgs.speichern}" />
 								</h:commandLink>
 
-								<h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}">
+								<h:commandLink id="cancelProperty" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}">
 									<h:outputText value="#{msgs.abbrechen}" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 								</h:commandLink>
 
-								<h:commandLink styleClass="btn btn-danger font-size-s" value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.WerkstueckEigenschaftLoeschen}"
+								<h:commandLink id="deleteProperty" styleClass="btn btn-danger font-size-s" value="#{msgs.loeschen}" action="#{ProzessverwaltungForm.WerkstueckEigenschaftLoeschen}"
 									onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" immediate="true"
 									rendered="#{ProzessverwaltungForm.myWerkstueckEigenschaft.id != null}">
 									<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />

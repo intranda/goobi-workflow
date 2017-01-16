@@ -19,13 +19,13 @@
 
                                 <div class="actions">
 
-                                    <h:commandLink title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}" styleClass="btn btn-mini" rel="tooltip">
+                                    <h:commandLink id="edit" title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}" styleClass="btn btn-mini" rel="tooltip">
                                         <i class="fa fa-pencil" title="#{msgs.prozessdetailsBearbeiten}"></i>
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="prozess" />
                                     </h:commandLink>
 
-                                    <h:commandLink action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
+                                    <h:commandLink id="reload" action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
                                         <i class="fa fa-refresh" title="#{msgs.reload}" rel="tooltip" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
@@ -175,7 +175,7 @@
                                 <h:outputText value="#{msgs.processLog}" />
                             </h3>
                         </div>
-                        <h:form styleClass="form-vertical form-bordered">
+                        <h:form styleClass="form-vertical form-bordered" id="processLog">
                             <div class="box-content nopadding">
                                 <div class="form-group nopadding">
                                     <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
@@ -236,7 +236,7 @@
                                             </h:panelGroup>
                                         </div>
                                         <div class="col-sm-3">
-                                            <h:commandButton type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{ProzessverwaltungForm.myProzess.addLogEntry}" />
+                                            <h:commandButton id="addToLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{ProzessverwaltungForm.myProzess.addLogEntry}" />
                                         </div>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@
             </h:panelGroup>
 
 
-            <h:form rendered="#{ProzessverwaltungForm.modusBearbeiten=='prozess'}" styleClass="form-horizontal form-bordered">
+            <h:form rendered="#{ProzessverwaltungForm.modusBearbeiten=='prozess'}" styleClass="form-horizontal form-bordered" id="editDetails">
                 <!-- Box für die Bearbeitung der Details -->
                 <div class="col-sm-12">
 
@@ -262,17 +262,17 @@
                         </div>
                         <div class="box-content nopadding">
 
-                            <intranda:formInputText name="titel" label="#{msgs.prozessTitel}" field="#{ProzessverwaltungForm.myNewProcessTitle}" help="#{msgs.helpProcessTitle}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputText id="title" name="titel" label="#{msgs.prozessTitel}" field="#{ProzessverwaltungForm.myNewProcessTitle}" help="#{msgs.helpProcessTitle}" fieldStyle="form-control" required="true" />
 
-                            <intranda:formInputDropDown label="#{msgs.projekt}" field="#{ProzessverwaltungForm.projektAuswahl}" help="#{msgs.helpProcessProject}" name="prozess" selectItems="#{ProzessverwaltungForm.projektAuswahlListe}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputDropDown id="project" label="#{msgs.projekt}" field="#{ProzessverwaltungForm.projektAuswahl}" help="#{msgs.helpProcessProject}" name="prozess" selectItems="#{ProzessverwaltungForm.projektAuswahlListe}" fieldStyle="form-control" required="true" />
 
-                            <intranda:formInputDropDown label="#{msgs.regelsatz}" field="#{ProzessverwaltungForm.rulesetSelection}" help="#{msgs.helpProcessRuleset}" name="Regelsatz" selectItems="#{ProzessverwaltungForm.rulesetSelectionList}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputDropDown id="ruleset" label="#{msgs.regelsatz}" field="#{ProzessverwaltungForm.rulesetSelection}" help="#{msgs.helpProcessRuleset}" name="Regelsatz" selectItems="#{ProzessverwaltungForm.rulesetSelectionList}" fieldStyle="form-control" required="true" />
 
-                            <intranda:formInputDropDown label="#{msgs.docket}" field="#{ProzessverwaltungForm.docketSelection}" help="#{msgs.helpProcessDocket}" name="docket" selectItems="#{ProzessverwaltungForm.docketSelectionList}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputDropDown id="docket" label="#{msgs.docket}" field="#{ProzessverwaltungForm.docketSelection}" help="#{msgs.helpProcessDocket}" name="docket" selectItems="#{ProzessverwaltungForm.docketSelectionList}" fieldStyle="form-control" required="true" />
 
-                            <intranda:formInputCheckBox label="#{msgs.inAuswahllisteAnzeigen}" field="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" help="#{msgs.helpProcessSelectionList}" name="check" disabled="#{not ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" />
+                            <intranda:formInputCheckBox id="showSelection"  label="#{msgs.inAuswahllisteAnzeigen}" field="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" help="#{msgs.helpProcessSelectionList}" name="check" disabled="#{not ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" />
 
-                            <intranda:formInputCheckBox label="#{msgs.istTemplate}" field="#{ProzessverwaltungForm.myProzess.istTemplate}" help="#{msgs.helpProcessTemplate}" name="template" />
+                            <intranda:formInputCheckBox id="isTemplate" label="#{msgs.istTemplate}" field="#{ProzessverwaltungForm.myProzess.istTemplate}" help="#{msgs.helpProcessTemplate}" name="template" />
 
 
                             <h:panelGroup>
@@ -285,16 +285,16 @@
                                         <h:outputText value="#{msgs.speichern}" />
                                     </h:commandLink>
 
-                                    <h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                    <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                         <h:outputText value="#{msgs.abbrechen}" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                     </h:commandLink>
 
-                                    <h:commandLink styleClass="btn btn-danger font-size-s margin-right-5" action="#{ProzessverwaltungForm.ContentLoeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                    <h:commandLink id="deleteContent" styleClass="btn btn-danger font-size-s margin-right-5" action="#{ProzessverwaltungForm.ContentLoeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                         <i class="fa fa-trash-o margin-right-5" />
                                         <h:outputText value="#{msgs.contentLoeschen}" />
                                     </h:commandLink>
-                                    <h:commandLink styleClass="btn btn-danger font-size-s" action="#{ProzessverwaltungForm.Loeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                    <h:commandLink id="deleteAll" styleClass="btn btn-danger font-size-s" action="#{ProzessverwaltungForm.Loeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                         <i class="fa fa-trash-o margin-right-5" />
                                         <h:outputText value="#{msgs.loeschen}" />
                                     </h:commandLink>

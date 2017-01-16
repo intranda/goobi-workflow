@@ -22,12 +22,12 @@
 						<div class="dataTables_wrapper">
 
 							<x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
-								value="#{ProzessverwaltungForm.usergroupPaginator.list}">
+								value="#{ProzessverwaltungForm.usergroupPaginator.list}" id="possibleGroups">
 
 								<h:column>
 									<h:outputText value="#{item.titel}" />
 									<!-- Hinzufügen-Schaltknopf -->
-									<h:commandLink styleClass="btn btn-primary pull-right" title="#{msgs.uebernehmen}" rel="tooltip"
+									<h:commandLink id="use" styleClass="btn btn-primary pull-right" title="#{msgs.uebernehmen}" rel="tooltip"
 										action="#{ProzessverwaltungForm.BenutzergruppeHinzufuegen}">
 										<i class="fa fa-plus"></i>
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -40,7 +40,7 @@
 
 							<div class="dataTables_info">
 								<!-- Cancel-Schaltknopf -->
-								<h:commandLink styleClass="btn font-size-s" action="#{NavigationForm.Reload}">
+								<h:commandLink id="cancelUserGroup" styleClass="btn font-size-s" action="#{NavigationForm.Reload}">
 									<h:outputText value="#{msgs.abbrechen}" />
 									<f:setPropertyActionListener target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
 									<f:ajax render=":myform" />
@@ -48,7 +48,7 @@
 							</div>
 							<div class="dataTables_paginate">
 								<!-- paginator -->
-								<intranda:tablePaginator2 paginator="#{ProzessverwaltungForm.usergroupPaginator}" />
+								<intranda:tablePaginator2 id="users" paginator="#{ProzessverwaltungForm.usergroupPaginator}" />
 								<!-- /paginator -->
 							</div>
 
@@ -71,13 +71,13 @@
 						<div class="dataTables_wrapper">
 
 							<x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
-								value="#{ProzessverwaltungForm.userPaginator.list}">
+								value="#{ProzessverwaltungForm.userPaginator.list}" id="possibleUser">
 
 								<h:column>
 									<h:outputText value="#{item.nachname}, #{item.vorname}" />
 									<!-- Hinzufügen-Schaltknopf -->
 									<h:commandLink styleClass="btn btn-primary pull-right" title="#{msgs.uebernehmen}" rel="tooltip"
-										action="#{ProzessverwaltungForm.BenutzerHinzufuegen}">
+										action="#{ProzessverwaltungForm.BenutzerHinzufuegen}" id="addUser">
 										<i class="fa fa-plus"></i>
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										<x:updateActionListener property="#{ProzessverwaltungForm.myBenutzer}" value="#{item}" />
@@ -89,7 +89,7 @@
 
 							<div class="dataTables_info">
 								<!-- Cancel-Schaltknopf -->
-								<h:commandLink styleClass="btn font-size-s" action="#{NavigationForm.Reload}">
+								<h:commandLink styleClass="btn font-size-s" action="#{NavigationForm.Reload}" id="cancelUser">
 									<h:outputText value="#{msgs.abbrechen}" />
 									<f:setPropertyActionListener target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
 									<f:ajax render=":myform" />
@@ -97,7 +97,7 @@
 							</div>
 							<div class="dataTables_paginate">
 								<!-- paginator -->
-								<intranda:tablePaginator paginator="#{ProzessverwaltungForm.userPaginator}" />
+								<intranda:tablePaginator id="groups" paginator="#{ProzessverwaltungForm.userPaginator}" />
 								<!-- /paginator -->
 							</div>
 
@@ -119,7 +119,7 @@
 					<div class="box-content nopadding">
 						<div class="dataTables_wrapper">
 
-							<x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
+							<x:dataTable id="addedPersons" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
 								value="#{ProzessverwaltungForm.mySchritt.benutzergruppen}" rendered="#{ProzessverwaltungForm.mySchritt.benutzergruppen.size() gt 0}">
 
 								<x:column style="width:30px;">
@@ -132,7 +132,7 @@
 								
 								<x:column style="width:80px;" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
 									<!-- Löschen-Schaltknopf -->
-									<h:commandLink styleClass="btn btn-danger font-size-s" title="#{msgs.berechtigungLoeschen}" rel="tooltip"
+									<h:commandLink id="deleteUserGroup" styleClass="btn btn-danger font-size-s" title="#{msgs.berechtigungLoeschen}" rel="tooltip"
 										action="#{ProzessverwaltungForm.BenutzergruppeLoeschen}">
 										<i class="fa fa-trash-o"></i>
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -156,7 +156,7 @@
 								
 								<x:column style="width:80px;" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
 									<!-- Löschen-Schaltknopf -->
-									<h:commandLink styleClass="btn btn-danger font-size-s" title="#{msgs.berechtigungLoeschen}" rel="tooltip"
+									<h:commandLink id="deleteUser" styleClass="btn btn-danger font-size-s" title="#{msgs.berechtigungLoeschen}" rel="tooltip"
 										action="#{ProzessverwaltungForm.BenutzerLoeschen}">
 										<i class="fa fa-trash-o"></i>
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -170,7 +170,7 @@
 							<div class="dataTables_info">
 							
 								<!-- new user -->
-								<h:commandLink styleClass="btn btn-primary font-size-s margin-right-5" action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}" immediate="true" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
+								<h:commandLink id="addUser" styleClass="btn btn-primary font-size-s margin-right-5" action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}" immediate="true" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
 									<i class="fa fa-user margin-right-5"></i>
 									<h:outputText value="#{msgs.benutzerHinzufuegen}" />
 									<f:setPropertyActionListener target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -179,7 +179,7 @@
 								</h:commandLink>
 								
 								<!-- new group -->
-								<h:commandLink styleClass="btn btn-primary font-size-s" action="#{BenutzergruppenForm.FilterKeinMitZurueck}" immediate="true" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
+								<h:commandLink id="addGroup" styleClass="btn btn-primary font-size-s" action="#{BenutzergruppenForm.FilterKeinMitZurueck}" immediate="true" rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
 									<i class="fa fa-users margin-right-5"></i>
 									<h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
 									<f:setPropertyActionListener target="#{ProzessverwaltungForm.userDisplayMode}"

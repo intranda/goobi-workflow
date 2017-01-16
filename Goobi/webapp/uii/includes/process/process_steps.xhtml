@@ -30,14 +30,14 @@
                                     </f:facet>
                                     <h:outputText value="#{item.reihenfolge}" />
                                     <!-- Schaltknopf: Reihenfolge nach oben -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.reihenfolgeUp}" title="#{msgs.moveTaskUp}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                    <h:commandLink id="up" action="#{ProzessverwaltungForm.reihenfolgeUp}" title="#{msgs.moveTaskUp}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
                                         <i class="fa fa-chevron-up font-light margin-left-10" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
                                         <f:ajax render="@form" />
                                     </h:commandLink>
                                     <!-- Schaltknopf: Reihenfolge nach unten -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.reihenfolgeDown}" title="#{msgs.moveTaskDown}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                    <h:commandLink id="down" action="#{ProzessverwaltungForm.reihenfolgeDown}" title="#{msgs.moveTaskDown}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
                                         <i class="fa fa-chevron-down font-light" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
@@ -180,7 +180,7 @@
                                     </ul>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.SchrittStatusDown}" rel="tooltip" title="#{msgs.statusRunterSetzen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                    <h:commandLink id="statusDown" action="#{ProzessverwaltungForm.SchrittStatusDown}" rel="tooltip" title="#{msgs.statusRunterSetzen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
                                         <i class="fa fa-chevron-left font-light margin-left-5" title="#{msgs.statusRunterSetzen}" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
@@ -188,7 +188,7 @@
                                     </h:commandLink>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.SchrittStatusUp}" rel="tooltip" title="#{msgs.statusHoeherSetzen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
+                                    <h:commandLink id="statusUp" action="#{ProzessverwaltungForm.SchrittStatusUp}" rel="tooltip" title="#{msgs.statusHoeherSetzen}" rendered="#{(LoginForm.maximaleBerechtigung == 1) or (LoginForm.maximaleBerechtigung == 2)}">
                                         <i class="fa fa-chevron-right font-light margin-left-5" title="#{msgs.statusHoeherSetzen}" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
@@ -203,14 +203,14 @@
                                         <h:outputText value="#{msgs.auswahl}" />
                                     </f:facet>
                                     <!-- Bearbeiten-Schaltknopf -->
-                                    <h:commandLink action="process_edit_step" title="#{msgs.detailsDesSchritts}">
+                                    <h:commandLink id="editStep" action="process_edit_step" title="#{msgs.detailsDesSchritts}">
                                         <i class="btn fa fa-pencil margin-right-5" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                     </h:commandLink>
 
-                                    <h:commandLink rendered="#{item.stepPlugin != '' and item.stepPlugin != null}" action="#{ProzessverwaltungForm.startPlugin}">
+                                    <h:commandLink id="runPlugin" rendered="#{item.stepPlugin != '' and item.stepPlugin != null}" action="#{ProzessverwaltungForm.startPlugin}">
                                         <span class="btn fa fa-puzzle-piece margin-right-5" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
                                     </h:commandLink>

@@ -43,7 +43,7 @@
                                 <ui:include src="includes/process/list_filterAndDisplay.xhtml" />
                             </h:form>
                             <h:form id="myform">
-                                <x:dataTable rowIndexVar="count" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProzessverwaltungForm.paginator.list}">
+                                <x:dataTable id="processTable" rowIndexVar="count" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProzessverwaltungForm.paginator.list}">
 
                                     <!-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ -->
                                     <x:column rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
@@ -242,7 +242,9 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
 
-                                        <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" title="#{msgs.prozessBearbeiten}">
+                                        <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" 
+                                        id="edit"
+                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" title="#{msgs.prozessBearbeiten}">
                                             <i class="btn fa fa-pencil" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -467,7 +469,7 @@
                                 </div>
                                 <div class="dataTables_paginate">
                                     <!-- paginator -->
-                                    <intranda:tablePaginator paginator="#{ProzessverwaltungForm.paginator}" />
+                                    <intranda:tablePaginator paginator="#{ProzessverwaltungForm.paginator}" id="navigator"/>
                                     <!-- /paginator -->
                                 </div>
                             </h:form>

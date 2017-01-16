@@ -7,7 +7,7 @@
 
 	<composite:implementation>
 
-		<x:dataList var="item" value="#{ProzessverwaltungForm.myProzess.vorlagenList}">
+		<x:dataList var="item" value="#{ProzessverwaltungForm.myProzess.vorlagenList}" id="templateList">
 
 			<div class="row">
 				<div class="col-sm-12">
@@ -21,7 +21,7 @@
 
 							<div class="actions">
 
-								<h:commandLink title="#{msgs.vorlageBearbeiten}" action="process_edit_template"
+								<h:commandLink title="#{msgs.vorlageBearbeiten}" action="process_edit_template" id="editTemplate"
 									styleClass="btn btn-mini" rel="tooltip"
 									rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 									<i class="fa fa-pencil" title="#{msgs.vorlageBearbeiten}"></i>
@@ -47,7 +47,7 @@
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink action="#{ProzessverwaltungForm.VorlageNeu}"
+									<h:commandLink action="#{ProzessverwaltungForm.VorlageNeu}" id="newTemplate"
 										rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}"
 										styleClass="btn btn-lightgrey font-size-s margin-top-5" title="#{msgs.vorlageHinzufuegen}">
 										<i class="fa fa-plus margin-right-5"></i>

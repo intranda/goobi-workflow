@@ -7,7 +7,7 @@
 
 	<composite:implementation>
 
-		<x:dataList var="item" value="#{ProzessverwaltungForm.myProzess.werkstueckeList}">
+		<x:dataList var="item" value="#{ProzessverwaltungForm.myProzess.werkstueckeList}" id="masterpieces">
 
 			<div class="row">
 				<div class="col-sm-12">
@@ -20,7 +20,7 @@
 							</h3>
 
 							<div class="actions">
-								<h:commandLink title="#{msgs.werkstueckBearbeiten}" action="process_edit_workpiece"
+								<h:commandLink title="#{msgs.werkstueckBearbeiten}" action="process_edit_workpiece" id="editMasterpiece"
 									styleClass="btn btn-mini" rel="tooltip"
 									rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
 									<i class="fa fa-pencil" title="#{msgs.vorlageBearbeiten}"></i>
@@ -45,7 +45,7 @@
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink action="#{ProzessverwaltungForm.WerkstueckNeu}"
+									<h:commandLink action="#{ProzessverwaltungForm.WerkstueckNeu}" id="newMasterpiece"
 										styleClass="btn btn-lightgrey font-size-s margin-top-5"
 										rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}"
 										title="#{msgs.werkstueckHinzufuegen}">

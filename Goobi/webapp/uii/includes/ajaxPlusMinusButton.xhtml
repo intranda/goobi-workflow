@@ -7,14 +7,14 @@
 
 	<composite:implementation>
 
-		<h:commandLink styleClass="font-black" rendered="#{!item.panelAusgeklappt}" title="#{item.titel}">
+		<h:commandLink styleClass="font-black" rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  id="displayDetails">
 			<i class="fa fa-angle-right margin-right-5"></i>
 			<h:outputText value="#{item.titel}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
 			<f:ajax render=":myform" />
 		</h:commandLink>
 		
-		<h:commandLink styleClass="font-black" rendered="#{item.panelAusgeklappt}" title="#{item.titel}">
+		<h:commandLink styleClass="font-black" rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  id="hideDetails">
 			<i class="fa fa-angle-down margin-right-5"></i>
 			<h:outputText value="#{item.titel}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>

@@ -151,7 +151,7 @@
 											<h:outputText value="#{element.title}" />
 										</h4>
 										<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" />
-										<h:commandLink action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}">
+										<h:commandLink id="createExcel" action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}">
 											<span class="btn margin-right-10 fa fa-floppy-o" />
 											<h:outputText value="#{msgs.createExcel}" />
 											<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
@@ -170,7 +170,7 @@
 												<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
 											</h:panelGroup>
 											<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
-											<h:commandLink action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable}">
+											<h:commandLink id="createExcel2" action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable}">
 												<span class="btn margin-right-10 fa fa-floppy-o" />
 												<h:outputText value="#{msgs.createExcel}" />
 												<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />

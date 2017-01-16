@@ -16,7 +16,7 @@
 
 		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
 
-			<h:form>
+			<h:form id="propertyList">
 
 				<div class="box thin-margin box-bordered">
 					<div class="box-title">
@@ -29,12 +29,12 @@
 
 						<div class="dataTables_wrapper">
 
-							<table class="table table-hover table-bordered">
-								<x:dataList var="container" value="#{ProzessverwaltungForm.containerList}"
+							<table class="table table-hover table-bordered" id="propertyTable">
+								<x:dataList var="container" value="#{ProzessverwaltungForm.containerList}" id="container"
 									rowCountVar="rowCount" rowIndexVar="rowIndex">
-									<x:dataList var="proc" value="#{ProzessverwaltungForm.containerlessProperties}"
+									<x:dataList var="proc" value="#{ProzessverwaltungForm.containerlessProperties}" id="containerless"
 										rowCountVar="propCount" rowIndexVar="propInd">
-										<h:panelGroup rendered="#{container == 0}">
+										<h:panelGroup rendered="#{container == 0}" >
 
 											<tr>
 												<td><h:outputText value="#{proc.name}" /></td>
@@ -53,7 +53,7 @@
 					                                	</h:panelGroup>
 					                                </h:panelGroup>
 												</td>
-												<td><h:commandLink action="process_edit" title="#{msgs.bearbeiten}">
+												<td><h:commandLink action="process_edit" title="#{msgs.bearbeiten}" id="editProperty">
 														<i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}"
@@ -62,7 +62,7 @@
 														<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}"
 															value="eigenschaft" />
 													</h:commandLink> <h:commandLink action="#{ProzessverwaltungForm.duplicateProperty}"
-														title="#{msgs.duplicate}">
+														title="#{msgs.duplicate}" id="duplicateProperty">
 														<i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}"
@@ -79,10 +79,10 @@
 										</tr>
 									</h:panelGroup>
 
-									<x:dataList var="process_item"
+									<x:dataList var="process_item" id="container"
 										value="#{ProzessverwaltungForm.containers[container].propertyList}"
 										rowCountVar="propCount" rowIndexVar="propInd">
-										<h:panelGroup rendered="#{container != 0}">
+										<h:panelGroup rendered="#{container != 0}" >
 											<tr>
 												<td><h:outputText value="#{process_item.name}" /></td>
 												<td>
@@ -102,11 +102,11 @@
 					                                	</h:panelGroup>
 					                                </h:panelGroup>
 												</td>
-												<h:panelGroup rendered="#{propInd == 0}">
+												<h:panelGroup rendered="#{propInd == 0}" id="cont">
 													<td rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
 														<!-- edit container --> 
 														<h:commandLink action="process_edit"
-															title="#{msgs.bearbeiten}">
+															title="#{msgs.bearbeiten}" id="editProperty2">
 															<i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
 															<f:passThroughAttribute name="data-toggle" value="tooltip" />
 															<x:updateActionListener property="#{ProzessverwaltungForm.container}"
@@ -115,7 +115,7 @@
 																value="eigenschaft" />
 														</h:commandLink> 
 														<!-- duplicate container --> 
-														<h:commandLink
+														<h:commandLink id="duplicateProperty2"
 															action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
 															<i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
 															<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -132,7 +132,7 @@
 							</table>
 							<div class="dataTables_info">
 								<!-- Neu-Schaltknopf -->
-								<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}"
+								<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}" id="newProperty"
 									title="#{msgs.eigenschaftHinzufuegen}" styleClass="btn btn-lightgrey font-size-s">
 									<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}"
@@ -294,20 +294,20 @@
 									<div class="form-actions">
 
 										<!-- Save -->
-										<h:commandLink styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+										<h:commandLink id="save" styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
 											action="#{ProzessverwaltungForm.saveCurrentProperty}">
 											<i class="fa fa-save margin-right-5"></i>
 											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 											<h:outputText value="#{msgs.speichern}" />
 										</h:commandLink>
 
-										<h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true"
+										<h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true"
 											action="#{NavigationForm.Reload}">
 											<h:outputText value="#{msgs.abbrechen}" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 										</h:commandLink>
 
-										<h:commandLink styleClass="btn btn-danger font-size-s"
+										<h:commandLink id="delete" styleClass="btn btn-danger font-size-s"
 											action="#{ProzessverwaltungForm.deleteProperty}"
 											onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
 											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />

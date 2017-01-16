@@ -17,12 +17,12 @@
 
                     <div class="actions">
 
-                        <h:commandLink action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
+                        <h:commandLink id="reloadStep" action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
                             <i class="fa fa-refresh" />
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
 
-                        <h:commandLink title="#{msgs.bearbeiten}" action="#{NavigationForm.Reload}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}" styleClass="btn btn-mini" rel="tooltip">
+                        <h:commandLink id="editStep" title="#{msgs.bearbeiten}" action="#{NavigationForm.Reload}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}" styleClass="btn btn-mini" rel="tooltip">
                             <i class="fa fa-pencil"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="schritt" />
@@ -151,38 +151,33 @@
                 <div class="box-content nopadding">
                     <!-- Felder -->
 
-                    <intranda:formInputText name="titel2" label="#{msgs.titel}" field="#{ProzessverwaltungForm.mySchritt.titel}" help="#{msgs.helpProcessStepTitle}" fieldStyle="form-control" required="true" />
+                    <intranda:formInputText id="title" name="titel2" label="#{msgs.titel}" field="#{ProzessverwaltungForm.mySchritt.titel}" help="#{msgs.helpProcessStepTitle}" fieldStyle="form-control" required="true" />
 
-                    <intranda:formInputText name="reihenfolge2" label="#{msgs.reihenfolge}" field="#{ProzessverwaltungForm.mySchritt.reihenfolge}" help="#{msgs.helpProcessStepOrder}" fieldStyle="form-control" required="true" />
+                    <intranda:formInputText id="order" name="reihenfolge2" label="#{msgs.reihenfolge}" field="#{ProzessverwaltungForm.mySchritt.reihenfolge}" help="#{msgs.helpProcessStepOrder}" fieldStyle="form-control" required="true" />
 
-                    <intranda:formInputText name="prioritaet" label="#{msgs.prioritaet}" field="#{ProzessverwaltungForm.mySchritt.prioritaet}" help="#{msgs.helpProcessStepPriority}" fieldStyle="form-control" required="true" />
+                    <intranda:formInputText id="priority" name="prioritaet" label="#{msgs.prioritaet}" field="#{ProzessverwaltungForm.mySchritt.prioritaet}" help="#{msgs.helpProcessStepPriority}" fieldStyle="form-control" required="true" />
 
-                    <intranda:formInputCheckBox label="#{msgs.metadaten}" field="#{ProzessverwaltungForm.mySchritt.typMetadaten}" help="#{msgs.helpProcessStepMetadata}" name="metadata" />
+                    <intranda:formInputCheckBox id="metadata" label="#{msgs.metadaten}" field="#{ProzessverwaltungForm.mySchritt.typMetadaten}" help="#{msgs.helpProcessStepMetadata}" name="metadata" />
 
-                    <!-- 					<intranda:formInputCheckBox label="#{msgs.importMittelsFileUpload}" -->
-                    <!-- 						field="#{ProzessverwaltungForm.mySchritt.typImportFileUpload}" -->
-                    <!-- 						help="#{msgs.helpProcessStepFileUpload}" name="fileupload" /> -->
-
-                    <!-- TODO Javascript onclick="if(!this.checked) document.getElementById('chkSchreiben').checked=false;" -->
-                    <intranda:formInputCheckBox label="#{msgs.imagesLesen}" field="#{ProzessverwaltungForm.mySchritt.typImagesLesen}" help="#{msgs.helpProcessStepReadImages}" name="chkLesen" />
+                    <intranda:formInputCheckBox id="readImages" label="#{msgs.imagesLesen}" field="#{ProzessverwaltungForm.mySchritt.typImagesLesen}" help="#{msgs.helpProcessStepReadImages}" name="chkLesen" />
 
                     <!-- TODO Javascript onclick="if(this.checked) document.getElementById('chkLesen').checked=true;" -->
-                    <intranda:formInputCheckBox label="#{msgs.imagesSchreiben}" field="#{ProzessverwaltungForm.mySchritt.typImagesSchreiben}" help="#{msgs.helpProcessStepWriteImages}" name="chkSchreiben" />
+                    <intranda:formInputCheckBox id="writeImages" label="#{msgs.imagesSchreiben}" field="#{ProzessverwaltungForm.mySchritt.typImagesSchreiben}" help="#{msgs.helpProcessStepWriteImages}" name="chkSchreiben" />
 
-                    <intranda:formInputCheckBox label="#{msgs.beimAbschliessenVerifizieren}" field="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}" help="#{msgs.helpProcessStepVerify}" name="verify" />
+                    <intranda:formInputCheckBox id="verify" label="#{msgs.beimAbschliessenVerifizieren}" field="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}" help="#{msgs.helpProcessStepVerify}" name="verify" />
 
-                    <intranda:formInputCheckBox label="#{msgs.exportDMS}" field="#{ProzessverwaltungForm.mySchritt.typExportDMS}" help="#{msgs.helpProcessStepExport}" name="export" />
+                    <intranda:formInputCheckBox id="exportDMS" label="#{msgs.exportDMS}" field="#{ProzessverwaltungForm.mySchritt.typExportDMS}" help="#{msgs.helpProcessStepExport}" name="export" />
 
-                    <intranda:formInputCheckBox label="#{msgs.schrittBeimAnnehmenAbschliessen}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" help="#{msgs.helpProcessStepFinish}" name="chkmanuell1" />
+                    <intranda:formInputCheckBox id="schrittBeimAnnehmenAbschliessen" label="#{msgs.schrittBeimAnnehmenAbschliessen}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" help="#{msgs.helpProcessStepFinish}" name="chkmanuell1" />
 
                     <h:panelGroup rendered="#{NavigationForm.showModuleManager}">
-                        <intranda:formInputCheckBox label="#{msgs.beimAnnehmenModulStarten}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}" help="#{msgs.helpProcessStepStartModule}" name="chkmanuell2" />
+                        <intranda:formInputCheckBox id="beimAnnehmenModulStarten" label="#{msgs.beimAnnehmenModulStarten}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}" help="#{msgs.helpProcessStepStartModule}" name="chkmanuell2" />
 
-                        <intranda:formInputCheckBox label="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}" help="#{msgs.helpProcessStepStartModuleAndFinish}" name="chkmanuell3" />
+                        <intranda:formInputCheckBox id="beimAnnehmenModulStartenUndSchrittAbschliessen" label="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}" help="#{msgs.helpProcessStepStartModuleAndFinish}" name="chkmanuell3" />
 
                     </h:panelGroup>
 
-                    <intranda:formInputCheckBox label="#{msgs.automatischerSchritt}" field="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" help="#{msgs.helpProcessStepAutomatic}" name="chkmanuell4" />
+                    <intranda:formInputCheckBox id="automatic" label="#{msgs.automatischerSchritt}" field="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" help="#{msgs.helpProcessStepAutomatic}" name="chkmanuell4" />
 
 
                     <div class="form-group" style="">
@@ -223,32 +218,20 @@
                         </div>
                     </div>
                     <h:panelGroup rendered="#{NavigationForm.showModuleManager}">
-                        <intranda:formInputText name="moduleName" label="#{msgs.modul}" field="#{ProzessverwaltungForm.mySchritt.typModulName}" help="#{msgs.helpProcessStepModule}" fieldStyle="form-control" />
+                        <intranda:formInputText id="moduleName" name="moduleName" label="#{msgs.modul}" field="#{ProzessverwaltungForm.mySchritt.typModulName}" help="#{msgs.helpProcessStepModule}" fieldStyle="form-control" />
                     </h:panelGroup>
 
-                    <intranda:formInputDropDown label="#{msgs.status}" field="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusAsString}" help="#{msgs.helpProcessStepStatus}" name="status" selectItems="#{HelperForm.stepStatusList}" fieldStyle="form-control" required="true" />
+                    <intranda:formInputDropDown id="status" label="#{msgs.status}" field="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusAsString}" help="#{msgs.helpProcessStepStatus}" name="status" selectItems="#{HelperForm.stepStatusList}" fieldStyle="form-control" required="true" />
 
-                    <intranda:formInputCheckBox label="#{msgs.batchStep}" field="#{ProzessverwaltungForm.mySchritt.batchStep}" help="#{msgs.helpProcessStepBatch}" name="batch" />
+                    <intranda:formInputCheckBox id="batchStep" label="#{msgs.batchStep}" field="#{ProzessverwaltungForm.mySchritt.batchStep}" help="#{msgs.helpProcessStepBatch}" name="batch" />
+    
+                    <intranda:formInputDropDownWithEmptyValue id="stepPlugin" label="#{msgs.stepPlugin}" field="#{ProzessverwaltungForm.mySchritt.stepPlugin}" help="#{msgs.helpProcessStepPlugin}" name="stepplugin" selectItems="#{ProzessverwaltungForm.possibleStepPlugins}" fieldStyle="form-control" required="false" />
 
-                    <!-- 
-					<intranda:formInputText name="stepplugin" label="#{msgs.stepPlugin}"
-						field="#{ProzessverwaltungForm.mySchritt.stepPlugin}" help="#{msgs.helpProcessStepPlugin}"
-						fieldStyle="form-control" required="false" />
- -->
-                    <intranda:formInputDropDownWithEmptyValue label="#{msgs.stepPlugin}" field="#{ProzessverwaltungForm.mySchritt.stepPlugin}" help="#{msgs.helpProcessStepPlugin}" name="stepplugin" selectItems="#{ProzessverwaltungForm.possibleStepPlugins}" fieldStyle="form-control" required="false" />
+                    <intranda:formInputDropDownWithEmptyValue id="validationPlugin" label="#{msgs.validationPlugin}" field="#{ProzessverwaltungForm.mySchritt.validationPlugin}" help="#{msgs.helpProcessValidationPlugin}" name="validationplugin" selectItems="#{ProzessverwaltungForm.possibleValidationPlugins}" fieldStyle="form-control" required="false" />
 
+                    <intranda:formInputCheckBox id="delay" label="#{msgs.timeDelayPlugin}" field="#{ProzessverwaltungForm.mySchritt.delayStep}" help="#{msgs.helpTimeDelayPlugin}" name="timeDelay" />
 
-                    <!--
-					<intranda:formInputText name="validationplugin" label="#{msgs.validationPlugin}"
-						field="#{ProzessverwaltungForm.mySchritt.validationPlugin}"
-						help="#{msgs.helpProcessValidationPlugin}" fieldStyle="form-control" required="false" />
--->
-                    <intranda:formInputDropDownWithEmptyValue label="#{msgs.validationPlugin}" field="#{ProzessverwaltungForm.mySchritt.validationPlugin}" help="#{msgs.helpProcessValidationPlugin}" name="validationplugin" selectItems="#{ProzessverwaltungForm.possibleValidationPlugins}" fieldStyle="form-control" required="false" />
-
-
-                    <intranda:formInputCheckBox label="#{msgs.timeDelayPlugin}" field="#{ProzessverwaltungForm.mySchritt.delayStep}" help="#{msgs.helpTimeDelayPlugin}" name="timeDelay" />
-
-                    <intranda:formInputCheckBox label="#{msgs.updateMetadataIndex}" field="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" help="#{msgs.helpUpdateMetadataIndex}" name="updateMetadataIndex" />
+                    <intranda:formInputCheckBox id="metadataIndex" label="#{msgs.updateMetadataIndex}" field="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" help="#{msgs.helpUpdateMetadataIndex}" name="updateMetadataIndex" />
 
 
                     <div class="form-actions">
@@ -262,11 +245,11 @@
 
 
                         <!-- Cancel -->
-                        <h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" action="#{NavigationForm.Reload}" value="#{msgs.abbrechen}" immediate="true">
+                        <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" action="#{NavigationForm.Reload}" value="#{msgs.abbrechen}" immediate="true">
                             <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                         </h:commandLink>
 
-                        <h:commandLink action="#{ProzessverwaltungForm.SchrittLoeschen}" styleClass="btn btn-danger font-size-s" onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
+                        <h:commandLink id="delete" action="#{ProzessverwaltungForm.SchrittLoeschen}" styleClass="btn btn-danger font-size-s" onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
                             <i class="fa fa-trash-o margin-right-5"></i>
                             <h:outputText value="#{msgs.loeschen}" />
                         </h:commandLink>

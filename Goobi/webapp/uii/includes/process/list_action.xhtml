@@ -1,509 +1,450 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
-	
-	<composite:interface>
-	</composite:interface>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
 
-	<composite:implementation>
+    <composite:interface>
+    </composite:interface>
 
-		<h:panelGroup
-			rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2))}">
+    <composite:implementation>
 
-			<div class="row">
-				<div class="col-sm-12">
+        <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2))}">
 
-					<div class="box box-color orange box-bordered">
-						<div class="box-title">
-							<h3>
-								<i class="fa fa-wrench"></i>
-								<h:outputText value="#{msgs.moeglicheAktionen}" />
-							</h3>
-						</div>
-						<div class="box-content ">
+            <div class="row">
+                <div class="col-sm-12">
 
-							<h:form prependId="false">
-								<ul class="action-ul">
-									
-									 <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
-									 
-										<h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }">
-											<li class="action-li">
-												<!-- Upload-Schaltknopf -->
-												<h:commandLink id="action1" action="#{ProzessverwaltungForm.UploadFromHomeAlle}"
-													title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.upload}')) return false">
-													<span class="btn btn-lightred margin-right-10 fa fa-cloud-upload fa-lg width-40" />
-													<h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
-												</h:commandLink>
-											</li>
-										</h:panelGroup>
-	
-										<h:panelGroup
-											rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-											<li class="action-li">
-											
-												<h:commandLink id="expandbutton1" onclick="toggle('possibleActions1')">
-													<span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg width-40" />
-													<h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
-													<f:ajax render="expandbutton1" />
-												</h:commandLink>
-												
-												<ul id="possibleActions1" style="display:none" class="action-intent-ul">
-													<li class="action-intent-li">
-														<!-- Download-Schaltknopf für Selection-->
-														<h:commandLink action="#{ProzessverwaltungForm.DownloadToHomeSelection}" 
-															rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-															onclick="if (!confirm('#{msgs.download}')) return false">
-															<span class="btn margin-right-10 fa fa-angle-right" />
-															<h:outputText value="#{msgs.auswahl2}" />
-														</h:commandLink>
-													</li>
-													
-													<li class="action-intent-li">
-														<!-- Download-Schaltknopf für Page-->
-														<h:commandLink id="action3" action="#{ProzessverwaltungForm.DownloadToHomePage}" title="#{msgs.trefferDieserSeite}"
-															onclick="if (!confirm('#{msgs.download}')) return false">
-															<span class="btn margin-right-10 fa fa-angle-right" />
-															<h:outputText value="#{msgs.trefferDieserSeite}" />
-														</h:commandLink>
-													</li>
-													<li class="action-intent-li">
-														<!-- Download-Schaltknopf für gesamtes Trefferset -->
-														<h:commandLink id="action4" action="#{ProzessverwaltungForm.DownloadToHomeHits}" title="#{msgs.gesamtesTrefferset}"
-															onclick="if (!confirm('#{msgs.download}')) return false">
-															<span class="btn margin-right-10 fa fa-angle-right" />
-															<h:outputText value="#{msgs.gesamtesTrefferset}" />
-														</h:commandLink>
-													</li>
-												</ul>
-													
-											</li>
-										</h:panelGroup>
-									</h:panelGroup>
-									
-									<h:panelGroup
-										rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton2" onclick="toggle('possibleActions2')">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
-												<h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
-												<f:ajax render="expandbutton2" />
-											</h:commandLink>
-											<ul id="possibleActions2" style="display:none" class="action-intent-ul">
-												
-												<li class="action-intent-li">
-													<!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
-													<h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
-												</li>
-												
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für Selection-->
-													<h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}"
-														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-														onclick="if (!confirm('#{msgs.download}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.auswahl2}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für Page-->
-													<h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7"
-														onclick="if (!confirm('#{msgs.download}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.trefferDieserSeite}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für gesamtes Trefferset -->
-													<h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8"
-														onclick="if (!confirm('#{msgs.download}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.gesamtesTrefferset}" />
-													</h:commandLink>
-												</li>
-											</ul>
-										</li>
-									</h:panelGroup>
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-wrench"></i>
+                                <h:outputText value="#{msgs.moeglicheAktionen}" />
+                            </h3>
+                        </div>
+                        <div class="box-content ">
 
-									<!-- Bearbeitungsstatus hochsetzen-->
-									<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton3" onclick="toggle('possibleActions3')">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-up fa-lg width-40" />
-												<h:outputText value="#{msgs.bearbeitungsstatusHochsetzen}" />
-												<f:ajax render="expandbutton3" />
-											</h:commandLink>
-												
-											<ul id="possibleActions3" style="display:none" class="action-intent-ul">
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für Selection-->
-													<h:commandLink id="action9" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenSelection}"
-														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-														onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.auswahl2}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für Page-->
-													<h:commandLink action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenPage}" title="#{msgs.trefferDieserSeite}" id="action10"
-														onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.trefferDieserSeite}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für gesamtes Trefferset -->
-													<h:commandLink id="action11" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenHits}" title="#{msgs.gesamtesTrefferset}"
-														onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.gesamtesTrefferset}" />
-													</h:commandLink>
-												</li>
-											</ul>
-										</li>
-									</h:panelGroup>
+                            <h:form prependId="false">
+                                <ul class="action-ul">
 
-									<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton4" onclick="toggle('possibleActions4')">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-down fa-lg width-40" />
-												<h:outputText value="#{msgs.bearbeitungsstatusRuntersetzen}" />
-												<f:ajax render="expandbutton4" />
-											</h:commandLink>
-												
-											<ul id="possibleActions4" style="display:none" class="action-intent-ul">
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für Selection-->
-													<h:commandLink id="action12" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenSelection}"
-														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}"
-														onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.auswahl2}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für Page-->
-													<h:commandLink id="action13" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenPage}" title="#{msgs.trefferDieserSeite}"
-														onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.trefferDieserSeite}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Download-Schaltknopf für gesamtes Trefferset -->
-													<h:commandLink id="action14" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenHits}" title="#{msgs.gesamtesTrefferset}"
-														onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.gesamtesTrefferset}" />
-													</h:commandLink>
-												</li>
-											</ul>
-												
-										</li>
-									</h:panelGroup>
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
 
-									<h:panelGroup
-										rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
-												<h:outputText value="#{msgs.goobiScriptAusfuehren}" />
-												<f:ajax render="expandbutton5" />
-											</h:commandLink>
-											
-											 <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger"
-												infoClass="alert alert-info" warnClass="alert" showDetail="true"
-												showSummary="true" tooltip="true" styleClass="messages" />
-							
-											<ul id="possibleActions5" style="display:none" class="action-intent-ul">
-												<li class="action-intent-li">
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'">addUser</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">addUserGroup</span>
-													<span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:deleteTiffHeaderFile'">deleteTiffHeaderFile</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot;swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'">swapSteps</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'">importFromFileSystem</span>
-													<span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesOut'">swapProzessesOut</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'">setRuleset</span>
-													<span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'">swapProzessesIn</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span> <span
-														class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'">setStepStatus</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'">addModuleToStep</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch value:true_OR_false'">setTaskProperty</span>
-													<span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:tiffWriter'">tiffWriter</span> 
-													<span
-														class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:exportDms exportImages:false'">exportDms</span>
-													<span
-														class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:updateMetadata'">updateMetadata</span>
-													<span class="badge badge-intranda-light pointer"
-														onclick="document.getElementById('goobiScriptfield').value='action:addPluginToStep &quot;steptitle:TITLE_STEP&quot; plugin:PLUGIN_NAME'">addPluginToStep</span>
-                                                    <span
-														class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addToProcessLog type:debug_info_warn_error_user &quot;message:YOUR_MESSAGE&quot;'">addToProcessLog</span>    
-                                                        <span
-                                                        class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:countImages'">countImages</span>	
-                                                              <span
-                                                        class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:countMetadata'">countMetadata</span>    
-														
-												</li>
-												<li class="action-intent-li">
-													<x:inputTextarea id="goobiScriptfield" forceId="true" styleClass="form-control"
-																	value="#{ProzessverwaltungForm.goobiScript}" />
-												</li>
-												<li class="action-intent-li">
-													<!-- GoobiScript für selektierte Treffer der Seite --> 
-													<h:commandLink id="script1"
-														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" action="#{ProzessverwaltungForm.GoobiScriptSelection}"
-														title="#{msgs.auswahl2}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.auswahl2}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- GoobiScript für Treffer der Seite --> 
-													<h:commandLink id="script2" action="#{ProzessverwaltungForm.GoobiScriptPage}"
-														title="#{msgs.trefferDieserSeite}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.trefferDieserSeite}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- GoobiScript für alle Treffer --> 
-													<h:commandLink id="script3" action="#{ProzessverwaltungForm.GoobiScriptHits}"
-														title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.gesamtesTrefferset}" />
-													</h:commandLink>
-												</li>
-											</ul>
-											
-										</li>
-									</h:panelGroup>
+                                        <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                            <li class="action-li">
+                                                <!-- Upload-Schaltknopf -->
+                                                <h:commandLink  action="#{ProzessverwaltungForm.UploadFromHomeAlle}" id="uploadFromHome" title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                                    <span class="btn btn-lightred margin-right-10 fa fa-cloud-upload fa-lg width-40" />
+                                                    <h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
+                                                </h:commandLink>
+                                            </li>
+                                        </h:panelGroup>
 
-									<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton10">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
-												<h:outputText value="#{msgs.saveSearchResult}" />
-												<f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
-												<f:ajax render="@form" />
-											</h:commandLink>
-											
-											<h:panelGroup rendered="#{ProzessverwaltungForm.dispaySearchResult}">
-												<ul id="possibleActions10" class="action-intent-ul">
-													<li class="action-intent-li">
+                                        <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                            <li class="action-li">
 
-														<x:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
+                                                <h:commandLink onclick="toggle('possibleActions1')" id="downloadToHome">
+                                                    <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg width-40" />
+                                                    <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
+                                                    <f:ajax render="expandbutton1" />
+                                                </h:commandLink>
 
-															<h:column>
-																<h:outputText value="#{msgs.column} #{id +1}:" styleClass="margin-right-5 margin-bottom-regular"/>
-															</h:column>
-
-															<h:column>
-																<h:selectOneMenu value="#{field.value}" styleClass="form-control margin-bottom-regular">
-																	<f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}"
-																		itemValue="#{item.value}" />
-																</h:selectOneMenu>
-															</h:column>
-															<h:column>
-																<h:commandLink action="#{ProzessverwaltungForm.addField}">
-																	<span class="btn margin-left-5 fa fa-plus margin-bottom-regular" />
-																	<f:ajax render="@form" execute="@form" />
-																</h:commandLink>
-
-																<h:commandLink action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}" >
-																	<span class="btn fa fa-minus margin-bottom-regular" />
-																	<x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
-																	<f:ajax render="@form" execute="@form" />
-																</h:commandLink>
-															</h:column>
-
-														</x:dataTable>
-
-													</li>
-                                                    
-                                                    
+                                                <ul id="possibleActions1" style="display: none" class="action-intent-ul">
                                                     <li class="action-intent-li">
-                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}"
-                                                            rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                                        <!-- Download-Schaltknopf für Selection-->
+                                                        <h:commandLink action="#{ProzessverwaltungForm.DownloadToHomeSelection}" id="downloadToHomeSelection" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                            <span class="btn margin-right-10 fa fa-angle-right" />
+                                                            <h:outputText value="#{msgs.auswahl2}" />
+                                                        </h:commandLink>
+                                                    </li>
+
+                                                    <li class="action-intent-li">
+                                                        <!-- Download-Schaltknopf für Page-->
+                                                        <h:commandLink action="#{ProzessverwaltungForm.DownloadToHomePage}" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.download}')) return false" id="downloadToHomePage">
+                                                            <span class="btn margin-right-10 fa fa-angle-right" />
+                                                            <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                        </h:commandLink>
+                                                    </li>
+                                                    <li class="action-intent-li">
+                                                        <!-- Download-Schaltknopf für gesamtes Trefferset -->
+                                                        <h:commandLink action="#{ProzessverwaltungForm.DownloadToHomeHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.download}')) return false" id="downloadToHomeAll">
+                                                            <span class="btn margin-right-10 fa fa-angle-right" />
+                                                            <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                        </h:commandLink>
+                                                    </li>
+                                                </ul>
+
+                                            </li>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton2" onclick="toggle('possibleActions2')">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
+                                                <h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
+                                                <f:ajax render="expandbutton2" />
+                                            </h:commandLink>
+                                            <ul id="possibleActions2" style="display: none" class="action-intent-ul">
+
+                                                <li class="action-intent-li">
+                                                    <!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
+                                                    <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
+                                                </li>
+
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für Selection-->
+                                                    <h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.auswahl2}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für Page-->
+                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für gesamtes Trefferset -->
+                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <!-- Bearbeitungsstatus hochsetzen-->
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton3" onclick="toggle('possibleActions3')">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-up fa-lg width-40" />
+                                                <h:outputText value="#{msgs.bearbeitungsstatusHochsetzen}" />
+                                                <f:ajax render="expandbutton3" />
+                                            </h:commandLink>
+
+                                            <ul id="possibleActions3" style="display: none" class="action-intent-ul">
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für Selection-->
+                                                    <h:commandLink id="action9" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.auswahl2}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für Page-->
+                                                    <h:commandLink action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenPage}" title="#{msgs.trefferDieserSeite}" id="action10" onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für gesamtes Trefferset -->
+                                                    <h:commandLink id="action11" action="#{ProzessverwaltungForm.BearbeitungsstatusHochsetzenHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.bearbeitungsstatusHochsetzen}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton4" onclick="toggle('possibleActions4')">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-down fa-lg width-40" />
+                                                <h:outputText value="#{msgs.bearbeitungsstatusRuntersetzen}" />
+                                                <f:ajax render="expandbutton4" />
+                                            </h:commandLink>
+
+                                            <ul id="possibleActions4" style="display: none" class="action-intent-ul">
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für Selection-->
+                                                    <h:commandLink id="action12" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.auswahl2}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für Page-->
+                                                    <h:commandLink id="action13" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenPage}" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Download-Schaltknopf für gesamtes Trefferset -->
+                                                    <h:commandLink id="action14" action="#{ProzessverwaltungForm.BearbeitungsstatusRuntersetzenHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.bearbeitungsstatusRuntersetzen}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
+                                                <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
+                                                <f:ajax render="expandbutton5" />
+                                            </h:commandLink>
+
+                                            <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+
+                                            <ul id="possibleActions5" style="display: none" class="action-intent-ul">
+                                                <li class="action-intent-li">
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'">addUser</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">addUserGroup</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:deleteTiffHeaderFile'">deleteTiffHeaderFile</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot;swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'">swapSteps</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'">importFromFileSystem</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesOut'">swapProzessesOut</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'">setRuleset</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'">swapProzessesIn</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'">setStepStatus</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'">addModuleToStep</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch value:true_OR_false'">setTaskProperty</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:tiffWriter'">tiffWriter</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:exportDms exportImages:false'">exportDms</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:updateMetadata'">updateMetadata</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addPluginToStep &quot;steptitle:TITLE_STEP&quot; plugin:PLUGIN_NAME'">addPluginToStep</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addToProcessLog type:debug_info_warn_error_user &quot;message:YOUR_MESSAGE&quot;'">addToProcessLog</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:countImages'">countImages</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:countMetadata'">countMetadata</span>
+
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <x:inputTextarea id="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- GoobiScript für selektierte Treffer der Seite -->
+                                                    <h:commandLink id="script1" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" action="#{ProzessverwaltungForm.GoobiScriptSelection}" title="#{msgs.auswahl2}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.auswahl2}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- GoobiScript für Treffer der Seite -->
+                                                    <h:commandLink id="script2" action="#{ProzessverwaltungForm.GoobiScriptPage}" title="#{msgs.trefferDieserSeite}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- GoobiScript für alle Treffer -->
+                                                    <h:commandLink id="script3" action="#{ProzessverwaltungForm.GoobiScriptHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+
+                                        </li>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton10">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
+                                                <h:outputText value="#{msgs.saveSearchResult}" />
+                                                <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
+                                                <f:ajax render="@form" />
+                                            </h:commandLink>
+
+                                            <h:panelGroup rendered="#{ProzessverwaltungForm.dispaySearchResult}">
+                                                <ul id="possibleActions10" class="action-intent-ul">
+                                                    <li class="action-intent-li">
+
+                                                        <x:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
+
+                                                            <h:column>
+                                                                <h:outputText value="#{msgs.column} #{id +1}:" styleClass="margin-right-5 margin-bottom-regular" />
+                                                            </h:column>
+
+                                                            <h:column>
+                                                                <h:selectOneMenu value="#{field.value}" styleClass="form-control margin-bottom-regular">
+                                                                    <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
+                                                                </h:selectOneMenu>
+                                                            </h:column>
+                                                            <h:column>
+                                                                <h:commandLink action="#{ProzessverwaltungForm.addField}">
+                                                                    <span class="btn margin-left-5 fa fa-plus margin-bottom-regular" />
+                                                                    <f:ajax render="@form" execute="@form" />
+                                                                </h:commandLink>
+
+                                                                <h:commandLink action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                                                    <span class="btn fa fa-minus margin-bottom-regular" />
+                                                                    <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
+                                                                    <f:ajax render="@form" execute="@form" />
+                                                                </h:commandLink>
+                                                            </h:column>
+
+                                                        </x:dataTable>
+
+                                                    </li>
+
+
+                                                    <li class="action-intent-li">
+                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}" rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                                             <span class="btn margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createExcel}" />
                                                         </h:commandLink>
                                                     </li>
-                                                                  
-                                 
-                                 
-                                                   <li class="action-intent-li">
-                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}"
-                                                            rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+
+
+
+                                                    <li class="action-intent-li">
+                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}" rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                                             <span class="btn margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createDoc}" />
                                                         </h:commandLink>
                                                     </li>
-                                 
-                                   
-                                                   <li class="action-intent-li">
-                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}"
-                                                            rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+
+
+                                                    <li class="action-intent-li">
+                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}" rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                                             <span class="btn margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createRtf}" />
                                                         </h:commandLink>
                                                     </li>
-													
-													<li class="action-intent-li">
-														<h:commandLink action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}"
-															rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-															<span class="btn margin-right-10 fa fa-floppy-o" />
-															<h:outputText value="#{msgs.createPdf}" />
-														</h:commandLink>
-													</li>
-												</ul>
-											</h:panelGroup>
-											
-										</li>
-									</h:panelGroup>
 
-									<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton6" onclick="toggle('possibleActions6')">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-table fa-lg width-40" />
-												<h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
-												<f:ajax render="expandbutton6" />
-											</h:commandLink>
-											
-											<ul id="possibleActions6" style="display:none" class="action-intent-ul">
-												<li class="action-intent-li">
-													<!-- Statistische Auswertung-Schaltknopf für Page-->
-													<h:commandLink id="action20" action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}"
-														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.auswahl2}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">		<!-- Statistische Auswertung-Schaltknopf für Page-->
-													<h:commandLink id="action21" action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}" title="#{msgs.trefferDieserSeite}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.trefferDieserSeite}" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
-													<h:commandLink id="action22" action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}"
-														onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.gesamtesTrefferset}" />
-													</h:commandLink>
-												</li>
-											</ul>
-										</li>
-									</h:panelGroup>
+                                                    <li class="action-intent-li">
+                                                        <h:commandLink action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}" rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                                            <span class="btn margin-right-10 fa fa-floppy-o" />
+                                                            <h:outputText value="#{msgs.createPdf}" />
+                                                        </h:commandLink>
+                                                    </li>
+                                                </ul>
+                                            </h:panelGroup>
 
-									<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-										<li class="action-li">
-											<h:commandLink id="expandbutton7" onclick="toggle('possibleActions7')">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
-												<h:outputText value="#{msgs.statistischeAuswertung}" />
-												<f:ajax render="expandbutton7" />
-											</h:commandLink>
-											
-											<ul id="possibleActions7" style="display:none" class="action-intent-ul">
-												<li class="action-intent-li">
-													<!-- StatisticsStatusVolumes-->
-													<h:commandLink id="action30" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsStatusVolumes}"
-														title="#{msgs.statusOfVolumes}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.statusOfVolumes}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- StatisticsUsergroups -->
-													<h:commandLink id="action31" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsUsergroups}"
-														title="#{msgs.statusForUsers}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.statusForUsers}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- StatisticsRuntimeSteps -->
-													<h:commandLink id="action32" rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}"
-														action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.runtimeOfSteps}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- StatisticsProduction -->
-													<h:commandLink id="action33" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsProduction}"
-														title="#{msgs.productionStatistics}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.productionStatistics}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- StatisticsTroughput -->
-													<h:commandLink id="action34" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsTroughput}"
-														title="#{msgs.productionThroughput}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.productionThroughput}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- StatisticsStorage -->
-													<h:commandLink id="action35" action="#{ProzessverwaltungForm.StatisticsStorage}" title="#{msgs.storageCalculator}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.storageCalculator}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- StatisticsCorrection -->
-													<h:commandLink id="action36" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsCorrection}"
-														title="#{msgs.errorTracking}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.errorTracking}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-												<li class="action-intent-li">
-													<!-- ProjectAssociationss -->
-													<h:commandLink id="action37" action="#{ProzessverwaltungForm.StatisticsProject}" title="#{msgs.projectAssociation}">
-														<span class="btn margin-right-10 fa fa-angle-right" />
-														<h:outputText value="#{msgs.projectAssociation}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
-													</h:commandLink>
-												</li>
-											</ul>
-										</li>
-									</h:panelGroup>
+                                        </li>
+                                    </h:panelGroup>
 
-								</ul>
-							</h:form>
-						</div>
-					</div>
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton6" onclick="toggle('possibleActions6')">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-table fa-lg width-40" />
+                                                <h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
+                                                <f:ajax render="expandbutton6" />
+                                            </h:commandLink>
 
-				</div>
-			</div>
-		</h:panelGroup>
+                                            <ul id="possibleActions6" style="display: none" class="action-intent-ul">
+                                                <li class="action-intent-li">
+                                                    <!-- Statistische Auswertung-Schaltknopf für Page-->
+                                                    <h:commandLink id="action20" action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.auswahl2}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Statistische Auswertung-Schaltknopf für Page-->
+                                                    <h:commandLink id="action21" action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}" title="#{msgs.trefferDieserSeite}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
+                                                    <h:commandLink id="action22" action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </h:panelGroup>
 
-	</composite:implementation>
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <li class="action-li">
+                                            <h:commandLink id="expandbutton7" onclick="toggle('possibleActions7')">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
+                                                <h:outputText value="#{msgs.statistischeAuswertung}" />
+                                                <f:ajax render="expandbutton7" />
+                                            </h:commandLink>
+
+                                            <ul id="possibleActions7" style="display: none" class="action-intent-ul">
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsStatusVolumes-->
+                                                    <h:commandLink id="action30" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.statusOfVolumes}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsUsergroups -->
+                                                    <h:commandLink id="action31" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsUsergroups}" title="#{msgs.statusForUsers}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.statusForUsers}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsRuntimeSteps -->
+                                                    <h:commandLink id="action32" rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.runtimeOfSteps}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsProduction -->
+                                                    <h:commandLink id="action33" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsProduction}" title="#{msgs.productionStatistics}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.productionStatistics}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsTroughput -->
+                                                    <h:commandLink id="action34" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsTroughput}" title="#{msgs.productionThroughput}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.productionThroughput}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsStorage -->
+                                                    <h:commandLink id="action35" action="#{ProzessverwaltungForm.StatisticsStorage}" title="#{msgs.storageCalculator}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.storageCalculator}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- StatisticsCorrection -->
+                                                    <h:commandLink id="action36" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsCorrection}" title="#{msgs.errorTracking}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.errorTracking}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="action-intent-li">
+                                                    <!-- ProjectAssociationss -->
+                                                    <h:commandLink id="action37" action="#{ProzessverwaltungForm.StatisticsProject}" title="#{msgs.projectAssociation}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:outputText value="#{msgs.projectAssociation}" />
+                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </h:panelGroup>
+
+                                </ul>
+                            </h:form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </h:panelGroup>
+
+    </composite:implementation>
 
 </ui:composition>
 
