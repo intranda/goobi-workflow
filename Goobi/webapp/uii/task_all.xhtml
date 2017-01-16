@@ -39,7 +39,7 @@
                             </h:form>
                             <h:form id="myform" prependId="false">
                                 <!-- Datentabelle -->
-                                <x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{AktuelleSchritteForm.paginator.list}">
+                                <x:dataTable id="tasks" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{AktuelleSchritteForm.paginator.list}">
 
                                     <!-- +++++++++++++++++ select boxes ++++++++++++++++++++++++ -->
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}">
@@ -55,7 +55,7 @@
                                                 </h:commandLink>
                                             </x:div>
                                         </f:facet>
-                                        <h:commandLink styleClass="font-black" style="padding:10px">
+                                        <h:commandLink id="selection" styleClass="font-black" style="padding:10px">
                                             <i class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
                                             <f:setPropertyActionListener target="#{item.selected}" value="#{item.selected?false:true}" />
                                             <f:ajax render=":myform" />
@@ -65,7 +65,7 @@
                                     <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
                                     <x:column id="my_tasks_process" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='idDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='idAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortProcessId" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.id}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
                                                     value="#{AktuelleSchritteForm.sortierung=='idAsc'?'idDesc':'idAsc'}" />
@@ -79,7 +79,7 @@
                                     <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='schrittDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='schrittAsc'?'sorting_asc':'sorting'}" >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortStepTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.arbeitsschritt}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='schrittAsc'?'schrittDesc':'schrittAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -126,7 +126,7 @@
                                     <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessAsc'?'sorting_asc':'sorting'}" styleClass="tableColumnMaxWidthLong">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortProcessTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.prozessTitel}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessAsc'?'prozessDesc':'prozessAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -148,7 +148,7 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortDate" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.vorgangsdatum}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessdateAsc'?'prozessdateDesc':'prozessdateAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -162,7 +162,7 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='modulesDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='modulesAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortModule" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.module}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='modulesAsc'?'modulesDesc':'modulesAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -176,7 +176,7 @@
                                     <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='projektDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='projektAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortProject" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.projekt}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -190,7 +190,7 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortLocking" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.sperrungen}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sperrungenDesc':'sperrungenAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -204,7 +204,7 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='batchDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortBatch" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.batch}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
                                                 <f:ajax render=":myform" />
@@ -296,7 +296,7 @@
                                     <x:column style="max-width:60px;" headerstyleClass="#{AktuelleSchritteForm.sortierung=='statusDesc'?'sorting_asc':AktuelleSchritteForm.sortierung=='statusAsc'?'sorting_desc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <h:commandLink id="sortStatus" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.auswahl}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='statusDesc'?'statusAsc':'statusDesc'}" />
                                                 <f:ajax render=":myform" />
@@ -353,7 +353,7 @@
 
                                 <div class="dataTables_paginate">
                                     <!-- paginator -->
-                                    <intranda:tablePaginator paginator="#{AktuelleSchritteForm.paginator}" />
+                                    <intranda:tablePaginator id="steps" paginator="#{AktuelleSchritteForm.paginator}" />
                                     <!-- /paginator -->
                                 </div>
 
@@ -380,26 +380,26 @@
                                 <h:panelGroup styleClass="pull-right">
                                     <h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
                                     <h:outputText id="calcNumber" styleClass="margin-left-5 margin-right-5" value="#{AktuelleSchritteForm.allImages}" />
-                                    <h:commandLink action="#{AktuelleSchritteForm.calcHomeImages}">
+                                    <h:commandLink id="calc" action="#{AktuelleSchritteForm.calcHomeImages}">
                                         <i class="btn fa fa-refresh" />
                                     </h:commandLink>
                                 </h:panelGroup>
 
                                 <ul class="action-ul">
                                     <li class="action-li">
-                                        <h:commandLink action="#{AktuelleSchritteForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigHochladen}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                        <h:commandLink id="uploadAll" action="#{AktuelleSchritteForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigHochladen}" onclick="if (!confirm('#{msgs.upload}')) return false">
                                             <span class="btn btn-lightred margin-right-10 fa fa-cloud-upload fa-lg" />
                                             <h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
                                         </h:commandLink>
                                     </li>
                                     <li class="action-li">
-                                        <h:commandLink action="#{AktuelleSchritteForm.DownloadToHomePage}" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                        <h:commandLink id="downloadPage" action="#{AktuelleSchritteForm.DownloadToHomePage}" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
                                             <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg" />
                                             <h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
                                         </h:commandLink>
                                     </li>
                                     <li class="action-li">
-                                        <h:commandLink action="#{AktuelleSchritteForm.DownloadToHomeHits}" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                        <h:commandLink id="downloadAll" action="#{AktuelleSchritteForm.DownloadToHomeHits}" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
                                             <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg" />
                                             <h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
                                         </h:commandLink>

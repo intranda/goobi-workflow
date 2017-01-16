@@ -13,8 +13,8 @@
                 
                 <table class="table table-hover table-bordered">
                    
-                    <x:dataList var="container" value="#{AktuelleSchritteForm.batchHelper.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                        <x:dataList var="proc" value="#{AktuelleSchritteForm.batchHelper.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd">
+                    <x:dataList var="container" value="#{AktuelleSchritteForm.batchHelper.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex" id="allProperties">
+                        <x:dataList var="proc" value="#{AktuelleSchritteForm.batchHelper.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd" id="containerlessProperties">
 							
 							<h:panelGroup rendered="#{container == 0}">
 								<tr>
@@ -36,7 +36,7 @@
 									</td>
 									
 									<td>
-										<h:commandLink action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
+										<h:commandLink id="editBatchProperty" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
 			                                rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 			                                <i class="fa fa-pencil"></i>
 			                                <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
@@ -44,7 +44,7 @@
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                            </h:commandLink>
 			                            
-			                             <h:commandLink action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" styleClass="btn btn-small margin-left-5"
+			                             <h:commandLink id="duplicateBatchProperty" action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" styleClass="btn btn-small margin-left-5"
 	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 	                                          <i class="fa fa-plus"></i>
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
@@ -62,7 +62,7 @@
                         </h:panelGroup>
 
                         <x:dataList var="process_item" value="#{AktuelleSchritteForm.batchHelper.containers[container].propertyList}"
-                            rowCountVar="propCount" rowIndexVar="propInd">
+                            rowCountVar="propCount" rowIndexVar="propInd" id="containerProperties">
 
                             <h:panelGroup rendered="#{container!=0 }">
  								<tr>
@@ -86,14 +86,14 @@
                                    	<h:panelGroup rendered="#{propInd ==0}">
                                         <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 	                                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-			                                    <h:commandLink action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small">
+			                                    <h:commandLink id="editContainer" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                                    </h:commandLink>
 			                                
-			                                	<h:commandLink action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
+			                                	<h:commandLink id="duplicateContainer" action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
                                                     rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}" styleClass="btn btn-small margin-left-5">
                                                      <i class="fa fa-plus"></i>
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
@@ -224,19 +224,19 @@
                  <div class="form-actions">
 
 	                <!-- Save -->
-					<h:commandLink styleClass="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" action="#{AktuelleSchritteForm.batchHelper.saveCurrentPropertyForAll}">
+					<h:commandLink id="applyToAllProcesses" styleClass="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" action="#{AktuelleSchritteForm.batchHelper.saveCurrentPropertyForAll}">
 	                    <i class="fa fa-save margin-right-5"></i>
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                    <h:outputText value="#{msgs.applyToAllProcesses}" />
 	                </h:commandLink>
 
-	                <h:commandLink styleClass="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" action="#{AktuelleSchritteForm.batchHelper.saveCurrentProperty}">
+	                <h:commandLink id="applyToThisProcess" styleClass="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" action="#{AktuelleSchritteForm.batchHelper.saveCurrentProperty}">
 	                    <i class="fa fa-save margin-right-5"></i>
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                    <h:outputText value="#{msgs.applyToThisProcess}" />
 	                </h:commandLink>
 	
-	                <h:commandLink styleClass="btn pull-right font-size-s margin-bottom-more margin-left-5" immediate="true" action="#{NavigationForm.Reload}">
+	                <h:commandLink id="cancelEdition" styleClass="btn pull-right font-size-s margin-bottom-more margin-left-5" immediate="true" action="#{NavigationForm.Reload}">
 	                    <h:outputText value="#{msgs.abbrechen}" />
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                </h:commandLink>

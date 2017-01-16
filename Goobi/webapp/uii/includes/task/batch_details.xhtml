@@ -14,7 +14,7 @@
                         #{AktuelleSchritteForm.batchHelper.currentStep.prozess.titel}
                     </h3>
                     <div class="actions">
-                        <h:commandLink styleClass="btn btn-mini font-light" action="#{NavigationForm.Reload}">
+                        <h:commandLink id="expandBatch" styleClass="btn btn-mini font-light" action="#{NavigationForm.Reload}">
                             <i class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
                             <f:setPropertyActionListener target="#{NavigationForm.uiStatus.task_viewWorkflow}" value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
                             <f:ajax render=":detailsform" />
@@ -202,7 +202,7 @@
                     <h:outputText value="#{msgs.processLog}" />
                 </h3>
             </div>
-            <h:form class="form-vertical form-bordered">
+            <h:form class="form-vertical form-bordered" id="processlog">
                 <div class="box-content nopadding">
                     <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
                         <x:dataTable var="entry" value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess.processLog}" width="100%" styleClass="table table-hover table-bordered">
@@ -267,8 +267,8 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="col-sm-12">
-                                <h:commandButton type="submit" styleClass="btn btn-primary margin-left-5 margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegenForAll}" action="#{AktuelleSchritteForm.batchHelper.addLogEntryForAll}" />
-                                <h:commandButton type="submit" styleClass="btn btn-primary margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.batchHelper.addLogEntry}" />
+                                <h:commandButton id="addToAll" type="submit" styleClass="btn btn-primary margin-left-5 margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegenForAll}" action="#{AktuelleSchritteForm.batchHelper.addLogEntryForAll}" />
+                                <h:commandButton id="addToCurrent" type="submit" styleClass="btn btn-primary margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.batchHelper.addLogEntry}" />
                             </div>
                         </div>
                         <!-- 						<div class="row"> -->

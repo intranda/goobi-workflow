@@ -97,7 +97,7 @@
                             <!-- 								</ul> -->
                             <!-- 							</h:form> -->
 
-                            <h:form styleClass="margin-sides-10 margin-top-10">
+                            <h:form styleClass="margin-sides-10 margin-top-10" id="actionForm">
 
                                 <ul class="action-ul">
 
@@ -105,7 +105,7 @@
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
                                         <li class="action-li">
                                             <!-- Plugin Button only for Plugins without any gui or with full gui -->
-                                            <h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+                                            <h:commandLink id="runPluginFullGUI" action="#{AktuelleSchritteForm.runPlugin}">
                                                 <!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                                 <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
@@ -116,7 +116,7 @@
                                     <!-- Plugin - NONE -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+                                            <h:commandLink id="runPluginNoGUI" action="#{AktuelleSchritteForm.runPlugin}">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                                 <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
                                             </h:commandLink>
@@ -126,7 +126,7 @@
                                     <!-- Modul-Schaltknopf -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})">
+                                            <h:commandLink id="executeModule" action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
                                                 <h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
                                             </h:commandLink>
@@ -136,7 +136,7 @@
                                     <!-- Script 1 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}">
+                                            <h:commandLink id="executeScript" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
@@ -147,7 +147,7 @@
                                     <!-- Script 2 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}">
+                                            <h:commandLink id="executeScript2" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
@@ -158,7 +158,7 @@
                                     <!-- Script 3 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}">
+                                            <h:commandLink id="executeScript3" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
@@ -169,7 +169,7 @@
                                     <!-- Script 4 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}">
+                                            <h:commandLink id="executeScript4" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
@@ -180,7 +180,7 @@
                                     <!-- Script 5 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}">
+                                            <h:commandLink id="executeScript5" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
@@ -195,7 +195,7 @@
                                             <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
 
                                             <!-- Upload-Schaltknopf -->
-                                            <h:commandLink action="#{AktuelleSchritteForm.ExportDMS}" title="#{msgs.importDms}">
+                                            <h:commandLink id="export" action="#{AktuelleSchritteForm.ExportDMS}" title="#{msgs.importDms}">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
                                                 <h:outputText value="#{msgs.importDms}" />
                                             </h:commandLink>
@@ -207,7 +207,7 @@
                                         <li class="action-li">
 
 
-                                            <h:commandLink action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
+                                            <h:commandLink id="metadata" action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" />
                                                 <h:outputText value="#{msgs.metadatenBearbeiten}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
@@ -292,7 +292,7 @@
 
                                     <!-- Bearbeitung abbrechen-Schaltknopf -->
                                     <li class="action-li">
-                                        <h:commandLink action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}" title="#{msgs.bearbeitungDiesesSchrittesAbgeben}">
+                                        <h:commandLink id="cancel" action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}" title="#{msgs.bearbeitungDiesesSchrittesAbgeben}">
                                             <span class="btn btn-lightred margin-right-10 fa fa-reply fa-lg width-40" />
                                             <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
                                         </h:commandLink>
@@ -300,7 +300,7 @@
 
                                     <!-- Abschliessen-Schaltknopf -->
                                     <li class="action-li">
-                                        <h:commandLink action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}">
+                                        <h:commandLink id="finish" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}">
                                             <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
                                             <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
                                         </h:commandLink>
@@ -313,12 +313,12 @@
 
                         <!-- Problem melden -->
                         <div id="secondtab" class="tab-pane">
-                            <h:form styleClass="form-vertical form-bordered">
+                            <h:form styleClass="form-vertical form-bordered" id="errorForm">
 
                                 <div class="form-group">
                                     <label class="control-label">#{msgs.korrekturmeldungAnVorherigeStationSenden}</label>
                                     <div class="controls">
-                                        <h:selectOneMenu styleClass="form-control" value="#{AktuelleSchritteForm.myProblemID}">
+                                        <h:selectOneMenu id="selectErrorStep" styleClass="form-control" value="#{AktuelleSchritteForm.myProblemID}">
                                             <f:selectItems value="#{AktuelleSchritteForm.previousStepsForProblemReporting}" var="step1" itemLabel="#{step1.titelMitBenutzername}" itemValue="#{step1.id}" />
                                         </h:selectOneMenu>
                                     </div>
@@ -332,7 +332,7 @@
                                 </div>
 
                                 <div class="form-actions">
-                                    <h:commandButton type="submit" action="#{AktuelleSchritteForm.ReportProblem}" value="#{msgs.korrekturmeldungSenden}" title="#{msgs.korrekturmeldungSenden}" styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
+                                    <h:commandButton id="submiterror" type="submit" action="#{AktuelleSchritteForm.ReportProblem}" value="#{msgs.korrekturmeldungSenden}" title="#{msgs.korrekturmeldungSenden}" styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
                                     </h:commandButton>
                                 </div>
                             </h:form>
@@ -343,12 +343,12 @@
                         <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
                             <div id="thirdtab" class="tab-pane">
 
-                                <h:form styleClass="form-vertical form-bordered">
+                                <h:form styleClass="form-vertical form-bordered" id="solveForm">
 
                                     <div class="form-group">
                                         <label class="control-label">#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}</label>
                                         <div class="controls">
-                                            <h:selectOneMenu styleClass="form-control" value="#{AktuelleSchritteForm.mySolutionID}">
+                                            <h:selectOneMenu id="selectSolveStep" styleClass="form-control" value="#{AktuelleSchritteForm.mySolutionID}">
                                                 <f:selectItems value="#{AktuelleSchritteForm.nextStepsForProblemSolution}" var="step2" itemLabel="#{step2.titelMitBenutzername}" itemValue="#{step2.id}" />
                                             </h:selectOneMenu>
                                         </div>
@@ -362,7 +362,7 @@
                                     </div>
 
                                     <div class="form-actions">
-                                        <h:commandButton type="submit" action="#{AktuelleSchritteForm.SolveProblem}" value="#{msgs.meldungUeberProblemloesungSenden}" title="#{msgs.meldungUeberProblemloesungSenden}" styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
+                                        <h:commandButton id="solveProblem" type="submit" action="#{AktuelleSchritteForm.SolveProblem}" value="#{msgs.meldungUeberProblemloesungSenden}" title="#{msgs.meldungUeberProblemloesungSenden}" styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
                                         </h:commandButton>
                                     </div>
                                 </h:form>

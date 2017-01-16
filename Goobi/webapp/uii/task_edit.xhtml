@@ -28,7 +28,7 @@
                             </h3>
                             <div class="actions">
 
-                                <h:commandLink styleClass="btn btn-mini font-light" action="#{NavigationForm.Reload}">
+                                <h:commandLink id="expand" styleClass="btn btn-mini font-light" action="#{NavigationForm.Reload}">
                                     <i class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
                                     <f:setPropertyActionListener target="#{NavigationForm.uiStatus.task_viewWorkflow}" value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
                                     <f:ajax render=":detailsform" />
@@ -215,7 +215,7 @@
                             <h:outputText value="#{msgs.processLog}" />
                         </h3>
                     </div>
-                    <h:form styleClass="form-vertical form-bordered">
+                    <h:form styleClass="form-vertical form-bordered" id="processLogForm">
                         <div class="box-content nopadding">
                             <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
                                 <x:dataTable var="entry" value="#{AktuelleSchritteForm.mySchritt.prozess.processLog}" width="100%" styleClass="table table-hover table-bordered">
@@ -274,7 +274,7 @@
                                         </h:panelGroup>
                                     </div>
                                     <div class="col-sm-3">
-                                        <h:commandButton type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" />
+                                        <h:commandButton id="saveLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" />
                                     </div>
 
                                 </div>
