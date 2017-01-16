@@ -83,6 +83,10 @@ public class ConfigOpac {
         return instance;
     }
 
+    public Map<String, String> getSearchFieldMap() {
+		return searchFieldMap;
+	}
+    
     /**
      * find Catalogue in Opac-Configurationlist ================================================================
      */

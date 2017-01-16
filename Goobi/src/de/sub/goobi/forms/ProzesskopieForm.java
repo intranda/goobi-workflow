@@ -1162,7 +1162,11 @@ public class ProzesskopieForm {
     }
 
     public Map<String, String> getAllSearchFields() {
-        return co.getCatalogueByName(opacKatalog).getSearchFields();
+        if (co.getCatalogueByName(opacKatalog)!=null){
+        	return co.getCatalogueByName(opacKatalog).getSearchFields();
+    	}else{
+    		return ConfigOpac.getInstance().getSearchFieldMap();
+    	}
     }
 
     public List<String> getAllOpacCatalogues() {
