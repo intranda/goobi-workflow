@@ -373,9 +373,11 @@ label {
     border-bottom: 0px !important;
 }
 
+/*
 .input-group-addon {
     padding: 2px 5px;
 }
+*/
 
 /* ------------- Tables --------------- */
 .table>tbody>tr>td {
