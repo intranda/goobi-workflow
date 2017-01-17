@@ -40,19 +40,19 @@
 						</div>
 						<div class="box-content nopadding">
 
-							<intranda:formInputText name="titel" label="#{msgs.rulesetTitle}"
+							<intranda:formInputText id="title" name="titel" label="#{msgs.rulesetTitle}"
 								field="#{RegelsaetzeForm.myRegelsatz.titel}"
 								help="#{msgs.helpRulesetTitle}" fieldStyle="form-control" />
 
-							<intranda:formInputText name="file" label="#{msgs.rulesetFile}"
+							<intranda:formInputText id="file" name="file" label="#{msgs.rulesetFile}"
 								field="#{RegelsaetzeForm.myRegelsatz.datei}"
 								help="#{msgs.helpRulesetFile}" fieldStyle="form-control" />
 
-							<intranda:formInputCheckBox label="#{msgs.rulesetOrderByFile}"
+							<intranda:formInputCheckBox id="order" label="#{msgs.rulesetOrderByFile}"
 								field="#{RegelsaetzeForm.myRegelsatz.orderMetadataByRuleset}"
 								help="#{msgs.helpRulesetOrderByFile}" name="check" />
 						
-							<intranda:formButtonArea form="#{RegelsaetzeForm}"
+							<intranda:formButtonArea id="buttons" form="#{RegelsaetzeForm}"
 								object="#{RegelsaetzeForm.myRegelsatz.id}"
 								actionCancel="ruleset_all" />
 

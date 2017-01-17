@@ -31,25 +31,25 @@
                             </h3>
                             <ul class="tabs">
                                 <li class="#{ProjekteForm.displayMode eq ''?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.details}">
+                                    <h:commandLink id="details" action="#{NavigationForm.Reload}" value="#{msgs.details}">
                                         <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
                                         <f:ajax render=":myform" execute=":myform" />
                                     </h:commandLink>
                                 </li>
                                 <li class="#{ProjekteForm.displayMode eq 'tab2'?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.technischeDaten}">
+                                    <h:commandLink id="technicalData" action="#{NavigationForm.Reload}" value="#{msgs.technischeDaten}">
                                         <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab2" />
                                         <f:ajax render=":myform" execute=":myform" />
                                     </h:commandLink>
                                 </li>
                                 <li class="#{ProjekteForm.displayMode eq 'tab3'?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metsParamater}">
+                                    <h:commandLink id="metsParameter" action="#{NavigationForm.Reload}" value="#{msgs.metsParamater}">
                                         <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab3" />
                                         <f:ajax render=":myform" execute=":myform" />
                                     </h:commandLink>
                                 </li>
                                 <li class="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metsfilegroups}">
+                                    <h:commandLink id="filegroups" action="#{NavigationForm.Reload}" value="#{msgs.metsfilegroups}">
                                         <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab4" />
                                         <f:ajax render=":myform" execute=":myform" />
                                     </h:commandLink>
@@ -62,100 +62,100 @@
                                 <div id="t7" class="#{ProjekteForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
                                     <!-- title -->
-                                    <intranda:formInputText name="titel" label="#{msgs.titel}" field="#{ProjekteForm.myProjekt.titel}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
+                                    <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.myProjekt.titel}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
                                     <!-- number of pages -->
-                                    <intranda:formInputText name="numberImages" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="numberImages" name="numberImages" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
 
                                     <!-- number of volumes -->
-                                    <intranda:formInputText name="numberVolumes" label="#{msgs.numberVolumes}" field="#{ProjekteForm.myProjekt.numberOfVolumes}" help="#{msgs.helpNumberVolumes}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="numberVolumes" name="numberVolumes" label="#{msgs.numberVolumes}" field="#{ProjekteForm.myProjekt.numberOfVolumes}" help="#{msgs.helpNumberVolumes}" fieldStyle="form-control" required="false" />
 
                                     <!-- startdate -->
-                                    <intranda:formInputCalendar name="startdate" label="#{msgs.startdate}" field="#{ProjekteForm.myProjekt.startDate}" help="#{msgs.helpStartdate}" required="false" />
+                                    <intranda:formInputCalendar id="startDate" name="startdate" label="#{msgs.startdate}" field="#{ProjekteForm.myProjekt.startDate}" help="#{msgs.helpStartdate}" required="false" />
 
                                     <!-- enddate -->
-                                    <intranda:formInputCalendar name="enddate" label="#{msgs.enddate}" field="#{ProjekteForm.myProjekt.endDate}" help="#{msgs.helpEnddate}" required="false" />
+                                    <intranda:formInputCalendar id="endDate" name="enddate" label="#{msgs.enddate}" field="#{ProjekteForm.myProjekt.endDate}" help="#{msgs.helpEnddate}" required="false" />
 
                                     <!-- archived -->
-                                    <intranda:formInputCheckBox label="#{msgs.projectIsArchived}" style="border-bottom: 1px solid #DDDDDD;" field="#{ProjekteForm.myProjekt.projectIsArchived}" help="#{msgs.helpProjectIsArchived}" name="check" />
+                                    <intranda:formInputCheckBox id="inactive" label="#{msgs.projectIsArchived}" style="border-bottom: 1px solid #DDDDDD;" field="#{ProjekteForm.myProjekt.projectIsArchived}" help="#{msgs.helpProjectIsArchived}" name="check" />
 
                                 </div>
                                 <div id="t8" class="#{ProjekteForm.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
 
                                     <!-- internes Speicherformat -->
-                                    <intranda:formInputDropDown label="#{msgs.internesSpeicherformat}" field="#{ProjekteForm.myProjekt.fileFormatInternal}" help="#{msgs.helpInternesSpeicherformat}" name="internesSpeicherformat" selectItems="#{HelperForm.fileFormatsInternalOnly}" fieldStyle="form-control" />
+                                    <intranda:formInputDropDown id="fileFormatInternal" label="#{msgs.internesSpeicherformat}" field="#{ProjekteForm.myProjekt.fileFormatInternal}" help="#{msgs.helpInternesSpeicherformat}" name="internesSpeicherformat" selectItems="#{HelperForm.fileFormatsInternalOnly}" fieldStyle="form-control" />
 
                                     <!-- Speicherformate für das DMS (mehrere möglich) -->
-                                    <intranda:formInputDropDown label="#{msgs.dmsExportformat}" field="#{ProjekteForm.myProjekt.fileFormatDmsExport}" help="#{msgs.helpDmsExportformat}" name="dmsExportformat" selectItems="#{HelperForm.fileFormats}" fieldStyle="form-control" />
+                                    <intranda:formInputDropDown id="fileFormatExternal" label="#{msgs.dmsExportformat}" field="#{ProjekteForm.myProjekt.fileFormatDmsExport}" help="#{msgs.helpDmsExportformat}" name="dmsExportformat" selectItems="#{HelperForm.fileFormats}" fieldStyle="form-control" />
 
                                     <!-- nutzt DMS-Import -->
-                                    <intranda:formInputCheckBox label="#{msgs.automatischerDmsImport}" field="#{ProjekteForm.myProjekt.useDmsImport}" help="#{msgs.helpAutomatischerDmsImport}" name="automatischerDmsImport" />
+                                    <intranda:formInputCheckBox id="useDms" label="#{msgs.automatischerDmsImport}" field="#{ProjekteForm.myProjekt.useDmsImport}" help="#{msgs.helpAutomatischerDmsImport}" name="automatischerDmsImport" />
 
                                     <!-- Dms-Import-XML-DATEI-Pfad -->
-                                    <intranda:formInputText name="dmsImportPfadXmlDatei" label="#{msgs.dmsImportPfadXmlDatei}" field="#{ProjekteForm.myProjekt.dmsImportRootPath}" help="#{msgs.helpDmsImportPfadXmlDatei}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="path" name="dmsImportPfadXmlDatei" label="#{msgs.dmsImportPfadXmlDatei}" field="#{ProjekteForm.myProjekt.dmsImportRootPath}" help="#{msgs.helpDmsImportPfadXmlDatei}" fieldStyle="form-control" required="false" />
 
                                     <!-- Dms-Import-Images-Pfad -->
-                                    <intranda:formInputText name="dmsImportSuccessPfad" label="#{msgs.dmsImportSuccessPfad}" field="#{ProjekteForm.myProjekt.dmsImportSuccessPath}" help="#{msgs.helpDmsImportSuccessPfad}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="path2" name="dmsImportSuccessPfad" label="#{msgs.dmsImportSuccessPfad}" field="#{ProjekteForm.myProjekt.dmsImportSuccessPath}" help="#{msgs.helpDmsImportSuccessPfad}" fieldStyle="form-control" required="false" />
 
                                     <!-- Dms-Import-Success-Pfad -->
-                                    <intranda:formInputText name="dmsImportImagesPfad" label="#{msgs.dmsImportImagesPfad}" field="#{ProjekteForm.myProjekt.dmsImportImagesPath}" help="#{msgs.helpDmsImportImagesPfad}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="path3" name="dmsImportImagesPfad" label="#{msgs.dmsImportImagesPfad}" field="#{ProjekteForm.myProjekt.dmsImportImagesPath}" help="#{msgs.helpDmsImportImagesPfad}" fieldStyle="form-control" required="false" />
 
                                     <!-- Dms-Import-Error-Pfad -->
-                                    <intranda:formInputText name="dmsImportErrorPfad" label="#{msgs.dmsImportErrorPfad}" field="#{ProjekteForm.myProjekt.dmsImportErrorPath}" help="#{msgs.helpDmsImportErrorPfad}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="path4" name="dmsImportErrorPfad" label="#{msgs.dmsImportErrorPfad}" field="#{ProjekteForm.myProjekt.dmsImportErrorPath}" help="#{msgs.helpDmsImportErrorPfad}" fieldStyle="form-control" required="false" />
 
                                     <!-- nutzt DMS-Import -->
-                                    <intranda:formInputCheckBox label="#{msgs.dmsImportCreateProcessFolder}" field="#{ProjekteForm.myProjekt.dmsImportCreateProcessFolder}" help="#{msgs.helpDmsImportCreateProcessFolder}" name="check" />
+                                    <intranda:formInputCheckBox id="createFolder" label="#{msgs.dmsImportCreateProcessFolder}" field="#{ProjekteForm.myProjekt.dmsImportCreateProcessFolder}" help="#{msgs.helpDmsImportCreateProcessFolder}" name="check" />
 
                                     <!-- Timeout -->
-                                    <intranda:formInputText name="timeout" label="#{msgs.timeout} (ms)" field="#{ProjekteForm.myProjekt.dmsImportTimeOut}" help="#{msgs.helpTimeoutProject}" fieldStyle="form-control" style="border-bottom: 1px solid #DDDDDD;" />
+                                    <intranda:formInputText id="timeout" name="timeout" label="#{msgs.timeout} (ms)" field="#{ProjekteForm.myProjekt.dmsImportTimeOut}" help="#{msgs.helpTimeoutProject}" fieldStyle="form-control" style="border-bottom: 1px solid #DDDDDD;" />
                                     
                                 </div>
                                 <div id="t9" class="#{ProjekteForm.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
 
                                     <!-- metsRightsOwner -->
-                                    <intranda:formInputText name="metsRightsOwner" label="#{msgs.metsRightsOwner}" field="#{ProjekteForm.myProjekt.metsRightsOwner}" help="#{msgs.helpMetsRightsOwner}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwner" name="metsRightsOwner" label="#{msgs.metsRightsOwner}" field="#{ProjekteForm.myProjekt.metsRightsOwner}" help="#{msgs.helpMetsRightsOwner}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsOwnerLogo -->
-                                    <intranda:formInputText name="metsRightsOwnerLogo" label="#{msgs.metsRightsOwnerLogo}" field="#{ProjekteForm.myProjekt.metsRightsOwnerLogo}" help="#{msgs.helpMetsRightsOwnerLogo}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwnerLogo" name="metsRightsOwnerLogo" label="#{msgs.metsRightsOwnerLogo}" field="#{ProjekteForm.myProjekt.metsRightsOwnerLogo}" help="#{msgs.helpMetsRightsOwnerLogo}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsOwnerSite -->
-                                    <intranda:formInputText name="metsRightsOwnerSite" label="#{msgs.metsRightsOwnerSite}" field="#{ProjekteForm.myProjekt.metsRightsOwnerSite}" help="#{msgs.helpMetsRightsOwnerSite}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwnerSite" name="metsRightsOwnerSite" label="#{msgs.metsRightsOwnerSite}" field="#{ProjekteForm.myProjekt.metsRightsOwnerSite}" help="#{msgs.helpMetsRightsOwnerSite}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsOwnerMail -->
-                                    <intranda:formInputText name="metsRightsOwnerMail" label="#{msgs.metsRightsOwnerMail}" field="#{ProjekteForm.myProjekt.metsRightsOwnerMail}" help="#{msgs.helpMetsRightsOwnerMail}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwnerMail" name="metsRightsOwnerMail" label="#{msgs.metsRightsOwnerMail}" field="#{ProjekteForm.myProjekt.metsRightsOwnerMail}" help="#{msgs.helpMetsRightsOwnerMail}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovReference -->
-                                    <intranda:formInputText name="metsDigiprovReference" label="#{msgs.metsDigiprovReference}" field="#{ProjekteForm.myProjekt.metsDigiprovReference}" help="#{msgs.helpMetsDigiprovReference}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovReference" name="metsDigiprovReference" label="#{msgs.metsDigiprovReference}" field="#{ProjekteForm.myProjekt.metsDigiprovReference}" help="#{msgs.helpMetsDigiprovReference}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovPresentation -->
-                                    <intranda:formInputText name="metsDigiprovPresentation" label="#{msgs.metsDigiprovPresentation}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentation}" help="#{msgs.helpMetsDigiprovPresentation}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovPresentation" name="metsDigiprovPresentation" label="#{msgs.metsDigiprovPresentation}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentation}" help="#{msgs.helpMetsDigiprovPresentation}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovReferenceAnchor -->
-                                    <intranda:formInputText name="metsDigiprovReferenceAnchor" label="#{msgs.metsDigiprovReferenceAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovReferenceAnchor}" help="#{msgs.helpMetsDigiprovReferenceAnchor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovReferenceAnchor" name="metsDigiprovReferenceAnchor" label="#{msgs.metsDigiprovReferenceAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovReferenceAnchor}" help="#{msgs.helpMetsDigiprovReferenceAnchor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovPresentationAnchor-->
-                                    <intranda:formInputText name="metsDigiprovPresentationAnchor" label="#{msgs.metsDigiprovPresentationAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentationAnchor}" help="#{msgs.helpMetsDigiprovPresentationAnchor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovPresentationAnchor" name="metsDigiprovPresentationAnchor" label="#{msgs.metsDigiprovPresentationAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentationAnchor}" help="#{msgs.helpMetsDigiprovPresentationAnchor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsPointerPath -->
-                                    <intranda:formInputText name="metsPointerPath" label="#{msgs.metsPointerPath}" field="#{ProjekteForm.myProjekt.metsPointerPath}" help="#{msgs.helpMetsPointerPath}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsPointerPath" name="metsPointerPath" label="#{msgs.metsPointerPath}" field="#{ProjekteForm.myProjekt.metsPointerPath}" help="#{msgs.helpMetsPointerPath}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsPointerPathAnchor -->
-                                    <intranda:formInputText name="metsPointerPathAnchor" label="#{msgs.metsPointerPathAnchor}" field="#{ProjekteForm.myProjekt.metsPointerPathAnchor}" help="#{msgs.helpMetsPointerPathAnchor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsPointerPathAnchor" name="metsPointerPathAnchor" label="#{msgs.metsPointerPathAnchor}" field="#{ProjekteForm.myProjekt.metsPointerPathAnchor}" help="#{msgs.helpMetsPointerPathAnchor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsPurl -->
-                                    <intranda:formInputText name="metsPurl" label="#{msgs.metsPurl}" field="#{ProjekteForm.myProjekt.metsPurl}" help="#{msgs.helpMetsPurl}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsPurl" name="metsPurl" label="#{msgs.metsPurl}" field="#{ProjekteForm.myProjekt.metsPurl}" help="#{msgs.helpMetsPurl}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsContentIDs -->
-                                    <intranda:formInputText name="metsContentIDs" label="#{msgs.metsContentIDs}" field="#{ProjekteForm.myProjekt.metsContentIDs}" help="#{msgs.helpMetsContentIDs}" fieldStyle="form-control" required="false"  />
+                                    <intranda:formInputText id="metsContentIDs" name="metsContentIDs" label="#{msgs.metsContentIDs}" field="#{ProjekteForm.myProjekt.metsContentIDs}" help="#{msgs.helpMetsContentIDs}" fieldStyle="form-control" required="false"  />
 
                                     <!-- metsRightsSponsor -->
-                                    <intranda:formInputText name="metsRightsSponsor" label="#{msgs.metsRightsSponsor}" field="#{ProjekteForm.myProjekt.metsRightsSponsor}" help="#{msgs.helpMetsRightsSponsor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsSponsor" name="metsRightsSponsor" label="#{msgs.metsRightsSponsor}" field="#{ProjekteForm.myProjekt.metsRightsSponsor}" help="#{msgs.helpMetsRightsSponsor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsSponsorLogo -->
-                                    <intranda:formInputText name="metsRightsSponsorLogo" label="#{msgs.metsRightsSponsorLogo}" field="#{ProjekteForm.myProjekt.metsRightsSponsorLogo}" help="#{msgs.helpMetsRightsSponsorLogo}" fieldStyle="form-control" required="false"  />
+                                    <intranda:formInputText id="metsRightsSponsorLogo" name="metsRightsSponsorLogo" label="#{msgs.metsRightsSponsorLogo}" field="#{ProjekteForm.myProjekt.metsRightsSponsorLogo}" help="#{msgs.helpMetsRightsSponsorLogo}" fieldStyle="form-control" required="false"  />
 
                                     <!-- metsRightsSponsorSiteURL -->
-                                    <intranda:formInputText name="metsRightsSponsorSiteURL" label="#{msgs.metsRightsSponsorSiteURL}" field="#{ProjekteForm.myProjekt.metsRightsSponsorSiteURL}" help="#{msgs.helpMetsRightsSponsorSiteURL}" fieldStyle="form-control" required="false"  />
+                                    <intranda:formInputText id="metsRightsSponsorSiteURL" name="metsRightsSponsorSiteURL" label="#{msgs.metsRightsSponsorSiteURL}" field="#{ProjekteForm.myProjekt.metsRightsSponsorSiteURL}" help="#{msgs.helpMetsRightsSponsorSiteURL}" fieldStyle="form-control" required="false"  />
 
 
                                     <!-- metsRightsLicense -->
@@ -207,19 +207,19 @@
                                                     </div>
                                                     <div class="box-content nopadding">
                                                     
-                                                        <intranda:formInputText name="name" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="name" name="name" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="url" name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText name="mimetype" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="mimetype" name="mimetype" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText name="suffix" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="suffix" name="suffix" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText name="folder" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="folder" name="folder" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
 
                                                         <div class="form-actions">
                                                             <!-- Speichern-Schaltknopf -->
-                                                            <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" action="#{ProjekteForm.filegroupSave}" title="#{msgs.uebernehmen}">
+                                                            <h:commandLink id="saveFileformat" styleClass="btn btn-success pull-right font-size-s margin-bottom-most" action="#{ProjekteForm.filegroupSave}" title="#{msgs.uebernehmen}">
                                                                 <i class="fa fa-save margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.uebernehmen}" />
                                                                 <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab4" />
@@ -227,7 +227,7 @@
                                                             </h:commandLink>
 
                                                             <!-- Abbrechen-Schaltknopf -->
-                                                            <h:commandLink styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{ProjekteForm.filegroupCancel}">
+                                                            <h:commandLink id="cancelFileformat" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{ProjekteForm.filegroupCancel}">
                                                                 <h:outputText value="#{msgs.abbrechen}" />
                                                                 <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab4" />
                                                                 <f:ajax render=":myform" />
@@ -251,20 +251,20 @@
                                                     <div class="box-content nopadding">
                                                         <div class="dataTables_wrapper">
 
-                                                            <x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProjekteForm.fileGroupList}">
+                                                            <x:dataTable id="fileformats" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProjekteForm.fileGroupList}">
 
                                                                 <h:column>
                                                                     <h:outputText value="#{item.name}" />
 
                                                                     <!-- Löschen-Schaltknopf -->
-                                                                    <h:commandLink styleClass="btn btn-danger pull-right" title="#{msgs.filegroupLoeschen}" rel="tooltip" action="#{ProjekteForm.filegroupDelete}">
+                                                                    <h:commandLink id="delete" styleClass="btn btn-danger pull-right" title="#{msgs.filegroupLoeschen}" rel="tooltip" action="#{ProjekteForm.filegroupDelete}">
                                                                         <i class="fa fa-trash-o"></i>
                                                                         <f:setPropertyActionListener target="#{ProjekteForm.myFilegroup}" value="#{item}" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
 
                                                                     <!-- Edit-Schaltknopf -->
-                                                                    <h:commandLink styleClass="btn btn-primary pull-right margin-right-5" title="#{msgs.filegroupBearbeiten}" rel="tooltip" action="#{ProjekteForm.filegroupEdit}">
+                                                                    <h:commandLink id="edit" styleClass="btn btn-primary pull-right margin-right-5" title="#{msgs.filegroupBearbeiten}" rel="tooltip" action="#{ProjekteForm.filegroupEdit}">
                                                                         <i class="fa fa-edit"></i>
                                                                         <f:setPropertyActionListener target="#{ProjekteForm.myFilegroup}" value="#{item}" />
                                                                         <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="filegroups" />
@@ -276,7 +276,7 @@
 
                                                             <div class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
-                                                                <h:commandLink styleClass="btn btn-primary font-size-s" action="#{ProjekteForm.filegroupAdd}" immediate="true">
+                                                                <h:commandLink id="newFileformat" styleClass="btn btn-primary font-size-s" action="#{ProjekteForm.filegroupAdd}" immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
                                                                     <h:outputText value="#{msgs.filegroupHinzufuegen}" />
                                                                     <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="filegroups" />
@@ -297,7 +297,7 @@
                             </div>
 
                             <h:panelGroup rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
-                                <intranda:formButtonArea form="#{ProjekteForm}" object="#{ProjekteForm.myProjekt.id}" actionCancel="project_all" />
+                                <intranda:formButtonArea id="buttons" form="#{ProjekteForm}" object="#{ProjekteForm.myProjekt.id}" actionCancel="project_all" />
                             </h:panelGroup>
 
                         </div>

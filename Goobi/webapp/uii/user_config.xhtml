@@ -42,7 +42,7 @@
 							<ul class="tabs">
 								<li
 									class="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5'?'active':''}">
-									<h:commandLink action="#{NavigationForm.Reload}"
+									<h:commandLink action="#{NavigationForm.Reload}" id="tab1"
 										value="#{msgs.uebersicht}">
 										<f:setPropertyActionListener
 											target="#{NavigationForm.uiStatus.user_config}" value="" />
@@ -51,7 +51,7 @@
 								</li>
 								<li
 									class="#{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}">
-									<h:commandLink action="#{NavigationForm.Reload}"
+									<h:commandLink action="#{NavigationForm.Reload}" id="tab2"
 										value="#{msgs.user_config_display_general}">
 										<f:setPropertyActionListener
 											target="#{NavigationForm.uiStatus.user_config}" value="tab2" />
@@ -60,7 +60,7 @@
 								</li>
 								<li
 									class="#{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}">
-									<h:commandLink action="#{NavigationForm.Reload}"
+									<h:commandLink action="#{NavigationForm.Reload}" id="tab3"
 										value="#{msgs.user_config_display_processes}">
 										<f:setPropertyActionListener
 											target="#{NavigationForm.uiStatus.user_config}" value="tab3" />
@@ -69,7 +69,7 @@
 								</li>
 								<li
 									class="#{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}">
-									<h:commandLink action="#{NavigationForm.Reload}"
+									<h:commandLink action="#{NavigationForm.Reload}" id="tab4"
 										value="#{msgs.user_config_display_tasks}">
 										<f:setPropertyActionListener
 											target="#{NavigationForm.uiStatus.user_config}" value="tab4" />
@@ -78,7 +78,7 @@
 								</li>
 								<li
 									class="#{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}">
-									<h:commandLink action="#{NavigationForm.Reload}"
+									<h:commandLink action="#{NavigationForm.Reload}" id="tab5"
 										value="#{msgs.user_config_metseditor}">
 										<f:setPropertyActionListener
 											target="#{NavigationForm.uiStatus.user_config}" value="tab5" />
@@ -92,22 +92,22 @@
 							<h:panelGroup
 								rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5'}">
 
-								<intranda:formInputText label="#{msgs.vorname}"
+								<intranda:formInputText label="#{msgs.vorname}" id="firstname"
 									field="#{LoginForm.myBenutzer.vorname}"
 									help="#{msgs.helpVorname}" name="vorname"
 									fieldStyle="form-control" readonly="true" />
 
-								<intranda:formInputText label="#{msgs.nachname}"
+								<intranda:formInputText label="#{msgs.nachname}" id="lastname"
 									field="#{LoginForm.myBenutzer.nachname}"
 									help="#{msgs.helpNachname}" name="nachname"
 									fieldStyle="form-control" readonly="true" />
 
-								<intranda:formInputText label="#{msgs.standort}"
+								<intranda:formInputText label="#{msgs.standort}" id="location"
 									field="#{LoginForm.myBenutzer.standort}"
 									help="#{msgs.helpStandort}" name="standort"
 									fieldStyle="form-control" readonly="true" />
 
-								<intranda:formInputText label="#{msgs.email}"
+								<intranda:formInputText label="#{msgs.email}" id="email"
 									field="#{LoginForm.myBenutzer.email}" help="#{msgs.helpEmail}"
 									required="false" name="email" fieldStyle="form-control" />
 
@@ -156,14 +156,14 @@
 							<h:panelGroup
 								rendered="#{NavigationForm.uiStatus.user_config eq 'tab2'}">
 
-								<intranda:formInputText label="#{msgs.timeoutForSession}"
+								<intranda:formInputText label="#{msgs.timeoutForSession}" id="sessionTimeout"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.sessiontimeoutInMinutes}"
 									help="#{msgs.helpTimeoutForSession}" name="timeoutForSession"
 									fieldStyle="form-control" />
 
-								<intranda:formInputText label="#{msgs.tabellengroesse}"
+								<intranda:formInputText label="#{msgs.tabellengroesse}" id="tableSize"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.tabellengroesse}"
@@ -174,7 +174,7 @@
 
 							<h:panelGroup
 								rendered="#{NavigationForm.uiStatus.user_config eq 'tab3'}">
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="displayDeactivatedProjects"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayDeactivatedProjects}"
@@ -182,7 +182,7 @@
 									help="#{msgs.helpDisplayDeactivatedProjects}"
 									name="displayDeactivatedProjects" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="displayFinishedProcesses"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayFinishedProcesses}"
@@ -190,26 +190,26 @@
 									help="#{msgs.helpDisplayFinishedProcesses}"
 									name="displayFinishedProcesses" />
 
-								<intranda:formInputCheckBox label="#{msgs.displaySelectBoxes}"
+								<intranda:formInputCheckBox label="#{msgs.displaySelectBoxes}" id="displaySelectBoxes"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.displaySelectBoxes}"
 									help="#{msgs.helpDisplaySelectBoxes}" name="displaySelectBoxes" />
 
-								<intranda:formInputCheckBox label="#{msgs.displayIdColumn}"
+								<intranda:formInputCheckBox label="#{msgs.displayIdColumn}" id="displayIdColumn"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.displayIdColumn}"
 									help="#{msgs.helpDisplayIdColumn}" name="displayIdColumn" />
 
-								<intranda:formInputCheckBox 
+								<intranda:formInputCheckBox  id="displayBatchColumn"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayBatchColumn}"
 									field="#{LoginForm.myBenutzer.displayBatchColumn}"
 									help="#{msgs.helpDisplayBatchColumn}" name="displayBatchColumn" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="displayProcessDateColumn"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayProcessDateColumn}"
@@ -217,14 +217,14 @@
 									help="#{msgs.helpDisplayProcessDateColumn}"
 									name="displayProcessDateColumn" />
 
-								<intranda:formInputCheckBox 
+								<intranda:formInputCheckBox  id="displayLocksColumn"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayLocksColumn}"
 									field="#{LoginForm.myBenutzer.displayLocksColumn}"
 									help="#{msgs.helpDisplayLocksColumn}" name="displayLocksColumn" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="displaySwappingColumn"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displaySwappingColumn}"
@@ -237,14 +237,14 @@
 							<h:panelGroup
 								rendered="#{NavigationForm.uiStatus.user_config eq 'tab4'}">
 
-								<intranda:formInputCheckBox label="#{msgs.hideCorrectionTasks}"
+								<intranda:formInputCheckBox label="#{msgs.hideCorrectionTasks}" id="hideCorrectionTasks"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.hideCorrectionTasks}"
 									help="#{msgs.helpHideCorrectionTasks}"
 									name="hideCorrectionTasks" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="displayOnlySelectedTasks"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayOnlySelectedTasks}"
@@ -252,22 +252,22 @@
 									help="#{msgs.helpDisplayOnlySelectedTasks}"
 									name="displayOnlySelectedTasks" />
 
-								<intranda:formInputCheckBox label="#{msgs.displayOnlyOpenTasks}"
+								<intranda:formInputCheckBox label="#{msgs.displayOnlyOpenTasks}" id="displayOnlyOpenTasks"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.displayOnlyOpenTasks}"
 									help="#{msgs.helpDisplayOnlyOpenTasks}"
 									name="displayOnlyOpenTasks" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="helpDisplayOtherTasks"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.showTasksFromOtherUsers}"
 									field="#{LoginForm.myBenutzer.displayOtherTasks}"
 									help="#{msgs.helpDisplayOtherTasks}"
-									name="displayOnlyOpenTasks" />
+									name="helpDisplayOtherTasks" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="displayAutomaticTasks"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.displayAutomaticTasks}"
@@ -280,7 +280,7 @@
 							<h:panelGroup
 								rendered="#{NavigationForm.uiStatus.user_config eq 'tab5'}">
 
-								<intranda:formInputText label="#{msgs.spracheFuerMetadaten}"
+								<intranda:formInputText label="#{msgs.spracheFuerMetadaten}" id="spracheFuerMetadaten"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.metadatenSprache}"
@@ -313,7 +313,7 @@
 									</div>
 								</div>
 
-								<intranda:formInputDropDown label="#{msgs.metadataShortcut}"
+								<intranda:formInputDropDown label="#{msgs.metadataShortcut}" id="shortcut"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.shortcutPrefix}"
@@ -321,27 +321,27 @@
 									selectItems="#{HelperForm.possibleShortcuts}" required="false"
 									fieldStyle="form-control" />
 
-								<intranda:formInputCheckBox label="#{msgs.mets_treeTitle}"
+								<intranda:formInputCheckBox label="#{msgs.mets_treeTitle}" id="metsDisplayTitle"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.metsDisplayTitle}"
 									help="#{msgs.helpMetsDisplayTitle}" name="metsDisplayTitle" />
 
-								<intranda:formInputCheckBox
+								<intranda:formInputCheckBox id="metsLinkImage"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									label="#{msgs.verlinkungDesBildesMitStrukturelement}"
 									field="#{LoginForm.myBenutzer.metsLinkImage}"
 									help="#{msgs.helpMetsLinkImage}" name="metsLinkImage" />
 
-								<intranda:formInputCheckBox label="#{msgs.mets_treePageNumber}"
+								<intranda:formInputCheckBox label="#{msgs.mets_treePageNumber}" id="metsDisplayPageAssignments"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.metsDisplayPageAssignments}"
 									help="#{msgs.helpMetsDisplayPageAssignments}"
 									name="metsDisplayPageAssignments" />
 
-								<intranda:formInputCheckBox label="#{msgs.mets_treelevel}"
+								<intranda:formInputCheckBox label="#{msgs.mets_treelevel}" id="metsDisplayHierarchy"
 									classLeft="col-sm-5"
 									classRight="col-sm-7"
 									field="#{LoginForm.myBenutzer.metsDisplayHierarchy}"
@@ -361,7 +361,7 @@
 								</h:commandLink>
 
 								<!-- Cancel -->
-								<h:link styleClass="btn margin-sides-10 pull-right font-size-s"
+								<h:link id="cancel" styleClass="btn margin-sides-10 pull-right font-size-s"
 									outcome="index" value="#{msgs.abbrechen}" />
 							</div>
 

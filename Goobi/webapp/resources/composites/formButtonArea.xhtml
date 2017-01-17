@@ -25,9 +25,9 @@
 			</h:commandLink>
  
 			<!-- Cancel -->
-			<h:link styleClass="btn margin-sides-10 font-size-s pull-right" outcome="#{cc.attrs.actionCancel}" value="#{msgs.abbrechen}"/>
+			<h:link id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" outcome="#{cc.attrs.actionCancel}" value="#{msgs.abbrechen}"/>
 
-			<h:commandLink styleClass="btn btn-danger font-size-s"
+			<h:commandLink id="delete" styleClass="btn btn-danger font-size-s"
 				onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 				action="#{cc.attrs.form.Loeschen}" >
 				<i class="fa fa-trash-o margin-right-5"></i>

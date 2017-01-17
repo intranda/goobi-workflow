@@ -41,7 +41,7 @@
 								</div>
 
 								<!-- Datentabelle -->
-								<x:dataTable
+								<x:dataTable id="usergroups"
 									styleClass="table table-hover dataTable table-bordered responsive"
 									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
@@ -81,7 +81,7 @@
 										</f:facet>
 
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink styleClass="btn margin-right-5" rel="tooltip"
+										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip"
 											action="usergroup_edit"
 											title="#{msgs.benutzergruppeBearbeiten}">
 											<i class="fa fa-pencil"></i>
@@ -96,7 +96,7 @@
 								</x:dataTable>
 								<div class="dataTables_info" style="float: left;">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink styleClass="btn btn-primary font-size-s"
+									<h:commandLink id="newUserGroup" styleClass="btn btn-primary font-size-s"
 										action="#{BenutzergruppenForm.Neu}" immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.neueBenutzergruppeAnlegen}" />
@@ -104,7 +104,7 @@
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->
-									<intranda:tablePaginator
+									<intranda:tablePaginator id="groups"
 										paginator="#{BenutzergruppenForm.paginator}" />
 									<!-- /paginator -->
 								</div>
