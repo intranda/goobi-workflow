@@ -217,8 +217,8 @@
                     </div>
                     <h:form styleClass="form-vertical form-bordered" id="processLogForm">
                         <div class="box-content nopadding">
-                            <div class="scrollable padding-all-more" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
-                                <x:dataTable var="entry" value="#{AktuelleSchritteForm.mySchritt.prozess.processLog}" width="100%" styleClass="table table-hover table-bordered">
+                            <div class="scrollable" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
+                                <x:dataTable var="entry" rendered="#{AktuelleSchritteForm.mySchritt.prozess.processLog.size()>0}" value="#{AktuelleSchritteForm.mySchritt.prozess.processLog}" width="100%" styleClass="table table-hover table-bordered">
                                     <x:column>
                                         <h:outputText value="#{entry.date}" styleClass="log_#{entry.type.title}" />
                                     </x:column>
@@ -247,11 +247,11 @@
                             </div>
 
 
-                            <div class="form-actions">
+                            <div class="form-actions" style="border-top: 1px solid #ddd;">
                                 <div class="row">
                                     <div class="col-sm-9">
                                         <h:panelGroup styleClass="col-sm-4">
-                                            <h:outputText value="#{msgs.firstContent}" />
+                                            <h:outputText value="#{msgs.process_log_firstContent}" />
                                         </h:panelGroup>
                                         <h:panelGroup styleClass="col-sm-8">
                                             <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.content}" />
@@ -259,7 +259,7 @@
 
 
                                         <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-                                            <h:outputText value="#{msgs.secondContent}" />
+                                            <h:outputText value="#{msgs.process_log_secondContent}" />
                                         </h:panelGroup>
                                         <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
                                             <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.secondContent}" />
@@ -267,7 +267,7 @@
 
 
                                         <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-                                            <h:outputText value="#{msgs.thirdContent}" />
+                                            <h:outputText value="#{msgs.process_log_thirdContent}" />
                                         </h:panelGroup>
                                         <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
                                             <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.thirdContent}" />
