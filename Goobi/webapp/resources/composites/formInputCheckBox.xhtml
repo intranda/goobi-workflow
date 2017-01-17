@@ -10,6 +10,7 @@
 		<composite:attribute name="help" />
 		<composite:attribute name="fieldStyle" />
 		<composite:attribute name="style" />
+		<composite:attribute name="styleRight" />
 		<composite:attribute name="required" default="false" />
 		<composite:attribute name="displayAsRequired" default="false" />
         <composite:attribute name="disabled" default="false" />
@@ -25,7 +26,7 @@
 					<i class="fa fa-asterisk pull-right font-asterisk"/>
 				</h:panelGroup>
 			</div>
-			<div class="#{cc.attrs.classRight}">
+			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
 					<h:selectBooleanCheckbox id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle} checkbox-height-fix" style="margin-left: 0px;"
 					value="#{cc.attrs.field}" disabled="#{cc.attrs.disabled}" />
 					<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
