@@ -163,6 +163,18 @@ label {
     margin-bottom: -17px;
 }
 
+/* ------------- sub forms --------------- */
+
+.padding-subform {
+    padding: 4px !important;
+}
+
+.subform{
+	border:1px #ddd solid;
+	padding:0px;
+	margin-bottom:9px;
+}
+
 /* ------------- Borders --------------- */
 .border-bottom-light {
     border-bottom: 1px solid #ddd !important;
