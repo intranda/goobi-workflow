@@ -8,9 +8,9 @@
 		value="#{DocketForm.myDocket.id == null?msgs.createNewDocket:msgs.editDocket}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<intranda:breadcrumb label="#{msgs.dockets}" action="#{DocketForm.paginator.returnToPreviousPage}" />
-		<intranda:breadcrumb label="#{myPageTitle}" action="docket_edit" noSeparator="#{true}" />
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb id="dockets" label="#{msgs.dockets}" action="#{DocketForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb id="docket" label="#{myPageTitle}" action="docket_edit" noSeparator="#{true}" />
 	</ui:define>
 
 	<ui:define name="info">
@@ -38,14 +38,14 @@
 						</div>
 						<div class="box-content nopadding">
 
-							<intranda:formInputText name="titel" label="#{msgs.docketTitle}"
+							<intranda:formInputText id="title" name="titel" label="#{msgs.docketTitle}"
 								field="#{DocketForm.myDocket.name}" help="#{msgs.helpDocketTitle}"
 								fieldStyle="form-control" />
 
-							<intranda:formInputText name="file" label="#{msgs.docketFile}"
+							<intranda:formInputText id="file" name="file" label="#{msgs.docketFile}"
 								field="#{DocketForm.myDocket.file}" help="#{msgs.helpDocketFile}" fieldStyle="form-control" />
 
-							<intranda:formButtonArea form="#{DocketForm}" object="#{DocketForm.myDocket.id}"
+							<intranda:formButtonArea id="buttons" form="#{DocketForm}" object="#{DocketForm.myDocket.id}"
 								actionCancel="docket_all" />
 
 						</div>

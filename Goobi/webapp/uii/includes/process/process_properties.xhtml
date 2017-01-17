@@ -172,7 +172,7 @@
 								<x:dataList var="myprocess_item" value="#{ProzessverwaltungForm.containerProperties}">
 									<h:panelGroup>
 										<h:panelGroup rendered="#{myprocess_item.isNew}">
-											<intranda:formInputText name="title" label="#{msgs.titel}" field="#{myprocess_item.name}"
+											<intranda:formInputText id="title" name="title" label="#{msgs.titel}" field="#{myprocess_item.name}"
 												help="#{msgs.helpPropertyTitle}" fieldStyle="form-control" required="true" />
 										</h:panelGroup>
 

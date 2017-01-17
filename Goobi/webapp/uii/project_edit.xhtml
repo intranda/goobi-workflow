@@ -3,9 +3,9 @@
     <ui:param name="myPageTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:msgs.projektBearbeiten}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb label="#{msgs.projekte}" action="#{ProjekteForm.paginator.returnToPreviousPage}" />
-        <intranda:breadcrumb label="#{myPageTitle}" action="project_edit" noSeparator="#{true}" />
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="projectsAll" label="#{msgs.projekte}" action="#{ProjekteForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb id="projectEdit" label="#{myPageTitle}" action="project_edit" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">

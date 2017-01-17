@@ -6,9 +6,9 @@
     <ui:param name="myPageTitle" value="#{msgs.detailsDesArbeitsschritts}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb label="#{msgs.aktuelleSchritte}" action="#{AktuelleSchritteForm.paginator.returnToPreviousPage}" />
-        <intranda:breadcrumb label="#{msgs.batch}" action="task_edit_batch" noSeparator="#{true}" />
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="taskAll" label="#{msgs.aktuelleSchritte}" action="#{AktuelleSchritteForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb id="batchEdit" label="#{msgs.batch}" action="task_edit_batch" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">

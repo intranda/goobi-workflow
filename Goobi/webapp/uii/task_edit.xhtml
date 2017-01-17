@@ -3,9 +3,9 @@
     <ui:param name="myPageTitle" value="#{msgs.detailsDesArbeitsschritts}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb label="#{msgs.aktuelleSchritte}" action="#{AktuelleSchritteForm.paginator.returnToPreviousPage}" />
-        <intranda:breadcrumb label="#{myPageTitle}" action="task_edit" noSeparator="#{true}" />
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="taskAll" label="#{msgs.aktuelleSchritte}" action="#{AktuelleSchritteForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb id="taskEdit" label="#{myPageTitle}" action="task_edit" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">

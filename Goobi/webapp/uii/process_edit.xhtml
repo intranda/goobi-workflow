@@ -7,8 +7,8 @@
 
 	<ui:define name="breadcrumb">
 		<intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<intranda:breadcrumb label="#{msgs.aktuelleProzesse}" action="process_all" navId="a1" />
-		<intranda:breadcrumb label="#{msgs.prozessDetails}" action="process_edit" noSeparator="#{true}" />
+		<intranda:breadcrumb id="processAll" label="#{msgs.aktuelleProzesse}" action="process_all" navId="a1" />
+		<intranda:breadcrumb id="processEdit" label="#{msgs.prozessDetails}" action="process_edit" noSeparator="#{true}" />
 	</ui:define>
 
 	<ui:define name="info">

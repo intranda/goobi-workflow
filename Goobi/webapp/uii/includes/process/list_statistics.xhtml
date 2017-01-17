@@ -32,7 +32,7 @@
 										<div class="form-group">
 											<h:outputLabel for="cal01" styleClass="control-label" value="#{msgs.zeitraum} #{msgs.from}" />
 											<div style="display:block">
-												<intranda:formInputCalendar3 name="enddate" field="#{ProzessverwaltungForm.statisticsManager.sourceDateFrom}" required="false" />
+												<intranda:formInputCalendar3 id="startdate" name="startdate" field="#{ProzessverwaltungForm.statisticsManager.sourceDateFrom}" required="false" />
 											</div>
                                         </div>
 									</div>
@@ -40,7 +40,7 @@
 										<div class="form-group">
 											<h:outputLabel for="cal02" styleClass="control-label" value="#{msgs.to}" />
 											<div style="display:block">
-												<intranda:formInputCalendar3 name="enddate" field="#{ProzessverwaltungForm.statisticsManager.sourceDateTo}" required="false" />
+												<intranda:formInputCalendar3 id="enddate" name="enddate" field="#{ProzessverwaltungForm.statisticsManager.sourceDateTo}" required="false" />
 											</div>
 										</div>
 									</div>

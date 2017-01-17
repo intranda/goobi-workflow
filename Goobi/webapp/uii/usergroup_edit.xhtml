@@ -11,11 +11,11 @@
 		value="#{BenutzergruppenForm.myBenutzergruppe.id == null?msgs.neueBenutzergruppeAnlegen:msgs.benutzergruppeBearbeiten}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index"
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index"
 			navId="a0" />
-		<intranda:breadcrumb label="#{msgs.benutzergruppen}"
+		<intranda:breadcrumb id="usergroupAll" label="#{msgs.benutzergruppen}"
 			action="#{BenutzergruppenForm.paginator.returnToPreviousPage}" />
-		<intranda:breadcrumb label="#{myPageTitle}" action="usergroup_edit"
+		<intranda:breadcrumb id="usergroupEdit" label="#{myPageTitle}" action="usergroup_edit"
 			noSeparator="#{true}" />
 	</ui:define>
 

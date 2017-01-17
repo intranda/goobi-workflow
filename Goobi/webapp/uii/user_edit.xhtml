@@ -11,9 +11,9 @@
     <ui:param name="myPageTitle" value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb label="#{msgs.benutzerverwaltung}" action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
-        <intranda:breadcrumb label="#{myPageTitle}" action="user_edit" noSeparator="#{true}" />
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="userAll" label="#{msgs.benutzerverwaltung}" action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb id="userEdit" label="#{myPageTitle}" action="user_edit" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">

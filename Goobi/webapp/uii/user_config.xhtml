@@ -11,10 +11,10 @@
 	<ui:param name="myPageTitle" value="#{msgs.benutzerkonfiguration}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb
+		<intranda:breadcrumb id="index"
 			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
 			action="index" navId="a0" />
-		<intranda:breadcrumb label="#{myPageTitle}" action="user_config"
+		<intranda:breadcrumb id="userConfig" label="#{myPageTitle}" action="user_config"
 			noSeparator="#{true}" />
 	</ui:define>
 

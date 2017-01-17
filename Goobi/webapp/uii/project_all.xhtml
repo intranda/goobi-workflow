@@ -5,8 +5,8 @@
 	<ui:param name="myPageTitle" value="#{msgs.projekte}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<intranda:breadcrumb label="#{myPageTitle}" action="project_all" noSeparator="#{true}" />
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb id="projectAll" label="#{myPageTitle}" action="project_all" noSeparator="#{true}" />
 	</ui:define>
 
 	<ui:define name="info">
