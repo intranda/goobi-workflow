@@ -158,25 +158,34 @@
 
                                     <ul class="colors small">
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}">
-                                            <li class="red" title="#{msgs.statusGesperrt}" rel="tooltip" />
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{msgs.statusGesperrt}" rel="tooltip" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}">
-                                            <li class="orange" title="#{msgs.statusOffen}" rel="tooltip" />
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{msgs.statusOffen}" rel="tooltip" />
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-                                            <li class="green" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-                                            <li class="yellow" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-                                            <li class="green" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-                                            <li class="yellow" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
+
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                        </h:panelGroup>
+
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}">
+                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{msgs.statusDeactivated}" />
+                                        </h:panelGroup>
+
                                     </ul>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
