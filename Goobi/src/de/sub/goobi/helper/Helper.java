@@ -309,7 +309,9 @@ public class Helper implements Serializable, Observer {
             while (polyglot.hasNext()) {
                 Locale language = polyglot.next();
                 try {
-                    commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                	ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
+                	commonMessages.put(language, common);
+//                    commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                 } catch (Exception e) {
                     logger.warn("Cannot load messages for language " + language.getLanguage());
                 }
