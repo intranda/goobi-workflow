@@ -43,21 +43,21 @@
 
             <ul class='main-nav'>
                 <li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoPagination">
                         <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.paginierung}" />
                     </h:commandLink>
                 </li>
 
                 <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoStructure">
                         <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.strukturdaten}" />
                     </h:commandLink>
                 </li>
 
                 <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoMetadata">
                         <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.metadaten}" />
                     </h:commandLink>
@@ -65,7 +65,7 @@
 
                 <h:panelGroup rendered="#{Metadaten.displayFileManipulation}">
                     <li class="#{Metadaten.modusAnsicht == 'File'?'active':''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoFile">
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
                             <h:outputText value="#{msgs.fileManipulation}" />
                         </h:commandLink>
@@ -81,7 +81,7 @@
                     <ul class="icon-nav">
 
                         <li>
-                            <h:commandLink action="#{Metadaten.toggleImageView}" title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
+                            <h:commandLink id="toggleImageView" action="#{Metadaten.toggleImageView}" title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
                                 <i class="fa fa-picture-o"></i>
                                 <i class="fa #{!Metadaten.treeProperties.showThumbnails?'fa-picture-o':''}"></i>
                                 <x:updateActionListener value="#{Metadaten.treeProperties.showThumbnails?false:true}" property="#{Metadaten.treeProperties.showThumbnails}" />
@@ -89,14 +89,14 @@
                         </li>
 
                         <li>
-                            <h:commandLink action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip" onclick="setScrollPosition();">
+                            <h:commandLink id="startValidation" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip" onclick="setScrollPosition();">
                                 <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <i class="fa fa-check"></i>
                             </h:commandLink>
                         </li>
 
                         <li>
-                            <h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{msgs.stickyImage}" rel="tooltip">
+                            <h:commandLink id="setImageSticky" styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{msgs.stickyImage}" rel="tooltip">
                                 <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <!-- 								<i class="fa fa-picture-o"></i> -->
                                 <i class="fa #{Metadaten.treeProperties.imageSticky?'fa-lock':'fa-unlock'}"></i>
@@ -111,7 +111,7 @@
                             </a>
                             <ul class="dropdown-menu pull-right theme-settings">
                                 <li>
-                                    <h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}">
+                                    <h:commandLink id="showtreelevel" styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}">
                                         <i class="fa fa-list-ol margin-right-10 #{Metadaten.treeProperties.showtreelevel?'font-light':''}"></i>
                                         <h:outputText value="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}" />
                                         <x:updateActionListener value="#{Metadaten.treeProperties.showtreelevel?false:true}" property="#{Metadaten.treeProperties.showtreelevel}" />
@@ -139,7 +139,7 @@
                                 <!-- 								</li> -->
 
                                 <li>
-                                    <h:commandLink styleClass="text_head" action="#{Metadaten.TreeExpand}" onclick="setScrollPosition();" title="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}">
+                                    <h:commandLink id="fullexpanded" styleClass="text_head" action="#{Metadaten.TreeExpand}" onclick="setScrollPosition();" title="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}">
                                         <i class="fa fa-indent margin-right-10"></i>
                                         <h:outputText value="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}" />
                                         <x:updateActionListener value="#{Metadaten.treeProperties.fullexpanded?false:true}" property="#{Metadaten.treeProperties.fullexpanded}" />
@@ -147,7 +147,7 @@
                                 </li>
 
                                 <li>
-                                    <h:commandLink action="#{Metadaten.BildAnzeigen}" onclick="setScrollPosition();" title="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}">
+                                    <h:commandLink id="displayImage" action="#{Metadaten.BildAnzeigen}" onclick="setScrollPosition();" title="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}">
                                         <i class="fa fa-picture-o margin-right-10 #{not Metadaten.bildAnzeigen?'font-light':''}"></i>
                                         <h:outputText value="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}" />
                                     </h:commandLink>
@@ -155,14 +155,14 @@
 
 
                                 <li>
-                                    <h:commandLink action="#{Metadaten.reloadPagination}" onclick="setScrollPosition();" title="#{msgs.mets_resetPagination}">
+                                    <h:commandLink id="resetPagination" action="#{Metadaten.reloadPagination}" onclick="setScrollPosition();" title="#{msgs.mets_resetPagination}">
                                         <i class="fa fa-refresh margin-right-10"></i>
                                         <h:outputText value="#{msgs.mets_resetPagination}" />
                                     </h:commandLink>
                                 </li>
 
                                 <li>
-                                    <h:commandLink action="#{Metadaten.changeTopstruct}" title="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}">
+                                    <h:commandLink id="toggleTopstruct" action="#{Metadaten.changeTopstruct}" title="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}">
                                         <i class="fa fa-sitemap margin-right-10 #{Metadaten.physicalTopstruct?'font-light':''}"></i>
                                         <h:outputText value="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}" />
                                     </h:commandLink>
@@ -214,7 +214,7 @@
 
                                 <c:if test="#{not Metadaten.nurLesenModus}">
                                     <li>
-                                        <h:commandLink styleClass="text_head" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.speichernZurueck}">
+                                        <h:commandLink id="saveAndExit" styleClass="text_head" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.speichernZurueck}">
                                             <i class="fa fa-floppy-o margin-right-10"></i>
                                             <h:outputText value="#{msgs.speichernZurueck}" />
 
@@ -222,7 +222,7 @@
                                     </li>
                                 </c:if>
                                 <li>
-                                    <h:commandLink styleClass="text_head" action="#{Metadaten.goZurueck}" title="#{msgs.goBack}" rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}">
+                                    <h:commandLink id="exitOnly" styleClass="text_head" action="#{Metadaten.goZurueck}" title="#{msgs.goBack}" rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}">
                                         <i class="fa fa-trash-o margin-right-10"></i>
                                         <h:outputText value="#{msgs.goBack}" />
                                     </h:commandLink>

@@ -26,14 +26,14 @@
 
             <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
             <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
-                <h:commandLink tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
+                <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
                     <i class="fa fa-copy" />
                     <f:param name="ID" value="#{cc.attrs.person.identifier}" />
                     <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
                     <f:ajax execute="@form" render="@form" />
                 </h:commandLink>
 
-                <h:commandLink tabindex="-1" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}" rendered="#{cc.attrs.renderDelete == 'true'}">
+                <h:commandLink  id="delete" tabindex="-1" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}" rendered="#{cc.attrs.renderDelete == 'true'}">
                     <i class="fa fa-trash-o" style="margin-left: 3px" />
                     <f:param name="ID" value="#{cc.attrs.person.identifier}" />
                     <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
@@ -119,7 +119,7 @@
 
         </x:dataList>
 
-        <h:commandLink style="display:block;margin-top:10px;" rendered="#{cc.attrs.person.additionalParts}" action="#{cc.attrs.person.addNamePart}" value="#{msgs.addNamePart}" title="#{msgs.addNamePart}" label="#{msgs.addNamePart}" />
+        <h:commandLink id="addNamePart" style="display:block;margin-top:10px;" rendered="#{cc.attrs.person.additionalParts}" action="#{cc.attrs.person.addNamePart}" value="#{msgs.addNamePart}" title="#{msgs.addNamePart}" label="#{msgs.addNamePart}" />
 
     </composite:implementation>
 

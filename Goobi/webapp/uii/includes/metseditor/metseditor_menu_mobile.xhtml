@@ -15,21 +15,21 @@
 		<h:form>
 			<ul class='mobile-nav open'>
 				<li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoPagination">
                         <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.paginierung}" />
                     </h:commandLink>
                 </li>
 
                 <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoStructure">
                         <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.strukturdaten}" />
                     </h:commandLink>
                 </li>
 
                 <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoMetadata">
                         <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.metadaten}" />
                     </h:commandLink>
@@ -37,7 +37,7 @@
 
                 <h:panelGroup rendered="#{Metadaten.displayFileManipulation}">
                     <li class="#{Metadaten.modusAnsicht == 'File'?'active':''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoFile">
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
                             <h:outputText value="#{msgs.fileManipulation}" />
                         </h:commandLink>

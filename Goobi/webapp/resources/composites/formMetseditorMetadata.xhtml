@@ -65,13 +65,13 @@
 
             <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
             <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
-                <h:commandLink tabindex="-1" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}" rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
+                <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}" rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
                     <i class="fa fa-copy" />
                     <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
                     <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
                     <f:ajax execute="@form" render="@form" />
                 </h:commandLink>
-                <h:commandLink tabindex="-1" action="#{Metadaten.Loeschen}" title="#{msgs.metadatenLoeschen}" rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
+                <h:commandLink id="delete" tabindex="-1" action="#{Metadaten.Loeschen}" title="#{msgs.metadatenLoeschen}" rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
                     <i class="fa fa-trash-o" style="margin-left: 3px" />
                     <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
                     <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />

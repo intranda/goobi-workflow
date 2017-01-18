@@ -18,7 +18,7 @@
 						<h:outputText value="#{msgs.fileUpload}" />
 					</h3>
 					<div class="actions">
-						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+						<h:commandLink id="file_toggle1" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                            	<i class="fa #{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
                            	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea1}" value="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'down':'up'}" />
                        		<f:ajax render="@form" />
@@ -43,7 +43,7 @@
 							<label class="control-label">#{msgs.aktuellerOrdner}:</label>
 						</div>
 						<div class="col-sm-9">
-							<h:selectOneMenu styleClass="form-control"
+							<h:selectOneMenu id="currentFolder1" styleClass="form-control"
 								value="#{Metadaten.fileManipulation.currentFolder}">
 								<f:selectItems value="#{Metadaten.allTifFolders}" var="folder"
 									itemLabel="#{folder}" itemValue="#{folder}" />
@@ -72,7 +72,7 @@
 							<label class="control-label">#{msgs.newFileName}:</label>
 						</div>
 						<div class="col-sm-9">
-                            <h:inputText value="#{Metadaten.fileManipulation.uploadedFileName}"  styleClass="form-control"/>
+                            <h:inputText id="uploadedFileName" value="#{Metadaten.fileManipulation.uploadedFileName}"  styleClass="form-control"/>
 						</div>
 					</div>
 					
@@ -81,7 +81,7 @@
 							<label class="control-label">#{msgs.paginierung}:</label>
 						</div>
 						<div class="col-sm-9">
-							<h:selectOneRadio value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection" styleClass="select-radio">
+							<h:selectOneRadio id="insertMode" value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection" styleClass="select-radio">
 								<f:selectItem itemValue="uncounted"
 									itemLabel="#{msgs.insertAsUncounted}" />
 								<f:selectItem itemValue="insertIntoPagination"
@@ -93,7 +93,7 @@
 					<hr class="margin-top-regular margin-bottom-regular"/>
 	
 					<div class="margin-top-regular">
-						<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.uploadFile}"
+						<h:commandLink id="uploadFile" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.uploadFile}"
 							action="#{Metadaten.fileManipulation.uploadFile}" onclick="setScrollPosition();"/>
 					</div>
 					
@@ -109,7 +109,7 @@
 							<h:outputText value="#{msgs.fileDownload}" />
 						</h3>
 						<div class="actions">
-						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+						<h:commandLink id="file_toggle2" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                            	<i class="fa #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
                            	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea2}" value="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'down':'up'}" />
                        		<f:ajax render="@form" />
@@ -123,7 +123,7 @@
 								<label class="control-label">#{msgs.aktuellerOrdner}:</label>
 							</div>
 							<div class="col-sm-9">
-								<h:selectOneMenu styleClass="form-control"
+								<h:selectOneMenu id="currentFolder2" styleClass="form-control"
 									value="#{Metadaten.fileManipulation.currentFolder}">
 									<f:selectItems value="#{Metadaten.allTifFolders}" var="folder"
 										itemLabel="#{folder}" itemValue="#{folder}" />
@@ -136,7 +136,7 @@
 								<label class="control-label">#{msgs.imageSelection}:</label>
 							</div>
 							<div class="col-sm-9">
-								<h:selectOneMenu styleClass="form-control"
+								<h:selectOneMenu  styleClass="form-control"
 									value="#{Metadaten.fileManipulation.imageSelection}"
 									id="imageSelection">
 									<f:selectItems value="#{Metadaten.alleSeiten}" />
@@ -147,14 +147,14 @@
 						<hr class="margin-top-regular margin-bottom-regular"/>
 
 						<div class="margin-top-regular">
-							<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.fileDownload}"
+							<h:commandLink id="downloadFile" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.fileDownload}"
 								action="#{Metadaten.fileManipulation.downloadFile}" onclick="setScrollPosition();"/>
 						</div>
 					</div>
 				</div>
 		</h:form>
 
-		<h:form rendered="#{Metadaten.alleSeiten != null}">
+		<h:form rendered="#{Metadaten.alleSeiten != null}" id="serversideForm">
 			
 			<div class="box box-bordered box-small box-color lightgrey">
 					<div class="box-title">
@@ -163,7 +163,7 @@
 							<h:outputText value="#{msgs.serversideUpload}" />
 						</h3>
 						<div class="actions">
-						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+						<h:commandLink id="file_toggle3" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                            	<i class="fa #{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
                            	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea3}" value="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'down':'up'}" />
                        		<f:ajax render="@form" />
@@ -206,7 +206,7 @@
 						<hr class="margin-top-regular margin-bottom-regular"/>
 
 						<div class="margin-top-regular">
-							<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.exportFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+							<h:commandLink id="exportFiles" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.exportFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
 								action="#{Metadaten.fileManipulation.exportFiles}"/>
 						</div>
 						
@@ -214,7 +214,7 @@
 				</div>
 		</h:form>
 
-		<h:form>
+		<h:form id="serversideForm2">
 			<div class="box box-bordered box-small box-color lightgrey">
 					<div class="box-title">
 						<h3>
@@ -222,7 +222,7 @@
 							<h:outputText value="#{msgs.serversideDownload}" />
 						</h3>
 						<div class="actions">
-						<h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+						<h:commandLink id="file_toggle4" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                            	<i class="fa #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
                            	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea4}" value="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'down':'up'}" />
                        		<f:ajax render="@form" />
@@ -262,7 +262,7 @@
 								<label class="control-label">#{msgs.paginierung}:</label>
 							</div>
 							<div class="col-sm-9">
-								<h:selectOneRadio value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection" styleClass="select-radio">
+								<h:selectOneRadio id="insertMode2" value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection" styleClass="select-radio">
 									<f:selectItem itemValue="uncounted"
 										itemLabel="#{msgs.insertAsUncounted}" />
 									<f:selectItem itemValue="insertIntoPagination"
@@ -274,7 +274,7 @@
 						<hr class="margin-top-regular margin-bottom-regular"/>
 
 						<div class="margin-top-regular">
-							<h:commandLink styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.importFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+							<h:commandLink id="importFiles2" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.importFiles}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
 							action="#{Metadaten.fileManipulation.importFiles}"/>
 						</div>
 						
