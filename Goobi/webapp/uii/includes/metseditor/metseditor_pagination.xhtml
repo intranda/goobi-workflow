@@ -103,7 +103,7 @@ xmlns:p="http://primefaces.org/ui">
 
 						<div id="paginationInputFields" class="row" style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
 							<div class="col-sm-4 padding-right-less">
-		                        <x:inputText styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationPrefix}">
+		                        <x:inputText id="paginationPrefix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationPrefix}">
 		                        	<f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}" />
 		                        </x:inputText>
 							</div>
@@ -114,7 +114,7 @@ xmlns:p="http://primefaces.org/ui">
 							</div>
 	
 	                        <div class="col-sm-4 padding-left-less">
-								<x:inputText styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationSuffix}">
+								<x:inputText id="paginationSuffix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationSuffix}">
 		                                       <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}" />
 		                        </x:inputText>
 							</div>

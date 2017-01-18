@@ -21,23 +21,23 @@
             <div class="col-sm-8 nopadding">
 
                 <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
-                <x:inputTextarea value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                <x:inputTextarea id="textarea" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputTextarea>
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'}">
+                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
 
                 <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
-                <h:selectManyListbox value="#{cc.attrs.metadata.selectedItems}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                <h:selectManyListbox id="selectMany" value="#{cc.attrs.metadata.selectedItems}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                 </h:selectManyListbox>
 
                 <!-- ++++++++++++++++++ Select One ++++++++++++++++++ -->
-                <h:selectOneMenu value="#{cc.attrs.metadata.selectedItem}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                <h:selectOneMenu id="selectOne" value="#{cc.attrs.metadata.selectedItem}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                 </h:selectOneMenu>
@@ -49,13 +49,13 @@
                 <h:panelGroup rendered="#{cc.attrs.metadata.normdata}">
                     <div class="row" style="margin-top: 5px;">
                         <div class="col-sm-6">
-                            <h:selectOneMenu value="#{cc.attrs.metadata.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                            <h:selectOneMenu id="normDatabase" value="#{cc.attrs.metadata.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                 <f:ajax execute="@form" event="valueChange" />
                                 <f:selectItems value="#{cc.attrs.metadata.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-sm-6">
-                            <h:inputText value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="normdataValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>

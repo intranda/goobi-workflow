@@ -19,7 +19,7 @@
 
             <!-- ++++++++++++++++++ First name ++++++++++++++++++ -->
             <div class="col-sm-8 nopadding">
-                <x:inputText styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
+                <x:inputText id="firstname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
             </div>
@@ -55,7 +55,7 @@
         <div class="row margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.nachname}" />
             <div class="col-sm-8 nopadding">
-                <x:inputText styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
+                <x:inputText id="lastname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
             </div>
@@ -65,7 +65,7 @@
         <div class="row margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.rolle}" />
             <div class="col-sm-8 nopadding">
-                <h:selectOneMenu value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
+                <h:selectOneMenu id="role" value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.person.addableRollen}" />
                 </h:selectOneMenu>
@@ -79,13 +79,13 @@
                 <h:panelGroup styleClass="col-sm-8 nopadding">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h:selectOneMenu value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                            <h:selectOneMenu id="normDatabase" value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                 <f:ajax execute="@form" event="valueChange" />
                                 <f:selectItems value="#{cc.attrs.person.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-sm-6">
-                            <h:inputText value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="normdataValue" value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>
@@ -103,13 +103,13 @@
                 <div class="col-sm-8 nopadding">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h:selectOneMenu value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                            <h:selectOneMenu id="namepartType" value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                 <f:ajax execute="@form" event="valueChange" render="@form" />
                                 <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-sm-6">
-                            <h:inputText value="#{part.value}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="namepartValue" value="#{part.value}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" render="@form" />
                             </h:inputText>
                         </div>

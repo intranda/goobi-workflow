@@ -37,12 +37,12 @@
                         </div>
                         <div class="modal-footer">
 
-                           <h:commandLink styleClass="btn btn-lightred pull-left" action="#{Metadaten.discard}" title="#{msgs.discard}">
+                           <h:commandLink id="discard" styleClass="btn btn-lightred pull-left" action="#{Metadaten.discard}" title="#{msgs.discard}">
                                 <i class="fa fa-trash-o margin-right-5"></i>
                                 <h:outputText value="#{msgs.discard}" />
                             </h:commandLink>
 
-                            <h:commandLink styleClass="btn btn-green" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.overwrite}">
+                            <h:commandLink id="overwrite" styleClass="btn btn-green" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.overwrite}">
                                 <i class="fa fa-floppy-o margin-right-5"></i>
                                 <h:outputText value="#{msgs.overwrite}" />
                             </h:commandLink>
@@ -352,7 +352,7 @@
                                     <x:inputText value="#{Metadaten.gndSearchValue}" styleClass="form-control input" id="input" />
                                 </div>
 
-                                <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+                                <h:commandLink  id="searchGnd" styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax execute="@form" render="list" />
@@ -372,7 +372,7 @@
 
 
                             <h:panelGroup layout="block" id="list" class="row pre-scrollable">
-                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">
+                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList" id="normdataList">
                                     <hr />
                                     <div class="row" style="margin: 20px;">
 
@@ -403,7 +403,7 @@
                                             </x:dataList>
                                         </div>
                                         <h:panelGroup layout="block" class="col-sm-1">
-                                            <h:commandLink styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
+                                            <h:commandLink id="gndData" styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
                                                 <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentPlugin.currentData}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
@@ -447,7 +447,7 @@
                                 </div>
 
 
-                                <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+                                <h:commandLink id="searchGeonames" styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax execute="@form" render="geonamesList" />
@@ -468,7 +468,7 @@
 
                             <h:panelGroup id="geonamesList" layout="block" styleClass="row pre-scrollable">
 
-                                <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="geonames">
+                                <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="geonames" id="dataList">
                                     <hr />
                                     <div class="row" style="margin: 20px;">
 
@@ -536,7 +536,7 @@
 
                                         </div>
                                         <div class="col-sm-1">
-                                            <h:commandLink action="#{Metadaten.currentPlugin.getData}" styleClass="btn btn-green margin-left-5">
+                                            <h:commandLink id="geonamesData" action="#{Metadaten.currentPlugin.getData}" styleClass="btn btn-green margin-left-5">
                                                 <f:setPropertyActionListener value="#{geonames}" target="#{Metadaten.currentPlugin.currentToponym}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.geonamesSearchValue}" />
                                                 <i class="fa fa-check" />

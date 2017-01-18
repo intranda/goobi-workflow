@@ -214,7 +214,7 @@
                                         </h:selectOneMenu>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h:inputText value="#{Metadaten.metadatum.normdataValue}" styleClass="form-control">
+                                        <h:inputText id="normdataValue" value="#{Metadaten.metadatum.normdataValue}" styleClass="form-control">
                                             <f:ajax execute="@form" event="valueChange" />
                                         </h:inputText>
                                     </div>
@@ -349,12 +349,12 @@
                                     <label class="control-label">#{metadata.typ}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
-                                    <h:inputText value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
-                                    <h:selectManyListbox styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
+                                    <h:inputTextarea id="textarea" value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
+                                    <h:inputText id="text" value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
+                                    <h:selectManyListbox id="selectMany" styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                                     </h:selectManyListbox>
-                                    <h:selectOneMenu styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
+                                    <h:selectOneMenu id="selectOne" styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                                     </h:selectOneMenu>
                                     <h:outputText value="#{metadata.value}" rendered="#{(metadata.outputType == 'readonly')}" styleClass="form-control font-light" />
