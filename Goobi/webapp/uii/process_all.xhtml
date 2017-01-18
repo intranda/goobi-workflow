@@ -136,25 +136,35 @@
 
                                                             <ul class="colors small13">
                                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
-                                                                    <li class="statusSmall red" title="#{msgs.statusGesperrt}" rel="tooltip" />
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" title="#{msgs.statusGesperrt}" rel="tooltip" />
                                                                 </h:panelGroup>
                                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
-                                                                    <li class="statusSmall orange" title="#{msgs.statusOffen}" rel="tooltip" />
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" title="#{msgs.statusOffen}" rel="tooltip" />
                                                                 </h:panelGroup>
 
                                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-                                                                    <li class="statusSmall green" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}" />
+                                                                   <li class="statusSmall #{step.bearbeitungsstatusEnum.color}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}" />
                                                                 </h:panelGroup>
                                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-                                                                    <li class="statusSmall yellow" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
                                                                 </h:panelGroup>
 
                                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-                                                                    <li class="statusSmall green" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                 </h:panelGroup>
                                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-                                                                    <li class="statusSmall yellow" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                 </h:panelGroup>
+                                                                <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
+                                                                </h:panelGroup>
+                                                                <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
+                                                                </h:panelGroup>
+
+                                                                <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
+                                                                    <li class="statusSmall  #{step.bearbeitungsstatusEnum.color}" title="#{step.bearbeitungsstatusEnum.title}" rel="tooltip" />
+                                                                </h:panelGroup>                                                                
                                                             </ul>
 
                                                         </h:column>
