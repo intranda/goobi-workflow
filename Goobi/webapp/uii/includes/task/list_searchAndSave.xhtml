@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<div class="dataTables_filter">
+			<div class="input-group input-group">
+				<span class="input-group-addon">
+					<i class="fa fa-search"></i>
+				</span>
+				<h:inputText id="searchField" styleClass="form-control searchfield" value="#{Form.filter}">
+					<f:passThroughAttribute name="placeholder" value="#{label}" />
+				</h:inputText>
+				<div class="input-group-btn">
+					<x:commandLink id="FilterAlle2" forceId="true" value="#{msgs.search}" styleClass="btn" action="#{Form.FilterAlleStart}" />
+				</div>
+			</div>
+			<x:commandButton type="submit" id="FilterAlle" forceId="true" style="display: none;" action="#{Form.FilterAlleStart}" />
+		</div>
+
+		<div class="dataTables_filter">
+			<div class="btn-group">
+				<span data-toggle="tooltip" title="#{msgs.filter}"> 
+					<a class="btn dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown" id="dropdown">
+						<i class="fa fa-filter margin-right-5" />
+						<span class="caret"></span>
+					</a> 
+					<!-- Filter Liste -->
+					<ul class="dropdown-menu">
+						<ui:repeat var="fil" value="#{Form.user.filters}">
+							<li>
+								<h:commandLink id="currentFilter" action="#{Form.FilterAlleStart}">
+									<h:outputText value="#{fil}" />
+									<x:updateActionListener property="#{Form.filter}" value="#{fil}" />
+								</h:commandLink>
+							</li>
+						</ui:repeat>
+					</ul>
+				</span>
+
+				<!-- remove filter from list -->
+				<h:commandLink id="deleteFilter" class="btn searchfieldbuttongroup" action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
+					<i class="fa fa-trash-o"></i>
+					<f:passThroughAttribute name="data-toggle" value="tooltip" />
+				</h:commandLink>
+
+				<!--Filter zur User-Liste hinzufuegen -->
+				<h:commandLink id="saveFilter" class="btn searchfieldbuttongroup" action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
+					<i class="fa fa-save"></i>
+					<f:passThroughAttribute name="data-toggle" value="tooltip" />
+				</h:commandLink>
+			</div>
+		</div>
+	</composite:implementation>
+</ui:composition>

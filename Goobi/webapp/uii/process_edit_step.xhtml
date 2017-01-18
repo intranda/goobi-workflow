@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+	<ui:param name="myPageTitle" value="#{msgs.schrittHinzufuegen}" rendered="#{ProzessverwaltungForm.mySchritt.id == null}" />
+	<ui:param name="myPageTitle" value="#{msgs.schrittDetails}" rendered="#{ProzessverwaltungForm.mySchritt.id != null}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb id="processAll" label="#{msgs.aktuelleProzesse}" action="process_all" navId="a1" />
+		<intranda:breadcrumb id="processDetails" label="#{msgs.prozessDetails}" action="process_edit" />
+		<intranda:breadcrumb id="stepDetails" label="#{msgs.schrittDetails}" action="process_edit_step" noSeparator="#{true}" />
+	</ui:define>
+
+
+
+	<ui:define name="content">
+
+		<h:form id="myform" onkeypress="submitOnEnter(event);" styleClass="form-horizontal form-bordered">
+
+			<ui:include src="includes/process/step_details.xhtml" />
+<!-- 			<ui:include src="includes/process/step_users.xhtml" /> -->
+<!-- 			<ui:include src="includes/process/step_usergroups.xhtml" /> -->
+			
+			<ui:include src="includes/process/step_usersMerged.xhtml" />
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
+
+
+
+
+

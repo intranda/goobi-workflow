@@ -40,6 +40,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,7 @@ import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.export.ExportDocket;
 
 import ugh.dl.Fileformat;
@@ -84,6 +86,8 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = Logger.getLogger(Process.class);
@@ -112,6 +116,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean selected = false;
     private Docket docket;
 
+    private List<LogEntry> processLog = new LinkedList<>();
+
     private BeanHelper bhelp = new BeanHelper();
 
     // temporär
@@ -125,9 +131,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public static String DIRECTORY_PREFIX = "orig";
     public static String DIRECTORY_SUFFIX = "images";
 
-    private String wikifield = "";
-
-    //    private static final String TEMPORARY_FILENAME_PREFIX = "temporary_";
+    
+    @Getter @Setter private String content ="";
+    @Getter @Setter private String secondContent ="";
+    @Getter @Setter private String thirdContent ="";
 
     public Process() {
         this.swappedOut = false;
@@ -457,8 +464,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
             }
             String rueckgabe = getImagesDirectory() + origOrdner + FileSystems.getDefault().getSeparator();
-            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000"
-                    && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
+            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000" && ConfigurationHelper
+                    .getInstance().isCreateMasterDirectory()) {
                 FilesystemHelper.createDirectory(rueckgabe);
             }
             return rueckgabe;
@@ -981,8 +988,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         MetadataManager.updateMetadata(id, metadata);
     }
 
-    public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException,
-            PreferencesException, WriteException {
+    public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
+            WriteException {
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
@@ -1032,11 +1039,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public boolean getTemporaryMetadataFiles() {
         return checkForNewerTemporaryMetadataFiles();
     }
-    
+
     public void setTemporaryMetadataFiles(boolean value) {
     }
-    
-    
+
     public void overwriteMetadata() {
         try {
             Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
@@ -1050,10 +1056,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
                 NIOFileUtils.copyFile(temporaryAnchorFile, metaAnchor);
             }
-        
+
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
             logger.error(e);
-        }        
+        }
     }
 
     public boolean checkForNewerTemporaryMetadataFiles() {
@@ -1135,14 +1141,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setSwappedOutGui(boolean inSwappedOut) {
         this.swappedOut = inSwappedOut;
-    }
-
-    public String getWikifield() {
-        return this.wikifield;
-    }
-
-    public void setWikifield(String wikifield) {
-        this.wikifield = wikifield;
     }
 
     public String downloadDocket() {
@@ -1287,7 +1285,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
         p.setTitel(this.getTitel() + "_copy");
-        p.setWikifield(wikifield);
 
         this.bhelp.SchritteKopieren(this, p);
         this.bhelp.ScanvorlagenKopieren(this, p);
@@ -1323,6 +1320,36 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         return p;
+    }
+
+    public void setProcessLog(List<LogEntry> processLog) {
+        this.processLog = processLog;
+    }
+
+    public List<LogEntry> getProcessLog() {
+        return processLog;
+    }
+
+    public void addLogEntry() {
+        LogEntry entry = new LogEntry();
+        entry.setCreationDate(new Date());
+        entry.setType(LogType.USER);
+        entry.setProcessId(id);
+        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (loginForm != null) {
+            entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
+        }
+        entry.setContent(content);
+        content = "";
+        
+        entry.setSecondContent(secondContent);
+        secondContent = "";
+        
+        entry.setThirdContent(thirdContent);
+        thirdContent = "";
+        processLog.add(entry);
+        
+        ProcessManager.saveLogEntry(entry);
     }
 
 }

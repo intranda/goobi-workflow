@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +48,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -59,7 +61,9 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
@@ -92,7 +96,6 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 //TODO: Delete me, this should be part of the Plugins...
 //TODO: Break this up into multiple classes with a common interface
-//TODO: add funny observer pattern here for more complexity
 
 public class GoobiScript {
     HashMap<String, String> myParameters;
@@ -178,6 +181,8 @@ public class GoobiScript {
                 updateContentFiles(inProzesse);
             } else if (this.myParameters.get("action").equals("deleteTiffHeaderFile")) {
                 deleteTiffHeaderFile(inProzesse);
+            } else if (this.myParameters.get("action").equals("addToProcessLog")) {
+                addToProcessLog(inProzesse);
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 setRuleset(inProzesse);
             } else if (this.myParameters.get("action").equals("exportDms")) {
@@ -412,6 +417,45 @@ public class GoobiScript {
         }
     }
 
+	private void addToProcessLog(List<Integer> inProzesse) {
+		if (this.myParameters.get("message") == null || this.myParameters.get("message").equals("")) {
+			Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "message");
+			return;
+		}
+
+		if (this.myParameters.get("type") == null || this.myParameters.get("type").equals("")) {
+			Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "type");
+			return;
+		}
+		if (!this.myParameters.get("type").equals("debug") && !this.myParameters.get("type").equals("info")
+				&& !this.myParameters.get("type").equals("error") && !this.myParameters.get("type").equals("warn") && !this.myParameters.get("type").equals("user")) {
+			Helper.setFehlerMeldung("goobiScriptfield", "Wrong parameter for type. Allowed values are: ",
+					"error, warn, info, debug, user");
+			return;
+		}
+
+		try {
+			LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+			String user = login.getMyBenutzer().getNachVorname();
+			for (Integer processId : inProzesse) {
+				
+                LogEntry logEntry = new LogEntry();
+                logEntry.setContent(myParameters.get("message"));
+                logEntry.setCreationDate(new Date());
+                logEntry.setProcessId(processId);
+                logEntry.setType(LogType.getByTitle(myParameters.get("type")));
+                logEntry.setUserName(user);
+
+                ProcessManager.saveLogEntry(logEntry);
+
+			}
+		} catch (Exception e) {
+			Helper.setFehlerMeldung(e);
+			logger.error(e);
+		}
+	}
+    
+    
     /**
      * Tauschen zweier Schritte gegeneinander ================================================================
      */

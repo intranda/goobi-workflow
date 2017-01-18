@@ -73,7 +73,6 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.cli.helper.WikiFieldHelper;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.export.ExportXmlLog;
@@ -169,7 +168,6 @@ public class ProcessBean extends BasicBean {
     private ProcessProperty processProperty;
     private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
     private Integer container;
-    private String addToWikiField = "";
     private String userDisplayMode = "";
 
     private boolean dispaySearchResult = false;
@@ -2125,45 +2123,6 @@ public class ProcessBean extends BasicBean {
 
     public boolean isShowArchivedProjects() {
         return this.showArchivedProjects;
-    }
-
-    /**
-     * @return values for wiki field
-     */
-    public String getWikiField() {
-        return this.myProzess.getWikifield();
-
-    }
-
-    /**
-     * sets new value for wiki field
-     * 
-     * @param inString
-     */
-    public void setWikiField(String inString) {
-        this.myProzess.setWikifield(inString);
-    }
-
-    public String getAddToWikiField() {
-        return this.addToWikiField;
-    }
-
-    public void setAddToWikiField(String addToWikiField) {
-        this.addToWikiField = addToWikiField;
-    }
-
-    public void addToWikiField() {
-        if (addToWikiField != null && addToWikiField.length() > 0) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-            this.myProzess.setWikifield(WikiFieldHelper.getWikiMessage(this.myProzess, this.myProzess.getWikifield(), "user", message));
-            this.addToWikiField = "";
-            try {
-                ProcessManager.saveProcess(myProzess);
-            } catch (DAOException e) {
-                logger.error(e);
-            }
-        }
     }
 
     public ProcessProperty getProcessProperty() {

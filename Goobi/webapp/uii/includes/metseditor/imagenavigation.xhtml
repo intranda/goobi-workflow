@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <style>
+.image-navigation {
+    display: inline-block;
+}
+</style>
+        <!-- navigation for big image -->
+
+        <div class="col-sm-12">
+            <h:commandLink styleClass="btn font-size-s margin-sides-10" title="#{msgs.firstImage}" id="imageFirst">
+                <i class="fa fa-double-angle-left"></i>
+                <f:ajax execute="@form" render="@form :bigimage" />
+                <x:updateActionListener value="0" property="#{Metadaten.imageIndex}" />
+            </h:commandLink>
+            <h:commandLink styleClass="btn btn-primary font-size-s" title="#{msgs.previousImage}" style="margin-right: 7px !important;" id="imageBack">
+                <i class="fa fa-angle-left"></i>
+                <h:outputText value=" #{msgs.pagePrevious}" />
+                <f:ajax execute="@form" render="@form :bigimage" />
+                <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
+            </h:commandLink>
+
+
+            <h:panelGroup rendered="#{Metadaten.imageIndex != '0'}">
+
+                <!-- wenn Bild groesser als 2 dann vorherige Seiten -->
+                <h:panelGroup rendered="#{Metadaten.imageIndex gt 0}">
+
+                    <!-- wenn Bild groesser als 4 dann grosses Trennzeichen Seiten -->
+                    <h:outputText value=" ... " rendered="#{Metadaten.imageIndex gt 3}" />
+
+                    <!-- wenn Bild groesser als 3 dann vorvorherige Seiten -->
+                    <h:panelGroup rendered="#{Metadaten.imageIndex gt 1}">
+                        <!-- vorvorheriges Bild -->
+                        <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex - 1}">
+                            <f:ajax execute="@form" render="@form :bigimage" />
+                            <x:updateActionListener value="#{Metadaten.imageIndex - 2}" property="#{Metadaten.imageIndex}" />
+                        </h:commandLink>
+                    </h:panelGroup>
+
+                    <!-- vorheriges Bild -->
+                    <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex}">
+                        <f:ajax execute="@form" render="@form :bigimage" />
+                        <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
+                    </h:commandLink>
+                </h:panelGroup>
+            </h:panelGroup>
+            <h:outputText class="currentPageNumber" value="#{Metadaten.imageIndex + 1}" />
+            <x:inputText id="hiddenImageNo" style="display: none" value="#{Metadaten.imageIndex}" />
+            <!-- nur anzeigen, wenn nicht letzte Seite -->
+
+            <h:panelGroup rendered="#{Metadaten.sizeOfImageList -1 != Metadaten.imageIndex}">
+
+                <!-- wenn es mindestens das vorvorletzte Bild ist -->
+                <h:panelGroup rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -1)}">
+
+                    <!-- naechste Seite -->
+                    <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex + 2}">
+                        <f:ajax execute="@form" render="@form :bigimage" />
+                        <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
+                    </h:commandLink>
+                    <!-- wenn es mindestens das vorvorvorletzte Bild ist -->
+                    <h:panelGroup rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -2)}">
+
+                        <!-- Uebernaechste Seite -->
+                        <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex + 3}">
+                            <f:ajax execute="@form" render="@form :bigimage" />
+                            <x:updateActionListener value="#{Metadaten.imageIndex + 2}" property="#{Metadaten.imageIndex}" />
+                        </h:commandLink>
+                    </h:panelGroup>
+                    <!-- wenn noch mehr als drei Seiten folgen, dann ein grosses Trennzeichen -->
+                    <h:outputText value=" ... " rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -4)}" />
+                </h:panelGroup>
+
+            </h:panelGroup>
+            <h:commandLink styleClass="btn btn-primary font-size-s" title="#{msgs.nextImage}" style="margin-left: 7px !important;" id="imageNext">
+                <h:outputText value="#{msgs.pageNext}" />
+                <i class="fa fa-angle-right"></i>
+                <f:ajax execute="@form" render="@form :bigimage" />
+                <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
+            </h:commandLink>
+            <h:commandLink styleClass="btn font-size-s margin-sides-10" title="#{msgs.lastImage}" id="imageLast">
+                <i class="fa fa-double-angle-right"></i>
+                <f:ajax execute="@form" render="@form :bigimage" />
+                <x:updateActionListener value="#{Metadaten.sizeOfImageList -1}" property="#{Metadaten.imageIndex}" />
+            </h:commandLink>
+
+
+            <h:commandButton id="imageBack20" style="display:none" >
+                <x:updateActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" />
+                <f:ajax execute="@form" render="@form :bigimage" />
+            </h:commandButton>
+            <h:commandButton id="imageNext20" style="display:none" >
+                <x:updateActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" />
+                <f:ajax execute="@form" render="@form :bigimage" />
+            </h:commandButton>
+			
+			<h:outputText styleClass="font-light" value="#{msgs.countImages}: #{Metadaten.sizeOfImageList}"></h:outputText>
+        </div>
+
+
+    </composite:implementation>
+</ui:composition>
+
+

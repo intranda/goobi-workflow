@@ -1,5 +1,6 @@
 package org.goobi.production.flow.delay;
 
+import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -21,8 +22,9 @@ package org.goobi.production.flow.delay;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.AbstractGoobiJob;
 import org.goobi.production.plugin.PluginLoader;
@@ -63,8 +65,14 @@ public class DelayJob extends AbstractGoobiJob {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
-                    ProcessManager.addLogfile(WikiFieldHelper.getWikiMessage(step.getProzess().getWikifield(), "trace", Helper
-                            .getTranslation("blockingDelayIsExhausted")), step.getProzess().getId());
+                    LogEntry logEntry = new LogEntry();
+                    logEntry.setContent(Helper.getTranslation("blockingDelayIsExhausted"));
+                    logEntry.setCreationDate(new Date());
+                    logEntry.setProcessId(step.getProzess().getId());
+                    logEntry.setType(LogType.DEBUG);
+                    logEntry.setUserName("-delay-");
+
+                    ProcessManager.saveLogEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
                     if (logger.isTraceEnabled()) {

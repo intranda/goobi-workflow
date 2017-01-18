@@ -27,8 +27,8 @@ package de.unigoettingen.sub.search.opac;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.sub.goobi.helper.FacesContextHelper;
 
@@ -39,12 +39,12 @@ public class ConfigOpacDoctype {
     private boolean periodical = false;
     private boolean multiVolume = false;
     private boolean containedWork = false;
-    private HashMap<String, String> labels;
-    private ArrayList<String> mappings;
+    private Map<String, String> labels;
+    private List<String> mappings;
     private String rulesetChildType;
 
     public ConfigOpacDoctype(String inTitle, String inRulesetType, String inTifHeaderType, boolean inPeriodical, boolean inMultiVolume,
-            boolean inContainedWork, HashMap<String, String> inLabels, ArrayList<String> inMappings, String rulesetChildType) {
+            boolean inContainedWork, Map<String, String> inLabels, List<String> inMappings, String rulesetChildType) {
         this.title = inTitle;
         this.rulesetType = inRulesetType;
         this.tifHeaderType = inTifHeaderType;
@@ -80,15 +80,15 @@ public class ConfigOpacDoctype {
         return this.containedWork;
     }
 
-    public HashMap<String, String> getLabels() {
+    public Map<String, String> getLabels() {
         return this.labels;
     }
 
-    public ArrayList<String> getMappings() {
+    public List<String> getMappings() {
         return this.mappings;
     }
 
-    public void setMappings(ArrayList<String> mappings) {
+    public void setMappings(List<String> mappings) {
         this.mappings = mappings;
     }
 

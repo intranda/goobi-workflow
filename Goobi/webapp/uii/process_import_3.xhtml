@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="templates" label="#{msgs.prozessvorlagen}" action="process_all" navId="a1" />
+        <intranda:breadcrumb id="page3" label="#{msgs.MassImport}" action="process_import_3" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form styleClass="form-horizontal form-bordered" id="nextStep">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color lightgrey box-bordered">
+                        <div class="box-title">
+                            <h3>
+                            	<i class="fa fa-tasks"></i>
+								<h:outputText value="#{msgs.nextStep}" />
+                            </h3>
+                        </div>
+                        <div class="box-content">
+                             <ul class="action-ul">
+                                <li class="action-li">
+                                    <h:commandLink id="utid21" action="#{MassImportForm.downloadDocket}">
+                                        <span class="btn margin-right-10 fa fa-print fa-lg width-40" />
+                                        <h:outputText value="#{msgs.laufzettelDrucken}" />
+                                    </h:commandLink>
+                                </li>
+                                <li class="action-li">
+                                    <h:commandLink id="utid20" action="#{MassImportForm.Prepare}">
+                                        <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
+                                        <h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
+                                    </h:commandLink>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+
+
+

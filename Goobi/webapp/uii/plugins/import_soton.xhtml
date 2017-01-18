@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+       
+        <div class="col-sm-12">
+            <div class="col-sm-2">
+                <h:outputText value="#{msgs.orderNumber}" />
+            </div>
+            <div class="col-sm-2">
+               <h:outputText value="#{msgs.volume}" />
+            </div>
+            <div class="col-sm-2">
+            	<h:outputText value="#{msgs.part}" />
+            </div>
+            <div class="col-sm-2">
+                <h:outputText value="#{msgs.year}" />
+            </div>
+            <div class="col-sm-4">
+                <h:outputText value="#{msgs.auswahl}" />
+            </div>
+        </div>
+
+        <x:dataList var="docstruct" id="sotondocstructs" value="#{MassImportForm.docstructs}" >
+            <div class="col-sm-12">
+                <div class="col-sm-2 padding-right-regular">
+                    <h:inputText value="#{docstruct.order}" styleClass="form-control">
+                        <f:validateLongRange minimum="1" />
+                    </h:inputText>
+                </div>
+                <div class="col-sm-2 padding-right-regular">
+                    <h:inputText id="Volume" value="#{docstruct.volumeProperty.value}" required="true" styleClass="form-control">
+                        <f:validateLength minimum="1" />
+                    </h:inputText>
+                    <h:message for="Volume">The value for volume is empty.</h:message>
+                </div>
+                <div class="col-sm-2 padding-right-regular">
+                    <h:inputText value="#{docstruct.partProperty.value}" id="prpvw15_2" styleClass="form-control"/>
+                </div>
+                <div class="col-sm-2 padding-right-regular">
+                    <h:inputText value="#{docstruct.yearProperty.value}" id="prpvw15_3" styleClass="form-control"/>
+                </div>
+                <div class="col-sm-4">
+                    <h:commandLink action="#{MassImportForm.plugin.addDocstruct}">
+                       <span class="btn fa fa-plus" />
+                    </h:commandLink>
+
+                    <h:commandLink action="#{MassImportForm.plugin.deleteDocstruct}" rendered="#{MassImportForm.docstructssize > 1}">
+                        <span class="btn fa fa-minus" />
+                        <x:updateActionListener property="#{MassImportForm.plugin.docstruct}" value="#{docstruct}" />
+                    </h:commandLink>
+
+                </div>
+            </div>
+        </x:dataList>
+    </composite:implementation>
+
+</ui:composition>
+
+

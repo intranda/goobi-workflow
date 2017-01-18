@@ -1,0 +1,151 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="templates" label="#{msgs.prozessvorlagen}" action="process_all" navId="a1" />
+        <intranda:breadcrumb id="page2" label="#{msgs.MassImport}" action="process_import_2" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form enctype="multipart/form-data" styleClass="form-horizontal form-bordered" prependId="false">
+           <style>
+.ui-progressbar {
+    background: #f6f6f6;
+}
+
+.ui-progressbar-label {
+    color: black;
+}
+</style>
+
+            <h:panelGroup style="display: none" id="progressPanel">
+                <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2" id="progressbutton" style="display: none;" />
+                <p:progressBar widgetVar="pbAjax" ajax="true" value="#{MassImportForm.progress}" labelTemplate="{value}%" styleClass="animated" global="false">
+                    <p:ajax event="complete" listener="#{MassImportForm.onComplete}" />
+                </p:progressBar>
+
+            </h:panelGroup>
+            <script type="text/javascript">
+                function displayProgressBar() {
+                    var element = document.getElementById('progressPanel');
+                    if (element.style.display == 'block') {
+                        element.style.display = 'none';
+                    } else {
+                        element.style.display = 'block';
+                    }
+                    document.getElementById('progressbutton').click();
+                }
+                
+                function start() {
+                    window['progress'] = setInterval(
+                            function() {
+                                var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
+                    
+                                pbClient.setValue(pbClient.getValue() + 10);
+                    
+                                if (newValue === 100) {
+                                    clearInterval(window['progress']);
+                                    
+                                }
+                            },
+                            1000);
+                }
+             </script>
+             
+            <div class="row">
+                <div class="col-sm-12">
+                    
+                        <div class="box box-color box-bordered">
+                            <div class="box-title">
+                                 <h3>
+		                            <i class="fa fa-cloud-download"></i>
+		                            <h:outputText value="#{msgs.MassImport}" />
+		                        </h3>
+                            </div>
+                            <div class="box-content nopadding">
+                                <x:dataList forceId="true" var="property" id="processProperties" value="#{MassImportForm.properties}">
+
+                                    <h:panelGroup rendered="#{(property.type.name == 'text') or (property.type.name == 'link')}">
+                                        <intranda:formInputText id="name" label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}"
+                                            name="inputText" fieldStyle="form-control" required="#{property.required}" />
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{property.type.name == 'integer' || property.type.name == 'number'}">
+                                        <div class="form-group" style="">
+                                            <h:outputLabel for="number" styleClass="control-label col-sm-2" value="#{property.name}" />
+                                            <div class="col-sm-10">
+                                                <x:inputText id="number" styleClass="form-control" value="#{property.value}"
+                                                    required="#{property.required}" />
+                                                <h:message for="number" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+                                                    value="#{msgs.helpProperty}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{(property.type.name == 'list')}">
+                                        <intranda:formInputDropDown2 id="selectMenu" label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}"
+                                            name="selectMenu" selectItems="#{property.possibleValues}" fieldStyle="form-control"
+                                            required="#{property.required}" var="propertys" itemLabel="#{propertys}" itemValue="#{propertys}" />
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{(property.type.name == 'listmultiselect')}">
+                                        <intranda:formInputSelectMany id="selectManyMenu" label="#{property.name}" field="#{property.valueList}"
+                                            help="#{msgs.helpProperty}" name="selectManyMenu" selectItems="#{property.possibleValues}"
+                                            fieldStyle="form-control" required="#{property.required}" var="step" itemLabel="#{step}"
+                                            itemValue="#{step}" />
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{(property.type.name == 'boolean')}">
+                                        <intranda:formInputCheckBox id="checkbox" label="#{property.name}" field="#{property.booleanValue}"
+                                            help="#{msgs.helpProperty}" name="checkbox" required="#{property.required}" />
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{(property.type.name == 'date')}">
+                                        <intranda:formInputCalendar2 id="calendar" name="calendar" label="#{property.name}" field="#{property.dateValue}"
+                                            required="#{property.required}" />
+                                    </h:panelGroup>
+
+                                </x:dataList>
+
+                                <div class="form-actions">
+                                    <!-- Save -->
+                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{MassImportForm.convertData}"  onclick="displayProgressBar()">
+                                        <i class="fa fa-save margin-right-5"/>
+                                        <h:outputText value="#{msgs.speichern}" />
+                                    </h:commandLink>
+
+                                    <!-- Cancel -->
+                                    <h:link id="cancel" styleClass="btn pull-right font-size-s margin-sides-10" outcome="process_all" value="#{msgs.abbrechen}" />
+
+									<!-- Back -->
+                                    <h:commandLink id="back" styleClass="btn font-size-s" action="process_import_1" immediate="true">
+                                        <i class="fa fa-arrow-circle-o-left margin-right-5"/>
+                                        <h:outputText value="#{msgs.zurueck}" />
+                                    </h:commandLink>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+
+
+
+
+

@@ -428,6 +428,19 @@ public class FilterHelper {
         }
     }
 
+    protected static String filterProcessLog(String tok, boolean negate) {
+        String query = "";
+        if (!negate) {
+            query = "prozesse.ProzesseID in (select distinct processId from processlog where processlog.content like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        } else {
+            query = "prozesse.ProzesseID not in (select distinct processId from processlog where processlog.content like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        }
+
+        return query;
+    }
+
     /**
      * Filter processes by Ids
      * 
@@ -679,8 +692,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.wikifield like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":")
-                        + 1)) + rightTruncationCharacter + "'");
+                filter.append(filterProcessLog(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -761,8 +773,7 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.wikifield not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":")
-                        + 1)) + rightTruncationCharacter + "'");
+                filter.append(filterProcessLog(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
@@ -835,8 +846,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(" prozesse.wikifield like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":")
-                        + 1)) + rightTruncationCharacter + "'");
+                filter.append(filterProcessLog(tok, false));
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))

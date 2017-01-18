@@ -1,0 +1,378 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <h:panelGroup id="BildArea2" style="#{Metadaten.treeProperties.imageSticky?('position: fixed;left: ').concat(Metadaten.treeWidth + 560).concat('px;z-index: 998;'):''}" rendered="#{Metadaten.bildAnzeigen==true}">
+
+            <div class="box">
+                <h:panelGroup id="bigimage" rendered="#{!Metadaten.treeProperties.showThumbnails}" >
+                    <h:form prependId="false" style="padding-left:20px;" id="openseadragonform">
+
+                        <div class="row pull-center" style="margin-left:20px">
+                        <h:panelGroup rendered="#{Metadaten.image != null}" styleClass="row box-title image-navigation" layout="block">
+                          
+                            	<ui:include src="imagenavigation.xhtml" />
+                           
+                        </h:panelGroup>
+                        </div>
+                        <div class="box-content" style="padding-top: 0px;">
+                            <!-- big image -->
+                            <h:panelGroup rendered="#{Metadaten.image != null}">
+                                <ui:include src="imageControls.xhtml" />
+                            </h:panelGroup>
+                            <div class="row margin-top-most margin-bottom-most" style="width: #{Metadaten.containerWidth}px;">
+                            
+                            
+                            <div class="clearfix"></div>
+
+                                <h:panelGroup rendered="#{Metadaten.bildNummer != '-1' and Metadaten.ocrResult!=''}">
+                                    <div style="background-color: #ffffff; border-style: solid; border-width: 1px; border-color: #CCCCCC; margin-bottom: 15px; padding: 5px;">
+                                        <h3>
+                                            <h:outputText value="OCR" />
+                                        </h3>
+                                        <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
+                                    </div>
+                                </h:panelGroup>
+
+                                <h:panelGroup styleClass="div-image" layout="block">
+                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null}" />
+
+                                    <script type="text/javascript">
+                                    $('#mainImage').height($('#mainImage').width() * #{Metadaten.imageHeight}/#{Metadaten.imageWidth});
+                                    var imageViewConfig = {
+                                            global: {
+                                                divId : 'mainImage',
+                                                zoomSlider : 'zoomSlider',
+                                                maxZoomLevel: 10
+                                            },
+                                            image: {
+                                                mimeType: "image/jpg",
+                                                imageLevels: #{Metadaten.image.imageLevels},
+                                                imageOriginalWidth: #{Metadaten.imageWidth},
+                                                imageOriginalHeight: #{Metadaten.imageHeight},
+                                                imageViewWidth: $('#mainImage').width(),
+                                                imageViewHeight: $('#mainImage').height(),
+                                                tileUrl: null                                
+                                          
+                                            }
+                                        }; 
+                                    viewImage.close();
+                                    viewImage.init(imageViewConfig);
+                                    
+//                                     ,
+//                                     location: {
+//                                     rotation: 90,
+//                                     	x: 0.5,
+//                                     	y: 0.6172839506172839,
+//                                     	zoom: 0.7290000000000001
+//                                     }
+                                    </script>
+                                </h:panelGroup>
+                            </div>
+                            <!-- // big image -->
+
+<!--                             <div class="row"> -->
+<!--                                 <ui:include src="imagenavigation.xhtml" /> -->
+<!--                             </div> -->
+                        </div>
+                    </h:form>
+                </h:panelGroup>
+
+	 		
+	 		
+	 		
+	 		
+	 		<!-- thumbnailview -->
+	        <h:panelGroup rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
+	            <h:form prependId="false" id="thumbnails" style="padding-left:20px;">
+  
+	                <div class="row pull-center" style="margin-left:20px">
+                         <div class="row box-title image-navigation">
+                         	 <ui:include src="thumbnavigation.xhtml" />
+                         </div>
+                     </div>
+	             
+	             
+	                <!-- Thumbnail list -->
+	                <div class="row margin-top-most margin-bottom-most" style="margin-left:20px">
+	             
+			             <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status">
+							<div class="goobi-thumbnail #{Metadaten.image.imageName eq image.imageName ? 'img-active' : 'font-light'}">
+                                <div class="thumb">
+									<h:commandLink title="#{image.tooltip}">
+										<canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{image.tooltip}" id="thumbnail-#{status.index}"></canvas>
+										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
+										<f:ajax render="@form :bigimage"/>
+									</h:commandLink>
+								</div>
+								<div class="goobi-thumbnail-caption">
+									<h:outputText value="#{image.imageName}"></h:outputText>
+								</div>
+							</div>
+						</ui:repeat>	             
+	                    
+	                </div>
+	                <!-- // Thumbnail list -->
+	
+	                <div class="row">
+	                    <ui:include src="thumbnavigation.xhtml" />
+	                    <x:inputText id="hiddenImageNoThumb" style="display: none" value="#{Metadaten.imageIndex}" />
+	                </div>
+	            </h:form>
+	        </h:panelGroup>
+
+
+
+
+
+
+
+
+                <div class="box-content">
+                    <h:form id="formularOrdner" rendered="#{Metadaten.bildNummer != '-1'}" styleClass="form-vertical" style="margin-top:15px">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="control-label" for="textfield">#{msgs.aktuellerOrdner}:</label>
+                            </div>
+                            <div class="col-sm-6" style="padding: 0px;">
+                                <h:selectOneMenu id="TifFolders" styleClass="form-control" value="#{Metadaten.currentTifFolder}">
+                                    <f:selectItems value="#{Metadaten.allTifFolders}" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="col-sm-3">
+                                <h:commandLink action="#{Metadaten.changeFolder}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
+                                    <i class="fa fa-check-circle-o" />
+                                    <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                                    <f:ajax execute="@form" render="@form :thumbnails :bigimage :openseadragonform :imagenavigation" />
+                                </h:commandLink>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="control-label" for="textfield">
+                                    <h:outputText value="#{msgs.setRepresentative}:" rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}" />
+                                </label>
+                            </div>
+                            <div class="col-sm-6" style="padding: 0px;">
+                                <h:selectOneMenu value="#{Metadaten.currentRepresentativePage}" styleClass="form-control" rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}">
+                                    <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="col-sm-3">
+                                <h:commandLink action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}" rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}">
+                                    <i class="fa fa-check-circle-o" />
+                                    <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                                    <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imagenavigation" />
+                                </h:commandLink>
+                            </div>
+                        </div>
+
+						<h:panelGroup rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
+							<div class="row">
+	                            <div class="col-sm-3">
+	                                <label class="control-label" for="textfield">
+	                                    <h:outputText value="#{msgs.numberOfImages}:" />
+	                                </label>
+	                            </div>
+	                            <div class="col-sm-6" style="padding: 0px;">
+	                                <h:selectOneMenu value="#{Metadaten.numberOfImagesPerPage}" styleClass="form-control" title="#{msgs.numberOfImages}">
+						                <f:selectItem itemValue="8" itemLabel="8" />
+						                <f:selectItem itemValue="12" itemLabel="12" />
+						                <f:selectItem itemValue="24" itemLabel="24" />
+						                <f:selectItem itemValue="48" itemLabel="48" />
+						                <f:selectItem itemValue="96" itemLabel="96" />
+						                <f:ajax event="change" render="@form"></f:ajax>
+						            </h:selectOneMenu>
+	                            </div>
+	                            <div class="col-sm-3">
+	                                <h:commandLink action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}" >
+	                                    <i class="fa fa-check-circle-o" />
+	                                   
+	                                </h:commandLink>
+	                            </div>
+	                        </div>
+	
+							<div class="row">
+	                            <div class="col-sm-3">
+	                                <label class="control-label" for="textfield">
+	                                    <h:outputText value="#{msgs.sizeOfImages}:" />
+	                                </label>
+	                            </div>
+	                            <div class="col-sm-6" style="padding: 0px;">
+	                                <h:selectOneMenu value="#{Metadaten.thumbnailSize}" styleClass="form-control thumbnails" title="#{msgs.sizeOfImages}">
+						                <f:selectItem itemValue="100" itemLabel="100" />
+						                <f:selectItem itemValue="150" itemLabel="150" />
+						                <f:selectItem itemValue="200" itemLabel="200" />
+						                <f:selectItem itemValue="250" itemLabel="250" />
+						                <f:selectItem itemValue="300" itemLabel="300" />
+						                <f:selectItem itemValue="350" itemLabel="350" />
+						                <f:selectItem itemValue="400" itemLabel="400" />
+						                <f:selectItem itemValue="450" itemLabel="450" />
+						                <f:selectItem itemValue="500" itemLabel="500" />
+						            </h:selectOneMenu>
+	                            </div>
+	                            <div class="col-sm-3">
+	                                <h:commandLink action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
+	                                    <i class="fa fa-check-circle-o" />
+	                                    
+	                                </h:commandLink>
+	                            </div>
+	                        </div>
+	            		</h:panelGroup>
+            		
+                        <!-- bookmark 1 -->
+                        <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc1 != null}" layout="block" id="bookmark1">
+                            <a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}" href="#{HelperForm.servletPathWithHostAsUrl}#{NavigationForm.uiStatus.mets_toc1}&amp;filename=intranda.png">
+                                <i class="fa fa-bookmark" />
+                            </a>
+                            <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
+                                <i class="fa fa-times" />
+                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                <f:ajax render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                            </h:commandLink>
+                        </h:panelGroup>
+                        <h:commandLink rendered="#{NavigationForm.uiStatus.mets_toc1 == null}" action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass1" title="#{msgs.mets_bookmarkAdd}">
+                            <i class="fa fa-bookmark-o" />
+                            <f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                            <f:ajax render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                        </h:commandLink>
+
+                        <!-- bookmark 2 -->
+                        <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc2 != null}" layout="block" id="bookmark2">
+                            <a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}" href="#{HelperForm.servletPathWithHostAsUrl}#{NavigationForm.uiStatus.mets_toc2}&amp;filename=intranda.png">
+                                <i class="fa fa-bookmark" />
+                            </a>
+                            <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
+                                <i class="fa fa-times" />
+                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                            </h:commandLink>
+                        </h:panelGroup>
+                        <h:commandLink rendered="#{NavigationForm.uiStatus.mets_toc2 == null and NavigationForm.uiStatus.mets_toc1 != null}" action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass2" title="#{msgs.mets_bookmarkAdd}">
+                            <i class="fa fa-bookmark-o" />
+                            <f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                            <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                        </h:commandLink>
+
+                        <!-- bookmark 3 -->
+                        <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc3 != null}" layout="block" id="bookmark3">
+                            <a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}" href="#{HelperForm.servletPathWithHostAsUrl}#{NavigationForm.uiStatus.mets_toc3}&amp;filename=intranda.png">
+                                <i class="fa fa-bookmark" />
+                            </a>
+                            <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
+                                <i class="fa fa-times" />
+                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                            </h:commandLink>
+                        </h:panelGroup>
+                        <h:commandLink rendered="#{NavigationForm.uiStatus.mets_toc3 == null and NavigationForm.uiStatus.mets_toc2 != null}" action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass3" title="#{msgs.mets_bookmarkAdd}">
+                            <i class="fa fa-bookmark-o" />
+                            <f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                            <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                        </h:commandLink>
+
+                        <!-- bookmark 4 -->
+                        <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc4 != null}" layout="block" id="bookmark4">
+                            <a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}" href="#{HelperForm.servletPathWithHostAsUrl}#{NavigationForm.uiStatus.mets_toc4}&amp;filename=intranda.png">
+                                <i class="fa fa-bookmark" />
+                            </a>
+                            <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
+                                <i class="fa fa-times" />
+                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                            </h:commandLink>
+                        </h:panelGroup>
+                        <h:commandLink rendered="#{NavigationForm.uiStatus.mets_toc4 == null and NavigationForm.uiStatus.mets_toc3 != null}" action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass4" title="#{msgs.mets_bookmarkAdd}">
+                            <i class="fa fa-bookmark-o" />
+                            <f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                            <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                        </h:commandLink>
+
+                        <!-- bookmark 5 -->
+                        <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc5 != null}" layout="block" id="bookmark5">
+                            <a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}" href="#{HelperForm.servletPathWithHostAsUrl}#{NavigationForm.uiStatus.mets_toc5}&amp;filename=intranda.png">
+                                <i class="fa fa-bookmark" />
+                            </a>
+                            <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
+                                <i class="fa fa-times" />
+                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                            </h:commandLink>
+                        </h:panelGroup>
+                        <h:commandLink rendered="#{NavigationForm.uiStatus.mets_toc5 == null and NavigationForm.uiStatus.mets_toc4 != null}" action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass5" title="#{msgs.mets_bookmarkAdd}">
+                            <i class="fa fa-bookmark-o" />
+                            <f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                            <f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+                        </h:commandLink>
+
+                    </h:form>
+                </div>
+
+                <h:form id="imageform">
+                    <x:inputHidden id="hiddenBildNummer" forceId="true" value="#{Metadaten.bildNummer}" />
+                </h:form>
+
+                <!-- wenn kein Bild vorhanden, dann nur Meldung -->
+                <h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" />
+
+
+            </div>
+
+        </h:panelGroup>
+
+
+
+
+       
+
+
+
+        <script type="text/javascript">
+	$(document).ready(
+			function() {
+				targetImage = parseInt($("#contentArea").width())
+						+ parseInt($("#left").width()) + 30;
+				$("#BildArea2").css("left", targetImage);
+
+				loadBookmarks();
+			});
+
+	function loadBookmarks() {
+		if ($(".colorbox-image").length > 0) {
+			$(".colorbox-image").colorbox({
+				maxWidth : "90%",
+				maxHeight : "90%",
+				rel : $(this).attr("rel")
+			});
+		}
+	}
+   
+	window.onload = function() {
+    	loadImages();
+    	
+    }
+	
+	function loadThumbnails() {
+//		 var height = parseInt('#{Metadaten.thumbnailSize}');
+		var height = parseInt($('.thumbnails').val());
+		if (height) {
+    		$('.goobi-thumbnail').css('height', (height + 25) + 'px');
+    		$('.goobi-thumbnail .thumb').css('max-height', height + 'px');
+    		$('.goobi-thumbnail .thumb canvas').css('max-height', height + 'px');
+    		$('.goobi-thumbnail').css('max-width', (height) + 'px');
+		}
+	}
+$( document ).ready(function() {
+	 loadThumbnails();
+});
+
+</script>
+
+    </composite:implementation>
+
+</ui:composition>
+
+

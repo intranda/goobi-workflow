@@ -1,0 +1,172 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<h:form>
+			<ul class='mobile-nav open'>
+				<!-- Startseite -->
+				<intranda:menuItem id="a0" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" />
+
+				<!-- aktuelle Schritte -->
+				<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
+					<li class="#{NavigationForm.aktuell == 'a20'?'active':''}">
+						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}" id="tasks">
+							<i class="#{cc.attrs.icon}"></i> #{msgs.aktuelleSchritte}
+							<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a20" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.filter}" value="" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="statusDesc" />
+						</h:commandLink>
+					</li>
+				</h:panelGroup>
+				<!-- Workflow -->
+				<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
+					<li class="has-submenu #{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
+						<a href="#">#{msgs.workflow}</a>
+						<ul>
+							<!-- Prozess suchen -->
+							<intranda:menuItem id="a21" label="#{msgs.nachEinemBandSuchen}"
+								action="process_search" filter="#{ProzessverwaltungForm.filter}"
+								icon="fa fa-search box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+							<h:panelGroup rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+								<!-- Prozessuebersicht -->
+								<intranda:menuItem id="a22" label="#{msgs.aktuelleProzesse}"
+									action="#{ProzessverwaltungForm.FilterAktuelleProzesse}"
+									filter="#{ProzessverwaltungForm.filter}"
+									display="#{ProzessverwaltungForm.modusAnzeige}"
+									icon="fa fa-tasks box-icon-fix-menu-up3 "
+									fontclass="margin-left-10" />
+									
+								<!-- batches -->
+								<h:panelGroup rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+									<intranda:menuItem id="a23" label="#{msgs.batches}"
+										action="#{BatchForm.FilterAlleStart}"
+										display="#{BatchForm.modusBearbeiten}"
+										icon="fa fa-archive box-icon-fix-menu-up3 "
+										fontclass="margin-left-10" />
+								</h:panelGroup>
+
+								<!-- neuen Vorgang anlegen -->
+<!-- 								<intranda:menuItem id="a24" label="#{msgs.neuenVorgangAnlegen}" -->
+<!-- 									action="#{ProzessverwaltungForm.NeuenVorgangAnlegen}" -->
+<!-- 									filter="#{ProzessverwaltungForm.filter}" -->
+<!-- 									rendered="#{LoginForm.maximaleBerechtigung == 2}" -->
+<!-- 									icon="fa fa-files-o box-icon-fix-menu-up3 " -->
+<!-- 									fontclass="margin-left-10" /> -->
+
+								<!-- Prozessvorlagen -->
+								<intranda:menuItem id="a25" label="#{msgs.prozessvorlagen}"
+									action="#{ProzessverwaltungForm.FilterVorlagen}"
+									filter="#{ProzessverwaltungForm.filter}"
+									rendered="#{LoginForm.maximaleBerechtigung ge 1}"
+									icon="fa fa-files-o box-icon-fix-menu-up3 "
+									fontclass="margin-left-10" />
+							</h:panelGroup>
+						</ul>
+					</li>
+ 				</h:panelGroup>
+				<!-- Administration -->
+				<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1}">
+					<li class="has-submenu #{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39'?'active':''}">
+						<a href="#">#{msgs.administration}</a>
+						<ul>
+							<!-- Benutzerverwaltung -->
+							<intranda:menuItem id="a30" label="#{msgs.benutzer}"
+								action="#{BenutzerverwaltungForm.FilterKein}"
+								icon="glyphicon-user box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Benutzergruppen -->
+							<intranda:menuItem id="a31" label="#{msgs.benutzergruppen}"
+								action="#{BenutzergruppenForm.FilterKein}"
+								icon="glyphicon-group box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Projekte -->
+							<intranda:menuItem id="a32" label="#{msgs.projekte}"
+								action="#{ProjekteForm.FilterKein}"
+								icon="glyphicon-compass box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Regelsaetze -->
+							<intranda:menuItem id="a33" label="#{msgs.regelsaetze}"
+								action="#{RegelsaetzeForm.FilterKein}"
+								icon="fa fa-wrench box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Laufzettel -->
+							<intranda:menuItem id="a34" label="#{msgs.dockets}"
+								action="#{DocketForm.FilterKein}"
+								icon="fa fa-print box-icon-fix-menu-up3"
+								fontclass="margin-left-10" />
+
+							<!-- Ldapgruppen -->
+							<intranda:menuItem id="a35" label="#{msgs.ldapgruppen}"
+								action="#{LdapGruppenForm.FilterKein}"
+								icon="glyphicon-keys box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- aktive Module -->
+							<h:panelGroup rendered="#{NavigationForm.showModuleManager}">
+								<intranda:menuItem id="a36" label="#{msgs.modulemanager}"
+									action="modulemanager" />
+							</h:panelGroup>
+
+							<!-- aktive Module -->
+							<h:panelGroup rendered="#{NavigationForm.showTaskManager}">
+								<intranda:menuItem id="a37" label="#{msgs.taskmanager}"
+									action="taskmanager" />
+							</h:panelGroup>
+
+							<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}">
+								<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
+									<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="openPlugin">
+										<span>
+											<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+											<span class="margin-left-10">#{msgs[plugin]}</span>
+										</span>
+										<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a38" />
+									</h:commandLink>
+								</li>
+							</ui:repeat>
+						</ul>
+					</li>
+ 				</h:panelGroup>
+				<!-- Controlling -->
+				<h:panelGroup rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+					<li class="has-submenu #{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
+						<a href="#">#{msgs.controlling}</a>
+						<ul>
+							<intranda:menuItem id="a40" label="#{msgs.statistik}"
+								action="statistics"
+								icon="fa fa-bar-chart box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+	
+							<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}">
+								<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+									<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="openStatistics">
+										<span>
+											<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
+											<span class="margin-left-10">#{msgs[statistics]}</span>
+										</span>
+										<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a41" />
+									</h:commandLink>
+								</li>
+							</ui:repeat>
+						</ul>
+					</li>
+	            </h:panelGroup>
+			</ul>
+		</h:form>
+	</composite:implementation>
+</ui:composition>

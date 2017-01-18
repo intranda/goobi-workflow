@@ -768,7 +768,7 @@ public class ProjectBean extends BasicBean {
         }
     }
     
-    private void resetStatistics() {
+    public void resetStatistics() {
         statisticsManager1 = null;
         statisticsManager2 = null;
         statisticsManager3 = null;
@@ -778,7 +778,7 @@ public class ProjectBean extends BasicBean {
         projectProgressImage = null;
         projectStatImages = null;
         projectStatVolumes = null;
-    }
+    }   
     
     public String cloneProject() {
        myProjekt.clone();

@@ -172,4 +172,12 @@ public class NavigationForm {
         return Theme.ui;
     }
 
+    
+    public boolean isShowSecondLogField() {
+      return ConfigurationHelper.getInstance().isShowSecondLogField();
+    }
+    
+    public boolean isShowThirdLogField() {
+        return ConfigurationHelper.getInstance().isShowThirdLogField();
+      }
 }

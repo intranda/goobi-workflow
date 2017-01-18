@@ -20,13 +20,22 @@ package de.sub.goobi.persistence.managers;
  */
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.goobi.production.enums.LogType;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 12;
+    public static final int EXPECTED_VERSION = 13;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -114,9 +123,14 @@ public class DatabaseVersion {
                 updateToVersion11();
             case 11:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 11.");
+                    logger.trace("Update database to version 12.");
                 }
                 updateToVersion12();
+            case 12:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 13.");
+                }
+                updateToVersion13();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -124,6 +138,121 @@ public class DatabaseVersion {
                     logger.trace("Database is up to date.");
                 }
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void updateToVersion13() {
+        Connection connection = null;
+        String sqlStatement =
+                "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+
+            runner.update(connection, sqlStatement);
+            logger.info("Convert old wikifield to new process log. This might run a while.");
+            String sql = "SELECT ProzesseID, wikifield from prozesse where wikifield !=''";
+            List<Object> rawData = ProcessManager.runSQL(sql);
+            if (rawData != null && !rawData.isEmpty()) {
+                String header = "INSERT INTO processlog (processID, creationDate, userName, type , content) VALUES ";
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < rawData.size(); i++) {
+                    Object[] rowData = (Object[]) rawData.get(i);
+                    String processId = (String) rowData[0];
+                    String oldLog = (String) rowData[1];
+
+                    String[] entries = oldLog.split("<br/>");
+
+                    for (String entry : entries) {
+                        if (!entry.trim().isEmpty()) {
+                            LogType type;
+                            if (entry.startsWith("<font color=\"#FF0000\">")) {
+                                type = LogType.ERROR;
+                            } else if (entry.startsWith("<font color=\"#FF6600\">")) {
+                                type = LogType.WARN;
+                            } else if (entry.startsWith("<font color=\"#CCCCCC\">")) {
+                                type = LogType.DEBUG;
+                            } else if (entry.startsWith("<font color=\"#006600\">")) {
+                                type = LogType.USER;
+                            }
+
+                            else {
+                                type = LogType.INFO;
+                            }
+                            entry = entry.replaceAll("<font color.*?>", "").replaceAll("</font>", "");
+                            String dateString = "";
+                            String username = "automatic";
+                            Date date = null;
+                            for (MatchResult r : findRegexMatches(".*\\d{2}:\\d{2}:\\d{2}:", entry)) {
+                                dateString = r.group();
+                                entry = entry.replace(r.group(), "");
+                            }
+                            for (MatchResult r : findRegexMatches("\\((.*?)\\)", entry)) {
+                                username = r.group(1);
+                                entry = entry.replace(r.group(), "");
+                            }
+
+                            if (!dateString.isEmpty()) {
+                                try {
+                                    date = new Date(dateString.substring(0, dateString.length() - 1));
+                                } catch (Exception e) {
+                                    if (logger.isDebugEnabled())
+                                        logger.debug("Process " + processId + ": cannot convert date " + dateString);
+                                }
+                            }
+
+                            sb.append("(");
+                            sb.append(processId);
+                            sb.append(",");
+                            //date
+                            if (date == null) {
+                                String s = null;
+                                sb.append(s);
+                            } else {
+                                sb.append("\"" + new Timestamp(date.getTime()) + "\"");
+                            }
+
+                            sb.append(",\"");
+                            sb.append(username);
+                            sb.append("\",\"");
+                            sb.append(type.getTitle());
+                            sb.append("\",\"");
+
+                            sb.append(StringEscapeUtils.escapeSql(entry.replace("\"", "'")));
+                            sb.append("\")");
+
+                            if (i % 50 == 0 || i == rawData.size()) {
+                                sb.append(";");
+                                runner.update(connection, header + sb.toString());
+
+                                sb = new StringBuilder();
+                            } else {
+                                sb.append(",");
+                            }
+                        }
+                    }
+                }
+            }
+            logger.info("Finished conversion of old wikifield to new process log.");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+
+    public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
+        List<MatchResult> results = new ArrayList<MatchResult>();
+        for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
+            results.add(m.toMatchResult());
+        }
+        return results;
     }
 
     private static void updateToVersion12() {

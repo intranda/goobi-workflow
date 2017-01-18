@@ -1,0 +1,213 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+	<ui:param name="myPageTitle" value="#{msgs.benutzerverwaltung}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb id="userAll" label="#{myPageTitle}" action="user_all" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info" />
+
+	<ui:define name="content">
+		<!-- 		<h:form id="myform" > -->
+		<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1}">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="glyphicon-user box-icon-fix"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+							<div class="dataTables_wrapper">
+								<div class="dataTables_length" style="margin-bottom: 10px;">
+									<h:outputText value="#{msgs.treffer}: #{BenutzerverwaltungForm.paginator.totalResults}" />
+								</div>
+								<h:form id="searchform">
+									<div class="dataTables_filter">
+										<div class="input-group input-group">
+											<span class="input-group-addon"> 
+												<i class="fa fa-search"></i>
+											</span>
+											<h:inputText id="searchfield" styleClass="form-control searchfield" value="#{BenutzerverwaltungForm.filter}">
+												<f:passThroughAttribute name="placeholder" value="#{msgs.benutzer}" />
+											</h:inputText>
+											<div class="input-group-btn">
+												<x:commandLink 
+													id="FilterAlle2" 
+													forceId="true" 
+													value="#{msgs.search}" 
+													styleClass="btn" 
+													action="#{BenutzerverwaltungForm.FilterAlleStart}" />
+											</div>
+										</div>
+										<x:commandButton 
+											type="submit" 
+											id="FilterAlle" 
+											forceId="true"
+											style="display:none"
+											action="#{BenutzerverwaltungForm.FilterAlleStart}" />
+									</div>
+
+									<div class="dataTables_filter">
+										<!-- aktive Nutzer anzeigen -->
+										<h:commandLink
+											id="tableUserAllShowActiveUsers" 
+											styleClass="btn searchfieldbuttongroup hidden-xs" 
+											action="#{BenutzerverwaltungForm.FilterAlleStart}"
+											immediate="true">
+											<i class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+											<h:outputText styleClass="font-size-s" value="#{msgs.nurAktiveNutzerZeigen}" />
+											<f:setPropertyActionListener
+												target="#{BenutzerverwaltungForm.hideInactiveUsers}"
+												value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
+										</h:commandLink>
+									</div>
+								</h:form>
+								
+								<!-- Datentabelle -->
+								<h:form id="myform" prependId="false">
+									<x:dataTable
+										id="tableUserAll"
+										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+										var="item" 
+										value="#{BenutzerverwaltungForm.paginator.list}">
+										<x:column>
+											<f:facet name="header">
+												<h:outputText value="#{msgs.benutzer}" />
+											</f:facet>
+											<h:outputText 
+												value="#{item.nachname}, #{item.vorname}"
+												styleClass="#{not item.istAktiv?'font-light':''}"
+												title="#{item.login}" />
+										</x:column>
+
+										<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.login}" />
+											</f:facet>
+											<h:outputText 
+												value="#{item.login}"
+												styleClass="#{not item.istAktiv?'font-light':''}" />
+										</x:column>
+
+										<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.standort}" />
+											</f:facet>
+											<h:outputText 
+												value="#{item.standort}"
+												styleClass="#{not item.istAktiv?'font-light':''}" />
+										</x:column>
+
+										<x:column >
+											<f:facet name="header">
+												<h:outputText value="#{msgs.benutzergruppen}" />
+											</f:facet>
+											<x:dataList 
+												var="intern"
+												styleClass="#{not item.istAktiv?'font-light':''}"
+												rendered="#{item.benutzergruppenSize != 0}"
+												value="#{item.benutzergruppen}" 
+												layout="ordered list"
+												rowCountVar="rowCount" 
+												rowIndexVar="rowIndex">
+												<h:outputText value="#{intern.titel}" />
+												<h:outputText value="," rendered="#{rowIndex + 1 lt rowCount}" />
+											</x:dataList>
+										</x:column>
+
+										<x:column>
+											<f:facet name="header">
+												<h:outputText value="#{msgs.projekte}" />
+											</f:facet>
+											<x:dataList 
+												var="intern"
+												styleClass="#{not item.istAktiv?'font-light':''}"
+												rendered="#{item.projekteSize != 0}"
+												value="#{item.projekte}" 
+												layout="ordered list"
+												rowCountVar="rowCount" 
+												rowIndexVar="rowIndex">
+												<h:outputText value="#{intern.titel}" />
+												<h:outputText value="," rendered="#{rowIndex + 1 lt rowCount}" />
+											</x:dataList>
+										</x:column>
+
+										<x:column>
+											<f:facet name="header">
+												<h:outputText value="#{msgs.auswahl}" />
+											</f:facet>
+											<!-- Bearbeiten-Schaltknopf -->
+											<h:commandLink id="edit"
+												styleClass="btn margin-right-5" 
+												rel="tooltip"
+												action="user_edit" 
+												title="#{msgs.benutzerBearbeiten}">
+												<i class="fa fa-pencil"></i>
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="" />
+											</h:commandLink>
+
+											<!-- Benutzerprofil laden-Schaltknopf -->
+											<h:commandLink id="switch"
+												styleClass="btn margin-right-5 hidden-xs"
+												action="#{LoginForm.EinloggenAls}"
+												title="#{msgs.benutzerprofilLaden}">
+												<i class="glyphicon-old_man"></i>
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<!-- 											<f:passThroughAttribute name="data-placement" value="top" /> -->
+												<f:param name="ID" value="#{item.id}" />
+											</h:commandLink>
+
+											<!-- LdapKonfiguration schreiben-Schaltknopf -->
+											<h:commandLink 
+												styleClass="btn" 
+												rel="tooltip"
+												action="#{BenutzerverwaltungForm.LdapKonfigurationSchreiben}"
+												title="#{msgs.ldapKonfigurationSchreiben}"
+												rendered="#{HelperForm.ldapIsWritable}">
+												<i class="glyphicon-keys"></i>
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+											</h:commandLink>
+										</x:column>
+									</x:dataTable>
+
+									<div class="dataTables_info">
+										<!-- Neu-Schaltknopf -->
+										<h:commandLink id="newUser"
+											styleClass="btn btn-primary font-size-s"
+											action="#{BenutzerverwaltungForm.Neu}" 
+											immediate="true">
+											<i class="fa fa-plus margin-right-5"></i>
+											<h:outputText value="#{msgs.neuenBenutzerAnlegen}" />
+											<f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="" />
+										</h:commandLink>
+									</div>
+									<div class="dataTables_paginate">
+										<!-- paginator -->
+										<intranda:tablePaginator id="users" paginator="#{BenutzerverwaltungForm.paginator}" />
+									</div>
+								</h:form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:panelGroup>
+		<!-- 		</h:form> -->
+	</ui:define>
+</ui:composition>

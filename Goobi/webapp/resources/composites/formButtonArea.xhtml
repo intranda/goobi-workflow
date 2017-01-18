@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<composite:interface>
+		<composite:attribute name="object" />
+		<composite:attribute name="form" />
+		<composite:attribute name="actionCancel"  />
+		
+	</composite:interface>
+
+	<composite:implementation>
+
+		<div class="form-actions">
+
+			<!-- Save -->
+			<h:commandLink styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" id="absenden" type="submit"
+				action="#{cc.attrs.form.Speichern}">
+				<i class="fa fa-save margin-right-5"></i>
+				<h:outputText value="#{msgs.speichern}" />
+			</h:commandLink>
+ 
+			<!-- Cancel -->
+			<h:link id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" outcome="#{cc.attrs.actionCancel}" value="#{msgs.abbrechen}"/>
+
+			<h:commandLink id="delete" styleClass="btn btn-danger font-size-s"
+				onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+				action="#{cc.attrs.form.Loeschen}" >
+				<i class="fa fa-trash-o margin-right-5"></i>
+				<h:outputText value="#{msgs.loeschen}" />
+			</h:commandLink>
+
+
+			<!-- Delete -->
+<!-- 			<c:if test="#{cc.attrs.object != null}"> -->
+
+<!-- 				<a href="#myModal" class="btn btn-danger" -->
+<!-- 					data-toggle="modal"><i class="fa fa-trash-o margin-right-5"></i> <h:outputText -->
+<!-- 						value="#{msgs.loeschen}" /></a> -->
+
+
+<!-- 				Modal -->
+<!-- 				<div id="myModal" class="modal hide fade" tabindex="-1" -->
+<!-- 					role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> -->
+<!-- 					<div class="modal-header"> -->
+<!-- 						<h3 id="myModalLabel">#{msgs.loeschen}</h3> -->
+<!-- 					</div> -->
+<!-- 					<div class="modal-body"> -->
+<!-- 						<p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p> -->
+<!-- 					</div> -->
+<!-- 					<div class="modal-footer"> -->
+<!-- 						<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button> -->
+<!-- 						<h:commandLink styleClass="btn btn-primary" -->
+<!-- 							value="#{msgs.loeschen}" -->
+<!-- 							action="#{cc.attrs.form.Loeschen}" /> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 			</c:if> -->
+
+		</div>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

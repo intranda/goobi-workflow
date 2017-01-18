@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- Apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="description" content="Goobi intranda edition" />
+    <meta name="author" content="intranda GmbH" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Script-Type" content="type" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="date" content="1970-01-01T00:00:00+01:00" />
+    <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
+    <title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="template/css/bootstrap.min.css" />
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="template/css/style.css?version=1" />
+    <!-- Color CSS -->
+    <link rel="stylesheet" href="template/css/themes.css" />
+    <!-- colorbox -->
+    <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css" />
+    <!-- intranda -->
+    <link rel="stylesheet" href="template/css/intranda.css?version=1" />
+    <script src="template/js/intranda.js?version=2"></script>
+    <!-- jQuery -->
+    <script src="template/js/jquery.min.js"></script>
+    <!-- Mobile nav swipe -->
+    <script src="template/js/plugins/touchwipe/touchwipe.min.js"></script>
+    <!-- Nice Scroll -->
+    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- imagesLoaded -->
+    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="template/js/plugins/jquery-ui/jquery-ui.js"></script>
+    <!-- colorbox -->
+    <script src="template/js/plugins/colorbox/jquery.colorbox-min.js"></script>
+    <!-- slimScroll	-->
+    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="template/js/bootstrap.min.js"></script>
+    <!-- Bootbox -->
+    <script src="template/js/plugins/bootbox/jquery.bootbox.js"></script>
+    <!-- Bootbox -->
+    <script src="template/js/plugins/form/jquery.form.min.js"></script>
+    <!-- Validation -->
+    <script src="template/js/plugins/validation/jquery.validate.min.js"></script>
+    <script src="template/js/plugins/validation/additional-methods.min.js"></script>
+
+    <!-- image navigation -->
+    <script src="template/js/openseadragon/openseadragon.min.js"></script>
+    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
+    <script src="template/js/viewImage.js"></script>
+    <script src="template/js/viewImage.controls.js"></script>
+    <script src="template/js/viewImage.zoomSlider.js"></script>
+
+    <!-- Theme framework -->
+    <!-- <script src="template/js/eakroko.js"></script> -->
+    <!-- Theme scripts -->
+    <script src="template/js/application.js?version=1"></script>
+
+    <!-- shortcuts -->
+    <script src="template/js/jquery.hotkeys.js"></script>
+
+    <!--[if lte IE 9]>
+	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('input, textarea').placeholder();
+			});
+		</script>
+	<![endif]-->
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="template/img/favicon.ico" />
+    <!-- Apple devices Homescreen icon -->
+    <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon-precomposed.png" />
+
+</h:head>
+
+<ui:insert name="metadata" />
+
+<body styleClass="#{LoginForm.myBenutzer == null?'login':''}" data-layout-sidebar="fixed" data-layout-topbar="fixed">
+    <f:view locale="#{SpracheForm.locale}">
+
+        <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
+            <ui:include src="inc_login.xhtml" />
+        </h:panelGroup>
+
+        <c:if test="#{LoginForm.myBenutzer!=null}">
+            <div id="navigation">
+                <div class="container-fluid">
+                    <ui:insert name="menu">
+                        <ui:include src="inc_menu.xhtml" />
+                    </ui:insert>
+                </div>
+
+                <ui:insert name="menu_mobile">
+                    <ui:include src="inc_menu_mobile.xhtml" />
+                </ui:insert>
+            </div>
+
+            <div class="container-fluid" id="content">
+				<div id="left" style="width: #{Metadaten.treeWidth}px; border-right: 2px solid #368ee0; z-index: 100;">
+                    <!-- <div id="left" class="no-resize" style="width:#{Metadaten.treeWidth}px"> -->
+                    <!-- <div id="left" class="no-resize" > -->
+                    <ui:insert name="sidebar">
+                        <ui:include src="inc_sidebar.xhtml" />
+                    </ui:insert>
+                </div>
+				<div id="main" style="margin-left: #{Metadaten.treeWidth}px">
+                    <div class="container-fluid">
+                        <ui:insert name="content" />
+                    </div>
+                </div>
+            </div>
+        </c:if>
+    </f:view>
+
+    <div id="ajaxloader" style="position: absolute; right: 20px; top: 103px; display: none;">
+        <img src="template/img/goobi/ajaxloader2.gif" />
+    </div>
+</body>
+<script>
+    function printpage() {
+         var printReport= document.getElementById('left').innerHTML;
+         var link  = document.createElement('link');
+         link.rel  = 'stylesheet';
+         link.type = 'text/css';
+         link.href = '#{HelperForm.servletPathWithHostAsUrl}/uii/template/css/intranda.css?version=1';
+ 
+         var win = window.open("", "", "");
+         var head = win.document.getElementsByTagName('head')[0];
+         head.appendChild(link);
+		 win.document.body.innerHTML =   printReport ;
+         
+		 win.window.print();
+        win.close();
+     }
+	
+	
+    jsf.ajax.addOnEvent(function(data) {
+        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+        var ajaxloader = document.getElementById("ajaxloader");
+		if (readOnlyMode === 'false') {
+            var saveButton = document.getElementById("menu-form:saveMetsFileButton");
+            var saveMetsFileImage = document.getElementById("menu-form:saveMetsFileImage");
+            
+            var ajaxSave = document.getElementById("menu-form:saveMetsFileButtonAjax");
+            var autoSave = document.getElementById("menu-form:automaticSave");
+            
+            var exit = document.getElementById("exit");
+            var exitImage = document.getElementById("menu-form:exitImage");
+            
+            switch (ajaxstatus) {
+                case "begin": // This is called right before ajax request is been sent.
+                    ajaxloader.style.display = 'block';
+                    saveButton.style.display='none';
+                    saveMetsFileImage.style.display='block';
+                    
+                    ajaxSave.disabled = true;
+                    autoSave.disabled = true;
+                    
+                    exit.style.display='none';
+                    exitImage.style.display='block';
+                    
+                    break;
+    
+                case "complete": // This is called right after ajax response is received.
+                    ajaxloader.style.display = 'none';
+                    saveButton.style.display='';
+                    saveMetsFileImage.style.display='none';
+                    
+                    ajaxSave.disabled = false;
+                    autoSave.disabled = false;
+                    
+                    exit.style.display='block';
+                    exitImage.style.display='none';
+                    break;
+    
+                case "success": // This is called when ajax response is successfully processed.
+                    // NOOP.
+                    $(function () {
+    					  $('[data-toggle="tooltip"]').tooltip();
+    					  $('[data-toggle="popover"]').popover();
+    				})
+    				
+    				if ($('.popover.fade.right.in').length > 0) {
+    					$('.popover.fade.right.in').remove();
+    				}
+                    loadImages();
+                    loadThumbnails();
+                    addPaginationButtons();
+                    reloadAllHandler();
+                    
+                    targetImage = parseInt($("#contentArea").width())
+    				+ parseInt($("#left").width()) + 30;
+    				$("#BildArea2").css("left", targetImage);
+    				
+    				fitResizeHandle();
+                    
+                    break;
+            	}
+		} else {
+            
+            switch (ajaxstatus) {
+                      
+     			case "begin": // This is called right before ajax request is been sent.
+                	ajaxloader.style.display = 'block';
+                    break;
+        
+                case "complete": // This is called right after ajax response is received.
+                     ajaxloader.style.display = 'none';
+                        
+                 case "success": // This is called when ajax response is successfully processed.
+                            // NOOP.
+                 	$(function () {
+            			$('[data-toggle="tooltip"]').tooltip();
+            					  $('[data-toggle="popover"]').popover();
+            				})
+            				
+            				if ($('.popover.fade.right.in').length > 0) {
+            					$('.popover.fade.right.in').remove();
+            				}
+                
+        }
+            }
+        
+
+    });
+
+    
+    function  reloadAllHandler() {
+            $( 'a[id*="geonamesIndexTrigger-"]' ).on( 'click', function() {
+                var currIndex = $( this ).attr( 'data-row' );
+                var currType = $( this ).attr( 'data-datatype' );
+                $( '#rowIndex' ).val( currIndex );
+                $( '#rowType' ).val( currType );
+            } );
+            
+            $( 'a[id*="gndIndexTrigger-"]' ).on( 'click', function() {
+                var currIndex = $( this ).attr( 'data-row' );
+                var currType = $( this ).attr( 'data-datatype' );
+                $( '#rowIndex' ).val( currIndex );
+                $( '#rowType' ).val( currType );
+            } );
+            
+            $( 'a[id*="gndPersonIndexTrigger-"]' ).on( 'click', function() {
+                var currIndex = $( this ).attr( 'data-row' );
+                var currType = $( this ).attr( 'data-datatype' );
+                $( '#rowIndex' ).val( currIndex );
+                $( '#rowType' ).val( currType );
+            } );        
+    }
+
+    function addPaginationButtons() {
+    	if ($('.pagination-thumb')) {
+    		$('.pagination-thumb').remove();
+    	}
+    	
+    	$('table#myCheckboxes label').each(function() {
+        	$(this).parent().append('<span title="#{msgs.mets_showThisImage}" class="fa fa-picture-o pagination-thumb" />');
+        });
+    	
+    	$('table#myCheckboxes span').on('click', function(event) {
+    		var number = parseInt($(this).prev().attr('for').replace('myCheckboxes:', ''));
+    		$(escapeClientId('#jumpToImage_input')).val(number + 1);
+				$(escapeClientId('#goButton')).click();          		
+    	});
+    	var escapeClientId = function(a) {
+            return a.replace(/:/g, "\\:")
+        };
+    }
+    
+    function paginierungWertAnzeigen() {
+    	var paginationInputFields = document.getElementById("paginationInputFields");
+    	var inputBoxElement = document.getElementById("paginierungWert");
+    	paginationInputFields.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
+        if ($("#paginationType").val() == 2 || $("#paginationType").val() == 5) {
+            inputBoxElement.value = 'I';
+        }
+        if ($("#paginationType").val() == 1 || $("#paginationType").val() == 4) {
+            inputBoxElement.value = '1';
+        }
+    }
+    
+        $(document).ready(function() {        
+        	target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
+		  	$("#pagRight").css("width", target);
+        	
+		  	addPaginationButtons();
+        });
+
+
+
+
+</script>
+</html>

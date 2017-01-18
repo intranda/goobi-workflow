@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -42,9 +43,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -223,12 +225,12 @@ public class BatchBean extends BasicBean {
     public void setSelectedProcesses(List<Process> selectedProcesses) {
         this.selectedProcesses = selectedProcesses;
     }
-    
+
     public void setSelectedProcessIds(List<String> processIds) {
         selectedProcesses = new ArrayList<Process>();
         for (String idString : processIds) {
             Integer id = new Integer(idString);
-            
+
             selectedProcesses.add(ProcessManager.getProcessById(id));
         }
     }
@@ -240,13 +242,11 @@ public class BatchBean extends BasicBean {
         }
         return idList;
     }
-    
-    
+
     public List<String> getSelectedBatches() {
         return this.selectedBatches;
     }
 
-    
     public void setSelectedBatches(List<String> selectedBatches) {
         this.selectedBatches = selectedBatches;
     }
@@ -258,9 +258,9 @@ public class BatchBean extends BasicBean {
     }
 
     public String downloadDocket() {
-         if (logger.isDebugEnabled()) {
-             logger.debug("generate docket for process list");
-         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("generate docket for process list");
+        }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
@@ -271,10 +271,9 @@ public class BatchBean extends BasicBean {
 
             //            Session session = Helper.getHibernateSession();
             //            Criteria crit = session.createCriteria(Process.class);
-            docket =
-                    ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
-                            getBatchMaxSize());
-       
+            docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
+                    getBatchMaxSize());
+
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
         }
@@ -307,17 +306,16 @@ public class BatchBean extends BasicBean {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-              
-                List<Process> deleteList =
-                        ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
-                                getBatchMaxSize());
+
+                List<Process> deleteList = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches
+                        .get(0)), 0, getBatchMaxSize());
                 {
                     for (Process p : deleteList) {
                         p.setBatchID(null);
                         ProcessManager.saveProcessInformation(p);
-                        
+
                     }
-                    
+
                 }
             } else {
                 Helper.setFehlerMeldung("noBatchSelected");
@@ -340,11 +338,18 @@ public class BatchBean extends BasicBean {
                 Integer batchid = new Integer(this.selectedBatches.get(0));
                 for (Process p : this.selectedProcesses) {
                     p.setBatchID(batchid);
-                    p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + batchid));
-                 
+
+                    LogEntry logEntry = new LogEntry();
+                    logEntry.setContent("added process to batch " + batchid);
+                    logEntry.setCreationDate(new Date());
+                    logEntry.setProcessId(p.getId());
+                    logEntry.setType(LogType.DEBUG);
+                    logEntry.setUserName("-batch-");
+                    ProcessManager.saveLogEntry(logEntry);
+
                     ProcessManager.saveProcessInformation(p);
                 }
-                               
+
             } catch (Exception e) {
                 Helper.setFehlerMeldung("noBatchSelected");
             }
@@ -355,13 +360,18 @@ public class BatchBean extends BasicBean {
     public void removeProcessesFromBatch() {
         //		Session session = Helper.getHibernateSession();
         for (Process p : this.selectedProcesses) {
-            p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "removed process from batch " + p.getBatchID()));
-            p.setBatchID(null);
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent("removed process from batch " + p.getBatchID());
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(p.getId());
+            logEntry.setType(LogType.DEBUG);
+            logEntry.setUserName("-batch-");
+            ProcessManager.saveLogEntry(logEntry);
 
-          
+            p.setBatchID(null);
             ProcessManager.saveProcessInformation(p);
         }
-      
+
         FilterAlleStart();
     }
 
@@ -376,11 +386,16 @@ public class BatchBean extends BasicBean {
 
             for (Process p : this.selectedProcesses) {
                 p.setBatchID(newBatchId);
-                p.setWikifield(WikiFieldHelper.getWikiMessage(p, p.getWikifield(), "debug", "added process to batch " + newBatchId));
+                LogEntry logEntry = new LogEntry();
+                logEntry.setContent("added process to batch " + newBatchId);
+                logEntry.setCreationDate(new Date());
+                logEntry.setProcessId(p.getId());
+                logEntry.setType(LogType.DEBUG);
+                logEntry.setUserName("-batch-");
+                ProcessManager.saveLogEntry(logEntry);
                 ProcessManager.saveProcessInformation(p);
-		}
-            
-  
+            }
+
         }
         FilterAlleStart();
     }
@@ -401,9 +416,8 @@ public class BatchBean extends BasicBean {
                 //                crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
                 //                List<Process> propertyBatch = crit.list();
 
-                List<Process> propertyBatch =
-                        ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
-                                getBatchMaxSize());
+                List<Process> propertyBatch = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(
+                        this.selectedBatches.get(0)), 0, getBatchMaxSize());
                 this.batchHelper = new BatchProcessHelper(propertyBatch);
                 return "batch_edit";
             } else {

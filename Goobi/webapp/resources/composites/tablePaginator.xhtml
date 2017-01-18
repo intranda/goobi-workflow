@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+		<composite:attribute name="paginator"/>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<h:panelGroup
+			rendered="#{cc.attrs.paginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
+
+			<div class="pull-right">
+
+				<h:commandLink styleClass="btn font-size-s margin-sides-10"
+					action="#{cc.attrs.paginator.cmdMoveFirst}" id="navfirst">
+					<i class="fa fa-double-angle-left"></i>
+					<f:ajax render=":myform" />
+				</h:commandLink>
+				<h:commandLink styleClass="btn btn-primary font-size-s"
+					action="#{cc.attrs.paginator.cmdMovePrevious}" id="navprev">
+					<i class="fa fa-angle-left"></i>
+					<h:outputText value=" #{msgs.pagePrevious}"/>
+					<f:ajax render=":myform" />
+				</h:commandLink>
+
+				<div class="margin-sides-10">
+					<!-- aktuelle Seite anzeigen -->
+					<x:outputText id="txtMoveTo1" forceId="true"
+						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
+						onclick="document.getElementById('txtMoveTo2').style.display='inline';
+			       document.getElementById('txtMoveTo1').style.display='none'; 
+			       document.getElementById('txtMoveTo2').focus();
+			       document.getElementById('txtMoveTo2').select();" />
+
+					<!-- Seite direkt anspringen -->
+					<x:inputText id="txtMoveTo2" forceId="true"
+						value="#{cc.attrs.paginator.txtMoveTo}" style="display:none;width:30px"
+						required="true"
+						onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
+						onkeypress="return submitEnter('cmdMoveTo',event)" />
+					<x:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
+						forceId="true" value="go" style="display:none" >
+						
+					</x:commandButton>
+				</div>
+
+				<h:commandLink styleClass="btn btn-primary font-size-s"
+					action="#{cc.attrs.paginator.cmdMoveNext}" id="navnext">
+					<h:outputText value="#{msgs.pageNext} "/>
+							<i class="fa fa-angle-right"></i>
+					<f:ajax render=":myform" />
+				</h:commandLink>
+				<h:commandLink styleClass="btn font-size-s margin-sides-10"
+					action="#{cc.attrs.paginator.cmdMoveLast}" id="navlast">
+					<i class="fa fa-double-angle-right"></i>
+					<f:ajax render=":myform" />
+				</h:commandLink>
+			</div>
+		</h:panelGroup>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

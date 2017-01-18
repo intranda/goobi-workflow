@@ -46,10 +46,11 @@ import javax.faces.bean.SessionScoped;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -87,6 +88,8 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @ManagedBean(name = "AktuelleSchritteForm")
 @SessionScoped
@@ -114,7 +117,6 @@ public class StepBean extends BasicBean {
     private HashMap<String, Boolean> anzeigeAnpassen;
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private String addToWikiField = "";
     private static String DONEDIRECTORYNAME = "fertig/";
     //	private Boolean flagWait = false;
     private BatchStepHelper batchHelper;
@@ -122,6 +124,16 @@ public class StepBean extends BasicBean {
     private Integer container;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
+
+    @Getter
+    @Setter
+    private String content = "";
+    @Getter
+    @Setter
+    private String secondContent = "";
+    @Getter
+    @Setter
+    private String thirdContent = "";
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
@@ -595,8 +607,16 @@ public class StepBean extends BasicBean {
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben.getNachVorname()
                     + ")";
-            this.mySchritt.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess()
-                    .getWikifield(), "error", message));
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(message);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(mySchritt.getProzess().getId());
+            logEntry.setType(LogType.ERROR);
+            if (ben != null) {
+                logEntry.setUserName(ben.getNachVorname());
+            }
+            ProcessManager.saveLogEntry(logEntry);
+
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
             HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
@@ -723,8 +743,16 @@ public class StepBean extends BasicBean {
              */
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben
                     .getNachVorname() + ")";
-            this.mySchritt.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess()
-                    .getWikifield(), "info", message));
+
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(message);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(mySchritt.getProzess().getId());
+            logEntry.setType(LogType.INFO);
+            if (ben != null) {
+                logEntry.setUserName(ben.getNachVorname());
+            }
+            ProcessManager.saveLogEntry(logEntry);
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
 
@@ -991,7 +1019,7 @@ public class StepBean extends BasicBean {
     public void setMyPlugin(IStepPlugin myPlugin) {
         this.myPlugin = myPlugin;
     }
-    
+
     public void setStep(Step step) {
         this.mySchritt = step;
         loadProcessProperties();
@@ -1148,43 +1176,22 @@ public class StepBean extends BasicBean {
         this.anzeigeAnpassen = anzeigeAnpassen;
     }
 
-    /**
-     * @return values for wiki field
-     */
-    public String getWikiField() {
-        return this.mySchritt.getProzess().getWikifield();
-
-    }
-
-    /**
-     * sets new value for wiki field
-     * 
-     * @param inString
-     */
-    public void setWikiField(String inString) {
-        this.mySchritt.getProzess().setWikifield(inString);
-    }
-
-    public String getAddToWikiField() {
-        return this.addToWikiField;
-    }
-
-    public void setAddToWikiField(String addToWikiField) {
-        this.addToWikiField = addToWikiField;
-    }
-
-    public void addToWikiField() {
-        if (addToWikiField != null && addToWikiField.length() > 0) {
+    public void addLogEntry() {
+        if (StringUtils.isNotBlank(content)) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-            this.mySchritt.getProzess().setWikifield(WikiFieldHelper.getWikiMessage(this.mySchritt.getProzess(), this.mySchritt.getProzess()
-                    .getWikifield(), "user", message));
-            this.addToWikiField = "";
-            try {
-                ProcessManager.saveProcess(this.mySchritt.getProzess());
-            } catch (DAOException e) {
-                logger.error(e);
-            }
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(content);
+            logEntry.setSecondContent(secondContent);
+            logEntry.setThirdContent(thirdContent);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(mySchritt.getProzess().getId());
+            logEntry.setType(LogType.USER);
+            logEntry.setUserName(user.getNachVorname());
+            ProcessManager.saveLogEntry(logEntry);
+            mySchritt.getProzess().getProcessLog().add(logEntry);
+            this.content = "";
+            secondContent = "";
+            thirdContent = "";
         }
     }
 

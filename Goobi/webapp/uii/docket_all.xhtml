@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle" value="#{msgs.dockets}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<intranda:breadcrumb id="docket_all" label="#{myPageTitle}" action="docket_all" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="myform" rendered="#{LoginForm.maximaleBerechtigung == 1}">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-print"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+							<div class="dataTables_wrapper">
+								<div class="dataTables_length">
+									<h:outputText value="#{msgs.treffer}: #{DocketForm.paginator.totalResults}" />
+								</div>
+
+								<!-- Datentabelle -->
+								<x:dataTable id="dockets" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{DocketForm.paginator.list}">
+
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.docketTitle}" />
+										</f:facet>
+										<h:outputText value="#{item.name}" />
+									</h:column>
+
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.docketFile}" />
+										</f:facet>
+										<h:outputText value="#{item.file}" />
+									</h:column>
+
+									<x:column style="width:150px;">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.auswahl}" />
+										</f:facet>
+										<!-- Bearbeiten-Schaltknopf -->
+										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="docket_edit" title="#{msgs.editDocket}">
+											<i class="fa fa-pencil"></i>
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:setPropertyActionListener target="#{DocketForm.myDocket}" value="#{item}" />
+										</h:commandLink>
+									</x:column>
+
+								</x:dataTable>
+
+								<div class="dataTables_info">
+									<!-- Neu-Schaltknopf -->
+									<h:commandLink id="new" styleClass="btn btn-primary font-size-s" action="#{DocketForm.Neu}" immediate="true">
+										<i class="fa fa-plus margin-right-5"></i>
+										<h:outputText value="#{msgs.createNewDocket}" />
+									</h:commandLink>
+								</div>
+								<div class="dataTables_paginate">
+									<!-- paginator -->
+									<intranda:tablePaginator id="dockets" paginator="#{DocketForm.paginator}" />
+									<!-- /paginator -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

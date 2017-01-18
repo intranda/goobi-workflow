@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<div class="dataTables_filter">
+
+			<div class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
+				<!-- show columns -->
+				<a class="btn dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown"> 
+					<i class="fa fa-columns margin-right-5" /> 
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+				     <li>
+	                    <!-- check boxes -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showSelectionBoxes">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.auswahlboxen}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
+	                    <!-- ID -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showProcessId">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.id}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
+	                    <!-- Batch ID -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showBatch">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.batch}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['batchId']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
+	                    <!-- process date -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showProcessDate">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.vorgangsdatum}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
+	                    <!-- lockings -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showProcessLockings">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.sperrungen}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
+	                    <!-- swapping -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showSwapping">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.ausgelagerung}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
+	                    </h:commandLink>
+                    </li>
+				</ul>
+
+			</div>
+			
+			<div class="btn-group" data-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
+			
+				<a class="btn dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown"> 
+					<i class="fa fa-wrench margin-right-5" /> 
+					<span class="caret"></span>
+				</a>
+
+				<!-- show or hide depending on filter -->
+				<ul class="dropdown-menu">
+					<li>
+	                    <!-- correction tasks -->
+	                    <h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" id="showCorrectionTasks">
+	                        <i class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.showClosedProcesses}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.showClosedProcesses}" value="#{not ProzessverwaltungForm.showClosedProcesses}" />
+	                    </h:commandLink>
+                    </li>  
+                     <h:panelGroup rendered="#{(LoginForm.maximaleBerechtigung == 1)}">
+						 <li>
+		                    <!-- automatic tasks -->
+		                    <h:commandLink action="#{ProzessverwaltungForm.FilterAlleStart}" id="showAutomaticTasks">
+		                        <i class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+		                        <h:outputText value="#{msgs.showArchivedProjects}" />
+		                        <x:updateActionListener property="#{ProzessverwaltungForm.showArchivedProjects}" value="#{not ProzessverwaltungForm.showArchivedProjects}" />
+		                    </h:commandLink>
+	                    </li>
+                   	</h:panelGroup>
+				</ul>
+				</div>
+		</div>
+
+	</composite:implementation>
+
+</ui:composition>
+
+
+
+
+

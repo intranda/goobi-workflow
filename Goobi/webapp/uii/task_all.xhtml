@@ -1,0 +1,437 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="taskAll" label="#{myPageTitle}" action="task_all" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="box box-color box-bordered">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-list"></i>
+                            <h:outputText value="#{myPageTitle}" />
+                        </h3>
+                    </div>
+                    <div class="box-content nopadding">
+                        <div class="dataTables_wrapper">
+                            <h:form id="searchform">
+                                <div class="dataTables_length" style="margin-bottom: 10px;">
+                                    <h:outputText value="#{msgs.treffer}: #{AktuelleSchritteForm.paginator.totalResults}" />
+                                </div>
+
+                                <x:aliasBeansScope>
+                                    <x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
+                                    <x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
+                                    <ui:include src="includes/task/list_searchAndSave.xhtml" />
+                                </x:aliasBeansScope>
+
+                                <ui:include src="includes/task/list_filterAndDisplay.xhtml" />
+                            </h:form>
+                            <h:form id="myform" prependId="false">
+                                <!-- Datentabelle -->
+                                <x:dataTable id="tasks" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{AktuelleSchritteForm.paginator.list}">
+
+                                    <!-- +++++++++++++++++ select boxes ++++++++++++++++++++++++ -->
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}">
+                                        <f:facet name="header">
+                                            <x:div>
+                                                <!-- Header -->
+                                                <h:outputText value="#{msgs.auswahl2}" styleClass="" />
+                                                <h:commandLink styleClass="font-black" action="#{AktuelleSchritteForm.SelectionNone}" id="selectnone" title="#{msgs.auswahlEntfernen}">
+                                                    <i class="fa fa-square-o" />
+                                                </h:commandLink>
+                                                <h:commandLink styleClass="font-black" action="#{AktuelleSchritteForm.SelectionAll}" id="selectAll" title="#{msgs.alleAuswaehlen}">
+                                                    <i class="fa fa-check-square-o" />
+                                                </h:commandLink>
+                                            </x:div>
+                                        </f:facet>
+                                        <h:commandLink id="selection" styleClass="font-black" style="padding:10px">
+                                            <i class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
+                                            <f:setPropertyActionListener target="#{item.selected}" value="#{item.selected?false:true}" />
+                                            <f:ajax render=":myform" />
+                                        </h:commandLink>
+                                    </x:column>
+
+                                    <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
+                                    <x:column id="my_tasks_process" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='idDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='idAsc'?'sorting_asc':'sorting'}">
+                                        <f:facet name="header">
+                                            <h:commandLink id="sortProcessId" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.id}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
+                                                    value="#{AktuelleSchritteForm.sortierung=='idAsc'?'idDesc':'idAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+                                        <h:outputText value="#{item.prozess.id}" />
+                                    </x:column>
+                                    
+                                    <!-- +++++++++++++++++  Task ++++++++++++++++++++++++ -->
+                                    <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='schrittDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='schrittAsc'?'sorting_asc':'sorting'}" >
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortStepTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.arbeitsschritt}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='schrittAsc'?'schrittDesc':'schrittAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <ui:include src="includes/ajaxPlusMinusButton.xhtml" />
+
+                                        <h:panelGroup styleClass="margin-top-10 block" id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
+
+                                            <div class="box box-small box-color box-bordered">
+                                                <div class="box-title">
+                                                    <h3>
+                                                        <i class="fa fa-table"></i>
+                                                        #{msgs.details}
+                                                    </h3>
+                                                </div>
+                                                <div class="box-content nopadding">
+                                                    <h:panelGrid columns="2" class="table table-hover table-bordered">
+
+                                                        <h:outputText value="#{msgs.titel}:" />
+                                                        <h:outputText value="#{item.titelLokalisiert}" />
+                                                        <h:outputText value="#{msgs.prioritaet}:" />
+                                                        <h:outputText value="#{item.prioritaet}" />
+                                                        <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungszeitpunktAsFormattedString}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{msgs.letzteAktualisierungDurch}:" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungsbenutzer.nachVorname}" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{msgs.aktualisierungstyp}:" />
+                                                        <h:outputText value="#{item.editTypeEnum.title}" />
+                                                    </h:panelGrid>
+
+                                                </div>
+                                            </div>
+
+                                        </h:panelGroup>
+
+                                    </x:column>
+
+                                    <!-- ===================== Process ====================== -->
+
+                                    <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessAsc'?'sorting_asc':'sorting'}" styleClass="tableColumnMaxWidthLong">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortProcessTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.prozessTitel}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessAsc'?'prozessDesc':'prozessAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
+                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" title="#{msgs.prozessBearbeiten}">
+                                            <i class="fa fa-tasks margin-right-10 btn" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
+                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                        </h:commandLink>
+                                        <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />
+                                    </x:column>
+
+
+                                    <!-- ===================== Process date ====================== -->
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'sorting_asc':'sorting'}">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortDate" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.vorgangsdatum}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessdateAsc'?'prozessdateDesc':'prozessdateAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <h:outputText value="#{item.prozess.erstellungsdatum}" />
+                                    </x:column>
+
+                                    <!-- ===================== Modules / Plugins ====================== -->
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='modulesDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='modulesAsc'?'sorting_asc':'sorting'}">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortModule" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.module}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='modulesAsc'?'modulesDesc':'modulesAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <h:outputText value="#{item.typModulName}" />
+                                    </x:column>
+
+                                    <!-- ===================== Project ====================== -->
+                                    <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='projektDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='projektAsc'?'sorting_asc':'sorting'}">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortProject" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.projekt}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <h:outputText value="#{item.prozess.projekt.titel}" />
+                                    </x:column>
+
+                                    <!-- ===================== Lockings ====================== -->
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sorting_asc':'sorting'}">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortLocking" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.sperrungen}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sperrungenDesc':'sperrungenAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <h:outputText value="#{item.prozess.benutzerGesperrt.nachVorname}" rendered="#{item.prozess.benutzerGesperrt != null}" />
+                                    </x:column>
+
+                                    <!-- ===================== Batch ====================== -->
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='batchDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortBatch" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.batch}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <h:outputText value="#{item.prozess.batchID}" rendered="#{item.prozess.batchID != null}" />
+                                    </x:column>
+
+                                    <!-- ===================== Status ====================== -->
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:outputText value="#{msgs.prioritaet}" />
+                                        </f:facet>
+
+										<h:panelGroup rendered="#{item.prioritaet == 0}" class="badge badge-intranda-ultralight">
+ 											<h:outputText value="#{msgs.normalePrioritaet}" />
+										</h:panelGroup>
+										
+                                        <h:panelGroup rendered="#{item.prioritaet == 1}" class="badge badge-intranda-orange">
+                                            <i class="fa fa-lightbulb-o"></i>
+												#{msgs.badgePriority1}
+										</h:panelGroup>
+										
+                                        <h:panelGroup rendered="#{item.prioritaet == 2}" class="badge badge-intranda-orange">
+                                            <i class="fa fa-lightbulb-o" />
+												#{msgs.badgePriority2}
+                                        </h:panelGroup>
+
+
+                                        <h:panelGroup rendered="#{item.prioritaet gt 2 and item.prioritaet lt 10}" class="badge badge-intranda-orange">
+                                            <i class="fa fa-lightbulb-o"></i>
+												#{msgs.badgePriority3}
+                                        </h:panelGroup>
+
+                                        <h:panelGroup class="badge badge-intranda-red popover-jsf" rendered="#{item.prioritaet gt 9 and false}">
+                                            <i class="fa fa-exclamation-triangle"></i>
+												#{msgs.badgeCorrection}
+                                          </h:panelGroup>
+
+
+                                        <h:panelGroup styleClass="popover-div" style="display:none;" rendered="#{false}">
+
+                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}">
+                                                <span class="block margin-bottom-10">
+                                                    <i class="btn btn-red margin-right-10 fa fa-exclamation-triangle fa-lg width-40"></i>
+                                                    <h:outputText class="font-red" value="#{intern.titel}" />
+                                                    <h:outputText class="block margin-top-5" value="#{intern.wert}" />
+                                                </span>
+                                            </ui:repeat>
+
+                                        </h:panelGroup>
+
+                                        <!-- Popup -->
+                                        <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="-320" displayAtDistanceY="-160" rendered="#{item.prioritaet gt 9}">
+
+                                            <f:facet name="popup">
+
+                                                <div class="box box-small box-color red box-bordered">
+                                                    <div class="box-title">
+                                                        <h3>
+                                                            <i class="fa fa-exclamation-triangle"></i>
+                                                            #{msgs.badgeCorrection}
+                                                        </h3>
+                                                    </div>
+                                                    <div class="box-content nopadding">
+                                                        <x:dataTable var="intern" style="width:400px" rendered="#{item.eigenschaftenSize!=0}" value="#{item.eigenschaftenList}" styleClass="table table-hover table-bordered">
+                                                            <x:column style="vertical-align: top;">
+                                                                <h:outputText value="#{intern.titel}:" />
+                                                            </x:column>
+                                                            <x:column style="vertical-align: top;">
+                                                                <h:outputText value="#{intern.wert}" />
+                                                            </x:column>
+                                                        </x:dataTable>
+
+                                                    </div>
+                                                </div>
+
+                                            </f:facet>
+                                            <h:panelGroup class="badge badge-intranda-red">
+                                                <i class="fa fa-exclamation-triangle"></i>
+													#{msgs.badgeCorrection}
+                                            </h:panelGroup>
+                                        </x:popup>
+                                    </x:column>
+
+                                    <!-- ===================== Action ====================== -->
+                                    <x:column style="max-width:60px;" headerstyleClass="#{AktuelleSchritteForm.sortierung=='statusDesc'?'sorting_asc':AktuelleSchritteForm.sortierung=='statusAsc'?'sorting_desc':'sorting'}">
+                                        <f:facet name="header">
+                                            <!-- Header -->
+                                            <h:commandLink id="sortStatus" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText value="#{msgs.auswahl}" />
+                                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='statusDesc'?'statusAsc':'statusDesc'}" />
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+
+                                        <!-- Bearbeitung übernehmen-Schaltknopf -->
+                                        <h:commandLink id="take" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                            <i class="fa fa-check"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
+                                        </h:commandLink>
+
+                                        <!-- Bearbeiten-Schaltknopf (eigener Schritt) -->
+                                        <h:commandLink action="#{AktuelleSchritteForm.EditStep}" id="view1" styleClass="btn btn-warning" rel="tooltip" rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
+                                            <i class="glyphicon-cogwheel"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
+                                        </h:commandLink>
+
+                                        <!-- Bearbeiten-Schaltknopf (fremder Schritt) -->
+                                        <h:commandLink action="#{AktuelleSchritteForm.EditStep}" id="view2" styleClass="btn" rel="tooltip" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and (!item.batchStep or !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+                                            <i class="glyphicon-cogwheel" style="color:#aaaaaa"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
+                                        </h:commandLink>
+
+                                        <!-- edit batch step -->
+                                        <h:commandLink id="batch" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.TakeOverBatch}" rendered="#{item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                            <i class="fa fa-check" style="margin-left: -6px"></i>
+                                            <i class="fa fa-check" style="margin-left: -5px; margin-right: -6px"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.step}" value="#{item}" />
+                                        </h:commandLink>
+
+                                        <!-- edit batch step -->
+                                        <h:commandLink id="batchInWork" styleClass="btn btn-warning" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+                                            <i class="glyphicon-cogwheels"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.step}" value="#{item}" />
+                                        </h:commandLink>
+
+                                        <!-- edit batch step -->
+                                        <h:commandLink id="batchInWorkOther" styleClass="btn" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+                                             <i class="glyphicon-cogwheels" style="color:#aaaaaa"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.step}" value="#{item}" />
+                                        </h:commandLink>
+                                    </x:column>
+                                    <!-- ===================== // Action ====================== -->
+
+                                </x:dataTable>
+
+
+                                <div class="dataTables_paginate">
+                                    <!-- paginator -->
+                                    <intranda:tablePaginator id="steps" paginator="#{AktuelleSchritteForm.paginator}" />
+                                    <!-- /paginator -->
+                                </div>
+
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h:form id="actionform">
+            <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="box box-color orange box-bordered">
+                            <div class="box-title">
+                                <h3>
+                                    <i class="fa fa-wrench"></i>
+                                    <h:outputText value="#{msgs.moeglicheAktionen}" />
+                                </h3>
+                            </div>
+                            <div class="box-content">
+
+                                <h:panelGroup styleClass="pull-right">
+                                    <h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
+                                    <h:outputText id="calcNumber" styleClass="margin-left-5 margin-right-5" value="#{AktuelleSchritteForm.allImages}" />
+                                    <h:commandLink id="calc" action="#{AktuelleSchritteForm.calcHomeImages}">
+                                        <i class="btn fa fa-refresh" />
+                                    </h:commandLink>
+                                </h:panelGroup>
+
+                                <ul class="action-ul">
+                                    <li class="action-li">
+                                        <h:commandLink id="uploadAll" action="#{AktuelleSchritteForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigHochladen}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                            <span class="btn btn-lightred margin-right-10 fa fa-cloud-upload fa-lg" />
+                                            <h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
+                                        </h:commandLink>
+                                    </li>
+                                    <li class="action-li">
+                                        <h:commandLink id="downloadPage" action="#{AktuelleSchritteForm.DownloadToHomePage}" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                            <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg" />
+                                            <h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
+                                        </h:commandLink>
+                                    </li>
+                                    <li class="action-li">
+                                        <h:commandLink id="downloadAll" action="#{AktuelleSchritteForm.DownloadToHomeHits}" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                            <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg" />
+                                            <h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
+                                        </h:commandLink>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:panelGroup>
+
+        </h:form>
+
+        <script type="text/javascript">
+									$('.popover-jsf')
+											.popover(
+													{
+														html : true,
+														title : "#{msgs.badgeCorrection}",
+														trigger : 'hover',
+														placement : 'left',
+														content : function() {
+															return $(this)
+																	.next(
+																			'.popover-div')
+																	.html();
+														}
+													});
+								</script>
+
+    </ui:define>
+
+</ui:composition>

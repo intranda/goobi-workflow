@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle"
+		value="#{RegelsaetzeForm.myRegelsatz.id == null?msgs.neuenRegelsatzAnlegen:msgs.regelsatzBearbeiten}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index"
+			navId="a0" />
+		<intranda:breadcrumb id="rulesetAll" label="#{msgs.regelsaetze}"
+			action="#{RegelsaetzeForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb id="rulesetEdit" label="#{myPageTitle}" action="ruleset_edit"
+			noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		
+		<h:form id="myform" styleClass="form-horizontal form-bordered"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.maximaleBerechtigung == 1}">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color blue box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-wrench"></i>
+								<h:outputText value="#{myPageTitle}" />
+								<h:outputText value=": #{RegelsaetzeForm.myRegelsatz.titel}" rendered="#{RegelsaetzeForm.myRegelsatz.id != null}" />
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+
+							<intranda:formInputText id="title" name="titel" label="#{msgs.rulesetTitle}"
+								field="#{RegelsaetzeForm.myRegelsatz.titel}"
+								help="#{msgs.helpRulesetTitle}" fieldStyle="form-control" />
+
+							<intranda:formInputText id="file" name="file" label="#{msgs.rulesetFile}"
+								field="#{RegelsaetzeForm.myRegelsatz.datei}"
+								help="#{msgs.helpRulesetFile}" fieldStyle="form-control" />
+
+							<intranda:formInputCheckBox id="order" label="#{msgs.rulesetOrderByFile}"
+								field="#{RegelsaetzeForm.myRegelsatz.orderMetadataByRuleset}"
+								help="#{msgs.helpRulesetOrderByFile}" name="check" />
+						
+							<intranda:formButtonArea id="buttons" form="#{RegelsaetzeForm}"
+								object="#{RegelsaetzeForm.myRegelsatz.id}"
+								actionCancel="ruleset_all" />
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

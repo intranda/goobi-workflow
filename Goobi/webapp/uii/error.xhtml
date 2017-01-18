@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param name="myPageTitle" value="#{msgs.failure}" />
+
+
+
+
+    <ui:define name="content">
+        <script type="text/javascript">
+									function show_txt() {
+										if (document
+												.getElementById('errorForm:stacktrace').style.display == 'block') {
+											document
+													.getElementById('errorForm:stacktrace').style.display = "none";
+										} else {
+											document
+													.getElementById('errorForm:stacktrace').style.display = "block";
+										}
+									}
+								</script>
+
+        <h:form styleClass="formError" id="errorForm">
+            <p>
+                #{msgs.generalError}
+                <h:outputLink value="#{HelperForm.servletPathAsUrl}/uii/index.xhtml">
+                    <h:outputText value="#{msgs.returnHome}" />
+                </h:outputLink>
+            </p>
+            <br />
+
+            <h4>
+                <h:outputText value="#{msgs.details}" />
+            </h4>
+
+            <h:outputText value="#{msgs.errorText} " />
+            <p style="padding: 10px; border: 1px dashed red;">#{errorDetails}</p>
+            <br />
+
+            <h4>
+                <h:outputText value="#{msgs.errorReport}" />
+            </h4>
+            <p>
+                <h:outputText value="#{msgs.errorReportDescription}" />
+            </p>
+            <br />
+            <h:button onclick="show_txt(); return false;" title="#{msgs.showErrorDetails}" value="#{msgs.showErrorDetails}"
+                styleClass="btn font-size-s margin-sides-10" />
+            <br />
+            <br />
+            <h:panelGroup id="stacktrace" style="display:none;">
+                <div style="padding: 10px; border: 1px dashed red;">
+                    <h:outputText value="#{errorDetails}" />
+                    <br />
+                    <br />
+                    <x:dataList value="#{stacktrace}" var="e" rowIndexVar="row">
+
+                        <h:outputText value="#{e}" rendered="#{row == 0}" />
+
+                        <h:outputText value="#{e}" style="position:relative; left: 50px;" rendered="#{row != 0 and row lt 15}" />
+
+                        <h:panelGroup rendered="#{row lt 15}">
+                            <br />
+                        </h:panelGroup>
+                    </x:dataList>
+                </div>
+
+            </h:panelGroup>
+
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

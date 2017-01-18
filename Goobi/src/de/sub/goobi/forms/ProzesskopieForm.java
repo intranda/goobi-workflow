@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
@@ -49,6 +50,7 @@ import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
@@ -58,7 +60,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.cli.helper.WikiFieldHelper;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
@@ -163,13 +165,7 @@ public class ProzesskopieForm {
         }
 
         clearValues();
-        try {
-            this.co = new ConfigOpac();
-        } catch (IOException e) {
-            logger.error("Error while reading von opac-config", e);
-            Helper.setFehlerMeldung("Error while reading von opac-config", e);
-            return null;
-        }
+        this.co = ConfigOpac.getInstance();
         readProjectConfigs();
         this.myRdf = null;
         this.prozessKopie = new Process();
@@ -338,7 +334,7 @@ public class ProzesskopieForm {
         clearValues();
         readProjectConfigs();
         try {
-            ConfigOpacCatalogue coc = new ConfigOpac().getCatalogueByName(opacKatalog);
+            ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
 
             myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
 
@@ -1165,24 +1161,20 @@ public class ProzesskopieForm {
         }
     }
 
+    public Map<String, String> getAllSearchFields() {
+        if (co.getCatalogueByName(opacKatalog)!=null){
+        	return co.getCatalogueByName(opacKatalog).getSearchFields();
+    	}else{
+    		return ConfigOpac.getInstance().getSearchFieldMap();
+    	}
+    }
+
     public List<String> getAllOpacCatalogues() {
-        try {
-            return new ConfigOpac().getAllCatalogueTitles();
-        } catch (IOException e) {
-            logger.error("Error while reading von opac-config", e);
-            Helper.setFehlerMeldung("Error while reading von opac-config", e);
-            return new ArrayList<String>();
-        }
+        return co.getAllCatalogueTitles();
     }
 
     public List<ConfigOpacDoctype> getAllDoctypes() {
-        try {
-            return new ConfigOpac().getAllDoctypes();
-        } catch (IOException e) {
-            logger.error("Error while reading von opac-config", e);
-            Helper.setFehlerMeldung("Error while reading von opac-config", e);
-            return new ArrayList<ConfigOpacDoctype>();
-        }
+        return co.getAllDoctypes();
     }
 
     /*
@@ -1504,12 +1496,15 @@ public class ProzesskopieForm {
     }
 
     public void setAddToWikiField(String addToWikiField) {
-        this.prozessKopie.setWikifield(prozessVorlage.getWikifield());
         this.addToWikiField = addToWikiField;
         if (addToWikiField != null && !addToWikiField.equals("")) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            String message = this.addToWikiField + " (" + user.getNachVorname() + ")";
-            this.prozessKopie.setWikifield(WikiFieldHelper.getWikiMessage(prozessKopie.getWikifield(), "info", message));
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(addToWikiField);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(prozessKopie.getId());
+            logEntry.setType(LogType.INFO);
+            logEntry.setUserName(user.getNachVorname());
         }
     }
 
