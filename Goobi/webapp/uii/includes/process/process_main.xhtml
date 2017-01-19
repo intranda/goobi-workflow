@@ -180,27 +180,21 @@
                                
                                 <div class="scrollable" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
                                     <x:dataTable rendered="#{ProzessverwaltungForm.myProzess.processLog.size()>0}" var="entry" value="#{ProzessverwaltungForm.myProzess.processLog}" width="100%" styleClass="table table-hover table-bordered">
+                                        
+                                         <x:column styleClass="log_table_column_date">
+				                             <h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" /><br/>
+				                             <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
+				                         </x:column>
+				             
                                         <x:column>
-                                            <h:outputText value="#{entry.date}" styleClass="log_#{entry.type.title}" />
-                                        </x:column>
-
-                                        <x:column>
-                                            <h:outputText value="#{msgs[entry.userName]}" styleClass="log_#{entry.type.title}" />
-                                        </x:column>
-
-                                        <x:column>
-                                            <h:outputText value="#{msgs[entry.type.title]}" styleClass="log_#{entry.type.title}" />
-                                        </x:column>
-
-                                        <x:column>
-                                            <h:outputText value="#{entry.content}" styleClass="log_#{entry.type.title}" />
+                                            <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" />
                                         </x:column>
 
                                         <x:column rendered="#{NavigationForm.showSecondLogField}">
-                                            <h:outputText value="#{entry.secondContent}" styleClass="log_#{entry.type.title}" />
+                                            <h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" />
                                         </x:column>
                                         <x:column rendered="#{NavigationForm.showThirdLogField}">
-                                            <h:outputText value="#{entry.thirdContent}" styleClass="log_#{entry.type.title}" />
+                                            <h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" />
                                         </x:column>
 
                                     </x:dataTable>

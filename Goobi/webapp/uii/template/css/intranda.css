@@ -179,6 +179,10 @@ label {
 .border-bottom-light {
     border-bottom: 1px solid #ddd !important;
 }
+
+.border-right-light {
+    border-right: 1px solid #ddd !important;
+}
 /* ------------- Margins --------------- */
 .padding-right-no {
     padding-right: 0px;
@@ -1340,26 +1344,31 @@ ul>li.yellow, .label-yellow {
     
 }
 
-.log_error {
+/* ------------- PROCESS LOG --------------- */
+
+.log_color_error {
     color: #FF0000;
 }
 
-.log_warn {
+.log_color_warn {
     color: #FF6600;
 }
 
-.log_info {
+.log_color_info {
     color: #0033CC;
 }
 
-.log_debug {
+.log_color_debug {
     color: #CCCCCC;
 }
 
-.log_user {
+.log_color_user {
     color: #006600;
 }
 
+.log_table_column_date {
+	min-width:140px;
+}
 
 
 @media only print {
