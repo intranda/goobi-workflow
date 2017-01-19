@@ -147,6 +147,11 @@
                     <include name="**/*.*" />
                 </patternset>
             </zipfileset>
+            <zipfileset dir="webapp/resources" prefix="resources">
+                <patternset>
+                    <include name="**/*.*" />
+                </patternset>
+            </zipfileset>
             <manifest>
                 <attribute name="Implementation-Title" value="${dist.name}" />
                 <attribute name="Implementation-Version" value="${git.revision}" />
