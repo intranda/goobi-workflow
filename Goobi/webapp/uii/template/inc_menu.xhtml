@@ -62,14 +62,6 @@
 										fontclass="margin-left-10" />
 								</h:panelGroup>
 
-								<!-- neuen Vorgang anlegen -->
-<!-- 								<intranda:menuItem id="a24" label="#{msgs.neuenVorgangAnlegen}" -->
-<!-- 									action="#{ProzessverwaltungForm.NeuenVorgangAnlegen}" -->
-<!-- 									filter="#{ProzessverwaltungForm.filter}" -->
-<!-- 									rendered="#{LoginForm.maximaleBerechtigung == 2}" -->
-<!-- 									icon="fa fa-files-o box-icon-fix-menu-up3 " -->
-<!-- 									fontclass="margin-left-10" /> -->
-
 								<!-- Prozessvorlagen -->
 								<intranda:menuItem id="a25" label="#{msgs.prozessvorlagen}"
 									action="#{ProzessverwaltungForm.FilterVorlagen}"
@@ -77,6 +69,20 @@
 									rendered="#{LoginForm.maximaleBerechtigung ge 1}"
 									icon="fa fa-files-o box-icon-fix-menu-up3 "
 									fontclass="margin-left-10" />
+                                   
+                                   
+                             <ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}">
+                                <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+                                    <h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
+                                        <span>
+                                            <i class="fa fa-plug box-icon-fix-menu-up3"></i>
+                                            <span class="margin-left-10">#{msgs[plugin]}</span>
+                                        </span>
+                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a28" />
+                                    </h:commandLink>
+                                </li>
+                            </ui:repeat> 
+                                    
 							</h:panelGroup>
 						</ul>
 					</li>
