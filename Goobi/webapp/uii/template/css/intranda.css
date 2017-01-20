@@ -825,6 +825,24 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     line-height: 20px;
 }
 
+
+/* ------------- METS-Editor OCR --------------- */
+.metseditorOcr {
+	display:block;
+	background-color: #ffffff; 
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #CCCCCC; 
+	margin-bottom: 15px; 
+	padding: 5px;
+}
+.metseditorOcrCaption {
+	font-size: 16px;
+	font-weight: 400;
+	display: block;
+	margin-bottom:10px;
+}
+
 /* ------------- METS-Editor Popup --------------- */
 .metseditorpopup-ul {
     padding-left: 0px;

@@ -27,14 +27,10 @@
                             
                             <div class="clearfix"></div>
 
-                                <h:panelGroup rendered="#{Metadaten.bildNummer != '-1' and Metadaten.ocrResult!=''}">
-                                    <div style="background-color: #ffffff; border-style: solid; border-width: 1px; border-color: #CCCCCC; margin-bottom: 15px; padding: 5px;">
-                                        <h3>
-                                            <h:outputText value="OCR" />
-                                        </h3>
-                                        <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
-                                    </div>
-                                </h:panelGroup>
+                                	<h:panelGroup rendered="#{Metadaten.isShowOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}" styleClass="metseditorOcr">
+                                       <h:outputText styleClass="metseditorOcrCaption" value="OCR" />
+                                       <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
+                                	</h:panelGroup>
 
                                 <h:panelGroup styleClass="div-image" layout="block">
                                     <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null}" />

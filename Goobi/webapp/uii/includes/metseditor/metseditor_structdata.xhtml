@@ -373,16 +373,7 @@
                                     <f:ajax execute="@form" render="@form :treeform" />
                                 </h:commandLink>
                             </li>
-                            <!-- OCR-Button -->
-                            <h:panelGroup rendered="#{Metadaten.showOcrButton}">
-                                <li class="action-li">
-                                    <h:commandLink id="showOcr" action="#{Metadaten.showOcrResultForElement}" title="#{msgs.ocr}">
-                                        <span class="btn margin-right-10 fa fa-file-text-o fa-lg width-40" />
-                                        <h:outputText value="#{msgs.ocr}" />
-                                        <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform :imagenavigation" />
-                                    </h:commandLink>
-                                </li>
-                            </h:panelGroup>
+                            
                         </ul>
                     </div>
                 </div>
