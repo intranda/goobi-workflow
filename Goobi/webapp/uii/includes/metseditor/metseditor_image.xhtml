@@ -27,7 +27,7 @@
                             
                             <div class="clearfix"></div>
 
-                                	<h:panelGroup rendered="#{Metadaten.isShowOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}" styleClass="metseditorOcr">
+                                	<h:panelGroup rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}" styleClass="metseditorOcr">
                                        <h:outputText styleClass="metseditorOcrCaption" value="OCR" />
                                        <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
                                 	</h:panelGroup>
