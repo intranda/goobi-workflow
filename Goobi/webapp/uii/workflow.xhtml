@@ -1,11 +1,11 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
-    <ui:param name="myPageTitle" value="#{NavigationForm.aktuell == 'a38'?msgs[AdministrationForm.administrationPlugin.title]:msgs.administration}" />
+    <ui:param name="myPageTitle" value="#{NavigationForm.aktuell == 'a28'?msgs[NavigationForm.workflowPlugin.title]:msgs.workflow}" />
 
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="admin" label="#{myPageTitle}" action="administration" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin" label="#{myPageTitle}" action="workflow" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
