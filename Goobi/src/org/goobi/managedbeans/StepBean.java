@@ -604,8 +604,7 @@ public class StepBean extends BasicBean {
             se.setType(PropertyType.messageError);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
-            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage + " (" + ben.getNachVorname()
-                    + ")";
+            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(message);
             logEntry.setCreationDate(new Date());
@@ -740,8 +739,7 @@ public class StepBean extends BasicBean {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage + " (" + ben
-                    .getNachVorname() + ")";
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(message);
