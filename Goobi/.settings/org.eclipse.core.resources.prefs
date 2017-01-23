@@ -1,10 +1,4 @@
 eclipse.preferences.version=1
-encoding//src/messages/messages_de.properties=UTF-8
-encoding//src/messages/messages_en.properties=UTF-8
-encoding//src/messages/messages_es.properties=UTF-8
-encoding//webapp/WEB-INF/classes/messages/messages_de.properties=UTF-8
-encoding//webapp/WEB-INF/classes/messages/messages_en.properties=UTF-8
-encoding//webapp/WEB-INF/classes/messages/messages_es.properties=UTF-8
 encoding//webapp/ui/css/default_2.1.css=UTF-8
 encoding//webapp/ui/css/print.css=UTF-8
 encoding//webapp/ui/currentUsers.xhtml=UTF-8
