@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -21,9 +22,11 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.User;
@@ -114,6 +117,12 @@ public class UsergroupManager implements IManager, Serializable {
         r.setId(rs.getInt("BenutzergruppenID"));
         r.setTitel(rs.getString("titel"));
         r.setBerechtigung(rs.getInt("berechtigung"));
+
+        String roles = rs.getString("roles");
+        if (StringUtils.isNotBlank(roles)) {
+            String[] userRole = roles.split(";");
+            r.setUserRoles(Arrays.asList(userRole));
+        }
         return r;
     }
 
@@ -164,7 +173,7 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList( String filter) {
+    public List<Integer> getIdList(String filter) {
         // TODO Auto-generated method stub
         return null;
     }

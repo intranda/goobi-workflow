@@ -64,8 +64,8 @@ class UsergroupMysqlHelper implements Serializable {
     }
 
     public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
-        return getUsergroups("titel", "BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID="
-                + user.getId() + ")", null, null);
+        return getUsergroups("titel", "BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user
+                .getId() + ")", null, null);
     }
 
     public static int getUsergroupCount(String order, String filter) throws SQLException {
@@ -108,15 +108,23 @@ class UsergroupMysqlHelper implements Serializable {
 
     public static void saveUsergroup(Usergroup ro) throws SQLException {
         Connection connection = null;
+        StringBuilder userRoles = new StringBuilder();
+        if (ro.getUserRoles()!= null) {
+            for (String userRole : ro.getUserRoles()) {
+                userRoles.append(userRole);
+                userRoles.append(";");
+            }
+        }
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung() };
-                String propNames = "titel, berechtigung";
-                String propValues = "? ,?";
+                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString() };
+                String propNames = "titel, berechtigung, roles";
+                String propValues = "? ,?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
@@ -130,10 +138,11 @@ class UsergroupMysqlHelper implements Serializable {
                     ro.setId(id);
                 }
             } else {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung() };
+                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
-                sql.append("berechtigung = ? ");
+                sql.append("berechtigung = ?, ");
+                sql.append("roles = ? ");
                 sql.append(" WHERE BenutzergruppenID = " + ro.getId() + ";");
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
