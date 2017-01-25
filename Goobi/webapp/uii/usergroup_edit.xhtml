@@ -5,7 +5,8 @@
 	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<ui:param name="myPageTitle"
 		value="#{BenutzergruppenForm.myBenutzergruppe.id == null?msgs.neueBenutzergruppeAnlegen:msgs.benutzergruppeBearbeiten}" />
@@ -66,6 +67,54 @@
 										styleClass="help-inline font-danger" />
 									<h:outputText styleClass="help-block font-light"
 										value="#{msgs.helpBerechtigung}" rendered="#{NavigationForm.showHelp}"/>
+								</div>
+							</div>
+								
+							<div class="form-group">
+								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3"
+									value="#{msgs.usergroup_userRoles}" />
+								<div class="col-sm-9">
+								
+									<h:panelGroup id="rolediv" styleClass="row" style="margin-left:0px;margin-right:0px;">
+										
+										<div class="col-sm-6" style="border-right:0px solid #ccc;padding-right:10px;">
+											<h5>#{msgs.usergroup_assignedRoles}</h5>
+											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
+				                            	<h:commandLink styleClass="badge #{fn:startsWith(role,'Admin_') ? 'badge-intranda-red' : fn:startsWith(role,'Workflow_') ? 'badge-intranda-orange' : fn:startsWith(role,'Plugin_') ? 'badge-intranda-blue' : 'badge-intranda-light'}" action="#{BenutzergruppenForm.removeRole}">
+													<h:outputText value="#{role}" />
+													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
+													<i class="fa fa-trash margin-left-5"></i>
+													 <f:ajax render=":myform" />
+												</h:commandLink>
+				                            </ui:repeat>
+										</div>
+										<div class="col-sm-6" style="border-left:1px solid #ccc;padding-left:10px;">
+											<h5>#{msgs.usergroup_availableRoles}</h5>
+											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
+				                            	<h:commandLink styleClass="badge #{fn:startsWith(role,'Admin_') ? 'badge-intranda-red' : fn:startsWith(role,'Workflow_') ? 'badge-intranda-orange' : fn:startsWith(role,'Plugin_') ? 'badge-intranda-blue' : 'badge-intranda-light'}" action="#{BenutzergruppenForm.addRole}">
+													<h:outputText value="#{role}" />
+													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
+													<i class="fa fa-plus margin-left-5"></i>
+													<f:ajax render=":myform" />
+												</h:commandLink>
+				                            </ui:repeat>
+										
+											<div class="input-group" style="margin-top:10px;">
+                                      			<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
+                                      			<div class="input-group-addon" style="padding:4px;"  >
+		                                            <h:commandLink tabindex="-1" title="#{msgs.usergroup_addRole}" action="#{BenutzergruppenForm.addRole}" style="margin-right:5px;">
+		                                                <i class="fa fa-plus font-black" style="margin-left: 3px" />
+		                                                
+		                                            </h:commandLink>
+		                                        </div>
+                                  			</div>
+										</div>
+									</h:panelGroup>
+								
+									<h:message for="userRoles" showDetail="true"
+										styleClass="help-inline font-danger" />
+									<h:outputText styleClass="help-block font-light"
+										value="#{msgs.helpUserRoles}" rendered="#{NavigationForm.showHelp}"/>
 								</div>
 							</div>
 

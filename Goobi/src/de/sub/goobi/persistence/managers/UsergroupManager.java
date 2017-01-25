@@ -121,7 +121,11 @@ public class UsergroupManager implements IManager, Serializable {
         String roles = rs.getString("roles");
         if (StringUtils.isNotBlank(roles)) {
             String[] userRole = roles.split(";");
-            r.setUserRoles(Arrays.asList(userRole));
+            List<String> roleList = new ArrayList<String>();
+            for (String x : userRole) {
+				roleList.add(x);
+			}
+            r.setUserRoles(roleList);
         }
         return r;
     }

@@ -29,6 +29,7 @@ package org.goobi.beans;
  */
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.ArrayList;
 import java.util.List;
 
 import jgravatar.Gravatar;
@@ -704,6 +705,14 @@ public class User implements DatabaseObject {
     public void setDisplayOtherTasks(boolean displayOtherTasks) {
         this.displayOtherTasks = displayOtherTasks;
     }
+
+	public List<String> getAllUserRoles() {
+		List<String> roles = new ArrayList<String>();
+		for (Usergroup group : getBenutzergruppen()) {
+			roles.addAll(group.getUserRoles());
+		}
+		return roles;
+	}
 }
 
 

@@ -28,6 +28,9 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -141,11 +144,31 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     }
 
     public List<String> getUserRoles() {
-        return userRoles;
+        if (userRoles==null){
+        	userRoles= new ArrayList<String>();
+        }
+    	return userRoles;
     }
 
     public void setUserRoles(List<String> userRoles) {
         this.userRoles = userRoles;
+    }
+    
+    public void addUserRole(String inRole){
+    	if (userRoles==null){
+    		userRoles = new ArrayList<String>();
+    	}
+    	if (!userRoles.contains(inRole)){
+    		userRoles.add(inRole);
+    		Collections.sort(userRoles);
+    	}
+    }
+    
+    public void removeUserRole(String inRole){
+    	if (userRoles!=null){
+    		userRoles.remove(inRole);
+    		Collections.sort(userRoles);
+    	}
     }
 
     @Override

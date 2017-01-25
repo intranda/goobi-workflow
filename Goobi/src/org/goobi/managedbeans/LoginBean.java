@@ -65,7 +65,8 @@ public class LoginBean {
     private String passwortAendernAlt;
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
-
+    private List<String> roles;
+    
     public String Ausloggen() {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
@@ -125,6 +126,7 @@ public class LoginBean {
                         temp.sessionBenutzerAktualisieren(mySession, b);
                         this.myBenutzer = b;
                         this.myBenutzer.lazyLoad();
+                        roles = myBenutzer.getAllUserRoles();
                     } else {
                         this.schonEingeloggt = true;
                         this.tempBenutzer = b;
@@ -342,5 +344,9 @@ public class LoginBean {
 
     public boolean isSchonEingeloggt() {
         return this.schonEingeloggt;
+    }
+    
+    public boolean hasRole(String inRole){
+    	return roles.contains(inRole);
     }
 }

@@ -661,14 +661,26 @@ dropdown-menu>li>a {
 
 .label-intranda-red, .badge-intranda-red {
     background-color: #E51400;
+    font-weight: normal;
+    margin: 3px;
 }
 
 .label-intranda-orange, .badge-intranda-orange {
     background-color: #F8A31F;
+    font-weight: normal;
+    margin: 3px;
 }
 
 .label-intranda-green, .badge-intranda-green {
     background-color: #56AF45;
+    font-weight: normal;
+    margin: 3px;
+}
+
+.label-intranda-blue, .badge-intranda-blue {
+    background-color: #368EE0;
+    font-weight: normal;
+    margin: 3px;
 }
 
 .pointer {
