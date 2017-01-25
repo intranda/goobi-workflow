@@ -35,7 +35,7 @@ import org.goobi.production.enums.LogType;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 13;
+    public static final int EXPECTED_VERSION = 14;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -131,12 +131,39 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 13.");
                 }
                 updateToVersion13();
+            case 13:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 13.");
+                }
+                updateToVersion14();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion14() {
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+
+            runner.update(connection, "alter table benutzergruppen add column roles text default null;");
+            
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
         }
     }
 
