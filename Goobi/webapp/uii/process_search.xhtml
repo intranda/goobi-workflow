@@ -133,11 +133,14 @@
 	                                </div>
 	                            </x:dataList>
 	
-	                            <h:panelGroup rendered="#{(LoginForm.maximaleBerechtigung == 1)}">
-	                                <intranda:formInputCheckBox id="showArchivedProjects" label="#{msgs.showArchivedProjects}:" field="#{ProzessverwaltungForm.showArchivedProjects}" help="#{msgs.helpShowArchivedProjects}" name="showArchivedProjects" />
-	                                <intranda:formInputCheckBox id="showClosedProcesses" label="#{msgs.showClosedProcesses}:" field="#{ProzessverwaltungForm.showClosedProcesses}" help="#{msgs.helpShowClosedProcesses}" name="showClosedProcesses" />
-	                            </h:panelGroup>
-	
+	                           
+                                <c:if test="#{LoginForm.hasRole('Workflow_Processes_show_deactivated_projects')}">
+                                	<intranda:formInputCheckBox id="showArchivedProjects" label="#{msgs.showArchivedProjects}:" field="#{ProzessverwaltungForm.showArchivedProjects}" help="#{msgs.helpShowArchivedProjects}" name="showArchivedProjects" />
+                                </c:if>
+                                <c:if test="#{LoginForm.hasRole('Workflow_Processes_show_finished')}">
+                                	<intranda:formInputCheckBox id="showClosedProcesses" label="#{msgs.showClosedProcesses}:" field="#{ProzessverwaltungForm.showClosedProcesses}" help="#{msgs.helpShowClosedProcesses}" name="showClosedProcesses" />
+                            	</c:if>
+	                           
 	                            <div class="form-actions">
 	                                <h:commandLink styleClass="btn btn-primary submitOnEnter font-size-s pull-right" id="absenden" action="#{SearchForm.createFilter}">
 	                                    <h:outputText value="#{msgs.filterAnwenden}" />
