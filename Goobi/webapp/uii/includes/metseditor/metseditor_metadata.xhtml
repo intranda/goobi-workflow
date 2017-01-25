@@ -338,7 +338,7 @@
 
 
 
-                        <ui:repeat var="metadata" value="#{Metadaten.selectedGroup.metadataList}" varStatus="status">
+                        <ui:repeat var="metadata" value="#{Metadaten.selectedGroup.metadataList}" varStatus="status" id="metadataList">
 
                             <h:panelGroup rendered="#{status.first == 'true'}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
@@ -363,7 +363,7 @@
 
                         </ui:repeat>
 
-                        <ui:repeat var="person" value="#{Metadaten.selectedGroup.personList}" varStatus="status">
+                        <ui:repeat var="person" value="#{Metadaten.selectedGroup.personList}" varStatus="status" id="personList">
 
                             <hr class="margin-top-regular margin-bottom-regular" />
 

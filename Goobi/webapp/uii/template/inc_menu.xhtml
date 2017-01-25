@@ -71,7 +71,7 @@
 									fontclass="margin-left-10" />
                                    
                                    
-                             <ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}">
+                             <ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}" id="plugin1">
                                 <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
                                     <h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
                                         <span>
@@ -144,7 +144,7 @@
 									action="taskmanager" />
 							</h:panelGroup>
 
-							<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}">
+							<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}" id="plugin2">
 								<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
 									<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="plugin">
 										<span>
@@ -171,7 +171,7 @@
 								icon="fa fa-bar-chart box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 	
-							<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}">
+							<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}" id="plugin3">
 								<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
 									<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="statistics">
 										<span>
@@ -212,7 +212,7 @@
 							<span></span>
 						</a>
 							<ul class="dropdown-menu pull-right">
-								<ui:repeat var="availableLanguage" value="#{SpracheForm.supportedLocales}">
+								<ui:repeat var="availableLanguage" value="#{SpracheForm.supportedLocales}" id="plugin4">
 									<li>
 										<h:commandLink id="locale" styleClass="text_head" action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
 											<f:param name="locale" value="#{availableLanguage.id}" />

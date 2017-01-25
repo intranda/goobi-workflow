@@ -249,7 +249,7 @@
 
                                         <h:panelGroup styleClass="popover-div" style="display:none;" rendered="#{false}">
 
-                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}">
+                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}" id="propList">
                                                 <span class="block margin-bottom-10">
                                                     <i class="btn btn-red margin-right-10 fa fa-exclamation-triangle fa-lg width-40"></i>
                                                     <h:outputText class="font-red" value="#{intern.titel}" />
