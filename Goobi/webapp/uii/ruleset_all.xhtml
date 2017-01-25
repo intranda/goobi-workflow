@@ -13,7 +13,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form id="myform" rendered="#{LoginForm.maximaleBerechtigung == 1}">
+		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Rulesets')}">
 
 			<div class="row">
 				<div class="col-sm-12">

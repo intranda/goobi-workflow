@@ -23,6 +23,7 @@ import java.util.List;
 public enum UserRole {
 	
 	Task_List, 
+	Task_Menu, 
 	Task_Mets_Pagination, 
 	Task_Mets_Structure, 
 	Task_Mets_Metadata, 
@@ -32,12 +33,19 @@ public enum UserRole {
 	Workflow_Details, 
 	Workflow_Import_Multi, 
 	Workflow_Import_Single,
+	Workflow_Menu,
 	Workflow_Processes,
+	Workflow_Processes_show_finished,
+	Workflow_Processes_show_deactivated_projects,
 	Workflow_ProcessTemplates,
 	Workflow_Search,
 	
+	Statistics_General,
+	Statistics_Menu,
+	
 	Admin_Dockets, 
 	Admin_Ldap, 
+	Admin_Menu, 
 	Admin_Projects,
 	Admin_Rulesets,
 	Admin_Users, 
@@ -51,4 +59,8 @@ public enum UserRole {
 		Collections.sort(roles);
 		return roles;
 	}
+	
+	// update benutzergruppen set roles="Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Projects;Admin_Rulesets;Admin_Users;Admin_Usergroups;Statistics_General;Statistics_Menu;Task_List;Task_Menu;Task_Mets_Pagination;Task_Mets_Structure;Task_Mets_Metadata;Task_Mets_Files;Workflow_Batches;Workflow_Details;Workflow_Import_Multi;Workflow_Import_Single;Workflow_Menu;Workflow_Processes;Workflow_Processes_show_finished;Workflow_Processes_show_deactivated_projects;Workflow_ProcessTemplates;Workflow_Search;Task_List;Task_Mets_Pagination;Task_Mets_Structure;Task_Mets_Metadata;Task_Mets_Files;" where berechtigung = 1;
+	// update benutzergruppen set roles="Statistics_General;Statistics_Menu;Task_List;Task_Menu;Task_Mets_Pagination;Task_Mets_Structure;Task_Mets_Metadata;Task_Mets_Files;Workflow_Batches;Workflow_Details;Workflow_Import_Multi;Workflow_Import_Single;Workflow_Menu;Workflow_Processes;Workflow_Processes_show_finished;Workflow_ProcessTemplates;Workflow_Search;" where berechtigung = 2;
+	// update benutzergruppen set roles="Task_List;Task_Menu;Task_Mets_Pagination;Task_Mets_Structure;Task_Mets_Metadata;Task_Mets_Files;" where berechtigung = 4;
 }

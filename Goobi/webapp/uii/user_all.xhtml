@@ -19,7 +19,7 @@
 
 	<ui:define name="content">
 		<!-- 		<h:form id="myform" > -->
-		<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1}">
+		<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Users')}">
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">

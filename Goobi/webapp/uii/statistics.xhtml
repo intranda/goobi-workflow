@@ -15,7 +15,7 @@
 
         <ui:include src="includes/calendarJavaScript.xhtml" />
 
-        <h:form rendered="#{NavigationForm.aktuell == 'a40'}" id="myform">
+        <h:form rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}" id="myform">
             <div class="row">
                 <div class="col-sm-6">
                     <div class="box box-color lightgrey box-bordered">
@@ -363,7 +363,7 @@
             </div>
         </h:form>
 
-        <h:panelGroup rendered="#{NavigationForm.aktuell == 'a41'}">
+        <h:panelGroup rendered="#{NavigationForm.aktuell == 'a41' and LoginForm.hasRole('Statistics_General')}">
             <h:panelGroup rendered="#{StatisticalQuestionBean.currentPlugin.permissions}">
                 <ui:include src="#{StatisticalQuestionBean.currentPlugin.gui}"></ui:include>
             </h:panelGroup>

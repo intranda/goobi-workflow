@@ -31,7 +31,7 @@
 		</script>
 		<h:form id="myform" styleClass="form-horizontal form-bordered"
 			onkeypress="submitOnEnter(event);"
-			rendered="#{LoginForm.maximaleBerechtigung == 1}">
+			rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
 
 			<div class="row">
 				<div class="col-sm-12">

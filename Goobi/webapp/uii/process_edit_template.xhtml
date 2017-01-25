@@ -15,7 +15,7 @@
 
 	<ui:define name="content">
 
-		<h:form id="myform" styleClass="form-horizontal form-bordered">
+		<h:form id="myform" styleClass="form-horizontal form-bordered" rendered="#{LoginForm.hasRole('Workflow_Details')}">
 			<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
 
 				<div class="row">

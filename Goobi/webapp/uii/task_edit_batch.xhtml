@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:panelGroup rendered="#{LoginForm.myBenutzer!=null}">
+        <h:panelGroup rendered="#{LoginForm.myBenutzer!=null and LoginForm.hasRole('Task_List')}">
             
             <div class="row">
             
