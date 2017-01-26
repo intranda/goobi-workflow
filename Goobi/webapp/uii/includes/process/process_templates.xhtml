@@ -23,7 +23,7 @@
 
 								<h:commandLink title="#{msgs.vorlageBearbeiten}" action="process_edit_template" id="editTemplate"
 									styleClass="btn btn-mini" rel="tooltip"
-									rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+									rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
 									<i class="fa fa-pencil" title="#{msgs.vorlageBearbeiten}"></i>
 									<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.myVorlageReload}" value="#{item}" />
@@ -48,7 +48,7 @@
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
 									<h:commandLink action="#{ProzessverwaltungForm.VorlageNeu}" id="newTemplate"
-										rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}"
+										rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Create')}"
 										styleClass="btn btn-lightgrey font-size-s margin-top-5" title="#{msgs.vorlageHinzufuegen}">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.vorlageHinzufuegen}" />

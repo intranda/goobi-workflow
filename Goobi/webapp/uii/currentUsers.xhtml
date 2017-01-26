@@ -14,7 +14,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form id="activeUser" prependId="false">
+		<h:form id="activeUser" prependId="false" rendered="#{LoginForm.hasRole('Statistics_CurrentUsers')}">
 
 			<div class="row">
 				<div class="col-sm-12">
@@ -39,14 +39,14 @@
 								<!-- Datentabelle -->
 								<x:dataTable id="userTable" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{SessionForm.alleSessions}">
 
-									<h:column rendered="#{LoginForm.maximaleBerechtigung gt 0}">
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.benutzer}" />
 										</f:facet>
 										<h:outputText value="#{item.user}" />
 									</h:column>
 
-									<h:column rendered="#{LoginForm.maximaleBerechtigung == 1}">
+									<h:column rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ip}" />
 										</f:facet>
@@ -61,7 +61,7 @@
 										<h:outputText value="#{item.browser}" />
 									</h:column>
 
-									<h:column rendered="#{LoginForm.maximaleBerechtigung == 1}">
+									<h:column rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.aktivSeit}" />
 										</f:facet>
@@ -76,8 +76,6 @@
 									</h:column>
 
 								</x:dataTable>
-
-
 							</div>
 						</div>
 					</div>

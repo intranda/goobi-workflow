@@ -6,6 +6,7 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzergruppen}" />
@@ -45,7 +46,7 @@
 									styleClass="table table-hover dataTable table-bordered responsive"
 									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
-									<h:column>
+									<x:column style="min-width:250px;">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.benutzergruppe}" />
 										</f:facet>
@@ -53,29 +54,41 @@
 										<ui:include src="includes/ajaxPlusMinusButton.xhtml" />
 
 										<h:panelGroup rendered="#{item.panelAusgeklappt}">
-											<div class="box box-small box-color box-bordered">
-												<div class="box-title">
-													<h3>
-														<i class="glyphicon-user"></i> #{msgs.benutzer}
-													</h3>
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="box box-small box-color lightgrey box-bordered">
+														<div class="box-title">
+															<h3>#{msgs.benutzer}</h3>
+														</div>
+														<div class="box-content nopadding">
+															<x:dataTable var="step" value="#{item.benutzer}"
+																styleClass="table table-hover table-bordered ">
+																<h:column>
+																	<h:outputText value="#{step.nachVorname}" />
+																</h:column>
+															</x:dataTable>
+														</div>
+		
+													</div>
 												</div>
-
-												<div class="box-content nopadding">
-													<x:dataTable var="step" value="#{item.benutzer}"
-														styleClass="table table-hover table-bordered ">
-														<h:column>
-
-															<h:outputText value="#{step.nachVorname}" />
-														</h:column>
-													</x:dataTable>
+												<div class="col-sm-6">
+													<div class="box box-small box-color lightgrey box-bordered">
+														<div class="box-title">
+															<h3>#{msgs.usergroup_userRoles}</h3>
+														</div>
+														<div class="box-content">
+															<ui:repeat var="role" value="#{item.userRoles}" varStatus="row">
+									                        	<h:outputText value="#{role}" styleClass="badge #{fn:startsWith(role,'Admin_') ? 'badge-intranda-red' : fn:startsWith(role,'Workflow_') ? 'badge-intranda-orange' : fn:startsWith(role,'Plugin_') ? 'badge-intranda-blue' : 'badge-intranda-light'}" action="#{BenutzergruppenForm.removeRole}"/>
+															</ui:repeat>
+														</div>
+													</div>
 												</div>
-
 											</div>
 										</h:panelGroup>
 
-									</h:column>
+									</x:column>
 
-									<x:column>
+									<x:column style="min-width:100px;">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>

@@ -42,28 +42,34 @@
             <a href="index.xhtml" id="brand">&#160;</a>
 
             <ul class='main-nav'>
-                <li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoPagination">
-                        <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
-                        <h:outputText value="#{msgs.paginierung}" />
-                    </h:commandLink>
-                </li>
-
-                <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoStructure">
-                        <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
-                        <h:outputText value="#{msgs.strukturdaten}" />
-                    </h:commandLink>
-                </li>
-
-                <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoMetadata">
-                        <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
-                        <h:outputText value="#{msgs.metadaten}" />
-                    </h:commandLink>
-                </li>
-
-                <h:panelGroup rendered="#{Metadaten.displayFileManipulation}">
+                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+	                <li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
+	                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoPagination">
+	                        <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
+	                        <h:outputText value="#{msgs.paginierung}" />
+	                    </h:commandLink>
+	                </li>
+				</h:panelGroup>
+				
+                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
+	                <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
+	                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoStructure">
+	                        <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
+	                        <h:outputText value="#{msgs.strukturdaten}" />
+	                    </h:commandLink>
+	                </li>
+				</h:panelGroup>
+				
+				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+	                <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
+	                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoMetadata">
+	                        <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
+	                        <h:outputText value="#{msgs.metadaten}" />
+	                    </h:commandLink>
+	                </li>
+				</h:panelGroup>
+				
+                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
                     <li class="#{Metadaten.modusAnsicht == 'File'?'active':''}">
                         <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoFile">
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
@@ -73,7 +79,7 @@
                 </h:panelGroup>
             </ul>
 
-            <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung gt 0}">
+            <h:panelGroup>
                 <!-- toggle mobile menu -->
 				<a href="#" class="toggle-mobile"><i class="fa fa-bars"></i></a>
 				
@@ -153,13 +159,14 @@
                                     </h:commandLink>
                                 </li>
 
-
-                                <li>
-                                    <h:commandLink id="resetPagination" action="#{Metadaten.reloadPagination}" onclick="setScrollPosition();" title="#{msgs.mets_resetPagination}">
-                                        <i class="fa fa-refresh margin-right-10"></i>
-                                        <h:outputText value="#{msgs.mets_resetPagination}" />
-                                    </h:commandLink>
-                                </li>
+								<c:if test="#{not Metadaten.nurLesenModus}">
+	                                <li>
+	                                    <h:commandLink id="resetPagination" action="#{Metadaten.reloadPagination}" onclick="setScrollPosition();" title="#{msgs.mets_resetPagination}">
+	                                        <i class="fa fa-refresh margin-right-10"></i>
+	                                        <h:outputText value="#{msgs.mets_resetPagination}" />
+	                                    </h:commandLink>
+	                                </li>
+								</c:if>
 
                                 <li>
                                     <h:commandLink id="toggleTopstruct" action="#{Metadaten.changeTopstruct}" title="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}">

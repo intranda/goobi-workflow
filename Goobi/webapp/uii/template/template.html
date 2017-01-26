@@ -124,7 +124,7 @@
                                             <img src="template/img/goobi/ajaxloader2.gif" />
                                         </li>
 
-                                        <h:panelGroup rendered="#{!HelperForm.anonymized}">
+                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
                                             <li class='background-color-A'>
                                                 <h:commandLink action="currentUsers" id="currentUsers">
                                                     <i class="glyphicon-parents box-icon-fix-down"></i>

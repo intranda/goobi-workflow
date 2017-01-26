@@ -22,7 +22,7 @@
 							<div class="actions">
 								<h:commandLink title="#{msgs.werkstueckBearbeiten}" action="process_edit_workpiece" id="editMasterpiece"
 									styleClass="btn btn-mini" rel="tooltip"
-									rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}">
+									rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
 									<i class="fa fa-pencil" title="#{msgs.vorlageBearbeiten}"></i>
 									<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.myWerkstueckReload}"
@@ -47,7 +47,7 @@
 									<!-- Neu-Schaltknopf -->
 									<h:commandLink action="#{ProzessverwaltungForm.WerkstueckNeu}" id="newMasterpiece"
 										styleClass="btn btn-lightgrey font-size-s margin-top-5"
-										rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}"
+										rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}"
 										title="#{msgs.werkstueckHinzufuegen}">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.werkstueckHinzufuegen}" />

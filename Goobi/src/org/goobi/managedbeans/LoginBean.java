@@ -153,6 +153,7 @@ public class LoginBean {
         temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
         this.schonEingeloggt = false;
+        roles = myBenutzer.getAllUserRoles();
         return "";
     }
 
@@ -179,6 +180,7 @@ public class LoginBean {
             SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
             temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
+            roles = myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";

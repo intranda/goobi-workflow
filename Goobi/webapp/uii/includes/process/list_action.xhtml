@@ -5,7 +5,7 @@
 
     <composite:implementation>
 
-        <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (ProzessverwaltungForm.modusAnzeige=='aktuell' and (LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2))}">
+        <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.modusAnzeige=='aktuell' and LoginForm.hasRole('Workflow_Processes') and (LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Export') or LoginForm.hasRole('Statistics_General'))}">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -72,7 +72,7 @@
                                         </h:panelGroup>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton2" onclick="toggle('possibleActions2')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
@@ -112,7 +112,7 @@
                                     </h:panelGroup>
 
                                     <!-- Bearbeitungsstatus hochsetzen-->
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton3" onclick="toggle('possibleActions3')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-up fa-lg width-40" />
@@ -146,7 +146,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton4" onclick="toggle('possibleActions4')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-down fa-lg width-40" />
@@ -181,7 +181,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1 and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
@@ -246,7 +246,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton10">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
@@ -324,7 +324,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton6" onclick="toggle('possibleActions6')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-table fa-lg width-40" />
@@ -358,7 +358,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton7" onclick="toggle('possibleActions7')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
