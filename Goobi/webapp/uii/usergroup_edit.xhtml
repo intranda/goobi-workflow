@@ -59,7 +59,15 @@
 										<div class="col-sm-6" style="border-right:0px solid #ccc;padding-right:10px;">
 											<h5>#{msgs.usergroup_assignedRoles}</h5>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
-				                            	<h:commandLink styleClass="badge #{fn:startsWith(role,'Admin_') ? 'badge-intranda-red' : fn:startsWith(role,'Workflow_') ? 'badge-intranda-orange' : fn:startsWith(role,'Plugin_') ? 'badge-intranda-blue' : 'badge-intranda-light'}" action="#{BenutzergruppenForm.removeRole}">
+				                            	<h:commandLink action="#{BenutzergruppenForm.removeRole}"
+				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
+					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+					                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
+					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
+					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
+					                            		'badge-light-greengrey'}" >
 													<h:outputText value="#{role}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-trash margin-left-5"></i>
@@ -70,7 +78,15 @@
 										<div class="col-sm-6" style="border-left:1px solid #ccc;padding-left:10px;">
 											<h5>#{msgs.usergroup_availableRoles}</h5>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
-				                            	<h:commandLink styleClass="badge #{fn:startsWith(role,'Admin_') ? 'badge-intranda-red' : fn:startsWith(role,'Workflow_') ? 'badge-intranda-orange' : fn:startsWith(role,'Plugin_') ? 'badge-intranda-blue' : 'badge-intranda-light'}" action="#{BenutzergruppenForm.addRole}">
+				                            	<h:commandLink action="#{BenutzergruppenForm.addRole}"
+				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
+					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+					                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
+					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
+					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
+					                            		'badge-light-greengrey'}" >
 													<h:outputText value="#{role}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-plus margin-left-5"></i>

@@ -648,6 +648,10 @@ dropdown-menu>li>a {
 }
 
 /* ------------- badges and labels --------------- */
+.badge-no-radius {
+	border-radius: 0px;
+}
+	
 .label-intranda-ultralight, .badge-intranda-ultralight {
     background-color: #bbbbbb;
     font-weight: normal;
@@ -682,6 +686,98 @@ dropdown-menu>li>a {
     font-weight: normal;
     margin: 3px;
 }
+
+.label-light-red, .badge-light-red {
+    background-color: white;
+    border:1px solid #E51400;
+    font-weight: normal;
+    color: #E51400;
+    margin: 3px;
+}
+
+.label-light-blue, .badge-light-blue {
+    background-color: white;
+    border:1px solid #368EE0;
+    font-weight: normal;
+    color: #368EE0;
+    margin: 3px;
+}
+
+.label-light-green, .badge-light-green {
+    background-color: white;
+    border:1px solid #56AF45;
+    font-weight: normal;
+    color: #56AF45;
+    margin: 3px;
+}
+
+.label-light-orange, .badge-light-orange {
+    background-color: white;
+    border:1px solid #F8A31F;
+    font-weight: normal;
+    color: #F8A31F;
+    margin: 3px;
+}
+
+.label-light-purple, .badge-light-purple {
+    background-color: white;
+    border:1px solid #8947CC;
+    font-weight: normal;
+    color: #8947CC;
+    margin: 3px;
+}
+
+.label-light-lila, .badge-light-lila {
+    background-color: white;
+    border:1px solid #500899;
+    font-weight: normal;
+    color: #500899;
+    margin: 3px;
+}
+
+.label-light-greengrey, .badge-light-greengrey {
+    background-color: white;
+    border:1px solid #617F7D;
+    font-weight: normal;
+    color: #617F7D;
+    margin: 3px;
+}
+
+.label-light-green2, .badge-light-green2 {
+    background-color: white;
+    border:1px solid #3B7F7B;
+    font-weight: normal;
+    color: #3B7F7B;
+    margin: 3px;
+}
+
+.label-light-brown1, .badge-light-brown1 {
+    background-color: white;
+    border:1px solid #3E2115;
+    font-weight: normal;
+    color: #3E2115;
+    margin: 3px;
+}
+
+.label-light-brown2, .badge-light-brown2 {
+    background-color: white;
+    border:1px solid #74422B;
+    font-weight: normal;
+    color: #74422B;
+    margin: 3px;
+}
+
+a.badge:hover,
+a.badge:focus {
+	color: black;
+  	text-decoration: none;
+  	cursor: pointer;
+}
+
+
+
+
+
 
 .pointer {
     cursor: pointer;
