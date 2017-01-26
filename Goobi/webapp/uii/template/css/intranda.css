@@ -176,6 +176,10 @@ label {
 }
 
 /* ------------- Borders --------------- */
+.border-top-light {
+    border-top: 1px solid #ddd !important;
+}
+
 .border-bottom-light {
     border-bottom: 1px solid #ddd !important;
 }
@@ -183,7 +187,17 @@ label {
 .border-right-light {
     border-right: 1px solid #ddd !important;
 }
+
+.border-left-light {
+    border-left: 1px solid #ddd !important;
+}
+
 /* ------------- Margins --------------- */
+.padding-sides-no {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
 .padding-right-no {
     padding-right: 0px;
 }
