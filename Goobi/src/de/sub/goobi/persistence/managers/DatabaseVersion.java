@@ -35,7 +35,7 @@ import org.goobi.production.enums.LogType;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 14;
+    public static final int EXPECTED_VERSION = 15;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -133,9 +133,14 @@ public class DatabaseVersion {
                 updateToVersion13();
             case 13:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 13.");
+                    logger.trace("Update database to version 14.");
                 }
                 updateToVersion14();
+            case 14:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 15.");
+                }
+                updateToVersion15();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -145,6 +150,30 @@ public class DatabaseVersion {
         }
     }
 
+    private static void updateToVersion15() {
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+
+            runner.update(connection, "update benutzergruppen set roles='Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_Batches;Workflow_Details;Workflow_Details_Edit;Workflow_Menu;Workflow_Plugins;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;Workflow_Search;Workflow_Show_All_Projects;' where berechtigung = 1;");
+            runner.update(connection, "update benutzergruppen set roles='Statistics_CurrentUsers;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_Batches;Workflow_Details;Workflow_Details_Edit;Workflow_Menu;Workflow_Plugins;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Finished;Workflow_Search;' where berechtigung = 2;");
+            runner.update(connection, "update benutzergruppen set roles='Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;' where berechtigung = 4;");
+            
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+    
     private static void updateToVersion14() {
         Connection connection = null;
 

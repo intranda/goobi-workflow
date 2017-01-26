@@ -50,27 +50,6 @@
 								help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
 
 							<div class="form-group">
-								<h:outputLabel for="berechtigung" styleClass="control-label col-sm-3"
-									value="#{msgs.berechtigung}" />
-								<div class="col-sm-9">
-									<h:selectOneMenu id="berechtigung" styleClass="form-control"
-										value="#{BenutzergruppenForm.myBenutzergruppe.berechtigungAsString}">
-										<f:selectItem itemValue="1" itemLabel="#{msgs.administration}" />
-										<f:selectItem itemValue="2"
-											itemLabel="#{msgs.prozessverwaltung}" />
-										<!--        <f:selectItem id="id18" itemValue="3"
-                                                            itemLabel="#{msgs.erweiterteNutzerBerechtigung}" />-->
-										<f:selectItem itemValue="4"
-											itemLabel="#{msgs.normaleNutzerBerechtigung}" />
-									</h:selectOneMenu>
-									<h:message for="berechtigung" showDetail="true"
-										styleClass="help-inline font-danger" />
-									<h:outputText styleClass="help-block font-light"
-										value="#{msgs.helpBerechtigung}" rendered="#{NavigationForm.showHelp}"/>
-								</div>
-							</div>
-								
-							<div class="form-group">
 								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3"
 									value="#{msgs.usergroup_userRoles}" />
 								<div class="col-sm-9">
