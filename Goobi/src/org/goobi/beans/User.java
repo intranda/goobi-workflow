@@ -30,7 +30,10 @@ package org.goobi.beans;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jgravatar.Gravatar;
 import jgravatar.GravatarRating;
@@ -707,10 +710,13 @@ public class User implements DatabaseObject {
     }
 
 	public List<String> getAllUserRoles() {
-		List<String> roles = new ArrayList<String>();
+		Set<String> hs = new HashSet<>();
 		for (Usergroup group : getBenutzergruppen()) {
-			roles.addAll(group.getUserRoles());
+			hs.addAll(group.getUserRoles());
 		}
+		List<String> roles = new ArrayList<String>();
+		roles.addAll(hs);
+		Collections.sort(roles);
 		return roles;
 	}
 }
