@@ -47,6 +47,7 @@ public enum UserRole {
 	Workflow_ProcessTemplates_Clone,
 	Workflow_ProcessTemplates_Create,
 	Workflow_Search,
+	Workflow_Show_All_Projects,
 	
 	Statistics_CurrentUsers,
 	Statistics_CurrentUsers_Details,
@@ -62,6 +63,7 @@ public enum UserRole {
 	Admin_Rulesets,
 	Admin_Administrative_Tasks,
 	Admin_Users, 
+	Admin_Users_Allow_Switch, 
 	Admin_Usergroups;
 	
 	public static List<String> getAllRoles() {

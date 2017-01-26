@@ -43,6 +43,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
@@ -169,7 +170,7 @@ public class LoginBean {
     }
 
     public String EinloggenAls() {
-        if (getMaximaleBerechtigung() != 1) {
+        if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
             return "index";
         }
         this.myBenutzer = null;

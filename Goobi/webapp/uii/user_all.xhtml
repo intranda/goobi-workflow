@@ -162,7 +162,7 @@
 											</h:commandLink>
 
 											<!-- Benutzerprofil laden-Schaltknopf -->
-											<h:commandLink id="switch"
+											<h:commandLink id="switch" rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
 												styleClass="btn margin-right-5 hidden-xs"
 												action="#{LoginForm.EinloggenAls}"
 												title="#{msgs.benutzerprofilLaden}">
