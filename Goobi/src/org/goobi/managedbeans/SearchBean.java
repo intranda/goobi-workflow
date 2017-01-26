@@ -35,6 +35,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 
 import org.goobi.beans.Project;
+import org.goobi.production.enums.UserRole;
 import org.goobi.production.search.api.ExtendedSearchRow;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -81,12 +82,13 @@ public class SearchBean {
         for (StepStatus s : StepStatus.values()) {
             this.stepstatus.add(s);
         }
-        int restriction = ((LoginBean) Helper.getManagedBeanValue("#{LoginForm}")).getMaximaleBerechtigung();
-
+        
+        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        
         // projects
         String projectFilter = "";
 
-        if (restriction > 2) {
+        if (!loginForm.hasRole(UserRole.Workflow_Processes_Show_Deactivated_Projects.name())) {
             projectFilter = " projectIsArchived = false ";
         }
         this.projects.add(Helper.getTranslation("notSelected"));
