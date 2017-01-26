@@ -71,19 +71,20 @@
 								icon="fa fa-files-o box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
                                    
-                               <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Plugins')}">
-	                             <ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}" id="plugin1">
-	                                <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
-	                                    <h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
-	                                        <span>
-	                                            <i class="fa fa-plug box-icon-fix-menu-up3"></i>
-	                                            <span class="margin-left-10">#{msgs[plugin]}</span>
-	                                        </span>
-	                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a28" />
-	                                    </h:commandLink>
-	                                </li>
-	                            </ui:repeat> 
-                               </h:panelGroup>
+                           	<!-- Workflow-Plugins -->
+                           	<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Plugins')}">
+                           		<ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}" id="plugin1">
+                             		<li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+                                 		<h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
+                                     		<span>
+                                         		<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+                                         		<span class="margin-left-10">#{msgs[plugin]}</span>
+                                     		</span>
+	                                 		<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a28" />
+                                    	</h:commandLink>
+                                	</li>
+                            	</ui:repeat> 
+                          	</h:panelGroup>
 						</ul>
 					</li>
  				</h:panelGroup>
@@ -144,19 +145,20 @@
 									action="modulemanager" />
 							</h:panelGroup>
 
-							<!-- Superadmin -->
-							<intranda:menuItem id="a38" label="#{msgs.administrationsaufgaben}"
-								action="admin"
-								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
-								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
-								fontclass="margin-left-10" />
-								
 							<!-- aktive Module -->
 							<h:panelGroup rendered="#{NavigationForm.showTaskManager}">
 								<intranda:menuItem id="a37" label="#{msgs.taskmanager}"
 									action="taskmanager" />
 							</h:panelGroup>
 
+							<!-- Superadmin -->
+							<intranda:menuItem id="a38" label="#{msgs.administrationsaufgaben}"
+								action="admin"
+								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
+								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+								fontclass="margin-left-10" />
+							
+							<!-- Admin-Plugins -->
 							<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
 								<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}" id="plugin2">
 									<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
@@ -174,6 +176,7 @@
 					</li>
  				</h:panelGroup>
 
+				<!-- Controlling -->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
 					<li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
 						<a href="#" data-toggle="dropdown" class='dropdown-toggle'>
