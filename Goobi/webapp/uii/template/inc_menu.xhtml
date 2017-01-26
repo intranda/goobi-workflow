@@ -152,7 +152,7 @@
 							</h:panelGroup>
 
 							<!-- Superadmin -->
-							<intranda:menuItem id="a38" label="#{msgs.administrationsaufgaben}"
+							<intranda:menuItem id="a39" label="#{msgs.administrationsaufgaben}"
 								action="admin"
 								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
 								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
@@ -251,7 +251,7 @@
 					</ul>
 					
 					<div class="dropdown">
-						<a href="#" class='dropdown-toggle' data-toggle="dropdown"> 
+						<a href="#" class='dropdown-toggle' data-toggle="dropdown" id="toggleUserdata"> 
 							<h:outputText rendered="#{LoginForm.myBenutzer != null}" value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
 							<c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
 								<img alt="" src="template/img/intranda.png" />
