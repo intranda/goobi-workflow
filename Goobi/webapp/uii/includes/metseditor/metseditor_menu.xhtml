@@ -159,7 +159,7 @@
                                     </h:commandLink>
                                 </li>
 
-								<c:if test="#{not Metadaten.nurLesenModus}">
+								<c:if test="#{not Metadaten.nurLesenModus and LoginForm.hasRole('Task_Mets_Pagination')}">
 	                                <li>
 	                                    <h:commandLink id="resetPagination" action="#{Metadaten.reloadPagination}" onclick="setScrollPosition();" title="#{msgs.mets_resetPagination}">
 	                                        <i class="fa fa-refresh margin-right-10"></i>
@@ -177,7 +177,6 @@
                                 
                             </ul>
                         </li>
-
 
                         <c:if test="#{not Metadaten.nurLesenModus}">
                             <li>

@@ -16,7 +16,7 @@
 
     <ui:define name="content">
 
-		<c:if test="#{LoginForm.hasRole('Workflow_Processes')}">
+		<c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
 								
 	        <div class="row">
 	            <div class="col-sm-12">
@@ -260,7 +260,7 @@
 	                                            <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 	                                        </h:commandLink>
 	                                        
-	                                        <!-- Metadaten-Schaltknopf -->
+	                                        <!-- Metadaten-Schaltknopf - Read only -->
 	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 	                                            <i class="btn fa fa-book" />
 	                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -270,13 +270,25 @@
 	                                            <f:param name="zurueck" value="process_all" />
 	                                        </h:commandLink>
 	
-	                                        <!-- Metadaten-Schaltknopf -->
+	                                        <!-- Metadaten-Schaltknopf - Allow writing -->
 	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action15" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
 	                                            <i class="btn fa fa-book " />
 	                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
 	                                            <f:param name="ProzesseID" value="#{item.id}" />
 	                                            <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
 	                                            <f:param name="zurueck" value="process_all" />
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Files')}">
+	                                            	<f:setPropertyActionListener value="File" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+	                                            	<f:setPropertyActionListener value="Metadaten" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Structure')}">
+	                                            	<f:setPropertyActionListener value="Strukturdaten" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+	                                            	<f:setPropertyActionListener value="Paginierung" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
 	                                            <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
 	                                            <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
 	                                            <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />

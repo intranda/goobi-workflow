@@ -1059,7 +1059,6 @@ public class Metadaten {
         }
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
-        this.modusAnsicht = "Metadaten";
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         this.modusStrukturelementVerschieben = false;
@@ -1129,9 +1128,9 @@ public class Metadaten {
         MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct, false);
         physicalTopstruct = mydocument.getPhysicalDocStruct();
         currentTopstruct = logicalTopstruct;
-        if (!this.nurLesenModus) {
+        if (this.nurLesenModus) {
             // inserted to make Paginierung the starting view
-            this.modusAnsicht = "Paginierung";
+            this.modusAnsicht = "Metadaten";
         }
         return "metseditor";
     }
