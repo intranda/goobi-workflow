@@ -69,6 +69,11 @@ var viewImage = ( function( osViewer ) {
         isDrawing: function() {
             return _drawing;
         },
+        removeLastDrawnElement() {
+        	if(_drawElement) {        		
+        		osViewer.viewer.removeOverlay( _drawElement );
+        	}
+        }
     }
 
     function _onViewerPress( event ) {
