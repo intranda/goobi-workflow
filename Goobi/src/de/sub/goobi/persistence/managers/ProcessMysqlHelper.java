@@ -40,6 +40,7 @@ import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
+import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -583,7 +584,7 @@ class ProcessMysqlHelper implements Serializable {
         String sql = "SELECT distinct batchID FROM prozesse";
 
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null && login.getMaximaleBerechtigung() > 1) {
+        if (login != null && !login.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
             sql += " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = " + login.getMyBenutzer()
                     .getId() + ")";
         }

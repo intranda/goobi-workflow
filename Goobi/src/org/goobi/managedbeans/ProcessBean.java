@@ -75,6 +75,7 @@ import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
+import org.goobi.production.enums.UserRole;
 import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.SearchColumn;
 import org.goobi.production.flow.helper.SearchResultHelper;
@@ -1393,7 +1394,7 @@ public class ProcessBean extends BasicBean {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
         List<Project> temp = null;
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null && login.getMaximaleBerechtigung() > 1) {
+        if (login != null && !login.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
             temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
         } else {
             temp = ProjectManager.getAllProjects();

@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
 
@@ -12,6 +12,7 @@
 
     <ui:define name="content">
 
+		<c:if test="#{LoginForm.hasRole('Task_List')}">
 
         <div class="row">
             <div class="col-sm-12">
@@ -134,7 +135,7 @@
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" title="#{msgs.prozessBearbeiten}">
+	                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" title="#{msgs.prozessBearbeiten}" rendered="#{LoginForm.hasRole('Workflow_Details')}">
                                             <i class="fa fa-tasks margin-right-10 btn" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
@@ -249,7 +250,7 @@
 
                                         <h:panelGroup styleClass="popover-div" style="display:none;" rendered="#{false}">
 
-                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}">
+	                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}" id="propList">
                                                 <span class="block margin-bottom-10">
                                                     <i class="btn btn-red margin-right-10 fa fa-exclamation-triangle fa-lg width-40"></i>
                                                     <h:outputText class="font-red" value="#{intern.titel}" />
@@ -438,6 +439,7 @@
 														}
 													});
 								</script>
+		</c:if>
 
     </ui:define>
 

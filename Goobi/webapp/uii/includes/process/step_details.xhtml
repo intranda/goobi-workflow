@@ -22,7 +22,7 @@
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
 
-                        <h:commandLink id="editStep" title="#{msgs.bearbeiten}" action="#{NavigationForm.Reload}" rendered="#{(LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2)}" styleClass="btn btn-mini" rel="tooltip">
+                        <h:commandLink id="editStep" title="#{msgs.bearbeiten}" action="#{NavigationForm.Reload}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}" styleClass="btn btn-mini" rel="tooltip">
                             <i class="fa fa-pencil"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="schritt" />

@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" >
 
     <composite:interface>
     </composite:interface>
@@ -97,7 +97,7 @@
                             <!-- 								</ul> -->
                             <!-- 							</h:form> -->
 
-                            <h:form styleClass="margin-sides-10 margin-top-10" id="actionForm">
+                            <h:form styleClass="margin-sides-10 margin-top-10 margin-bottom-10" id="actionForm">
 
                                 <ul class="action-ul">
 
@@ -214,15 +214,24 @@
                                                 <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
                                                 <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
                                                 <f:param name="zurueck" value="task_edit" />
+                                                <c:if test="#{LoginForm.hasRole('Task_Mets_Files')}">
+	                                            	<f:setPropertyActionListener value="File" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+	                                            	<f:setPropertyActionListener value="Metadaten" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Structure')}">
+	                                            	<f:setPropertyActionListener value="Strukturdaten" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
+	                                            <c:if test="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+	                                            	<f:setPropertyActionListener value="Paginierung" target="#{Metadaten.modusAnsicht}" />
+	                                            </c:if>
                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
                                             </h:commandLink>
-
-
-
 
                                             <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
                                                 <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" data-toggle="modal" data-target="#myModal">
@@ -305,7 +314,6 @@
                                             <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
                                         </h:commandLink>
                                     </li>
-                                     
                                 </ul>
                             </h:form>
 

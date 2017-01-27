@@ -42,17 +42,17 @@
                                 <p:autoComplete id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                             </div>
                             <div class="col-sm-4">
-                                <h:commandLink action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                <h:commandLink id="takePreviousImage" action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                     <f:ajax render="pagestart1" />
                                     <i class="fa fa-angle-left" style="margin-right: 3px;" />
                                     <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
                                 </h:commandLink>
-                                <h:commandLink action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                <h:commandLink id="takeCurrentImage" action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
                                     <f:ajax render="pagestart1" />
                                     <i class="fa fa-picture-o" />
                                     <x:updateActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" />
                                 </h:commandLink>
-                                <h:commandLink action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                <h:commandLink id="takeNextImage" action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
                                     <f:ajax render="pagestart1" />
                                     <i class="fa fa-angle-right" />
                                     <x:updateActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" />
@@ -69,17 +69,17 @@
                                 <p:autoComplete id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                             </div>
                             <div class="col-sm-4">
-                                <h:commandLink action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                <h:commandLink id="takePreviousImage2" action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                     <f:ajax render="pageend1" />
                                     <i class="fa fa-angle-left" style="margin-right: 3px;" />
                                     <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
                                 </h:commandLink>
-                                <h:commandLink action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                <h:commandLink id="takeCurrentImage2" action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
                                     <f:ajax render="pageend1" />
                                     <i class="fa fa-picture-o" />
                                     <x:updateActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" />
                                 </h:commandLink>
-                                <h:commandLink action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                <h:commandLink id="takeNextImage2" action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
                                     <f:ajax render="pageend1" />
                                     <i class="fa fa-angle-right" />
                                     <x:updateActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" />
@@ -110,9 +110,9 @@
                         </h:panelGroup>
 
                         <h:panelGroup rendered="#{Metadaten.addablePersondata.size() > 0}">
-                            <x:dataList var="addablePersondata" value="#{Metadaten.addablePersondata}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <x:dataList id="addablePersondata" var="addablePersondata" value="#{Metadaten.addablePersondata}" rowCountVar="rowCount" rowIndexVar="rowIndex">
 
-                                <intranda:formMetseditorPerson person="#{addablePersondata}" fieldStyle="form-control" renderDelete="false" index="#{rowIndex}" 
+                                <intranda:formMetseditorPerson id="person" person="#{addablePersondata}" fieldStyle="form-control" renderDelete="false" index="#{rowIndex}" 
                                 datatype="addablePerson"
                                 />
                                 <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
@@ -122,8 +122,8 @@
                             <hr style="margin: 7px" />
                         </h:panelGroup>
                         <h:panelGroup rendered="#{Metadaten.addableMetadata.size() > 0}">
-                            <x:dataList var="Item" value="#{Metadaten.addableMetadata}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                                <intranda:formMetseditorMetadata metadata="#{Item}" 
+                            <x:dataList id="addableMetadata" var="Item" value="#{Metadaten.addableMetadata}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                                <intranda:formMetseditorMetadata metadata="#{Item}"  id="meta"
                                  datatype="addableMetadata"
                                 fieldStyle="form-control" renderDelete="false" renderDuplicate="false" index="#{rowIndex}"/>
                                 <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
@@ -138,7 +138,7 @@
                         </h:panelGroup>
 
                         <div class="pull-right margin-top-10">
-                            <h:commandLink styleClass="btn btn-primary font-size-s" action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}" onclick="setScrollPosition();">
+                            <h:commandLink id="add" styleClass="btn btn-primary font-size-s" action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}" onclick="setScrollPosition();">
                                 <f:ajax render="@form :treeform" execute="@form" />
                             </h:commandLink>
                         </div>
@@ -164,8 +164,8 @@
 
 						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'block':'none'}">
                         <h:outputText value="#{msgs.mets_no_persons_assigned}" rendered="#{empty Metadaten.myPersonen}" />
-                        <x:dataList var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorPerson person="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
+                        <x:dataList id="personList2" var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorPerson person="#{Item}" fieldStyle="form-control" index="#{rowIndex}" id="currentPerson" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr style="margin: 7px" />
                             </h:panelGroup>
@@ -194,8 +194,8 @@
 
 						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'block':'none'}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
-                        <x:dataList var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorMetadata metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
+                        <x:dataList id="metadataList2" var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorMetadata id="currentMetadata" metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
@@ -228,7 +228,7 @@
                         <ul class="action-ul">
                             <!-- Knoten nach oben -->
                             <li class="action-li">
-                                <h:commandLink action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
+                                <h:commandLink id="nodeUp" action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}">
                                     <span class="btn margin-right-10 fa fa-chevron-up fa-lg width-40" />
                                     <h:outputText value="#{msgs.docstructNachObenSchieben}" />
                                     <f:ajax execute="@form" render="@form :treeform" />
@@ -236,7 +236,7 @@
                             </li>
                             <!-- Knoten nach unten -->
                             <li class="action-li">
-                                <h:commandLink action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
+                                <h:commandLink id="nodeDown" action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}">
                                     <span class="btn margin-right-10 fa fa-chevron-down fa-lg width-40" />
                                     <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
                                     <f:ajax execute="@form" render="@form :treeform" />
@@ -244,7 +244,7 @@
                             </li>
                             <!-- Knoten an andere Stelle schieben -->
                             <li class="action-li">
-                                <h:commandLink action="metseditor" title="#{msgs.docstructAnAndereStelleSchieben}" onclick="setScrollPosition();">
+                                <h:commandLink id="moveNode" action="metseditor" title="#{msgs.docstructAnAndereStelleSchieben}" onclick="setScrollPosition();">
                                     <span class="btn margin-right-10 fa fa-arrows fa-lg width-40" />
                                     <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
                                     <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
@@ -252,7 +252,7 @@
                             </li>
                             <!-- copy structure element from somewhere else -->
                             <li class="action-li">
-                                <h:commandLink action="metseditor" title="#{msgs.copyDocstructFromOtherProcess}" onclick="setScrollPosition();">
+                                <h:commandLink id="copyNode" action="metseditor" title="#{msgs.copyDocstructFromOtherProcess}" onclick="setScrollPosition();">
                                     <span class="btn margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                     <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
@@ -277,7 +277,7 @@
                                         </div>
                                         <!-- Action -->
                                         <div class="col-sm-3">
-                                            <h:commandLink action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" styleClass="btn" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:commandLink id="ChangeCurrentDocstructType" action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" styleClass="btn" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                 <i class="fa fa-check-circle-o" />
                                             </h:commandLink>
                                         </div>
@@ -285,7 +285,7 @@
                                 </li>
                                 <!-- Knoten loeschen -->
                                 <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
+                                    <h:commandLink id="deleteNode" action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
                                         <span class="btn margin-right-10 fa fa-trash fa-lg width-40" />
                                         <h:outputText value="#{msgs.strukturelementLoeschen}" />
                                         <f:ajax execute="@form" render="@form :treeform" />
@@ -293,7 +293,7 @@
                                 </li>
                                 <!-- duplicate node -->
                                 <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}">
+                                    <h:commandLink id="duplicateNode" action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}">
                                         <span class="btn margin-right-10 fa fa-files-o fa-lg width-40" />
                                         <h:outputText value="#{msgs.duplicateStructureElement}" />
                                         <f:ajax execute="@form" render="@form :treeform" />
@@ -353,11 +353,11 @@
                                     <div class="row" style="margin-left: 40px; margin-top: 10px;">
                                         <div class="col-sm-3"></div>
                                         <div class="col-sm-9">
-                                            <h:commandLink immediate="false" styleClass="btn margin-right-10 font-size-s" action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:commandLink id="importMetadata" immediate="false" styleClass="btn margin-right-10 font-size-s" action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                 <h:outputText value="#{msgs.nurMetadaten}" />
                                             </h:commandLink>
 
-                                            <h:commandLink immediate="false" styleClass="btn font-size-s" action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:commandLink id="importNode" immediate="false" styleClass="btn font-size-s" action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                 <h:outputText value="#{msgs.alsUnterelemente}" />
                                             </h:commandLink>
                                         </div>
@@ -367,22 +367,13 @@
                             </li>
                             <!-- Seitenzuweisung -->
                             <li class="action-li">
-                                <h:commandLink action="#{Metadaten.SeitenVonChildrenUebernehmen}" title="#{msgs.seitenVonUnterelementenZuweisen}">
+                                <h:commandLink id="seitenVonUnterelementenZuweisen" action="#{Metadaten.SeitenVonChildrenUebernehmen}" title="#{msgs.seitenVonUnterelementenZuweisen}">
                                     <span class="btn margin-right-10 fa fa-sort-numeric-asc fa-lg width-40" />
                                     <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
                                     <f:ajax execute="@form" render="@form :treeform" />
                                 </h:commandLink>
                             </li>
-                            <!-- OCR-Button -->
-                            <h:panelGroup rendered="#{Metadaten.showOcrButton}">
-                                <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.showOcrResultForElement}" title="#{msgs.ocr}">
-                                        <span class="btn margin-right-10 fa fa-file-text-o fa-lg width-40" />
-                                        <h:outputText value="#{msgs.ocr}" />
-                                        <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform :imagenavigation" />
-                                    </h:commandLink>
-                                </li>
-                            </h:panelGroup>
+                            
                         </ul>
                     </div>
                 </div>
@@ -410,20 +401,20 @@
 
                             <ul class="tabs tab-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}">
                                 <li class="#{(NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null || NavigationForm.uiStatus.pageassignment eq 'tab0')?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_overview}" onclick="setScrollPosition();">
+                                    <h:commandLink id="metseditor_pages_overview" action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_overview}" onclick="setScrollPosition();">
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab0" />
                                         <f:ajax render="pageallocation" />
                                     </h:commandLink>
                                 </li>
 
                                 <li class="#{NavigationForm.uiStatus.pageassignment eq 'tab1'?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_allPages}" onclick="setScrollPosition();">
+                                    <h:commandLink id="metseditor_pages_allPages" action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_allPages}" onclick="setScrollPosition();">
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab1" />
                                         <f:ajax render="pageallocation" />
                                     </h:commandLink>
                                 </li>
                                 <li class="#{NavigationForm.uiStatus.pageassignment eq 'tab2'?'active':''}">
-                                    <h:commandLink action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_quickassign}" onclick="setScrollPosition();">
+                                    <h:commandLink id="metseditor_pages_quickassign" action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_quickassign}" onclick="setScrollPosition();">
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab2" />
                                         <f:ajax render="pageallocation" />
                                     </h:commandLink>
@@ -445,17 +436,17 @@
                                             <p:autoComplete id="pagestart2" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <h:commandLink action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                            <h:commandLink id="takePreviousImage3" action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                                 <f:ajax render="pagestart2" />
                                                 <i class="fa fa-angle-left" style="margin-right: 3px;" />
                                                 <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
                                             </h:commandLink>
-                                            <h:commandLink action="#{Metadaten.startpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                            <h:commandLink id="takeCurrentImage3" action="#{Metadaten.startpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
                                                 <f:ajax render="pagestart2" />
                                                 <i class="fa fa-picture-o" />
                                                 <x:updateActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" />
                                             </h:commandLink>
-                                            <h:commandLink action="#{Metadaten.startpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                            <h:commandLink id="takeNextImage3" action="#{Metadaten.startpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
                                                 <f:ajax render="pagestart2" />
                                                 <i class="fa fa-angle-right" />
                                                 <x:updateActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" />
@@ -472,17 +463,17 @@
                                             <p:autoComplete id="pageend2" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <h:commandLink action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
+                                            <h:commandLink id="takePreviousImage4" action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                                 <f:ajax render="pageend2" />
                                                 <i class="fa fa-angle-left" style="margin-right: 3px;" />
                                                 <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
                                             </h:commandLink>
-                                            <h:commandLink action="#{Metadaten.endpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
+                                            <h:commandLink id="takeCurrentImage4" action="#{Metadaten.endpage}" title="#{msgs.mets_takeCurrentImage}" styleClass="btn">
                                                 <f:ajax render="pageend2" />
                                                 <i class="fa fa-picture-o" />
                                                 <x:updateActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" />
                                             </h:commandLink>
-                                            <h:commandLink action="#{Metadaten.endpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
+                                            <h:commandLink id="takeNextImage4" action="#{Metadaten.endpage}" title="#{msgs.mets_takeNextImage}" styleClass="btn2" style="margin-left:4px;vertical-align:middle;">
                                                 <f:ajax render="pageend2" />
                                                 <i class="fa fa-angle-right" />
                                                 <x:updateActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" />
@@ -490,7 +481,7 @@
                                         </div>
                                     </div>
                                     <div class="pull-right margin-top-10">
-                                        <h:commandLink action="#{Metadaten.setPages}" styleClass="btn btn-lightgrey font-size-s" onclick="setScrollPosition();">
+                                        <h:commandLink  id="setPages2" action="#{Metadaten.setPages}" styleClass="btn btn-lightgrey font-size-s" onclick="setScrollPosition();">
                                             <h:outputText value="#{msgs.seitenZuweisen}" />
                                             <f:ajax render="pageallocation" />
                                         </h:commandLink>
@@ -505,7 +496,7 @@
                                     <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
                                         <div class="col-sm-5">
                                             <h:outputText value="#{msgs.alleSeiten}" />
-                                            <x:selectManyListbox value="#{Metadaten.alleSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
+                                            <x:selectManyListbox id="selectPages" value="#{Metadaten.alleSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
                                                 <f:selectItems value="#{Metadaten.alleSeiten}" />
                                             </x:selectManyListbox>
                                         </div>
@@ -521,7 +512,7 @@
                                         </div>
                                         <div class="col-sm-5">
                                             <h:outputText value="#{msgs.zugehoerigeSeiten}" />
-                                            <x:selectManyListbox value="#{Metadaten.structSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
+                                            <x:selectManyListbox id="selectPages2" value="#{Metadaten.structSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
                                                 <f:selectItems value="#{Metadaten.structSeiten}" />
                                             </x:selectManyListbox>
                                         </div>
@@ -540,7 +531,7 @@
                                             </h:selectOneMenu>
                                         </div>
                                         <div class="col-sm-1">
-                                            <h:commandLink styleClass="btn" action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
+                                            <h:commandLink id="showFirst" styleClass="btn" action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
                                                 <i class="fa fa-eye" />
                                             </h:commandLink>
                                         </div>
@@ -557,7 +548,7 @@
                                             </h:selectOneMenu>
                                         </div>
                                         <div class="col-sm-1">
-                                            <h:commandLink styleClass="btn" action="#{Metadaten.BildLetzteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
+                                            <h:commandLink id="showLast" styleClass="btn" action="#{Metadaten.BildLetzteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
                                                 <i class="fa fa-eye" />
                                             </h:commandLink>
                                         </div>
@@ -567,10 +558,10 @@
                                         <div class="col-sm-9">
 
                                             <div class="pull-right">
-                                                <h:commandLink action="#{Metadaten.SeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" onclick="setScrollPosition();">
+                                                <h:commandLink id="SeitenStartUndEndeSetzen" action="#{Metadaten.SeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" onclick="setScrollPosition();">
                                                     <h:outputText value="#{msgs.seitenZuweisen}" />
                                                 </h:commandLink>
-                                                <h:commandLink action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==true}" onclick="setScrollPosition();">
+                                                <h:commandLink id="showpagesasajax" action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==true}" onclick="setScrollPosition();">
                                                     <h:outputText value="#{msgs.seitenZuweisen}" />
                                                 </h:commandLink>
                                             </div>
@@ -653,7 +644,7 @@
                                     <i class="fa fa-file-o" />
                                 </h:panelGroup>
 
-                                <h:commandLink styleClass="document" action="#{Metadaten.KnotenVerschieben}" rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
+                                <h:commandLink id="moveNode" styleClass="document" action="#{Metadaten.KnotenVerschieben}" rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
 
 
                                     <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" />
@@ -705,7 +696,7 @@
 
                         <hr style="margin: 7px" />
 
-                        <h:commandLink styleClass="btn pull-right margin-right-10 font-size-s" immediate="true" action="#{NavigationForm.Reload}" onclick="setScrollPosition();">
+                        <h:commandLink id="cancelMove" styleClass="btn pull-right margin-right-10 font-size-s" immediate="true" action="#{NavigationForm.Reload}" onclick="setScrollPosition();">
                             <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
                             <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
                         </h:commandLink>
@@ -747,7 +738,7 @@
                                     <label class="control-label">#{msgs.title}:</label>
                                 </div>
                                 <div class="col-sm-9 margin-top-5">
-                                    <x:inputText value="#{Metadaten.filterProcessTitle}" styleClass="form-control" />
+                                    <x:inputText id="filterProcessTitle" value="#{Metadaten.filterProcessTitle}" styleClass="form-control" />
                                 </div>
                             </div>
 
@@ -756,7 +747,7 @@
                                 <h:outputText value="#{msgs.findProcess}" />
                             </h:commandLink>
 
-                            <h:commandLink styleClass="btn pull-right margin-right-10 margin-top-5 font-size-s margin-bottom-5" action="#{NavigationForm.Reload}" title="#{msgs.verschiebenAbbrechen}" onclick="setScrollPosition();">
+                            <h:commandLink id="cancelMove2" styleClass="btn pull-right margin-right-10 margin-top-5 font-size-s margin-bottom-5" action="#{NavigationForm.Reload}" title="#{msgs.verschiebenAbbrechen}" onclick="setScrollPosition();">
                                 <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
                                 <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                 <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
@@ -776,7 +767,7 @@
                                             <i class="fa fa-file-o" />
                                         </h:panelGroup>
 
-                                        <h:commandLink styleClass="document" action="#{Metadaten.updateAllSubNodes}" rendered="#{item.node.einfuegenErlaubt}" onclick="setScrollPosition();">
+                                        <h:commandLink id="updateSubNodes" styleClass="document" action="#{Metadaten.updateAllSubNodes}" rendered="#{item.node.einfuegenErlaubt}" onclick="setScrollPosition();">
 
 
                                             <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="#{item.node.selected?'color:red;':''}" />
@@ -862,7 +853,7 @@
                                         <i class="fa fa-file-o" />
                                     </h:panelGroup>
 
-                                    <h:commandLink styleClass="document" action="#{Metadaten.importFilteredProcessStruct}" rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
+                                    <h:commandLink id="importFilteredProcessStruct" styleClass="document" action="#{Metadaten.importFilteredProcessStruct}" rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
 
                                         <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" style="#{item.node.selected?'color:red;':''}" />
 
@@ -917,7 +908,7 @@
                             <div class="form-actions">
 
                                 <!-- Cancel -->
-                                <h:commandLink styleClass="btn margin-sides-10 pull-right font-size-s margin-bottom-5" action="#{NavigationForm.Reload}" value="#{msgs.abbrechen}" onclick="setScrollPosition();">
+                                <h:commandLink id="cancelImport" styleClass="btn margin-sides-10 pull-right font-size-s margin-bottom-5" action="#{NavigationForm.Reload}" value="#{msgs.abbrechen}" onclick="setScrollPosition();">
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                     <x:updateActionListener property="#{Metadaten.displayInsertion}" value="false" />
                                 </h:commandLink>

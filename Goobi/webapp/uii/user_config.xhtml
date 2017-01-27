@@ -6,6 +6,7 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzerkonfiguration}" />
@@ -148,6 +149,29 @@
 										<h:outputText styleClass="help-block font-light"
 											rendered="#{NavigationForm.showHelp}"
 											value="#{msgs.helpUsergroups}" />
+									</div>
+								</div>
+								
+								<div class="form-group" style="">
+									<h:outputLabel for="ug" styleClass="control-label col-sm-3"
+										value="#{msgs.usergroup_assignedRoles}" />
+									<div class="col-sm-9">
+										
+										<ui:repeat var="role" value="#{LoginForm.myBenutzer.allUserRoles}" varStatus="row">
+			                            	<h:outputText value="#{role}" 
+			                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+			                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+			                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
+			                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+			                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
+			                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
+			                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
+			                            		'badge-light-greengrey'}" />
+			                            </ui:repeat>
+										
+										<h:outputText styleClass="help-block font-light"
+											rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpUserRoles}" />
 									</div>
 								</div>
 

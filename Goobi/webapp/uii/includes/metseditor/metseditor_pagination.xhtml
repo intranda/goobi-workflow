@@ -18,7 +18,7 @@ xmlns:p="http://primefaces.org/ui">
                             <h:outputText value="#{msgs.auswahlDerSeiten}" />
                         </h3>
                         <div class="actions">
-                            <h:commandLink styleClass="btn content-refresh" action="#{Metadaten.createPagination}" title="#{msgs.paginierungEinlesen}" onclick="setScrollPosition();">
+                            <h:commandLink id="readPagination" styleClass="btn content-refresh" action="#{Metadaten.createPagination}" title="#{msgs.paginierungEinlesen}" onclick="setScrollPosition();">
                                 <i class="fa fa-refresh"></i>
                             </h:commandLink>
                         </div>
@@ -55,31 +55,31 @@ xmlns:p="http://primefaces.org/ui">
                                 </a>
                                 <ul class="dropdown-menu dropdown">
                                     <li>
-                                        <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlung}">
+                                        <h:commandLink id="seitenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlung}">
                                             <h:outputText value="1 - #{msgs.seitenzaehlung}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="1" />
                                         </h:commandLink>
                                     </li>
                                     <li>
-                                        <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.spaltenzaehlung}" onclick="setScrollPosition();">
+                                        <h:commandLink id="spaltenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.spaltenzaehlung}" onclick="setScrollPosition();">
                                             <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="2" />
                                         </h:commandLink>
                                     </li>
                                     <li>
-                                        <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlung}" onclick="setScrollPosition();">
+                                        <h:commandLink id="blattzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlung}" onclick="setScrollPosition();">
                                             <h:outputText value="3 - #{msgs.blattzaehlung}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="3" />
                                         </h:commandLink>
                                     </li>
                                     <li>
-                                        <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlungrectoverso}" onclick="setScrollPosition();">
+                                        <h:commandLink id="blattzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlungrectoverso}" onclick="setScrollPosition();">
                                             <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="4" />
                                         </h:commandLink>
                                     </li>
                                     <li>
-                                        <h:commandLink action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlungrectoverso}" onclick="setScrollPosition();">
+                                        <h:commandLink id="seitenzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlungrectoverso}" onclick="setScrollPosition();">
                                             <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="5" />
                                         </h:commandLink>
@@ -103,7 +103,7 @@ xmlns:p="http://primefaces.org/ui">
 
 						<div id="paginationInputFields" class="row" style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
 							<div class="col-sm-4 padding-right-less">
-		                        <x:inputText styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationPrefix}">
+		                        <x:inputText id="paginationPrefix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationPrefix}">
 		                        	<f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}" />
 		                        </x:inputText>
 							</div>
@@ -114,7 +114,7 @@ xmlns:p="http://primefaces.org/ui">
 							</div>
 	
 	                        <div class="col-sm-4 padding-left-less">
-								<x:inputText styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationSuffix}">
+								<x:inputText id="paginationSuffix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationSuffix}">
 		                                       <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}" />
 		                        </x:inputText>
 							</div>
@@ -127,7 +127,7 @@ xmlns:p="http://primefaces.org/ui">
 
                         <ul class="action-ul">
                             <li class="action-li">
-                                <h:commandLink action="#{Metadaten.Paginierung}">
+                                <h:commandLink id="paginationSelection" action="#{Metadaten.Paginierung}">
                                     <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
                                     <h:outputText value="#{msgs.nurDieMarkiertenSeiten}" />
                                     <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
@@ -135,7 +135,7 @@ xmlns:p="http://primefaces.org/ui">
                                 </h:commandLink>
                             </li>
                             <li class="action-li">
-                                <h:commandLink action="#{Metadaten.Paginierung}">
+                                <h:commandLink id="paginationAll" action="#{Metadaten.Paginierung}">
                                     <span class="btn margin-right-10 fa fa-files-o fa-lg width-40" />
                                     <h:outputText value="#{msgs.abDerErstenMarkiertenSeite}" />
                                     <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
@@ -162,46 +162,46 @@ xmlns:p="http://primefaces.org/ui">
                             <ul class="action-ul">
 
                                 <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('up', 1)}">
+                                    <h:commandLink id="moveUp1" action="#{Metadaten.moveSelectedPages('up', 1)}">
                                         <span class="btn margin-right-10 fa fa-chevron-up fa-lg width-40" />
                                         <h:outputText value="#{msgs.moveSeltectedPagesUp}" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('up', 100)}" styleClass="margin-right-10 pull-right">
+                                    <h:commandLink id="moveUp100" action="#{Metadaten.moveSelectedPages('up', 100)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="100" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('up', 50)}" styleClass="margin-right-10 pull-right">
+                                    <h:commandLink id="moveUp50" action="#{Metadaten.moveSelectedPages('up', 50)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="50" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('up', 10)}" styleClass="margin-right-10 pull-right">
+                                    <h:commandLink id="moveUp10" action="#{Metadaten.moveSelectedPages('up', 10)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="10" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
                                 </li>
 
                                 <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('down', 1)}">
+                                    <h:commandLink id="moveDown1" action="#{Metadaten.moveSelectedPages('down', 1)}">
                                         <span class="btn margin-right-10 fa fa-chevron-down fa-lg width-40" />
                                         <h:outputText value="#{msgs.moveSeltectedPagesDown}" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('down', 100)}" styleClass="margin-right-10 pull-right">
+                                    <h:commandLink id="moveDown100" action="#{Metadaten.moveSelectedPages('down', 100)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="100" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('down', 50)}" styleClass="margin-right-10 pull-right">
+                                    <h:commandLink id="moveDown50" action="#{Metadaten.moveSelectedPages('down', 50)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="50" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.moveSelectedPages('down', 10)}" styleClass="margin-right-10 pull-right">
+                                    <h:commandLink id="moveDown10" action="#{Metadaten.moveSelectedPages('down', 10)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="10" />
                                         <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
                                     </h:commandLink>
                                 </li>
                                 <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.deleteSeltectedPages}"
+                                    <h:commandLink id="deletePages" action="#{Metadaten.deleteSeltectedPages}"
                                         onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                         <span class="btn margin-right-10 fa fa-trash-o fa-lg width-40" />
                                         <h:outputText value="#{msgs.deleteSeltectedPages}" />
@@ -210,7 +210,7 @@ xmlns:p="http://primefaces.org/ui">
 
                                 </li>
                                 <li class="action-li">
-                                    <h:commandLink action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
+                                    <h:commandLink id="reOrder" action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
                                         <span class="btn margin-right-10 fa fa-refresh fa-lg width-40" />
                                         <h:outputText value="#{msgs.reOrder}" />
                                         <f:ajax execute="@form" render=":progressform :messages" />

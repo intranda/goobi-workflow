@@ -13,7 +13,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form id="myform" rendered="#{LoginForm.maximaleBerechtigung == 1}">
+		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Dockets')}">
 
 			<div class="row">
 				<div class="col-sm-12">
@@ -70,7 +70,7 @@
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->
-									<intranda:tablePaginator id="dockets" paginator="#{DocketForm.paginator}" />
+									<intranda:tablePaginator id="docket" paginator="#{DocketForm.paginator}" />
 									<!-- /paginator -->
 								</div>
 							</div>

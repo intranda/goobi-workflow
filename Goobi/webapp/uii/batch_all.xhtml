@@ -17,7 +17,7 @@
 	<ui:define name="content">
 
 		<h:form id="myform"
-			rendered="#{((LoginForm.maximaleBerechtigung == 1) || (LoginForm.maximaleBerechtigung == 2))}">
+			rendered="#{LoginForm.hasRole('Workflow_Batches')}">
 
 			<div class="row">
 				<div class="col-sm-6">

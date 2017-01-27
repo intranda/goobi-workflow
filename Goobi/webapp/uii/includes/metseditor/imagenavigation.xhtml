@@ -36,14 +36,14 @@
                     <!-- wenn Bild groesser als 3 dann vorvorherige Seiten -->
                     <h:panelGroup rendered="#{Metadaten.imageIndex gt 1}">
                         <!-- vorvorheriges Bild -->
-                        <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex - 1}">
+                        <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex - 1}" id="previosPages">
                             <f:ajax execute="@form" render="@form :bigimage" />
                             <x:updateActionListener value="#{Metadaten.imageIndex - 2}" property="#{Metadaten.imageIndex}" />
                         </h:commandLink>
                     </h:panelGroup>
 
                     <!-- vorheriges Bild -->
-                    <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex}">
+                    <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex}" id="prevPage">
                         <f:ajax execute="@form" render="@form :bigimage" />
                         <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
                     </h:commandLink>
@@ -59,7 +59,7 @@
                 <h:panelGroup rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -1)}">
 
                     <!-- naechste Seite -->
-                    <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex + 2}">
+                    <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex + 2}" id="nextPage1">
                         <f:ajax execute="@form" render="@form :bigimage" />
                         <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
                     </h:commandLink>
@@ -67,7 +67,7 @@
                     <h:panelGroup rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -2)}">
 
                         <!-- Uebernaechste Seite -->
-                        <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex + 3}">
+                        <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex + 3}" id="afterNextPage">
                             <f:ajax execute="@form" render="@form :bigimage" />
                             <x:updateActionListener value="#{Metadaten.imageIndex + 2}" property="#{Metadaten.imageIndex}" />
                         </h:commandLink>

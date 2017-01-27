@@ -43,6 +43,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
@@ -65,7 +66,8 @@ public class LoginBean {
     private String passwortAendernAlt;
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
-
+    private List<String> roles;
+    
     public String Ausloggen() {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
@@ -125,6 +127,7 @@ public class LoginBean {
                         temp.sessionBenutzerAktualisieren(mySession, b);
                         this.myBenutzer = b;
                         this.myBenutzer.lazyLoad();
+                        roles = myBenutzer.getAllUserRoles();
                     } else {
                         this.schonEingeloggt = true;
                         this.tempBenutzer = b;
@@ -151,6 +154,7 @@ public class LoginBean {
         temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
         this.schonEingeloggt = false;
+        roles = myBenutzer.getAllUserRoles();
         return "";
     }
 
@@ -166,7 +170,7 @@ public class LoginBean {
     }
 
     public String EinloggenAls() {
-        if (getMaximaleBerechtigung() != 1) {
+        if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
             return "index";
         }
         this.myBenutzer = null;
@@ -177,6 +181,7 @@ public class LoginBean {
             SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
             temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
+            roles = myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
@@ -342,5 +347,9 @@ public class LoginBean {
 
     public boolean isSchonEingeloggt() {
         return this.schonEingeloggt;
+    }
+    
+    public boolean hasRole(String inRole){
+    	return roles.contains(inRole);
     }
 }

@@ -53,7 +53,8 @@
 					                                	</h:panelGroup>
 					                                </h:panelGroup>
 												</td>
-												<td><h:commandLink action="process_edit" title="#{msgs.bearbeiten}" id="editProperty">
+												<c:if test="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+													<td><h:commandLink action="process_edit" title="#{msgs.bearbeiten}" id="editProperty">
 														<i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}"
@@ -69,6 +70,7 @@
 															value="#{proc}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
 													</h:commandLink></td>
+												</c:if>
 											</tr>
 										</h:panelGroup>
 									</x:dataList>
@@ -105,7 +107,7 @@
 												<h:panelGroup rendered="#{propInd == 0}" id="cont">
 													<td rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
 														<!-- edit container --> 
-														<h:commandLink action="process_edit"
+														<h:commandLink action="process_edit" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}"
 															title="#{msgs.bearbeiten}" id="editProperty2">
 															<i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
 															<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -115,7 +117,7 @@
 																value="eigenschaft" />
 														</h:commandLink> 
 														<!-- duplicate container --> 
-														<h:commandLink id="duplicateProperty2"
+														<h:commandLink id="duplicateProperty2" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}"
 															action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
 															<i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
 															<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -132,7 +134,7 @@
 							</table>
 							<div class="dataTables_info">
 								<!-- Neu-Schaltknopf -->
-								<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}" id="newProperty"
+								<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}" id="newProperty" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}"
 									title="#{msgs.eigenschaftHinzufuegen}" styleClass="btn btn-lightgrey font-size-s">
 									<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}"

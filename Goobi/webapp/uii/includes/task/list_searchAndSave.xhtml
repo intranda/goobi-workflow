@@ -32,7 +32,7 @@
 					</a> 
 					<!-- Filter Liste -->
 					<ul class="dropdown-menu">
-						<ui:repeat var="fil" value="#{Form.user.filters}">
+						<ui:repeat var="fil" value="#{Form.user.filters}" id="fil">
 							<li>
 								<h:commandLink id="currentFilter" action="#{Form.FilterAlleStart}">
 									<h:outputText value="#{fil}" />

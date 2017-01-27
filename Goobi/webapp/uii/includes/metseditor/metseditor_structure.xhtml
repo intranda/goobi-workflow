@@ -16,28 +16,28 @@
             </h:commandLink>
 
             <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
-            <h:commandLink action="#{Metadaten.BildBlaettern}" title="#{msgs.verlinkungDesBildesMitStrukturelement}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:5px;padding-left: 5px;padding-right: 5px;">
+            <h:commandLink id="linkImage" action="#{Metadaten.BildBlaettern}" title="#{msgs.verlinkungDesBildesMitStrukturelement}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:5px;padding-left: 5px;padding-right: 5px;">
                 <i class="#{Metadaten.bildZuStrukturelement?'fa fa-chain':'fa fa-chain-broken font-light'} fa-lg btn " />
                 <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                 <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}" />
                 <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform :imagenavigation" />
             </h:commandLink>
             
-            <h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:30px;padding-left: 5px;padding-right: 5px;"
+            <h:commandLink id="showtitle" styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:30px;padding-left: 5px;padding-right: 5px;"
 				title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
 				<i class="#{Metadaten.treeProperties.showtitle?'':'font-light'} fa fa-list fa-lg btn" />
 				<x:updateActionListener value="#{Metadaten.treeProperties.showtitle?false:true}"
 					property="#{Metadaten.treeProperties.showtitle}" />
 			</h:commandLink>
 
-            <h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:55px;padding-left: 5px;padding-right: 5px;"
+            <h:commandLink id="showfirstpagenumber" styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:55px;padding-left: 5px;padding-right: 5px;"
 				title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
 				<i class="#{Metadaten.treeProperties.showfirstpagenumber?'':'font-light'} fa fa-exchange fa-lg btn" />
 				<x:updateActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
 					property="#{Metadaten.treeProperties.showfirstpagenumber}" />
 			</h:commandLink>
 			
-            <h:commandLink onclick="printpage()"  style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:80px;padding-left: 5px;padding-right: 5px;" title="#{msgs.mets_printThisPage}">
+            <h:commandLink id="printpage" onclick="printpage()"  style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:80px;padding-left: 5px;padding-right: 5px;" title="#{msgs.mets_printThisPage}">
                 <i class="fa fa-print fa-lg btn font-light" />
                 <f:ajax render="@this"></f:ajax>
             </h:commandLink>
@@ -47,7 +47,7 @@
                 <h:column>
                     <h:outputText value="&amp;nbsp;" escape="false" rendered="#{not item.node.hasChildren}" style="margin-left:#{item.niveau * 12}px;margin-right:9px;" />
 
-                    <h:commandLink action="#{NavigationForm.Reload}" style="margin-left:#{item.niveau * 12}px;#{item.node.expanded?'margin-right:3px;':'margin-right:7px;'}" styleClass="font-light" rendered="#{item.node.hasChildren}">
+                    <h:commandLink id="expand" action="#{NavigationForm.Reload}" style="margin-left:#{item.niveau * 12}px;#{item.node.expanded?'margin-right:3px;':'margin-right:7px;'}" styleClass="font-light" rendered="#{item.node.hasChildren}">
 
                         <i class="#{item.node.expanded?'fa fa-caret-down fa-lg':'fa fa-caret-right fa-lg'}" />
                         <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />

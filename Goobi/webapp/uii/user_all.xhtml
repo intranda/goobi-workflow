@@ -19,7 +19,7 @@
 
 	<ui:define name="content">
 		<!-- 		<h:form id="myform" > -->
-		<h:panelGroup rendered="#{LoginForm.maximaleBerechtigung == 1}">
+		<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Users')}">
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
@@ -162,7 +162,7 @@
 											</h:commandLink>
 
 											<!-- Benutzerprofil laden-Schaltknopf -->
-											<h:commandLink id="switch"
+											<h:commandLink id="switch" rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
 												styleClass="btn margin-right-5 hidden-xs"
 												action="#{LoginForm.EinloggenAls}"
 												title="#{msgs.benutzerprofilLaden}">

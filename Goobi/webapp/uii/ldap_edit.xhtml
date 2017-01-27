@@ -25,8 +25,7 @@
 		</script>
 		<h:form id="myform" styleClass="form-horizontal form-bordered"
 			onkeypress="submitOnEnter(event);"
-			rendered="#{LoginForm.maximaleBerechtigung == 1}">											
-											
+			rendered="#{LoginForm.hasRole('Admin_Ldap')}">											
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="box box-color orange box-bordered">

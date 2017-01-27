@@ -1,5 +1,9 @@
 package org.goobi.managedbeans;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,6 +35,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -41,7 +46,8 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 public class UsergroupBean extends BasicBean {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
-
+    private String tempRole;
+    
     public String Neu() {
         this.myBenutzergruppe = new Usergroup();
         return "usergroup_edit";
@@ -77,6 +83,26 @@ public class UsergroupBean extends BasicBean {
         return FilterKein();
     }
 
+    public String getTempRole() {
+		return tempRole;
+	}
+    
+    public void setTempRole(String tempRole) {
+		this.tempRole = tempRole;
+	}
+    
+    public String addRole(){
+    	myBenutzergruppe.addUserRole(tempRole);
+    	tempRole = "";
+    	return "";
+    }
+
+    public String removeRole(){
+    	myBenutzergruppe.removeUserRole(tempRole);
+    	tempRole = "";
+    	return "";
+    }
+    
     public String FilterKein() {
         UsergroupManager m = new UsergroupManager();
         paginator = new DatabasePaginator(sortierung, filter, m, "usergroup_all");
@@ -96,4 +122,15 @@ public class UsergroupBean extends BasicBean {
         this.myBenutzergruppe = myBenutzergruppe;
     }
 
+    public List<String> getAllAvailableRoles(){
+    	List<String> myroles = new ArrayList<String>();
+    	for (String role : UserRole.getAllRoles()) {
+			if (!myBenutzergruppe.getUserRoles().contains(role)){
+				myroles.add(role);
+			}
+		}
+    	return myroles;
+    }
+
+	
 }

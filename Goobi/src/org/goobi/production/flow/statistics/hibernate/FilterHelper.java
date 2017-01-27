@@ -36,6 +36,7 @@ import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
@@ -72,7 +73,7 @@ public class FilterHelper {
         }
 
         if (aktuellerNutzer != null) {
-            if (loginForm.getMaximaleBerechtigung() > 1) {
+            if (!loginForm.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
                 answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
                         .getId() + ")";
 

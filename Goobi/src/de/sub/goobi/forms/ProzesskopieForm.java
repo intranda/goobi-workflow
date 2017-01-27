@@ -62,6 +62,7 @@ import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
+import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
@@ -304,7 +305,7 @@ public class ProzesskopieForm {
             /*
              * wenn die maximale Berechtigung nicht Admin ist, dann nur bestimmte
              */
-            if (loginForm.getMaximaleBerechtigung() > 1) {
+            if (!loginForm.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
 
                 filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
                         .getId() + ")";

@@ -19,21 +19,21 @@
 
             <!-- ++++++++++++++++++ First name ++++++++++++++++++ -->
             <div class="col-sm-8 nopadding">
-                <x:inputText styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
+                <x:inputText id="firstname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
             </div>
 
             <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
             <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
-                <h:commandLink tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
+                <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
                     <i class="fa fa-copy" />
                     <f:param name="ID" value="#{cc.attrs.person.identifier}" />
                     <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
                     <f:ajax execute="@form" render="@form" />
                 </h:commandLink>
 
-                <h:commandLink tabindex="-1" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}" rendered="#{cc.attrs.renderDelete == 'true'}">
+                <h:commandLink  id="delete" tabindex="-1" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}" rendered="#{cc.attrs.renderDelete == 'true'}">
                     <i class="fa fa-trash-o" style="margin-left: 3px" />
                     <f:param name="ID" value="#{cc.attrs.person.identifier}" />
                     <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
@@ -55,7 +55,7 @@
         <div class="row margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.nachname}" />
             <div class="col-sm-8 nopadding">
-                <x:inputText styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
+                <x:inputText id="lastname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
             </div>
@@ -65,7 +65,7 @@
         <div class="row margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.rolle}" />
             <div class="col-sm-8 nopadding">
-                <h:selectOneMenu value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
+                <h:selectOneMenu id="role" value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.person.addableRollen}" />
                 </h:selectOneMenu>
@@ -79,13 +79,13 @@
                 <h:panelGroup styleClass="col-sm-8 nopadding">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h:selectOneMenu value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                            <h:selectOneMenu id="normDatabase" value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                 <f:ajax execute="@form" event="valueChange" />
                                 <f:selectItems value="#{cc.attrs.person.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-sm-6">
-                            <h:inputText value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="normdataValue" value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>
@@ -103,13 +103,13 @@
                 <div class="col-sm-8 nopadding">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h:selectOneMenu value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                            <h:selectOneMenu id="namepartType" value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                 <f:ajax execute="@form" event="valueChange" render="@form" />
                                 <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-sm-6">
-                            <h:inputText value="#{part.value}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="namepartValue" value="#{part.value}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" render="@form" />
                             </h:inputText>
                         </div>
@@ -119,7 +119,7 @@
 
         </x:dataList>
 
-        <h:commandLink style="display:block;margin-top:10px;" rendered="#{cc.attrs.person.additionalParts}" action="#{cc.attrs.person.addNamePart}" value="#{msgs.addNamePart}" title="#{msgs.addNamePart}" label="#{msgs.addNamePart}" />
+        <h:commandLink id="addNamePart" style="display:block;margin-top:10px;" rendered="#{cc.attrs.person.additionalParts}" action="#{cc.attrs.person.addNamePart}" value="#{msgs.addNamePart}" title="#{msgs.addNamePart}" label="#{msgs.addNamePart}" />
 
     </composite:implementation>
 

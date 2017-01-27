@@ -176,10 +176,28 @@ label {
 }
 
 /* ------------- Borders --------------- */
+.border-top-light {
+    border-top: 1px solid #ddd !important;
+}
+
 .border-bottom-light {
     border-bottom: 1px solid #ddd !important;
 }
+
+.border-right-light {
+    border-right: 1px solid #ddd !important;
+}
+
+.border-left-light {
+    border-left: 1px solid #ddd !important;
+}
+
 /* ------------- Margins --------------- */
+.padding-sides-no {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
 .padding-right-no {
     padding-right: 0px;
 }
@@ -644,6 +662,10 @@ dropdown-menu>li>a {
 }
 
 /* ------------- badges and labels --------------- */
+.badge-no-radius {
+	border-radius: 0px;
+}
+	
 .label-intranda-ultralight, .badge-intranda-ultralight {
     background-color: #bbbbbb;
     font-weight: normal;
@@ -657,15 +679,119 @@ dropdown-menu>li>a {
 
 .label-intranda-red, .badge-intranda-red {
     background-color: #E51400;
+    font-weight: normal;
+    margin: 3px;
 }
 
 .label-intranda-orange, .badge-intranda-orange {
     background-color: #F8A31F;
+    font-weight: normal;
+    margin: 3px;
 }
 
 .label-intranda-green, .badge-intranda-green {
     background-color: #56AF45;
+    font-weight: normal;
+    margin: 3px;
 }
+
+.label-intranda-blue, .badge-intranda-blue {
+    background-color: #368EE0;
+    font-weight: normal;
+    margin: 3px;
+}
+
+.label-light-red, .badge-light-red {
+    background-color: white;
+    border:1px solid #E51400;
+    font-weight: normal;
+    color: #E51400;
+    margin: 3px;
+}
+
+.label-light-blue, .badge-light-blue {
+    background-color: white;
+    border:1px solid #368EE0;
+    font-weight: normal;
+    color: #368EE0;
+    margin: 3px;
+}
+
+.label-light-green, .badge-light-green {
+    background-color: white;
+    border:1px solid #56AF45;
+    font-weight: normal;
+    color: #56AF45;
+    margin: 3px;
+}
+
+.label-light-orange, .badge-light-orange {
+    background-color: white;
+    border:1px solid #F8A31F;
+    font-weight: normal;
+    color: #F8A31F;
+    margin: 3px;
+}
+
+.label-light-purple, .badge-light-purple {
+    background-color: white;
+    border:1px solid #8947CC;
+    font-weight: normal;
+    color: #8947CC;
+    margin: 3px;
+}
+
+.label-light-lila, .badge-light-lila {
+    background-color: white;
+    border:1px solid #500899;
+    font-weight: normal;
+    color: #500899;
+    margin: 3px;
+}
+
+.label-light-greengrey, .badge-light-greengrey {
+    background-color: white;
+    border:1px solid #617F7D;
+    font-weight: normal;
+    color: #617F7D;
+    margin: 3px;
+}
+
+.label-light-green2, .badge-light-green2 {
+    background-color: white;
+    border:1px solid #3B7F7B;
+    font-weight: normal;
+    color: #3B7F7B;
+    margin: 3px;
+}
+
+.label-light-brown1, .badge-light-brown1 {
+    background-color: white;
+    border:1px solid #3E2115;
+    font-weight: normal;
+    color: #3E2115;
+    margin: 3px;
+}
+
+.label-light-brown2, .badge-light-brown2 {
+    background-color: white;
+    border:1px solid #74422B;
+    font-weight: normal;
+    color: #74422B;
+    margin: 3px;
+}
+
+a.badge:hover,
+a.badge:focus {
+	color: black;
+  	text-decoration: none;
+  	cursor: pointer;
+}
+
+
+
+
+
 
 .pointer {
     cursor: pointer;
@@ -819,6 +945,24 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     width: 30px;
     height: 30px;
     line-height: 20px;
+}
+
+
+/* ------------- METS-Editor OCR --------------- */
+.metseditorOcr {
+	display:block;
+	background-color: #ffffff; 
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #CCCCCC; 
+	margin-bottom: 15px; 
+	padding: 5px;
+}
+.metseditorOcrCaption {
+	font-size: 16px;
+	font-weight: 400;
+	display: block;
+	margin-bottom:10px;
 }
 
 /* ------------- METS-Editor Popup --------------- */
@@ -1340,26 +1484,31 @@ ul>li.yellow, .label-yellow {
     
 }
 
-.log_error {
+/* ------------- PROCESS LOG --------------- */
+
+.log_color_error {
     color: #FF0000;
 }
 
-.log_warn {
+.log_color_warn {
     color: #FF6600;
 }
 
-.log_info {
+.log_color_info {
     color: #0033CC;
 }
 
-.log_debug {
+.log_color_debug {
     color: #CCCCCC;
 }
 
-.log_user {
+.log_color_user {
     color: #006600;
 }
 
+.log_table_column_date {
+	min-width:140px;
+}
 
 
 @media only print {

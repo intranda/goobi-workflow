@@ -20,7 +20,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form rendered="#{LoginForm.maximaleBerechtigung == 1}">
+		<h:form rendered="#{LoginForm.hasRole('Admin_Menu')}">
 
 			<div class="row">
 				<div class="col-sm-12">

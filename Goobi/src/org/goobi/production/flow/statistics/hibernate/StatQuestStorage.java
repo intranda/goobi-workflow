@@ -113,7 +113,7 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
         List list = ProcessManager.runSQL(natSQL);
 		DataTable dtbl = new DataTable(StatisticsMode.getByClassName(
 				this.getClass()).getTitle() + " "
-				+ Helper.getTranslation("_inGB"));
+				+ Helper.getTranslation("statistics_inGB"));
 
 		DataRow dataRow;
 

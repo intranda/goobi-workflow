@@ -24,10 +24,10 @@
                             <h:outputText value="#{msgs.personen}" />
                         </h3>
                         <div class="actions">
-                            <h:commandLink styleClass="btn btn-mini" action="#{Metadaten.HinzufuegenPerson}" title="#{msgs.neuePersonAnlegen}" rendered="#{Metadaten.sizeOfRoles!=0}" onclick="setScrollPosition();">
+                            <h:commandLink id="addPerson" styleClass="btn btn-mini" action="#{Metadaten.HinzufuegenPerson}" title="#{msgs.neuePersonAnlegen}" rendered="#{Metadaten.sizeOfRoles!=0}" onclick="setScrollPosition();">
                                 <i class="fa fa-plus" />
                             </h:commandLink>
-                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                            <h:commandLink id="struct_toggle1" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                                 <i class="fa #{NavigationForm.uiStatus.mets_edit_person eq 'up'?'fa-angle-down':'fa-angle-up'}" />
                                 <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_edit_person}" value="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?'down':'up'}" />
                                 <f:ajax render="@form" />
@@ -37,8 +37,8 @@
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_person eq 'up'?'none':'block'}">
                         <h:outputText value="#{msgs.mets_no_persons_assigned}" rendered="#{empty Metadaten.myPersonen}" />
 
-                        <x:dataList var="currentPerson" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorPerson person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" index="#{rowIndex}" />
+                        <x:dataList var="currentPerson" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex" id="personList">
+                            <intranda:formMetseditorPerson id="person"  person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" index="#{rowIndex}" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
@@ -57,10 +57,10 @@
                             <h:outputText value="#{msgs.metadaten}" />
                         </h3>
                         <div class="actions">
-                            <h:commandLink styleClass="btn btn-mini" action="#{Metadaten.Hinzufuegen}" title="#{msgs.neuesMetadatumAnlegen}" rendered="#{Metadaten.sizeOfMetadata!=0}">
+                            <h:commandLink id="addMetadata" styleClass="btn btn-mini" action="#{Metadaten.Hinzufuegen}" title="#{msgs.neuesMetadatumAnlegen}" rendered="#{Metadaten.sizeOfMetadata!=0}">
                                 <i class="fa fa-plus" />
                             </h:commandLink>
-                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                            <h:commandLink id="struct_toggle2" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                                 <i class="fa #{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'fa-angle-down':'fa-angle-up'}" />
                                 <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_edit_metadata}" value="#{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'down':'up'}" />
                                 <f:ajax render="@form" />
@@ -70,8 +70,8 @@
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'none':'block'}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
 
-                        <x:dataList var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorMetadata metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
+                        <x:dataList id="metadataList" var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorMetadata id="metadata" metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
@@ -88,10 +88,10 @@
                             <h:outputText value="#{msgs.metadataGroups}" />
                         </h3>
                         <div class="actions">
-                            <h:commandLink styleClass="btn btn-mini" action="#{Metadaten.AddGroup}" title="#{msgs.AddNewGroup}" rendered="#{Metadaten.sizeOfMetadataGroups!=0}">
+                            <h:commandLink id="addGroup" styleClass="btn btn-mini" action="#{Metadaten.AddGroup}" title="#{msgs.AddNewGroup}" rendered="#{Metadaten.sizeOfMetadataGroups!=0}">
                                 <i class="fa fa-plus" />
                             </h:commandLink>
-                            <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                            <h:commandLink id="struct_toggle3" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                                 <i class="fa #{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'fa-angle-down':'fa-angle-up'}" />
                                 <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_edit_metadatagroups}" value="#{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'down':'up'}" />
                                 <f:ajax render="@form" />
@@ -100,36 +100,36 @@
                     </div>
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'none':'block'}">
                         <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}" rendered="#{empty Metadaten.groups}" />
-                        <x:dataList var="Item" value="#{Metadaten.groups}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                        <x:dataList id="groupList" var="Item" value="#{Metadaten.groups}" rowCountVar="rowCount" rowIndexVar="rowIndex">
                             <h5>
                                 <h:outputText value="#{Item.name}" />
                             </h5>
                             <div class="row">
                                 <div class="control-group col-sm-11">
-                                    <x:dataList var="metadata" value="#{Item.metadataList}" rowCountVar="varCount" rowIndexVar="varIndex">
+                                    <x:dataList id="grpMdList" var="metadata" value="#{Item.metadataList}" rowCountVar="varCount" rowIndexVar="varIndex">
                                         <h:panelGroup>
                                             <hr class="margin-top-regular margin-bottom-regular" />
                                         </h:panelGroup>
-                                        <intranda:formMetseditorMetadata metadata="#{metadata}" fieldStyle="form-control" renderDelete="false" renderDuplicate="false" />
+                                        <intranda:formMetseditorMetadata id="grpMetadata" metadata="#{metadata}" fieldStyle="form-control" renderDelete="false" renderDuplicate="false" />
                                     </x:dataList>
 
 
-                                    <x:dataList var="currentPerson" value="#{Item.personList}" rowCountVar="varCount" rowIndexVar="varIndex">
+                                    <x:dataList id="grpPL" var="currentPerson" value="#{Item.personList}" rowCountVar="varCount" rowIndexVar="varIndex">
                                         <h:panelGroup>
                                             <hr class="margin-top-regular margin-bottom-regular" />
                                         </h:panelGroup>
-                                        <intranda:formMetseditorPerson person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" />
+                                        <intranda:formMetseditorPerson id="grpPerson" person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" />
                                     </x:dataList>
 
                                 </div>
                                 <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
-                                    <h:commandLink action="#{Metadaten.CopyGroup}" title="#{msgs.metadatenKopieren}">
+                                    <h:commandLink id="grpduplicate" action="#{Metadaten.CopyGroup}" title="#{msgs.metadatenKopieren}">
                                         <i class="fa fa-copy" />
                                         <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
                                         <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
                                         <f:ajax execute="@form" render="@form" />
                                     </h:commandLink>
-                                    <h:commandLink action="#{Metadaten.deleteGroup}" title="#{msgs.metadatenLoeschen}">
+                                    <h:commandLink id="grpdelete" action="#{Metadaten.deleteGroup}" title="#{msgs.metadatenLoeschen}">
                                         <i class="fa fa-trash-o" style="margin-left: 3px" />
                                         <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
                                         <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
@@ -214,7 +214,7 @@
                                         </h:selectOneMenu>
                                     </div>
                                     <div class="col-sm-6">
-                                        <h:inputText value="#{Metadaten.metadatum.normdataValue}" styleClass="form-control">
+                                        <h:inputText id="normdataValue" value="#{Metadaten.metadatum.normdataValue}" styleClass="form-control">
                                             <f:ajax execute="@form" event="valueChange" />
                                         </h:inputText>
                                     </div>
@@ -242,7 +242,7 @@
                         <hr class="margin-top-regular margin-bottom-regular" />
 
                         <div>
-                            <h:commandLink styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
+                            <h:commandLink id="cancelMetadata" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
                                 <x:updateActionListener value="" property="#{Metadaten.metadatum.value}" />
                             </h:commandLink>
                             <h:commandLink styleClass="btn btn-primary font-size-s pull-right" id="absenden" type="submit" action="#{Metadaten.Speichern}" value="#{msgs.dieAenderungenSpeichern}" />
@@ -304,8 +304,8 @@
                         <hr class="margin-top-regular margin-bottom-regular" />
 
                         <div class="margin-top-regular">
-                            <h:commandLink styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
-                            <h:commandLink styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.SpeichernPerson}" value="#{msgs.dieAenderungenSpeichern}" />
+                            <h:commandLink id="cancelPerson" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
+                            <h:commandLink id="savePerson" styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.SpeichernPerson}" value="#{msgs.dieAenderungenSpeichern}" />
                         </div>
 
                     </div>
@@ -338,7 +338,7 @@
 
 
 
-                        <ui:repeat var="metadata" value="#{Metadaten.selectedGroup.metadataList}" varStatus="status">
+                        <ui:repeat var="metadata" value="#{Metadaten.selectedGroup.metadataList}" varStatus="status" id="metadataListRepeat">
 
                             <h:panelGroup rendered="#{status.first == 'true'}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
@@ -349,12 +349,12 @@
                                     <label class="control-label">#{metadata.typ}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
-                                    <h:inputText value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
-                                    <h:selectManyListbox styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
+                                    <h:inputTextarea id="textarea" value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
+                                    <h:inputText id="text" value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
+                                    <h:selectManyListbox id="selectMany" styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                                     </h:selectManyListbox>
-                                    <h:selectOneMenu styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
+                                    <h:selectOneMenu id="selectOne" styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                                     </h:selectOneMenu>
                                     <h:outputText value="#{metadata.value}" rendered="#{(metadata.outputType == 'readonly')}" styleClass="form-control font-light" />
@@ -363,7 +363,7 @@
 
                         </ui:repeat>
 
-                        <ui:repeat var="person" value="#{Metadaten.selectedGroup.personList}" varStatus="status">
+                        <ui:repeat var="person" value="#{Metadaten.selectedGroup.personList}" varStatus="status" id="personListRepeat">
 
                             <hr class="margin-top-regular margin-bottom-regular" />
 
@@ -401,8 +401,8 @@
                         <hr class="margin-top-regular margin-bottom-regular" />
 
                         <div class="margin-top-regular">
-                            <h:commandLink styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
-                            <h:commandLink styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.saveGroup}" value="#{msgs.dieAenderungenSpeichern}" />
+                            <h:commandLink id="cancelGroup" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
+                            <h:commandLink id="sqaveGroup" styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.saveGroup}" value="#{msgs.dieAenderungenSpeichern}" />
                         </div>
 
                     </div>

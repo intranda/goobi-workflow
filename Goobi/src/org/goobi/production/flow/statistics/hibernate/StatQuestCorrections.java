@@ -121,7 +121,7 @@ public class StatQuestCorrections implements
 		
 		DataTable dtbl = new DataTable(StatisticsMode.getByClassName(
 				this.getClass()).getTitle()
-				+ Helper.getTranslation("_(number)"));
+				+ Helper.getTranslation("statistics_(number)"));
 
 		DataRow dataRow;
 

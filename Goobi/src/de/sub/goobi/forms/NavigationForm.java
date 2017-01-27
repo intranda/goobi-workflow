@@ -1,5 +1,7 @@
 package de.sub.goobi.forms;
 
+import java.util.Collections;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,12 +31,16 @@ package de.sub.goobi.forms;
  */
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -42,18 +48,31 @@ import de.sub.goobi.helper.FacesContextHelper;
 @ManagedBean(name = "NavigationForm")
 @SessionScoped
 public class NavigationForm {
+
+    private List<String> possibleWorkflowPluginNames;
+
+    private String currentWorkflowPluginName;
+
+    private IWorkflowPlugin workflowPlugin;
+
+    public NavigationForm() {
+        possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
+        Collections.sort(possibleWorkflowPluginNames);
+    }
+
     public enum Theme {
         ui("ui"),
-        uii("uii"); 
+        uii("uii");
         private String id;
 
-        private Theme (String id) {
+        private Theme(String id) {
             this.id = id;
         }
+
         public String getId() {
             return id;
         }
-        
+
     };
 
     private String aktuell = "0";
@@ -172,12 +191,41 @@ public class NavigationForm {
         return Theme.ui;
     }
 
-    
     public boolean isShowSecondLogField() {
-      return ConfigurationHelper.getInstance().isShowSecondLogField();
+        return ConfigurationHelper.getInstance().isShowSecondLogField();
     }
-    
+
     public boolean isShowThirdLogField() {
         return ConfigurationHelper.getInstance().isShowThirdLogField();
-      }
+    }
+
+    public String getCurrentWorkflowPluginName() {
+        return currentWorkflowPluginName;
+    }
+
+    public List<String> getPossibleWorkflowPluginNames() {
+        return possibleWorkflowPluginNames;
+    }
+
+    public IWorkflowPlugin getWorkflowPlugin() {
+        return workflowPlugin;
+    }
+
+    public void setCurrentWorkflowPluginName(String currentWorkflowPluginName) {
+        this.currentWorkflowPluginName = currentWorkflowPluginName;
+    }
+
+    public void setPossibleWorkflowPluginNames(List<String> possibleWorkflowPluginNames) {
+        this.possibleWorkflowPluginNames = possibleWorkflowPluginNames;
+    }
+
+    public void setWorkflowPlugin(IWorkflowPlugin workflowPlugin) {
+        this.workflowPlugin = workflowPlugin;
+    }
+
+    public String setPlugin(String pluginName) {
+        currentWorkflowPluginName = pluginName;
+        workflowPlugin = (IWorkflowPlugin) PluginLoader.getPluginByTitle(PluginType.Workflow, currentWorkflowPluginName);
+        return "workflow";
+    }
 }

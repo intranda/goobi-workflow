@@ -40,6 +40,7 @@ import org.goobi.production.plugin.interfaces.IServletPlugin;
 import org.goobi.production.plugin.interfaces.IStatisticPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
+import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 
 public enum PluginType {
 
@@ -54,7 +55,8 @@ public enum PluginType {
     Statistics(9, "statistics", IStatisticPlugin.class),
     Dashboard(10, "dashboard", IDashboardPlugin.class),
     Administration(11, "administration", IAdministrationPlugin.class),
-    Metadata(12, "metadata", IMetadataPlugin.class);
+    Metadata(12, "metadata", IMetadataPlugin.class),
+    Workflow(13, "workflow", IWorkflowPlugin.class);
 
     private int id;
     private String name;

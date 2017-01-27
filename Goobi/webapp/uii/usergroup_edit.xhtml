@@ -5,7 +5,8 @@
 	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<ui:param name="myPageTitle"
 		value="#{BenutzergruppenForm.myBenutzergruppe.id == null?msgs.neueBenutzergruppeAnlegen:msgs.benutzergruppeBearbeiten}" />
@@ -30,11 +31,11 @@
 		</script>
 		<h:form id="myform" styleClass="form-horizontal form-bordered"
 			onkeypress="submitOnEnter(event);"
-			rendered="#{LoginForm.maximaleBerechtigung == 1}">
+			rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
 
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="box box-color box-bordered">
+					<div class="box box-color box-bordered orange">
 						<div class="box-title">
 							<h3>
 								<i class="glyphicon-group box-icon-fix"></i>
@@ -49,23 +50,66 @@
 								help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
 
 							<div class="form-group">
-								<h:outputLabel for="berechtigung" styleClass="control-label col-sm-3"
-									value="#{msgs.berechtigung}" />
+								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3"
+									value="#{msgs.usergroup_userRoles}" />
 								<div class="col-sm-9">
-									<h:selectOneMenu id="berechtigung" styleClass="form-control"
-										value="#{BenutzergruppenForm.myBenutzergruppe.berechtigungAsString}">
-										<f:selectItem itemValue="1" itemLabel="#{msgs.administration}" />
-										<f:selectItem itemValue="2"
-											itemLabel="#{msgs.prozessverwaltung}" />
-										<!--        <f:selectItem id="id18" itemValue="3"
-                                                            itemLabel="#{msgs.erweiterteNutzerBerechtigung}" />-->
-										<f:selectItem itemValue="4"
-											itemLabel="#{msgs.normaleNutzerBerechtigung}" />
-									</h:selectOneMenu>
-									<h:message for="berechtigung" showDetail="true"
+								
+									<h:panelGroup id="rolediv" styleClass="row" style="margin-left:0px;margin-right:0px;">
+										
+										<div class="col-sm-6" style="border-right:0px solid #ccc;padding-right:10px;">
+											<h5>#{msgs.usergroup_assignedRoles}</h5>
+											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
+				                            	<h:commandLink action="#{BenutzergruppenForm.removeRole}"
+				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
+					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+					                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
+					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
+					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
+					                            		'badge-light-greengrey'}" >
+													<h:outputText value="#{role}" />
+													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
+													<i class="fa fa-trash margin-left-5"></i>
+													 <f:ajax render=":myform" />
+												</h:commandLink>
+				                            </ui:repeat>
+										</div>
+										<div class="col-sm-6" style="border-left:1px solid #ccc;padding-left:10px;">
+											<h5>#{msgs.usergroup_availableRoles}</h5>
+											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
+				                            	<h:commandLink action="#{BenutzergruppenForm.addRole}"
+				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
+					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+					                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
+					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
+					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
+					                            		'badge-light-greengrey'}" >
+													<h:outputText value="#{role}" />
+													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
+													<i class="fa fa-plus margin-left-5"></i>
+													<f:ajax render=":myform" />
+												</h:commandLink>
+				                            </ui:repeat>
+										
+											<div class="input-group" style="margin-top:10px;">
+                                      			<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
+                                      			<div class="input-group-addon" style="padding:4px;"  >
+		                                            <h:commandLink tabindex="-1" title="#{msgs.usergroup_addRole}" action="#{BenutzergruppenForm.addRole}" style="margin-right:5px;">
+		                                                <i class="fa fa-plus font-black" style="margin-left: 3px" />
+		                                                
+		                                            </h:commandLink>
+		                                        </div>
+                                  			</div>
+										</div>
+									</h:panelGroup>
+								
+									<h:message for="userRoles" showDetail="true"
 										styleClass="help-inline font-danger" />
 									<h:outputText styleClass="help-block font-light"
-										value="#{msgs.helpBerechtigung}" rendered="#{NavigationForm.showHelp}"/>
+										value="#{msgs.helpUserRoles}" rendered="#{NavigationForm.showHelp}"/>
 								</div>
 							</div>
 
