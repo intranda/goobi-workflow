@@ -58,6 +58,7 @@ import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
+import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
@@ -267,7 +268,7 @@ public class StepBean extends BasicBean {
         mySchritt = StepManager.getStepById(mySchritt.getId());
         mySchritt.lazyLoad();
 
-        if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.OPEN) {
+        if (!(this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.OPEN || this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.ERROR)) {
             Helper.setFehlerMeldung("stepInWorkError");
             //					this.flagWait = false;
             return "";
@@ -1478,7 +1479,12 @@ public class StepBean extends BasicBean {
         if (mySchritt.getStepPlugin() != null && mySchritt.getStepPlugin().length() > 0) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
             isp.initialize(mySchritt, "");
-            isp.execute();
+            if (isp instanceof IStepPluginVersion2) {
+                IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
+                 plugin.run();
+            } else {
+                isp.execute();
+            }
         }
         return "";
     }

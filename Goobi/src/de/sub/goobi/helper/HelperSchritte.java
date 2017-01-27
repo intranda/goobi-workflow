@@ -54,10 +54,9 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.AutomaticDmsExport;
@@ -160,7 +159,7 @@ public class HelperSchritte {
         List<Step> allehoeherenSchritte = new ArrayList<Step>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge() && !so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) && so
+            if (so.getReihenfolge() == currentStep.getReihenfolge() && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) ||so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && so
                     .getId() != currentStep.getId()) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
@@ -179,7 +178,7 @@ public class HelperSchritte {
                     reihenfolge = myStep.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) && !myStep
+                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && !myStep
                         .getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
                     /*
                      * den Schritt aktivieren, wenn es kein vollautomatischer ist
@@ -280,7 +279,7 @@ public class HelperSchritte {
         int abgeschlossen = 0;
         List<Step> stepsForProcess = StepManager.getStepsForProcess(processId);
         for (Step step : stepsForProcess) {
-            if (step.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+            if (step.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
                 offen++;
@@ -315,16 +314,18 @@ public class HelperSchritte {
             if (logger.isDebugEnabled()) {
                 logger.debug("starting script " + script);
             }
-            if (returnParameter != 0) {
-                abortStep(step);
-                break;
-            }
+           
             if (script != null && !script.equals(" ") && script.length() != 0) {
                 if (automatic && (count == size)) {
                     returnParameter = executeScriptForStepObject(step, script, true);
                 } else {
                     returnParameter = executeScriptForStepObject(step, script, false);
                 }
+            }
+            
+            if (returnParameter != 0 && automatic) {
+                errorStep(step);
+                break;
             }
             count++;
         }
@@ -375,7 +376,7 @@ public class HelperSchritte {
 
                 } else {
                     step.setEditTypeEnum(StepEditType.AUTOMATIC);
-                    step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                    step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                     StepManager.saveStep(step);
                 }
             }
@@ -391,7 +392,6 @@ public class HelperSchritte {
 
     public void executeDmsExport(Step step, boolean automatic) {
         IExportPlugin dms = null;
-
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
@@ -412,59 +412,33 @@ public class HelperSchritte {
             if (validate) {
                 CloseStepObjectAutomatic(step);
             } else {
-                abortStep(step);
+                errorStep(step);
             }
-        } catch (DAOException e) {
+        } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
+                | ExportFileException e) {
             logger.error(e);
-            abortStep(step);
+            errorStep(step);
             return;
-        } catch (PreferencesException e) {
-            logger.error(e);
-            abortStep(step);
-            return;
-        } catch (WriteException e) {
-            logger.error(e);
-            abortStep(step);
-            return;
-        } catch (SwapException e) {
-            logger.error(e);
-            abortStep(step);
-            return;
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e);
-            abortStep(step);
-            return;
-        } catch (IOException e) {
-            logger.error(e);
-            abortStep(step);
-            return;
-        } catch (InterruptedException e) {
-            // validation error
-            abortStep(step);
-            return;
-        } catch (DocStructHasNoTypeException e) {
-            logger.error(e);
-            abortStep(step);
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e);
-            abortStep(step);
-        } catch (ExportFileException e) {
-            logger.error(e);
-            abortStep(step);
-        } catch (UghHelperException e) {
-            logger.error(e);
-            abortStep(step);
-        } catch (ReadException e) {
-            logger.error(e);
         }
 
     }
 
-    private void abortStep(Step step) {
+    //    private void abortStep(Step step) {
+    //
+    //        step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+    //        step.setEditTypeEnum(StepEditType.AUTOMATIC);
+    //
+    //        try {
+    //            StepManager.saveStep(step);
+    //        } catch (DAOException e) {
+    //            logger.error(e);
+    //        }
+    //    }
 
-        step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+    public void errorStep(Step step) {
+        step.setBearbeitungsstatusEnum(StepStatus.ERROR);
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
-
+        step.setBearbeitungsende(new Date());
         try {
             StepManager.saveStep(step);
         } catch (DAOException e) {

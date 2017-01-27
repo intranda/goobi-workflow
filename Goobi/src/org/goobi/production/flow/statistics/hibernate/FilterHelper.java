@@ -95,15 +95,14 @@ public class FilterHelper {
         /*
          * -------------------------------- hits by user groups --------------------------------
          */
-
         if (stepOpenOnly) {
-            answer.append(" Bearbeitungsstatus = 1 ");
+            answer.append(" Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 4 ");
         } else if (userAssignedStepsOnly) {
             answer.append(" BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2 ");
         } else if (hideStepsFromOtherUsers) {
-            answer.append(" ((BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2) OR (Bearbeitungsstatus = 1)) ");
+            answer.append(" ((BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2) OR (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 4)) ");
         } else {
-            answer.append(" (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 2) ");
+            answer.append(" (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 2 OR  Bearbeitungsstatus = 4) ");
 
         }
 
@@ -652,7 +651,12 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.DONE, false));
-
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPERROR)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.ERROR, false));
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPDEACTIVATED)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, false));
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONETITLE) || tok.toLowerCase().startsWith(
@@ -742,7 +746,13 @@ public class FilterHelper {
                     + FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.DONE, true));
-
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPERROR)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.ERROR, true));
+                
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDEACTIVATED)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, true));
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONETITLE) || tok.toLowerCase().startsWith("-"

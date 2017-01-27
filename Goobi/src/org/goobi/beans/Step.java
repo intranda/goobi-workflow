@@ -100,7 +100,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String stepPlugin;
     private String validationPlugin;
     private boolean delayStep;
-    
+
     private boolean updateMetadataIndex;
 
     public Step() {
@@ -415,13 +415,17 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setBearbeitungsstatusUp() {
-        if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
+        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+            this.bearbeitungsstatus = StepStatus.DONE.getValue();
+        } else if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
             this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() + 1);
         }
     }
 
     public void setBearbeitungsstatusDown() {
-        if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
+        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+            this.bearbeitungsstatus = StepStatus.OPEN.getValue();
+        } else if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
             this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() - 1);
         }
     }
@@ -856,11 +860,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public void setDelayStep(boolean delayStep) {
         this.delayStep = delayStep;
     }
-    
+
     public boolean isUpdateMetadataIndex() {
         return updateMetadataIndex;
     }
-    
+
     public void setUpdateMetadataIndex(boolean updateMetadataIndex) {
         this.updateMetadataIndex = updateMetadataIndex;
     }

@@ -17,7 +17,8 @@ public class ServletHelper {
 		return facesContext.getApplication();
 	}
 
-	public static Object getManagedBean(String beanName,
+	@SuppressWarnings("deprecation")
+    public static Object getManagedBean(String beanName,
 			FacesContext facesContext) {
 		return getApplication(facesContext).getVariableResolver()
 				.resolveVariable(facesContext, beanName);

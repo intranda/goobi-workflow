@@ -31,10 +31,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Step;
+import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
+import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
 public class ScriptThreadWithoutHibernate extends Thread {
     HelperSchritte hs = new HelperSchritte();
@@ -66,12 +68,30 @@ public class ScriptThreadWithoutHibernate extends Thread {
             idp.initialize(step, "");
             if (idp.execute()) {
                 hs.CloseStepObjectAutomatic(step);
+            } else {
+                hs.errorStep(step);
             }
         } else if (this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
             isp.initialize(step, "");
-            if (isp.execute()) {
-                hs.CloseStepObjectAutomatic(step);
+
+            if (isp instanceof IStepPluginVersion2) {
+                IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
+                PluginReturnValue val = plugin.run();
+                if (val == PluginReturnValue.FINISH) {
+                    hs.CloseStepObjectAutomatic(step);
+                } else if (val == PluginReturnValue.ERROR) {
+                    hs.errorStep(step);
+                } else if (val == PluginReturnValue.WAIT) {
+                    // stay in status inwork 
+                }
+
+            } else {
+                if (isp.execute()) {
+                    hs.CloseStepObjectAutomatic(step);
+                } else {
+                    hs.errorStep(step);
+                }
             }
         }
     }
@@ -80,4 +100,5 @@ public class ScriptThreadWithoutHibernate extends Thread {
         this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
         this.stop = true;
     }
+
 }

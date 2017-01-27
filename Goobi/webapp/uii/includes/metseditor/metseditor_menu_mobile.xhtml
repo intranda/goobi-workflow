@@ -16,7 +16,7 @@
 			<ul class='mobile-nav open'>
 				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
 				<li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoPagination">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
                         <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.paginierung}" />
                     </h:commandLink>
@@ -24,7 +24,7 @@
 				</h:panelGroup>
 				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
                 <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoStructure">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
                         <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.strukturdaten}" />
                     </h:commandLink>
@@ -32,7 +32,7 @@
                 </h:panelGroup>
 				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
                 <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
-                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoMetadata">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
                         <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
                         <h:outputText value="#{msgs.metadaten}" />
                     </h:commandLink>
@@ -40,13 +40,13 @@
 				</h:panelGroup>
                 <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
                     <li class="#{Metadaten.modusAnsicht == 'File'?'active':''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoFile">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
                             <h:outputText value="#{msgs.fileManipulation}" />
                         </h:commandLink>
                     </li>
                 </h:panelGroup>
-            </ul>
+			</ul>
 		</h:form>
 	</composite:implementation>
 </ui:composition>
