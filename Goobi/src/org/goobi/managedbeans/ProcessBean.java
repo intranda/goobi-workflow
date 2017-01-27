@@ -1402,7 +1402,7 @@ public class ProcessBean extends BasicBean {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
         List<Project> temp = null;
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null && !login.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
+        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
             temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
         } else {
             temp = ProjectManager.getAllProjects();

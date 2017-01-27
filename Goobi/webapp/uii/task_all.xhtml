@@ -135,7 +135,7 @@
 	                                        </f:facet>
 	
 	                                        <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-	                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" title="#{msgs.prozessBearbeiten}" rendered="#{LoginForm.hasRole('Workflow_Details')}">
+	                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" title="#{msgs.prozessBearbeiten}" rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 	                                            <i class="fa fa-tasks margin-right-10 btn" />
 	                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
 	                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />

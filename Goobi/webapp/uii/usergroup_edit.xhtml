@@ -68,7 +68,7 @@
 					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
 					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
 					                            		'badge-light-greengrey'}" >
-													<h:outputText value="#{role}" />
+													<h:outputText value="#{msgs[('roles_').concat(role)]}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-trash margin-left-5"></i>
 													 <f:ajax render=":myform" />
@@ -87,7 +87,7 @@
 					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
 					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
 					                            		'badge-light-greengrey'}" >
-													<h:outputText value="#{role}" />
+													<h:outputText value="#{msgs[('roles_').concat(role)]}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-plus margin-left-5"></i>
 													<f:ajax render=":myform" />

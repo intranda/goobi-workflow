@@ -9,7 +9,7 @@
 
     <ui:define name="content">
 
-		<c:if test="#{LoginForm.hasRole('Workflow_Search')}">
+		<c:if test="#{LoginForm.hasRole('Workflow_General_Search')}">
 
 	        <div class="row">
 	            <div class="col-sm-12">
@@ -134,10 +134,10 @@
 	                            </x:dataList>
 	
 	                           
-                                <c:if test="#{LoginForm.hasRole('Workflow_Processes_show_deactivated_projects')}">
+                                <c:if test="#{LoginForm.hasRole('Workflow_Processes_Show_Deactivated_Projects')}">
                                 	<intranda:formInputCheckBox id="showArchivedProjects" label="#{msgs.showArchivedProjects}:" field="#{ProzessverwaltungForm.showArchivedProjects}" help="#{msgs.helpShowArchivedProjects}" name="showArchivedProjects" />
                                 </c:if>
-                                <c:if test="#{LoginForm.hasRole('Workflow_Processes_show_finished')}">
+                                <c:if test="#{LoginForm.hasRole('Workflow_Processes_Show_Finished')}">
                                 	<intranda:formInputCheckBox id="showClosedProcesses" label="#{msgs.showClosedProcesses}:" field="#{ProzessverwaltungForm.showClosedProcesses}" help="#{msgs.helpShowClosedProcesses}" name="showClosedProcesses" />
                             	</c:if>
 	                           

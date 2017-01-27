@@ -33,7 +33,7 @@
 					</div>
 					<div class="box-content">
 						<h:form id="processForm"
-							rendered="#{LoginForm.hasRole('Workflow_Batches')}">
+							rendered="#{LoginForm.hasRole('Workflow_General_Batches')}">
 
 							<div class="form-group">
 
@@ -53,7 +53,7 @@
 				</div>
 			</div>
 
-			<h:form rendered="#{LoginForm.hasRole('Workflow_Batches')}" id="properties">
+			<h:form rendered="#{LoginForm.hasRole('Workflow_General_Batches')}" id="properties">
 				<h:panelGroup rendered="#{BatchForm.modusBearbeiten!='eigenschaft' and BatchForm.batchHelper.propertyListSize gt 0}">
 
 					<div class="col-sm-6">

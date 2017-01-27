@@ -29,14 +29,14 @@
 					</li>
 				</h:panelGroup>
 				<!-- Workflow -->
-				<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Menu')}">
+				<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
 					<li class="has-submenu #{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
 						<a href="#">#{msgs.workflow}</a>
 						<ul>
 							<!-- Prozess suchen -->
 							<intranda:menuItem id="a21" label="#{msgs.nachEinemBandSuchen}"
 								action="process_search" filter="#{ProzessverwaltungForm.filter}"
-								rendered="#{LoginForm.hasRole('Workflow_Search')}"
+								rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
 								icon="fa fa-search box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 							
@@ -53,7 +53,7 @@
 								<intranda:menuItem id="a23" label="#{msgs.batches}"
 									action="#{BatchForm.FilterAlleStart}"
 									display="#{BatchForm.modusBearbeiten}"
-									rendered="#{LoginForm.hasRole('Workflow_Batches')}"
+									rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
 									icon="fa fa-archive box-icon-fix-menu-up3 "
 									fontclass="margin-left-10" />
 								
@@ -66,7 +66,7 @@
 									fontclass="margin-left-10" />
 									
 								<!-- Workflow-Plugins -->
-								<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Plugins')}">
+								<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
 	                             <ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}" id="plugin11">
 	                                <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
 	                                    <h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
