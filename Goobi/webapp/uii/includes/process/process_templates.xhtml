@@ -23,7 +23,7 @@
 
 								<h:commandLink title="#{msgs.vorlageBearbeiten}" action="process_edit_template" id="editTemplate"
 									styleClass="btn btn-mini" rel="tooltip"
-									rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 									<i class="fa fa-pencil" title="#{msgs.vorlageBearbeiten}"></i>
 									<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.myVorlageReload}" value="#{item}" />

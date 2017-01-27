@@ -305,7 +305,7 @@ public class ProzesskopieForm {
             /*
              * wenn die maximale Berechtigung nicht Admin ist, dann nur bestimmte
              */
-            if (!loginForm.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
+            if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
                 filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
                         .getId() + ")";

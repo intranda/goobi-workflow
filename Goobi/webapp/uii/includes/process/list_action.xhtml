@@ -112,7 +112,7 @@
                                     </h:panelGroup>
 
                                     <!-- Bearbeitungsstatus hochsetzen-->
-                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton3" onclick="toggle('possibleActions3')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-up fa-lg width-40" />
@@ -146,7 +146,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton4" onclick="toggle('possibleActions4')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-caret-square-o-down fa-lg width-40" />

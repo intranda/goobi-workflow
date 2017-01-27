@@ -73,7 +73,7 @@ public class FilterHelper {
         }
 
         if (aktuellerNutzer != null) {
-            if (!loginForm.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
+            if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
                 answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
                         .getId() + ")";
 

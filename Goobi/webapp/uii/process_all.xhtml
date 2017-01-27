@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:param name="myPageTitle" value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}" />
 
@@ -255,7 +255,7 @@
                                         </f:facet>
 
 	                                        <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" id="edit"
-	                                        rendered="#{LoginForm.hasRole('Workflow_Details')}" title="#{msgs.prozessBearbeiten}">
+	                                        rendered="#{LoginForm.hasRole('Workflow_General_Details')}" title="#{msgs.prozessBearbeiten}">
                                             <i class="btn fa fa-pencil" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -481,12 +481,12 @@
                                 <div class="dataTables_info" style="float: left;">
                                     <!-- Neu-Schaltknopf -->
                                     <!-- 									 <h:commandLink action="#{ProzessverwaltungForm.Neu}" immediate="true" styleClass="btn btn-primary font-size-s" -->
-	                                    <!--                                         rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige!='vorlagen'}" -->
+	                                    <!--                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige!='vorlagen'}" -->
                                     <!--                                         id="new1"> -->
                                     <!--                                         <i class="fa fa-plus margin-right-5"></i> -->
                                     <!--                                         <h:outputText value="#{msgs.einenNeuenProzessAnlegen}" /> -->
                                     <!--                                     </h:commandLink> -->
-	                                    <h:commandLink action="#{ProzessverwaltungForm.NeuVorlage}" immediate="true" styleClass="btn btn-primary font-size-s" rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}" id="new2">
+	                                    <h:commandLink action="#{ProzessverwaltungForm.NeuVorlage}" immediate="true" styleClass="btn btn-primary font-size-s" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}" id="new2">
                                         <i class="fa fa-plus margin-right-5"></i>
                                         <h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
                                     </h:commandLink>
