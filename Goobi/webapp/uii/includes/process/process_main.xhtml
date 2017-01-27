@@ -176,7 +176,7 @@
                                     <h:outputText value="#{msgs.processLog}" />
 
                                 </h3>
-                                <div class="btn-group pull-right" data-toggle="tooltip" title="#{msgs.filterProcessLog}">
+                                <div class="btn-group pull-right margin-right-10" data-toggle="tooltip" title="#{msgs.filterProcessLog}">
                                     <a class="btn dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown">
                                         <i class="fa fa-columns margin-right-5" />
                                         <span class="caret"></span>
@@ -185,38 +185,38 @@
                                     <ul class="dropdown-menu">
                                         <li>
                                             <h:commandLink action="#{NavigationForm.Reload}" id="showDebugMessages">
-                                                <i class="fa #{NavigationForm.uiStatus['debug']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                                                <h:outputText value="#{msgs.showDebugMessages}" />
+                                                <i class="fa #{NavigationForm.uiStatus['debug']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                                <h:outputText value="#{msgs.process_log_showDebugMessages}" />
                                                 <x:updateActionListener property="#{NavigationForm.uiStatus['debug']}" value="#{not NavigationForm.uiStatus['debug']}" />
                                             </h:commandLink>
                                         </li>
                                         <li>
                                             <h:commandLink action="#{NavigationForm.Reload}" id="showInfoMessages">
-                                                <i class="fa #{NavigationForm.uiStatus['info']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                                                <h:outputText value="#{msgs.showInfoMessages}" />
+                                                <i class="fa #{NavigationForm.uiStatus['info']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                                <h:outputText value="#{msgs.process_log_showInfoMessages}" />
                                                 <x:updateActionListener property="#{NavigationForm.uiStatus['info']}" value="#{not NavigationForm.uiStatus['info']}" />
                                             </h:commandLink>
 
                                         </li>
                                         <li>
                                             <h:commandLink action="#{NavigationForm.Reload}" id="showUserMessages">
-                                                <i class="fa #{NavigationForm.uiStatus['user']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                                                <h:outputText value="#{msgs.showUserMessages}" />
+                                                <i class="fa #{NavigationForm.uiStatus['user']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                                <h:outputText value="#{msgs.process_log_showUserMessages}" />
                                                 <x:updateActionListener property="#{NavigationForm.uiStatus['user']}" value="#{not NavigationForm.uiStatus['user']}" />
                                             </h:commandLink>
                                         </li>
                                         <li>
                                             <h:commandLink action="#{NavigationForm.Reload}" id="showWarnMessages">
-                                                <i class="fa #{NavigationForm.uiStatus['warn']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                                                <h:outputText value="#{msgs.showWarnMessages}" />
+                                                <i class="fa #{NavigationForm.uiStatus['warn']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                                <h:outputText value="#{msgs.process_log_showWarnMessages}" />
                                                 <x:updateActionListener property="#{NavigationForm.uiStatus['warn']}" value="#{not NavigationForm.uiStatus['warn']}" />
                                             </h:commandLink>
 
                                         </li>
                                         <li>
                                             <h:commandLink action="#{NavigationForm.Reload}" id="showErrorMessages">
-                                                <i class="fa #{NavigationForm.uiStatus['error']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                                                <h:outputText value="#{msgs.showErrorMessages}" />
+                                                <i class="fa #{NavigationForm.uiStatus['error']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                                <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                                 <x:updateActionListener property="#{NavigationForm.uiStatus['error']}" value="#{not NavigationForm.uiStatus['error']}" />
                                             </h:commandLink>
 
@@ -228,28 +228,34 @@
                             <div class="box-content nopadding">
 
                                 <div class="scrollable" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
-                                    <x:dataTable rendered="#{ProzessverwaltungForm.myProzess.processLog.size()>0}" var="entry" value="#{ProzessverwaltungForm.myProzess.processLog}" width="100%" styleClass="table table-hover table-bordered">
-
-                                        <x:column styleClass="log_table_column_date">
-                                            <h:panelGroup rendered="#{NavigationForm.uiStatus[entry.type.title]}">
-                                                <h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" />
-                                                <br />
-                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
-                                            </h:panelGroup>
-                                        </x:column>
-
-                                        <x:column>
-                                            <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" rendered="#{NavigationForm.uiStatus[entry.type.title]}" />
-                                        </x:column>
-
-                                        <x:column rendered="#{NavigationForm.showSecondLogField}">
-                                            <h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" rendered="#{NavigationForm.uiStatus[entry.type.title]}" />
-                                        </x:column>
-                                        <x:column rendered="#{NavigationForm.showThirdLogField}">
-                                            <h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" rendered="#{NavigationForm.uiStatus[entry.type.title]}" />
-                                        </x:column>
-
-                                    </x:dataTable>
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.processLog.size()>0}">
+                                    	<table style="width:100%" class="table table-hover table-bordered">
+	                                    	<ui:repeat var="entry" value="#{ProzessverwaltungForm.myProzess.processLog}" varStatus="row">
+												<h:panelGroup rendered="#{!NavigationForm.uiStatus[entry.type.title]}">
+													<tr>
+														<td>
+															<h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" />
+			                                                <br />
+			                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
+														</td>
+														<td>
+															 <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" />
+														</td>
+														<h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
+															<td>
+																<h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" />
+															</td>
+														</h:panelGroup>
+														<h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
+															<td>
+																<h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" />
+															</td>
+														</h:panelGroup>
+													</tr>  
+												</h:panelGroup>                                  		
+											</ui:repeat>
+                                    	</table>
+                                    </h:panelGroup>
                                 </div>
 
                                 <div class="form-actions" style="border-top: 1px solid #ddd;">
