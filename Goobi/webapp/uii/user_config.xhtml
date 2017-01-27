@@ -158,7 +158,7 @@
 									<div class="col-sm-9">
 										
 										<ui:repeat var="role" value="#{LoginForm.myBenutzer.allUserRoles}" varStatus="row">
-			                            	<h:outputText value="#{role}" 
+			                            	<h:outputText value="#{msgs[('roles_').concat(role)]}" 
 			                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 			                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 			                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 

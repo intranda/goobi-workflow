@@ -19,7 +19,7 @@
 
                                 <div class="actions">
 
-                                    <h:commandLink id="edit" title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}" styleClass="btn btn-mini" rel="tooltip">
+                                    <h:commandLink id="edit" title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}" styleClass="btn btn-mini" rel="tooltip">
                                         <i class="fa fa-pencil" title="#{msgs.prozessdetailsBearbeiten}"></i>
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="prozess" />
@@ -55,7 +55,7 @@
                                     </h:commandLink>
 
                                     <!--  modal rendern  -->
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Details_Edit') and item.temporaryMetadataFiles}">
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
                                         <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" data-toggle="modal" data-target="#myModal-#{count}">
                                             <i class="btn fa fa-book " />
                                         </a>

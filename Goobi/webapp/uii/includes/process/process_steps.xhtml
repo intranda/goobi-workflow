@@ -30,14 +30,14 @@
                                     </f:facet>
                                     <h:outputText value="#{item.reihenfolge}" />
                                     <!-- Schaltknopf: Reihenfolge nach oben -->
-                                    <h:commandLink id="up" action="#{ProzessverwaltungForm.reihenfolgeUp}" title="#{msgs.moveTaskUp}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+                                    <h:commandLink id="up" action="#{ProzessverwaltungForm.reihenfolgeUp}" title="#{msgs.moveTaskUp}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-up font-light margin-left-10" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
                                         <f:ajax render="@form" />
                                     </h:commandLink>
                                     <!-- Schaltknopf: Reihenfolge nach unten -->
-                                    <h:commandLink id="down" action="#{ProzessverwaltungForm.reihenfolgeDown}" title="#{msgs.moveTaskDown}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+                                    <h:commandLink id="down" action="#{ProzessverwaltungForm.reihenfolgeDown}" title="#{msgs.moveTaskDown}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-down font-light" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
@@ -180,7 +180,7 @@
                                     </ul>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
-                                    <h:commandLink id="statusDown" action="#{ProzessverwaltungForm.SchrittStatusDown}" rel="tooltip" title="#{msgs.statusRunterSetzen}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+                                    <h:commandLink id="statusDown" action="#{ProzessverwaltungForm.SchrittStatusDown}" rel="tooltip" title="#{msgs.statusRunterSetzen}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-left font-light margin-left-5" title="#{msgs.statusRunterSetzen}" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
@@ -188,7 +188,7 @@
                                     </h:commandLink>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
-                                    <h:commandLink id="statusUp" action="#{ProzessverwaltungForm.SchrittStatusUp}" rel="tooltip" title="#{msgs.statusHoeherSetzen}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+                                    <h:commandLink id="statusUp" action="#{ProzessverwaltungForm.SchrittStatusUp}" rel="tooltip" title="#{msgs.statusHoeherSetzen}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-right font-light margin-left-5" title="#{msgs.statusHoeherSetzen}" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
@@ -198,7 +198,7 @@
 
                                 </h:column>
 
-                                <h:column rendered="#{LoginForm.hasRole('Workflow_Details_Edit')}">
+                                <h:column rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.auswahl}" />
                                     </f:facet>
@@ -220,7 +220,7 @@
 
                             <div class="dataTables_info">
                                 <!-- Neu-Schaltknopf -->
-                                <h:commandLink id="addStepLink" styleClass="btn btn-primary font-size-s margin-right-5" action="#{ProzessverwaltungForm.SchrittNeu}" title="#{msgs.schrittHinzufuegen}" rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
+                                <h:commandLink id="addStepLink" styleClass="btn btn-primary font-size-s margin-right-5" action="#{ProzessverwaltungForm.SchrittNeu}" title="#{msgs.schrittHinzufuegen}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
                                     <i class="fa fa-plus margin-right-5"></i>
                                     <h:outputText value="#{msgs.schrittHinzufuegen}" />
                                 </h:commandLink>

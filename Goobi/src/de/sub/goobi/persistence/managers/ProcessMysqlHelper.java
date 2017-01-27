@@ -584,7 +584,7 @@ class ProcessMysqlHelper implements Serializable {
         String sql = "SELECT distinct batchID FROM prozesse";
 
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null && !login.hasRole(UserRole.Workflow_Show_All_Projects.name())) {
+        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
             sql += " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = " + login.getMyBenutzer()
                     .getId() + ")";
         }

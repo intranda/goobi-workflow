@@ -245,7 +245,7 @@
 	                                        </f:facet>
 	
 	                                        <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" id="edit"
-	                                        rendered="#{LoginForm.hasRole('Workflow_Details')}" title="#{msgs.prozessBearbeiten}">
+	                                        rendered="#{LoginForm.hasRole('Workflow_General_Details')}" title="#{msgs.prozessBearbeiten}">
 	                                            <i class="btn fa fa-pencil" />
 	                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
 	                                            <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -463,12 +463,12 @@
 	                                <div class="dataTables_info" style="float: left;">
 	                                    <!-- Neu-Schaltknopf -->
 	                                    <!-- 									 <h:commandLink action="#{ProzessverwaltungForm.Neu}" immediate="true" styleClass="btn btn-primary font-size-s" -->
-	                                    <!--                                         rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige!='vorlagen'}" -->
+	                                    <!--                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige!='vorlagen'}" -->
 	                                    <!--                                         id="new1"> -->
 	                                    <!--                                         <i class="fa fa-plus margin-right-5"></i> -->
 	                                    <!--                                         <h:outputText value="#{msgs.einenNeuenProzessAnlegen}" /> -->
 	                                    <!--                                     </h:commandLink> -->
-	                                    <h:commandLink action="#{ProzessverwaltungForm.NeuVorlage}" immediate="true" styleClass="btn btn-primary font-size-s" rendered="#{LoginForm.hasRole('Workflow_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}" id="new2">
+	                                    <h:commandLink action="#{ProzessverwaltungForm.NeuVorlage}" immediate="true" styleClass="btn btn-primary font-size-s" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}" id="new2">
 	                                        <i class="fa fa-plus margin-right-5"></i>
 	                                        <h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
 	                                    </h:commandLink>
