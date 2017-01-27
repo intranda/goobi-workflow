@@ -71,7 +71,7 @@
 
                             <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
                                 <span class="badge badge-intranda-red">
-                                    <i class="fa fa-exclamation-triangle"></i>
+                                    <i class="fa fa-bullhorn"></i>
                                     #{msgs.badgeCorrection}
                                 </span>
                             </h:panelGroup>
@@ -128,7 +128,12 @@
                         </h:panelGroup>
 
                         <h:outputText value="#{msgs.status}:" />
+                        <h:panelGroup>
+	                        <ul class="colors small13">
+	                            <li class="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color} margin-top-lesser margin-right-regular" rel="tooltip" title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
+	                        </ul>
                         <h:outputText value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
+                        </h:panelGroup>
 
                     </h:panelGrid>
                 </div>
@@ -155,7 +160,9 @@
 
                     <intranda:formInputText id="order" name="reihenfolge2" label="#{msgs.reihenfolge}" field="#{ProzessverwaltungForm.mySchritt.reihenfolge}" help="#{msgs.helpProcessStepOrder}" fieldStyle="form-control" required="true" />
 
-                    <intranda:formInputText id="priority" name="prioritaet" label="#{msgs.prioritaet}" field="#{ProzessverwaltungForm.mySchritt.prioritaet}" help="#{msgs.helpProcessStepPriority}" fieldStyle="form-control" required="true" />
+					<intranda:formInputDropDown id="priority" label="#{msgs.prioritaet}" field="#{ProzessverwaltungForm.mySchritt.prioritaet}" help="#{msgs.helpProcessStepPriority}" name="prioritaet" selectItems="#{HelperForm.stepPriorityList}" fieldStyle="form-control" required="true" />
+
+<!--                     <intranda:formInputText id="priority" name="prioritaet" label="#{msgs.prioritaet}" field="#{ProzessverwaltungForm.mySchritt.prioritaet}" help="#{msgs.helpProcessStepPriority}" fieldStyle="form-control" required="true" /> -->
 
                     <intranda:formInputCheckBox id="metadata" label="#{msgs.metadaten}" field="#{ProzessverwaltungForm.mySchritt.typMetadaten}" help="#{msgs.helpProcessStepMetadata}" name="metadata" />
 

@@ -466,8 +466,7 @@ public class BatchStepHelper {
                 }
             }
             if (temp != null) {
-                temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                temp.setPrioritaet(Integer.valueOf(10));
+                temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 temp.setCorrectionStep();
                 temp.setBearbeitungsende(null);
                 ErrorProperty se = new ErrorProperty();
@@ -507,8 +506,9 @@ public class BatchStepHelper {
                 //                      .add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
-                    step.setPrioritaet(Integer.valueOf(10));
-                    step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
+                    	step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+                    }
                     step.setCorrectionStep();
                     step.setBearbeitungsende(null);
                     ErrorProperty seg = new ErrorProperty();
@@ -603,7 +603,9 @@ public class BatchStepHelper {
 
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
-                    step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
+                    	step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                    }
                     step.setBearbeitungsende(now);
                     step.setPrioritaet(Integer.valueOf(0));
                     if (step.getId().intValue() == temp.getId().intValue()) {

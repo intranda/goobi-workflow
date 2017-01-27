@@ -591,10 +591,10 @@ public class StepBean extends BasicBean {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
         this.mySchritt.setBearbeitungsbeginn(null);
-        mySchritt.setPrioritaet(10);
+        mySchritt.setCorrectionStep();
         try {
             Step temp = StepManager.getStepById(myProblemID);
-            temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
+            temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
             temp.setBearbeitungsende(null);
@@ -635,8 +635,10 @@ public class StepBean extends BasicBean {
             //					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
             //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Step step : alleSchritteDazwischen) {
-                step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
-                // if (step.getPrioritaet().intValue() == 0)
+                
+            	if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
+            		step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+            	}
                 step.setCorrectionStep();
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
@@ -712,9 +714,12 @@ public class StepBean extends BasicBean {
             //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                 Step step = iter.next();
-                step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
+                	step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                }
                 step.setBearbeitungsende(now);
-                step.setPrioritaet(Integer.valueOf(0));
+                step.setCorrectionStep();
+                step.setBearbeitungszeitpunkt(new Date());
                 if (step.getId().intValue() == temp.getId().intValue()) {
                     step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     step.setCorrectionStep();
@@ -724,7 +729,6 @@ public class StepBean extends BasicBean {
                 }
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-                step.setBearbeitungszeitpunkt(new Date());
                 if (ben != null) {
                     step.setBearbeitungsbenutzer(ben);
                 }

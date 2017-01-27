@@ -242,22 +242,14 @@
 												#{msgs.badgePriority3}
                                         </h:panelGroup>
 
-                                        <h:panelGroup class="badge badge-intranda-red popover-jsf" rendered="#{item.prioritaet gt 9 and false}">
-                                            <i class="fa fa-exclamation-triangle"></i>
-												#{msgs.badgeCorrection}
-                                          </h:panelGroup>
-
-
                                         <h:panelGroup styleClass="popover-div" style="display:none;" rendered="#{false}">
-
 	                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}" id="propList">
                                                 <span class="block margin-bottom-10">
-                                                    <i class="btn btn-red margin-right-10 fa fa-exclamation-triangle fa-lg width-40"></i>
+                                                    <i class="btn btn-red margin-right-10 fa fa-bullhorn fa-lg width-40"></i>
                                                     <h:outputText class="font-red" value="#{intern.titel}" />
                                                     <h:outputText class="block margin-top-5" value="#{intern.wert}" />
                                                 </span>
                                             </ui:repeat>
-
                                         </h:panelGroup>
 
                                         <!-- Popup -->
@@ -268,7 +260,7 @@
                                                 <div class="box box-small box-color red box-bordered">
                                                     <div class="box-title">
                                                         <h3>
-                                                            <i class="fa fa-exclamation-triangle"></i>
+                                                            <i class="fa fa-bullhorn"></i>
                                                             #{msgs.badgeCorrection}
                                                         </h3>
                                                     </div>
@@ -287,10 +279,11 @@
 
                                             </f:facet>
                                             <h:panelGroup class="badge badge-intranda-red">
-                                                <i class="fa fa-exclamation-triangle"></i>
+                                                <i class="fa fa-bullhorn"></i>
 													#{msgs.badgeCorrection}
                                             </h:panelGroup>
                                         </x:popup>
+                                        
                                     </x:column>
 
                                     <!-- ===================== Action ====================== -->
@@ -311,7 +304,7 @@
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
                                         </h:commandLink>
 
-                                        <h:commandLink styleClass="btn btn-#{item.bearbeitungsstatusEnum.color}" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <h:commandLink styleClass="btn btn-red" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'ERROR' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
@@ -339,6 +332,14 @@
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.step}" value="#{item}" />
                                         </h:commandLink>
+                                        
+                                        <!-- edit batch step -->
+                                        <h:commandLink id="batch-error" styleClass="btn btn-red" rel="tooltip" action="#{AktuelleSchritteForm.TakeOverBatch}" rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                            <i class="fa fa-check" style="margin-left: -6px"></i>
+                                            <i class="fa fa-check" style="margin-left: -5px; margin-right: -6px"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.step}" value="#{item}" />
+                                        </h:commandLink>
 
                                         <!-- edit batch step -->
                                         <h:commandLink id="batchInWork" styleClass="btn btn-warning" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
@@ -353,6 +354,10 @@
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.step}" value="#{item}" />
                                         </h:commandLink>
+                                        
+<!--                                       	<h:panelGroup rendered="#{item.bearbeitungsstatusEnum.title eq 'statusError'}"> -->
+<!--                                             <i class="fa fa-life-ring font-red pull-right" style="font-size:30px;"/> -->
+<!--                                         </h:panelGroup> -->
                                     </x:column>
                                     <!-- ===================== // Action ====================== -->
 

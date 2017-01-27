@@ -750,6 +750,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
+                // nothing
             } else {
                 inBearbeitung++;
             }
@@ -779,6 +781,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
+                // nothing
             } else {
                 inBearbeitung++;
             }
@@ -798,6 +802,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
+                // nothing
             } else {
                 inBearbeitung++;
             }
@@ -818,6 +824,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
+                // nothing
             } else {
                 inBearbeitung++;
             }

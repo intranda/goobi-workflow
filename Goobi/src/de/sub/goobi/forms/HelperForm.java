@@ -195,15 +195,31 @@ public class HelperForm {
 
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
-        SelectItem error = new SelectItem("4", Helper.getTranslation("statusError"));
-        ssl.add(error);
         
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
 
+        SelectItem error = new SelectItem("4", Helper.getTranslation("statusError"));
+        ssl.add(error);
+        
         SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
         ssl.add(deactivated);
         
+        return ssl;
+    }
+    
+    public List<SelectItem> getStepPriorityList() {
+        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        SelectItem s1 = new SelectItem("0", Helper.getTranslation("normalePrioritaet"));
+        ssl.add(s1);
+        SelectItem s2 = new SelectItem("1", Helper.getTranslation("badgePriority1"));
+        ssl.add(s2);
+        SelectItem s3 = new SelectItem("2", Helper.getTranslation("badgePriority2"));
+        ssl.add(s3);
+        SelectItem s4 = new SelectItem("3", Helper.getTranslation("badgePriority3"));
+        ssl.add(s4);
+        SelectItem s5 = new SelectItem("10", Helper.getTranslation("badgeCorrection"));
+        ssl.add(s5);
         return ssl;
     }
 

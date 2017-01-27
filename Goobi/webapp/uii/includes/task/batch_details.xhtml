@@ -60,7 +60,7 @@
 
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet gt 9}">
                                     <span class="badge badge-intranda-red">
-                                        <i class="fa fa-exclamation-triangle"></i>
+                                        <i class="fa fa-bullhorn"></i>
                                         #{msgs.badgeCorrection}
                                     </span>
                                 </h:panelGroup>
@@ -88,26 +88,7 @@
                                 <tr>
                                     <td colspan="#{(step.bearbeitungsstatusEnum == 'DONE')?'1':'3'}">
                                         <ul class="colors small13">
-                                            <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
-                                                <li class="red margin-top-lesser margin-right-regular" title="#{msgs.statusGesperrt}" rel="tooltip" />
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
-                                                <li class="orange margin-top-lesser margin-right-regular" title="#{msgs.statusOffen}" rel="tooltip" />
-                                            </h:panelGroup>
-
-                                            <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-                                                <li class="green margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-                                                <li class="orange margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
-                                            </h:panelGroup>
-
-                                            <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-                                                <li class="green margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-                                                <li class="orange margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
-                                            </h:panelGroup>
+                                            <li class="#{step.bearbeitungsstatusEnum.color} margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
                                         </ul>
                                         <h:outputText value="#{step.titelLokalisiert}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
 
@@ -144,7 +125,7 @@
 
                                                     <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet gt 9}">
                                                         <span class="badge badge-intranda-red">
-                                                            <i class="fa fa-exclamation-triangle"></i>
+                                                            <i class="fa fa-bullhorn"></i>
                                                             #{msgs.badgeCorrection}
                                                         </span>
                                                     </h:panelGroup>
