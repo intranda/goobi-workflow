@@ -661,6 +661,44 @@ dropdown-menu>li>a {
     padding: 0 7px;
 }
 
+/* farben:
+
+grün: #339933
+gelb: #ffbf21
+orange: #e8860c
+rot: #e51400
+blau: #368ee0
+grau: #dddddd
+
+*/
+
+
+.status-done{
+	background: #339933 none repeat scroll 0 0;	
+}
+
+.status-open{
+	background: #e8860c none repeat scroll 0 0;	
+}
+
+.status-inwork{
+	background: #ffbf21 none repeat scroll 0 0;	
+}
+
+.status-locked{
+	background: #e51400 none repeat scroll 0 0;	
+}
+
+.status-error{
+	background: #ffbf21 none repeat scroll 0 0;	
+	background-image: linear-gradient(-45deg, #e51400 25%, transparent 25%, transparent 50%, #e51400 50%, #e51400 75%, transparent 75%, transparent);
+    background-size: 8px 8px;
+}
+
+.status-deactivated{
+	background: #ccc none repeat scroll 0 0;	
+}
+
 /* ------------- badges and labels --------------- */
 .badge-no-radius {
 	border-radius: 0px;
