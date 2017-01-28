@@ -130,7 +130,7 @@
                         <h:outputText value="#{msgs.status}:" />
                         <h:panelGroup>
 	                        <ul class="colors small13">
-	                            <li class="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color} margin-top-lesser margin-right-regular" rel="tooltip" title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
+	                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular" rel="tooltip" title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
 	                        </ul>
                         <h:outputText value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
                         </h:panelGroup>

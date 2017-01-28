@@ -158,36 +158,36 @@
 
                                     <ul class="colors small">
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{msgs.statusGesperrt}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{msgs.statusGesperrt}" rel="tooltip" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{msgs.statusOffen}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{msgs.statusOffen}" rel="tooltip" />
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}" rel="tooltip" />
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}">
-                                            <li class="#{item.bearbeitungsstatusEnum.color}" title="#{msgs.statusDeactivated}" />
+                                            <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" title="#{msgs.statusDeactivated}" />
                                         </h:panelGroup>
 
                                     </ul>
-
+									<h:outputText value="#{item.bearbeitungsstatusEnum.title}" rendered="#{NavigationForm.showEasyRead}"/>
                                     <!-- Bearbeitungsstatus hoch und runter -->
                                     <h:commandLink id="statusDown" action="#{ProzessverwaltungForm.SchrittStatusDown}" rel="tooltip" title="#{msgs.statusRunterSetzen}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-left font-light margin-left-5" title="#{msgs.statusRunterSetzen}" />

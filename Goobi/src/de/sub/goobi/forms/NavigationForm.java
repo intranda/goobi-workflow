@@ -77,6 +77,7 @@ public class NavigationForm {
 
     private String aktuell = "0";
     private boolean showHelp = false;
+    private boolean showEasyRead = false;
     private boolean showExpertView = false;
     private boolean showSidebar = true;
     private String activeTab = "productionStatistics";
@@ -125,6 +126,14 @@ public class NavigationForm {
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
     }
+    
+    public boolean isShowEasyRead() {
+		return showEasyRead;
+	}
+    
+    public void setShowEasyRead(boolean showEasyRead) {
+		this.showEasyRead = showEasyRead;
+	}
 
     public boolean isShowExpertView() {
         return showExpertView;

@@ -275,6 +275,14 @@
 									icon="glyphicon-keys box-icon-fix-menu-up3" />
 							</h:panelGroup>
 
+							<li>
+								<h:commandLink id="showEasyRead" action="#{NavigationForm.Reload}" title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" rel="tooltip">
+									<i class="fa fa-eye-slash margin-right-5"/>
+									<h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"/>
+									<f:setPropertyActionListener target="#{NavigationForm.showEasyRead}" value="#{not NavigationForm.showEasyRead}" />
+								</h:commandLink>
+							</li>
+
 							<!-- switch ui to classic vies -->
 							<intranda:menuItem id="history" label="#{msgs.changeTheme}"
 								action="#{NavigationForm.changeTheme}"
