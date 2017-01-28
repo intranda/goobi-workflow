@@ -744,12 +744,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getFortschritt() {
         int offen = 0;
         int inBearbeitung = 0;
+        int error = 0;
         int abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+                error++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 // nothing
             } else {
@@ -758,65 +761,98 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         double offen2 = 0;
         double inBearbeitung2 = 0;
+        double error2 = 0;
         double abgeschlossen2 = 0;
 
-        if ((offen + inBearbeitung + abgeschlossen) == 0) {
+        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
             offen = 1;
         }
 
-        offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        abgeschlossen2 = 100 - offen2 - inBearbeitung2;
+        offen2 = (offen * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        error2 = (error * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        abgeschlossen2 = 100 - offen2 - error2 - inBearbeitung2;
         // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
-        return df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
+        return df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(error2) + df.format(offen2);
     }
 
     public int getFortschritt1() {
         int offen = 0;
         int inBearbeitung = 0;
+        int error = 0;
         int abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+                error++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 // nothing
             } else {
                 inBearbeitung++;
             }
         }
-        if ((offen + inBearbeitung + abgeschlossen) == 0) {
+        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
             offen = 1;
         }
-        return (offen * 100) / (offen + inBearbeitung + abgeschlossen);
+        return (offen * 100) / (offen + inBearbeitung + error + abgeschlossen);
     }
 
     public int getFortschritt2() {
         int offen = 0;
         int inBearbeitung = 0;
+        int error = 0;
         int abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+                error++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 // nothing
             } else {
                 inBearbeitung++;
             }
         }
-        if ((offen + inBearbeitung + abgeschlossen) == 0) {
+        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
             offen = 1;
         }
-        return (inBearbeitung * 100) / (offen + inBearbeitung + abgeschlossen);
+        return (inBearbeitung * 100) / (offen + inBearbeitung + error + abgeschlossen);
+    }
+    
+    public int getFortschrittError() {
+        int offen = 0;
+        int inBearbeitung = 0;
+        int error = 0;
+        int abgeschlossen = 0;
+        for (Step step : getSchritte()) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                abgeschlossen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
+                offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+                error++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
+                // nothing
+            } else {
+                inBearbeitung++;
+            }
+        }
+        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
+            offen = 1;
+        }
+        return (error * 100) / (offen + inBearbeitung + error + abgeschlossen);
     }
 
     public int getFortschritt3() {
         int offen = 0;
         int inBearbeitung = 0;
+        int error = 0;
         int abgeschlossen = 0;
 
         for (Step step : getSchritte()) {
@@ -824,22 +860,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
+            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
+                error++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 // nothing
             } else {
                 inBearbeitung++;
             }
         }
-        if ((offen + inBearbeitung + abgeschlossen) == 0) {
+        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
             offen = 1;
         }
         double offen2 = 0;
         double inBearbeitung2 = 0;
+        double error2 = 0;
         double abgeschlossen2 = 0;
 
-        offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        abgeschlossen2 = 100 - offen2 - inBearbeitung2;
+        offen2 = (offen * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        error2 = (error * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        abgeschlossen2 = 100 - offen2 - inBearbeitung2 - error2;
         return (int) abgeschlossen2;
     }
 

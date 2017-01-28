@@ -24,11 +24,11 @@
                             <x:dataTable styleClass="table table-hover table-nomargin dataTable table-bordered responsive" id="steps" width="100%" cellspacing="1px" var="item" value="#{ProzessverwaltungForm.myProzess.schritteList}">
 
                                 <!-- ===================== Reihenfolge ====================== -->
-                                <h:column id="ordercolumn">
+                                <x:column id="ordercolumn" style="min-width:80px;">
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.nr}" />
                                     </f:facet>
-                                    <h:outputText value="#{item.reihenfolge}" />
+                                    <h:outputText value="#{item.reihenfolge}" styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                     <!-- Schaltknopf: Reihenfolge nach oben -->
                                     <h:commandLink id="up" action="#{ProzessverwaltungForm.reihenfolgeUp}" title="#{msgs.moveTaskUp}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-up font-light margin-left-10" />
@@ -43,7 +43,7 @@
                                         <x:updateActionListener property="#{ProzessverwaltungForm.mySchritt}" value="#{item}" />
                                         <f:ajax render="@form" />
                                     </h:commandLink>
-                                </h:column>
+                                </x:column>
                                 <!-- ===================== // Reihenfolge ====================== -->
 
                                 <!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
@@ -56,14 +56,14 @@
 
                                         <h:commandLink id="expandbutton1" styleClass="font-black">
                                             <h:panelGroup rendered="#{!item.panelAusgeklappt}">
-                                                <i class="fa fa-angle-right margin-right-5" />
+                                                <i class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{item.panelAusgeklappt}">
-                                                <i class="fa fa-angle-down margin-right-5" />
+                                                <i class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <x:updateActionListener value="#{item.panelAusgeklappt?false:true}" property="#{item.panelAusgeklappt}" />
                                             <f:ajax render="possibleActions1" />
-                                            <h:outputText value="#{item.titelLokalisiert}" />
+                                            <h:outputText value="#{item.titel}"  styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                         </h:commandLink>
 
                                         <h:panelGroup styleClass="margin-top-10 block" rendered="#{item.panelAusgeklappt}">
@@ -77,10 +77,10 @@
                                                 </div>
                                                 <div class="box-content nopadding">
 
-                                                    <h:panelGrid columns="2" class="table table-hover table-bordered">
+                                                    <h:panelGrid columns="2" columnClasses="tableColumnWidthLong" class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" >
 
                                                         <h:outputText value="#{msgs.titel}:" />
-                                                        <h:outputText value="#{item.titelLokalisiert}" />
+                                                        <h:outputText value="#{item.titel}" />
 
                                                         <h:outputText value="#{msgs.prioritaet}:" />
                                                         <h:panelGroup>
@@ -151,7 +151,7 @@
                                 </h:column>
                                 <!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
 
-                                <h:column>
+                                <x:column style="min-width:80px;">
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.status}" />
                                     </f:facet>
@@ -205,7 +205,7 @@
                                     </h:commandLink>
 
 
-                                </h:column>
+                                </x:column>
 
                                 <h:column rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                     <f:facet name="header">

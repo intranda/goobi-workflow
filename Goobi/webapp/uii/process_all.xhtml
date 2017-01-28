@@ -90,7 +90,7 @@
                                                 <f:ajax render=":myform" />
                                             </h:commandLink>
                                         </f:facet>
-                                        <h:outputText value="#{item.batchID}" rendered="#{item.batchID != null}" />
+                                        <h:outputText value="#{item.batchID}" rendered="#{item.batchID != null}"/>
                                     </x:column>
 
                                     <!-- +++++++++++++++++  alle Schritte auflisten ++++++++++++++++++++++++ -->
@@ -121,14 +121,14 @@
                                                             <f:facet name="header">
                                                                 <h:outputText value="#{msgs.nr}" />
                                                             </f:facet>
-                                                            <h:outputText value="#{step.reihenfolge}" />
+                                                            <h:outputText value="#{step.reihenfolge}" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                                         </h:column>
 
                                                         <h:column>
                                                             <f:facet name="header">
                                                                 <h:outputText value="#{msgs.titel}" />
                                                             </f:facet>
-                                                            <h:outputText value="#{step.titelLokalisiert}" />
+                                                            <h:outputText value="#{step.titel}" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                                         </h:column>
 
                                                         <h:column>
@@ -206,6 +206,7 @@
                                         <div class="progress margin-bottom-no" title="#{msgs.status}">
 											<div title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar progress-bar-success" style="width: #{item.fortschritt3}%;"/>
 											<div title="#{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar progress-bar-warning" style="width: #{item.fortschritt2}%;"/>
+											<div title="#{msgs.statusError}" data-toggle="tooltip" class="progress-bar progress-bar-danger progressbar-status-error" style="width: #{item.fortschrittError}%;"/>
 											<div title="#{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar progress-bar-danger" style="width: #{item.fortschritt1}%;"/>
                                         </div>
 

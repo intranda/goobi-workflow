@@ -418,6 +418,20 @@ label {
     padding-right: 10px;
 }
 
+.tableColumnWidthMid {
+    width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.tableColumnWidthLong {
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
 .tableColumnMaxWidthMid {
     max-width: 80px;
     overflow: hidden;
@@ -690,13 +704,31 @@ grau: #dddddd
 }
 
 .status-error{
-	background: #ffbf21 none repeat scroll 0 0;	
-	background-image: linear-gradient(-45deg, #e51400 25%, transparent 25%, transparent 50%, #e51400 50%, #e51400 75%, transparent 75%, transparent);
-    background-size: 8px 8px;
+	background: white none repeat scroll 0 0;	
+	background-image: linear-gradient(45deg, #e51400 25%, transparent 25%, transparent 50%, #e51400 50%, #e51400 75%, transparent 75%, transparent);
+    background-size: 7px 7px;
+    border: 0.5px solid #e51400;
 }
 
 .status-deactivated{
 	background: #ccc none repeat scroll 0 0;	
+}
+
+.progressbar-status-locked {
+    background: #e51400 none repeat scroll 0 0;	
+ }
+
+.progressbar-status-open {
+    background: #e8860c none repeat scroll 0 0;	
+}
+
+.progressbar-status-done {
+    background: #339933 none repeat scroll 0 0;	
+}
+
+.progressbar-status-error {
+	background-image: linear-gradient(45deg, white 25%, transparent 25%, transparent 50%, white 50%, white 75%, transparent 75%, transparent);
+    background-size: 10px 10px;
 }
 
 /* ------------- badges and labels --------------- */
