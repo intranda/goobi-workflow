@@ -722,7 +722,7 @@ grau: #dddddd
 
 .easy-read-status-done{
 	background: black none repeat scroll 0 0;	
-	border-top: 1px solid black;
+	border: 1px solid black;
 }
 
 .easy-read-status-open{
@@ -766,6 +766,7 @@ grau: #dddddd
     background: #ccc none repeat scroll 0 0;
 	border-bottom: 1px solid black;
 	border-top: 1px solid black;
+	border-right: 1px solid black;
 	box-shadow: none;
 }
 
@@ -774,6 +775,7 @@ grau: #dddddd
 	border-bottom: 1px solid black;
 	border-top: 1px solid black;
 	border-left: 1px solid black;
+	border-right: 1px solid black;
 	box-shadow: none;
 }
 
@@ -783,6 +785,7 @@ grau: #dddddd
     background-size: 10px 10px;
     border-bottom: 1px solid black;
 	border-top: 1px solid black;
+	border-right: 1px solid black;
 	box-shadow: none;
 }
 

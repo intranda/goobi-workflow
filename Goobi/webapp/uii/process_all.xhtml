@@ -204,10 +204,18 @@
                                         </f:facet>
 
                                         <div class="progress margin-bottom-no" title="#{msgs.status}" style="border: 0px solid black;">
-											<div title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;"/>
-											<div title="#{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;"/>
-											<div title="#{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;"/>
-											<div title="#{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;"/>
+											<h:panelGroup rendered="#{item.fortschritt3 gt 0}">
+												<div title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;"/>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{item.fortschritt2 gt 0}">
+												<div title="#{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;"/>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{item.fortschrittError gt 0}">
+												<div title="#{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;"/>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{item.fortschritt1 gt 0}">
+												<div title="#{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;"/>
+											</h:panelGroup>
                                         </div>
 
                                     </x:column>
