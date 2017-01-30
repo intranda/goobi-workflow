@@ -418,8 +418,79 @@ label {
     padding-right: 10px;
 }
 
-.tableColumnWidthMid {
+.tableColumnOverflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.width80 {
     width: 80px;
+}
+.width100 {
+    width: 100px;
+}
+.width120 {
+    width: 120px;
+}
+.width150 {
+    width: 150px;
+}
+.width200 {
+    width: 200px;
+}
+.width250 {
+    width: 250px;
+}
+.width300 {
+    width: 300px;
+}
+.width350 {
+    width: 350px;
+}
+.maxWidth80 {
+    max-width: 80px;
+}
+.maxWidth100 {
+    max-width: 100px;
+}
+.maxWidth120 {
+    max-width: 120px;
+}
+.maxWidth150 {
+    max-width: 150px;
+}
+.maxWidth200 {
+    max-width: 200px;
+}
+.maxWidth250 {
+    max-width: 250px;
+}
+.maxWidth300 {
+    max-width: 300px;
+}
+.maxWidth350 {
+    max-width: 350px;
+}
+
+
+
+.tableColumnWidthSmall {
+    width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.tableColumnWidth100 {
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.tableColumnWidthMid {
+    width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap

@@ -48,7 +48,7 @@
                                 <x:dataTable id="processTable" rowIndexVar="count" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProzessverwaltungForm.paginator.list}">
 
                                     <!-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ -->
-                                    <x:column rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
+                                    <x:column styleClass="tableColumnWidthMid" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
                                         <f:facet name="header">
                                             <x:div>
                                                 <!-- Header -->
@@ -94,7 +94,7 @@
                                     </x:column>
 
                                     <!-- +++++++++++++++++  alle Schritte auflisten ++++++++++++++++++++++++ -->
-                                    <x:column rendered="true" id="ajaxcolumn" styleClass="tableColumnMaxWidthLong" headerstyleClass="#{ProzessverwaltungForm.sortierung=='titelDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='titelAsc'?'sorting_asc':'sorting'}">
+                                    <x:column rendered="true" id="ajaxcolumn" styleClass="tableColumnMaxWidthLonger" headerstyleClass="#{ProzessverwaltungForm.sortierung=='titelDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='titelAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.prozessTitel}" />
@@ -181,7 +181,7 @@
 
 
                                     <!-- +++++++++++++++++  Vorgangsdatum ++++++++++++++++++++++++ -->
-                                    <x:column rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'sorting_asc':'sorting'}">
+                                    <x:column styleClass="tableColumnWidthMid" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.vorgangsdatum}" />
