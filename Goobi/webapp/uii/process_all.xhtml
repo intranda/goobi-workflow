@@ -48,7 +48,7 @@
                                 <x:dataTable id="processTable" rowIndexVar="count" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProzessverwaltungForm.paginator.list}">
 
                                     <!-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ -->
-                                    <x:column styleClass="tableColumnWidthMid" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
+                                    <x:column styleClass="tableColumnOverflow width120" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
                                         <f:facet name="header">
                                             <x:div>
                                                 <!-- Header -->
@@ -70,7 +70,7 @@
                                     </x:column>
 
                                     <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
-                                    <x:column rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='idDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='idAsc'?'sorting_asc':'sorting'}">
+                                    <x:column styleClass="tableColumnOverflow width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='idDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='idAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.id}" />
@@ -82,7 +82,7 @@
                                     </x:column>
 
                                     <!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
-                                    <x:column rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='batchDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
+                                    <x:column styleClass="tableColumnOverflow width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='batchDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.batch}" />
@@ -94,7 +94,7 @@
                                     </x:column>
 
                                     <!-- +++++++++++++++++  alle Schritte auflisten ++++++++++++++++++++++++ -->
-                                    <x:column rendered="true" id="ajaxcolumn" styleClass="tableColumnMaxWidthLonger" headerstyleClass="#{ProzessverwaltungForm.sortierung=='titelDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='titelAsc'?'sorting_asc':'sorting'}">
+                                    <x:column rendered="true" id="ajaxcolumn" styleClass="tableColumnOverflow maxWidth300" headerstyleClass="#{ProzessverwaltungForm.sortierung=='titelDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='titelAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.prozessTitel}" />
@@ -181,7 +181,7 @@
 
 
                                     <!-- +++++++++++++++++  Vorgangsdatum ++++++++++++++++++++++++ -->
-                                    <x:column styleClass="tableColumnWidthMid" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'sorting_asc':'sorting'}">
+                                    <x:column styleClass="tableColumnOverflow width150" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.vorgangsdatum}" />
@@ -194,7 +194,7 @@
                                     </x:column>
 
                                     <!-- +++++++++++++++++  Status ++++++++++++++++++++++++ -->
-                                    <x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{ProzessverwaltungForm.sortierung=='fortschrittDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='fortschrittAsc'?'sorting_asc':'sorting'}">
+                                    <x:column styleClass="tableColumnOverflow width200" headerstyleClass="#{ProzessverwaltungForm.sortierung=='fortschrittDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='fortschrittAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                 <h:outputText value="#{msgs.status}" />
@@ -221,7 +221,7 @@
                                     </x:column>
 
 
-                                    <x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{ProzessverwaltungForm.sortierung=='projektDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='projektAsc'?'sorting_asc':'sorting'}">
+                                    <x:column styleClass="tableColumnOverflow maxWidth120" headerstyleClass="#{ProzessverwaltungForm.sortierung=='projektDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='projektAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <!-- Header -->
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}" title="#{msgs.projekt}">
@@ -234,7 +234,7 @@
                                     </x:column>
 
 
-                                    <x:column rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}">
+                                    <x:column styleClass="tableColumnOverflow maxWidth120" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}">
                                         <f:facet name="header">
                                             <x:div>
                                                 <!-- Header -->
@@ -248,7 +248,7 @@
 
 
                                     <!-- +++++++++++++++++  Swapped out ++++++++++++++++++++++++ -->
-                                    <x:column rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
+                                    <x:column styleClass="tableColumnOverflow width100" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
                                         <f:facet name="header">
                                             <x:div>
                                                 <!-- Header -->
@@ -258,7 +258,7 @@
                                         <i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
                                     </x:column>
 
-                                    <x:column style="width:180px;">
+                                    <x:column styleClass="tableColumnOverflow width200">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>

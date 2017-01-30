@@ -472,6 +472,9 @@ label {
 .maxWidth350 {
     max-width: 350px;
 }
+.maxWidth350 {
+    max-width: 500px;
+}
 
 
 
