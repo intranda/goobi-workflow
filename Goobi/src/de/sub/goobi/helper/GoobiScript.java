@@ -267,14 +267,14 @@ public class GoobiScript {
                         NIOFileUtils.deleteDir(images);
                     }
                 } catch (Exception e) {
-                    Helper.setFehlerMeldung("Can not delete metadata directory", e);
+                    Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory", e);
                 }
-                Helper.setMeldung("Content deleted for " + title);
+                Helper.setMeldung("goobiScriptfield", "", "Content deleted for " + title);
             } else {
 
                 deleteMetadataDirectory(p);
                 ProcessManager.deleteProcess(p);
-                Helper.setMeldung("Process " + title + " deleted.");
+                Helper.setMeldung("goobiScriptfield", "", "Process " + title + " deleted.");
             }
         }
     }
@@ -287,7 +287,7 @@ public class GoobiScript {
                 NIOFileUtils.deleteDir(ocr);
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung("Can not delete metadata directory", e);
+            Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory", e);
         }
     }
 
@@ -355,7 +355,7 @@ public class GoobiScript {
 
         Path sourceFolder = Paths.get(this.myParameters.get("sourcefolder"));
         if (!Files.exists(sourceFolder) || !Files.isDirectory(sourceFolder)) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Directory " + this.myParameters.get("sourcefolder") + " does not exisist");
+            Helper.setFehlerMeldung("goobiScriptfield", "", "Directory " + this.myParameters.get("sourcefolder") + " does not exisist");
             return;
         }
         try {
@@ -380,7 +380,7 @@ public class GoobiScript {
                 }
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung(e);
+            Helper.setFehlerMeldung("goobiScriptfield","",e);
             logger.error(e);
         }
     }
@@ -412,7 +412,7 @@ public class GoobiScript {
                 ProcessManager.saveProcess(p);
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung(e);
+            Helper.setFehlerMeldung("goobiScriptfield", "", e);
             logger.error(e);
         }
     }
@@ -450,7 +450,7 @@ public class GoobiScript {
 
 			}
 		} catch (Exception e) {
-			Helper.setFehlerMeldung(e);
+			Helper.setFehlerMeldung("goobiScriptfield", "", e);
 			logger.error(e);
 		}
 	}
@@ -528,7 +528,7 @@ public class GoobiScript {
             }
 
         }
-        Helper.setMeldung("goobiScriptfield", "swapsteps finished: ");
+        Helper.setMeldung("goobiScriptfield","", "swapsteps finished");
     }
 
     /**
@@ -777,7 +777,7 @@ public class GoobiScript {
         }
 
         if (!value.equals("true") && !value.equals("false")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "wrong parameter 'value'; possible values: true, false");
+            Helper.setFehlerMeldung("goobiScriptfield", "", "wrong parameter 'value'; possible values: true, false");
             return;
         }
 
@@ -1103,11 +1103,11 @@ public class GoobiScript {
                 Helper.setMeldung("goobiScriptfield", "ImagePath updated: ", proz.getTitel());
 
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
+                Helper.setFehlerMeldung("goobiScriptfield", "DocStructHasNoTypeException", e.getMessage());
             } catch (UghHelperException e) {
-                Helper.setFehlerMeldung("UghHelperException", e.getMessage());
+                Helper.setFehlerMeldung("goobiScriptfield", "UghHelperException", e.getMessage());
             } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
+                Helper.setFehlerMeldung("goobiScriptfield", "MetadataTypeNotAllowedException", e.getMessage());
 
             } catch (Exception e) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Error while updating imagepath", e);
@@ -1228,7 +1228,7 @@ public class GoobiScript {
                     | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
                     | InterruptedException e) {
                 String[] parameter = { prozess.getTitel(), e.getMessage() };
-                Helper.setFehlerMeldung(Helper.getTranslation("ErrorDMSExport", parameter));
+                Helper.setFehlerMeldung("goobiScriptfield", "", Helper.getTranslation("ErrorDMSExport", parameter));
                 logger.error("DocStructHasNoTypeException", e);
 
                 logger.error("PreferencesException", e);

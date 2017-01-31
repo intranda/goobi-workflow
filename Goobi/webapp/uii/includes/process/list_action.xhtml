@@ -273,7 +273,7 @@
 	                                                        <f:param value="#{ProzessverwaltungForm.securityCheckNumber2}" />
 	                                                    </h:outputFormat>
 	                                                    <br/><br/>
-	                                                    <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.securityCheckResultGuess}" validatorMessage="Zahlen nicht zwischen 1 und 1000.">
+	                                                    <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.securityCheckResultGuess}" validatorMessage="#{msgs.GoobiScript_input_not_valid}">
 	                                                    	<f:validateLongRange minimum="1" maximum="1000"/>
 	                                                    </h:inputText>
 	                                                </div>

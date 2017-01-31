@@ -1616,7 +1616,7 @@ public class ProcessBean extends BasicBean {
      */
     public void GoobiScriptHits() {
     	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("GoobiScript_wrong_answer");
+    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
     	}else{
     		calcSecurityNumber();
 	        GoobiScript gs = new GoobiScript();
@@ -1631,7 +1631,7 @@ public class ProcessBean extends BasicBean {
     @SuppressWarnings("unchecked")
     public void GoobiScriptPage() {
     	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("GoobiScript_wrong_answer");
+    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
     	}else{
 	    	calcSecurityNumber();
 	        GoobiScript gs = new GoobiScript();
@@ -1649,7 +1649,7 @@ public class ProcessBean extends BasicBean {
     @SuppressWarnings("unchecked")
     public void GoobiScriptSelection() {
     	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("GoobiScript_wrong_answer");
+    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
     	}else{
     		calcSecurityNumber();
 	    	List<Integer> idList = new ArrayList<>();
