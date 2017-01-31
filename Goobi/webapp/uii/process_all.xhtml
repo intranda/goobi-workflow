@@ -263,7 +263,8 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
 
-	                                        <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" id="edit"
+                                        <!-- Bearbeiten-Schaltknopf: Vorlagen -->
+	                                    <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" id="edit"
 	                                        rendered="#{LoginForm.hasRole('Workflow_General_Details')}" title="#{msgs.prozessBearbeiten}">
                                             <i class="btn fa fa-pencil" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -271,14 +272,6 @@
                                             <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                         </h:commandLink>
 
-                                        <!-- Bearbeiten-Schaltknopf: Vorlagen -->
-                                        <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" rendered="#{(LoginForm.maximaleBerechtigung == 1 or LoginForm.maximaleBerechtigung == 2) and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}" title="#{msgs.prozessBearbeiten}">
-                                            <i class="btn fa fa-pencil" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                            <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
-                                            <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-                                        </h:commandLink>
-                                        
                                         <!-- Duplicate process template -->
 	                                        <h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rel="tooltip" rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}" title="#{msgs.duplicateWorkflow}"
                                         	onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
