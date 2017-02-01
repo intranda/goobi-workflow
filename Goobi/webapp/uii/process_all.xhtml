@@ -264,26 +264,23 @@
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf: Vorlagen -->
-	                                    <h:commandLink action="#{ProzessverwaltungForm.editProcess}" rel="tooltip" id="edit"
+	                                    <h:commandLink action="#{ProzessverwaltungForm.editProcess}" id="edit"
 	                                        rendered="#{LoginForm.hasRole('Workflow_General_Details')}" title="#{msgs.prozessBearbeiten}">
                                             <i class="btn fa fa-pencil" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                         </h:commandLink>
 
                                         <!-- Duplicate process template -->
-	                                        <h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rel="tooltip" rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}" title="#{msgs.duplicateWorkflow}"
+	                                        <h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}" title="#{msgs.duplicateWorkflow}"
                                         	onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <i class="btn fa fa-clipboard" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                                         </h:commandLink>
                                         
 	                                        <!-- Metadaten-Schaltknopf - Read only -->
-	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" title="#{msgs.metadatenBearbeiten}" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                                             <i class="btn fa fa-book" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:param name="nurLesen" value="true" />
                                             <f:param name="ProzesseID" value="#{item.id}" />
                                             <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
@@ -291,9 +288,8 @@
                                         </h:commandLink>
 
 	                                        <!-- Metadaten-Schaltknopf - Allow writing -->
-	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action15" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
+	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action15" title="#{msgs.metadatenBearbeiten}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
                                             <i class="btn fa fa-book " />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:param name="ProzesseID" value="#{item.id}" />
                                             <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
                                             <f:param name="zurueck" value="process_all" />
@@ -376,30 +372,26 @@
 
 
                                         <!-- DMS-Export-Schaltknopf -->
-	                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" title="#{msgs.importDms}" rel="tooltip" styleClass="font-light" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+	                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" title="#{msgs.importDms}" styleClass="font-light" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
                                             <i class="btn fa fa-globe" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                                         </h:commandLink>
 
                                         <!-- DMS-Export-Schaltknopf greyed -->
-	                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" disabled="true" title="#{msgs.importDms}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
+	                                        <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" disabled="true" title="#{msgs.importDms}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
                                             <i class="btn font-light fa fa-globe" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                                         </h:commandLink>
                                         
                                         <!-- ProzessKopie-Schaltknopf -->
-	                                        <h:commandLink action="#{ProzesskopieForm.Prepare}" id="action22" rel="tooltip" title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}" rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single')}">
+	                                        <h:commandLink action="#{ProzesskopieForm.Prepare}" id="action22" title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}" rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single')}">
                                             <i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzesskopieForm.prozessVorlage}" value="#{item}" />
                                         </h:commandLink>
 
                                         <!-- MassenImport -->
-	                                        <h:commandLink action="#{MassImportForm.Prepare}" id="action222" title="#{msgs.MassenImport}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi')}">
+	                                        <h:commandLink action="#{MassImportForm.Prepare}" id="action222" title="#{msgs.MassenImport}" rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi')}">
                                             <i class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{MassImportForm.template}" value="#{item}" />
                                         </h:commandLink>
 
