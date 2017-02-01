@@ -361,7 +361,7 @@ public class ProzesskopieFormTest {
         userList = new ArrayList<>();
         User user = new User();
         user.setLogin("login");
-        user.setPasswort("password");
+        user.setEncryptedPassword("password");
         userList.add(user);
 
         List<Step> stepList = new ArrayList<>();

@@ -175,6 +175,8 @@ public class UserManager implements IManager, Serializable {
         r.setNachname(rs.getString("Nachname"));
         r.setLogin(rs.getString("login"));
         r.setPasswort(rs.getString("passwort"));
+        r.setEncryptedPassword(rs.getString("encryptedPassword"));
+        r.setPasswordSalt(rs.getString("salt"));
         r.setIstAktiv(rs.getBoolean("IstAktiv"));
         r.setStandort(rs.getString("Standort"));
         r.setMetadatenSprache(rs.getString("metadatensprache"));

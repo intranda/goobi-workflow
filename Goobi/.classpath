@@ -73,7 +73,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/util-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xalan-2.6.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xbean_xpath-2.4.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xml-apis-ext-1.3.04.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xmlbeans-2.4.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xmlgraphics-commons-1.3.1.jar"/>
@@ -125,8 +124,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lombok-1.12.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-collections-3.2.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/normdataimporter.jar"/>
@@ -155,6 +152,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.1.39-bin.jar"/>
 	<classpathentry kind="lib" path="lib-test/commons-pool2-2.3.jar"/>
 	<classpathentry kind="lib" path="lib-test/jetty-servlets-9.3.12.v20160915.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/shiro-all-1.3.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
@@ -170,5 +168,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.2 (Mojarra 2.2.0)"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>

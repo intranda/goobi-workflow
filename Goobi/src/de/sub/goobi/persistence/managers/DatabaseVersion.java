@@ -31,11 +31,16 @@ import java.util.regex.Pattern;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.goobi.beans.User;
 import org.goobi.production.enums.LogType;
+
+import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 15;
+    public static final int EXPECTED_VERSION = 16;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -141,6 +146,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 15.");
                 }
                 updateToVersion15();
+            case 15:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 15.");
+                }
+                updateToVersion16();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -150,6 +160,45 @@ public class DatabaseVersion {
         }
     }
 
+    private static void updateToVersion16() {
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+
+            runner.update(connection, "alter table benutzer add column salt text DEFAULT NULL");
+            runner.update(connection, "alter table benutzer add column encryptedPassword text DEFAULT NULL");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+
+        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+        try {
+            List<User> allUsers = UserManager.getUsers("", "", null, null);
+            for (User user : allUsers) {
+                Object salt = rng.nextBytes();
+                user.setPasswordSalt(salt.toString());
+                String oldPassword = user.getPasswortCrypt();
+                user.setEncryptedPassword(user.getPasswordHash(oldPassword));
+                user.setPasswort("");
+                UserManager.saveUser(user);
+            }
+
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+
+    }
+
     private static void updateToVersion15() {
         Connection connection = null;
 
@@ -157,10 +206,13 @@ public class DatabaseVersion {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
 
-            runner.update(connection, "update benutzergruppen set roles='Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;' where berechtigung = 1;");
-            runner.update(connection, "update benutzergruppen set roles='Statistics_CurrentUsers;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Finished;' where berechtigung = 2;");
-            runner.update(connection, "update benutzergruppen set roles='Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;' where berechtigung = 4;");
-            
+            runner.update(connection,
+                    "update benutzergruppen set roles='Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;' where berechtigung = 1;");
+            runner.update(connection,
+                    "update benutzergruppen set roles='Statistics_CurrentUsers;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Finished;' where berechtigung = 2;");
+            runner.update(connection,
+                    "update benutzergruppen set roles='Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;' where berechtigung = 4;");
+
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -173,7 +225,7 @@ public class DatabaseVersion {
             }
         }
     }
-    
+
     private static void updateToVersion14() {
         Connection connection = null;
 
@@ -182,7 +234,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
 
             runner.update(connection, "alter table benutzergruppen add column roles text default null;");
-            
+
         } catch (SQLException e) {
             logger.error(e);
         } finally {

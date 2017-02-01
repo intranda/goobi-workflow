@@ -45,6 +45,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -78,7 +80,9 @@ public class UserBean extends BasicBean {
         this.myClass.setNachname("");
         this.myClass.setLogin("");
         this.myClass.setLdaplogin("");
-        this.myClass.setPasswortCrypt("Passwort");
+        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+        Object salt = rng.nextBytes();
+        this.myClass.setPasswordSalt(salt.toString());
         updateUsergroupPaginator();
         updateProjectPaginator();
         return "user_edit";
@@ -142,6 +146,8 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query);
             if (num == 0) {
+                myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+                myClass.setPasswort("");;
                 UserManager.saveUser(this.myClass);
                 paginator.load();
                 return FilterKein();
@@ -324,7 +330,8 @@ public class UserBean extends BasicBean {
     public String LdapKonfigurationSchreiben() {
         LdapAuthentication myLdap = new LdapAuthentication();
         try {
-            myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
+            // TODO
+//            myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
         } catch (Exception e) {
             logger.warn("Could not generate ldap entry: " + e.getMessage());
             Helper.setFehlerMeldung("Error on writing to database", e);

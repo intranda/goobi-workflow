@@ -26,66 +26,32 @@ public class JettyServer {
         WebAppContext wac = new AliasEnhancedWebAppContext();
         wac.setContextPath("/Goobi");
 
-        wac.setBaseResource(new ResourceCollection(new String[] { "./webapp" }));
-        wac.setResourceAlias("/webapp/WEB-INF/classes", "/classes/");
-        wac.setDescriptor("./webapp/WEB-INF/web.xml");
+        wac.setBaseResource(new ResourceCollection(new String[] { "webapp" }));
+        wac.setResourceAlias("webapp/WEB-INF/classes", "/classes/");
+        wac.setDescriptor("webapp/WEB-INF/web.xml");
+                
+//        wac.setClassLoader(getClass().getClassLoader());
         server.setHandler(wac);
-        // TODO check javax.faces
-//            wac.setConfigurationClasses(new String[] { 
-//                    "org.eclipse.jetty.plus.webapp.EnvConfiguration",
-//                "org.eclipse.jetty.plus.webapp.PlusConfiguration",
-//               
-//              
-//                });
-//            "org.eclipse.jetty.webapp.WebInfConfiguration", 
-//            "org.eclipse.jetty.webapp.WebXmlConfiguration",
-//            "org.eclipse.jetty.webapp.MetaInfConfiguration",
-//            "org.eclipse.jetty.webapp.FragmentConfiguration",
-//            "org.eclipse.jetty.plus.webapp.EnvConfiguration",
-//            "org.eclipse.jetty.plus.webapp.PlusConfiguration",
-//            "org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
-//            "org.eclipse.jetty.webapp.TagLibConfiguration" 
-
-//        InputStream jettyConfFile = JettyServer.class.getResourceAsStream("jetty-env.xml");
-//        XmlConfiguration config = new XmlConfiguration(jettyConfFile);
-//        config.configure(server);
+        
+      
+        
+        
         MysqlConnectionPoolDataSource dataSource=new MysqlConnectionPoolDataSource();
         dataSource.setUrl("jdbc:mysql://localhost/goobi");
         dataSource.setUser("goobi");
         dataSource.setPassword("goobi");
         new Resource( "java:comp/env/goobi",dataSource);
-//        
-        
-//        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.eclipse.jetty.jndi.InitialContextFactory");
-//        System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
-//        InitialContext ic = new InitialContext();
-//
-//        ic.createSubcontext("java:");
-//        ic.createSubcontext("java:/comp");
-//        ic.createSubcontext("java:/comp/env");
-//        ic.bind("java:/goobi", dataSource);
-//        BasicDataSource dataSource = new BasicDataSource();
-//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost/goobi");
-//        dataSource.setUsername("goobi");
-//        dataSource.setPassword("goobi");
-
-//        dataSource.setJmxName("goobi");
 
 
 
-        
-//        try {
-//            org.eclipse.jetty.plus.jndi.Resource mydatasource = new org.eclipse.jetty.plus.jndi.Resource(wac, "goobi", dataSource);
-////            server.setAttribute("goobi", mydatasource);
-//        } catch (NamingException e) {
-//            e.printStackTrace();
-//        }
 
         server.setStopAtShutdown(true);
         try {
             server.start();
+
+            
             server.join();
+            wac.getServletContext().addListener(com.sun.faces.config.ConfigureListener.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,11 +60,11 @@ public class JettyServer {
 
     @Test
     public void shouldRun() throws Exception {
-        @SuppressWarnings("deprecation")
         HttpClient client = new DefaultHttpClient();
-        HttpGet mockRequest = new HttpGet("http://localhost:8080/Goobi");
+        HttpGet mockRequest = new HttpGet("http://localhost:8090/Goobi");
         HttpResponse mockResponse = client.execute(mockRequest);
 
+        
     }
 
     @After

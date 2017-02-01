@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
 
-import de.sub.goobi.config.ConfigurationHelper;
 
 public class SecurityCheckFilter implements Filter {
 

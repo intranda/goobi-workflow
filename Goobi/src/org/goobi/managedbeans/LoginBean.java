@@ -204,7 +204,8 @@ public class LoginBean {
                 LdapAuthentication myLdap = new LdapAuthentication();
                 myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
                 User temp = UserManager.getUserById(this.myBenutzer.getId());
-                temp.setPasswortCrypt(this.passwortAendernNeu1);
+               // TODO
+//                temp.setPasswortCrypt(this.passwortAendernNeu1);
                 UserManager.saveUser(temp);
                 this.myBenutzer = temp;
 

@@ -34,7 +34,7 @@ public class LdapAuthenticationTest {
         currentUser.setVorname("firstname");
         currentUser.setNachname("lastname");
         currentUser.setLdaplogin("login");
-        currentUser.setPasswort("password");
+        currentUser.setEncryptedPassword("password");
         
         Ldap ldap = new Ldap();
         ldap.setUserDN("cn=testuser,dc=ldap,dc=intranda,dc=com");

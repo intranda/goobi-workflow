@@ -40,6 +40,7 @@ import jgravatar.GravatarRating;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -53,425 +54,444 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 public class User implements DatabaseObject {
 
     private static final Logger logger = Logger.getLogger(User.class);
-	private Integer id;
-	private String vorname;
-	private String nachname;
-	private String login;
-	private String ldaplogin;
-	private String passwort;
-	private boolean istAktiv = true;
-	private String isVisible;
-	private String standort;
-	private Integer tabellengroesse = Integer.valueOf(10);
-	private Integer sessiontimeout = 7200;
-//	private boolean confVorgangsdatumAnzeigen = false;
-	private String metadatenSprache;
-	private List<Usergroup> benutzergruppen;
-	private List<Step> schritte;
-	private List<Step> bearbeitungsschritte;
-	private List<Project> projekte;
-	private List<UserProperty> eigenschaften;
-	private boolean mitMassendownload = false;
-	private Ldap ldapGruppe;
-	private String css;
-	private String email;
-	private String shortcutPrefix = "ctrl+shift";
-	
-	private boolean displayDeactivatedProjects = false;
-	private boolean displayFinishedProcesses = false;
-	private boolean displaySelectBoxes = false;
-	private boolean displayIdColumn = false;
-	private boolean displayBatchColumn = false;
-	private boolean displayProcessDateColumn = false;
-	private boolean displayLocksColumn = false;
-	private boolean displaySwappingColumn = false;
-	private boolean displayModulesColumn = false;
-	
-	private boolean displayAutomaticTasks = false;
-	private boolean hideCorrectionTasks = false;
-	private boolean displayOnlySelectedTasks = false;
-	private boolean displayOnlyOpenTasks = false;
-	private boolean displayOtherTasks = false;
-	
-	private boolean metsDisplayTitle = false;
-	private boolean metsLinkImage = false;
-	private boolean metsDisplayPageAssignments = false;
+    private Integer id;
+    private String vorname;
+    private String nachname;
+    private String login;
+    private String ldaplogin;
+    private String passwort;
+    private boolean istAktiv = true;
+    private String isVisible;
+    private String standort;
+    private Integer tabellengroesse = Integer.valueOf(10);
+    private Integer sessiontimeout = 7200;
+    //	private boolean confVorgangsdatumAnzeigen = false;
+    private String metadatenSprache;
+    private List<Usergroup> benutzergruppen;
+    private List<Step> schritte;
+    private List<Step> bearbeitungsschritte;
+    private List<Project> projekte;
+    private List<UserProperty> eigenschaften;
+    private boolean mitMassendownload = false;
+    private Ldap ldapGruppe;
+    private String css;
+    private String email;
+    private String shortcutPrefix = "ctrl+shift";
+
+    private String encryptedPassword;
+    private String passwordSalt;
+
+    private boolean displayDeactivatedProjects = false;
+    private boolean displayFinishedProcesses = false;
+    private boolean displaySelectBoxes = false;
+    private boolean displayIdColumn = false;
+    private boolean displayBatchColumn = false;
+    private boolean displayProcessDateColumn = false;
+    private boolean displayLocksColumn = false;
+    private boolean displaySwappingColumn = false;
+    private boolean displayModulesColumn = false;
+
+    private boolean displayAutomaticTasks = false;
+    private boolean hideCorrectionTasks = false;
+    private boolean displayOnlySelectedTasks = false;
+    private boolean displayOnlyOpenTasks = false;
+    private boolean displayOtherTasks = false;
+
+    private boolean metsDisplayTitle = false;
+    private boolean metsLinkImage = false;
+    private boolean metsDisplayPageAssignments = false;
     private boolean metsDisplayHierarchy = false;
-	
-	private Integer metsEditorTime;
-	
-	private static final int IMAGE_SIZE = 27;
-	
 
-	public void lazyLoad(){
-		try {
-			this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
-			this.projekte = ProjectManager.getProjectsForUser(this);
-		} catch (DAOException e) {
-			logger.error("error during lazy loading of User", e);
-		}
-	}
-	
-	public Integer getId() {
-		return this.id;
-	}
+    private Integer metsEditorTime;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    private static final int IMAGE_SIZE = 27;
 
-	public String getLogin() {
-		return this.login;
-	}
+    public void lazyLoad() {
+        try {
+            this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
+            this.projekte = ProjectManager.getProjectsForUser(this);
+        } catch (DAOException e) {
+            logger.error("error during lazy loading of User", e);
+        }
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public String getNachname() {
-		return this.nachname;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setNachname(String nachname) {
-		this.nachname = nachname;
-	}
+    public String getLogin() {
+        return this.login;
+    }
 
-	public String getPasswort() {
-		return this.passwort;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public void setPasswort(String inpasswort) {
-		this.passwort = inpasswort;
-	}
+    public String getNachname() {
+        return this.nachname;
+    }
 
-	public String getPasswortCrypt() {
-		DesEncrypter encrypter = new DesEncrypter();
-		String decrypted = encrypter.decrypt(this.passwort);
-		return decrypted;
-	}
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
+    }
 
-	public void setPasswortCrypt(String inpasswort) {
-		DesEncrypter encrypter = new DesEncrypter();
-		String encrypted = encrypter.encrypt(inpasswort);
-		this.passwort = encrypted;
-	}
+    public String getPasswort() {
+        return this.passwort;
+    }
 
-	public boolean isIstAktiv() {
-		return this.istAktiv;
-	}
+    public void setPasswort(String inpasswort) {
+        this.passwort = inpasswort;
+    }
 
-	public void setIstAktiv(boolean istAktiv) {
-		this.istAktiv = istAktiv;
-	}
+    public String getPasswortCrypt() {
+        DesEncrypter encrypter = new DesEncrypter();
+        String decrypted = encrypter.decrypt(this.passwort);
+        return decrypted;
+    }
 
-	public void setIsVisible(String isVisible) {
-		this.isVisible = isVisible;
-	}
+    public void setPasswortCrypt(String inpasswort) {
+        DesEncrypter encrypter = new DesEncrypter();
+        String encrypted = encrypter.encrypt(inpasswort);
+        this.passwort = encrypted;
+    }
 
-	public String getIsVisible() {
-		return this.isVisible;
-	}
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
 
-	public String getStandort() {
-		return this.standort;
-	}
+    public Object getPasswordSalt() {
+        return passwordSalt;
+    }
 
-	public void setStandort(String instandort) {
-		this.standort = instandort;
-	}
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
 
-	public String getVorname() {
-		return this.vorname;
-	}
+    public void setPasswordSalt(String passwordSalt) {
+        this.passwordSalt = passwordSalt;
+    }
 
-	public void setVorname(String vorname) {
-		this.vorname = vorname;
-	}
+    public boolean isIstAktiv() {
+        return this.istAktiv;
+    }
 
-	public Integer getTabellengroesse() {
-		if (this.tabellengroesse == null) {
-			return Integer.valueOf(10);
-		}
-		return this.tabellengroesse;
-	}
+    public void setIstAktiv(boolean istAktiv) {
+        this.istAktiv = istAktiv;
+    }
 
-	public void setTabellengroesse(Integer tabellengroesse) {
-		this.tabellengroesse = tabellengroesse;
-	}
+    public void setIsVisible(String isVisible) {
+        this.isVisible = isVisible;
+    }
 
-	public boolean isMitMassendownload() {
-		return this.mitMassendownload;
-	}
+    public String getIsVisible() {
+        return this.isVisible;
+    }
 
-	public void setMitMassendownload(boolean mitMassendownload) {
-		this.mitMassendownload = mitMassendownload;
-	}
+    public String getStandort() {
+        return this.standort;
+    }
 
-	public Ldap getLdapGruppe() {
-		return this.ldapGruppe;
-	}
+    public void setStandort(String instandort) {
+        this.standort = instandort;
+    }
 
-	public void setLdapGruppe(Ldap ldapGruppe) {
-		this.ldapGruppe = ldapGruppe;
-	}
+    public String getVorname() {
+        return this.vorname;
+    }
 
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
 
-	public int getBenutzergruppenSize() {
-		if (this.benutzergruppen == null) {
-			return 0;
-		} else {
-			return this.benutzergruppen.size();
-		}
-	}
+    public Integer getTabellengroesse() {
+        if (this.tabellengroesse == null) {
+            return Integer.valueOf(10);
+        }
+        return this.tabellengroesse;
+    }
 
-	public void setBenutzergruppen(List<Usergroup> benutzergruppen) {
-		this.benutzergruppen = benutzergruppen;
-	}
-	
-	public List<Usergroup> getBenutzergruppen() {
-	    if (benutzergruppen == null || benutzergruppen.size() == 0 ) {
+    public void setTabellengroesse(Integer tabellengroesse) {
+        this.tabellengroesse = tabellengroesse;
+    }
+
+    public boolean isMitMassendownload() {
+        return this.mitMassendownload;
+    }
+
+    public void setMitMassendownload(boolean mitMassendownload) {
+        this.mitMassendownload = mitMassendownload;
+    }
+
+    public Ldap getLdapGruppe() {
+        return this.ldapGruppe;
+    }
+
+    public void setLdapGruppe(Ldap ldapGruppe) {
+        this.ldapGruppe = ldapGruppe;
+    }
+
+    public int getBenutzergruppenSize() {
+        if (this.benutzergruppen == null) {
+            return 0;
+        } else {
+            return this.benutzergruppen.size();
+        }
+    }
+
+    public void setBenutzergruppen(List<Usergroup> benutzergruppen) {
+        this.benutzergruppen = benutzergruppen;
+    }
+
+    public List<Usergroup> getBenutzergruppen() {
+        if (benutzergruppen == null || benutzergruppen.size() == 0) {
             try {
                 this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             } catch (DAOException e) {
                 logger.error(e);
             }
-	    }
-		return benutzergruppen;
-	}
+        }
+        return benutzergruppen;
+    }
 
-	public List<Step> getSchritte() {
-		return this.schritte;
-	}
+    public List<Step> getSchritte() {
+        return this.schritte;
+    }
 
-	public void setSchritte(List<Step> schritte) {
-		this.schritte = schritte;
-	}
+    public void setSchritte(List<Step> schritte) {
+        this.schritte = schritte;
+    }
 
-	public int getSchritteSize() {
-		if (this.schritte == null) {
-			return 0;
-		} else {
-			return this.schritte.size();
-		}
-	}
+    public int getSchritteSize() {
+        if (this.schritte == null) {
+            return 0;
+        } else {
+            return this.schritte.size();
+        }
+    }
 
-	public List<Step> getBearbeitungsschritte() {
-		return this.bearbeitungsschritte;
-	}
+    public List<Step> getBearbeitungsschritte() {
+        return this.bearbeitungsschritte;
+    }
 
-	public void setBearbeitungsschritte(List<Step> bearbeitungsschritte) {
-		this.bearbeitungsschritte = bearbeitungsschritte;
-	}
+    public void setBearbeitungsschritte(List<Step> bearbeitungsschritte) {
+        this.bearbeitungsschritte = bearbeitungsschritte;
+    }
 
-	public int getBearbeitungsschritteSize() {
-		if (this.bearbeitungsschritte == null) {
-			return 0;
-		} else {
-			return this.bearbeitungsschritte.size();
-		}
-	}
+    public int getBearbeitungsschritteSize() {
+        if (this.bearbeitungsschritte == null) {
+            return 0;
+        } else {
+            return this.bearbeitungsschritte.size();
+        }
+    }
 
-	public int getProjekteSize() {
-		if (this.projekte == null) {
-			return 0;
-		} else {
-			return this.projekte.size();
-		}
-	}
+    public int getProjekteSize() {
+        if (this.projekte == null) {
+            return 0;
+        } else {
+            return this.projekte.size();
+        }
+    }
 
-	public void setProjekte(List<Project> projekte) {
-		this.projekte = projekte;
-	}
-	
-	public List<Project> getProjekte() {
-	    if (projekte == null || projekte.size() == 0 ) {
+    public void setProjekte(List<Project> projekte) {
+        this.projekte = projekte;
+    }
+
+    public List<Project> getProjekte() {
+        if (projekte == null || projekte.size() == 0) {
             try {
                 this.projekte = ProjectManager.getProjectsForUser(this);
             } catch (DAOException e) {
                 logger.error(e);
             }
         }
-		
-		return this.projekte;
-	}
 
-//	public boolean isConfVorgangsdatumAnzeigen() {
-//		return this.confVorgangsdatumAnzeigen;
-//	}
-//
-//	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
-//		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
-//	}
+        return this.projekte;
+    }
 
-	public String getMetadatenSprache() {
-		return this.metadatenSprache;
-	}
+    //	public boolean isConfVorgangsdatumAnzeigen() {
+    //		return this.confVorgangsdatumAnzeigen;
+    //	}
+    //
+    //	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
+    //		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
+    //	}
 
-	public void setMetadatenSprache(String metadatenSprache) {
-		this.metadatenSprache = metadatenSprache;
-	}
+    public String getMetadatenSprache() {
+        return this.metadatenSprache;
+    }
 
-	public String getLdaplogin() {
-		return this.ldaplogin;
-	}
+    public void setMetadatenSprache(String metadatenSprache) {
+        this.metadatenSprache = metadatenSprache;
+    }
 
-	public void setLdaplogin(String ldaplogin) {
-		this.ldaplogin = ldaplogin;
-	}
+    public String getLdaplogin() {
+        return this.ldaplogin;
+    }
 
-	public boolean istPasswortKorrekt(String inPasswort) {
-		if (inPasswort == null || inPasswort.length() == 0) {
-			return false;
-		} else {
+    public void setLdaplogin(String ldaplogin) {
+        this.ldaplogin = ldaplogin;
+    }
 
-			/* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
+    public boolean istPasswortKorrekt(String inPasswort) {
+        if (inPasswort == null || inPasswort.length() == 0) {
+            return false;
+        } else {
 
-			if (ConfigurationHelper.getInstance().isUseLdap()) {
-			 LdapAuthentication myldap = new LdapAuthentication();
-				return myldap.isUserPasswordCorrect(this, inPasswort);
-			} else {
-				DesEncrypter encrypter = new DesEncrypter();
-				String encoded = encrypter.encrypt(inPasswort);
-				return this.passwort.equals(encoded);
-			}
-		}
-	}
+            /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
+            if (ConfigurationHelper.getInstance().isUseLdap()) {
+                LdapAuthentication myldap = new LdapAuthentication();
+                return myldap.isUserPasswordCorrect(this, inPasswort);
+            } else {
+                String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
+                return this.encryptedPassword.equals(hashedPasswordBase64);
+            }
+        }
+    }
 
-	public String getNachVorname() {
-		return this.nachname + ", " + this.vorname;
-	}
+    public String getPasswordHash(String plainTextPassword) {
+        String hashedPasswordBase64 = new Sha256Hash(plainTextPassword, passwordSalt, 10000).toBase64();
+        return hashedPasswordBase64;
 
-	/**
-	 * BenutzerHome ermitteln und zurückgeben (entweder aus dem LDAP oder direkt aus der Konfiguration)
-	 * 
-	 * @return Path as String
-	 * @throws InterruptedException
-	 * @throws IOException
-	 */
-	public String getHomeDir() throws IOException, InterruptedException {
-		String rueckgabe = "";
-		/* wenn LDAP genutzt wird, HomeDir aus LDAP ermitteln, ansonsten aus der Konfiguration */
+    }
 
-		if (ConfigurationHelper.getInstance().isUseLdap()) {
-			LdapAuthentication myldap = new LdapAuthentication();
-			rueckgabe = myldap.getUserHomeDirectory(this);
-		} else {
-			rueckgabe = ConfigurationHelper.getInstance().getUserFolder() + this.login;
-		}
+    public String getNachVorname() {
+        return this.nachname + ", " + this.vorname;
+    }
 
-		if (rueckgabe.equals("")) {
-			return "";
-		}
+    /**
+     * BenutzerHome ermitteln und zurückgeben (entweder aus dem LDAP oder direkt aus der Konfiguration)
+     * 
+     * @return Path as String
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    public String getHomeDir() throws IOException, InterruptedException {
+        String rueckgabe = "";
+        /* wenn LDAP genutzt wird, HomeDir aus LDAP ermitteln, ansonsten aus der Konfiguration */
 
-		if (!rueckgabe.endsWith(FileSystems.getDefault().getSeparator())) {
-			rueckgabe += FileSystems.getDefault().getSeparator();
-		}
-		/* wenn das Verzeichnis nicht "" ist, aber noch nicht existiert, dann jetzt anlegen */
+        if (ConfigurationHelper.getInstance().isUseLdap()) {
+            LdapAuthentication myldap = new LdapAuthentication();
+            rueckgabe = myldap.getUserHomeDirectory(this);
+        } else {
+            rueckgabe = ConfigurationHelper.getInstance().getUserFolder() + this.login;
+        }
+
+        if (rueckgabe.equals("")) {
+            return "";
+        }
+
+        if (!rueckgabe.endsWith(FileSystems.getDefault().getSeparator())) {
+            rueckgabe += FileSystems.getDefault().getSeparator();
+        }
+        /* wenn das Verzeichnis nicht "" ist, aber noch nicht existiert, dann jetzt anlegen */
         FilesystemHelper.createDirectoryForUser(rueckgabe, login);
-		return rueckgabe;
-	}
+        return rueckgabe;
+    }
 
-	public Integer getSessiontimeout() {
-		if (this.sessiontimeout == null) {
-			this.sessiontimeout = 7200;
-		}
-		return this.sessiontimeout;
-	}
+    public Integer getSessiontimeout() {
+        if (this.sessiontimeout == null) {
+            this.sessiontimeout = 7200;
+        }
+        return this.sessiontimeout;
+    }
 
-	public void setSessiontimeout(Integer sessiontimeout) {
-		this.sessiontimeout = sessiontimeout;
-	}
+    public void setSessiontimeout(Integer sessiontimeout) {
+        this.sessiontimeout = sessiontimeout;
+    }
 
-	public Integer getSessiontimeoutInMinutes() {
-		return getSessiontimeout() / 60;
-	}
+    public Integer getSessiontimeoutInMinutes() {
+        return getSessiontimeout() / 60;
+    }
 
-	public void setSessiontimeoutInMinutes(Integer sessiontimeout) {
-		if (sessiontimeout.intValue() < 5) {
-			this.sessiontimeout = 5 * 60;
-		} else {
-			this.sessiontimeout = sessiontimeout * 60;
-		}
-	}
+    public void setSessiontimeoutInMinutes(Integer sessiontimeout) {
+        if (sessiontimeout.intValue() < 5) {
+            this.sessiontimeout = 5 * 60;
+        } else {
+            this.sessiontimeout = sessiontimeout * 60;
+        }
+    }
 
-	public String getCss() {
-		if (this.css == null || this.css.length() == 0) {
-			this.css = "/css/default.css";
-		}
-		return this.css;
-	}
+    public String getCss() {
+        if (this.css == null || this.css.length() == 0) {
+            this.css = "/css/default.css";
+        }
+        return this.css;
+    }
 
-	public void setCss(String css) {
-		this.css = css;
-	}
-	
-	public List<UserProperty> getEigenschaften() {
-		return this.eigenschaften;
-	}
+    public void setCss(String css) {
+        this.css = css;
+    }
 
-	public void setEigenschaften(List<UserProperty> eigenschaften) {
-		this.eigenschaften = eigenschaften;
-	}
+    public List<UserProperty> getEigenschaften() {
+        return this.eigenschaften;
+    }
 
-	public int getEigenschaftenSize() {
+    public void setEigenschaften(List<UserProperty> eigenschaften) {
+        this.eigenschaften = eigenschaften;
+    }
 
-		if (this.eigenschaften == null) {
-			return 0;
-		} else {
-			return this.eigenschaften.size();
-		}
-	}
+    public int getEigenschaftenSize() {
 
-	/**
-	 * 
-	 * @return List of filters as strings
-	 */
+        if (this.eigenschaften == null) {
+            return 0;
+        } else {
+            return this.eigenschaften.size();
+        }
+    }
 
-	public List<String> getFilters() {
-		return UserManager.getFilters(this.id);
-	}
+    /**
+     * 
+     * @return List of filters as strings
+     */
 
-	/**
-	 * adds a new filter to list
-	 * 
-	 * @param inFilter
-	 *            the filter to add
-	 */
+    public List<String> getFilters() {
+        return UserManager.getFilters(this.id);
+    }
 
-	public void addFilter(String inFilter) {
-		UserManager.addFilter(this.id, inFilter);
-	}
+    /**
+     * adds a new filter to list
+     * 
+     * @param inFilter the filter to add
+     */
 
-	/**
-	 * removes filter from list
-	 * 
-	 * @param inFilter
-	 *            the filter to remove
-	 */
-	public void removeFilter(String inFilter) {
-		UserManager.removeFilter(this.id, inFilter);
-	}
+    public void addFilter(String inFilter) {
+        UserManager.addFilter(this.id, inFilter);
+    }
 
-	/**
-	 * The function selfDestruct() removes a user from the environment. Since the user ID may still be referenced somewhere, the user is not hard
-	 * deleted from the database, instead the account is set inactive and invisible.
-	 * 
-	 * To allow recreation of an account with the same login the login is cleaned - otherwise it would be blocked eternally by the login existence
-	 * test performed in the BenutzerverwaltungForm.Speichern() function. In addition, all personally identifiable information is removed from the
-	 * database as well.
-	 */
+    /**
+     * removes filter from list
+     * 
+     * @param inFilter the filter to remove
+     */
+    public void removeFilter(String inFilter) {
+        UserManager.removeFilter(this.id, inFilter);
+    }
 
-	public User selfDestruct() {
-		this.isVisible = "deleted";
-		this.login = null;
-		this.istAktiv = false;
-		this.vorname = null;
-		this.nachname = null;
-		this.standort = null;
-		this.benutzergruppen =null;
-		this.projekte = null;
-		return this;
-	}
+    /**
+     * The function selfDestruct() removes a user from the environment. Since the user ID may still be referenced somewhere, the user is not hard
+     * deleted from the database, instead the account is set inactive and invisible.
+     * 
+     * To allow recreation of an account with the same login the login is cleaned - otherwise it would be blocked eternally by the login existence
+     * test performed in the BenutzerverwaltungForm.Speichern() function. In addition, all personally identifiable information is removed from the
+     * database as well.
+     */
+
+    public User selfDestruct() {
+        this.isVisible = "deleted";
+        this.login = null;
+        this.istAktiv = false;
+        this.vorname = null;
+        this.nachname = null;
+        this.standort = null;
+        this.benutzergruppen = null;
+        this.projekte = null;
+        return this;
+    }
 
     @Override
     public int hashCode() {
@@ -636,11 +656,11 @@ public class User implements DatabaseObject {
     public void setEmail(String email) {
         this.email = email;
     }
-    
-    public void setImageUrl (String url) {
-        
+
+    public void setImageUrl(String url) {
+
     }
-    
+
     public String getImageUrl() {
         if (StringUtils.isNotEmpty(email)) {
             Gravatar gravatar = new Gravatar();
@@ -648,8 +668,8 @@ public class User implements DatabaseObject {
             gravatar.setRating(GravatarRating.GENERAL_AUDIENCES);
             String url = gravatar.getUrl(email).replaceAll("http://", "https://");
             url = url.replace("d=404", "d=https://www.gravatar.com/avatar/92bb3cacd091cbee44637e73f2ea1f7c.jpg?s=27");
-            return url; 
-        }        
+            return url;
+        }
         return null;
     }
 
@@ -668,57 +688,55 @@ public class User implements DatabaseObject {
     public void setMetsEditorTime(Integer metsEditorTime) {
         this.metsEditorTime = metsEditorTime;
     }
-    
+
     public boolean isMetsDisplayHierarchy() {
         return metsDisplayHierarchy;
     }
-    
+
     public boolean isMetsDisplayPageAssignments() {
         return metsDisplayPageAssignments;
     }
-    
+
     public boolean isMetsDisplayTitle() {
         return metsDisplayTitle;
     }
-    
+
     public boolean isMetsLinkImage() {
         return metsLinkImage;
     }
-    
+
     public void setMetsDisplayHierarchy(boolean metsDisplayHierarchy) {
         this.metsDisplayHierarchy = metsDisplayHierarchy;
     }
-    
+
     public void setMetsDisplayPageAssignments(boolean metsDisplayPageAssignments) {
         this.metsDisplayPageAssignments = metsDisplayPageAssignments;
     }
-    
+
     public void setMetsDisplayTitle(boolean metsDisplayTitle) {
         this.metsDisplayTitle = metsDisplayTitle;
     }
-    
+
     public void setMetsLinkImage(boolean metsLinkImage) {
         this.metsLinkImage = metsLinkImage;
     }
-    
+
     public boolean isDisplayOtherTasks() {
         return displayOtherTasks;
     }
-    
+
     public void setDisplayOtherTasks(boolean displayOtherTasks) {
         this.displayOtherTasks = displayOtherTasks;
     }
 
-	public List<String> getAllUserRoles() {
-		Set<String> hs = new HashSet<>();
-		for (Usergroup group : getBenutzergruppen()) {
-			hs.addAll(group.getUserRoles());
-		}
-		List<String> roles = new ArrayList<String>();
-		roles.addAll(hs);
-		Collections.sort(roles);
-		return roles;
-	}
+    public List<String> getAllUserRoles() {
+        Set<String> hs = new HashSet<>();
+        for (Usergroup group : getBenutzergruppen()) {
+            hs.addAll(group.getUserRoles());
+        }
+        List<String> roles = new ArrayList<String>();
+        roles.addAll(hs);
+        Collections.sort(roles);
+        return roles;
+    }
 }
-
-

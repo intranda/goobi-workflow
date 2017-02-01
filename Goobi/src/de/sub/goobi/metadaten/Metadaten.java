@@ -29,12 +29,9 @@ package de.sub.goobi.metadaten;
  */
 
 import java.awt.Dimension;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -94,7 +91,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 import org.goobi.beans.Process;
-import org.mozilla.universalchardet.UniversalDetector;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.NavigationForm.Theme;

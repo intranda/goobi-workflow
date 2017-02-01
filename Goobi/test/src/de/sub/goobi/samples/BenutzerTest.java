@@ -42,7 +42,7 @@ public class BenutzerTest {
    public void testLogin1() {
       User b = new User();
       b.setLogin("ein Name");
-      System.out.println(b.getPasswortCrypt());
+      System.out.println(b.getEncryptedPassword());
    }
 
    @Test
