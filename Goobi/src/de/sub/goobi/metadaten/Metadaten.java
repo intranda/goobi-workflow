@@ -29,12 +29,9 @@ package de.sub.goobi.metadaten;
  */
 
 import java.awt.Dimension;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -66,35 +63,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.Process;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
-
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataGroup;
-import ugh.dl.MetadataGroupType;
-import ugh.dl.MetadataType;
-import ugh.dl.NamePart;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
-import ugh.dl.Reference;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.IncompletePersonObjectException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-
-import org.goobi.beans.Process;
-import org.mozilla.universalchardet.UniversalDetector;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.NavigationForm.Theme;
@@ -117,6 +91,26 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageExcepti
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.DocStructType;
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataGroupType;
+import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
+import ugh.dl.Person;
+import ugh.dl.Prefs;
+import ugh.dl.Reference;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.IncompletePersonObjectException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
