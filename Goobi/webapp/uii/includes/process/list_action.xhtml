@@ -445,9 +445,9 @@
                                     </h:panelGroup>
 
                                 </ul>
-                            </h:form>
+<!--                             </h:form> -->
                             
-                            <h:form prependId="false" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup prependId="false" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 	                            <div class="modal fade" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		                            <div class="modal-dialog" role="document">
 		                                <div class="modal-content">
@@ -502,7 +502,8 @@
 		                            </div>
 		                        </div>
 	                        
-                        	</h:form>
+                        	</h:panelGroup>
+                            </h:form>
                         </div>
                     </div>
 
