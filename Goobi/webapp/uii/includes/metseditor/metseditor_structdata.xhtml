@@ -164,8 +164,8 @@
 
 						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'block':'none'}">
                         <h:outputText value="#{msgs.mets_no_persons_assigned}" rendered="#{empty Metadaten.myPersonen}" />
-                        <x:dataList id="personList2" var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorPerson person="#{Item}" fieldStyle="form-control" index="#{rowIndex}" id="currentPerson" />
+                        <x:dataList var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorPerson person="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr style="margin: 7px" />
                             </h:panelGroup>
@@ -194,8 +194,8 @@
 
 						<div class="box-content" style="display:#{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'block':'none'}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
-                        <x:dataList id="metadataList2" var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorMetadata id="currentMetadata" metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
+                        <x:dataList var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                            <intranda:formMetseditorMetadata metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
