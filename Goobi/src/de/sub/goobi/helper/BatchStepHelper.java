@@ -60,6 +60,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
+import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -108,6 +109,16 @@ public class BatchStepHelper {
             this.processName = this.currentStep.getProzess().getTitel();
             loadProcessProperties(this.currentStep);
         }
+    }
+    
+    public BatchStepHelper(List<Step> steps, Step inStep) {
+        this.steps = steps;
+        for (Step s : steps) {
+            this.processNameList.add(s.getProzess().getTitel());
+        }
+        this.currentStep = inStep;
+        this.processName = inStep.getProzess().getTitel();
+        loadProcessProperties(this.currentStep);
     }
 
     public List<Step> getSteps() {
@@ -164,6 +175,10 @@ public class BatchStepHelper {
             if (s.getProzess().getTitel().equals(processName)) {
                 this.currentStep = s;
                 loadProcessProperties(this.currentStep);
+                
+                //try to load the same step in step-managed-bean
+                StepBean sb = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+                sb.setMySchritt(s);
                 break;
             }
         }
