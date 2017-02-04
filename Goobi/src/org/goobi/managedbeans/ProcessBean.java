@@ -1381,7 +1381,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void setProjektAuswahl(Integer inProjektAuswahl) {
-        if (inProjektAuswahl.intValue() != 0) {
+        if (inProjektAuswahl != null && inProjektAuswahl.intValue() != 0) {
             try {
                 Project p = ProjectManager.getProjectById(inProjektAuswahl);
                 this.myProzess.setProjekt(p);
@@ -1419,7 +1419,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void setRulesetSelection(Integer selected) {
-        if (selected.intValue() != 0) {
+        if (selected != null && selected.intValue() != 0) {
             try {
                 Ruleset ruleset = RulesetManager.getRulesetById(selected);
                 myProzess.setRegelsatz(ruleset);
@@ -1449,7 +1449,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void setDocketSelection(Integer selected) {
-        if (selected.intValue() != 0) {
+        if (selected != null && selected.intValue() != 0) {
             try {
                 Docket ruleset = DocketManager.getDocketById(selected);
                 myProzess.setDocket(ruleset);
