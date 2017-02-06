@@ -8,7 +8,7 @@
 
         <!-- Step of another user -->
         <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id}">
-            <h:outputText value="#{msgs.workflowStepOfAnotherUser} " />
+            <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10 margin-top-10 margin-left-10 margin-right-10" value="#{msgs.workflowStepOfAnotherUser} " />
         </h:panelGroup>
 
         <!-- Step of the current user -->
