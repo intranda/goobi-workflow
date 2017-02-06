@@ -321,7 +321,7 @@ public class BatchBean extends BasicBean {
                 Helper.setFehlerMeldung("noBatchSelected");
             }
         } else {
-            Helper.setFehlerMeldung("toḾanyBatchesSelected");
+            Helper.setFehlerMeldung("tooḾanyBatchesSelected");
         }
         FilterAlleStart();
 
@@ -331,7 +331,7 @@ public class BatchBean extends BasicBean {
         if (this.selectedBatches.size() == 0) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() > 1) {
-            Helper.setFehlerMeldung("toḾanyBatchesSelected");
+            Helper.setFehlerMeldung("tooḾanyBatchesSelected");
         } else {
             try {
                 //				Session session = Helper.getHibernateSession();
@@ -405,7 +405,7 @@ public class BatchBean extends BasicBean {
             Helper.setFehlerMeldung("noBatchSelected");
             return "";
         } else if (this.selectedBatches.size() > 1) {
-            Helper.setFehlerMeldung("toḾanyBatchesSelected");
+            Helper.setFehlerMeldung("tooḾanyBatchesSelected");
             return "";
         } else {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
