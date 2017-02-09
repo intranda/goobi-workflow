@@ -322,8 +322,8 @@ public class HelperSchritte {
                     returnParameter = executeScriptForStepObject(step, script, false);
                 }
             }
-            
-            if (returnParameter != 0 && automatic) {
+            // return code 99 means wait for finishing
+            if (returnParameter != 0 && automatic && returnParameter != 99) {
                 errorStep(step);
                 break;
             }
