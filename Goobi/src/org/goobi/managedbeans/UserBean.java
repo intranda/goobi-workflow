@@ -116,15 +116,12 @@ public class UserBean extends BasicBean {
         String myfilter = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
-            myfilter +=
-                    " AND (vorname like '%"
-                            + StringEscapeUtils.escapeSql(this.filter)
-                            + "%' OR nachname like '%"
-                            + StringEscapeUtils.escapeSql(this.filter)
-                            + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                            + StringEscapeUtils.escapeSql(this.filter)
-                            + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                            + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            myfilter += " AND (vorname like '%" + StringEscapeUtils.escapeSql(this.filter) + "%' OR nachname like '%" + StringEscapeUtils.escapeSql(
+                    this.filter)
+                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
+                    + StringEscapeUtils.escapeSql(this.filter)
+                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
+                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
         paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
@@ -147,7 +144,7 @@ public class UserBean extends BasicBean {
             int num = new UserManager().getHitSize(null, query);
             if (num == 0) {
                 myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-                myClass.setPasswort("");;
+//                myClass.setPasswort("");
                 UserManager.saveUser(this.myClass);
                 paginator.load();
                 return FilterKein();
@@ -174,8 +171,8 @@ public class UserBean extends BasicBean {
         /* Pfad zur Datei ermitteln */
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        String filename =
-                session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
+        String filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems
+                .getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
             FileInputStream fis = new FileInputStream(filename);
@@ -203,7 +200,7 @@ public class UserBean extends BasicBean {
     public String Loeschen() {
         try {
             UserManager.hideUser(myClass);
-            if (ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly()){
+            if (ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly()) {
                 new LdapAuthentication().deleteUser(myClass);
             }
             paginator.load();
@@ -286,10 +283,10 @@ public class UserBean extends BasicBean {
 
     public void setMyClass(User inMyClass) {
         this.myClass = inMyClass;
-        
-            updateUsergroupPaginator();
-            updateProjectPaginator();
-        
+
+        updateUsergroupPaginator();
+        updateProjectPaginator();
+
     }
 
     public Integer getLdapGruppeAuswahl() {
@@ -330,8 +327,7 @@ public class UserBean extends BasicBean {
     public String LdapKonfigurationSchreiben() {
         LdapAuthentication myLdap = new LdapAuthentication();
         try {
-            // TODO
-//            myLdap.createNewUser(this.myClass, this.myClass.getPasswortCrypt());
+            myLdap.createNewUser(this.myClass, this.myClass.getPasswort());
         } catch (Exception e) {
             logger.warn("Could not generate ldap entry: " + e.getMessage());
             Helper.setFehlerMeldung("Error on writing to database", e);
@@ -368,23 +364,22 @@ public class UserBean extends BasicBean {
     }
 
     private void updateUsergroupPaginator() {
-    	String filter = "";
-    	if (myClass!=null && myClass.getId()!=null){
-    		 filter =
-                " benutzergruppen.BenutzergruppenID not in (select benutzergruppenmitgliedschaft.BenutzerGruppenID from "
-                + "benutzergruppenmitgliedschaft where benutzergruppenmitgliedschaft.BenutzerID = " + myClass.getId() + ")";
-    	}
+        String filter = "";
+        if (myClass != null && myClass.getId() != null) {
+            filter = " benutzergruppen.BenutzergruppenID not in (select benutzergruppenmitgliedschaft.BenutzerGruppenID from "
+                    + "benutzergruppenmitgliedschaft where benutzergruppenmitgliedschaft.BenutzerID = " + myClass.getId() + ")";
+        }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
     }
 
     private void updateProjectPaginator() {
-    	String filter = "";
-    	if (myClass!=null && myClass.getId()!=null){
-    		filter =      " projekte.ProjekteID not in (select projektbenutzer.ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + myClass.getId() + ")";
+        String filter = "";
+        if (myClass != null && myClass.getId() != null) {
+            filter = " projekte.ProjekteID not in (select projektbenutzer.ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                    + myClass.getId() + ")";
         }
-    	ProjectManager m = new ProjectManager();
+        ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
     }
 

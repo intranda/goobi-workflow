@@ -122,15 +122,15 @@ class UserMysqlHelper implements Serializable {
             if (ro.getId() == null) {
 
                 String propNames =
-                        "Vorname, Nachname, login, passwort, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
+                        "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
                                 + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt";
 
-                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
-                                ro.getLogin() == null ? null : ro.getLogin(), ro.getPasswort() == null ? null : ro.getPasswort(), ro.isIstAktiv(),
+                                ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(),
                                 ro.getStandort() == null ? null : ro.getStandort(),
                                 ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
                                 ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
@@ -163,7 +163,6 @@ class UserMysqlHelper implements Serializable {
                 sql.append("Vorname = ?, ");
                 sql.append("Nachname = ?, ");
                 sql.append("login = ?, ");
-                sql.append("passwort = ?, ");
                 sql.append("IstAktiv = ?, ");
                 sql.append("Standort =  ?, ");
                 sql.append("metadatensprache =  ?, ");
@@ -201,7 +200,7 @@ class UserMysqlHelper implements Serializable {
 
                 Object[] param =
                         { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
-                                ro.getLogin() == null ? null : ro.getLogin(), ro.getPasswort() == null ? null : ro.getPasswort(), ro.isIstAktiv(),
+                                ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(),
                                 ro.getStandort() == null ? null : ro.getStandort(),
                                 ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
                                 ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
