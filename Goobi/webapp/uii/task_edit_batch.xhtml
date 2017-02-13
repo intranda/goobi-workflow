@@ -56,6 +56,11 @@
 	                    </div>
 	                </div>
             	 	
+            	 	 <!-- Area for part GUI plugins -->
+	                <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
+	                    <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+	                </c:if>
+	                
             	 	 <!-- Box for process properties -->
             	 	<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.propertyListSize>0}">
                         <div class="box box-color lightgrey box-bordered">

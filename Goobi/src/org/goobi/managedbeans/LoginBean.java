@@ -165,6 +165,7 @@ public class LoginBean {
         /* in der Session den Login speichern */
         temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
+        roles = myBenutzer.getAllUserRoles();
         this.schonEingeloggt = false;
         return "";
     }

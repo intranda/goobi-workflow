@@ -109,6 +109,16 @@ public class BatchStepHelper {
             loadProcessProperties(this.currentStep);
         }
     }
+    
+    public BatchStepHelper(List<Step> steps, Step inStep) {
+        this.steps = steps;
+        for (Step s : steps) {
+            this.processNameList.add(s.getProzess().getTitel());
+        }
+        this.currentStep = inStep;
+        this.processName = inStep.getProzess().getTitel();
+        loadProcessProperties(this.currentStep);
+    }
 
     public List<Step> getSteps() {
         return this.steps;
@@ -164,6 +174,10 @@ public class BatchStepHelper {
             if (s.getProzess().getTitel().equals(processName)) {
                 this.currentStep = s;
                 loadProcessProperties(this.currentStep);
+                
+                //try to load the same step in step-managed-bean
+                StepBean sb = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+                sb.setMySchritt(s);
                 break;
             }
         }

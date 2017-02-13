@@ -8,7 +8,7 @@
 
         <!-- Step of another user -->
         <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id}">
-            <h:outputText value="#{msgs.workflowStepOfAnotherUser} " />
+            <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10 margin-top-10 margin-left-10 margin-right-10" value="#{msgs.workflowStepOfAnotherUser} " />
         </h:panelGroup>
 
         <!-- Step of the current user -->
@@ -73,39 +73,38 @@
 
 							<ul class="action-ul">
 
-<!-- 									Plugin - FULL -->
-<!-- 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}"> -->
-<!-- 										<li class="action-li"> -->
-<!-- 											Plugin Button only for Plugins without any gui or with full gui -->
-<!-- 											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}"> -->
-<!-- 												<h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
-<!-- 												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" /> -->
-<!-- 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" /> -->
-<!-- 											</h:commandLink> -->
-<!-- 										</li> -->
-<!-- 									</h:panelGroup> -->
+									<!-- Plugin - FULL -->
+									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
+										<li class="action-li">
+											<!-- Plugin Button only for Plugins without any gui or with full gui -->
+											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
+											</h:commandLink>
+										</li>
+									</h:panelGroup>
 									
-<!-- 									Plugin - NONE -->
-<!-- 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}"> -->
-<!-- 										<li class="action-li"> -->
-<!-- 											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}"> -->
-<!-- 												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" /> -->
-<!-- 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" /> -->
-<!-- 											</h:commandLink> -->
-<!-- 										</li> -->
-<!-- 									</h:panelGroup> -->
+									<!-- Plugin - NONE -->
+									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
+										<li class="action-li">
+											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
+											</h:commandLink>
+										</li>
+									</h:panelGroup>
 									
-<!-- 									Modul-Schaltknopf -->
-<!-- 									<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typModulName != null and AktuelleSchritteForm.batchHelper.currentStep.typModulName != ''}"> -->
-<!-- 										<li class="action-li"> -->
-<!-- 											<h:commandLink -->
-<!-- 												action="#{AktuelleSchritteForm.executeModule}" -->
-<!-- 												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})"> -->
-<!-- 												<span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" /> -->
-<!-- 												<h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" /> -->
-<!-- 											</h:commandLink> -->
-<!-- 										</li> -->
-<!-- 									</h:panelGroup> -->
+									<!-- Modul-Schaltknopf -->
+									<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typModulName != null and AktuelleSchritteForm.batchHelper.currentStep.typModulName != ''}">
+										<li class="action-li">
+											<h:commandLink
+												action="#{AktuelleSchritteForm.executeModule}"
+												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})">
+												<span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
+												<h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" />
+											</h:commandLink>
+										</li>
+									</h:panelGroup>
 									
                                 <!-- Script 1 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad != ''}">

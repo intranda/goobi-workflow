@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
 
-
 public class SecurityCheckFilter implements Filter {
 
     public SecurityCheckFilter() { //called once. no method arguments allowed here!

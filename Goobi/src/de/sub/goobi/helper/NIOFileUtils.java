@@ -306,8 +306,8 @@ public class NIOFileUtils {
 
                 DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
                 if (dosAttrs != null) {
-                    DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
                     if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
+                    DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
                         DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
                         targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
                         targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
@@ -324,8 +324,8 @@ public class NIOFileUtils {
                 }
                 PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
                 if (posixAttrs != null) {
-                    PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
                     if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                    PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
                         PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
                         targetPosix.setPermissions(sourcePosix.permissions());
                         targetPosix.setGroup(sourcePosix.group());

@@ -395,7 +395,7 @@ public class StepBean extends BasicBean {
             }
         }
 
-        this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch));
+        this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
         return "task_edit_batch";
     }
 
@@ -430,7 +430,7 @@ public class StepBean extends BasicBean {
         if (currentStepsOfBatch.size() == 1) {
             return "task_edit";
         }
-        this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch));
+        this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
         return "task_edit_batch";
     }
 
@@ -462,7 +462,8 @@ public class StepBean extends BasicBean {
         } catch (DAOException e) {
         }
         // calcHomeImages();
-        return "task_all";
+//        return "task_all";
+        return FilterAlleStart();
     }
 
     public String SchrittDurchBenutzerAbschliessen() {
@@ -986,7 +987,11 @@ public class StepBean extends BasicBean {
             if (myPlugin == null) {
                 Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
             } else {
-                myPlugin.initialize(mySchritt, "/task_edit");
+            	if (mySchritt.isBatchStep() && mySchritt.isBatchSize()){
+            		myPlugin.initialize(mySchritt, "/task_edit_batch");
+            	}else{
+            		myPlugin.initialize(mySchritt, "/task_edit");
+                }
                 //                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
                 //                    runPlugin();
                 //                }

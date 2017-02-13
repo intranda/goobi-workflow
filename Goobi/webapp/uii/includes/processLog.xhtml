@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<h3>
+            <i class="fa fa-comment"></i>
+            <h:outputText value="#{msgs.processLog}" />
+        </h3>
+        <div class="btn-group pull-right margin-right-10" data-toggle="tooltip" title="#{msgs.filterProcessLog}">
+            <a class="btn dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown">
+                <i class="fa fa-columns margin-right-5" />
+                <span class="caret"></span>
+            </a>
+
+            <ul class="dropdown-menu">
+                <li>
+                    <h:commandLink action="#{NavigationForm.Reload}" id="showDebugMessages">
+                        <i class="fa #{NavigationForm.uiStatus['debug']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                        <h:outputText value="#{msgs.process_log_showDebugMessages}" />
+                        <x:updateActionListener property="#{NavigationForm.uiStatus['debug']}" value="#{not NavigationForm.uiStatus['debug']}" />
+                    </h:commandLink>
+                </li>
+                <li>
+                    <h:commandLink action="#{NavigationForm.Reload}" id="showInfoMessages">
+                        <i class="fa #{NavigationForm.uiStatus['info']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                        <h:outputText value="#{msgs.process_log_showInfoMessages}" />
+                        <x:updateActionListener property="#{NavigationForm.uiStatus['info']}" value="#{not NavigationForm.uiStatus['info']}" />
+                    </h:commandLink>
+
+                </li>
+                <li>
+                    <h:commandLink action="#{NavigationForm.Reload}" id="showUserMessages">
+                        <i class="fa #{NavigationForm.uiStatus['user']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                        <h:outputText value="#{msgs.process_log_showUserMessages}" />
+                        <x:updateActionListener property="#{NavigationForm.uiStatus['user']}" value="#{not NavigationForm.uiStatus['user']}" />
+                    </h:commandLink>
+                </li>
+                <li>
+                    <h:commandLink action="#{NavigationForm.Reload}" id="showWarnMessages">
+                        <i class="fa #{NavigationForm.uiStatus['warn']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                        <h:outputText value="#{msgs.process_log_showWarnMessages}" />
+                        <x:updateActionListener property="#{NavigationForm.uiStatus['warn']}" value="#{not NavigationForm.uiStatus['warn']}" />
+                    </h:commandLink>
+
+                </li>
+                <li>
+                    <h:commandLink action="#{NavigationForm.Reload}" id="showErrorMessages">
+                        <i class="fa #{NavigationForm.uiStatus['error']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                        <h:outputText value="#{msgs.process_log_showErrorMessages}" />
+                        <x:updateActionListener property="#{NavigationForm.uiStatus['error']}" value="#{not NavigationForm.uiStatus['error']}" />
+                    </h:commandLink>
+
+                </li>
+            </ul>
+
+        </div>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

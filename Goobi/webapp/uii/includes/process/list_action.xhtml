@@ -249,59 +249,6 @@
 
                                         </li>
 
-	                                    <div class="modal fade" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	                                        <div class="modal-dialog" role="document">
-	                                            <div class="modal-content">
-	                                                <div class="modal-header">
-	
-	                                                    <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
-	                                                        <i class="fa fa-times"></i>
-	                                                    </a>
-	                                                    <h4 class="modal-title" id="myModalLabel">
-	                                                        <h:outputText value="GoobiScript" />
-	                                                    </h4>
-	                                                </div>
-	                                                <div class="modal-body">
-	                                                	<h:outputText value="#{msgs['GoobiScript_warning_selection']}" id="modalMessageSelection" escape="false"/>
-	                                                    <h:outputText value="#{msgs['GoobiScript_warning_page']}" id="modalMessagePage" escape="false"/>
-														<h:outputFormat value="#{msgs['GoobiScript_warning_all']}" id="modalMessageAll" escape="false">
-	                                                        <f:param value="#{ProzessverwaltungForm.paginator.totalResults}" />
-	                                                    </h:outputFormat>
-	                                                	<br/><br/>
-	                                                    <h:outputFormat value="#{msgs['GoobiScript_securityQuestion']}" escape="false">
-	                                                        <f:param value="#{ProzessverwaltungForm.securityCheckNumber1}" />
-	                                                        <f:param value="#{ProzessverwaltungForm.securityCheckNumber2}" />
-	                                                    </h:outputFormat>
-	                                                    <br/><br/>
-	                                                    <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.securityCheckResultGuess}" validatorMessage="Zahlen nicht zwischen 1 und 1000.">
-	                                                    	<f:validateLongRange minimum="1" maximum="1000"/>
-	                                                    </h:inputText>
-	                                                </div>
-	                                                <div class="modal-footer">
-	
-														<a href="#" class="btn pull-left" title="#{msgs.cancel}" data-dismiss="modal">
-	                                                        <h:outputText value="#{msgs.cancel}" />
-	                                                    </a>
-	                                                    
-	                                                    <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptSelection}" id="modalButtonSelection" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-red">
-	                                                        <i class="fa fa-exclamation-triangle margin-right-10"></i>
-	                                                        <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
-	                                                    </h:commandLink>
-	                                                    
-	                                                    <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptPage}" id="modalButtonPage" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-red">
-	                                                        <i class="fa fa-exclamation-triangle margin-right-10"></i>
-	                                                        <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
-	                                                    </h:commandLink>
-	                                                    
-	                                                    <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptHits}" id="modalButtonAll" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-red">
-	                                                        <i class="fa fa-exclamation-triangle margin-right-10"></i>
-	                                                        <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
-	                                                    </h:commandLink>
-	
-	                                                </div>
-	                                            </div>
-	                                        </div>
-	                                    </div>
                                     </h:panelGroup>
                                     
                                     
@@ -498,6 +445,64 @@
                                     </h:panelGroup>
 
                                 </ul>
+<!--                             </h:form> -->
+                            
+                            <h:panelGroup prependId="false" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+	                            <div class="modal fade" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		                            <div class="modal-dialog" role="document">
+		                                <div class="modal-content">
+		                                    <div class="modal-header">
+		
+		                                        <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+		                                            <i class="fa fa-times"></i>
+		                                        </a>
+		                                        <h4 class="modal-title" id="myModalLabel">
+		                                            <h:outputText value="GoobiScript" />
+		                                        </h4>
+		                                    </div>
+		                                    <div class="modal-body">
+		                                    	<h:outputText value="#{msgs['GoobiScript_warning_selection']}" id="modalMessageSelection" escape="false"/>
+		                                        <h:outputText value="#{msgs['GoobiScript_warning_page']}" id="modalMessagePage" escape="false"/>
+												<h:outputFormat value="#{msgs['GoobiScript_warning_all']}" id="modalMessageAll" escape="false">
+		                                            <f:param value="#{ProzessverwaltungForm.paginator.totalResults}" />
+		                                        </h:outputFormat>
+		                                    	<br/><br/>
+		                                        <h:outputFormat value="#{msgs['GoobiScript_securityQuestion']}" escape="false">
+		                                            <f:param value="#{ProzessverwaltungForm.securityCheckNumber1}" />
+		                                            <f:param value="#{ProzessverwaltungForm.securityCheckNumber2}" />
+		                                        </h:outputFormat>
+		                                        <br/><br/>
+		                                        <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.securityCheckResultGuess}" validatorMessage="#{msgs.GoobiScript_input_not_valid}">
+<!-- 		                                        	<f:validateLongRange minimum="1" maximum="1000"/> -->
+		                                        </h:inputText>
+		                                    </div>
+		                                    <div class="modal-footer">
+		
+												<a href="#" class="btn pull-left" title="#{msgs.cancel}" data-dismiss="modal">
+		                                            <h:outputText value="#{msgs.cancel}" />
+		                                        </a>
+		                                        
+		                                        <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptSelection}" id="modalButtonSelection" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-red">
+		                                            <i class="fa fa-exclamation-triangle margin-right-10"></i>
+		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+		                                        </h:commandLink>
+		                                        
+		                                        <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptPage}" id="modalButtonPage" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-red">
+		                                            <i class="fa fa-exclamation-triangle margin-right-10"></i>
+		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+		                                        </h:commandLink>
+		                                        
+		                                        <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptHits}" id="modalButtonAll" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-red">
+		                                            <i class="fa fa-exclamation-triangle margin-right-10"></i>
+		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
+		                                        </h:commandLink>
+		
+		                                    </div>
+		                                </div>
+		                            </div>
+		                        </div>
+	                        
+                        	</h:panelGroup>
                             </h:form>
                         </div>
                     </div>

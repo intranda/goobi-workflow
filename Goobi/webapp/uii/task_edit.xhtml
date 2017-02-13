@@ -192,73 +192,81 @@
 	                <!-- // Box for process details -->
 	
 	                <!-- Box for process log -->
+	                <h:form styleClass="form-vertical form-bordered" id="processLog">
 	                <div class="box thin-margin box-bordered">
 	                    <div class="box-title">
-	                        <h3>
-	                            <i class="fa fa-comment"></i>
-	                            <h:outputText value="#{msgs.processLog}" />
-	                        </h3>
+		                     <x:aliasBeansScope>
+		                     	<f:subview id="sublog">
+		                        	<ui:include src="includes/processLog.xhtml" />
+		                        </f:subview>
+		                     </x:aliasBeansScope>
 	                    </div>
-	                    <h:form styleClass="form-vertical form-bordered" id="processLogForm">
-	                        <div class="box-content nopadding">
-	                            <div class="scrollable" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
-	                                <x:dataTable var="entry" rendered="#{AktuelleSchritteForm.mySchritt.prozess.processLog.size()>0}" value="#{AktuelleSchritteForm.mySchritt.prozess.processLog}" width="100%" styleClass="table table-hover table-bordered">
-	                                    <x:column styleClass="log_table_column_date">
-	                                        <h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" /><br/>
-	                                        <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
-	                                    </x:column>
+                        <div class="box-content nopadding">
+                            <div class="scrollable" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
+                                <table style="width:100%" class="table table-hover table-bordered">
+	                                    
+	                                <ui:repeat var="entry" value="#{AktuelleSchritteForm.mySchritt.prozess.processLog}" varStatus="row">
+										<h:panelGroup rendered="#{!NavigationForm.uiStatus[entry.type.title]}">
+											<tr>
+												<td>
+													<h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" />
+	                                                <br />
+	                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
+												</td>
+												<td>
+													 <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" />
+												</td>
+												<h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
+													<td>
+														<h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" />
+													</td>
+												</h:panelGroup>
+												<h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
+													<td>
+														<h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" />
+													</td>
+												</h:panelGroup>
+											</tr>  
+										</h:panelGroup>                                  		
+									</ui:repeat>
+								</table>
+                            </div>
 	
-	                                    <x:column>
-	                                        <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" />
-	                                    </x:column>
-	
-	                                    <x:column rendered="#{NavigationForm.showSecondLogField}">
-	                                        <h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" />
-	                                    </x:column>
-	                                    <x:column rendered="#{NavigationForm.showThirdLogField}">
-	                                        <h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" />
-	                                    </x:column>
-	
-	                                </x:dataTable>
-	
-	                            </div>
-	
-	
-	                            <div class="form-actions" style="border-top: 1px solid #ddd;">
-	                                <div class="row">
-	                                    <div class="col-sm-9">
-	                                        <h:panelGroup styleClass="col-sm-4">
-	                                            <h:outputText value="#{msgs.process_log_firstContent}" />
-	                                        </h:panelGroup>
-	                                        <h:panelGroup styleClass="col-sm-8">
-	                                            <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.content}" />
-	                                        </h:panelGroup>
-	
-	
-	                                        <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-	                                            <h:outputText value="#{msgs.process_log_secondContent}" />
-	                                        </h:panelGroup>
-	                                        <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-	                                            <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.secondContent}" />
-	                                        </h:panelGroup>
-	
-	
-	                                        <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-	                                            <h:outputText value="#{msgs.process_log_thirdContent}" />
-	                                        </h:panelGroup>
-	                                        <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-	                                            <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.thirdContent}" />
-	                                        </h:panelGroup>
-	                                    </div>
-	                                    <div class="col-sm-3">
-	                                        <h:commandButton id="saveLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" />
-	                                    </div>
-	
-	                                </div>
-	                            </div>
+                            <div class="form-actions" style="border-top: 1px solid #ddd;">
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <h:panelGroup styleClass="col-sm-4">
+                                            <h:outputText value="#{msgs.process_log_firstContent}" />
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="col-sm-8">
+                                            <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.content}" />
+                                        </h:panelGroup>
+
+
+                                        <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
+                                            <h:outputText value="#{msgs.process_log_secondContent}" />
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
+                                            <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.secondContent}" />
+                                        </h:panelGroup>
+
+
+                                        <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
+                                            <h:outputText value="#{msgs.process_log_thirdContent}" />
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
+                                            <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.thirdContent}" />
+                                        </h:panelGroup>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h:commandButton id="saveLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" />
+                                    </div>
+
+                                </div>
+                            </div>
 	                        </div>
-	                    </h:form>
-	                </div>
+		                </div>
+	                </h:form>
 	                <!-- // Box for process log -->
 	
 	
