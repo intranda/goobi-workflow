@@ -97,9 +97,8 @@ public class MetadatenVerifizierung {
             Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
             try {
                 if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                    String[] parameter =
-                            { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
-                                    logical.getType().getNameByLanguage(metadataLanguage) };
+                    String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage), logical.getType().getNameByLanguage(
+                            metadataLanguage) };
 
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierCharacter", parameter));
 
@@ -107,16 +106,15 @@ public class MetadatenVerifizierung {
                 }
                 DocStruct firstChild = logical.getAllChildren().get(0);
                 Metadata identifierFirstChild = firstChild.getAllIdentifierMetadata().get(0);
-                if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
-                        && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
+                if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != "" && identifierTopStruct.getValue().equals(
+                        identifierFirstChild.getValue())) {
                     String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierSame", parameter));
                     ergebnis = false;
                 }
                 if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                    String[] parameter =
-                            { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
-                                    firstChild.getType().getNameByLanguage(metadataLanguage) };
+                    String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage), firstChild.getType().getNameByLanguage(
+                            metadataLanguage) };
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierCharacter", parameter));
                     ergebnis = false;
                 }
@@ -150,8 +148,8 @@ public class MetadatenVerifizierung {
             if (this.docStructsOhneSeiten.size() != 0) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
-                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure")
-                            + ds.getType().getNameByLanguage(metadataLanguage));
+                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure") + ds.getType()
+                            .getNameByLanguage(metadataLanguage));
                 }
                 ergebnis = false;
             }
@@ -315,29 +313,51 @@ public class MetadatenVerifizierung {
         List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
         for (MetadataType mdt : allMDTypes) {
             String number = dst.getNumberOfMetadataType(mdt);
-            List<? extends Metadata> ll = inStruct.getAllMetadataByType(mdt);
+            List<? extends Metadata> ll = null;
+//            if (!mdt.getIsPerson()) {
+                ll = inStruct.getAllMetadataByType(mdt);
+//            } else {
+//                ll = inStruct.getAllPersonsByType(mdt);
+//            }
             int real = 0;
             // if (ll.size() > 0) {
             real = ll.size();
 
-            if ((number.equals("1m") || number.equals("+")) && real == 1 && (ll.get(0).getValue() == null || ll.get(0).getValue().equals(""))) {
-
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataIsEmpty"));
+            if ((number.equals("1m") || number.equals("+")) && real == 1) {
+               if (mdt.getIsPerson()) {
+                   Person p = (Person) ll.get(0);
+                   if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
+                       inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                   }
+               } else {
+                   Metadata md = ll.get(0);
+                   if ( md.getValue() == null ||  md.getValue().equals("")) {
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                       
+                   }
+               }
+                
+                
             }
             /* jetzt die Typen prüfen */
             if (number.equals("1m") && real != 1) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataNotOneElement") + " " + real + Helper.getTranslation("MetadataTimes"));
+                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                        "MetadataNotOneElement") + " " + real + Helper.getTranslation("MetadataTimes"));
             }
             if (number.equals("1o") && real > 1) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataToManyElements") + " " + real + " " + Helper.getTranslation("MetadataTimes"));
+                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                        "MetadataToManyElements") + " " + real + " " + Helper.getTranslation("MetadataTimes"));
             }
             if (number.equals("+") && real == 0) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataNotEnoughElements"));
+                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                        "MetadataNotEnoughElements"));
             }
+            //            } else {
+            //                List<Person> ll = inStruct.getAllPersonsByType(mdt);
+            //                int real = 0;
+            //                real = ll.size();
+            //                
+            //            }
         }
 
         for (MetadataGroupType mgt : dst.getAllMetadataGroupTypes()) {
@@ -361,16 +381,16 @@ public class MetadatenVerifizierung {
                 }
             }
             if (allowedNumber.equals("1m") && realNumber != 1) {
-                inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataNotOneElement") + " " + realNumber + Helper.getTranslation("MetadataTimes"));
+                inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataNotOneElement")
+                        + " " + realNumber + Helper.getTranslation("MetadataTimes"));
             }
             if (allowedNumber.equals("1o") && realNumber > 1) {
-                inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataToManyElements") + " " + realNumber + " " + Helper.getTranslation("MetadataTimes"));
+                inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                        "MetadataToManyElements") + " " + realNumber + " " + Helper.getTranslation("MetadataTimes"));
             }
             if (allowedNumber.equals("+") && realNumber == 0) {
-                inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation("MetadataNotEnoughElements"));
+                inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                        "MetadataNotEnoughElements"));
             }
 
         }
@@ -547,8 +567,8 @@ public class MetadatenVerifizierung {
                         }
                     }
                     if (!isOk && !this.autoSave) {
-                        inFehlerList.add(md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " "
-                                + md.getValue() + " " + Helper.getTranslation("MetadataDoesNotStartWith") + " " + prop_startswith);
+                        inFehlerList.add(md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " " + md
+                                .getValue() + " " + Helper.getTranslation("MetadataDoesNotStartWith") + " " + prop_startswith);
                     }
                     if (!isOk && this.autoSave) {
                         md.setValue(new StringTokenizer(prop_startswith, "|").nextToken() + md.getValue());
@@ -565,8 +585,8 @@ public class MetadatenVerifizierung {
                         }
                     }
                     if (!isOk && !this.autoSave) {
-                        inFehlerList.add(md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " "
-                                + md.getValue() + " " + Helper.getTranslation("MetadataDoesNotEndWith") + " " + prop_endswith);
+                        inFehlerList.add(md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " " + md
+                                .getValue() + " " + Helper.getTranslation("MetadataDoesNotEndWith") + " " + prop_endswith);
                     }
                     if (!isOk && this.autoSave) {
                         md.setValue(md.getValue() + new StringTokenizer(prop_endswith, "|").nextToken());
@@ -621,14 +641,14 @@ public class MetadatenVerifizierung {
                 Metadata identifierTopStruct = uppermostStruct.getAllIdentifierMetadata().get(0);
                 try {
                     if (identifierTopStruct.getValue() == null || identifierTopStruct.getValue().length() == 0) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in " + uppermostStruct.getType()
+                                .getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
                     if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError")
-                                + identifierTopStruct.getType().getNameByLanguage(language) + " in DocStruct "
-                                + uppermostStruct.getType().getNameByLanguage(language) + Helper.getTranslation("MetadataInvalidCharacter"));
+                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getNameByLanguage(
+                                language) + " in DocStruct " + uppermostStruct.getType().getNameByLanguage(language) + Helper.getTranslation(
+                                        "MetadataInvalidCharacter"));
                         return false;
                     }
                     DocStruct firstChild = uppermostStruct.getAllChildren().get(0);
@@ -637,15 +657,15 @@ public class MetadatenVerifizierung {
                         return false;
                     }
                     if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in " + uppermostStruct.getType()
+                                .getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
-                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
-                            && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName()
-                                + Helper.getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and "
-                                + firstChild.getType().getName());
+                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != "" && identifierTopStruct.getValue().equals(
+                            identifierFirstChild.getValue())) {
+                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName() + Helper
+                                .getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and " + firstChild.getType()
+                                        .getName());
                         return false;
                     }
                 } catch (Exception e) {
