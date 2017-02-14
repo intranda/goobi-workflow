@@ -2894,7 +2894,12 @@ public class Metadaten {
     public String getOcrResult() {
     	String ocrResult = "";
     	if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
-            String myOcrUrl = getOcrBasisUrl(this.myBildNummer);
+            String myOcrUrl = "";
+            if (currentTheme == Theme.ui) {
+                myOcrUrl = getOcrBasisUrl(this.myBildNummer);
+            } else {
+                myOcrUrl = getOcrBasisUrl(image.getOrder());
+            }
             CloseableHttpClient client = null;
             HttpGet method = new HttpGet(myOcrUrl);
             InputStream stream = null;
