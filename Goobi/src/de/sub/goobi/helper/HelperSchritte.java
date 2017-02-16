@@ -159,8 +159,8 @@ public class HelperSchritte {
         List<Step> allehoeherenSchritte = new ArrayList<Step>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge() && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) ||so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && so
-                    .getId() != currentStep.getId()) {
+            if (so.getReihenfolge() == currentStep.getReihenfolge() && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so
+                    .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && so.getId() != currentStep.getId()) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
                 allehoeherenSchritte.add(so);
@@ -178,8 +178,9 @@ public class HelperSchritte {
                     reihenfolge = myStep.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && !myStep
-                        .getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep
+                        .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && !myStep.getBearbeitungsstatusEnum().equals(
+                                StepStatus.INWORK)) {
                     /*
                      * den Schritt aktivieren, wenn es kein vollautomatischer ist
                      */
@@ -314,7 +315,7 @@ public class HelperSchritte {
             if (logger.isDebugEnabled()) {
                 logger.debug("starting script " + script);
             }
-           
+
             if (script != null && !script.equals(" ") && script.length() != 0) {
                 if (automatic && (count == size)) {
                     returnParameter = executeScriptForStepObject(step, script, true);
@@ -346,7 +347,7 @@ public class HelperSchritte {
                 logger.error("Metadata file is not readable.");
                 return -1;
             }
-            dd = po.readMetadataFile().getDigitalDocument();
+            dd = ff.getDigitalDocument();
         } catch (DAOException | PreferencesException | ReadException | SwapException | WriteException | IOException | InterruptedException e2) {
             logger.error(e2);
         }
@@ -375,9 +376,11 @@ public class HelperSchritte {
                     }
 
                 } else {
-                    step.setEditTypeEnum(StepEditType.AUTOMATIC);
-                    step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                    StepManager.saveStep(step);
+                    if (rueckgabe != 99) {
+                        step.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                        StepManager.saveStep(step);
+                    }
                 }
             }
         } catch (IOException e) {
