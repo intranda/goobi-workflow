@@ -169,5 +169,11 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.2 (Mojarra 2.2.0)"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.0">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+			<attribute name="owner.project.facets" value="jst.jsf"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
