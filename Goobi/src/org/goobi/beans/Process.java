@@ -339,7 +339,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             if (!suffix.equals("")) {
                 Path tif = Paths.get(tifOrdner);
-                List<String> files = NIOFileUtils.list(tif.toString());
+                List<String> files = NIOFileUtils.list(getImagesDirectory() + tif.toString());
                 if (files == null || files.size() == 0) {
                     List<String> folderList = NIOFileUtils.list(dir.toString());
                     for (String folder : folderList) {
