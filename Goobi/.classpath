@@ -34,9 +34,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/htmLib.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/intrandaChart_1.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/iText-2.1.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jai_codec-1.1.2_01.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jai_core-1.1.2_01.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jai_imageio-1.0_01.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jakarta-oro.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jboss-logging-3.1.0.GA.jar"/>
@@ -136,6 +133,9 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="lib-test/jai_codec-1.1.2_01.jar"/>
+	<classpathentry kind="lib" path="lib-test/jai_core-1.1.2_01.jar"/>
+	<classpathentry kind="lib" path="lib-test/jai_imageio-1.0_01.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
