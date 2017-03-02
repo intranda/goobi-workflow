@@ -70,7 +70,7 @@ public class ProjectHelper {
         totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
         totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
-        List<String> stepTitleList = StepManager.getDistinctStepTitles("schritte.reihenfolge", projectFilter);
+        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
 
         List<StepInformation> workFlow = new ArrayList<StepInformation>();
 
@@ -89,7 +89,7 @@ public class ProjectHelper {
             }
         }
 
-        List<String> stepDoneTitleList = StepManager.getDistinctStepTitles("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
+        List<String> stepDoneTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
 
         for (String stepDoneTitle : stepDoneTitleList) {
             Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter
@@ -140,7 +140,7 @@ public class ProjectHelper {
         totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
         totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
-        List<String> stepTitleList = StepManager.getDistinctStepTitles("schritte.reihenfolge", projectFilter);
+        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
 
         List<StepInformation> workFlow = new ArrayList<StepInformation>();
 
@@ -159,7 +159,7 @@ public class ProjectHelper {
             }
         }
 
-        List<String> stepDoneTitleList = StepManager.getDistinctStepTitles("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
+        List<String> stepDoneTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
 
         for (String stepDoneTitle : stepDoneTitleList) {
             Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter

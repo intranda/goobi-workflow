@@ -151,6 +151,26 @@ public class StepManager implements IManager, Serializable {
         return new ArrayList<Integer>();
     }
 
+    public static List<String> getDistinctStepTitlesAndOrder() {
+
+        try {
+            return StepMysqlHelper.getDistinctStepTitlesAndOrder("Titel", null);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<String>();
+    }
+
+    public static List<String> getDistinctStepTitlesAndOrder(String order, String filter) {
+
+        try {
+            return StepMysqlHelper.getDistinctStepTitlesAndOrder(order, filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new ArrayList<String>();
+    }
+    
     public static List<String> getDistinctStepTitles() {
 
         try {
@@ -160,7 +180,7 @@ public class StepManager implements IManager, Serializable {
         }
         return new ArrayList<String>();
     }
-
+    
     public static List<String> getDistinctStepTitles(String order, String filter) {
 
         try {
@@ -170,6 +190,7 @@ public class StepManager implements IManager, Serializable {
         }
         return new ArrayList<String>();
     }
+    
 
     public static void saveUserAssignment(Step step) {
         try {

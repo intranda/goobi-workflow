@@ -853,7 +853,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
+    public static List<String> getDistinctStepTitlesAndOrder(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("select distinct schritte.titel, schritte.reihenfolge from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
         if (filter != null && !filter.isEmpty()) {
@@ -876,6 +876,31 @@ class StepMysqlHelper implements Serializable {
             }
         }
     }
+    
+    public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select distinct schritte.titel from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" AND " + filter);
+        }
+
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+    
 
     public static void saveUserAssignment(Step step) throws SQLException {
         if (step.getId() != null) {
