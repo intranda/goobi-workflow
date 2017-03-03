@@ -1097,7 +1097,7 @@ public class Metadaten {
 
             pageNo = 0;
             imageIndex = 0;
-            loadCurrentImages();
+            loadCurrentImages(true);
         } else {
             this.myBildNummer = 1;
             this.myImageRotation = 0;
@@ -1129,7 +1129,7 @@ public class Metadaten {
         return "metseditor";
     }
 
-    private void loadCurrentImages() {
+    private void loadCurrentImages(boolean jumpToFirstPage) {
         allImages = new ArrayList<Image>();
         try {
             List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
@@ -1140,7 +1140,9 @@ public class Metadaten {
                     Image currentImage = new Image(imagename, order++, "", "", imagename);
                     allImages.add(currentImage);
                 }
-                setImageIndex(0);
+                if(jumpToFirstPage){
+                	setImageIndex(0);
+                }
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);
@@ -3589,7 +3591,7 @@ public class Metadaten {
         if (currentTheme == Theme.ui) {
             BildErmitteln(0);
         } else {
-            loadCurrentImages();
+            loadCurrentImages(false);
         }
     }
 
@@ -3648,7 +3650,7 @@ public class Metadaten {
         if (currentTheme == Theme.ui) {
             BildErmitteln(0);
         } else {
-            loadCurrentImages();
+            loadCurrentImages(false);
         }
     }
 
@@ -3694,7 +3696,7 @@ public class Metadaten {
             myBildLetztes = 0;
         }
 
-        loadCurrentImages();
+        loadCurrentImages(true);
         allPages = mydocument.getPhysicalDocStruct().getAllChildren();
 
         int currentPhysicalOrder = 1;
@@ -4373,6 +4375,11 @@ public class Metadaten {
             this.imageIndex = getSizeOfImageList() - 1;
         }
         setImage(allImages.get(this.imageIndex));
+    }
+    
+    public void checkSelectedThumbnail(int imageIndex){
+    	alleSeitenAuswahl = new String[1];
+    	alleSeitenAuswahl[0] = String.valueOf(imageIndex);
     }
 
     public String getImageUrl() {

@@ -99,17 +99,17 @@
 			             <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
 							<div class="goobi-thumbnail #{Metadaten.image.imageName eq image.imageName ? 'img-active' : 'font-light'}">
                                 <div class="thumb">
-									<h:commandLink id="thumbnailImage" title="#{image.tooltip}">
+									<h:commandLink id="thumbnailImage" title="#{image.tooltip}" action="#{Metadaten.checkSelectedThumbnail(image.order -1)}">
 										<canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{image.tooltip}" id="thumbnail-#{status.index}"></canvas>
 										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
-										<f:ajax render="@form :bigimage"/>
+										<f:ajax render="@form :bigimage :myform"/>
 									</h:commandLink>
 								</div>
 								<div class="goobi-thumbnail-caption">
 									<!-- 
 									<h:outputText style="line-heigth:9px;" value="#{image.imageName}"/><br/>
 									-->
-									<h:outputText value="#{Metadaten.alleSeiten[status.index].label}"/>
+									<h:outputText value="#{Metadaten.alleSeiten[image.order -1].label}"/>
 									<br/>
 									<h:outputText style="color:white;" value="__________________________"/>
 								</div>
