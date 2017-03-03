@@ -93,9 +93,9 @@
                             <h:outputText styleClass="block" value="#{msgs.modulSchritt}: #{ProzessverwaltungForm.mySchritt.typModulName}" rendered="#{ProzessverwaltungForm.mySchritt.typModulName!=null and ProzessverwaltungForm.mySchritt.typModulName!=''}" />
                             <h:outputText styleClass="block" value="#{msgs.stepPlugin}: #{ProzessverwaltungForm.mySchritt.stepPlugin}" rendered="#{ProzessverwaltungForm.mySchritt.stepPlugin!=null and ProzessverwaltungForm.mySchritt.stepPlugin!=''}" />
                             <h:outputText styleClass="block" value="#{msgs.validationPlugin}" rendered="#{ProzessverwaltungForm.mySchritt.validationPlugin!=null and ProzessverwaltungForm.mySchritt.validationPlugin!=''}" />
-                            <h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}: #{ProzessverwaltungForm.mySchritt.delayStep}" rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!=''}" />
-
+                            <h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!='' and ProzessverwaltungForm.mySchritt.delayStep}" />
                             <h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
+                            <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
                         </h:panelGroup>
 
                         <h:outputText value="#{msgs.script}:" />

@@ -128,14 +128,56 @@
 
                                                         <h:outputText value="#{msgs.aktualisierungstyp}:" />
                                                         <h:outputText value="#{item.editTypeEnum.title}" />
-
+                                                        
+                                                        <h:outputText value="#{msgs.typ}:" />
+                                                        <h:panelGroup>
+								                            <h:outputText styleClass="block" value="#{msgs.metadaten}" rendered="#{item.typMetadaten}" />
+								                            <h:outputText styleClass="block" value="#{msgs.importMittelsFileUpload}" rendered="#{item.typImportFileUpload}" />
+								                            <h:outputText styleClass="block" value="#{msgs.exportDMS}" rendered="#{item.typExportDMS}" />
+								                            <h:outputText styleClass="block" value="#{msgs.schrittBeimAnnehmenAbschliessen}" rendered="#{item.typBeimAnnehmenAbschliessen}" />
+								                            <h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStarten}" rendered="#{item.typBeimAnnehmenModul}" />
+								                            <h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
+								                            <h:outputText styleClass="block" value="#{msgs.imagesLesen}" rendered="#{item.typImagesLesen}" />
+								                            <h:outputText styleClass="block" value="#{msgs.imagesSchreiben}" rendered="#{item.typImagesSchreiben}" />
+								                            <h:outputText styleClass="block" value="#{msgs.beimAbschliessenVerifizieren}" rendered="#{item.typBeimAbschliessenVerifizieren}" />
+								                            <h:outputText styleClass="block" value="#{msgs.automatischerSchritt}" rendered="#{item.typAutomatisch}" />
+								                            <h:outputText styleClass="block" value="#{msgs.typScriptStep}" rendered="#{item.typScriptStep}" />
+								                            <h:outputText styleClass="block" value="#{msgs.modulSchritt}: #{item.typModulName}" rendered="#{item.typModulName!=null and item.typModulName!=''}" />
+								                            <h:outputText styleClass="block" value="#{msgs.stepPlugin}: #{item.stepPlugin}" rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
+								                            <h:outputText styleClass="block" value="#{msgs.validationPlugin}" rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
+								                            <h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{item.delayStep!=null and item.delayStep!='' and item.delayStep}" />
+								                            <h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{item.batchStep}" />
+								                            <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{item.updateMetadataIndex}" />
+								                        </h:panelGroup>
+								                        
                                                         <h:outputText value="#{msgs.automatischerSchritt}:" rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}" />
                                                         <h:panelGroup rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
-                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad}" rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}" />
-                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad2}" rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}" />
-                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad3}" rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}" />
-                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad4}" rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}" />
-                                                            <h:outputText styleClass="block" value="#{item.typAutomatischScriptpfad5}" rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}" />
+                                                        
+                                                        	<h:panelGroup styleClass="block" rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
+                                                        		<h:outputText value="#{item.scriptname1}" />
+                                								<h:outputText styleClass="font-light " value=" #{item.typAutomatischScriptpfad}" />
+                                                        	</h:panelGroup>
+                                                       
+                                                        	<h:panelGroup styleClass="block" rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}">
+                                                        		<h:outputText value="#{item.scriptname2}" />
+                                								<h:outputText styleClass="font-light " value=" #{item.typAutomatischScriptpfad2}" />
+                                                        	</h:panelGroup>
+                                                        	
+                                                     		<h:panelGroup styleClass="block" rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}">
+                                                        		<h:outputText value="#{item.scriptname3}" />
+                                								<h:outputText styleClass="font-light " value=" #{item.typAutomatischScriptpfad3}" />                                                        	
+                                                        	</h:panelGroup>
+                                                        	
+                                                        	<h:panelGroup styleClass="block" rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}">
+                                                        		<h:outputText value="#{item.scriptname4}" />
+                                								<h:outputText styleClass="font-light " value=" #{item.typAutomatischScriptpfad4}" />
+                                                        	</h:panelGroup>
+                                                        	
+                                                        	<h:panelGroup styleClass="block" rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}">
+                                                        		<h:outputText value="#{item.scriptname5}" />
+                                								<h:outputText styleClass="font-light " value=" #{item.typAutomatischScriptpfad5}" />
+                                                        	</h:panelGroup>
+                                                       
                                                         </h:panelGroup>
 
                                                         <h:outputText value="#{msgs.module}:" rendered="#{item.typModulName != null and item.typModulName != ''}" />
