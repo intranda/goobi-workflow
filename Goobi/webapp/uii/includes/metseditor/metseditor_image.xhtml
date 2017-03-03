@@ -106,7 +106,12 @@
 									</h:commandLink>
 								</div>
 								<div class="goobi-thumbnail-caption">
-									<h:outputText value="#{image.imageName}"></h:outputText>
+									<!-- 
+									<h:outputText style="line-heigth:9px;" value="#{image.imageName}"/><br/>
+									-->
+									<h:outputText value="#{Metadaten.alleSeiten[status.index].label}"/>
+									<br/>
+									<h:outputText style="color:white;" value="__________________________"/>
 								</div>
 							</div>
 						</ui:repeat>	             
@@ -174,12 +179,11 @@
 							<div class="row">
 	                            <div class="col-sm-3">
 	                                <label class="control-label" for="textfield">
-	                                    <h:outputText value="#{msgs.numberOfImages}:" />
+	                                    <h:outputText value="#{msgs.numberOfImages}:" /> 
 	                                </label>
 	                            </div>
 	                            <div class="col-sm-6" style="padding: 0px;">
 	                                <h:selectOneMenu id="numberOfImages" value="#{Metadaten.numberOfImagesPerPage}" styleClass="form-control" title="#{msgs.numberOfImages}">
-						                <f:selectItem itemValue="8" itemLabel="8" />
 						                <f:selectItem itemValue="12" itemLabel="12" />
 						                <f:selectItem itemValue="24" itemLabel="24" />
 						                <f:selectItem itemValue="48" itemLabel="48" />

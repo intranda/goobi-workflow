@@ -165,19 +165,19 @@ xmlns:p="http://primefaces.org/ui">
                                     <h:commandLink id="moveUp1" action="#{Metadaten.moveSelectedPages('up', 1)}">
                                         <span class="btn margin-right-10 fa fa-chevron-up fa-lg width-40" />
                                         <h:outputText value="#{msgs.moveSeltectedPagesUp}" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <h:commandLink id="moveUp100" action="#{Metadaten.moveSelectedPages('up', 100)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="100" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <h:commandLink id="moveUp50" action="#{Metadaten.moveSelectedPages('up', 50)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="50" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <h:commandLink id="moveUp10" action="#{Metadaten.moveSelectedPages('up', 10)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="10" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                 </li>
 
@@ -185,19 +185,19 @@ xmlns:p="http://primefaces.org/ui">
                                     <h:commandLink id="moveDown1" action="#{Metadaten.moveSelectedPages('down', 1)}">
                                         <span class="btn margin-right-10 fa fa-chevron-down fa-lg width-40" />
                                         <h:outputText value="#{msgs.moveSeltectedPagesDown}" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <h:commandLink id="moveDown100" action="#{Metadaten.moveSelectedPages('down', 100)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="100" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <h:commandLink id="moveDown50" action="#{Metadaten.moveSelectedPages('down', 50)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="50" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                     <h:commandLink id="moveDown10" action="#{Metadaten.moveSelectedPages('down', 10)}" styleClass="margin-right-10 pull-right">
                                         <h:outputText value="10" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
                                 </li>
                                 <li class="action-li">
@@ -205,7 +205,7 @@ xmlns:p="http://primefaces.org/ui">
                                         onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                         <span class="btn margin-right-10 fa fa-trash-o fa-lg width-40" />
                                         <h:outputText value="#{msgs.deleteSeltectedPages}" />
-                                        <f:ajax execute="@form" render="@form :imagenavigation :openseadragonform" />
+                                        <f:ajax execute="@form" render="@form :BildArea2" />
                                     </h:commandLink>
 
                                 </li>
@@ -213,7 +213,7 @@ xmlns:p="http://primefaces.org/ui">
                                     <h:commandLink id="reOrder" action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
                                         <span class="btn margin-right-10 fa fa-refresh fa-lg width-40" />
                                         <h:outputText value="#{msgs.reOrder}" />
-                                        <f:ajax execute="@form" render=":progressform :messages" />
+                                        <f:ajax execute="@form" render=":progressform :messages :BildArea2" />
                                     </h:commandLink>
                                 </li>
 

@@ -3694,6 +3694,7 @@ public class Metadaten {
             myBildLetztes = 0;
         }
 
+        loadCurrentImages();
         allPages = mydocument.getPhysicalDocStruct().getAllChildren();
 
         int currentPhysicalOrder = 1;
@@ -3722,7 +3723,7 @@ public class Metadaten {
             } else {
                 setImageIndex(myBildNummer - 1);
             }
-        }
+        }        
     }
 
     public void reOrderPagination() {
