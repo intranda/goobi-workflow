@@ -36,7 +36,7 @@
 
                                 <x:aliasBeansScope>
                                     <x:aliasBean alias="#{Form}" value="#{ProzessverwaltungForm}" />
-                                    <x:aliasBean alias="#{label}" value="#{msgs.filterProcesses}" />
+                                    <x:aliasBean alias="#{label}" value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
                                     <f:subview id="sub1">
                                         <ui:include src="includes/task/list_searchAndSave.xhtml" />
                                     </f:subview>
@@ -97,7 +97,7 @@
                                     <x:column rendered="true" id="ajaxcolumn" styleClass="tableColumnOverflow maxWidth300" headerstyleClass="#{ProzessverwaltungForm.sortierung=='titelDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='titelAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.prozessTitel}" />
+                                                <h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
                                                 <f:setPropertyActionListener target="#{ProzessverwaltungForm.sortierung}" value="#{ProzessverwaltungForm.sortierung=='titelAsc'?'titelDesc':'titelAsc'}" />
                                                 <f:ajax render=":myform" />
                                             </h:commandLink>
@@ -263,9 +263,9 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
 
-                                        <!-- Bearbeiten-Schaltknopf: Vorlagen -->
+                                        <!-- Bearbeiten-Schaltknopf -->
 	                                    <h:commandLink action="#{ProzessverwaltungForm.editProcess}" id="edit"
-	                                        rendered="#{LoginForm.hasRole('Workflow_General_Details')}" rel="tooltip" title="#{msgs.prozessBearbeiten}">
+	                                        rendered="#{LoginForm.hasRole('Workflow_General_Details')}" rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}">
                                             <i class="btn fa fa-pencil" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
