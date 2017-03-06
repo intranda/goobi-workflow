@@ -188,20 +188,22 @@ public class ProjectBean extends BasicBean {
     }
 
     public String Loeschen() {
-        if (this.myProjekt.getBenutzer().size() > 0) {
-            Helper.setFehlerMeldung("userAssignedError");
+        if (ProjectManager.getNumberOfProcessesForProject(myProjekt.getId()) != 0) {
+            Helper.setFehlerMeldung("projectssAssignedError");
             return "";
-        } else {
-            try {
-                ProjectManager.deleteProject(this.myProjekt);
-                paginator.load();
-                displayMode = "";
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not delete", e.getMessage());
-                return "";
-            }
         }
+
+        try {
+            ProjectManager.deleteProject(this.myProjekt);
+            paginator.load();
+            displayMode = "";
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("could not delete", e.getMessage());
+            return "";
+        }
+
         return FilterKein();
+
     }
 
     public String FilterKein() {
@@ -305,9 +307,8 @@ public class ProjectBean extends BasicBean {
 
     public StatisticsManager getStatisticsManager1() {
         if (this.statisticsManager1 == null) {
-            this.statisticsManager1 =
-                    new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot().getLocale(), "\"project:"
-                            + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager1;
     }
@@ -318,9 +319,8 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager2() {
         if (this.statisticsManager2 == null) {
-            this.statisticsManager2 =
-                    new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext.getCurrentInstance().getViewRoot().getLocale(), "\"project:"
-                            + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager2;
     }
@@ -331,9 +331,8 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager3() {
         if (this.statisticsManager3 == null) {
-            this.statisticsManager3 =
-                    new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext.getCurrentInstance().getViewRoot().getLocale(), "\"project:"
-                            + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager3;
     }
@@ -344,9 +343,8 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager4() {
         if (this.statisticsManager4 == null) {
-            this.statisticsManager4 =
-                    new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(), "\"project:"
-                            + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager4;
     }
@@ -356,10 +354,8 @@ public class ProjectBean extends BasicBean {
      */
 
     public void GenerateValuesForStatistics() {
-        String projectFilter =
-                FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false, null, null, null, true,
-                        false)
-                        + " AND prozesse.istTemplate = false ";
+        String projectFilter = FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false, null,
+                null, null, true, false) + " AND prozesse.istTemplate = false ";
         Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
         Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
         //		ProjectionList pl = Projections.projectionList();
@@ -556,8 +552,7 @@ public class ProjectBean extends BasicBean {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData.setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel())
-                        + "\"", false, null, null, null, true, false)
-                        + " AND prozesse.istTemplate = false ");
+                        + "\"", false, null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
@@ -767,7 +762,7 @@ public class ProjectBean extends BasicBean {
             resetStatistics();
         }
     }
-    
+
     public void resetStatistics() {
         statisticsManager1 = null;
         statisticsManager2 = null;
@@ -778,12 +773,12 @@ public class ProjectBean extends BasicBean {
         projectProgressImage = null;
         projectStatImages = null;
         projectStatVolumes = null;
-    }   
-    
-    public String cloneProject() {
-       myProjekt.clone();
-       Cancel();
-       return FilterKein();
     }
-    
+
+    public String cloneProject() {
+        myProjekt.clone();
+        Cancel();
+        return FilterKein();
+    }
+
 }

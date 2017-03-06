@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -160,6 +161,15 @@ public class ProjectManager implements IManager, Serializable {
         }
     }
 
+    public static Integer getNumberOfProcessesForProject(Integer projectId) {
+        try {
+            return ProjectMysqlHelper.getNumberOfProcessesForProject(projectId);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return null;
+    }
+
     /* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
 
     public static Project convert(ResultSet rs) throws SQLException {
@@ -248,9 +258,8 @@ public class ProjectManager implements IManager, Serializable {
     };
 
     @Override
-    public List<Integer> getIdList( String filter) {
+    public List<Integer> getIdList(String filter) {
         // TODO Auto-generated method stub
         return null;
     }
-
 }
