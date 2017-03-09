@@ -226,10 +226,10 @@ public class ProcessBean extends BasicBean {
         validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
         Collections.sort(validationPluginList);
         calcSecurityNumber();
-        
+
     }
 
-   	/**
+    /**
      * needed for ExtendedSearch
      * 
      * @return
@@ -502,7 +502,7 @@ public class ProcessBean extends BasicBean {
      * Anzeige der Sammelbände filtern
      */
     public String FilterAlleStart() {
-    	this.statisticsManager = null;
+        this.statisticsManager = null;
         this.myAnzahlList = null;
 
         String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
@@ -1587,42 +1587,43 @@ public class ProcessBean extends BasicBean {
     }
 
     public int getSecurityCheckNumber1() {
-		return securityCheckNumber1;
-	}
-    
-    public int getSecurityCheckNumber2() {
-		return securityCheckNumber2;
-	}
-    
-    public int getSecurityCheckResultGuess() {
-		return securityCheckResultGuess;
-	}
-    public void setSecurityCheckResultGuess(int securityCheckResultGuess) {
-		this.securityCheckResultGuess = securityCheckResultGuess;
-	}
-    
-    private void calcSecurityNumber() {
-    	securityCheckNumber1 = 101 + (int)(Math.random() * ((499 - 101) + 1));
-    	securityCheckNumber2 = 101 + (int)(Math.random() * ((499 - 101) + 1));
-    	securityCheckResultGuess = 0;
-	}
-    
-    private boolean checkSecurityResult(){
-    	return (securityCheckNumber1 + securityCheckNumber2 == securityCheckResultGuess);
+        return securityCheckNumber1;
     }
-    
+
+    public int getSecurityCheckNumber2() {
+        return securityCheckNumber2;
+    }
+
+    public int getSecurityCheckResultGuess() {
+        return securityCheckResultGuess;
+    }
+
+    public void setSecurityCheckResultGuess(int securityCheckResultGuess) {
+        this.securityCheckResultGuess = securityCheckResultGuess;
+    }
+
+    private void calcSecurityNumber() {
+        securityCheckNumber1 = 101 + (int) (Math.random() * ((499 - 101) + 1));
+        securityCheckNumber2 = 101 + (int) (Math.random() * ((499 - 101) + 1));
+        securityCheckResultGuess = 0;
+    }
+
+    private boolean checkSecurityResult() {
+        return (securityCheckNumber1 + securityCheckNumber2 == securityCheckResultGuess);
+    }
+
     /**
      * Starte GoobiScript über alle Treffer
      */
     public void GoobiScriptHits() {
-    	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-    	}else{
-    		calcSecurityNumber();
-	        GoobiScript gs = new GoobiScript();
-	        gs.execute(this.paginator.getIdList(), this.goobiScript);
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+        } else {
+            calcSecurityNumber();
+            GoobiScript gs = new GoobiScript();
+            gs.execute(this.paginator.getIdList(), this.goobiScript);
 
-    	}
+        }
     }
 
     /**
@@ -1630,49 +1631,48 @@ public class ProcessBean extends BasicBean {
      */
     @SuppressWarnings("unchecked")
     public void GoobiScriptPage() {
-    	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-    	}else{
-	    	calcSecurityNumber();
-	        GoobiScript gs = new GoobiScript();
-	        List<Integer> idList = new ArrayList<>();
-	        for (Process p : (List<Process>) paginator.getList()) {
-	            idList.add(p.getId());
-	        }
-	        gs.execute(idList, this.goobiScript);
-    	}
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+        } else {
+            calcSecurityNumber();
+            GoobiScript gs = new GoobiScript();
+            List<Integer> idList = new ArrayList<>();
+            for (Process p : (List<Process>) paginator.getList()) {
+                idList.add(p.getId());
+            }
+            gs.execute(idList, this.goobiScript);
+        }
     }
-    
+
     /**
      * Starte GoobiScript über alle selectierten Treffer
      */
     @SuppressWarnings("unchecked")
     public void GoobiScriptSelection() {
-    	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-    	}else{
-    		calcSecurityNumber();
-	    	List<Integer> idList = new ArrayList<>();
-	        for (Process p : (List<Process>) this.paginator.getList()) {
-	            if (p.isSelected()) {
-	                idList.add(p.getId());
-	            }
-	        }
-	        GoobiScript gs = new GoobiScript();
-	        gs.execute(idList, this.goobiScript);
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+        } else {
+            calcSecurityNumber();
+            List<Integer> idList = new ArrayList<>();
+            for (Process p : (List<Process>) this.paginator.getList()) {
+                if (p.isSelected()) {
+                    idList.add(p.getId());
+                }
+            }
+            GoobiScript gs = new GoobiScript();
+            gs.execute(idList, this.goobiScript);
         }
     }
-    
-    public int getGoobiScriptCountSelection(){
-    	List<Integer> idList = new ArrayList<>();
-    	for (Process p : (List<Process>) this.paginator.getList()) {
+
+    public int getGoobiScriptCountSelection() {
+        List<Integer> idList = new ArrayList<>();
+        for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
                 idList.add(p.getId());
             }
         }
-    	return idList.size();
+        return idList.size();
     }
-    
 
     /*
      * Statistische Auswertung
@@ -2539,6 +2539,19 @@ public class ProcessBean extends BasicBean {
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
+                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
+                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
+                        if (bean == null) {
+                            bean = new StepBean();
+                            requestMap.put("AktuelleSchritteForm", bean);
+                        }
+                        bean.setMyPlugin(currentPlugin);
+                        String mypath = "/uii/a_reference.xhtml";
+                        currentPlugin.execute();
+                        return mypath;
+
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
                         currentPlugin.execute();
                         currentPlugin.finish();
