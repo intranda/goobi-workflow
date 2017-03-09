@@ -2548,7 +2548,7 @@ public class ProcessBean extends BasicBean {
                             requestMap.put("AktuelleSchritteForm", bean);
                         }
                         bean.setMyPlugin(currentPlugin);
-                        String mypath = "/uii/a_reference.xhtml";
+                        String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
 
