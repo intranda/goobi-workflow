@@ -80,8 +80,39 @@
                                         </f:facet>
                                         <h:outputText value="#{item.id}" />
                                     </x:column>
+                                    
+                                    
+                                    <x:column styleClass="tableColumnOverflow width80" rendered="false">
+                                        <f:facet name="header">
+                                            <h:commandLink styleClass="font-black-block">
+                                                <h:outputText value="#{msgs.thumbnail}" />
+<!--                                                 <f:setPropertyActionListener target="#{ProzessverwaltungForm.sortierung}" value="#{ProzessverwaltungForm.sortierung=='idAsc'?'idDesc':'idAsc'}" /> -->
+                                                <f:ajax render=":myform" />
+                                            </h:commandLink>
+                                        </f:facet>
+                                        <h:outputText value="#{item.representativeImage}" />
+                                    </x:column>
 
-                                    <!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
+                                        <x:column styleClass="tableColumnOverflow width80"  rendered="false">
+                                            <f:facet name="header">
+                                                <h:commandLink styleClass="font-black-block">
+                                                    <h:outputText value="#{msgs.metadata}" />
+                                                    <f:ajax render=":myform" />
+                                                </h:commandLink>
+                                            </f:facet>
+                                            <x:dataTable var="metadata" value="#{item.metadataList}">
+                                                <x:column>
+                                                    <h:outputText value="#{metadata.one}:" />
+                                                </x:column>
+                                                <x:column>
+                                                    <h:outputText value="#{metadata.two}" />
+
+                                                </x:column>
+                                            </x:dataTable>
+
+                                        </x:column>
+
+                                        <!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
                                     <x:column styleClass="tableColumnOverflow width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='batchDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
