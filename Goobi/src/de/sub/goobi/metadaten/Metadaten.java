@@ -1140,8 +1140,8 @@ public class Metadaten {
                     Image currentImage = new Image(imagename, order++, "", "", imagename);
                     allImages.add(currentImage);
                 }
-                if(jumpToFirstPage){
-                	setImageIndex(0);
+                if (jumpToFirstPage) {
+                    setImageIndex(0);
                 }
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
@@ -2143,9 +2143,10 @@ public class Metadaten {
                 }
             }
         }
-
-        if (!this.allTifFolders.contains(this.currentTifFolder)) {
+        if (StringUtils.isBlank(currentTifFolder) && allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
+        } else if (!this.allTifFolders.contains(this.currentTifFolder)) {
+            this.currentTifFolder = allTifFolders.get(0);
         }
     }
 
@@ -2865,8 +2866,8 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
-    private String getOcrFileNameForImage(){
-    	String ocrFile = "";
+    private String getOcrFileNameForImage() {
+        String ocrFile = "";
         if (currentTheme == Theme.ui) {
             ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
         } else {
@@ -2874,11 +2875,11 @@ public class Metadaten {
         }
         return ocrFile;
     }
-    
-    public boolean isImageHasOcr(){
-    	return FilesystemHelper.isOcrFileExists(myProzess,getOcrFileNameForImage());
+
+    public boolean isImageHasOcr() {
+        return FilesystemHelper.isOcrFileExists(myProzess, getOcrFileNameForImage());
     }
-    
+
     public boolean isShowOcrButton() {
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
@@ -2894,8 +2895,8 @@ public class Metadaten {
     }
 
     public String getOcrResult() {
-    	String ocrResult = "";
-    	if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
+        String ocrResult = "";
+        if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             String myOcrUrl = "";
             if (currentTheme == Theme.ui) {
                 myOcrUrl = getOcrBasisUrl(this.myBildNummer);
@@ -2911,7 +2912,7 @@ public class Metadaten {
                 stream = client.execute(method, HttpClientHelper.streamResponseHandler);
                 if (stream != null) {
                     ocrResult = IOUtils.toString(stream, "UTF-8");
-                } 
+                }
                 // this.ocrResult = method.getResponseBodyAsString();
 
             } catch (IOException e) {
@@ -2941,11 +2942,10 @@ public class Metadaten {
                 ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
             }
             logger.trace("myPicture: " + ocrFile);
-            ocrResult = FilesystemHelper.getOcrFileContent(myProzess,ocrFile);
+            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
         }
-    	return ocrResult;
+        return ocrResult;
     }
-
 
     public String getOcrAddress() {
         int startseite = -1;
@@ -3479,11 +3479,11 @@ public class Metadaten {
     public void setOpacKatalog(String opacKatalog) {
         this.opacKatalog = opacKatalog;
     }
-    
-    public Map<String, String>  getAllSearchFields() {
+
+    public Map<String, String> getAllSearchFields() {
         return ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog()).getSearchFields();
-     }
-    
+    }
+
     public List<String> getAllOpacCatalogues() {
         return ConfigOpac.getInstance().getAllCatalogueTitles();
     }
@@ -3725,7 +3725,7 @@ public class Metadaten {
             } else {
                 setImageIndex(myBildNummer - 1);
             }
-        }        
+        }
     }
 
     public void reOrderPagination() {
@@ -4376,10 +4376,10 @@ public class Metadaten {
         }
         setImage(allImages.get(this.imageIndex));
     }
-    
-    public void checkSelectedThumbnail(int imageIndex){
-    	alleSeitenAuswahl = new String[1];
-    	alleSeitenAuswahl[0] = String.valueOf(imageIndex);
+
+    public void checkSelectedThumbnail(int imageIndex) {
+        alleSeitenAuswahl = new String[1];
+        alleSeitenAuswahl[0] = String.valueOf(imageIndex);
     }
 
     public String getImageUrl() {
