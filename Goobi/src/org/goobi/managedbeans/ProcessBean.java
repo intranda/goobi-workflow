@@ -73,6 +73,7 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.UserRole;
@@ -837,6 +838,7 @@ public class ProcessBean extends BasicBean {
         ExportMets export = new ExportMets();
         try {
             export.startExport(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (Exception e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
@@ -850,6 +852,7 @@ public class ProcessBean extends BasicBean {
         ExportPdf export = new ExportPdf();
         try {
             export.startExport(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started PDF export using 'ExportPdf'.");
         } catch (Exception e) {
             String[] parameter = { "PDF", this.myProzess.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
@@ -872,6 +875,7 @@ public class ProcessBean extends BasicBean {
         }
         if (export == null) {
             export = new ExportDms();
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
         }
         try {
             export.startExport(this.myProzess);
@@ -903,6 +907,7 @@ public class ProcessBean extends BasicBean {
             }
             try {
                 export.startExport(proz);
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSPage'.");
             } catch (Exception e) {
                 // without this a new exception is thrown, if an exception
                 // caught here doesn't have an
@@ -947,6 +952,7 @@ public class ProcessBean extends BasicBean {
                 }
                 try {
                     export.startExport(proz);
+                    Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("ExportError", e.getMessage());
                     logger.error(e);
@@ -976,6 +982,7 @@ public class ProcessBean extends BasicBean {
 
             try {
                 export.startExport(proz);
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSHits'.");
             } catch (Exception e) {
                 Helper.setFehlerMeldung("ExportError", e.getMessage());
                 logger.error(e);
@@ -1099,12 +1106,13 @@ public class ProcessBean extends BasicBean {
                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                     new HelperSchritte().CloseStepObjectAutomatic(so, true);
                 } else {
-                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                    if (ben != null) {
-                        so.setBearbeitungsbenutzer(ben);
-                    }
-                    ProcessManager.saveProcess(proz);
+//                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+//                    if (ben != null) {
+//                        so.setBearbeitungsbenutzer(ben);
+//                    }
+                	ProcessManager.saveProcess(proz);
                 }
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusUp' mass manipulation for step " + so.getTitel());
                 break;
             }
         }
@@ -1118,12 +1126,13 @@ public class ProcessBean extends BasicBean {
         for (Step step : tempList) {
             if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
                 step.setEditTypeEnum(StepEditType.ADMIN);
-                mySchritt.setBearbeitungszeitpunkt(new Date());
-                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                if (ben != null) {
-                    mySchritt.setBearbeitungsbenutzer(ben);
-                }
+                step.setBearbeitungszeitpunkt(new Date());
+//                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+//                if (ben != null) {
+//                    mySchritt.setBearbeitungsbenutzer(ben);
+//                }
                 step.setBearbeitungsstatusDown();
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusDown' mass manipulation for step " + step.getTitel());
                 break;
             }
         }

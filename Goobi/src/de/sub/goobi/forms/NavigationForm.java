@@ -58,6 +58,7 @@ public class NavigationForm {
     public NavigationForm() {
         possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
         Collections.sort(possibleWorkflowPluginNames);
+        uiStatus.put("debug", "true");
     }
 
     public enum Theme {
