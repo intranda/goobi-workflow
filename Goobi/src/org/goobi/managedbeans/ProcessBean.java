@@ -685,6 +685,7 @@ public class ProcessBean extends BasicBean {
         Speichern();
         updateUsergroupPaginator();
         updateUserPaginator();
+        Reload();
     }
 
     public String SchrittLoeschen() {
