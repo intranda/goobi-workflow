@@ -182,15 +182,14 @@
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+                                        <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
                                                 <f:ajax render="expandbutton5, goobiScriptModal" />
                                             </h:commandLink>
-
-                                            <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                                            <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
 
                                             <ul id="possibleActions5" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">
@@ -204,7 +203,7 @@
 <!--                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapProzessesIn'">swapProzessesIn</span> -->
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_3'">setStepStatus</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_5'">setStepStatus</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
 <!--                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addModuleToStep &quot;steptitle:TITLE_STEP&quot; &quot;module:MODULE_NAME&quot;'">addModuleToStep</span> -->
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
@@ -216,6 +215,7 @@
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addToProcessLog type:debug_info_warn_error_user &quot;message:YOUR_MESSAGE&quot;'">addToProcessLog</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:countImages'">countImages</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:countMetadata'">countMetadata</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:updateMetadata'">updateMetadata</span>
 
                                                 </li>
                                                 <li class="action-intent-li">

@@ -64,12 +64,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
 import org.jdom2.Element;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SpracheForm;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 @SuppressWarnings("deprecation")
 public class Helper implements Serializable, Observer {
@@ -179,6 +182,18 @@ public class Helper implements Serializable, Observer {
         setMeldung(control, meldung, beschreibung, true);
     }
 
+    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+		String user = login.getMyBenutzer().getNachVorname();
+	    LogEntry logEntry = new LogEntry();
+        logEntry.setContent(message);
+        logEntry.setCreationDate(new Date());
+        logEntry.setProcessId(processId);
+        logEntry.setType(type);
+        logEntry.setUserName(user);
+        ProcessManager.saveLogEntry(logEntry);
+	}
+    
     /**
      * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
      */

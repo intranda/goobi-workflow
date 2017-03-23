@@ -113,7 +113,4 @@ public class Ruleset implements Serializable, DatabaseObject {
         this.orderMetadataByRuleset = orderMetadataByRuleset;
     }
 
-    public static void resetLoadedPrefs() {
-        //        loadedPrefs = new HashMap<Integer, Prefs>();
-    }
 }
