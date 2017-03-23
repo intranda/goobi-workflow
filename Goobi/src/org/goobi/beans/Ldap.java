@@ -33,25 +33,25 @@ public class Ldap implements Serializable,DatabaseObject {
 	private static final long serialVersionUID = 931296142933906486L;
 	private Integer id;
 	private String titel;
-	private String homeDirectory;
-	private String gidNumber;
-	private String userDN;
-	private String objectClasses;
-	private String sambaSID;
-	private String sn;
-	private String uid;
-	private String description;
-	private String displayName;
-	private String gecos;
-	private String loginShell;
-	private String sambaAcctFlags;
-	private String sambaLogonScript;
-	private String sambaPrimaryGroupSID;
+	private String homeDirectory = "/home/{login}";
+	private String gidNumber = "100";
+	private String userDN = "CHANGE_ME_cn={login},ou=users,o=example,c=net";
+	private String objectClasses = "top,inetOrgPerson,posixAccount,shadowAccount,sambaSamAccount";
+	private String sambaSID = "CHANGE_ME-{uidnumber*2+1000}";
+	private String sn = "{login}";
+	private String uid = "{login}";
+	private String description = "Goobi user";
+	private String displayName = "{user full name}";
+	private String gecos = "Goobi user";
+	private String loginShell = "CHANGE_ME_/bin/false";
+	private String sambaAcctFlags = "[UX         ]";
+	private String sambaLogonScript = "_{login}.bat";
+	private String sambaPrimaryGroupSID = "CHANGE_ME";
 
-	private String sambaPwdMustChange;
-	private String sambaPasswordHistory;
-	private String sambaLogonHours;
-	private String sambaKickoffTime;
+	private String sambaPwdMustChange = "2147483647";
+	private String sambaPasswordHistory = "0000000000000000000000000000000000000000000000000000000000000000";
+	private String sambaLogonHours = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+	private String sambaKickoffTime = "0";
 
 	public void lazyLoad(){
 		// nothing to load lazy here
