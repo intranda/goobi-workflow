@@ -17,10 +17,7 @@
 
 		<h:form id="myform" onkeypress="submitOnEnter(event);" styleClass="form-horizontal form-bordered"  rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
-			<ui:include src="includes/process/step_details.xhtml" />
-<!-- 			<ui:include src="includes/process/step_users.xhtml" /> -->
-<!-- 			<ui:include src="includes/process/step_usergroups.xhtml" /> -->
-			
+			<ui:include src="includes/process/step_details.xhtml" />			
 			<ui:include src="includes/process/step_usersMerged.xhtml" />
 		</h:form>
 	</ui:define>
