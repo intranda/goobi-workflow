@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.forms.NavigationForm.Theme;
 import de.sub.goobi.helper.Helper;
 
 import ugh.dl.Metadata;
@@ -44,17 +43,17 @@ public class MetadataGroupImpl {
     private Process process;
     private MetadataGroup metadataGroup;
 
-    public MetadataGroupImpl(Prefs myPrefs, Process myProcess, MetadataGroup metadataGroup, Theme theme, Metadaten bean) {
+    public MetadataGroupImpl(Prefs myPrefs, Process myProcess, MetadataGroup metadataGroup, Metadaten bean) {
         this.prefs = myPrefs;
         this.process = myProcess;
         this.metadataGroup = metadataGroup;
         int counter = 0;
         for (Metadata md : metadataGroup.getMetadataList()) {
-            MetadatumImpl mdum = new MetadatumImpl(md, counter++, this.prefs, this.process, theme, bean);
+            MetadatumImpl mdum = new MetadatumImpl(md, counter++, this.prefs, this.process, bean);
             metadataList.add(mdum);
         }
         for (Person p : metadataGroup.getPersonList()) {
-            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct(), myProcess, theme, bean);
+            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct(), myProcess, bean);
             personList.add(mp);
         }
     }
