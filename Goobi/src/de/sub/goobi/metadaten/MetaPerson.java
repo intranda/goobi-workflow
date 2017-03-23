@@ -37,7 +37,6 @@ import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
-import de.sub.goobi.forms.NavigationForm.Theme;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
@@ -56,35 +55,31 @@ public class MetaPerson {
     private Prefs myPrefs;
     private DocStruct myDocStruct;
     private MetadatenHelper mdh;
-    private Theme theme;
     private IPersonPlugin plugin;
     private DisplayCase myValues;
 
     /**
      * Allgemeiner Konstruktor ()
      */
-    public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct, Process inProcess, Theme theme, Metadaten bean) {
+    public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.p = p;
         this.identifier = inID;
         this.myDocStruct = inStruct;
         this.mdh = new MetadatenHelper(inPrefs, null);
-        this.theme = theme;
         myValues = new DisplayCase(inProcess, p.getType());
 
-        if (this.theme == Theme.uii) {
-            try {
-                plugin = (IPersonPlugin) Class.forName("de.intranda.goobi.plugins." + myValues.getDisplayType().getPluginName()).newInstance();
-                if (plugin != null) {
-                    plugin.setPerson(p);
-                    plugin.setBean(bean);
-                    plugin.setDocStruct(myDocStruct);
-                    plugin.setMetadatenHelper(mdh);
-                    //                    initializeValues();
-                }
-            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                plugin = null;
+        try {
+            plugin = (IPersonPlugin) Class.forName("de.intranda.goobi.plugins." + myValues.getDisplayType().getPluginName()).newInstance();
+            if (plugin != null) {
+                plugin.setPerson(p);
+                plugin.setBean(bean);
+                plugin.setDocStruct(myDocStruct);
+                plugin.setMetadatenHelper(mdh);
+                //                    initializeValues();
             }
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            plugin = null;
         }
     }
 
@@ -95,27 +90,23 @@ public class MetaPerson {
      ##                                                   															    
      #####################################################
      ####################################################*/
-   
+
     public int getIdentifier() {
         return this.identifier;
     }
 
-   
     public void setIdentifier(int identifier) {
         this.identifier = identifier;
     }
 
-   
     public Person getP() {
         return this.p;
     }
 
-   
     public void setP(Person p) {
         this.p = p;
     }
 
-   
     public String getVorname() {
         if (this.p.getFirstname() == null) {
             return "";
@@ -123,7 +114,6 @@ public class MetaPerson {
         return this.p.getFirstname();
     }
 
-   
     public void setVorname(String inVorname) {
         if (inVorname == null) {
             inVorname = "";
@@ -132,7 +122,6 @@ public class MetaPerson {
         this.p.setDisplayname(getNachname() + ", " + getVorname());
     }
 
-   
     public String getNachname() {
         if (this.p.getLastname() == null) {
             return "";
@@ -140,7 +129,6 @@ public class MetaPerson {
         return this.p.getLastname();
     }
 
-   
     public void setNachname(String inNachname) {
         if (inNachname == null) {
             inNachname = "";
@@ -149,12 +137,10 @@ public class MetaPerson {
         this.p.setDisplayname(getNachname() + ", " + getVorname());
     }
 
-   
     public String getRolle() {
         return this.p.getRole();
     }
 
-   
     public void setRolle(String inRolle) {
         this.p.setRole(inRolle);
         MetadataType mdt = this.myPrefs.getMetadataTypeByName(this.p.getRole());
@@ -162,22 +148,18 @@ public class MetaPerson {
 
     }
 
-   
     public ArrayList<SelectItem> getAddableRollen() {
         return this.mdh.getAddablePersonRoles(this.myDocStruct, this.p.getRole());
     }
 
-   
     public List<NamePart> getAdditionalNameParts() {
         return p.getAdditionalNameParts();
     }
 
-   
     public void setAdditionalNameParts(List<NamePart> nameParts) {
         p.setAdditionalNameParts(nameParts);
     }
 
-   
     public void addNamePart() {
         List<NamePart> parts = p.getAdditionalNameParts();
         if (parts == null) {
@@ -189,7 +171,6 @@ public class MetaPerson {
         p.setAdditionalNameParts(parts);
     }
 
-   
     public List<String> getPossibleDatabases() {
         List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
         List<String> abbrev = new ArrayList<String>();
@@ -199,7 +180,6 @@ public class MetaPerson {
         return abbrev;
     }
 
-   
     public List<String> getPossibleNamePartTypes() {
         // TODO configurable?
         List<String> possibleNamePartTypes = new ArrayList<String>();
@@ -208,24 +188,20 @@ public class MetaPerson {
         return possibleNamePartTypes;
     }
 
-   
     public String getNormdataValue() {
         return p.getAuthorityValue();
     }
 
-   
     public void setNormdataValue(String normdata) {
         p.setAuthorityValue(normdata);
     }
 
-   
     public void setNormDatabase(String abbrev) {
         NormDatabase database = NormDatabase.getByAbbreviation(abbrev);
         p.setAuthorityID(database.getAbbreviation());
         p.setAuthorityURI(database.getPath());
     }
 
-   
     public String getNormDatabase() {
         if (p.getAuthorityURI() != null && p.getAuthorityID() != null) {
             NormDatabase ndb = NormDatabase.getByAbbreviation(p.getAuthorityID());
@@ -235,21 +211,18 @@ public class MetaPerson {
         }
     }
 
-   
     public boolean isAdditionalParts() {
         return p.getType().isAllowNameParts();
     }
 
-   
     public boolean isNormdata() {
         return p.getType().isAllowNormdata();
     }
 
-    
     public IPersonPlugin getPlugin() {
         return plugin;
     }
-    
+
     public void setPlugin(IPersonPlugin plugin) {
         this.plugin = plugin;
     }

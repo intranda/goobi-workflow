@@ -17,7 +17,6 @@ import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import de.sub.goobi.forms.NavigationForm.Theme;
 import de.sub.goobi.mock.MockProcess;
 
 public class MetaPersonTest {
@@ -43,14 +42,14 @@ public class MetaPersonTest {
     @Test
     public void testMetaPerson() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
     }
 
     @Test
     public void testIdentifier() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         assertEquals(0, mp.getIdentifier());
         mp.setIdentifier(1);
@@ -60,7 +59,7 @@ public class MetaPersonTest {
     @Test
     public void testPerson() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         mp.setP(p);
         assertSame(p, mp.getP());
@@ -69,7 +68,7 @@ public class MetaPersonTest {
     @Test
     public void testFirstname() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         assertEquals("", mp.getVorname());
         mp.setVorname("fixture");
@@ -81,7 +80,7 @@ public class MetaPersonTest {
     @Test
     public void testLastname() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         assertEquals("", mp.getNachname());
         mp.setNachname("fixture");
@@ -93,7 +92,7 @@ public class MetaPersonTest {
     @Test
     public void testRole() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         assertEquals(METADATA_TYPE, mp.getRolle());
         mp.setRolle(METADATA_TYPE);
@@ -103,7 +102,7 @@ public class MetaPersonTest {
     @Test
     public void testAddableRollen() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         List<SelectItem> fixture = mp.getAddableRollen();
         assertNotNull(fixture);
@@ -113,7 +112,7 @@ public class MetaPersonTest {
     @Test
     public void testAdditionalNameParts() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         List<NamePart> fixture = mp.getAdditionalNameParts();
         assertNull(fixture);
@@ -127,7 +126,7 @@ public class MetaPersonTest {
     @Test
     public void testPossibleDatabases() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         List<String> fixture = mp.getPossibleDatabases();
         assertEquals("gnd", fixture.get(0));
@@ -136,7 +135,7 @@ public class MetaPersonTest {
     @Test
     public void testPossibleNameparts() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         List<String> fixture = mp.getPossibleNamePartTypes();
         assertEquals("date", fixture.get(0));
@@ -146,7 +145,7 @@ public class MetaPersonTest {
     @Test
     public void testNormdataValue() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         String fixture = "value";
         mp.setNormdataValue(fixture);
@@ -156,7 +155,7 @@ public class MetaPersonTest {
     @Test
     public void testNormDatabase() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         String fixture = "gnd";
         mp.setNormDatabase(fixture);
@@ -166,7 +165,7 @@ public class MetaPersonTest {
     @Test
     public void testAdditionalParts() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         assertTrue(mp.isAdditionalParts());
         p.getType().setAllowNameParts(false);
@@ -176,7 +175,7 @@ public class MetaPersonTest {
     @Test
     public void testNormdata() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, Theme.ui, null);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
         assertTrue(mp.isNormdata());
         p.getType().setAllowNormdata(false);

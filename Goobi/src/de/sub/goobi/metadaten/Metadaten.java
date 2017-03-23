@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,7 +50,6 @@ import java.util.StringTokenizer;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
@@ -71,7 +69,6 @@ import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.NavigationForm.Theme;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -193,14 +190,11 @@ public class Metadaten {
 
     private TreeNodeStruct3 treeOfFilteredProcess;
     private TreeNodeStruct3 tree3;
-    private String myBild;
 
     // old image parameter
     private int myBildNummer = 0;
     private int myBildLetztes = 0;
-    private int myBildCounter = 0;
     private int myBildGroesse = 30;
-    private int myImageRotation = 0; // entspricht myBildRotation
     private String bildNummerGeheZu = "";
     private int numberOfNavigation = 0;
 
@@ -233,9 +227,6 @@ public class Metadaten {
     private double totalImageNo = 0;
     private Integer progress;
 
-    private boolean tiffFolderHasChanged = true;
-    private List<String> dataList = new ArrayList<String>();
-
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
 
@@ -252,7 +243,6 @@ public class Metadaten {
     private Image image = null;
     private List<String> imageSizes;
     private int containerWidth = 600;;
-    private Theme currentTheme = Theme.ui;
     private boolean processHasNewTemporaryMetadataFiles = false;
     private boolean sizeChanged = false;
 
@@ -787,7 +777,7 @@ public class Metadaten {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadatatypeLanguage(mdt)));
             try {
                 Metadata md = new Metadata(mdt);
-                MetadatumImpl mdum = new MetadatumImpl(md, counter, this.myPrefs, this.myProzess, currentTheme, this);
+                MetadatumImpl mdum = new MetadatumImpl(md, counter, this.myPrefs, this.myProzess, this);
                 counter++;
                 this.tempMetadatumList.add(mdum);
 
@@ -831,7 +821,7 @@ public class Metadaten {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, currentTheme, this);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this);
                 this.tempMetadataGroups.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
@@ -1045,19 +1035,12 @@ public class Metadaten {
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
             WriteException {
-        try {
-            currentTheme = (Theme) Helper.getManagedBeanValue("#{NavigationForm.theme}");
-
-        } catch (Exception e) {
-
-        }
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         this.modusStrukturelementVerschieben = false;
         this.modusCopyDocstructFromOtherProcess = false;
-        this.myBild = null;
 
         this.currentTifFolder = null;
         readAllTifFolders();
@@ -1088,21 +1071,15 @@ public class Metadaten {
         checkImageNames();
         retrieveAllImages();
         // check filenames, correct them
-        if (currentTheme == Theme.uii) {
 
-            // initialize image list
-            numberOfImagesPerPage = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
-            thumbnailSizeInPixel = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
-            imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
+        // initialize image list
+        numberOfImagesPerPage = ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage();
+        thumbnailSizeInPixel = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
+        imageSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
 
-            pageNo = 0;
-            imageIndex = 0;
-            loadCurrentImages(true);
-        } else {
-            this.myBildNummer = 1;
-            this.myImageRotation = 0;
-            BildErmitteln(0);
-        }
+        pageNo = 0;
+        imageIndex = 0;
+        loadCurrentImages(true);
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
@@ -1261,7 +1238,7 @@ public class Metadaten {
                 .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
-                MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, currentTheme, this);
+                MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
                 meta.getSelectedItem();
                 lsMeta.add(meta);
             }
@@ -1274,7 +1251,7 @@ public class Metadaten {
                 "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
-                lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, currentTheme, this));
+                lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
             }
         }
 
@@ -1282,7 +1259,7 @@ public class Metadaten {
                 "#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
         if (groups != null) {
             for (MetadataGroup mg : groups) {
-                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, currentTheme, this));
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
             }
         }
 
@@ -1844,14 +1821,13 @@ public class Metadaten {
             for (DocStruct mySeitenDocStruct : meineListe) {
                 List<? extends Metadata> mySeitenDocStructMetadaten = mySeitenDocStruct.getAllMetadataByType(mdt);
                 for (Metadata meineSeite : mySeitenDocStructMetadaten) {
-                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, currentTheme, this);
+                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, this);
                     this.alleSeiten[zaehler] = new SelectItem(String.valueOf(zaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber")
                             .trim() + ": " + meineSeite.getValue());
                 }
                 zaehler++;
             }
         }
-        dataList = null;
     }
 
     /**
@@ -1911,13 +1887,11 @@ public class Metadaten {
          * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
         if (this.bildZuStrukturelement) {
-            if (currentTheme == Theme.ui) {
-                BildErmitteln(imageNr - this.myBildNummer);
-            } else {
-                if (!allImages.isEmpty()) {
-                    setImageIndex(imageNr - 1);
-                }
+
+            if (!allImages.isEmpty()) {
+                setImageIndex(imageNr - 1);
             }
+
         }
     }
 
@@ -1931,7 +1905,7 @@ public class Metadaten {
             return;
         }
         for (Metadata meineSeite : listMetadaten) {
-            this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, currentTheme, this);
+            this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
             this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler), MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber")
                     .trim() + ": " + meineSeite.getValue());
         }
@@ -2044,19 +2018,7 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
-    public String BildBlaetternVor() {
-        BildErmitteln(1);
-        return "";
-    }
-
-    public String BildBlaetternZurueck() {
-        BildErmitteln(-1);
-        return "";
-    }
-
-    public void flipImage(AjaxBehaviorEvent event) {
-        BildBlaettern();
-    }
+ 
 
     public int getNumberOfNavigation() {
         return numberOfNavigation;
@@ -2066,23 +2028,8 @@ public class Metadaten {
         this.numberOfNavigation = numberOfNavigation;
     }
 
-    public String BildBlaettern() {
-        BildErmitteln(numberOfNavigation);
-        return "";
-    }
+  
 
-    public void rotateLeft() {
-        if (this.myImageRotation < 90) {
-            this.myImageRotation = 360;
-        }
-        this.myImageRotation = (this.myImageRotation - 90) % 360;
-        BildErmitteln(0);
-    }
-
-    public void rotateRight() {
-        this.myImageRotation = (this.myImageRotation + 90) % 360;
-        BildErmitteln(0);
-    }
 
     public String BildGeheZu() {
         int eingabe;
@@ -2091,35 +2038,12 @@ public class Metadaten {
         } catch (Exception e) {
             eingabe = this.myBildNummer;
         }
-        if (currentTheme == Theme.ui) {
-            BildErmitteln(eingabe - this.myBildNummer);
-        } else {
-            setImageIndex(eingabe - 1);
-        }
+        setImageIndex(eingabe - 1);
+
         return "";
     }
 
-    public String BildZoomPlus() {
-        this.myBildGroesse += 10;
-        BildErmitteln(0);
-        return "";
-    }
 
-    public String BildZoomMinus() {
-        if (this.myBildGroesse > 10) {
-            this.myBildGroesse -= 10;
-        }
-        BildErmitteln(0);
-        return "";
-    }
-
-    public String getBild() {
-        BildPruefen();
-        /* Session ermitteln */
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        return ConfigurationHelper.getTempImagesPath() + session.getId() + "_" + this.myBildCounter + ".png";
-    }
 
     public List<String> getAllTifFolders() {
         return this.allTifFolders;
@@ -2150,149 +2074,6 @@ public class Metadaten {
         }
     }
 
-    public void BildErmitteln(int welches) {
-        /*
-         * wenn die Bilder nicht angezeigt werden, brauchen wir auch das Bild nicht neu umrechnen
-         */
-        logger.trace("start BildErmitteln 1");
-        if (!this.bildAnzeigen) {
-            logger.trace("end BildErmitteln 1");
-            return;
-        }
-        logger.trace("ocr BildErmitteln");
-        logger.trace("dataList");
-        // try {
-        if (dataList == null || dataList.isEmpty() || tiffFolderHasChanged) {
-            tiffFolderHasChanged = false;
-
-            if (this.currentTifFolder != null) {
-                logger.trace("currentTifFolder: " + this.currentTifFolder);
-                try {
-                    // dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
-                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
-                    if (dataList == null) {
-                        myBild = null;
-                        myBildNummer = -1;
-                        return;
-                    }
-                    //
-                } catch (InvalidImagesException e1) {
-                    logger.trace("dataList error");
-                    logger.error("Images could not be read", e1);
-                    Helper.setFehlerMeldung("images could not be read", e1);
-                }
-            } else {
-                try {
-                    createPagination();
-                    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
-                } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
-                } catch (SwapException e) {
-                    logger.error(e);
-                } catch (DAOException e) {
-                    logger.error(e);
-                } catch (IOException e) {
-                    logger.error(e);
-                } catch (InterruptedException e) {
-                    logger.error(e);
-                }
-            }
-        }
-
-        logger.trace("dataList 2");
-
-        if (dataList != null && dataList.size() > 0) {
-            logger.trace("dataList not null");
-            this.myBildLetztes = dataList.size();
-            logger.trace("myBildLetztes");
-            for (int i = 0; i < dataList.size(); i++) {
-                logger.trace("file: " + i);
-                if (this.myBild == null) {
-                    this.myBild = dataList.get(0);
-                }
-                logger.trace("myBild: " + this.myBild);
-                String index = dataList.get(i).substring(0, dataList.get(i).lastIndexOf("."));
-                logger.trace("index: " + index);
-                String myPicture = this.myBild.substring(0, this.myBild.lastIndexOf("."));
-                logger.trace("myPicture: " + myPicture);
-                /* wenn das aktuelle Bild gefunden ist, das neue ermitteln */
-                if (index.equals(myPicture)) {
-                    logger.trace("index == myPicture");
-                    int pos = i + welches;
-                    logger.trace("pos: " + pos);
-                    /* aber keine Indexes ausserhalb des Array erlauben */
-                    if (pos < 0) {
-                        pos = 0;
-                    }
-                    if (pos > dataList.size() - 1) {
-                        pos = dataList.size() - 1;
-                    }
-                    /* das aktuelle tif erfassen */
-                    if (dataList.size() > pos) {
-                        this.myBild = dataList.get(pos);
-                    } else {
-                        this.myBild = dataList.get(dataList.size() - 1);
-                    }
-                    logger.trace("found myBild");
-                    /* die korrekte Seitenzahl anzeigen */
-                    this.myBildNummer = pos + 1;
-                    logger.trace("myBildNummer: " + this.myBildNummer);
-                    /* Pages-Verzeichnis ermitteln */
-                    String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
-                    logger.trace("myPfad: " + myPfad);
-                    /*
-                     * den Counter für die Bild-ID auf einen neuen Wert setzen, damit nichts gecacht wird
-                     */
-                    this.myBildCounter++;
-                    logger.trace("myBildCounter: " + this.myBildCounter);
-
-                    /* Session ermitteln */
-                    FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                    HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-                    String mySession = session.getId() + "_" + this.myBildCounter + ".png";
-                    logger.trace("facescontext");
-
-                    /* das neue Bild zuweisen */
-                    try {
-                        String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                                .getSeparator() + this.myBild;
-                        logger.trace("tiffconverterpfad: " + tiffconverterpfad);
-                        if (!Files.exists(Paths.get(tiffconverterpfad))) {
-                            tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
-                            Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
-                                    + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                            .getFileName().toString());
-                        }
-                        this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, this.myImageRotation);
-                        logger.trace("scaleFile");
-                    } catch (Exception e) {
-                        Helper.setFehlerMeldung("could not find image folder", e);
-                        logger.error(e);
-                    }
-                    break;
-                }
-            }
-        }
-        BildPruefen();
-    }
-
-    private void BildPruefen() {
-        /* wenn bisher noch kein Bild da ist, das erste nehmen */
-        boolean exists = false;
-        try {
-            if (this.currentTifFolder != null && this.myBild != null) {
-                exists = Files.exists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator()
-                        + this.myBild));
-            }
-        } catch (Exception e) {
-            this.myBildNummer = -1;
-            logger.error(e);
-        }
-        /* wenn das Bild nicht existiert, den Status ändern */
-        if (!exists) {
-            this.myBildNummer = -1;
-        }
-    }
 
     /*
      * ##################################################### ##################################################### ## ## Sperrung der Metadaten
@@ -2772,11 +2553,8 @@ public class Metadaten {
         }
         try {
             int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) - this.myBildNummer + 1;
-            if (currentTheme == Theme.ui) {
-                BildErmitteln(pageNumber);
-            } else {
-                setImageIndex(pageNumber - 1);
-            }
+            setImageIndex(pageNumber - 1);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2799,11 +2577,7 @@ public class Metadaten {
         }
         try {
             int pageNumber = Integer.parseInt(this.alleSeitenAuswahl_letzteSeite) - this.myBildNummer + 1;
-            if (currentTheme == Theme.ui) {
-                BildErmitteln(pageNumber);
-            } else {
-                setImageIndex(pageNumber - 1);
-            }
+            setImageIndex(pageNumber - 1);
         } catch (Exception e) {
 
         }
@@ -2868,11 +2642,7 @@ public class Metadaten {
 
     private String getOcrFileNameForImage() {
         String ocrFile = "";
-        if (currentTheme == Theme.ui) {
-            ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
-        } else {
             ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-        }
         return ocrFile;
     }
 
@@ -2898,11 +2668,9 @@ public class Metadaten {
         String ocrResult = "";
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             String myOcrUrl = "";
-            if (currentTheme == Theme.ui) {
-                myOcrUrl = getOcrBasisUrl(this.myBildNummer);
-            } else {
+          
                 myOcrUrl = getOcrBasisUrl(image.getOrder());
-            }
+            
             CloseableHttpClient client = null;
             HttpGet method = new HttpGet(myOcrUrl);
             InputStream stream = null;
@@ -2936,11 +2704,7 @@ public class Metadaten {
             }
         } else {
             String ocrFile = "";
-            if (currentTheme == Theme.ui) {
-                ocrFile = this.myBild.substring(0, this.myBild.lastIndexOf(".")) + ".txt";
-            } else {
                 ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-            }
             logger.trace("myPicture: " + ocrFile);
             ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
         }
@@ -3020,7 +2784,7 @@ public class Metadaten {
         MetadataType mdt = this.myPrefs.getMetadataTypeByName(tempTyp);
         try {
             Metadata md = new Metadata(mdt);
-            this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess, currentTheme, this);
+            this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess, this);
             currentPlugin = selectedMetadatum.getPlugin();
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e.getMessage());
@@ -3055,7 +2819,7 @@ public class Metadaten {
             MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, currentTheme, this);
+                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this);
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error(e.getMessage());
             }
@@ -3200,16 +2964,6 @@ public class Metadaten {
 
     public void BildAnzeigen() {
         this.bildAnzeigen = !this.bildAnzeigen;
-        if (this.bildAnzeigen) {
-            try {
-                if (currentTheme == Theme.ui) {
-                    BildErmitteln(0);
-                }
-            } catch (Exception e) {
-                Helper.setFehlerMeldung("Error while generating image", e.getMessage());
-                logger.error(e);
-            }
-        }
     }
 
     public String getAddDocStructType1() {
@@ -3512,9 +3266,7 @@ public class Metadaten {
 
     public void setCurrentTifFolder(String currentTifFolder) {
         if (!this.currentTifFolder.equals(currentTifFolder)) {
-            tiffFolderHasChanged = true;
             this.currentTifFolder = currentTifFolder;
-
         }
     }
 
@@ -3590,11 +3342,9 @@ public class Metadaten {
 
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-        if (currentTheme == Theme.ui) {
-            BildErmitteln(0);
-        } else {
+    
             loadCurrentImages(false);
-        }
+        
     }
 
     private void setPhysicalOrder(List<DocStruct> pages) {
@@ -3649,11 +3399,9 @@ public class Metadaten {
         setPhysicalOrder(allPages);
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-        if (currentTheme == Theme.ui) {
-            BildErmitteln(0);
-        } else {
+     
             loadCurrentImages(false);
-        }
+        
     }
 
     public void deleteSeltectedPages() {
@@ -3722,11 +3470,9 @@ public class Metadaten {
 
             BildErsteSeiteAnzeigen();
         } else {
-            if (currentTheme == Theme.ui) {
-                BildErmitteln(0);
-            } else {
+        
                 setImageIndex(myBildNummer - 1);
-            }
+            
         }
     }
 
@@ -3856,10 +3602,6 @@ public class Metadaten {
         progress = null;
         totalImageNo = 0;
         currentImageNo = 0;
-
-        if (currentTheme == Theme.ui) {
-            BildErmitteln(0);
-        }
 
         Helper.setMeldung("finishedFileRenaming");
     }
@@ -4234,7 +3976,7 @@ public class Metadaten {
                             "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
-                            MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, currentTheme, this);
+                            MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
                             // meta.getSelectedItem();
                             addableMetadata.add(meta);
                         }
@@ -4254,7 +3996,7 @@ public class Metadaten {
                             "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
-                            MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, currentTheme, this);
+                            MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
 
                             addablePersondata.add(meta);
                         }
