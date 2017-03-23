@@ -3217,6 +3217,7 @@ public class Metadaten {
             SelectItem[] list = getAddableDocStructTypenAlsNachbar();
             if (list.length > 0) {
                 addDocStructType1 = ((DocStructType) list[0].getValue()).getName();
+                createAddableData();
             }
         }
         return this.addDocStructType1;
@@ -3233,6 +3234,7 @@ public class Metadaten {
             SelectItem[] list = getAddableDocStructTypenAlsKind();
             if (list.length > 0) {
                 addDocStructType2 = ((DocStructType) list[0].getValue()).getName();
+                createAddableData();
             }
         }
 
