@@ -4,11 +4,11 @@ package de.sub.goobi.export.dms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *          - http://www.goobi.org
- *          - http://launchpad.net/goobi-production
- *          - http://gdz.sub.uni-goettingen.de
- *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *     		- http://www.goobi.org
+ *     		- http://launchpad.net/goobi-production
+ * 		    - http://gdz.sub.uni-goettingen.de
+ * 			- http://www.intranda.com
+ * 			- http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -115,8 +115,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         String atsPpnBand = myProzess.getTitel();
 
         /*
-         * -------------------------------- Dokument einlesen
-         * --------------------------------
+         * -------------------------------- Dokument einlesen --------------------------------
          */
         Fileformat gdzfile;
         //      Fileformat newfile;
@@ -137,8 +136,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         trimAllMetadata(gdzfile.getDigitalDocument().getLogicalDocStruct());
 
         /*
-         * -------------------------------- Metadaten validieren
-         * --------------------------------
+         * -------------------------------- Metadaten validieren --------------------------------
          */
 
         if (ConfigurationHelper.getInstance().isUseMetadataValidation()) {
@@ -149,8 +147,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         }
 
         /*
-         * -------------------------------- Speicherort vorbereiten und
-         * downloaden --------------------------------
+         * -------------------------------- Speicherort vorbereiten und downloaden --------------------------------
          */
         String zielVerzeichnis;
         Path benutzerHome;
@@ -197,8 +194,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         }
 
         /*
-         * -------------------------------- der eigentliche Download der Images
-         * --------------------------------
+         * -------------------------------- der eigentliche Download der Images --------------------------------
          */
         try {
             if (this.exportWithImages) {
@@ -352,14 +348,12 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             InterruptedException, SwapException, DAOException {
 
         /*
-         * -------------------------------- dann den Ausgangspfad ermitteln
-         * --------------------------------
+         * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
          */
         Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(true));
 
         /*
-         * -------------------------------- jetzt die Ausgangsordner in die
-         * Zielordner kopieren --------------------------------
+         * -------------------------------- jetzt die Ausgangsordner in die Zielordner kopieren --------------------------------
          */
         Path zielTif = Paths.get(benutzerHome.toString(), atsPpnBand + ordnerEndung);
         if (Files.exists(tifOrdner) && !NIOFileUtils.list(tifOrdner.toString()).isEmpty()) {
@@ -371,8 +365,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 }
             } else {
                 /*
-                 * wenn kein Agora-Import, dann den Ordner mit
-                 * Benutzerberechtigung neu anlegen
+                 * wenn kein Agora-Import, dann den Ordner mit Benutzerberechtigung neu anlegen
                  */
                 User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 try {
@@ -384,7 +377,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             /* jetzt den eigentlichen Kopiervorgang */
-
             List<Path> files = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
             for (Path file : files) {
                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
