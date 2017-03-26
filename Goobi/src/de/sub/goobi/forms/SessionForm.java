@@ -49,6 +49,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.User;
+import org.goobi.goobiScript.GoobiScriptManager;
 import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.production.enums.GoobiScriptResultType;
 
@@ -72,9 +73,8 @@ public class SessionForm {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
     private String aktuelleZeit = this.formatter.format(new Date());
     private String bitteAusloggen = "";
-    
     @Getter
-    private List<GoobiScriptResult> goobiScriptResults = new ArrayList<>();
+    private GoobiScriptManager gsm = new GoobiScriptManager();
     
     private static final String MONITORING_CHECK = "nagios-plugins";
 
@@ -275,56 +275,4 @@ public class SessionForm {
         this.dateFormatter = dateFormatter;
     }
     
-    public void goobiScriptResultsReset(){
-    	goobiScriptResults = new ArrayList<>();
-    }
-    
-    public boolean goobiScriptHasResults(String status){
-    	for (GoobiScriptResult gsr : goobiScriptResults) {
-			if (gsr.getResultType().toString().equals(status)){
-				return true;
-			}
-		}
-    	return false;
-    }
-    
-    public void goobiScriptResultsExcel() {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            try {
-                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-                String contentType = servletContext.getMimeType("goobiScript.xls");
-                response.setContentType(contentType);
-                response.setHeader("Content-Disposition", "attachment;filename=\"goobiScript.xls\"");
-                ServletOutputStream out = response.getOutputStream();
-                
-                HSSFWorkbook workbook = new HSSFWorkbook();
-                HSSFSheet sheet = workbook.createSheet("GoobiScript");  
-
-                HSSFRow rowhead = sheet.createRow((short)0);
-                rowhead.createCell(0).setCellValue("Process ID");
-                rowhead.createCell(1).setCellValue("Process title");
-                rowhead.createCell(2).setCellValue("Command");
-                rowhead.createCell(3).setCellValue("Result");
-                rowhead.createCell(4).setCellValue("Description");
-                
-                int count = 1;
-                for (GoobiScriptResult gsr : goobiScriptResults) {
-                	HSSFRow row = sheet.createRow((short) count++);
-                	row.createCell(0).setCellValue(gsr.getProcessId());
-                	row.createCell(1).setCellValue(gsr.getProcessTitle());
-                	row.createCell(2).setCellValue(gsr.getCommand());
-                	row.createCell(3).setCellValue(gsr.getResultType().toString());
-                	row.createCell(4).setCellValue(gsr.getResultMessage());
-				}
-
-                workbook.write(out);
-                out.flush();
-                facesContext.responseComplete();
-            } catch (IOException e) {
-            	
-            }
-        }
-    }
 }

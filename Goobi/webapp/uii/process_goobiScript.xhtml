@@ -32,57 +32,75 @@
 	                    <div class="box-content nopadding">
 	                    	<div class="dataTables_wrapper">
 								<div class="dataTables_length">
-									<h:outputText value="#{msgs.treffer}: #{SessionForm.goobiScriptResults.size()}" />
+									<h:outputText value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResults.size()}" />
 								</div>
 
 								<!-- Datentabelle -->
-								<x:dataTable id="gsr"
-									styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-									var="item" value="#{SessionForm.goobiScriptResults}">
-
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="#{msgs.goobiScript_processId}" />
-										</f:facet>
-										<h:outputText value="#{item.processId}" />
-									</h:column>
-
-									<x:column styleClass="tableColumnMaxWidthMid">
-										<f:facet name="header">
-											<h:outputText value="#{msgs.goobiScript_processTitle}" />
-										</f:facet>
-										<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
-									</x:column>
-									
-									<x:column styleClass="tableColumnMaxWidthMid">
-										<f:facet name="header">
-											<h:outputText value="#{msgs.goobiScript_command}" />
-										</f:facet>
-										<h:outputText value="#{item.command}" title="#{item.command}" />
-									</x:column>
-									
-									<x:column>
-										<f:facet name="header">
-											<h:outputText value="#{msgs.goobiScript_resultType}" />
-										</f:facet>
-										<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':'badge-intranda-red'}">
-		                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':'fa-exclamation-triangle'} margin-right-5"></i>
-		                                    #{msgs['goobiScript_status_'.concat(item.resultType)]}
-		                                </span>
-									</x:column>
-									
-									<x:column>
-										<f:facet name="header">
-											<h:outputText value="#{msgs.goobiScript_resultMessage}" />
-										</f:facet>
-										<h:outputText value="#{item.resultMessage}" />
-									</x:column>
-									
-								</x:dataTable>
+		                    	<h:form>
+									<x:dataTable id="gsr"
+										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+										var="item" value="#{SessionForm.gsm.goobiScriptResults}">
+	
+										<h:column>
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_processId}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="id" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.processId}" />
+										</h:column>
+	
+										<x:column styleClass="tableColumnMaxWidthMid">
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_processTitle}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="title" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
+										</x:column>
+										
+										<x:column styleClass="tableColumnMaxWidthMid">
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_command}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="command" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.command}" title="#{item.command}" />
+										</x:column>
+										
+										<x:column>
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_resultType}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="status" />
+	                                            </h:commandLink>
+											</f:facet>
+											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':'badge-intranda-red'}">
+			                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':'fa-exclamation-triangle'} margin-right-5"></i>
+			                                    #{msgs['goobiScript_status_'.concat(item.resultType)]}
+			                                </span>
+										</x:column>
+										
+										<x:column>
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="description" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.resultMessage}" />
+										</x:column>
+										
+									</x:dataTable>
+								</h:form>
+								
 								<div class="dataTables_info">
 									<h:form>
 										<!-- Reset button -->
-										<h:commandLink id="reset" styleClass="btn font-size-s" action="#{SessionForm.goobiScriptResultsReset}">
+										<h:commandLink id="reset" styleClass="btn font-size-s" action="#{SessionForm.gsm.goobiScriptResultsReset}">
 											<i class="fa fa-trash margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_resetList}" />
 										</h:commandLink>
@@ -110,7 +128,7 @@
 										</h:commandLink>
 										
 										<!-- Download as excel button -->
-										<h:commandLink id="excel" styleClass="btn btn-blue font-size-s" style="margin-top:-7px;" action="#{SessionForm.goobiScriptResultsExcel}">
+										<h:commandLink id="excel" styleClass="btn btn-blue font-size-s" style="margin-top:-7px;" action="#{SessionForm.gsm.goobiScriptResultsExcel}">
 											<i class="fa fa-file-excel-o margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_downloadExcel}" />
 										</h:commandLink>

@@ -126,13 +126,13 @@
 
                                        
                                         
-                                        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.goobiScriptResults.size() gt 0}">
-                                        	<li class="#{SessionForm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
+                                        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
 	                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
-	                                                    <i class="fa fa-cog #{SessionForm.goobiScriptHasResults('WAITING')?'fa-spin':''}"></i>
+	                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING')?'fa-spin':''}"></i>
 	                                                    <div class="details">
 	                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-	                                                        <span>#{SessionForm.goobiScriptResults.size()}</span>
+	                                                        <span>#{SessionForm.gsm.goobiScriptResults.size()}</span>
 	                                                    </div>
 	                                                </h:commandLink>
 	                                        </li>

@@ -22,7 +22,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 		this.parameters = parameters;
 		this.command = command;
 		SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-		resultList = sf.getGoobiScriptResults();
+		resultList = sf.getGsm().getGoobiScriptResults();
 	}
 	
 	@Override
