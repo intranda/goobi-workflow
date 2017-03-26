@@ -66,8 +66,11 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
 
-					Boolean exportFulltext = Boolean.getBoolean(parameters.get("exportOcr"));
-					Boolean exportImages = Boolean.getBoolean(parameters.get("exportImages"));
+					
+					String exportFulltextParameter = parameters.get("exportOcr");
+					String exportImagesParameter = parameters.get("exportImages");
+					boolean exportFulltext = exportFulltextParameter.toLowerCase().equals("true");
+					boolean exportImages = exportImagesParameter.toLowerCase().equals("true");
 
 					IExportPlugin export = null;
 					String pluginName = ProcessManager.getExportPluginName(p.getId());
@@ -87,7 +90,7 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 						export = new ExportDms();
 					}
 					export.setExportFulltext(exportFulltext);
-					if (exportImages != null && exportImages.equals("false")) {
+					if (exportImages == false) {
 						logextension = "without images and " + logextension;
 						export.setExportImages(false);
 					} else {

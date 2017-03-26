@@ -189,15 +189,15 @@ public class GoobiScript {
                 addToProcessLog(inProzesse);
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 setRuleset(inProzesse);
-            } else if (this.myParameters.get("action").equals("exportDms")) {
-            	return exportDms(inProzesse, this.myParameters.get("exportImages"), true);
-            } else if (this.myParameters.get("action").equals("export")) {
-            	return exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
-            } else if (this.myParameters.get("action").equals("doit")) {
-            	return exportDms(inProzesse, "false", false);
-            } else if (this.myParameters.get("action").equals("doit2")) {
-                return exportDms(inProzesse, "false", true);
-           } else if (this.myParameters.get("action").equals("doit3")) {
+//            } else if (this.myParameters.get("action").equals("exportDms")) {
+//            	return exportDms(inProzesse, this.myParameters.get("exportImages"), true);
+//            } else if (this.myParameters.get("action").equals("export")) {
+//            	return exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
+//            } else if (this.myParameters.get("action").equals("doit")) {
+//            	return exportDms(inProzesse, "false", false);
+//            } else if (this.myParameters.get("action").equals("doit2")) {
+//                return exportDms(inProzesse, "false", true);
+           } else if (this.myParameters.get("action").equals("export")) {
                 igs = new GoobiScriptExportDMS();
             } else if (this.myParameters.get("action").equals("runscript")) {
                 String stepname = this.myParameters.get("stepname");
@@ -1297,59 +1297,59 @@ public class GoobiScript {
         return metadataPairs;
     }
 
-    /**
-     * GoobiScript export
-     * 
-     * @param processes List of identifiers for this GoobiScript
-     * @param exportImages boolean if images shall be exported too
-     * @param exportFulltext boolean if ocr results shall be exported too
-     */
-    private String exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
-        for (Integer processId : processes) {
-            Process prozess = ProcessManager.getProcessById(processId);
-            IExportPlugin export = null;
-            String pluginName = ProcessManager.getExportPluginName(prozess.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
-                    export = new ExportDms();
-                }
-            }
-            String logextension ="without ocr results";
-            if (exportFulltext){
-            	logextension = "including ocr results";
-            }
-            if (export == null) {
-                export = new ExportDms();
-            }
-            export.setExportFulltext(exportFulltext);
-            if (exportImages != null && exportImages.equals("false")) {
-            	logextension = "without images and " + logextension;
-            	export.setExportImages(false);
-            } else {
-            	logextension = "including images and " + logextension;
-                export.setExportImages(true);
-            }
-
-            try {
-                export.startExport(prozess);
-                Helper.addMessageToProcessLog(prozess.getId(), LogType.DEBUG, "Export " + logextension + " started using GoobiScript.");
-                logger.info("Export " + logextension + " started using GoobiScript for process with ID " + prozess.getId());
-            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ExportFileException
-                    | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
-                    | InterruptedException e) {
-                String[] parameter = { prozess.getTitel(), e.getMessage() };
-                Helper.setFehlerMeldung("goobiScriptfield", "", Helper.getTranslation("ErrorDMSExport", parameter));
-                logger.error("DocStructHasNoTypeException", e);
-
-                logger.error("PreferencesException", e);
-
-            }
-        }
-        return "";
-    }
+//    /**
+//     * GoobiScript export
+//     * 
+//     * @param processes List of identifiers for this GoobiScript
+//     * @param exportImages boolean if images shall be exported too
+//     * @param exportFulltext boolean if ocr results shall be exported too
+//     */
+//    private String exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
+//        for (Integer processId : processes) {
+//            Process prozess = ProcessManager.getProcessById(processId);
+//            IExportPlugin export = null;
+//            String pluginName = ProcessManager.getExportPluginName(prozess.getId());
+//            if (StringUtils.isNotEmpty(pluginName)) {
+//                try {
+//                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+//                } catch (Exception e) {
+//                    logger.error("Can't load export plugin, use default plugin", e);
+//                    export = new ExportDms();
+//                }
+//            }
+//            String logextension ="without ocr results";
+//            if (exportFulltext){
+//            	logextension = "including ocr results";
+//            }
+//            if (export == null) {
+//                export = new ExportDms();
+//            }
+//            export.setExportFulltext(exportFulltext);
+//            if (exportImages != null && exportImages.equals("false")) {
+//            	logextension = "without images and " + logextension;
+//            	export.setExportImages(false);
+//            } else {
+//            	logextension = "including images and " + logextension;
+//                export.setExportImages(true);
+//            }
+//
+//            try {
+//                export.startExport(prozess);
+//                Helper.addMessageToProcessLog(prozess.getId(), LogType.DEBUG, "Export " + logextension + " started using GoobiScript.");
+//                logger.info("Export " + logextension + " started using GoobiScript for process with ID " + prozess.getId());
+//            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ExportFileException
+//                    | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
+//                    | InterruptedException e) {
+//                String[] parameter = { prozess.getTitel(), e.getMessage() };
+//                Helper.setFehlerMeldung("goobiScriptfield", "", Helper.getTranslation("ErrorDMSExport", parameter));
+//                logger.error("DocStructHasNoTypeException", e);
+//
+//                logger.error("PreferencesException", e);
+//
+//            }
+//        }
+//        return "";
+//    }
 
     
     /**
