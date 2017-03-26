@@ -72,6 +72,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
@@ -109,6 +110,7 @@ import de.sub.goobi.export.download.ExportPdf;
 import de.sub.goobi.export.download.Multipage;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
@@ -450,6 +452,19 @@ public class ProcessBean extends BasicBean {
         return "process_all";
     }
 
+    public String FilterAktuelleProzesseOfGoobiScript(String status){
+    	SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+		List<GoobiScriptResult> resultList = sf.getGoobiScriptResults();
+		filter = "\"id:";
+		for (GoobiScriptResult gsr : resultList) {
+			if (gsr.getResultType().toString().equals(status)){
+				filter += gsr.getProcessId() + " ";
+			}
+		}
+		filter += "\"";
+		return FilterAktuelleProzesse();
+    }
+    
     public String FilterVorlagen() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
@@ -1625,13 +1640,14 @@ public class ProcessBean extends BasicBean {
     /**
      * Starte GoobiScript über alle Treffer
      */
-    public void GoobiScriptHits() {
+    public String GoobiScriptHits() {
         if (!checkSecurityResult()) {
             Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
         } else {
             calcSecurityNumber();
             GoobiScript gs = new GoobiScript();
-            gs.execute(this.paginator.getIdList(), this.goobiScript);
+            return gs.execute(this.paginator.getIdList(), this.goobiScript);
 
         }
     }
@@ -1640,9 +1656,10 @@ public class ProcessBean extends BasicBean {
      * Starte GoobiScript über alle Treffer der Seite
      */
     @SuppressWarnings("unchecked")
-    public void GoobiScriptPage() {
+    public String GoobiScriptPage() {
         if (!checkSecurityResult()) {
             Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
         } else {
             calcSecurityNumber();
             GoobiScript gs = new GoobiScript();
@@ -1650,7 +1667,7 @@ public class ProcessBean extends BasicBean {
             for (Process p : (List<Process>) paginator.getList()) {
                 idList.add(p.getId());
             }
-            gs.execute(idList, this.goobiScript);
+            return gs.execute(idList, this.goobiScript);
         }
     }
 
@@ -1658,9 +1675,10 @@ public class ProcessBean extends BasicBean {
      * Starte GoobiScript über alle selectierten Treffer
      */
     @SuppressWarnings("unchecked")
-    public void GoobiScriptSelection() {
+    public String GoobiScriptSelection() {
         if (!checkSecurityResult()) {
             Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
         } else {
             calcSecurityNumber();
             List<Integer> idList = new ArrayList<>();
@@ -1670,7 +1688,7 @@ public class ProcessBean extends BasicBean {
                 }
             }
             GoobiScript gs = new GoobiScript();
-            gs.execute(idList, this.goobiScript);
+            return gs.execute(idList, this.goobiScript);
         }
     }
 

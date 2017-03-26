@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -69,9 +70,10 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     ConfigProjects cp;
     private boolean exportWithImages = true;
     private boolean exportFulltext = true;
-
+    private List<String> problems = new ArrayList<>();
     public final static String DIRECTORY_SUFFIX = "_tif";
-
+    
+    
     public ExportDms() {
     }
 
@@ -130,6 +132,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         } catch (Exception e) {
             Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), e);
             logger.error("Export abgebrochen, xml-LeseFehler", e);
+            problems.add("Export cancelled: " + e.getMessage());
             return false;
         }
 
@@ -142,7 +145,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         if (ConfigurationHelper.getInstance().isUseMetadataValidation()) {
             MetadatenVerifizierung mv = new MetadatenVerifizierung();
             if (!mv.validate(gdzfile, this.myPrefs, myProzess)) {
-                return false;
+            	problems.add("Export cancelled because of validation errors");
+            	problems.addAll(mv.getProblems());
+            	return false;
             }
         }
 
@@ -162,18 +167,21 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 /* alte Import-Ordner löschen */
                 if (!NIOFileUtils.deleteDir(benutzerHome)) {
                     Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Import folder could not be cleared");
+                    problems.add("Export cancelled: Import folder could not be cleared.");
                     return false;
                 }
                 /* alte Success-Ordner löschen */
                 Path successFile = Paths.get(myProzess.getProjekt().getDmsImportSuccessPath(), myProzess.getTitel());
                 if (!NIOFileUtils.deleteDir(successFile)) {
                     Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Success folder could not be cleared");
+                    problems.add("Export cancelled: Success folder could not be cleared.");
                     return false;
                 }
                 /* alte Error-Ordner löschen */
                 Path errorfile = Paths.get(myProzess.getProjekt().getDmsImportErrorPath(), myProzess.getTitel());
                 if (!NIOFileUtils.deleteDir(errorfile)) {
                     Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Error folder could not be cleared");
+                    problems.add("Export cancelled: Error folder could not be cleared.");
                     return false;
                 }
 
@@ -187,7 +195,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             // wenn das Home existiert, erst löschen und dann neu anlegen
             benutzerHome = Paths.get(zielVerzeichnis);
             if (!NIOFileUtils.deleteDir(benutzerHome)) {
-                Helper.setFehlerMeldung("Export canceled: " + myProzess.getTitel(), "could not delete home directory");
+                Helper.setFehlerMeldung("Export canceled: " + myProzess.getTitel(), "Could not delete home directory");
+                problems.add("Export cancelled: Could not delete home directory.");
                 return false;
             }
             prepareUserDirectory(zielVerzeichnis);
@@ -227,6 +236,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), e);
+            problems.add("Export cancelled: " + e.getMessage());
             return false;
         }
 
@@ -260,6 +270,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     }
                 } catch (InterruptedException e) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": error on export - ", e.getMessage());
+                    problems.add("Export problems: " + e.getMessage());
                     logger.error(myProzess.getTitel() + ": error on export", e);
                 }
                 if (agoraThread.rueckgabe.length() > 0) {
@@ -417,5 +428,10 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
     public String getDescription() {
         return getTitle();
+    }
+    
+    @Override
+    public List<String> getProblems() {
+        return problems;
     }
 }

@@ -48,6 +48,8 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.DocStruct;
@@ -108,7 +110,7 @@ public class GoobiScript {
     /**
      * Starten des Scripts ================================================================
      */
-    public void execute(List<Integer> inProzesse, String inScript) {
+    public String execute(List<Integer> inProzesse, String inScript) {
 
         StrTokenizer scriptTokenizer = new StrTokenizer(inScript, ';');
 
@@ -137,12 +139,14 @@ public class GoobiScript {
             if (this.myParameters.get("action") == null) {
                 Helper.setFehlerMeldung("goobiScriptfield", "missing action",
                         " - possible: 'action:swapsteps, action:adduser, action:addusergroup, action:swapprozessesout, action:swapprozessesin, action:deleteTiffHeaderFile, action:importFromFileSystem'");
-                return;
+                return "";
             }
 
             /*
              * -------------------------------- Aufruf der richtigen Methode über den Parameter --------------------------------
              */
+            IGoobiScript igs = null;
+            
             if (this.myParameters.get("action").equals("swapSteps")) {
                 swapSteps(inProzesse);
             } else if (this.myParameters.get("action").equals("swapProzessesOut")) {
@@ -186,14 +190,15 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 setRuleset(inProzesse);
             } else if (this.myParameters.get("action").equals("exportDms")) {
-                exportDms(inProzesse, this.myParameters.get("exportImages"), true);
+            	return exportDms(inProzesse, this.myParameters.get("exportImages"), true);
             } else if (this.myParameters.get("action").equals("export")) {
-                exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
+            	return exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
             } else if (this.myParameters.get("action").equals("doit")) {
-                exportDms(inProzesse, "false", false);
+            	return exportDms(inProzesse, "false", false);
             } else if (this.myParameters.get("action").equals("doit2")) {
-                exportDms(inProzesse, "false", true);
-
+                return exportDms(inProzesse, "false", true);
+           } else if (this.myParameters.get("action").equals("doit3")) {
+                igs = new GoobiScriptExportDMS();
             } else if (this.myParameters.get("action").equals("runscript")) {
                 String stepname = this.myParameters.get("stepname");
                 String scriptname = this.myParameters.get("script");
@@ -221,10 +226,15 @@ public class GoobiScript {
                 countMetadata(inProzesse);
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
-                return;
             }
-
+            
+            // if the selected GoobiScript is a new implementation based on interface then execute it now
+            if(igs!=null){
+            	igs.prepare(inProzesse, currentScript, this.myParameters);
+            	return igs.execute();
+            }
         }
+        return "";
     }
 
     /**
@@ -432,35 +442,7 @@ public class GoobiScript {
      * @param inProzesse List of identifiers for this GoobiScript
      */
     private void setRuleset(List<Integer> inProzesse) {
-        /*
-         * -------------------------------- Validierung der Actionparameter --------------------------------
-         */
-        if (this.myParameters.get("ruleset") == null || this.myParameters.get("ruleset").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "ruleset");
-            return;
-        }
-
-        try {
-
-            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + this.myParameters.get("ruleset") + "'", null, null);
-            if (rulesets == null || rulesets.size() == 0) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", "ruleset");
-                return;
-            }
-            Ruleset regelsatz = rulesets.get(0);
-
-            for (Integer processId : inProzesse) {
-                Process p = ProcessManager.getProcessById(processId);
-                p.setRegelsatz(regelsatz);
-                ProcessManager.saveProcess(p);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Switch to use ruleset '" + regelsatz.getTitel() + "' using GoobiScript.");
-                logger.info("Switch to use ruleset '" + regelsatz.getTitel() + "' using GoobiScript for process with ID " + p.getId());
-            }
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", e);
-            logger.error(e);
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setRuleset' executed.");
+        
     }
 
     /**
@@ -1322,7 +1304,7 @@ public class GoobiScript {
      * @param exportImages boolean if images shall be exported too
      * @param exportFulltext boolean if ocr results shall be exported too
      */
-    private void exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
+    private String exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
         for (Integer processId : processes) {
             Process prozess = ProcessManager.getProcessById(processId);
             IExportPlugin export = null;
@@ -1366,6 +1348,7 @@ public class GoobiScript {
 
             }
         }
+        return "";
     }
 
     

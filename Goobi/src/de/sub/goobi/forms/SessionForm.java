@@ -1,5 +1,6 @@
 package de.sub.goobi.forms;
 
+import java.io.IOException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -38,13 +39,22 @@ import java.util.Map;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.User;
+import org.goobi.goobiScript.GoobiScriptResult;
+import org.goobi.production.enums.GoobiScriptResultType;
 
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
@@ -62,7 +72,10 @@ public class SessionForm {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
     private String aktuelleZeit = this.formatter.format(new Date());
     private String bitteAusloggen = "";
-
+    
+    @Getter
+    private List<GoobiScriptResult> goobiScriptResults = new ArrayList<>();
+    
     private static final String MONITORING_CHECK = "nagios-plugins";
 
     public int getAktiveSessions() {
@@ -260,5 +273,58 @@ public class SessionForm {
 
     public void setDateFormatter(SimpleDateFormat dateFormatter) {
         this.dateFormatter = dateFormatter;
+    }
+    
+    public void goobiScriptResultsReset(){
+    	goobiScriptResults = new ArrayList<>();
+    }
+    
+    public boolean goobiScriptHasResults(String status){
+    	for (GoobiScriptResult gsr : goobiScriptResults) {
+			if (gsr.getResultType().toString().equals(status)){
+				return true;
+			}
+		}
+    	return false;
+    }
+    
+    public void goobiScriptResultsExcel() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            try {
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType("goobiScript.xls");
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"goobiScript.xls\"");
+                ServletOutputStream out = response.getOutputStream();
+                
+                HSSFWorkbook workbook = new HSSFWorkbook();
+                HSSFSheet sheet = workbook.createSheet("GoobiScript");  
+
+                HSSFRow rowhead = sheet.createRow((short)0);
+                rowhead.createCell(0).setCellValue("Process ID");
+                rowhead.createCell(1).setCellValue("Process title");
+                rowhead.createCell(2).setCellValue("Command");
+                rowhead.createCell(3).setCellValue("Result");
+                rowhead.createCell(4).setCellValue("Description");
+                
+                int count = 1;
+                for (GoobiScriptResult gsr : goobiScriptResults) {
+                	HSSFRow row = sheet.createRow((short) count++);
+                	row.createCell(0).setCellValue(gsr.getProcessId());
+                	row.createCell(1).setCellValue(gsr.getProcessTitle());
+                	row.createCell(2).setCellValue(gsr.getCommand());
+                	row.createCell(3).setCellValue(gsr.getResultType().toString());
+                	row.createCell(4).setCellValue(gsr.getResultMessage());
+				}
+
+                workbook.write(out);
+                out.flush();
+                facesContext.responseComplete();
+            } catch (IOException e) {
+            	
+            }
+        }
     }
 }

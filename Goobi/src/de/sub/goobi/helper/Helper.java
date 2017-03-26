@@ -185,12 +185,16 @@ public class Helper implements Serializable, Observer {
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
 		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		String user = login.getMyBenutzer().getNachVorname();
-	    LogEntry logEntry = new LogEntry();
+	    addMessageToProcessLog(processId, type, message, user);
+	}
+    
+    public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
+		LogEntry logEntry = new LogEntry();
         logEntry.setContent(message);
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processId);
         logEntry.setType(type);
-        logEntry.setUserName(user);
+        logEntry.setUserName(username);
         ProcessManager.saveLogEntry(logEntry);
 	}
     

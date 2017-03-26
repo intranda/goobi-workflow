@@ -18,6 +18,7 @@ package org.goobi.production.plugin.interfaces;
  * 
  */
 import java.io.IOException;
+import java.util.List;
 
 import org.goobi.beans.Process;
 
@@ -33,7 +34,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public interface IExportPlugin extends IPlugin {
-
     
     public boolean startExport(Process process) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
     WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
@@ -46,5 +46,7 @@ public interface IExportPlugin extends IPlugin {
     public void setExportFulltext(boolean exportFulltext);
     
     public void setExportImages(boolean exportImages);
-
+    
+    public List<String> getProblems();
+    
 }

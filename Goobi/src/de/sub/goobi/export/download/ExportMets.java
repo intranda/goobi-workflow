@@ -71,7 +71,8 @@ import de.sub.goobi.metadaten.MetadatenImagesHelper;
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
-
+    private List<String> problems = new ArrayList<>();
+    
     protected static final Logger logger = Logger.getLogger(ExportMets.class);
 
     /**
@@ -353,5 +354,9 @@ public class ExportMets {
         }
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
+    }
+
+    public List<String> getProblems() {
+        return problems;
     }
 }
