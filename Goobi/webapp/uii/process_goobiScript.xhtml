@@ -45,6 +45,7 @@
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
 													<h:outputText value="#{msgs.goobiScript_processId}" />
+													<i class="#{SessionForm.gsm.sort eq 'id'?'fa fa-sort-amount-desc':''}"/>
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="id" />
 	                                            </h:commandLink>
 											</f:facet>
@@ -55,6 +56,7 @@
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
 													<h:outputText value="#{msgs.goobiScript_processTitle}" />
+													<i class="#{SessionForm.gsm.sort eq 'title'?'fa fa-sort-amount-desc':''}"/>
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="title" />
 	                                            </h:commandLink>
 											</f:facet>
@@ -65,6 +67,7 @@
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
 													<h:outputText value="#{msgs.goobiScript_command}" />
+													<i class="#{SessionForm.gsm.sort eq 'command'?'fa fa-sort-amount-desc':''}"/>
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="command" />
 	                                            </h:commandLink>
 											</f:facet>
@@ -75,6 +78,7 @@
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
 													<h:outputText value="#{msgs.goobiScript_resultType}" />
+													<i class="#{SessionForm.gsm.sort eq 'status'?'fa fa-sort-amount-desc':''}"/>
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="status" />
 	                                            </h:commandLink>
 											</f:facet>
@@ -88,6 +92,7 @@
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
 													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
+	                                            	<i class="#{SessionForm.gsm.sort eq 'description'?'fa fa-sort-amount-desc':''}"/>
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="description" />
 	                                            </h:commandLink>
 											</f:facet>

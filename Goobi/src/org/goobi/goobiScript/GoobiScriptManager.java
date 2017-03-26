@@ -34,6 +34,7 @@ public class GoobiScriptManager {
 	 */
 	public void goobiScriptResultsReset() {
 		goobiScriptResults = new ArrayList<>();
+		sort = "";
 	}
 
 	/**
