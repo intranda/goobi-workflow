@@ -12,12 +12,18 @@
 			<h1>
 				<a href="index.xhtml"><h:outputText value="#{HelperForm.applicationHeaderTitle} #{HelperForm.version}" /></a>
 			</h1>
-			<div class="login-body">
+			
+			
+			<div class="login-body" style="margin-bottom:5px;">
 				<h2>
 					<h:outputText value="#{msgs.login}" />
 				</h2>
-				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm">
-                   
+				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
+					<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+			             <i class="fa fa-exclamation-triangle margin-right-10" />
+			             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+			         </h:panelGroup>
+			       
                     <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
 						warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
 						styleClass="messagesLogin" />
@@ -41,7 +47,7 @@
 							</div>
 						</div>
 						<div class="submit">
-							<h:commandLink id="login" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
+							<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
 								styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
 								<h:outputText value="#{msgs.einloggen}" rendered="#{!LoginForm.schonEingeloggt}" />
 								<h:outputText value="#{msgs.dennochEinloggen}" rendered="#{LoginForm.schonEingeloggt}" />
@@ -78,13 +84,13 @@
 
 				</h:form>
 			</div>
-			<a style="color: #FFFFFF;" href="http://www.intranda.com/digiverso/goobi/history/">Goobi - intranda
-				edition</a>
+			<a style="color: #FFFFFF;" href="http://www.intranda.com/digiverso/goobi/release-notes/">Goobi - developed by intranda</a>
 			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{HelperForm.version}" />
 
 		</div>
 
 	</composite:implementation>
+	
 
 </ui:composition>
 

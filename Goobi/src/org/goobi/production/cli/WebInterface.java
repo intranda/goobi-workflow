@@ -205,8 +205,8 @@ public class WebInterface extends HttpServlet {
 		answer += "</style>";
 		answer += "</head>";
 		answer += "<body>";
-		answer += "<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"ui/images/webapi_1.png\"></a>";
-		answer += "<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"ui/images/webapi_2.png\"></a>";
+		answer += "<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"uii/template/img/webapi_1.png\"></a>";
+		answer += "<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"uii/template/img/webapi_2.png\"></a>";
 		answer += "<h1>";
 		answer += cr.getTitle();
 		answer += "</h1>";

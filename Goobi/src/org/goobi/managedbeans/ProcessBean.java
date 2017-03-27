@@ -72,7 +72,9 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.UserRole;
@@ -108,6 +110,7 @@ import de.sub.goobi.export.download.ExportPdf;
 import de.sub.goobi.export.download.Multipage;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
@@ -226,10 +229,10 @@ public class ProcessBean extends BasicBean {
         validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
         Collections.sort(validationPluginList);
         calcSecurityNumber();
-        
+
     }
 
-   	/**
+    /**
      * needed for ExtendedSearch
      * 
      * @return
@@ -449,6 +452,19 @@ public class ProcessBean extends BasicBean {
         return "process_all";
     }
 
+    public String FilterAktuelleProzesseOfGoobiScript(String status){
+    	SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+		List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
+		filter = "\"id:";
+		for (GoobiScriptResult gsr : resultList) {
+			if (gsr.getResultType().toString().equals(status)){
+				filter += gsr.getProcessId() + " ";
+			}
+		}
+		filter += "\"";
+		return FilterAktuelleProzesse();
+    }
+    
     public String FilterVorlagen() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
@@ -502,7 +518,7 @@ public class ProcessBean extends BasicBean {
      * Anzeige der Sammelbände filtern
      */
     public String FilterAlleStart() {
-    	this.statisticsManager = null;
+        this.statisticsManager = null;
         this.myAnzahlList = null;
 
         String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
@@ -684,6 +700,7 @@ public class ProcessBean extends BasicBean {
         Speichern();
         updateUsergroupPaginator();
         updateUserPaginator();
+        Reload();
     }
 
     public String SchrittLoeschen() {
@@ -837,6 +854,7 @@ public class ProcessBean extends BasicBean {
         ExportMets export = new ExportMets();
         try {
             export.startExport(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (Exception e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
@@ -850,6 +868,7 @@ public class ProcessBean extends BasicBean {
         ExportPdf export = new ExportPdf();
         try {
             export.startExport(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started PDF export using 'ExportPdf'.");
         } catch (Exception e) {
             String[] parameter = { "PDF", this.myProzess.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
@@ -872,6 +891,7 @@ public class ProcessBean extends BasicBean {
         }
         if (export == null) {
             export = new ExportDms();
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
         }
         try {
             export.startExport(this.myProzess);
@@ -903,6 +923,7 @@ public class ProcessBean extends BasicBean {
             }
             try {
                 export.startExport(proz);
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSPage'.");
             } catch (Exception e) {
                 // without this a new exception is thrown, if an exception
                 // caught here doesn't have an
@@ -947,6 +968,7 @@ public class ProcessBean extends BasicBean {
                 }
                 try {
                     export.startExport(proz);
+                    Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("ExportError", e.getMessage());
                     logger.error(e);
@@ -976,6 +998,7 @@ public class ProcessBean extends BasicBean {
 
             try {
                 export.startExport(proz);
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSHits'.");
             } catch (Exception e) {
                 Helper.setFehlerMeldung("ExportError", e.getMessage());
                 logger.error(e);
@@ -1099,12 +1122,13 @@ public class ProcessBean extends BasicBean {
                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                     new HelperSchritte().CloseStepObjectAutomatic(so, true);
                 } else {
-                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                    if (ben != null) {
-                        so.setBearbeitungsbenutzer(ben);
-                    }
-                    ProcessManager.saveProcess(proz);
+//                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+//                    if (ben != null) {
+//                        so.setBearbeitungsbenutzer(ben);
+//                    }
+                	ProcessManager.saveProcess(proz);
                 }
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusUp' mass manipulation for step " + so.getTitel());
                 break;
             }
         }
@@ -1118,12 +1142,13 @@ public class ProcessBean extends BasicBean {
         for (Step step : tempList) {
             if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
                 step.setEditTypeEnum(StepEditType.ADMIN);
-                mySchritt.setBearbeitungszeitpunkt(new Date());
-                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                if (ben != null) {
-                    mySchritt.setBearbeitungsbenutzer(ben);
-                }
+                step.setBearbeitungszeitpunkt(new Date());
+//                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+//                if (ben != null) {
+//                    mySchritt.setBearbeitungsbenutzer(ben);
+//                }
                 step.setBearbeitungsstatusDown();
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusDown' mass manipulation for step " + step.getTitel());
                 break;
             }
         }
@@ -1587,92 +1612,95 @@ public class ProcessBean extends BasicBean {
     }
 
     public int getSecurityCheckNumber1() {
-		return securityCheckNumber1;
-	}
-    
-    public int getSecurityCheckNumber2() {
-		return securityCheckNumber2;
-	}
-    
-    public int getSecurityCheckResultGuess() {
-		return securityCheckResultGuess;
-	}
-    public void setSecurityCheckResultGuess(int securityCheckResultGuess) {
-		this.securityCheckResultGuess = securityCheckResultGuess;
-	}
-    
-    private void calcSecurityNumber() {
-    	securityCheckNumber1 = 101 + (int)(Math.random() * ((499 - 101) + 1));
-    	securityCheckNumber2 = 101 + (int)(Math.random() * ((499 - 101) + 1));
-    	securityCheckResultGuess = 0;
-	}
-    
-    private boolean checkSecurityResult(){
-    	return (securityCheckNumber1 + securityCheckNumber2 == securityCheckResultGuess);
+        return securityCheckNumber1;
     }
-    
+
+    public int getSecurityCheckNumber2() {
+        return securityCheckNumber2;
+    }
+
+    public int getSecurityCheckResultGuess() {
+        return securityCheckResultGuess;
+    }
+
+    public void setSecurityCheckResultGuess(int securityCheckResultGuess) {
+        this.securityCheckResultGuess = securityCheckResultGuess;
+    }
+
+    private void calcSecurityNumber() {
+        securityCheckNumber1 = 101 + (int) (Math.random() * ((499 - 101) + 1));
+        securityCheckNumber2 = 101 + (int) (Math.random() * ((499 - 101) + 1));
+        securityCheckResultGuess = 0;
+    }
+
+    private boolean checkSecurityResult() {
+        return (securityCheckNumber1 + securityCheckNumber2 == securityCheckResultGuess);
+    }
+
     /**
      * Starte GoobiScript über alle Treffer
      */
-    public void GoobiScriptHits() {
-    	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-    	}else{
-    		calcSecurityNumber();
-	        GoobiScript gs = new GoobiScript();
-	        gs.execute(this.paginator.getIdList(), this.goobiScript);
+    public String GoobiScriptHits() {
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
+        } else {
+            calcSecurityNumber();
+            GoobiScript gs = new GoobiScript();
+            return gs.execute(this.paginator.getIdList(), this.goobiScript);
 
-    	}
+        }
     }
 
     /**
      * Starte GoobiScript über alle Treffer der Seite
      */
     @SuppressWarnings("unchecked")
-    public void GoobiScriptPage() {
-    	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-    	}else{
-	    	calcSecurityNumber();
-	        GoobiScript gs = new GoobiScript();
-	        List<Integer> idList = new ArrayList<>();
-	        for (Process p : (List<Process>) paginator.getList()) {
-	            idList.add(p.getId());
-	        }
-	        gs.execute(idList, this.goobiScript);
-    	}
+    public String GoobiScriptPage() {
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
+        } else {
+            calcSecurityNumber();
+            GoobiScript gs = new GoobiScript();
+            List<Integer> idList = new ArrayList<>();
+            for (Process p : (List<Process>) paginator.getList()) {
+                idList.add(p.getId());
+            }
+            return gs.execute(idList, this.goobiScript);
+        }
     }
-    
+
     /**
      * Starte GoobiScript über alle selectierten Treffer
      */
     @SuppressWarnings("unchecked")
-    public void GoobiScriptSelection() {
-    	if (!checkSecurityResult()){
-    		Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-    	}else{
-    		calcSecurityNumber();
-	    	List<Integer> idList = new ArrayList<>();
-	        for (Process p : (List<Process>) this.paginator.getList()) {
-	            if (p.isSelected()) {
-	                idList.add(p.getId());
-	            }
-	        }
-	        GoobiScript gs = new GoobiScript();
-	        gs.execute(idList, this.goobiScript);
+    public String GoobiScriptSelection() {
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
+        } else {
+            calcSecurityNumber();
+            List<Integer> idList = new ArrayList<>();
+            for (Process p : (List<Process>) this.paginator.getList()) {
+                if (p.isSelected()) {
+                    idList.add(p.getId());
+                }
+            }
+            GoobiScript gs = new GoobiScript();
+            return gs.execute(idList, this.goobiScript);
         }
     }
-    
-    public int getGoobiScriptCountSelection(){
-    	List<Integer> idList = new ArrayList<>();
-    	for (Process p : (List<Process>) this.paginator.getList()) {
+
+    public int getGoobiScriptCountSelection() {
+        List<Integer> idList = new ArrayList<>();
+        for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
                 idList.add(p.getId());
             }
         }
-    	return idList.size();
+        return idList.size();
     }
-    
 
     /*
      * Statistische Auswertung
@@ -2539,6 +2567,19 @@ public class ProcessBean extends BasicBean {
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
+                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
+                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
+                        if (bean == null) {
+                            bean = new StepBean();
+                            requestMap.put("AktuelleSchritteForm", bean);
+                        }
+                        bean.setMyPlugin(currentPlugin);
+                        String mypath = "/uii/task_edit_simulator";
+                        currentPlugin.execute();
+                        return mypath;
+
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
                         currentPlugin.execute();
                         currentPlugin.finish();

@@ -49,6 +49,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Project;
@@ -57,6 +59,7 @@ import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.export.ExportDocket;
 
@@ -131,10 +134,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public static String DIRECTORY_PREFIX = "orig";
     public static String DIRECTORY_SUFFIX = "images";
 
-    
-    @Getter @Setter private String content ="";
-    @Getter @Setter private String secondContent ="";
-    @Getter @Setter private String thirdContent ="";
+    @Getter
+    @Setter
+    private String content = "";
+    @Getter
+    @Setter
+    private String secondContent = "";
+    @Getter
+    @Setter
+    private String thirdContent = "";
+
+    private List<StringPair> metadataList = new ArrayList<>();
+    private String representativeImage = null;
 
     public Process() {
         this.swappedOut = false;
@@ -824,7 +835,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return (inBearbeitung * 100) / (offen + inBearbeitung + error + abgeschlossen);
     }
-    
+
     public int getFortschrittError() {
         int offen = 0;
         int inBearbeitung = 0;
@@ -1389,15 +1400,46 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         entry.setContent(content);
         content = "";
-        
+
         entry.setSecondContent(secondContent);
         secondContent = "";
-        
+
         entry.setThirdContent(thirdContent);
         thirdContent = "";
         processLog.add(entry);
-        
+
         ProcessManager.saveLogEntry(entry);
+    }
+
+    public List<StringPair> getMetadataList() {
+        if (metadataList.isEmpty()) {
+            metadataList = MetadataManager.getMetadata(id);
+        }
+        return metadataList;
+    }
+
+    public String getRepresentativeImage() {
+        if (StringUtils.isBlank(representativeImage)) {
+            int imageNo = 0;
+            if (!getMetadataList().isEmpty()) {
+                for (StringPair sp : getMetadataList()) {
+                    if (sp.getOne().equals("_representative")) {
+                        imageNo = NumberUtils.toInt(sp.getTwo()) - 1;
+
+                    }
+                }
+            }
+            try {
+                List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true));
+                if (images != null && !images.isEmpty()) {
+                    representativeImage = images.get(imageNo).toString();
+                }
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+            }
+
+        }
+        return representativeImage;
     }
 
 }

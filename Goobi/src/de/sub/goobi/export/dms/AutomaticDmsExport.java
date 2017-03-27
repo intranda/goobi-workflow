@@ -84,7 +84,7 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
     public void setExportFulltext(boolean exportFulltext) {
         this.exportFulltext = exportFulltext;
     }
-    
+
     @Override
     public void setExportImages(boolean exportImages) {
         exportWithImages = exportImages;
@@ -219,8 +219,10 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
         }
 
         /*
-         * -------------------------------- zum Schluss Datei an gewünschten Ort exportieren entweder direkt in den Import-Ordner oder ins
-         * Benutzerhome anschliessend den Import-Thread starten --------------------------------
+         * -------------------------------- zum Schluss Datei an gewünschten Ort
+         * exportieren entweder direkt in den Import-Ordner oder ins
+         * Benutzerhome anschliessend den Import-Thread starten
+         * --------------------------------
          */
         boolean externalExport =
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz()) != null;
@@ -376,7 +378,6 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
                 }
             }
         }
-        
     }
 
     @Override
@@ -389,7 +390,6 @@ public class AutomaticDmsExport extends ExportMets implements IExportPlugin {
         return "AutomaticDmsExport";
     }
 
-    
     public String getDescription() {
         return getTitle();
     }

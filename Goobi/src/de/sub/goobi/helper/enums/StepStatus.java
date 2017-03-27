@@ -98,6 +98,15 @@ public enum StepStatus {
     public String getTitle() {
         return Helper.getTranslation(this.title);
     }
+    
+    /**
+     * get untranslated title from status type
+     * 
+     * @return title as translated string for current locale from standard-jsf-messages
+     */
+    public String getUntranslatedTitle() {
+        return this.title;
+    }
 
     /**
      * get file name for small image

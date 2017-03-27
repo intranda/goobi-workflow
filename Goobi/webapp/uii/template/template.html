@@ -124,13 +124,28 @@
                                             <img src="template/img/goobi/ajaxloader2.gif" />
                                         </li>
 
+                                       
+                                        
+                                        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
+	                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
+	                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING')?'fa-spin':''}"></i>
+	                                                    <div class="details">
+	                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
+	                                                        <span>#{SessionForm.gsm.goobiScriptResults.size()}</span>
+	                                                    </div>
+	                                                </h:commandLink>
+	                                        </li>
+                                        </h:panelGroup>
+                                        
+                                        
                                         <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
                                             <li class='background-color-A'>
                                                 <h:commandLink action="currentUsers" id="currentUsers">
                                                     <i class="glyphicon-parents box-icon-fix-down"></i>
                                                     <div class="details">
-                                                        <span class="big">#{SessionForm.aktiveSessions}</span>
                                                         <span>#{msgs.aktiveBenutzer}</span>
+                                                        <span class="big">#{SessionForm.aktiveSessions}</span>
                                                         <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
                                                     </div>
                                                 </h:commandLink>
@@ -147,7 +162,7 @@
                                                 </span>
                                             </div>
                                         </li>
-
+                                        
                                     </ul>
                                 </div>
                             </div>

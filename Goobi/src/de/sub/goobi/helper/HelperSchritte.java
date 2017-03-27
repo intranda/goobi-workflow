@@ -50,16 +50,8 @@ import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.jdom2.JDOMException;
 
-import ugh.dl.DigitalDocument;
-import ugh.dl.Fileformat;
-import ugh.dl.Prefs;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.UGHException;
-import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.export.dms.AutomaticDmsExport;
+import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -71,6 +63,14 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import ugh.dl.DigitalDocument;
+import ugh.dl.Fileformat;
+import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.UGHException;
+import ugh.exceptions.WriteException;
 
 public class HelperSchritte {
     private static final Logger logger = Logger.getLogger(HelperSchritte.class);
@@ -400,11 +400,13 @@ public class HelperSchritte {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
             } catch (Exception e) {
                 logger.error("Can't load export plugin, use default plugin", e);
-                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+                dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+//                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
             }
         }
         if (dms == null) {
-            dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+        	dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+//            dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
         }
         if (!ConfigurationHelper.getInstance().isAutomaticExportWithOcr()) {
             dms.setExportFulltext(false);

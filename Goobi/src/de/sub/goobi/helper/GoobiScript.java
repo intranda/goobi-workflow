@@ -48,6 +48,8 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.DocStruct;
@@ -108,7 +110,7 @@ public class GoobiScript {
     /**
      * Starten des Scripts ================================================================
      */
-    public void execute(List<Integer> inProzesse, String inScript) {
+    public String execute(List<Integer> inProzesse, String inScript) {
 
         StrTokenizer scriptTokenizer = new StrTokenizer(inScript, ';');
 
@@ -137,12 +139,14 @@ public class GoobiScript {
             if (this.myParameters.get("action") == null) {
                 Helper.setFehlerMeldung("goobiScriptfield", "missing action",
                         " - possible: 'action:swapsteps, action:adduser, action:addusergroup, action:swapprozessesout, action:swapprozessesin, action:deleteTiffHeaderFile, action:importFromFileSystem'");
-                return;
+                return "";
             }
 
             /*
              * -------------------------------- Aufruf der richtigen Methode über den Parameter --------------------------------
              */
+            IGoobiScript igs = null;
+            
             if (this.myParameters.get("action").equals("swapSteps")) {
                 swapSteps(inProzesse);
             } else if (this.myParameters.get("action").equals("swapProzessesOut")) {
@@ -185,15 +189,16 @@ public class GoobiScript {
                 addToProcessLog(inProzesse);
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 setRuleset(inProzesse);
-            } else if (this.myParameters.get("action").equals("exportDms")) {
-                exportDms(inProzesse, this.myParameters.get("exportImages"), true);
-            } else if (this.myParameters.get("action").equals("export")) {
-                exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
-            } else if (this.myParameters.get("action").equals("doit")) {
-                exportDms(inProzesse, "false", false);
-            } else if (this.myParameters.get("action").equals("doit2")) {
-                exportDms(inProzesse, "false", true);
-
+//            } else if (this.myParameters.get("action").equals("exportDms")) {
+//            	return exportDms(inProzesse, this.myParameters.get("exportImages"), true);
+//            } else if (this.myParameters.get("action").equals("export")) {
+//            	return exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
+//            } else if (this.myParameters.get("action").equals("doit")) {
+//            	return exportDms(inProzesse, "false", false);
+//            } else if (this.myParameters.get("action").equals("doit2")) {
+//                return exportDms(inProzesse, "false", true);
+           } else if (this.myParameters.get("action").equals("export")) {
+                igs = new GoobiScriptExportDMS();
             } else if (this.myParameters.get("action").equals("runscript")) {
                 String stepname = this.myParameters.get("stepname");
                 String scriptname = this.myParameters.get("script");
@@ -210,7 +215,6 @@ public class GoobiScript {
                 }
                 deleteProcess(inProzesse, contentOnly);
             } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {
-
                 updateMetadataTable(inProzesse);
             } else if (this.myParameters.get("action").equalsIgnoreCase("unloadRuleset")) {
                 unloadRuleset();
@@ -222,17 +226,31 @@ public class GoobiScript {
                 countMetadata(inProzesse);
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
-                return;
             }
-
+            
+            // if the selected GoobiScript is a new implementation based on interface then execute it now
+            if(igs!=null){
+            	igs.prepare(inProzesse, currentScript, this.myParameters);
+            	return igs.execute();
+            }
         }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript finished");
+        return "";
     }
 
+    /**
+     * GoobiScript unloadRuleset - not used anymore
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     */
     private void unloadRuleset() {
-        Ruleset.resetLoadedPrefs();
+        Helper.setMeldung("goobiScriptfield", "Ruleset reset is not used anymore");
     }
 
+    /**
+     * GoobiScript updateContentFiles
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     */
     private void updateContentFiles(List<Integer> inProzesse) {
         for (Integer processId : inProzesse) {
             Process proz = ProcessManager.getProcessById(processId);
@@ -240,6 +258,8 @@ public class GoobiScript {
                 Fileformat myRdf = proz.readMetadataFile();
                 myRdf.getDigitalDocument().addAllContentFiles();
                 proz.writeMetadataFile(myRdf);
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "ContentFiles updated using GoobiScript.");
+                logger.info("ContentFiles updated using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "ContentFiles updated: ", proz.getTitel());
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
@@ -248,9 +268,15 @@ public class GoobiScript {
                 Helper.setFehlerMeldung("goobiScriptfield", "Error while updating content files", e);
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "updateContentFiles finished");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateContentFiles' finished");
     }
 
+    /**
+     * GoobiScript deleteProcess
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     * @param contentOnly boolean if the content shall only be deleted or the entire process 
+     */
     private void deleteProcess(List<Integer> inProzesse, boolean contentOnly) {
 
         for (Integer processId : inProzesse) {
@@ -267,8 +293,10 @@ public class GoobiScript {
                         NIOFileUtils.deleteDir(images);
                     }
                 } catch (Exception e) {
-                    Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory", e);
+                    Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory.", e);
                 }
+                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.");
+                logger.info("Content deleted using GoobiScript for process with ID " + p.getId());
                 Helper.setMeldung("goobiScriptfield", "", "Content deleted for " + title);
             } else {
 
@@ -287,10 +315,17 @@ public class GoobiScript {
                 NIOFileUtils.deleteDir(ocr);
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory", e);
+            Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory.", e);
         }
     }
 
+    /**
+     * GoobiScript runScript
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     * @param stepname name of the workflow step 
+     * @param scriptname optional name of the script to call
+     */
     private void runScript(List<Integer> inProzesse, String stepname, String scriptname) {
         HelperSchritte hs = new HelperSchritte();
         for (Integer processId : inProzesse) {
@@ -302,47 +337,61 @@ public class GoobiScript {
                         if (step.getAllScripts().containsKey(scriptname)) {
                             String path = step.getAllScripts().get(scriptname);
                             hs.executeScriptForStepObject(so, path, false);
+                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Script '" + scriptname + "' for step '" + stepname + "' executed using GoobiScript.");
+                            logger.info("Script '" + scriptname + "' for step '" + stepname + "' executed using GoobiScript for process with ID " + p.getId());
                         }
                     } else {
                         hs.executeAllScriptsForStep(so, false);
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "All scripts for step '" + stepname + "' executed using GoobiScript.");
+                        logger.info("All scripts for step '" + stepname + "' executed using GoobiScript for process with ID " + p.getId());
                     }
                 }
             }
+            
         }
-
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'runScript' executed.");
     }
 
     /**
-     * Prozesse auslagern ================================================================
+     * GoobiScript swapOutProzesses
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void swapOutProzesses(List<Integer> inProzesse) {
         for (Integer processId : inProzesse) {
             Process p = ProcessManager.getProcessById(processId);
-
             ProcessSwapOutTask task = new ProcessSwapOutTask();
             task.initialize(p);
             LongRunningTaskManager.getInstance().addTask(task);
             LongRunningTaskManager.getInstance().executeTask(task);
-
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Swapping out started using GoobiScript.");
+            logger.info("Swapping out started using GoobiScript for process with ID " + p.getId());
         }
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapOut' executed.");
     }
 
     /**
-     * Prozesse wieder einlagern ================================================================
+     * GoobiScript swapInProzesses
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void swapInProzesses(List<Integer> inProzesse) {
         for (Integer processId : inProzesse) {
             Process p = ProcessManager.getProcessById(processId);
-
             ProcessSwapInTask task = new ProcessSwapInTask();
             task.initialize(p);
             LongRunningTaskManager.getInstance().addTask(task);
             LongRunningTaskManager.getInstance().executeTask(task);
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Swapping in started using GoobiScript.");
+            logger.info("Swapping in started using GoobiScript for process with ID " + p.getId());
         }
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapIn' executed.");
     }
 
     /**
-     * voll allen gewählten Prozessen die Daten aus einem Verzeichnis einspielen ================================================================
+     * GoobiScript importFromFileSystem
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void importFromFileSystem(List<Integer> inProzesse) {
         /*
@@ -359,7 +408,6 @@ public class GoobiScript {
             return;
         }
         try {
-
             for (Integer processId : inProzesse) {
                 Process p = ProcessManager.getProcessById(processId);
                 Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
@@ -376,6 +424,8 @@ public class GoobiScript {
                         Helper.setMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is copied");
                     }
+                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Data imported from file system using GoobiScript.");
+                    logger.info("Data imported from file system using GoobiScript for process with ID " + p.getId());
                     Helper.setMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue() + "] is copied");
                 }
             }
@@ -383,40 +433,23 @@ public class GoobiScript {
             Helper.setFehlerMeldung("goobiScriptfield","",e);
             logger.error(e);
         }
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'importFromFileSystem' executed.");
     }
 
     /**
-     * Regelsatz setzen ================================================================
+     * GoobiScript setRuleset
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void setRuleset(List<Integer> inProzesse) {
-        /*
-         * -------------------------------- Validierung der Actionparameter --------------------------------
-         */
-        if (this.myParameters.get("ruleset") == null || this.myParameters.get("ruleset").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "ruleset");
-            return;
-        }
-
-        try {
-
-            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + this.myParameters.get("ruleset") + "'", null, null);
-            if (rulesets == null || rulesets.size() == 0) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", "ruleset");
-                return;
-            }
-            Ruleset regelsatz = rulesets.get(0);
-
-            for (Integer processId : inProzesse) {
-                Process p = ProcessManager.getProcessById(processId);
-                p.setRegelsatz(regelsatz);
-                ProcessManager.saveProcess(p);
-            }
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", e);
-            logger.error(e);
-        }
+        
     }
 
+    /**
+     * GoobiScript addToProcessLog
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     */
 	private void addToProcessLog(List<Integer> inProzesse) {
 		if (this.myParameters.get("message") == null || this.myParameters.get("message").equals("")) {
 			Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "message");
@@ -447,17 +480,21 @@ public class GoobiScript {
                 logEntry.setUserName(user);
 
                 ProcessManager.saveLogEntry(logEntry);
+                logger.info("Process log updated for process with ID " + processId);
 
 			}
 		} catch (Exception e) {
 			Helper.setFehlerMeldung("goobiScriptfield", "", e);
 			logger.error(e);
 		}
+		Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addToProcessLog' executed.");
 	}
     
     
     /**
-     * Tauschen zweier Schritte gegeneinander ================================================================
+     * GoobiScript swapSteps
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void swapSteps(List<Integer> inProzesse) {
         /*
@@ -523,16 +560,19 @@ public class GoobiScript {
                             .getTitel() + " : " + s2.getTitel());
                     logger.error("Error on save while swapping process: " + proz.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
                 }
-
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.");
+                logger.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "Swapped steps in: ", proz.getTitel());
             }
 
         }
-        Helper.setMeldung("goobiScriptfield","", "swapsteps finished");
+        Helper.setMeldung("goobiScriptfield","", "GoobiScript 'swapsteps' finished.");
     }
 
     /**
-     * Schritte löschen ================================================================
+     * GoobiScript deleteStep
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void deleteStep(List<Integer> inProzesse) {
         /*
@@ -556,18 +596,21 @@ public class GoobiScript {
                         proz.getSchritte().remove(s);
 
                         StepManager.deleteStep(s);
-
+                        Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Deleted step '" + s.getTitel() + "' form process using GoobiScript.");
+                        logger.info("Deleted step '" + s.getTitel() + "' form process using GoobiScript for process with ID " + proz.getId());
                         Helper.setMeldung("goobiScriptfield", "Removed step from process: ", proz.getTitel());
                         break;
                     }
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "deleteStep finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'deleteStep' finished");
     }
 
     /**
-     * Schritte hinzufuegen ================================================================
+     * GoobiScript addStep
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void addStep(List<Integer> inProzesse) {
         /*
@@ -603,17 +646,21 @@ public class GoobiScript {
             proz.getSchritte().add(s);
             try {
                 ProcessManager.saveProcess(proz);
+                Helper.addMessageToProcessLog(processId,LogType.DEBUG,"Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.");
+                logger.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript for process with ID " + proz.getId());
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                 logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
             }
             Helper.setMeldung("goobiScriptfield", "Added step to process: ", proz.getTitel());
         }
-        Helper.setMeldung("goobiScriptfield", "", "addStep finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addStep' finished.");
     }
 
     /**
-     * ShellScript an Schritt hängen ================================================================
+     * GoobiScript addShellScriptToStep
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void addShellScriptToStep(List<Integer> inProzesse) {
         /*
@@ -649,6 +696,8 @@ public class GoobiScript {
                         s.setTypScriptStep(true);
                         try {
                             ProcessManager.saveProcess(proz);
+                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '" +  s.getTypAutomatischScriptpfad() + "' using GoobiScript.");
+                            logger.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '" +  s.getTypAutomatischScriptpfad() + "' using GoobiScript for process with ID " + proz.getId());
                         } catch (DAOException e) {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -659,11 +708,13 @@ public class GoobiScript {
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "addShellScriptToStep finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addShellScriptToStep' finished.");
     }
 
     /**
-     * ShellScript an Schritt hängen ================================================================
+     * GoobiScript addModuleToStep
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void addModuleToStep(List<Integer> inProzesse) {
         /*
@@ -692,6 +743,8 @@ public class GoobiScript {
                         s.setTypModulName(this.myParameters.get("module"));
                         try {
                             ProcessManager.saveProcess(proz);
+                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Added module to step '" + s.getTitel() + "' with name '" + s.getTypModulName() + " using GoobiScript.");
+                            logger.info("Added module to step '" + s.getTitel() + "' with name '" + s.getTypModulName() + " using GoobiScript for process with ID " + proz.getId());
                         } catch (DAOException e) {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -702,9 +755,14 @@ public class GoobiScript {
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "addModuleToStep finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addModuleToStep' finished.");
     }
 
+    /**
+     * GoobiScript addPluginToStep
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     */
     private void addPluginToStep(List<Integer> inProzesse) {
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
@@ -731,6 +789,8 @@ public class GoobiScript {
                         s.setStepPlugin(this.myParameters.get("plugin"));
                         try {
                             ProcessManager.saveProcess(proz);
+                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "' using GoobiScript.");
+                            logger.info("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "' using GoobiScript for process with ID " + proz.getId());
                         } catch (DAOException e) {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -741,11 +801,13 @@ public class GoobiScript {
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "addPluginToStep finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addPluginToStep' finished.");
     }
 
     /**
-     * Flag von Schritten setzen ================================================================
+     * GoobiScript setTaskProperty
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void setTaskProperty(List<Integer> inProzesse) {
         /*
@@ -816,6 +878,8 @@ public class GoobiScript {
 
                         try {
                             ProcessManager.saveProcess(proz);
+                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' using GoobiScript.");
+                            logger.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' using GoobiScript for process with ID " + proz.getId());
                         } catch (DAOException e) {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -826,11 +890,13 @@ public class GoobiScript {
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "setTaskProperty abgeschlossen: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setTaskProperty' abgeschlossen.");
     }
 
     /**
-     * Schritte auf bestimmten Status setzen ================================================================
+     * GoobiScript setStepStatus
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void setStepStatus(List<Integer> inProzesse) {
         /*
@@ -847,8 +913,8 @@ public class GoobiScript {
         }
 
         if (!this.myParameters.get("status").equals("0") && !this.myParameters.get("status").equals("1") && !this.myParameters.get("status").equals(
-                "2") && !this.myParameters.get("status").equals("3")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ", "(possible: 0=closed, 1=open, 2=in work, 3=finished");
+                "2") && !this.myParameters.get("status").equals("3") && !this.myParameters.get("status").equals("4") && !this.myParameters.get("status").equals("5")) {
+            Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ", "(possible: 0=closed, 1=open, 2=in work, 3=finished, 4=error, 5=deactivated");
             return;
         }
 
@@ -864,20 +930,24 @@ public class GoobiScript {
                     s.setBearbeitungsstatusAsString(this.myParameters.get("status"));
                     try {
                         StepManager.saveStep(s);
+                        Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Changed status of step '" + s.getTitel() + "' to '" + s.getBearbeitungsstatusEnum().getUntranslatedTitle() + "' using GoobiScript.");
+                        logger.info("Changed status of step '" + s.getTitel() + "' to '" + s.getBearbeitungsstatusEnum().getUntranslatedTitle() + "' using GoobiScript for process with ID " + proz.getId());
                     } catch (DAOException e) {
                         Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                         logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
                     }
-                    Helper.setMeldung("goobiScriptfield", "stepstatus set in process: ", proz.getTitel());
+                    Helper.setMeldung("goobiScriptfield", "Status of the step is set for process: ", proz.getTitel());
                     break;
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "setStepStatus finished: ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setStepStatus' finished.");
     }
 
     /**
-     * Schritte auf bestimmten Reihenfolge setzen ================================================================
+     * GoobiScript setStepNumber
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void setStepNumber(List<Integer> inProzesse) {
         /*
@@ -910,6 +980,8 @@ public class GoobiScript {
                     s.setReihenfolge(Integer.parseInt(this.myParameters.get("number")));
                     try {
                         StepManager.saveStep(s);
+                        Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript.");
+                        logger.info("Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript for process with ID " + proz.getId());
                     } catch (DAOException e) {
                         Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
                         logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
@@ -919,11 +991,13 @@ public class GoobiScript {
                 }
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "setStepNumber finished ");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setStepNumber' finished.");
     }
 
     /**
-     * Benutzer zu Schritt hinzufügen ================================================================
+     * GoobiScript adduser
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void adduser(List<Integer> inProzesse) {
         /*
@@ -971,6 +1045,8 @@ public class GoobiScript {
                         myBenutzer.add(myUser);
                         try {
                             StepManager.saveStep(s);
+                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.");
+                            logger.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript for process with ID " + proz.getId());
                         } catch (DAOException e) {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + proz.getTitel(), e);
                             logger.error("goobiScriptfield" + "Error while saving - " + proz.getTitel(), e);
@@ -981,11 +1057,13 @@ public class GoobiScript {
             }
             Helper.setMeldung("goobiScriptfield", "Added user to step: ", proz.getTitel());
         }
-        Helper.setMeldung("goobiScriptfield", "", "adduser finished.");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'adduser' finished.");
     }
 
     /**
-     * Benutzergruppe zu Schritt hinzufügen ================================================================
+     * GoobiScript addusergroup
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void addusergroup(List<Integer> inProzesse) {
         /*
@@ -1032,6 +1110,8 @@ public class GoobiScript {
                         myBenutzergruppe.add(myGroup);
                         try {
                             StepManager.saveStep(s);
+                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript.");
+                            logger.info("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript for process with ID " + proz.getId());
                         } catch (DAOException e) {
                             Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + proz.getTitel(), e);
                             return;
@@ -1039,13 +1119,15 @@ public class GoobiScript {
                     }
                 }
             }
-            Helper.setMeldung("goobiScriptfield", "added usergroup to step: ", proz.getTitel());
+            Helper.setMeldung("goobiScriptfield", "Added usergroup to step: ", proz.getTitel());
         }
-        Helper.setMeldung("goobiScriptfield", "", "addusergroup finished");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addusergroup' finished.");
     }
 
     /**
-     * TiffHeader von den Prozessen löschen ================================================================
+     * GoobiScript deleteTiffHeaderFile to delete an existing tiff header file tiffwriter.conf for each process
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     public void deleteTiffHeaderFile(List<Integer> inProzesse) {
         for (Integer processId : inProzesse) {
@@ -1055,16 +1137,20 @@ public class GoobiScript {
                 if (Files.exists(tiffheaderfile)) {
                     Files.delete(tiffheaderfile);
                 }
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
+                logger.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "TiffHeaderFile deleted: ", proz.getTitel());
             } catch (Exception e) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Error while deleting TiffHeader", e);
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "deleteTiffHeaderFile finished");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'deleteTiffHeaderFile' finished.");
     }
 
     /**
-     * TiffHeader von den Prozessen neu schreiben ================================================================
+     * GoobiScript writeTiffHeader to write tiff headers into the image files
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     private void writeTiffHeader(List<Integer> inProzesse) {
         for (Integer processId : inProzesse) {
@@ -1072,11 +1158,15 @@ public class GoobiScript {
             TiffWriterTask task = new TiffWriterTask();
             task.initialize(proz);
             LongRunningTaskManager.getInstance().addTask(task);
+            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "TiffHeader writing started using GoobiScript.");
+            logger.info("TiffHeader writing started using GoobiScript for process with ID " + proz.getId());
         }
     }
 
     /**
-     * Imagepfad in den Metadaten neu setzen (evtl. vorhandene zunächst löschen) ================================================================
+     * GoobiScript updateImagePath
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
      */
     public void updateImagePath(List<Integer> inProzesse) {
         for (Integer processId : inProzesse) {
@@ -1100,6 +1190,8 @@ public class GoobiScript {
                 }
                 myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
                 proz.writeMetadataFile(myRdf);
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.");
+                logger.info("ImagePath updated using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "ImagePath updated: ", proz.getTitel());
 
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
@@ -1114,9 +1206,14 @@ public class GoobiScript {
             }
 
         }
-        Helper.setMeldung("goobiScriptfield", "", "updateImagePath finished");
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateImagePath' finished.");
     }
 
+    /**
+     * GoobiScript updateMetadata
+     * 
+     * @param inProzesse List of identifiers for this GoobiScript
+     */
     private void updateMetadataTable(List<Integer> inProzesse) {
 
         for (Integer processId : inProzesse) {
@@ -1136,11 +1233,13 @@ public class GoobiScript {
                     pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
                 MetadataManager.updateMetadata(id, pairs);
-
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Metadata updated using GoobiScript.");
+                logger.info("Metadata updated using GoobiScript for process with ID " + proz.getId());
             } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
-                logger.error("process id : " + id, e1);
+                logger.error("Problem while updating the metadata using GoobiScript for process with id: " + id, e1);
             }
         }
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateMetadata' finished.");
     }
 
     public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,
@@ -1170,7 +1269,6 @@ public class GoobiScript {
     }
 
     private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
-
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
             String metadataValue = "";
@@ -1199,44 +1297,66 @@ public class GoobiScript {
         return metadataPairs;
     }
 
-    private void exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
-        for (Integer processId : processes) {
-            Process prozess = ProcessManager.getProcessById(processId);
-            IExportPlugin export = null;
-            String pluginName = ProcessManager.getExportPluginName(prozess.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
-                    export = new ExportDms();
-                }
-            }
-            if (export == null) {
-                export = new ExportDms();
-            }
-            export.setExportFulltext(exportFulltext);
-            if (exportImages != null && exportImages.equals("false")) {
-                export.setExportImages(false);
-            } else {
-                export.setExportImages(true);
-            }
+//    /**
+//     * GoobiScript export
+//     * 
+//     * @param processes List of identifiers for this GoobiScript
+//     * @param exportImages boolean if images shall be exported too
+//     * @param exportFulltext boolean if ocr results shall be exported too
+//     */
+//    private String exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
+//        for (Integer processId : processes) {
+//            Process prozess = ProcessManager.getProcessById(processId);
+//            IExportPlugin export = null;
+//            String pluginName = ProcessManager.getExportPluginName(prozess.getId());
+//            if (StringUtils.isNotEmpty(pluginName)) {
+//                try {
+//                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+//                } catch (Exception e) {
+//                    logger.error("Can't load export plugin, use default plugin", e);
+//                    export = new ExportDms();
+//                }
+//            }
+//            String logextension ="without ocr results";
+//            if (exportFulltext){
+//            	logextension = "including ocr results";
+//            }
+//            if (export == null) {
+//                export = new ExportDms();
+//            }
+//            export.setExportFulltext(exportFulltext);
+//            if (exportImages != null && exportImages.equals("false")) {
+//            	logextension = "without images and " + logextension;
+//            	export.setExportImages(false);
+//            } else {
+//            	logextension = "including images and " + logextension;
+//                export.setExportImages(true);
+//            }
+//
+//            try {
+//                export.startExport(prozess);
+//                Helper.addMessageToProcessLog(prozess.getId(), LogType.DEBUG, "Export " + logextension + " started using GoobiScript.");
+//                logger.info("Export " + logextension + " started using GoobiScript for process with ID " + prozess.getId());
+//            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ExportFileException
+//                    | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
+//                    | InterruptedException e) {
+//                String[] parameter = { prozess.getTitel(), e.getMessage() };
+//                Helper.setFehlerMeldung("goobiScriptfield", "", Helper.getTranslation("ErrorDMSExport", parameter));
+//                logger.error("DocStructHasNoTypeException", e);
+//
+//                logger.error("PreferencesException", e);
+//
+//            }
+//        }
+//        return "";
+//    }
 
-            try {
-                export.startExport(prozess);
-            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ExportFileException
-                    | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
-                    | InterruptedException e) {
-                String[] parameter = { prozess.getTitel(), e.getMessage() };
-                Helper.setFehlerMeldung("goobiScriptfield", "", Helper.getTranslation("ErrorDMSExport", parameter));
-                logger.error("DocStructHasNoTypeException", e);
-
-                logger.error("PreferencesException", e);
-
-            }
-        }
-    }
-
+    
+    /**
+     * GoobiScript countImages
+     * 
+     * @param processes List of identifiers for this GoobiScript
+     */
     private void countImages(List<Integer> processes) {
         for (Integer processId : processes) {
             Process p = ProcessManager.getProcessById(processId);
@@ -1244,12 +1364,20 @@ public class GoobiScript {
                 int value = HistoryManager.getNumberOfImages(p.getId());
                 if (value > 0) {
                     ProcessManager.updateImages(value, p.getId());
+                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Image numbers counted using GoobiScript.");
+                    logger.info("Image numbers counted using GoobiScript for process with ID " + p.getId());
                 }
             }
 
         }
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'countImages' finished.");
     }
 
+    /**
+     * GoobiScript countMetadata
+     * 
+     * @param processes List of identifiers for this GoobiScript
+     */
     private void countMetadata(List<Integer> processes) {
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
         for (Integer processId : processes) {
@@ -1262,11 +1390,14 @@ public class GoobiScript {
 
                 //                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
                 ProcessManager.saveProcess(p);
+                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata fields counted using GoobiScript.");
+                logger.info("Metadata fields counted using GoobiScript for process with ID " + p.getId());
             } catch (Exception e) {
                 logger.error(e);
             }
 
         }
+        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'countMetadata' finished.");
     }
 
     public static void main(String[] args) throws JDOMException, IOException {

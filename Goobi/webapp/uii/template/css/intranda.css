@@ -124,6 +124,18 @@ label {
     background: none repeat scroll 0 0 #ccc;
 }
 
+.background-color-D {
+    background: none repeat scroll 0 0 #56af45;
+}
+
+.background-color-E {
+    background: none repeat scroll 0 0 #e8860c;
+}
+
+.background-color-F {
+    background: none repeat scroll 0 0 #e51400;
+}
+
 /* ------------- Menu --------------- */
 #navigation #brand {
     width: 50px;

@@ -63,6 +63,7 @@ public class MetadatenVerifizierung {
     List<DocStruct> docStructsOhneSeiten;
     Process myProzess;
     boolean autoSave = false;
+    private List<String> problems = new ArrayList<>();
 
     public boolean validate(Process inProzess) {
         Prefs myPrefs = inProzess.getRegelsatz().getPreferences();
@@ -74,6 +75,7 @@ public class MetadatenVerifizierung {
             gdzfile = inProzess.readMetadataFile();
         } catch (Exception e) {
             Helper.setFehlerMeldung(Helper.getTranslation("MetadataReadError") + inProzess.getTitel(), e.getMessage());
+            problems.add(Helper.getTranslation("MetadataReadError") + ": " + e.getMessage());
             return false;
         }
         return validate(gdzfile, myPrefs, inProzess);
@@ -81,6 +83,9 @@ public class MetadatenVerifizierung {
 
     public boolean validate(Fileformat gdzfile, Prefs inPrefs, Process inProzess) {
         String metadataLanguage = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
+        if (metadataLanguage == null){
+        	metadataLanguage = "en";
+        }
         this.myProzess = inProzess;
         boolean ergebnis = true;
 
@@ -89,6 +94,7 @@ public class MetadatenVerifizierung {
             dd = gdzfile.getDigitalDocument();
         } catch (Exception e) {
             Helper.setFehlerMeldung(Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
+            problems.add(Helper.getTranslation("MetadataDigitalDocumentError") + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -101,7 +107,7 @@ public class MetadatenVerifizierung {
                             metadataLanguage) };
 
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierCharacter", parameter));
-
+                    problems.add(Helper.getTranslation("InvalidIdentifierCharacter") + ": " + parameter);
                     ergebnis = false;
                 }
                 DocStruct firstChild = logical.getAllChildren().get(0);
@@ -110,12 +116,14 @@ public class MetadatenVerifizierung {
                         identifierFirstChild.getValue())) {
                     String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierSame", parameter));
+                    problems.add(Helper.getTranslation("InvalidIdentifierSame") + ": " + parameter);
                     ergebnis = false;
                 }
                 if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
                     String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage), firstChild.getType().getNameByLanguage(
                             metadataLanguage) };
                     Helper.setFehlerMeldung(Helper.getTranslation("InvalidIdentifierCharacter", parameter));
+                    problems.add(Helper.getTranslation("InvalidIdentifierCharacter") + ": " + parameter);
                     ergebnis = false;
                 }
             } catch (Exception e) {
@@ -123,12 +131,14 @@ public class MetadatenVerifizierung {
             }
         } else {
             Helper.setFehlerMeldung(Helper.getTranslation("MetadataMissingIdentifier"));
+            problems.add(Helper.getTranslation("MetadataMissingIdentifier"));
             ergebnis = false;
         }
         /*
          * -------------------------------- PathImagesFiles prüfen --------------------------------
          */
         if (!this.isValidPathImageFiles(dd.getPhysicalDocStruct(), inPrefs)) {
+        	problems.add(Helper.getTranslation("InvalidImagePath"));
             ergebnis = false;
         }
 
@@ -138,6 +148,7 @@ public class MetadatenVerifizierung {
         DocStruct logicalTop = dd.getLogicalDocStruct();
         if (logicalTop == null) {
             Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationError"));
+            problems.add(Helper.getTranslation("MetadataPaginationError"));
             ergebnis = false;
         }
 
@@ -150,6 +161,7 @@ public class MetadatenVerifizierung {
                     DocStruct ds = iter.next();
                     Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure") + ds.getType()
                             .getNameByLanguage(metadataLanguage));
+                    problems.add(Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
                 }
                 ergebnis = false;
             }
@@ -162,12 +174,14 @@ public class MetadatenVerifizierung {
                 seitenOhneDocstructs = checkSeitenOhneDocstructs(gdzfile);
             } catch (PreferencesException e1) {
                 Helper.setFehlerMeldung("[" + inProzess.getTitel() + "] Can not check pages without docstructs: ");
+                problems.add(Helper.getTranslation("Can not check pages without docstructs"));
                 ergebnis = false;
             }
             if (seitenOhneDocstructs != null && seitenOhneDocstructs.size() != 0) {
                 for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
                     String seite = iter.next();
                     Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationPages"), seite);
+                    problems.add(Helper.getTranslation("MetadataPaginationPages") + ": " + seite);
                 }
                 ergebnis = false;
             }
@@ -180,6 +194,7 @@ public class MetadatenVerifizierung {
             for (Iterator<String> iter = mandatoryList.iterator(); iter.hasNext();) {
                 String temp = iter.next();
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataMandatoryElement"), temp);
+                problems.add(Helper.getTranslation("MetadataMandatoryElement") + ": " + temp);
             }
             ergebnis = false;
         }
@@ -193,6 +208,7 @@ public class MetadatenVerifizierung {
             for (Iterator<String> iter = configuredList.iterator(); iter.hasNext();) {
                 String temp = iter.next();
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataInvalidData"), temp);
+                problems.add(Helper.getTranslation("MetadataInvalidData") + ": " + temp);
             }
             ergebnis = false;
         }
@@ -201,6 +217,7 @@ public class MetadatenVerifizierung {
         if (!expressionList.isEmpty()) {
             for (String text : expressionList) {
                 Helper.setFehlerMeldung(text);
+                problems.add(text);
             }
             ergebnis = false;
         }
@@ -209,10 +226,12 @@ public class MetadatenVerifizierung {
             MetadatenImagesHelper mih = new MetadatenImagesHelper(inPrefs, dd);
             try {
                 if (!mih.checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true))) {
+                	problems.add(Helper.getTranslation("ImagesNotValid"));
                     ergebnis = false;
                 }
             } catch (Exception e) {
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e);
+                problems.add(Helper.getTranslation("Exception occurred") + ": " + e.getMessage());
                 ergebnis = false;
             }
 
@@ -224,11 +243,13 @@ public class MetadatenVerifizierung {
                     if (sizeOfPagination != sizeOfImages) {
                         String[] parameter = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
                         Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", parameter));
+                        problems.add(Helper.getTranslation("imagePaginationError"));
                         return false;
                     }
                 }
             } catch (InvalidImagesException e1) {
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e1);
+                problems.add("InvalidImagesException: " + e1.getMessage());
                 ergebnis = false;
             }
         }
@@ -241,6 +262,7 @@ public class MetadatenVerifizierung {
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error while writing metadata: " + inProzess.getTitel(), e);
+            problems.add(Helper.getTranslation("Error while writing metadata")  + ": " + e.getMessage());
         }
         return ergebnis;
     }
@@ -636,6 +658,9 @@ public class MetadatenVerifizierung {
 
         if (uppermostStruct.getType().isAnchor()) {
             String language = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
+            if (language==null){
+            	language = "en";
+            }
 
             if (uppermostStruct.getAllIdentifierMetadata() != null && uppermostStruct.getAllIdentifierMetadata().size() > 0) {
                 Metadata identifierTopStruct = uppermostStruct.getAllIdentifierMetadata().get(0);
@@ -677,4 +702,7 @@ public class MetadatenVerifizierung {
         return true;
     }
 
+    public List<String> getProblems() {
+		return problems;
+	}
 }

@@ -41,6 +41,7 @@ import de.sub.goobi.persistence.managers.LdapManager;
 public class LdapBean extends BasicBean {
 	private static final long serialVersionUID = -5644561256582235244L;
 	private Ldap myLdapGruppe = new Ldap();
+	private String displayMode = "";
 	
 	public String Neu() {
 		this.myLdapGruppe = new Ldap();
@@ -87,5 +88,13 @@ public class LdapBean extends BasicBean {
 	public void setMyLdapGruppe(Ldap myLdapGruppe) {
 		this.myLdapGruppe = myLdapGruppe;
 	}
+	
+    public String getDisplayMode() {
+        return displayMode;
+    }
+
+    public void setDisplayMode(String displayMode) {
+        this.displayMode = displayMode;
+    }
 
 }

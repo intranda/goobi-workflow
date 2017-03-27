@@ -1,5 +1,6 @@
 package de.sub.goobi.forms;
 
+import java.io.IOException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -38,13 +39,23 @@ import java.util.Map;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.User;
+import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.goobiScript.GoobiScriptResult;
+import org.goobi.production.enums.GoobiScriptResultType;
 
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
@@ -62,7 +73,9 @@ public class SessionForm {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
     private String aktuelleZeit = this.formatter.format(new Date());
     private String bitteAusloggen = "";
-
+    @Getter
+    private GoobiScriptManager gsm = new GoobiScriptManager();
+    
     private static final String MONITORING_CHECK = "nagios-plugins";
 
     public int getAktiveSessions() {
@@ -261,4 +274,5 @@ public class SessionForm {
     public void setDateFormatter(SimpleDateFormat dateFormatter) {
         this.dateFormatter = dateFormatter;
     }
+    
 }

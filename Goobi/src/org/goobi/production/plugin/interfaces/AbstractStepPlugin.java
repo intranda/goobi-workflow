@@ -79,7 +79,7 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
         if (logger.isDebugEnabled()) {
             logger.debug("finish called");
         }
-        return this.returnPath;
+        return "/uii" + this.returnPath;
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
         if (logger.isDebugEnabled()) {
             logger.debug("cancel called");
         }
-        return this.returnPath;
+        return "/uii" + this.returnPath;
     }
 
     @Override

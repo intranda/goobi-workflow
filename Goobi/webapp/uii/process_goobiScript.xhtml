@@ -1,0 +1,151 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:param name="myPageTitle" value="#{msgs.goobiScriptAusfuehren}" />
+
+    <ui:define name="title">
+        <h:outputText value="#{myPageTitle}" />
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<c:if test="#{LoginForm.hasRole('Workflow_Processes')}">
+			<intranda:breadcrumb id="processAll" label="#{msgs.aktuelleProzesse}" action="process_all" navId="a1" />
+		</c:if>
+		<intranda:breadcrumb id="processEdit" label="#{msgs.goobiScriptAusfuehren}" action="process_goobiScript" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+		<c:if test="#{LoginForm.hasRole('Workflow_Processes') and LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript')}">
+	        <div class="row">
+	            <div class="col-sm-12">
+	                <div class="box box-color box-bordered">
+	                    <div class="box-title">
+	                        <h3>
+	                            <i class="fa fa-tasks"></i>
+	                            <h:outputText value="#{myPageTitle}" />
+	                        </h3>
+	                    </div>
+	                    <div class="box-content nopadding">
+	                    	<div class="dataTables_wrapper">
+								<div class="dataTables_length">
+									<h:outputText value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResults.size()}" />
+								</div>
+
+								<!-- Datentabelle -->
+		                    	<h:form>
+									<x:dataTable id="gsr"
+										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+										var="item" value="#{SessionForm.gsm.goobiScriptResults}">
+	
+										<h:column>
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_processId}" />
+													<i class="#{SessionForm.gsm.sort eq 'id'?'fa fa-sort-amount-desc':''}"/>
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="id" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.processId}" />
+										</h:column>
+	
+										<x:column styleClass="tableColumnMaxWidthMid">
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_processTitle}" />
+													<i class="#{SessionForm.gsm.sort eq 'title'?'fa fa-sort-amount-desc':''}"/>
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="title" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
+										</x:column>
+										
+										<x:column styleClass="tableColumnMaxWidthMid">
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_command}" />
+													<i class="#{SessionForm.gsm.sort eq 'command'?'fa fa-sort-amount-desc':''}"/>
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="command" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.command}" title="#{item.command}" />
+										</x:column>
+										
+										<x:column>
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_resultType}" />
+													<i class="#{SessionForm.gsm.sort eq 'status'?'fa fa-sort-amount-desc':''}"/>
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="status" />
+	                                            </h:commandLink>
+											</f:facet>
+											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':'badge-intranda-red'}">
+			                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':'fa-exclamation-triangle'} margin-right-5"></i>
+			                                    #{msgs['goobiScript_status_'.concat(item.resultType)]}
+			                                </span>
+										</x:column>
+										
+										<x:column>
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black">
+													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
+	                                            	<i class="#{SessionForm.gsm.sort eq 'description'?'fa fa-sort-amount-desc':''}"/>
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="description" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.resultMessage}" />
+										</x:column>
+										
+									</x:dataTable>
+								</h:form>
+								
+								<div class="dataTables_info">
+									<h:form>
+										<!-- Reset button -->
+										<h:commandLink id="reset" styleClass="btn font-size-s" action="#{SessionForm.gsm.goobiScriptResultsReset}">
+											<i class="fa fa-trash margin-right-5"></i>
+											<h:outputText value="#{msgs.goobiScript_resetList}" />
+										</h:commandLink>
+									</h:form>
+								</div>
+								<div class="dataTables_paginate">
+									<h:form>
+									
+										<!-- Show process list with error records -->
+										<h:commandLink id="list_error" styleClass="btn font-size-s margin-right-5" style="margin-top:-7px;" action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
+											<i class="fa fa-exclamation-triangle margin-right-5"></i>
+											<h:outputText value="#{msgs.goobiScript_filterErrorProcesses}" />
+										</h:commandLink>
+										
+										<!-- Show process list with waiting records -->
+										<h:commandLink id="list_waiting" styleClass="btn font-size-s margin-right-5" style="margin-top:-7px;" action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
+											<i class="fa fa-clock-o margin-right-5"></i>
+											<h:outputText value="#{msgs.goobiScript_filterWaitingProcesses}" />
+										</h:commandLink>
+										
+										<!-- Show process list with successfull records -->
+										<h:commandLink id="list_ok" styleClass="btn font-size-s margin-right-5" style="margin-top:-7px;" action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
+											<i class="fa fa-check margin-right-5"></i>
+											<h:outputText value="#{msgs.goobiScript_filterOkProcesses}" />
+										</h:commandLink>
+										
+										<!-- Download as excel button -->
+										<h:commandLink id="excel" styleClass="btn btn-blue font-size-s" style="margin-top:-7px;" action="#{SessionForm.gsm.goobiScriptResultsExcel}">
+											<i class="fa fa-file-excel-o margin-right-5"></i>
+											<h:outputText value="#{msgs.goobiScript_downloadExcel}" />
+										</h:commandLink>
+									</h:form>
+								</div>
+								
+							</div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+		</c:if> 
+
+    </ui:define>
+</ui:composition>
