@@ -263,7 +263,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 DmsImportThread agoraThread = new DmsImportThread(myProzess, atsPpnBand);
                 agoraThread.start();
                 try {
-                    /* 30 Sekunden auf den Thread warten, evtl. killen */
+                    /* xx Sekunden auf den Thread warten, evtl. killen */
                     agoraThread.join(myProzess.getProjekt().getDmsImportTimeOut().longValue());
                     if (agoraThread.isAlive()) {
                         agoraThread.stopThread();
@@ -380,7 +380,11 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                  */
                 User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 try {
-                    FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
+                	if (myBenutzer == null){
+                		Files.createDirectories(zielTif);
+                	}else{
+                		FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
+                	}
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");
                     logger.error("could not create destination directory", e);

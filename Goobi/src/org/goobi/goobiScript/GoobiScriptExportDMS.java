@@ -113,10 +113,7 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 							gsr.setResultMessage("Export done successfully");
 							gsr.setResultType(GoobiScriptResultType.OK);
 						}
-					} catch (DocStructHasNoTypeException | PreferencesException | WriteException
-							| MetadataTypeNotAllowedException | ExportFileException | UghHelperException | ReadException
-							| SwapException | DAOException | TypeNotAllowedForParentException | IOException
-							| InterruptedException e) {
+					} catch (NoSuchMethodError | Exception e) {
 						gsr.setResultMessage(e.getMessage());
 						gsr.setResultType(GoobiScriptResultType.ERROR);
 						logger.error("Exception during the export of process " + p.getId(), e);

@@ -99,6 +99,8 @@ public class ExportMets {
         String benutzerHome = "";
         if (login != null) {
             benutzerHome = login.getMyBenutzer().getHomeDir();
+        }else{
+        	benutzerHome = myProzess.getProjekt().getDmsImportImagesPath();
         }
         return startExport(myProzess, benutzerHome);
     }

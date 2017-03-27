@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AutomaticDmsExportTest.class, ExportDmsTest.class})
+@SuiteClasses({ ExportDmsTest.class})
 public class TestAll {
 
 }
