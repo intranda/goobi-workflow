@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 import org.jdom2.JDOMException;
@@ -26,7 +25,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 	private static final Logger logger = Logger.getLogger(GoobiScriptUpdateMetadata.class);
 
 	@Override
-	public void prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
 
 		// add all valid commands to list
@@ -34,24 +33,17 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
 			resultList.add(gsr);
 		}
+		
+		return true;
 	}
 
 	@Override
 	public void execute() {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = login.getMyBenutzer().getNachVorname();
-		UpdateMetadataThread et = new UpdateMetadataThread(user);
+		UpdateMetadataThread et = new UpdateMetadataThread();
 		et.start();
 	}
 
 	class UpdateMetadataThread extends Thread {
-		private String username = "";
-		
-		    
-		public UpdateMetadataThread(String inName){
-			username = inName;
-		}
-		
 		public void run() {
 			// execute all jobs that are still in waiting state
 			for (GoobiScriptResult gsr : resultList) {

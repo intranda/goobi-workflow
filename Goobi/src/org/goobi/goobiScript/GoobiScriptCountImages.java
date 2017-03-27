@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
@@ -17,7 +16,7 @@ public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoo
 	private static final Logger logger = Logger.getLogger(GoobiScriptCountImages.class);
 
 	@Override
-	public void prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
 
 		// add all valid commands to list
@@ -25,22 +24,16 @@ public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoo
 			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
 			resultList.add(gsr);
 		}
+		return true;
 	}
 
 	@Override
 	public void execute() {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = login.getMyBenutzer().getNachVorname();
-		CountImagesThread et = new CountImagesThread(user);
+		CountImagesThread et = new CountImagesThread();
 		et.start();
 	}
 
 	class CountImagesThread extends Thread {
-		private String username = "";
-		
-		public CountImagesThread(String inName){
-			username = inName;
-		}
 		
 		public void run() {
 			// execute all jobs that are still in waiting state

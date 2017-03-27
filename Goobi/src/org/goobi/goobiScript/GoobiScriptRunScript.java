@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
@@ -19,7 +18,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 	private static final Logger logger = Logger.getLogger(GoobiScriptRunScript.class);
 
 	@Override
-	public void prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
 
 		// add all valid commands to list
@@ -27,22 +26,17 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
 			resultList.add(gsr);
 		}
+		
+		return true;
 	}
 
 	@Override
 	public void execute() {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = login.getMyBenutzer().getNachVorname();
-		RunScriptThread et = new RunScriptThread(user);
+		RunScriptThread et = new RunScriptThread();
 		et.start();
 	}
 
 	class RunScriptThread extends Thread {
-		private String username = "";
-		
-		public RunScriptThread(String inName){
-			username = inName;
-		}
 		
 		public void run() {
 			HelperSchritte hs = new HelperSchritte();

@@ -3,6 +3,8 @@ package org.goobi.goobiScript;
 import java.util.HashMap;
 import java.util.List;
 
+import org.goobi.managedbeans.LoginBean;
+
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 
@@ -18,12 +20,15 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
     }
     
     @Override
-	public void prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		this.processes = processes;
 		this.parameters = parameters;
 		this.command = command;
 		SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
 		resultList = sf.getGsm().getGoobiScriptResults();
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+		username = login.getMyBenutzer().getNachVorname();
+		return true;
 	}
 	
 	@Override

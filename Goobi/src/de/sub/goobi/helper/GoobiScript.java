@@ -22,7 +22,9 @@ import org.goobi.goobiScript.GoobiScriptCountImages;
 import org.goobi.goobiScript.GoobiScriptCountMetadata;
 import org.goobi.goobiScript.GoobiScriptExportDMS;
 import org.goobi.goobiScript.GoobiScriptRunScript;
+import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
+import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
 import org.goobi.goobiScript.GoobiScriptUpdateMetadata;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
@@ -104,13 +106,13 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equals("addUserGroup")) {
                 addusergroup(inProzesse);
             } else if (this.myParameters.get("action").equals("setTaskProperty")) {
-                setTaskProperty(inProzesse);
+                igs = new GoobiScriptSetTaskProperty();
             } else if (this.myParameters.get("action").equals("deleteStep")) {
                 deleteStep(inProzesse);
             } else if (this.myParameters.get("action").equals("addStep")) {
                 addStep(inProzesse);
             } else if (this.myParameters.get("action").equals("setStepNumber")) {
-                setStepNumber(inProzesse);
+            	igs = new GoobiScriptSetStepNumber();
             } else if (this.myParameters.get("action").equals("setStepStatus")) {
                igs = new GoobiScriptSetStepStatus();
             } else if (this.myParameters.get("action").equals("addShellScriptToStep")) {
@@ -163,9 +165,12 @@ public class GoobiScript {
             
             // if the selected GoobiScript is a new implementation based on interface then execute it now
             if(igs!=null){
-            	igs.prepare(inProzesse, currentScript, this.myParameters);
-            	igs.execute();
-            	Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
+            	boolean scriptCallIsValid = igs.prepare(inProzesse, currentScript, this.myParameters);
+            	// just execute the scripts if the call was valid
+            	if(scriptCallIsValid){
+            		Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
+            		igs.execute();
+            	}
             }
         }
         return "";
@@ -703,145 +708,6 @@ public class GoobiScript {
             }
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'addPluginToStep' finished.");
-    }
-
-    /**
-     * GoobiScript setTaskProperty
-     * 
-     * @param inProzesse List of identifiers for this GoobiScript
-     */
-    private void setTaskProperty(List<Integer> inProzesse) {
-        /*
-         * -------------------------------- Validierung der Actionparameter --------------------------------
-         */
-        if (this.myParameters.get("steptitle") == null || this.myParameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return;
-        }
-
-        if (this.myParameters.get("property") == null || this.myParameters.get("property").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "property");
-            return;
-        }
-
-        if (this.myParameters.get("value") == null || this.myParameters.get("value").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "value");
-            return;
-        }
-
-        String property = this.myParameters.get("property");
-        String value = this.myParameters.get("value");
-
-        if (!property.equals("metadata") && !property.equals("readimages") && !property.equals("writeimages") && !property.equals("validate")
-                && !property.equals("exportdms") && !property.equals("batch") && !property.equals("automatic")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "",
-                    "wrong parameter 'property'; possible values: metadata, readimages, writeimages, validate, exportdms");
-            return;
-        }
-
-        if (!value.equals("true") && !value.equals("false")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "wrong parameter 'value'; possible values: true, false");
-            return;
-        }
-
-        /*
-         * -------------------------------- Durchführung der Action --------------------------------
-         */
-        //		ProzessDAO sdao = new ProzessDAO();
-        for (Integer processId : inProzesse) {
-            Process proz = ProcessManager.getProcessById(processId);
-            if (proz.getSchritte() != null) {
-                for (Iterator<Step> iterator = proz.getSchritte().iterator(); iterator.hasNext();) {
-                    Step s = iterator.next();
-                    if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-
-                        if (property.equals("metadata")) {
-                            s.setTypMetadaten(Boolean.parseBoolean(value));
-                        }
-                        if (property.equals("automatic")) {
-                            s.setTypAutomatisch(Boolean.parseBoolean(value));
-                        }
-                        if (property.equals("batch")) {
-                            s.setBatchStep(Boolean.parseBoolean(value));
-                        }
-                        if (property.equals("readimages")) {
-                            s.setTypImagesLesen(Boolean.parseBoolean(value));
-                        }
-                        if (property.equals("writeimages")) {
-                            s.setTypImagesSchreiben(Boolean.parseBoolean(value));
-                        }
-                        if (property.equals("validate")) {
-                            s.setTypBeimAbschliessenVerifizieren(Boolean.parseBoolean(value));
-                        }
-                        if (property.equals("exportdms")) {
-                            s.setTypExportDMS(Boolean.parseBoolean(value));
-                        }
-
-                        try {
-                            ProcessManager.saveProcess(proz);
-                            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' using GoobiScript.");
-                            logger.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' using GoobiScript for process with ID " + proz.getId());
-                        } catch (DAOException e) {
-                            Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
-                            logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
-                        }
-                        Helper.setMeldung("goobiScriptfield", "Updated process: ", proz.getTitel());
-                        break;
-                    }
-                }
-            }
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setTaskProperty' abgeschlossen.");
-    }
-
-    /**
-     * GoobiScript setStepNumber
-     * 
-     * @param inProzesse List of identifiers for this GoobiScript
-     */
-    private void setStepNumber(List<Integer> inProzesse) {
-        /*
-         * -------------------------------- Validierung der Actionparameter --------------------------------
-         */
-        if (this.myParameters.get("steptitle") == null || this.myParameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return;
-        }
-
-        if (this.myParameters.get("number") == null || this.myParameters.get("number").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "number");
-            return;
-        }
-
-        if (!StringUtils.isNumeric(this.myParameters.get("number"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong number parameter", "(only numbers allowed)");
-            return;
-        }
-
-        /*
-         * -------------------------------- Durchführung der Action --------------------------------
-         */
-
-        for (Integer processId : inProzesse) {
-            Process proz = ProcessManager.getProcessById(processId);
-            for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
-                if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-                    s.setReihenfolge(Integer.parseInt(this.myParameters.get("number")));
-                    try {
-                        StepManager.saveStep(s);
-                        Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript.");
-                        logger.info("Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript for process with ID " + proz.getId());
-                    } catch (DAOException e) {
-                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
-                        logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
-                    }
-                    Helper.setMeldung("goobiScriptfield", "step order changed in process: ", proz.getTitel());
-                    break;
-                }
-            }
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setStepNumber' finished.");
     }
 
     /**

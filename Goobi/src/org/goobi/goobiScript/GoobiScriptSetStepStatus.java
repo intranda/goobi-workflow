@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
@@ -20,23 +19,23 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 	private static final Logger logger = Logger.getLogger(GoobiScriptSetStepStatus.class);
 
 	@Override
-	public void prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
 
 		 if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
 	            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-	            return;
+	            return false;
 	        }
 
 	        if (parameters.get("status") == null || parameters.get("status").equals("")) {
 	            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "status");
-	            return;
+	            return false;
 	        }
 
 	        if (!parameters.get("status").equals("0") && !parameters.get("status").equals("1") && !parameters.get("status").equals(
 	                "2") && !parameters.get("status").equals("3") && !parameters.get("status").equals("4") && !parameters.get("status").equals("5")) {
 	            Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ", "(possible: 0=closed, 1=open, 2=in work, 3=finished, 4=error, 5=deactivated");
-	            return;
+	            return false;
 	        }
 		
 		// add all valid commands to list
@@ -44,24 +43,17 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
 			resultList.add(gsr);
 		}
+		return true;
 	}
 
 	@Override
 	public void execute() {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = login.getMyBenutzer().getNachVorname();
-		SetStepStatusThread et = new SetStepStatusThread(user);
+		SetStepStatusThread et = new SetStepStatusThread();
 		et.start();
 	}
 
 	class SetStepStatusThread extends Thread {
-		private String username = "";
-		
-		public SetStepStatusThread(String inName){
-			username = inName;
-		}
-		
-		public void run() {
+			public void run() {
 			// execute all jobs that are still in waiting state
 			for (GoobiScriptResult gsr : resultList) {
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
@@ -79,7 +71,6 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 		                        gsr.setResultMessage("Status of the step is set successfully.");
 								gsr.setResultType(GoobiScriptResultType.OK);
 		                    } catch (DAOException e) {
-		                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + p.getTitel(), e);
 		                        logger.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
 		                        gsr.setResultMessage("Error while changing the step status: " + e.getMessage());
 								gsr.setResultType(GoobiScriptResultType.ERROR);
@@ -87,9 +78,6 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 		                    break;
 		                }
 		            }
-	
-
-					
 				}
 			}
 		}

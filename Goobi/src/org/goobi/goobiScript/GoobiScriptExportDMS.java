@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -21,7 +20,7 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 	private static final Logger logger = Logger.getLogger(GoobiScriptExportDMS.class);
 
 	@Override
-	public void prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
 
 		// add all valid commands to list
@@ -29,22 +28,17 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
 			resultList.add(gsr);
 		}
+		
+		return true;
 	}
 
 	@Override
 	public void execute() {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = login.getMyBenutzer().getNachVorname();
-		ExportThread et = new ExportThread(user);
+		ExportThread et = new ExportThread();
 		et.start();
 	}
 
 	class ExportThread extends Thread {
-		private String username = "";
-		
-		public ExportThread(String inName){
-			username = inName;
-		}
 		
 		public void run() {
 			String exportFulltextParameter = parameters.get("exportOcr");
@@ -57,8 +51,6 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
-					
 
 					IExportPlugin export = null;
 					String pluginName = ProcessManager.getExportPluginName(p.getId());
