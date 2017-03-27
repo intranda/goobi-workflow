@@ -21,6 +21,11 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
 
+		if (parameters.get("stepname") == null || parameters.get("stepname").equals("")) {
+            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "stepname");
+            return false;
+        }
+		
 		// add all valid commands to list
 		for (Integer i : processes) {
 			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
