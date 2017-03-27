@@ -1,35 +1,5 @@
 package de.sub.goobi.helper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- */
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,74 +8,46 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
-import org.goobi.beans.Ruleset;
+import org.goobi.beans.LogEntry;
+import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptCountImages;
+import org.goobi.goobiScript.GoobiScriptCountMetadata;
 import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.GoobiScriptRunScript;
+import org.goobi.goobiScript.GoobiScriptSetStepStatus;
+import org.goobi.goobiScript.GoobiScriptUpdateMetadata;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
-
-import ugh.dl.DocStruct;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-
-import org.goobi.beans.LogEntry;
-import org.goobi.beans.Process;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.enums.PluginType;
-import org.goobi.production.plugin.PluginLoader;
-import org.goobi.production.plugin.interfaces.IExportPlugin;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
-import de.sub.goobi.export.dms.ExportDms;
-import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.helper.tasks.TiffWriterTask;
-import de.sub.goobi.persistence.managers.HistoryManager;
-import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-
-//TODO: Delete me, this should be part of the Plugins...
-//TODO: Break this up into multiple classes with a common interface
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.exceptions.MetadataTypeNotAllowedException;
 
 public class GoobiScript {
     HashMap<String, String> myParameters;
     private static final Logger logger = Logger.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
-    private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
-    private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
 
     /**
      * Starten des Scripts ================================================================
@@ -170,7 +112,7 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equals("setStepNumber")) {
                 setStepNumber(inProzesse);
             } else if (this.myParameters.get("action").equals("setStepStatus")) {
-                setStepStatus(inProzesse);
+               igs = new GoobiScriptSetStepStatus();
             } else if (this.myParameters.get("action").equals("addShellScriptToStep")) {
                 addShellScriptToStep(inProzesse);
             } else if (this.myParameters.get("action").equals("addModuleToStep")) {
@@ -189,23 +131,14 @@ public class GoobiScript {
                 addToProcessLog(inProzesse);
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 setRuleset(inProzesse);
-//            } else if (this.myParameters.get("action").equals("exportDms")) {
-//            	return exportDms(inProzesse, this.myParameters.get("exportImages"), true);
-//            } else if (this.myParameters.get("action").equals("export")) {
-//            	return exportDms(inProzesse, this.myParameters.get("exportImages"), Boolean.getBoolean(this.myParameters.get("exportOcr")));
-//            } else if (this.myParameters.get("action").equals("doit")) {
-//            	return exportDms(inProzesse, "false", false);
-//            } else if (this.myParameters.get("action").equals("doit2")) {
-//                return exportDms(inProzesse, "false", true);
            } else if (this.myParameters.get("action").equals("export")) {
                 igs = new GoobiScriptExportDMS();
             } else if (this.myParameters.get("action").equals("runscript")) {
                 String stepname = this.myParameters.get("stepname");
-                String scriptname = this.myParameters.get("script");
                 if (stepname == null) {
                     Helper.setFehlerMeldung("goobiScriptfield", "", "Missing parameter");
                 } else {
-                    runScript(inProzesse, stepname, scriptname);
+                    igs = new GoobiScriptRunScript();
                 }
             } else if (this.myParameters.get("action").equals("deleteProcess")) {
                 String value = myParameters.get("contentOnly");
@@ -215,15 +148,15 @@ public class GoobiScript {
                 }
                 deleteProcess(inProzesse, contentOnly);
             } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {
-                updateMetadataTable(inProzesse);
+                igs = new GoobiScriptUpdateMetadata();
             } else if (this.myParameters.get("action").equalsIgnoreCase("unloadRuleset")) {
                 unloadRuleset();
             }
 
             else if (myParameters.get("action").equalsIgnoreCase("countImages")) {
-                countImages(inProzesse);
+                igs = new GoobiScriptCountImages();
             } else if (myParameters.get("action").equalsIgnoreCase("countMetadata")) {
-                countMetadata(inProzesse);
+                igs = new GoobiScriptCountMetadata();
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
@@ -231,7 +164,8 @@ public class GoobiScript {
             // if the selected GoobiScript is a new implementation based on interface then execute it now
             if(igs!=null){
             	igs.prepare(inProzesse, currentScript, this.myParameters);
-            	return igs.execute();
+            	igs.execute();
+            	Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
             }
         }
         return "";
@@ -317,39 +251,6 @@ public class GoobiScript {
         } catch (Exception e) {
             Helper.setFehlerMeldung("goobiScriptfield","Can not delete metadata directory.", e);
         }
-    }
-
-    /**
-     * GoobiScript runScript
-     * 
-     * @param inProzesse List of identifiers for this GoobiScript
-     * @param stepname name of the workflow step 
-     * @param scriptname optional name of the script to call
-     */
-    private void runScript(List<Integer> inProzesse, String stepname, String scriptname) {
-        HelperSchritte hs = new HelperSchritte();
-        for (Integer processId : inProzesse) {
-            Process p = ProcessManager.getProcessById(processId);
-            for (Step step : p.getSchritteList()) {
-                if (step.getTitel().equalsIgnoreCase(stepname)) {
-                    Step so = StepManager.getStepById(step.getId());
-                    if (scriptname != null) {
-                        if (step.getAllScripts().containsKey(scriptname)) {
-                            String path = step.getAllScripts().get(scriptname);
-                            hs.executeScriptForStepObject(so, path, false);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Script '" + scriptname + "' for step '" + stepname + "' executed using GoobiScript.");
-                            logger.info("Script '" + scriptname + "' for step '" + stepname + "' executed using GoobiScript for process with ID " + p.getId());
-                        }
-                    } else {
-                        hs.executeAllScriptsForStep(so, false);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "All scripts for step '" + stepname + "' executed using GoobiScript.");
-                        logger.info("All scripts for step '" + stepname + "' executed using GoobiScript for process with ID " + p.getId());
-                    }
-                }
-            }
-            
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'runScript' executed.");
     }
 
     /**
@@ -894,57 +795,6 @@ public class GoobiScript {
     }
 
     /**
-     * GoobiScript setStepStatus
-     * 
-     * @param inProzesse List of identifiers for this GoobiScript
-     */
-    private void setStepStatus(List<Integer> inProzesse) {
-        /*
-         * -------------------------------- Validierung der Actionparameter --------------------------------
-         */
-        if (this.myParameters.get("steptitle") == null || this.myParameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return;
-        }
-
-        if (this.myParameters.get("status") == null || this.myParameters.get("status").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "status");
-            return;
-        }
-
-        if (!this.myParameters.get("status").equals("0") && !this.myParameters.get("status").equals("1") && !this.myParameters.get("status").equals(
-                "2") && !this.myParameters.get("status").equals("3") && !this.myParameters.get("status").equals("4") && !this.myParameters.get("status").equals("5")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ", "(possible: 0=closed, 1=open, 2=in work, 3=finished, 4=error, 5=deactivated");
-            return;
-        }
-
-        /*
-         * -------------------------------- Durchführung der Action --------------------------------
-         */
-
-        for (Integer processId : inProzesse) {
-            Process proz = ProcessManager.getProcessById(processId);
-            for (Iterator<Step> iterator = proz.getSchritteList().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
-                if (s.getTitel().equals(this.myParameters.get("steptitle"))) {
-                    s.setBearbeitungsstatusAsString(this.myParameters.get("status"));
-                    try {
-                        StepManager.saveStep(s);
-                        Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Changed status of step '" + s.getTitel() + "' to '" + s.getBearbeitungsstatusEnum().getUntranslatedTitle() + "' using GoobiScript.");
-                        logger.info("Changed status of step '" + s.getTitel() + "' to '" + s.getBearbeitungsstatusEnum().getUntranslatedTitle() + "' using GoobiScript for process with ID " + proz.getId());
-                    } catch (DAOException e) {
-                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + proz.getTitel(), e);
-                        logger.error("goobiScriptfield" + "Error while saving process: " + proz.getTitel(), e);
-                    }
-                    Helper.setMeldung("goobiScriptfield", "Status of the step is set for process: ", proz.getTitel());
-                    break;
-                }
-            }
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'setStepStatus' finished.");
-    }
-
-    /**
      * GoobiScript setStepNumber
      * 
      * @param inProzesse List of identifiers for this GoobiScript
@@ -1207,228 +1057,6 @@ public class GoobiScript {
 
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateImagePath' finished.");
-    }
-
-    /**
-     * GoobiScript updateMetadata
-     * 
-     * @param inProzesse List of identifiers for this GoobiScript
-     */
-    private void updateMetadataTable(List<Integer> inProzesse) {
-
-        for (Integer processId : inProzesse) {
-            Process proz = ProcessManager.getProcessById(processId);
-            int id = proz.getId();
-
-            try {
-                String metdatdaPath = proz.getMetadataFilePath();
-                String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
-                Path metadataFile = Paths.get(metdatdaPath);
-                Path anchorFile = Paths.get(anchorPath);
-                Map<String, List<String>> pairs = new HashMap<>();
-
-                pairs = extractMetadata(metadataFile, pairs);
-
-                if (Files.exists(anchorFile)) {
-                    pairs.putAll(extractMetadata(anchorFile, pairs));
-                }
-                MetadataManager.updateMetadata(id, pairs);
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Metadata updated using GoobiScript.");
-                logger.info("Metadata updated using GoobiScript for process with ID " + proz.getId());
-            } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
-                logger.error("Problem while updating the metadata using GoobiScript for process with id: " + id, e1);
-            }
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateMetadata' finished.");
-    }
-
-    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,
-            IOException {
-
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(metadataFile.toString());
-        Element root = doc.getRootElement();
-        try {
-            Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
-                    .getChild("extension", mods).getChild("goobi", goobiNamespace);
-            List<Element> metadataList = goobi.getChildren();
-            metadataPairs = getMetadata(metadataList, metadataPairs);
-            for (Element el : root.getChildren("dmdSec", mets)) {
-                if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
-                    Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
-                            "goobi", goobiNamespace);
-                    List<Element> physList = phys.getChildren();
-                    metadataPairs = getMetadata(physList, metadataPairs);
-                }
-            }
-
-        } catch (Exception e) {
-            logger.error("cannot extract metadata from " + metadataFile.toString());
-        }
-        return metadataPairs;
-    }
-
-    private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
-        for (Element goobimetadata : elements) {
-            String metadataType = goobimetadata.getAttributeValue("name");
-            String metadataValue = "";
-            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
-                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
-                if (displayName != null && !displayName.getValue().equals(",")) {
-                    metadataValue = displayName.getValue();
-                }
-            } else {
-                metadataValue = goobimetadata.getValue();
-            }
-            if (!metadataValue.equals("")) {
-
-                if (metadataPairs.containsKey(metadataType)) {
-                    List<String> oldValue = metadataPairs.get(metadataType);
-                    oldValue.add(metadataValue);
-
-                    metadataPairs.put(metadataType, oldValue);
-                } else {
-                    List<String> list = new ArrayList<>();
-                    list.add(metadataValue);
-                    metadataPairs.put(metadataType, list);
-                }
-            }
-        }
-        return metadataPairs;
-    }
-
-//    /**
-//     * GoobiScript export
-//     * 
-//     * @param processes List of identifiers for this GoobiScript
-//     * @param exportImages boolean if images shall be exported too
-//     * @param exportFulltext boolean if ocr results shall be exported too
-//     */
-//    private String exportDms(List<Integer> processes, String exportImages, boolean exportFulltext) {
-//        for (Integer processId : processes) {
-//            Process prozess = ProcessManager.getProcessById(processId);
-//            IExportPlugin export = null;
-//            String pluginName = ProcessManager.getExportPluginName(prozess.getId());
-//            if (StringUtils.isNotEmpty(pluginName)) {
-//                try {
-//                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-//                } catch (Exception e) {
-//                    logger.error("Can't load export plugin, use default plugin", e);
-//                    export = new ExportDms();
-//                }
-//            }
-//            String logextension ="without ocr results";
-//            if (exportFulltext){
-//            	logextension = "including ocr results";
-//            }
-//            if (export == null) {
-//                export = new ExportDms();
-//            }
-//            export.setExportFulltext(exportFulltext);
-//            if (exportImages != null && exportImages.equals("false")) {
-//            	logextension = "without images and " + logextension;
-//            	export.setExportImages(false);
-//            } else {
-//            	logextension = "including images and " + logextension;
-//                export.setExportImages(true);
-//            }
-//
-//            try {
-//                export.startExport(prozess);
-//                Helper.addMessageToProcessLog(prozess.getId(), LogType.DEBUG, "Export " + logextension + " started using GoobiScript.");
-//                logger.info("Export " + logextension + " started using GoobiScript for process with ID " + prozess.getId());
-//            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ExportFileException
-//                    | UghHelperException | ReadException | SwapException | DAOException | TypeNotAllowedForParentException | IOException
-//                    | InterruptedException e) {
-//                String[] parameter = { prozess.getTitel(), e.getMessage() };
-//                Helper.setFehlerMeldung("goobiScriptfield", "", Helper.getTranslation("ErrorDMSExport", parameter));
-//                logger.error("DocStructHasNoTypeException", e);
-//
-//                logger.error("PreferencesException", e);
-//
-//            }
-//        }
-//        return "";
-//    }
-
-    
-    /**
-     * GoobiScript countImages
-     * 
-     * @param processes List of identifiers for this GoobiScript
-     */
-    private void countImages(List<Integer> processes) {
-        for (Integer processId : processes) {
-            Process p = ProcessManager.getProcessById(processId);
-            if (p.getSortHelperImages() == 0) {
-                int value = HistoryManager.getNumberOfImages(p.getId());
-                if (value > 0) {
-                    ProcessManager.updateImages(value, p.getId());
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Image numbers counted using GoobiScript.");
-                    logger.info("Image numbers counted using GoobiScript for process with ID " + p.getId());
-                }
-            }
-
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'countImages' finished.");
-    }
-
-    /**
-     * GoobiScript countMetadata
-     * 
-     * @param processes List of identifiers for this GoobiScript
-     */
-    private void countMetadata(List<Integer> processes) {
-        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
-        for (Integer processId : processes) {
-            Process p = ProcessManager.getProcessById(processId);
-
-            try {
-                DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
-                p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
-                p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
-
-                //                p.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true))));
-                ProcessManager.saveProcess(p);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata fields counted using GoobiScript.");
-                logger.info("Metadata fields counted using GoobiScript for process with ID " + p.getId());
-            } catch (Exception e) {
-                logger.error(e);
-            }
-
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'countMetadata' finished.");
-    }
-
-    public static void main(String[] args) throws JDOMException, IOException {
-        Namespace xlink = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
-
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build("/home/robert/meta.xml");
-        Element root = doc.getRootElement();
-
-        Element fileSec = root.getChild("fileSec", mets);
-        Element fileGrp = fileSec.getChild("fileGrp", mets);
-        List<Element> files = fileGrp.getChildren();
-        int i = 1;
-        for (Element file : files) {
-            Element flocat = file.getChild("FLocat", mets);
-            flocat.setAttribute("href", "file:///opt/digiverso/goobi/metadata/18309/images/ortnklin_PPN627455409_0003_tif/" + filename(i++), xlink);
-        }
-
-        XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
-        xmlOutput.output(doc, new FileOutputStream(new File("/home/robert/meta.xml")));
-
-    }
-
-    private static String filename(int i) {
-        if (i < 10) {
-            return "0000000" + i + ".tif";
-        } else if (i < 100) {
-            return "000000" + i + ".tif";
-        } else {
-            return "00000" + i + ".tif";
-        }
     }
 
 }

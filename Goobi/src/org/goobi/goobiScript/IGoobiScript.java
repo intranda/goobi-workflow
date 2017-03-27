@@ -7,6 +7,6 @@ public interface IGoobiScript {
 	
 	public abstract void prepare(List<Integer> processes, String command, HashMap<String, String> parameters);
     
-	public abstract String execute();
+	public abstract void execute();
 
 }

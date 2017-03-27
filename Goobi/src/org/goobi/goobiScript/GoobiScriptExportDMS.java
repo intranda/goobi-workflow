@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,19 +14,8 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
 import de.sub.goobi.export.dms.ExportDms;
-import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
 
 public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobiScript {
 	private static final Logger logger = Logger.getLogger(GoobiScriptExportDMS.class);
@@ -44,12 +32,11 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 	}
 
 	@Override
-	public String execute() {
+	public void execute() {
 		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		String user = login.getMyBenutzer().getNachVorname();
 		ExportThread et = new ExportThread(user);
 		et.start();
-		return "process_goobiScript";
 	}
 
 	class ExportThread extends Thread {
@@ -60,17 +47,18 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 		}
 		
 		public void run() {
+			String exportFulltextParameter = parameters.get("exportOcr");
+			String exportImagesParameter = parameters.get("exportImages");
+			boolean exportFulltext = exportFulltextParameter.toLowerCase().equals("true");
+			boolean exportImages = exportImagesParameter.toLowerCase().equals("true");
+
 			// execute all jobs that are still in waiting state
 			for (GoobiScriptResult gsr : resultList) {
-				if (gsr.getResultType() == GoobiScriptResultType.WAITING) {
+				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
 
 					
-					String exportFulltextParameter = parameters.get("exportOcr");
-					String exportImagesParameter = parameters.get("exportImages");
-					boolean exportFulltext = exportFulltextParameter.toLowerCase().equals("true");
-					boolean exportImages = exportImagesParameter.toLowerCase().equals("true");
 
 					IExportPlugin export = null;
 					String pluginName = ProcessManager.getExportPluginName(p.getId());

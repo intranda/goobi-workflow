@@ -48,7 +48,11 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -75,7 +79,9 @@ import ugh.exceptions.WriteException;
 public class HelperSchritte {
     private static final Logger logger = Logger.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
-
+    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+	private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+	private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
     /**
      * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
      */
@@ -134,10 +140,10 @@ public class HelperSchritte {
                 Path anchorFile = Paths.get(anchorPath);
                 Map<String, List<String>> pairs = new HashMap<>();
 
-                pairs = GoobiScript.extractMetadata(metadataFile, pairs);
+                pairs = extractMetadata(metadataFile, pairs);
 
                 if (Files.exists(anchorFile)) {
-                    pairs.putAll(GoobiScript.extractMetadata(anchorFile, pairs));
+                    pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
                 MetadataManager.updateMetadata(processId, pairs);
 
@@ -449,5 +455,58 @@ public class HelperSchritte {
         } catch (DAOException e) {
             logger.error(e);
         }
+    }
+    
+    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
+	    SAXBuilder builder = new SAXBuilder();
+	    Document doc = builder.build(metadataFile.toString());
+	    Element root = doc.getRootElement();
+	    try {
+	        Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
+	                .getChild("extension", mods).getChild("goobi", goobiNamespace);
+	        List<Element> metadataList = goobi.getChildren();
+	        metadataPairs = getMetadata(metadataList, metadataPairs);
+	        for (Element el : root.getChildren("dmdSec", mets)) {
+	            if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
+	                Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
+	                        "goobi", goobiNamespace);
+	                List<Element> physList = phys.getChildren();
+	                metadataPairs = getMetadata(physList, metadataPairs);
+	            }
+	        }
+	
+	    } catch (Exception e) {
+	        logger.error("cannot extract metadata from " + metadataFile.toString());
+	    }
+	    return metadataPairs;
+	}
+	
+	private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
+        for (Element goobimetadata : elements) {
+            String metadataType = goobimetadata.getAttributeValue("name");
+            String metadataValue = "";
+            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
+                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
+                if (displayName != null && !displayName.getValue().equals(",")) {
+                    metadataValue = displayName.getValue();
+                }
+            } else {
+                metadataValue = goobimetadata.getValue();
+            }
+            if (!metadataValue.equals("")) {
+
+                if (metadataPairs.containsKey(metadataType)) {
+                    List<String> oldValue = metadataPairs.get(metadataType);
+                    oldValue.add(metadataValue);
+
+                    metadataPairs.put(metadataType, oldValue);
+                } else {
+                    List<String> list = new ArrayList<>();
+                    list.add(metadataValue);
+                    metadataPairs.put(metadataType, list);
+                }
+            }
+        }
+        return metadataPairs;
     }
 }

@@ -11,6 +11,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 	protected HashMap<String, String> parameters;
 	protected List<GoobiScriptResult> resultList;
 	protected String command;
+	protected String username;
 	
     public AbstractIGoobiScript() {
         super();
@@ -26,8 +27,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 	}
 	
 	@Override
-	public String execute() {
-		return "";
+	public void execute() {
 	}
 
 }
