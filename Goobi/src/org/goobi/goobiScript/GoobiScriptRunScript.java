@@ -60,18 +60,28 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 		                    if (scriptname != null) {
 		                        if (step.getAllScripts().containsKey(scriptname)) {
 		                            String path = step.getAllScripts().get(scriptname);
-		                            hs.executeScriptForStepObject(so, path, false);
+		                            int returncode = hs.executeScriptForStepObject(so, path, false);
 		                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Script '" + scriptname + "' for step '" + steptitle + "' executed using GoobiScript.", username);
 		                            logger.info("Script '" + scriptname + "' for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-		                            gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
-		                            gsr.setResultType(GoobiScriptResultType.OK);
+		                            if (returncode == 0){
+			                            gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
+			                            gsr.setResultType(GoobiScriptResultType.OK);
+		                            } else {
+		                            	gsr.setResultMessage("A problem occured while executing script '" + scriptname + "' for step '" + steptitle + "': " + returncode);
+				                        gsr.setResultType(GoobiScriptResultType.ERROR);
+		                            }
 		                        }
 		                    } else {
-		                        hs.executeAllScriptsForStep(so, false);
+		                        int returncode = hs.executeAllScriptsForStep(so, false);
 		                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "All scripts for step '" + steptitle + "' executed using GoobiScript.", username);
 		                        logger.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-		                        gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
-		                        gsr.setResultType(GoobiScriptResultType.OK);
+		                        if (returncode == 0){
+			                        gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
+			                        gsr.setResultType(GoobiScriptResultType.OK);
+		                        } else{
+		                        	gsr.setResultMessage("A problem occured while executing all scripts for step '" + steptitle + "': " + returncode);
+			                        gsr.setResultType(GoobiScriptResultType.ERROR);
+		                        }
 		                    }
 		                }
 		            }

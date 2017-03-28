@@ -268,7 +268,7 @@ public class HelperSchritte {
         ProcessManager.updateProcessStatus(value, processId);
     }
 
-    public void executeAllScriptsForStep(Step step, boolean automatic) {
+    public int executeAllScriptsForStep(Step step, boolean automatic) {
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
         int size = scriptpaths.size();
@@ -292,6 +292,7 @@ public class HelperSchritte {
             }
             count++;
         }
+        return returnParameter;
     }
 
     public int executeScriptForStepObject(Step step, String script, boolean automatic) {
