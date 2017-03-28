@@ -21,6 +21,7 @@ import org.goobi.goobiScript.GoobiScriptCountMetadata;
 import org.goobi.goobiScript.GoobiScriptDeleteProcess;
 import org.goobi.goobiScript.GoobiScriptDeleteStep;
 import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
 import org.goobi.goobiScript.GoobiScriptSetRuleset;
 import org.goobi.goobiScript.GoobiScriptSetStepNumber;
@@ -125,11 +126,13 @@ public class GoobiScript {
                 igs = new GoobiScriptSetRuleset();
            } else if (this.myParameters.get("action").equals("export")) {
                 igs = new GoobiScriptExportDMS();
-            } else if (this.myParameters.get("action").equals("runscript")) {
+           } else if (this.myParameters.get("action").equals("runPlugin")) {
+               igs = new GoobiScriptRunPlugin();
+            } else if (this.myParameters.get("action").equals("runScript")) {
                igs = new GoobiScriptRunScript();
             } else if (this.myParameters.get("action").equals("deleteProcess")) {
             	igs = new GoobiScriptDeleteProcess();
-            } else if (this.myParameters.get("action").equalsIgnoreCase("updatemetadata")) {
+            } else if (this.myParameters.get("action").equalsIgnoreCase("updateMetadata")) {
                 igs = new GoobiScriptUpdateMetadata();
             } else if (myParameters.get("action").equalsIgnoreCase("countImages")) {
                 igs = new GoobiScriptCountImages();
