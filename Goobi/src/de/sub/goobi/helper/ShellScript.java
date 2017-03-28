@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
+import org.goobi.production.enums.LogType;
 
 /**
  * The class ShellScript is intended to run shell scripts (or other system commands).
@@ -215,7 +216,7 @@ public class ShellScript {
      * @throws InterruptedException In case the script was interrupted due to concurrency
      * @throws IOException If an I/O error happens
      */
-    public static int legacyCallShell2(String nonSpacesafeScriptingCommand) throws IOException, InterruptedException {
+    public static int legacyCallShell2(String nonSpacesafeScriptingCommand, Integer processID) throws IOException, InterruptedException {
         //		String[] tokenisedCommand = nonSpacesafeScriptingCommand.split("\\s");
         ShellScript s;
         int err = ShellScript.ERRORLEVEL_ERROR;
@@ -255,6 +256,7 @@ public class ShellScript {
                 msg += line + "\n";
 //                Helper.setMeldung(line);
             }
+            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + msg);
             Helper.setMeldung(msg);
             if (s.getStdErr().size() > 0) {
                 err = ShellScript.ERRORLEVEL_ERROR;
@@ -262,10 +264,12 @@ public class ShellScript {
                 for (String line : s.getStdErr()) {
                     message += line + "\n";
                 }
+                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + nonSpacesafeScriptingCommand + "': " + message);
                 Helper.setFehlerMeldung(message);
             }
         } catch (FileNotFoundException e) {
             logger.error("FileNotFoundException in callShell2()", e);
+            Helper.addMessageToProcessLog(processID, LogType.ERROR, "Exception occured while executing script '" + nonSpacesafeScriptingCommand + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
         return err;

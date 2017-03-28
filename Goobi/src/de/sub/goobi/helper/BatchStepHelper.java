@@ -880,7 +880,7 @@ public class BatchStepHelper {
                 this.myDav.UploadFromHome(s.getProzess());
                 Step so = StepManager.getStepById(s.getId());
                 so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
-                helper.CloseStepObjectAutomatic(so, true);
+                helper.CloseStepObjectAutomatic(so);
             }
         }
         StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");

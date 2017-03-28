@@ -1120,7 +1120,7 @@ public class ProcessBean extends BasicBean {
                 so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
                 so.setEditTypeEnum(StepEditType.ADMIN);
                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
-                    new HelperSchritte().CloseStepObjectAutomatic(so, true);
+                    new HelperSchritte().CloseStepObjectAutomatic(so);
                 } else {
 //                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
 //                    if (ben != null) {
@@ -1184,16 +1184,17 @@ public class ProcessBean extends BasicBean {
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
+                new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
             } else {
                 mySchritt.setBearbeitungszeitpunkt(new Date());
-                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                if (ben != null) {
-                    mySchritt.setBearbeitungsbenutzer(ben);
-                }
+//                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+//                if (ben != null) {
+//                    mySchritt.setBearbeitungsbenutzer(ben);
+//                }
             }
         }
         try {
+        	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
             logger.error(e);
@@ -1205,12 +1206,13 @@ public class ProcessBean extends BasicBean {
     public String SchrittStatusDown() {
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-        if (ben != null) {
-            mySchritt.setBearbeitungsbenutzer(ben);
-        }
+//        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+//        if (ben != null) {
+//            mySchritt.setBearbeitungsbenutzer(ben);
+//        }
         this.mySchritt.setBearbeitungsstatusDown();
         try {
+        	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             StepManager.saveStep(mySchritt);
             new HelperSchritte().updateProcessStatus(myProzess.getId());
         } catch (DAOException e) {
@@ -1350,6 +1352,7 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() - 1));
         try {
             StepManager.saveStep(mySchritt);
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1362,6 +1365,7 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
         try {
             StepManager.saveStep(mySchritt);
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {

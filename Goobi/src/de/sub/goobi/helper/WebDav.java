@@ -211,7 +211,7 @@ public class WebDav implements Serializable {
 			command += aktuellerBenutzer.getLogin();
 		}
 		try {
-            	ShellScript.legacyCallShell2(command);
+            	ShellScript.legacyCallShell2(command, myProzess.getId());
             } catch (java.io.IOException ioe) {
 			logger.error("IOException DownloadToHome()", ioe);
 			Helper.setFehlerMeldung("Download aborted, IOException", ioe.getMessage());

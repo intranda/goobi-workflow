@@ -539,7 +539,7 @@ public class StepBean extends BasicBean {
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         //        Step so = StepObjectManager.getStepById(this.mySchritt.getId());
-        new HelperSchritte().CloseStepObjectAutomatic(mySchritt, true);
+        new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
         // new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
         return FilterAlleStart();
     }

@@ -44,6 +44,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
@@ -82,57 +83,40 @@ public class HelperSchritte {
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
 	private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
 	private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-    /**
+    
+	/**
      * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
      */
 
     public void CloseStepObjectAutomatic(Step currentStep) {
-        closeStepObject(currentStep, currentStep.getProcessId(), false);
+        closeStepObject(currentStep, currentStep.getProcessId());
     }
 
-    public void CloseStepObjectAutomatic(Step currentStep, boolean requestFromGUI) {
-        closeStepObject(currentStep, currentStep.getProcessId(), requestFromGUI);
-    }
-
-    private void closeStepObject(Step currentStep, int processId, boolean requestFromGUI) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("closing step with id " + currentStep.getId() + " and process id " + processId);
-        }
+    private void closeStepObject(Step currentStep, int processId) {
         currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
         Date myDate = new Date();
-        if (logger.isDebugEnabled()) {
-            logger.debug("set new date for edit time");
-        }
+
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
             LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (lf != null) {
                 User ben = lf.getMyBenutzer();
                 if (ben != null) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("set new user");
-                    }
                     currentStep.setBearbeitungsbenutzer(ben);
                 }
             }
         } catch (Exception e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("cannot resolve LoginForm", e);
-            }
+
         }
         currentStep.setBearbeitungsende(myDate);
-        if (logger.isDebugEnabled()) {
-            logger.debug("set new end date");
-            logger.debug("saving step");
-        }
         try {
             StepManager.saveStep(currentStep);
+            Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
         } catch (DAOException e) {
-            logger.error(e);
+        	logger.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
         }
 
         if (currentStep.isUpdateMetadataIndex()) {
-
             try {
                 String metdatdaPath = currentStep.getProzess().getMetadataFilePath();
                 String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
@@ -148,19 +132,16 @@ public class HelperSchritte {
                 MetadataManager.updateMetadata(processId, pairs);
 
             } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
-                logger.error("process id : " + processId, e1);
+            	logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
             }
         }
 
         List<Step> automatischeSchritte = new ArrayList<Step>();
         List<Step> stepsToFinish = new ArrayList<Step>();
-        if (logger.isDebugEnabled()) {
-            logger.debug("create history events for step");
-        }
         HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
                 .getValue(), processId);
+        
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
-
         List<Step> steps = StepManager.getStepsForProcess(processId);
         List<Step> allehoeherenSchritte = new ArrayList<Step>();
         int offeneSchritteGleicherReihenfolge = 0;
@@ -172,11 +153,9 @@ public class HelperSchritte {
                 allehoeherenSchritte.add(so);
             }
         }
+        
         /* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
         if (offeneSchritteGleicherReihenfolge == 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("found " + allehoeherenSchritte.size() + " tasks");
-            }
             int reihenfolge = 0;
             boolean matched = false;
             for (Step myStep : allehoeherenSchritte) {
@@ -190,33 +169,22 @@ public class HelperSchritte {
                     /*
                      * den Schritt aktivieren, wenn es kein vollautomatischer ist
                      */
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("open step " + myStep.getTitel());
-                    }
                     myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     myStep.setBearbeitungszeitpunkt(myDate);
                     myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("create history events for next step");
-                    }
                     HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
                             .getValue(), processId);
                     /* wenn es ein automatischer Schritt mit Script ist */
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("check if step is an automatic task: " + myStep.isTypAutomatisch());
-                    }
                     if (myStep.isTypAutomatisch()) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("add step to list of automatic tasks");
-                        }
                         automatischeSchritte.add(myStep);
                     } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
                         stepsToFinish.add(myStep);
                     }
                     try {
                         StepManager.saveStep(myStep);
+                        Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
                     } catch (DAOException e) {
-                        logger.error(e);
+                    	logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
                     }
                     matched = true;
 
@@ -236,21 +204,11 @@ public class HelperSchritte {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
 
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
+        } catch (Exception e) {
+        	logger.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
         }
 
         updateProcessStatus(processId);
-        if (logger.isDebugEnabled()) {
-            logger.debug("update process status");
-            logger.debug("start " + automatischeSchritte.size() + " automatic tasks");
-        }
         for (Step automaticStep : automatischeSchritte) {
             automaticStep.setBearbeitungsbeginn(new Date());
             automaticStep.setBearbeitungsbenutzer(null);
@@ -260,20 +218,18 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
+                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel() + "' started to work automatically.");
             } catch (DAOException e) {
-                logger.error(e);
+            	logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
             // save 
             if (logger.isDebugEnabled()) {
-                logger.debug("starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+                logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
             myThread.start();
         }
         for (Step finish : stepsToFinish) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("closing task " + finish.getTitel());
-            }
             CloseStepObjectAutomatic(finish);
         }
 
@@ -319,7 +275,7 @@ public class HelperSchritte {
         int returnParameter = 0;
         for (String script : scriptpaths) {
             if (logger.isDebugEnabled()) {
-                logger.debug("starting script " + script);
+                logger.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
 
             if (script != null && !script.equals(" ") && script.length() != 0) {
@@ -350,20 +306,20 @@ public class HelperSchritte {
             prefs = po.getRegelsatz().getPreferences();
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
-                logger.error("Metadata file is not readable.");
+                logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
                 return -1;
             }
             dd = ff.getDigitalDocument();
-        } catch (DAOException | PreferencesException | ReadException | SwapException | WriteException | IOException | InterruptedException e2) {
-            logger.error(e2);
+        } catch (Exception e2) {
+        	logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
 
         script = replacer.replace(script);
         int rueckgabe = -1;
         try {
-            logger.info("Calling the shell: " + script);
-            rueckgabe = ShellScript.legacyCallShell2(script);
+            logger.info("Calling the shell: " + script  + " for process with ID " + step.getProcessId());
+            rueckgabe = ShellScript.legacyCallShell2(script, step.getProcessId());
             if (automatic) {
                 if (rueckgabe == 0) {
                     step.setEditTypeEnum(StepEditType.AUTOMATIC);
@@ -374,6 +330,7 @@ public class HelperSchritte {
                         if (!ivp.validate()) {
                             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             StepManager.saveStep(step);
+                            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
                         } else {
                             CloseStepObjectAutomatic(step);
                         }
@@ -386,15 +343,15 @@ public class HelperSchritte {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
+                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe);
+                        logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId() + ". Return code: " + rueckgabe);
                     }
                 }
             }
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException: ", e.getMessage());
-        } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("InterruptedException: ", e.getMessage());
-        } catch (DAOException e) {
-            logger.error(e);
+        } catch (Exception e) {
+            Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
+            logger.error("Exception occurered while running a script for process with ID " + step.getProcessId(), e);
         }
         return rueckgabe;
     }
@@ -405,7 +362,7 @@ public class HelperSchritte {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin", e);
+                logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
 //                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
             }
@@ -421,17 +378,19 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
+            	Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
+            	Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId() + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
                 | ExportFileException e) {
-            logger.error(e);
+            logger.error("Exception occurered while trying to export process with ID " + step.getProcessId(), e);
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
             return;
         }
-
     }
 
     //    private void abortStep(Step step) {
@@ -453,7 +412,7 @@ public class HelperSchritte {
         try {
             StepManager.saveStep(step);
         } catch (DAOException e) {
-            logger.error(e);
+            logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
         }
     }
     
@@ -476,7 +435,7 @@ public class HelperSchritte {
 	        }
 	
 	    } catch (Exception e) {
-	        logger.error("cannot extract metadata from " + metadataFile.toString());
+	        logger.error("Cannot extract metadata from " + metadataFile.toString());
 	    }
 	    return metadataPairs;
 	}
