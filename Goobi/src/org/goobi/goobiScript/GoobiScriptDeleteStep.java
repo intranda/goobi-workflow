@@ -56,9 +56,9 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
 		                        p.getSchritte().remove(s);
 
 		                        StepManager.deleteStep(s);
-		                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Deleted step '" + s.getTitel() + "' form process using GoobiScript.");
-		                        logger.info("Deleted step '" + s.getTitel() + "' form process using GoobiScript for process with ID " + p.getId());
-		                        gsr.setResultMessage("Deleted step '" + s.getTitel() + "' form process.");
+		                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
+		                        logger.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID " + p.getId());
+		                        gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
 		    					gsr.setResultType(GoobiScriptResultType.OK);
 		    					break;
 		                    }
