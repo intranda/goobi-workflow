@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.goobi.production.enums.GoobiScriptResultType;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -24,7 +27,9 @@ public class GoobiScriptManager {
 
 	@Getter
 	private List<GoobiScriptResult> goobiScriptResults = new ArrayList<>();
-
+	@Getter @Setter
+	private int showMax = 1000;
+	
 	@Getter
 	@Setter
 	private String sort = "";
@@ -35,8 +40,20 @@ public class GoobiScriptManager {
 	public void goobiScriptResultsReset() {
 		goobiScriptResults = new ArrayList<>();
 		sort = "";
+		showMax = 1000;
 	}
 
+	/**
+	 * get just a limited number of results
+	 */
+	public List<GoobiScriptResult> getShortGoobiScriptResults(){
+		if (showMax>goobiScriptResults.size()){
+			return goobiScriptResults;
+		} else {
+			return goobiScriptResults.subList(0, showMax);
+		}
+	}
+	
 	/**
 	 * Check if there are currently GoobiScripts in the list with a specific
 	 * status
@@ -63,15 +80,15 @@ public class GoobiScriptManager {
 			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 			try {
 				ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-				String contentType = servletContext.getMimeType("goobiScript.xls");
+				String contentType = servletContext.getMimeType("goobiScript.xlsx");
 				response.setContentType(contentType);
-				response.setHeader("Content-Disposition", "attachment;filename=\"goobiScript.xls\"");
+				response.setHeader("Content-Disposition", "attachment;filename=\"goobiScript.xlsx\"");
 				ServletOutputStream out = response.getOutputStream();
 
-				HSSFWorkbook workbook = new HSSFWorkbook();
-				HSSFSheet sheet = workbook.createSheet("GoobiScript");
+				XSSFWorkbook workbook = new XSSFWorkbook();
+				XSSFSheet sheet = workbook.createSheet("GoobiScript");
 
-				HSSFRow rowhead = sheet.createRow((short) 0);
+				XSSFRow rowhead = sheet.createRow((short) 0);
 				rowhead.createCell(0).setCellValue("Process ID");
 				rowhead.createCell(1).setCellValue("Process title");
 				rowhead.createCell(2).setCellValue("Command");
@@ -80,7 +97,7 @@ public class GoobiScriptManager {
 
 				int count = 1;
 				for (GoobiScriptResult gsr : goobiScriptResults) {
-					HSSFRow row = sheet.createRow((short) count++);
+					XSSFRow row = sheet.createRow((short) count++);
 					row.createCell(0).setCellValue(gsr.getProcessId());
 					row.createCell(1).setCellValue(gsr.getProcessTitle());
 					row.createCell(2).setCellValue(gsr.getCommand());
