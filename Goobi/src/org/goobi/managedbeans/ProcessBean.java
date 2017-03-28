@@ -1183,6 +1183,7 @@ public class ProcessBean extends BasicBean {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
             } else {
@@ -1194,7 +1195,6 @@ public class ProcessBean extends BasicBean {
             }
         }
         try {
-        	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
             logger.error(e);
@@ -1211,8 +1211,8 @@ public class ProcessBean extends BasicBean {
 //            mySchritt.setBearbeitungsbenutzer(ben);
 //        }
         this.mySchritt.setBearbeitungsstatusDown();
+        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
         try {
-        	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             StepManager.saveStep(mySchritt);
             new HelperSchritte().updateProcessStatus(myProzess.getId());
         } catch (DAOException e) {
