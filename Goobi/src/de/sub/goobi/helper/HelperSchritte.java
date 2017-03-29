@@ -457,9 +457,10 @@ public class HelperSchritte {
 
                 if (metadataPairs.containsKey(metadataType)) {
                     List<String> oldValue = metadataPairs.get(metadataType);
-                    oldValue.add(metadataValue);
-
-                    metadataPairs.put(metadataType, oldValue);
+                    if (!oldValue.contains(metadataValue)){
+                    	oldValue.add(metadataValue);
+                    	metadataPairs.put(metadataType, oldValue);
+                    }
                 } else {
                     List<String> list = new ArrayList<>();
                     list.add(metadataValue);

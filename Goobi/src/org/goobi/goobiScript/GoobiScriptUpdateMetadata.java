@@ -60,7 +60,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 		                pairs = HelperSchritte.extractMetadata(metadataFile, pairs);
 
 		                if (Files.exists(anchorFile)) {
-		                    pairs.putAll(HelperSchritte.extractMetadata(anchorFile, pairs));
+		                    pairs = (HelperSchritte.extractMetadata(anchorFile, pairs));
 		                }
 		                MetadataManager.updateMetadata(p.getId(), pairs);
 		                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata updated using GoobiScript.", username);
