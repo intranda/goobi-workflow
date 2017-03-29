@@ -32,6 +32,22 @@
 	                    </h:commandLink>
                     </li>
                     <li>
+	                    <!-- Thumbnail -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showProcessThumbnail">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.thumbnail}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
+	                    <!-- Metadata details -->
+	                    <h:commandLink action="#{NavigationForm.Reload}" id="showProcessMetadataDetails">
+	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+	                        <h:outputText value="#{msgs.metadatadetails}" />
+	                        <x:updateActionListener property="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
+	                    </h:commandLink>
+                    </li>
+                    <li>
 	                    <!-- Batch ID -->
 	                    <h:commandLink action="#{NavigationForm.Reload}" id="showBatch">
 	                        <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>

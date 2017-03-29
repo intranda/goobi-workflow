@@ -81,36 +81,45 @@
                                         <h:outputText value="#{item.id}" />
                                     </x:column>
                                     
-                                    
-                                    <x:column styleClass="tableColumnOverflow width80" rendered="false">
+                                    <!-- +++++++++++++++++  Thumbnail ++++++++++++++++++++++++ -->
+                                    <x:column styleClass="width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}">
                                         <f:facet name="header">
-                                            <h:commandLink styleClass="font-black-block">
-                                                <h:outputText value="#{msgs.thumbnail}" />
-<!--                                                 <f:setPropertyActionListener target="#{ProzessverwaltungForm.sortierung}" value="#{ProzessverwaltungForm.sortierung=='idAsc'?'idDesc':'idAsc'}" /> -->
-                                                <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                        	<h:outputText value="#{msgs.thumbnail}" />
                                         </f:facet>
-                                        <h:outputText value="#{item.representativeImage}" />
+                                        <canvas class="thumb-canvas" style="width:150px;" 
+                                        	data-image_small="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=150&amp;height=150" 
+                                        	data-image_large="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=450&amp;height=450" 
+                                        	id="thumbnail-#{count}">
+                                        </canvas>
                                     </x:column>
 
-                                        <x:column styleClass="tableColumnOverflow width80"  rendered="false">
-                                            <f:facet name="header">
-                                                <h:commandLink styleClass="font-black-block">
-                                                    <h:outputText value="#{msgs.metadata}" />
-                                                    <f:ajax render=":myform" />
-                                                </h:commandLink>
-                                            </f:facet>
-                                            <x:dataTable var="metadata" value="#{item.metadataList}">
-                                                <x:column>
-                                                    <h:outputText value="#{metadata.one}:" />
-                                                </x:column>
-                                                <x:column>
-                                                    <h:outputText value="#{metadata.two}" />
-
-                                                </x:column>
-                                            </x:dataTable>
-
-                                        </x:column>
+									 <!-- +++++++++++++++++  Embedded metadata ++++++++++++++++++++++++ -->
+                                     <x:column styleClass="tableColumnOverflow maxWidth300"  rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}">
+                                         <f:facet name="header">
+                                             <h:outputText value="#{msgs.metadata}" />
+                                         </f:facet>
+                                         <table>
+    	                                     <ui:repeat var="metadata" value="#{item.metadataList}" varStatus="metadatastatus" id="metadatalist">
+                                                 <h:panelGroup rendered="#{metadata.one == 'TitleDocMain'
+														 or metadata.one == 'Author'
+														 or metadata.one == 'PlaceOfPublication'
+														 or metadata.one == 'PublicationYear'
+														 or metadata.one == 'PublisherName'
+														 or metadata.one == 'CatalogIDDigital'
+														 or metadata.one == 'shelfmarksource'}"> 
+                                                    <tr>
+	                                                	<td style="border: none #ddd;padding: 2px;vertical-align:top;">
+<!-- 	                                                		<h:outputText value="#{metadata.one}:" /> -->
+	                                                		<h:outputText value="#{msgs[metadata.one]}:" />
+	                                                	</td>
+	                                                	<td style="border: none #ddd;padding: 2px; white-space: normal;">
+	                                                		<h:outputText value="#{metadata.two}" />
+	                                                	</td>
+		 										 	</tr>
+												</h:panelGroup>
+	 										 </ui:repeat>
+                                         </table>
+                                     </x:column>
 
                                         <!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
                                     <x:column styleClass="tableColumnOverflow width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='batchDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
@@ -157,9 +166,9 @@
 
                                                         <h:column>
                                                             <f:facet name="header">
-                                                                <h:outputText value="#{msgs.titel}" />
+                                                                <h:outputText value="#{msgs.titel}" style="white-space: normal;"/>
                                                             </f:facet>
-                                                            <h:outputText value="#{step.titel}" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
+                                                            <h:outputText value="#{step.titel}"  style="white-space: normal;" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                                         </h:column>
 
                                                         <h:column>
@@ -545,6 +554,13 @@
         </h:panelGroup>
 
 		</c:if> 
+
+        <script type="text/javascript">
+		   window.onload = function() {
+		    	loadImages();
+		    	
+		    }
+		</script>
 
     </ui:define>
 

@@ -78,6 +78,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
+import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -1425,12 +1426,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 for (StringPair sp : getMetadataList()) {
                     if (sp.getOne().equals("_representative")) {
                         imageNo = NumberUtils.toInt(sp.getTwo()) - 1;
-
                     }
                 }
             }
             try {
-                List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true));
+            	List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
                 if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();
                 }
@@ -1439,7 +1439,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
         }
-        return representativeImage;
+           
+        String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
+        return rootpath + representativeImage;
     }
 
 }
