@@ -6,7 +6,7 @@
     <composite:implementation>
         <div class="row">
             <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='prozess'}">
-                <div class="col-sm-6">
+                <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box für die Darstellung der Details -->
                     <h:form id="processdetails">
                         <div class="box box-color box-bordered">
@@ -166,13 +166,15 @@
                     </h:form>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box for process log -->
                     <h:form styleClass="form-vertical form-bordered" id="processLog">
                         <div class="box thin-margin box-bordered">
+                            
                             <div class="box-title">
                                 
                                 <x:aliasBeansScope>
+	                                <x:aliasBean alias="#{showBigButton}" value="true" />
 			                         <f:subview id="sublog">
 			                             <ui:include src="../processLog.xhtml" />
 			                         </f:subview>
@@ -180,11 +182,11 @@
                             </div>
                             <div class="box-content nopadding">
 
-                                <div class="scrollable" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; height: 214px;">
+                                <div class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 214px'};">
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.processLog.size()>0}">
                                     	<table style="width:100%" class="table table-hover table-bordered">
 	                                    	<ui:repeat var="entry" value="#{ProzessverwaltungForm.myProzess.processLog}" varStatus="row">
-												<h:panelGroup rendered="#{!NavigationForm.uiStatus[entry.type.title]}">
+												<h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
 													<tr>
 														<td>
 															<h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" />

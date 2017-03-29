@@ -27,8 +27,7 @@ public class GoobiScriptManager {
 	@Getter @Setter
 	private int showMax = 1000;
 	
-	@Getter
-	@Setter
+	@Getter	@Setter
 	private String sort = "";
 
 	/**
@@ -116,50 +115,107 @@ public class GoobiScriptManager {
 	 */
 	public void goobiScriptSort() {
 		if (sort.equals("id")) {
-			Collections.sort(goobiScriptResults, new SortByID());
+			Collections.sort(goobiScriptResults, new SortByID(false));
+		} else if (sort.equals("id desc")) {
+			Collections.sort(goobiScriptResults, new SortByID(true));
 		} else if (sort.equals("title")) {
-			Collections.sort(goobiScriptResults, new SortByTitle());
+			Collections.sort(goobiScriptResults, new SortByTitle(false));
+		} else if (sort.equals("title desc")) {
+			Collections.sort(goobiScriptResults, new SortByTitle(true));
 		} else if (sort.equals("status")) {
-			Collections.sort(goobiScriptResults, new SortByStatus());
-		}else if (sort.equals("command")) {
-			Collections.sort(goobiScriptResults, new SortByCommand());
-		}else if (sort.equals("description")) {
-			Collections.sort(goobiScriptResults, new SortByDescription());
+			Collections.sort(goobiScriptResults, new SortByStatus(false));
+		} else if (sort.equals("status desc")) {
+			Collections.sort(goobiScriptResults, new SortByStatus(true));
+		} else if (sort.equals("command")) {
+			Collections.sort(goobiScriptResults, new SortByCommand(false));
+		} else if (sort.equals("command desc")) {
+			Collections.sort(goobiScriptResults, new SortByCommand(true));
+		} else if (sort.equals("description")) {
+			Collections.sort(goobiScriptResults, new SortByDescription(false));
+		} else if (sort.equals("description desc")) {
+			Collections.sort(goobiScriptResults, new SortByDescription(true));
 		}
 	}
 
-	public class SortByStatus implements Comparator<GoobiScriptResult> {
+	private class SortByStatus implements Comparator<GoobiScriptResult> {
+		
+		private boolean reverse = false;
+		
+		public SortByStatus(boolean reverse) {
+			this.reverse = reverse;
+		}
+		
 		@Override
 		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
-			return g1.getResultType().compareTo(g2.getResultType());
+			if (reverse){
+				return g1.getResultType().compareTo(g2.getResultType());
+			} else{
+				return g2.getResultType().compareTo(g1.getResultType());
+			}
 		}
 	}
 
-	public class SortByTitle implements Comparator<GoobiScriptResult> {
+	private class SortByTitle implements Comparator<GoobiScriptResult> {
+		private boolean reverse = false;
+		
+		public SortByTitle(boolean reverse) {
+			this.reverse = reverse;
+		}
 		@Override
 		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
-			return g1.getProcessTitle().compareTo(g2.getProcessTitle());
+			if (reverse){
+				return g1.getProcessTitle().compareTo(g2.getProcessTitle());
+			} else{
+				return g2.getProcessTitle().compareTo(g1.getProcessTitle());
+			}
 		}
 	}
 
-	public class SortByID implements Comparator<GoobiScriptResult> {
+	private class SortByID implements Comparator<GoobiScriptResult> {
+		private boolean reverse = false;
+		
+		public SortByID(boolean reverse) {
+			this.reverse = reverse;
+		}
 		@Override
 		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
-			return g1.getProcessId().compareTo(g2.getProcessId());
+			if (reverse){
+				return g1.getProcessId().compareTo(g2.getProcessId());
+			} else{
+				return g2.getProcessId().compareTo(g1.getProcessId());
+			}
 		}
 	}
 	
-	public class SortByCommand implements Comparator<GoobiScriptResult> {
+	private class SortByCommand implements Comparator<GoobiScriptResult> {
+		private boolean reverse = false;
+		
+		public SortByCommand(boolean reverse) {
+			this.reverse = reverse;
+		}
 		@Override
 		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
-			return g1.getCommand().compareTo(g2.getCommand());
+			if (reverse){
+				return g1.getCommand().compareTo(g2.getCommand());
+			} else{
+				return g2.getCommand().compareTo(g1.getCommand());
+			}
 		}
 	}
 	
-	public class SortByDescription implements Comparator<GoobiScriptResult> {
+	private class SortByDescription implements Comparator<GoobiScriptResult> {
+		private boolean reverse = false;
+		
+		public SortByDescription(boolean reverse) {
+			this.reverse = reverse;
+		}
 		@Override
 		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
-			return g1.getResultMessage().compareTo(g2.getResultMessage());
+			if (reverse){
+				return g1.getResultMessage().compareTo(g2.getResultMessage());
+			} else{
+				return g2.getResultMessage().compareTo(g1.getResultMessage());
+			}
 		}
 	}
 }
