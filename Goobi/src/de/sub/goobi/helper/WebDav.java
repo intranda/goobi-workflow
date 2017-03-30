@@ -96,7 +96,7 @@ public class WebDav implements Serializable {
 			VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 		} catch (Exception ioe) {
 			logger.error("Exception RemoveFromHomeAlle()", ioe);
-			Helper.setFehlerMeldung("Upload stoped, error", ioe.getMessage());
+			Helper.setFehlerMeldung("Upload stopped, error", ioe.getMessage());
 			return;
 		}
 

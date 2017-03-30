@@ -1022,6 +1022,7 @@ public class ProcessBean extends BasicBean {
         WebDav myDav = new WebDav();
         myDav.UploadFromHome(this.myProzess);
         Helper.setMeldung(null, "directoryRemoved", this.myProzess.getTitel());
+        Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Process uploaded from home directory via process list.");
         return "";
     }
 
