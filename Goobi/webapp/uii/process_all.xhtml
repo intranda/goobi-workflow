@@ -320,8 +320,8 @@
                                             <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                                         </h:commandLink>
                                         
-	                                        <!-- Metadaten-Schaltknopf - Read only -->
-	                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                                        <!-- Metadaten-Schaltknopf - Read only -->
+                                        <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                                             <i class="btn fa fa-book" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:param name="nurLesen" value="true" />

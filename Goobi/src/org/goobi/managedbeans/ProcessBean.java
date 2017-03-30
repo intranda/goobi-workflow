@@ -392,6 +392,7 @@ public class ProcessBean extends BasicBean {
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
+        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Deleted content for this process in process details.");
 
         Helper.setMeldung("Content deleted");
         return "";
@@ -711,6 +712,8 @@ public class ProcessBean extends BasicBean {
     }
 
     private void deleteSymlinksFromUserHomes() {
+        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Removed links in home directories for all users in process details.");
+
         WebDav myDav = new WebDav();
         /* alle Benutzer */
         for (User b : this.mySchritt.getBenutzerList()) {
@@ -1023,52 +1026,40 @@ public class ProcessBean extends BasicBean {
     }
 
     public void DownloadToHome() {
+    	doDownloadToHome(this.myProzess);
+    }
+
+    private void doDownloadToHome(Process p){
         /*
          * zunächst prüfen, ob dieser Band gerade von einem anderen Nutzer in Bearbeitung ist und in dessen Homeverzeichnis abgelegt wurde, ansonsten
          * Download
          */
-        if (!this.myProzess.isImageFolderInUse()) {
+    	if (!p.isImageFolderInUse()) {
             WebDav myDav = new WebDav();
-            myDav.DownloadToHome(this.myProzess, 0, false);
+            myDav.DownloadToHome(p, 0, false);
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory incl. writing access from process list.");
         } else {
-            Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + this.myProzess.getTitel() + " " + Helper.getTranslation("isInUse"),
-                    this.myProzess.getImageFolderInUseUser().getNachVorname());
+            Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"),
+                    p.getImageFolderInUseUser().getNachVorname());
             WebDav myDav = new WebDav();
-            myDav.DownloadToHome(this.myProzess, 0, true);
+            myDav.DownloadToHome(p, 0, true);
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory with reading access from process list.");
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     public void DownloadToHomePage() {
-        WebDav myDav = new WebDav();
         for (Process proz : (List<Process>) this.paginator.getList()) {
-            /*
-             * zunächst prüfen, ob dieser Band gerade von einem anderen Nutzer in Bearbeitung ist und in dessen Homeverzeichnis abgelegt wurde,
-             * ansonsten Download
-             */
-            if (!proz.isImageFolderInUse()) {
-                myDav.DownloadToHome(proz, 0, false);
-            } else {
-                Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + proz.getTitel() + " " + Helper.getTranslation("isInUse"), proz
-                        .getImageFolderInUseUser().getNachVorname());
-                myDav.DownloadToHome(proz, 0, true);
-            }
+        	doDownloadToHome(proz);
         }
         Helper.setMeldung(null, "createdInUserHome", "");
     }
 
     @SuppressWarnings("unchecked")
     public void DownloadToHomeSelection() {
-        WebDav myDav = new WebDav();
         for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
-                if (!proz.isImageFolderInUse()) {
-                    myDav.DownloadToHome(proz, 0, false);
-                } else {
-                    Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + proz.getTitel() + " " + Helper.getTranslation("isInUse"), proz
-                            .getImageFolderInUseUser().getNachVorname());
-                    myDav.DownloadToHome(proz, 0, true);
-                }
+            	doDownloadToHome(proz);
             }
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
@@ -1076,15 +1067,8 @@ public class ProcessBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public void DownloadToHomeHits() {
-        WebDav myDav = new WebDav();
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            if (!proz.isImageFolderInUse()) {
-                myDav.DownloadToHome(proz, 0, false);
-            } else {
-                Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + proz.getTitel() + " " + Helper.getTranslation("isInUse"), proz
-                        .getImageFolderInUseUser().getNachVorname());
-                myDav.DownloadToHome(proz, 0, true);
-            }
+        	doDownloadToHome(proz);
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
     }
