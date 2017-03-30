@@ -109,7 +109,7 @@
 												</h:panelGroup>
 											</div>
                                             <div class="col-sm-9">
-                                                <h:selectManyListbox value="#{intern.values}" style="max-height: 300px;" id="multiselect" styleClass="form-control">
+                                                <h:selectManyListbox id="aaa" value="#{intern.values}" style="max-height: 300px;" id="multiselect" styleClass="form-control">
                                                     <f:selectItems value="#{intern.selectList}"  itemLabel="{item}" itemValue="{item}" var="item"/>
                                                 </h:selectManyListbox>
                                                 <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs[('help_import_').concat(intern.titel)]}" />
