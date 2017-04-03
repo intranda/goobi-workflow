@@ -1431,8 +1431,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             try {
             	List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                if (images != null && !images.isEmpty()) {
+                if (images == null || images.size() == 0){
+                	images = NIOFileUtils.listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
+                }
+            	
+            	if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();
+                }else{
+                	representativeImage = "/opt/digiverso/goobi/config/thumbnail-placeholder.png";
                 }
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error(e);

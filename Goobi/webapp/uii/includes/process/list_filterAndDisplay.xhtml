@@ -8,6 +8,11 @@
 
 		<div class="dataTables_filter">
 
+			<h:commandLink styleClass="btn margin-right-10" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus['processListDisplay']?msgs.process_displayAsTable:msgs.process_displayAsGrid}" rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
+	            <i class="fa #{NavigationForm.uiStatus['processListDisplay']?'fa-align-justify':'fa-th-large'}"></i>
+                <f:setPropertyActionListener target="#{NavigationForm.uiStatus['processListDisplay']}" value="#{not NavigationForm.uiStatus['processListDisplay']}" />
+	        </h:commandLink>
+
 			<div class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
 				<a class="btn dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown"> 

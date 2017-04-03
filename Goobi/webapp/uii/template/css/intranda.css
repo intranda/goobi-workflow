@@ -715,6 +715,10 @@ dropdown-menu>li>a {
     color: #666666;
 }
 
+.box.box-color.ultralightgrey .box-title {
+    background: #ccc none repeat scroll 0 0 !important;
+}
+
 /* ------------- Action Box --------------- */
 .action-ul {
     padding-left: 0px;

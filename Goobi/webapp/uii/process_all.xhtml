@@ -33,7 +33,7 @@
                                 <div class="dataTables_length" style="margin-bottom: 10px;">
                                     <h:outputText value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
                                 </div>
-
+								
                                 <x:aliasBeansScope>
                                     <x:aliasBean alias="#{Form}" value="#{ProzessverwaltungForm}" />
                                     <x:aliasBean alias="#{label}" value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
@@ -45,7 +45,16 @@
                                 <ui:include src="includes/process/list_filterAndDisplay.xhtml" />
                             </h:form>
                             <h:form id="myform">
-                                <x:dataTable id="processTable" rowIndexVar="count" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProzessverwaltungForm.paginator.list}">
+                                
+								<!-- +++++++++++++++++  Display as grid ++++++++++++++++++++++++ -->
+                                <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and NavigationForm.uiStatus['processListDisplay']}" >
+                        
+                        			<ui:include src="includes/process/list_grid.xhtml" />
+                                
+                                </h:panelGroup>
+
+								<!-- +++++++++++++++++  Display as table ++++++++++++++++++++++++ -->
+                                <x:dataTable id="processTable" rowIndexVar="count" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProzessverwaltungForm.paginator.list}" rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' or not NavigationForm.uiStatus['processListDisplay']}">
 
                                     <!-- +++++++++++++++++  SelectionBoxes ++++++++++++++++++++++++ -->
                                     <x:column styleClass="tableColumnOverflow width120" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
