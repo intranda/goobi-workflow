@@ -148,7 +148,7 @@ public class DatabaseVersion {
                 updateToVersion15();
             case 15:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 15.");
+                    logger.trace("Update database to version 16.");
                 }
                 updateToVersion16();
             case 999:

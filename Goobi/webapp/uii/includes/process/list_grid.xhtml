@@ -69,7 +69,7 @@
 								<td style="padding-left:10px;" rowspan="2">
 									<h:commandLink action="#{NavigationForm.Reload}" id="grid_show_tasks"
 										rel="tooltip" title="#{msgs.process_grid_details}">
-										<i class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'} font-black" />
+										<i class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'} font-black margin-left-5 margin-right-5" />
 										<x:updateActionListener property="#{item.panelAusgeklappt}" value="#{not item.panelAusgeklappt}" />
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										<f:ajax render=":myform" />
@@ -315,9 +315,10 @@
 							</h:panelGroup>
 						</ui:repeat>
 					</table>
-				
+					
 				</div>
 			</div>
+			<img src="template/img/thumbnail-gradientBackground.png" alt="" style="position:relative; left:1px;bottom:45px;width:498px;height:45px;"/>
 		</div>
 	</ui:repeat>
 </div> 
