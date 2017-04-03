@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
 
 	<composite:interface>
 	</composite:interface>
@@ -19,10 +20,13 @@
 					<h:outputText value="#{msgs.login}" />
 				</h2>
 				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
-					<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
-			             <i class="fa fa-exclamation-triangle margin-right-10" />
-			             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+					<h:panelGroup id="globalWarningMessage">
+						<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+				             <i class="fa fa-exclamation-triangle margin-right-10" />
+				             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+				         </h:panelGroup>
 			         </h:panelGroup>
+			       	<p:poll interval="30" update="globalWarningMessage" />
 			       
                     <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
 						warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
@@ -37,13 +41,17 @@
 						<div class="form-group">
 							<div class="email controls">
 								<x:inputText id="login" forceId="true" styleClass="form-control"
-									value="#{LoginForm.login}" />
+									value="#{LoginForm.login}" >
+									<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
+								</x:inputText>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="pw controls">
 								<x:inputSecret id="passwort" forceId="true" styleClass="form-control"
-									value="#{LoginForm.passwort}"  />
+									value="#{LoginForm.passwort}"  >
+									<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
+								</x:inputSecret>
 							</div>
 						</div>
 						<div class="submit">

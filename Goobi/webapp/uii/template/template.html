@@ -124,8 +124,6 @@
                                             <img src="template/img/goobi/ajaxloader2.gif" />
                                         </li>
 
-                                       
-                                        
                                         <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.gsm.goobiScriptResults.size() gt 0}">
                                         	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
 	                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
