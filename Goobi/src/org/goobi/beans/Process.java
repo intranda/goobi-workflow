@@ -860,7 +860,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return (error * 100) / (offen + inBearbeitung + error + abgeschlossen);
     }
 
-    public int getFortschritt3() {
+    public double getFortschritt3() {
         double offen = 0;
         double inBearbeitung = 0;
         double error = 0;
@@ -891,7 +891,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         error2 = (error * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
         inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - inBearbeitung2 - error2;
-        return (int) abgeschlossen2;
+        return abgeschlossen2;
     }
     public String getMetadataFilePath() throws IOException, InterruptedException, SwapException, DAOException {
         return getProcessDataDirectory() + "meta.xml";
