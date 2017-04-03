@@ -78,7 +78,6 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
-import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -754,10 +753,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public String getFortschritt() {
-        int offen = 0;
-        int inBearbeitung = 0;
-        int error = 0;
-        int abgeschlossen = 0;
+        double offen = 0;
+        double inBearbeitung = 0;
+        double error = 0;
+        double abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
@@ -785,15 +784,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         error2 = (error * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - error2 - inBearbeitung2;
         // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
-        java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
+        java.text.DecimalFormat df = new java.text.DecimalFormat("###.#");
         return df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(error2) + df.format(offen2);
     }
 
-    public int getFortschritt1() {
-        int offen = 0;
-        int inBearbeitung = 0;
-        int error = 0;
-        int abgeschlossen = 0;
+    public double getFortschritt1() {
+        double offen = 0;
+        double inBearbeitung = 0;
+        double error = 0;
+        double abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
@@ -813,11 +812,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return (offen * 100) / (offen + inBearbeitung + error + abgeschlossen);
     }
 
-    public int getFortschritt2() {
-        int offen = 0;
-        int inBearbeitung = 0;
-        int error = 0;
-        int abgeschlossen = 0;
+    public double getFortschritt2() {
+        double offen = 0;
+        double inBearbeitung = 0;
+        double error = 0;
+        double abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
@@ -837,11 +836,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return (inBearbeitung * 100) / (offen + inBearbeitung + error + abgeschlossen);
     }
 
-    public int getFortschrittError() {
-        int offen = 0;
-        int inBearbeitung = 0;
-        int error = 0;
-        int abgeschlossen = 0;
+    public double getFortschrittError() {
+        double offen = 0;
+        double inBearbeitung = 0;
+        double error = 0;
+        double abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
@@ -862,10 +861,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getFortschritt3() {
-        int offen = 0;
-        int inBearbeitung = 0;
-        int error = 0;
-        int abgeschlossen = 0;
+        double offen = 0;
+        double inBearbeitung = 0;
+        double error = 0;
+        double abgeschlossen = 0;
 
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
@@ -894,7 +893,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         abgeschlossen2 = 100 - offen2 - inBearbeitung2 - error2;
         return (int) abgeschlossen2;
     }
-
     public String getMetadataFilePath() throws IOException, InterruptedException, SwapException, DAOException {
         return getProcessDataDirectory() + "meta.xml";
     }
