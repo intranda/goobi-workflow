@@ -1438,7 +1438,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             	if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();
                 }else{
-                	representativeImage = "/opt/digiverso/goobi/config/thumbnail-placeholder.png";
+                	return "uii/template/img/thumbnail-placeholder.png?version=1";
                 }
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error(e);
