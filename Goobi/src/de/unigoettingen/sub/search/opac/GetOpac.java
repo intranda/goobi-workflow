@@ -43,6 +43,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -377,7 +379,7 @@ public class GetOpac {
             if (picaPlusLong != null) {
                 result.appendChild(picaPlusRaw.importNode(picaPlusLong, true));
             } else {
-               logger.error("Could not retrieve data for hit nr:" + i);
+                logger.error("Could not retrieve data for hit nr:" + i);
             }
         }
 
@@ -451,7 +453,7 @@ public class GetOpac {
         for (int i = 10; i < numberOfHits; i += 10) {
             String tmpSearch =
                     retrieveDataFromOPAC("/XML=1.0" + DATABASE_URL + this.cat.getDataBase() + SET_ID_URL + search.getSet() + SESSIONID_URL
-                            + search.getSessionId(URL_CHARACTER_ENCODING) + "/TTL=" + (i - 9) + SHOW_NEXT_HITS_URL + (i + 1));
+                    + search.getSessionId(URL_CHARACTER_ENCODING) + "/TTL=" + (i - 9) + SHOW_NEXT_HITS_URL + (i + 1));
             search = parseOpacResponse(tmpSearch);
             result[0].addAll(search.getOpacResponseItemPpns());
             result[1].addAll(search.getOpacResponseItemTitles());
@@ -488,7 +490,7 @@ public class GetOpac {
         }
         result =
                 retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
-                        + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
+                + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
         OpacResponseHandler opacResult = parseOpacResponse(result);
 
@@ -623,15 +625,15 @@ public class GetOpac {
     private String retrieveDataFromOPAC(String url) throws IOException {
 
         if (verbose) {
-            logger.info("Retrieving URL: " +cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
+            logger.info("Retrieving URL: " + cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
         }
 
         HttpGet opacRequest = null;
-        opacRequest = new HttpGet(cat.getProtocol()  + this.cat.getServerAddress() + url + this.cat.getCbs());
+        opacRequest = new HttpGet(cat.getProtocol() + this.cat.getServerAddress() + url + this.cat.getCbs());
 
         if (this.cat.getPort() == 80) {
         } else {
-            opacRequest = new HttpGet(cat.getProtocol()  + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
+            opacRequest = new HttpGet(cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
 
         }
         try {
@@ -650,7 +652,9 @@ public class GetOpac {
                 opacRequest.setConfig(rc);
             }
 
-            return this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
+            String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
+            result = StringEscapeUtils.unescapeHtml(result);
+            return result;
         } finally {
             opacRequest.releaseConnection();
         }
@@ -660,7 +664,6 @@ public class GetOpac {
     public OpacResponseHandler parseOpacResponse(String opacResponse) throws IOException, SAXException, ParserConfigurationException {
         opacResponse =
                 opacResponse.replace("&amp;amp;", "&amp;").replace("&amp;quot;", "&quot;").replace("&amp;lt;", "&lt;").replace("&amp;gt;", "&gt;");
-
         XMLReader parser = null;
         OpacResponseHandler ids = new OpacResponseHandler();
         /* Use Java 1.4 methods to create default parser. */
