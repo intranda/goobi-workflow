@@ -73,7 +73,7 @@
 
 <ui:insert name="metadata" />
 
-<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'}">
+<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'}" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
