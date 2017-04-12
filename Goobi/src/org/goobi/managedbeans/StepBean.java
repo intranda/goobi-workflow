@@ -124,6 +124,7 @@ public class StepBean extends BasicBean {
     private Integer container;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
+    private HashMap <Integer, Boolean> containerAccess;
 
     @Getter
     @Setter
@@ -1214,7 +1215,6 @@ public class StepBean extends BasicBean {
         return this.processPropertyList;
     }
 
-    private HashMap <Integer, Boolean> containerAccess;
     public HashMap<Integer, Boolean> getContainerAccess() {
 		return containerAccess;
 	}

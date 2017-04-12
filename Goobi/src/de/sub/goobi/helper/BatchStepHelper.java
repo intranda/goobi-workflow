@@ -93,6 +93,7 @@ public class BatchStepHelper {
     @Getter @Setter private String content = "";
     @Getter @Setter private String secondContent = "";
     @Getter @Setter private String thirdContent = "";
+    private HashMap <Integer, Boolean> containerAccess;
     
     private String script;
     private WebDav myDav = new WebDav();
@@ -261,8 +262,6 @@ public class BatchStepHelper {
         Helper.setMeldung("Properties saved");
     }
 
-    
-    private HashMap <Integer, Boolean> containerAccess;
     public HashMap<Integer, Boolean> getContainerAccess() {
 		return containerAccess;
 	}
