@@ -1214,12 +1214,21 @@ public class StepBean extends BasicBean {
         return this.processPropertyList;
     }
 
+    private HashMap <Integer, Boolean> containerAccess;
+    public HashMap<Integer, Boolean> getContainerAccess() {
+		return containerAccess;
+	}
+    
     private void loadProcessProperties() {
-        this.containers = new TreeMap<Integer, PropertyListObject>();
+        containerAccess = new HashMap<>();
+    	this.containers = new TreeMap<Integer, PropertyListObject>();
         this.processPropertyList = PropertyParser.getPropertiesForStep(this.mySchritt);
 
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getProzesseigenschaft() == null) {
+            if (pt.getContainer()!=0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ){
+            	containerAccess.put(pt.getContainer(), true);
+            }
+        	if (pt.getProzesseigenschaft() == null) {
                 Processproperty pe = new Processproperty();
                 pe.setProzess(this.mySchritt.getProzess());
                 pt.setProzesseigenschaft(pe);

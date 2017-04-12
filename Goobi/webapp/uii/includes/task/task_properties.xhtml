@@ -37,7 +37,7 @@
 									
 									<td>
 										<h:commandLink id="editProperty" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="0" />
@@ -66,7 +66,7 @@
 		
 		                    <h:panelGroup rendered="#{container != 0}">
 		                        <tr>
-									<td><h:outputText value="#{process_item.name}" /></td>
+									<td><h:outputText value="#{process_item.name} #{process_item.currentStepAccessCondition}" /></td>
 									<td>
 										<h:outputText value="#{process_item.value}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" />
 		                                <h:outputLink value="#{process_item.value}" title="#{process_item.value}" target="_blank"
@@ -85,7 +85,8 @@
 	                       		    <h:panelGroup rendered="#{propInd ==0}">
 		                                <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 			                                <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small">
+			                                    
+			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.containerAccess[container]}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="#{container}" />
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />

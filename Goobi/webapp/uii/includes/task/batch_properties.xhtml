@@ -37,7 +37,7 @@
 									
 									<td>
 										<h:commandLink id="editBatchProperty" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+			                                rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
@@ -86,7 +86,7 @@
                                    	<h:panelGroup rendered="#{propInd ==0}">
                                         <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 	                                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-			                                    <h:commandLink id="editContainer" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small">
+			                                    <h:commandLink id="editContainer" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container]}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
