@@ -20,16 +20,16 @@
 								<tr>
 									<td><h:outputText value="#{proc.name}" /></td>
 									<td>
-										<h:outputText value="#{proc.value}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
-		                                <h:outputLink value="#{proc.value}" title="#{proc.value}" target="_blank"
+										<h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
+		                                <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank"
 		                                    rendered="#{proc.type.name == 'link'}">
-		                                    <h:outputText value="#{proc.value}" />
+		                                    <h:outputText value="#{proc.readValue}" />
 		                                </h:outputLink>
 		                                <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
-		                                	<h:panelGroup rendered="#{proc.value eq 'true'}">
+		                                	<h:panelGroup rendered="#{proc.readValue eq 'true'}">
 		                                		<i class="fa fa-check-square-o fa-lg"></i>
 		                                	</h:panelGroup>
-		                                	<h:panelGroup rendered="#{proc.value ne 'true'}">
+		                                	<h:panelGroup rendered="#{proc.readValue ne 'true'}">
 		                                		<i class="fa fa-square-o fa-lg"></i>
 		                                	</h:panelGroup>
 		                                </h:panelGroup>
@@ -37,7 +37,7 @@
 									
 									<td>
 										<h:commandLink id="editProperty" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="0" />
@@ -68,16 +68,16 @@
 		                        <tr>
 									<td><h:outputText value="#{process_item.name}" /></td>
 									<td>
-										<h:outputText value="#{process_item.value}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" />
-		                                <h:outputLink value="#{process_item.value}" title="#{process_item.value}" target="_blank"
+										<h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" />
+		                                <h:outputLink value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank"
 		                                    rendered="#{process_item.type.name == 'link'}">
-		                                    <h:outputText value="#{process_item.value}" />
+		                                    <h:outputText value="#{process_item.readValue}" />
 		                                </h:outputLink>
 		                                <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
-		                                	<h:panelGroup rendered="#{process_item.value eq 'true'}">
+		                                	<h:panelGroup rendered="#{process_item.readValue eq 'true'}">
 		                                		<i class="fa fa-check-square-o fa-lg"></i>
 		                                	</h:panelGroup>
-		                                	<h:panelGroup rendered="#{process_item.value ne 'true'}">
+		                                	<h:panelGroup rendered="#{process_item.readValue ne 'true'}">
 		                                		<i class="fa fa-square-o fa-lg"></i>
 		                                	</h:panelGroup>
 		                                </h:panelGroup>
@@ -85,7 +85,8 @@
 	                       		    <h:panelGroup rendered="#{propInd ==0}">
 		                                <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 			                                <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small">
+			                                    
+			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.containerAccess[container]}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="#{container}" />
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
@@ -191,8 +192,18 @@
                                 <h:outputLabel for="boolean" styleClass="control-label col-sm-3" value="#{myprocess_item.name}" />
                                 <div class="col-sm-9">
                                     <h:selectBooleanCheckbox id="boolean" value="#{myprocess_item.booleanValue}"
-                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
+                                        rendered="#{myprocess_item.currentStepAccessCondition != 'READ'}">
                                     </h:selectBooleanCheckbox>
+                                    
+                                    
+                                    <h:panelGroup rendered="#{myprocess_item.currentStepAccessCondition == 'READ' and myprocess_item.booleanValue eq 'true'}">
+                                		<i class="fa fa-check-square-o fa-lg"></i>
+                                	</h:panelGroup>
+                                	<h:panelGroup rendered="#{myprocess_item.currentStepAccessCondition == 'READ' and myprocess_item.booleanValue ne 'true'}">
+                                		<i class="fa fa-square-o fa-lg"></i>
+                                	</h:panelGroup>
+                                    
+                                    
                                     <h:message for="boolean" showDetail="true" styleClass="help-inline font-danger" />
                                     <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
                                         value="#{msgs.helpPropertyValue}" />

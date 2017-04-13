@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,7 @@ public class BatchStepHelper {
     @Getter @Setter private String content = "";
     @Getter @Setter private String secondContent = "";
     @Getter @Setter private String thirdContent = "";
+    private HashMap <Integer, Boolean> containerAccess;
     
     private String script;
     private WebDav myDav = new WebDav();
@@ -260,15 +262,23 @@ public class BatchStepHelper {
         Helper.setMeldung("Properties saved");
     }
 
+    public HashMap<Integer, Boolean> getContainerAccess() {
+		return containerAccess;
+	}
+    
     private void loadProcessProperties(Step s) {
-        this.containers = new TreeMap<Integer, PropertyListObject>();
+    	containerAccess = new HashMap<>();
+    	this.containers = new TreeMap<Integer, PropertyListObject>();
         this.processPropertyList = PropertyParser.getPropertiesForStep(s);
         List<Process> pList = new ArrayList<Process>();
         for (Step step : this.steps) {
             pList.add(step.getProzess());
         }
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getProzesseigenschaft() == null) {
+        	if (pt.getContainer()!=0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ){
+            	containerAccess.put(pt.getContainer(), true);
+            }
+        	if (pt.getProzesseigenschaft() == null) {
                 Processproperty pe = new Processproperty();
                 pe.setProzess(s.getProzess());
                 pt.setProzesseigenschaft(pe);
