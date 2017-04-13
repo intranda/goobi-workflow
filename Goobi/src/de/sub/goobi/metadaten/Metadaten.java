@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -190,10 +191,12 @@ public class Metadaten {
 
     private TreeNodeStruct3 treeOfFilteredProcess;
     private TreeNodeStruct3 tree3;
+    private String myBild;
 
     // old image parameter
     private int myBildNummer = 0;
     private int myBildLetztes = 0;
+    private int myBildCounter = 0;
     private int myBildGroesse = 30;
     private String bildNummerGeheZu = "";
     private int numberOfNavigation = 0;
@@ -226,6 +229,9 @@ public class Metadaten {
     private double currentImageNo = 0;
     private double totalImageNo = 0;
     private Integer progress;
+
+    private boolean tiffFolderHasChanged = true;
+    private List<String> dataList = new ArrayList<String>();
 
     private List<MetadatumImpl> addableMetadata = new LinkedList<MetadatumImpl>();
     private List<MetaPerson> addablePersondata = new LinkedList<MetaPerson>();
@@ -2028,6 +2034,10 @@ public class Metadaten {
         this.numberOfNavigation = numberOfNavigation;
     }
 
+    public String BildBlaettern() {
+        BildErmitteln(numberOfNavigation);
+        return "";
+    }
   
 
 
@@ -2074,12 +2084,129 @@ public class Metadaten {
         }
     }
 
+    public void BildErmitteln(int welches) {
+        /*
+         * wenn die Bilder nicht angezeigt werden, brauchen wir auch das Bild nicht neu umrechnen
+         */
+        if (!this.bildAnzeigen) {
+            return;
+        }
+       
+        // try {
+        if (dataList == null || dataList.isEmpty() || tiffFolderHasChanged) {
+            tiffFolderHasChanged = false;
 
-    /*
-     * ##################################################### ##################################################### ## ## Sperrung der Metadaten
-     * aktualisieren oder prüfen ## ##################################################### ####################################################
-     */
+            if (this.currentTifFolder != null) {
+                try {
+                    // dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+                    if (dataList == null) {
+                        myBild = null;
+                        myBildNummer = -1;
+                        return;
+                    }
+                    //
+                } catch (InvalidImagesException e1) {
+                    logger.error("Images could not be read", e1);
+                    Helper.setFehlerMeldung("images could not be read", e1);
+                }
+            } else {
+                try {
+                    createPagination();
+                    dataList = this.imagehelper.getImageFiles(mydocument.getPhysicalDocStruct());
+                } catch (TypeNotAllowedForParentException e) {
+                    logger.error(e);
+                } catch (SwapException e) {
+                    logger.error(e);
+                } catch (DAOException e) {
+                    logger.error(e);
+                } catch (IOException e) {
+                    logger.error(e);
+                } catch (InterruptedException e) {
+                    logger.error(e);
+                }
+            }
+        }
 
+
+        if (dataList != null && dataList.size() > 0) {
+            this.myBildLetztes = dataList.size();
+            for (int i = 0; i < dataList.size(); i++) {
+                if (this.myBild == null) {
+                    this.myBild = dataList.get(0);
+                }
+                String index = dataList.get(i).substring(0, dataList.get(i).lastIndexOf("."));
+                String myPicture = this.myBild.substring(0, this.myBild.lastIndexOf("."));
+                /* wenn das aktuelle Bild gefunden ist, das neue ermitteln */
+                if (index.equals(myPicture)) {
+                    int pos = i + welches;
+                    /* aber keine Indexes ausserhalb des Array erlauben */
+                    if (pos < 0) {
+                        pos = 0;
+                    }
+                    if (pos > dataList.size() - 1) {
+                        pos = dataList.size() - 1;
+                    }
+                    /* das aktuelle tif erfassen */
+                    if (dataList.size() > pos) {
+                        this.myBild = dataList.get(pos);
+                    } else {
+                        this.myBild = dataList.get(dataList.size() - 1);
+                    }
+                    /* die korrekte Seitenzahl anzeigen */
+                    this.myBildNummer = pos + 1;
+                    /* Pages-Verzeichnis ermitteln */
+                    String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
+                    /*
+                     * den Counter für die Bild-ID auf einen neuen Wert setzen, damit nichts gecacht wird
+                     */
+                    this.myBildCounter++;
+
+                    /* Session ermitteln */
+                    FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                    HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+                    String mySession = session.getId() + "_" + this.myBildCounter + ".png";
+
+                    /* das neue Bild zuweisen */
+                    try {
+                        String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
+                                .getSeparator() + this.myBild;
+                        if (!Files.exists(Paths.get(tiffconverterpfad))) {
+                            tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
+                            Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
+                                    + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
+                                            .getFileName().toString());
+                        }
+                        this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
+                    } catch (Exception e) {
+                        Helper.setFehlerMeldung("could not find image folder", e);
+                        logger.error(e);
+                    }
+                    break;
+                }
+            }
+        }
+        BildPruefen();
+    }
+
+    private void BildPruefen() {
+        /* wenn bisher noch kein Bild da ist, das erste nehmen */
+        boolean exists = false;
+        try {
+            if (this.currentTifFolder != null && this.myBild != null) {
+                exists = Files.exists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator()
+                        + this.myBild));
+            }
+        } catch (Exception e) {
+            this.myBildNummer = -1;
+            logger.error(e);
+        }
+        /* wenn das Bild nicht existiert, den Status ändern */
+        if (!exists) {
+            this.myBildNummer = -1;
+        }
+    }
+    
     private boolean SperrungAktualisieren() {
         /*
          * wenn die Sperrung noch aktiv ist und auch für den aktuellen Nutzer gilt, Sperrung aktualisieren
