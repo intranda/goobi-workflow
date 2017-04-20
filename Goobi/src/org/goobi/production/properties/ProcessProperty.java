@@ -51,6 +51,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	private String validation;
 	private Type type;
 	private String value;
+	private String readValue;
 	private List<String> possibleValues;
 	private List<String> projects;
 	private List<ShowStepCondition> showStepConditions;
@@ -135,6 +136,14 @@ public class ProcessProperty implements IProperty, Serializable {
 		return this.type;
 	}
 
+	public String getReadValue() {
+		return readValue;
+	}
+	
+	public void setReadValue(String readValue) {
+		this.readValue = readValue;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -163,6 +172,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	@Override
 	public void setValue(String value) {
 		this.value = value;
+		this.readValue = value;
 	}
 	
 	/*
@@ -189,6 +199,7 @@ public class ProcessProperty implements IProperty, Serializable {
 	public void setDateValue(Date inDate) {
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 		value= format.format(inDate);
+		this.readValue = value;
 	}
 
 	
@@ -364,6 +375,7 @@ public class ProcessProperty implements IProperty, Serializable {
 		for (String val : valueList) {
 			this.value = this.value + val + "; ";
 		}
+		this.readValue = value;
 	}
 
 	public boolean getBooleanValue() {
@@ -380,6 +392,7 @@ public class ProcessProperty implements IProperty, Serializable {
 		} else {
 			this.value = "false";
 		}
+		this.readValue = value;
 	}
 
 	public static class CompareProperties implements Comparator<ProcessProperty>, Serializable {

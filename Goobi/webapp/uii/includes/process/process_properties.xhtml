@@ -39,16 +39,16 @@
 											<tr>
 												<td><h:outputText value="#{proc.name}" /></td>
 												<td>
-													<h:outputText value="#{proc.value}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
-					                                <h:outputLink value="#{proc.value}" title="#{proc.value}" target="_blank"
+													<h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
+					                                <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank"
 					                                    rendered="#{proc.type.name == 'link'}">
-					                                    <h:outputText value="#{proc.value}" />
+					                                    <h:outputText value="#{proc.readValue}" />
 					                                </h:outputLink>
 					                                <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
-					                                	<h:panelGroup rendered="#{proc.value eq 'true'}">
+					                                	<h:panelGroup rendered="#{proc.readValue eq 'true'}">
 					                                		<i class="fa fa-check-square-o fa-lg"></i>
 					                                	</h:panelGroup>
-					                                	<h:panelGroup rendered="#{proc.value ne 'true'}">
+					                                	<h:panelGroup rendered="#{proc.readValue ne 'true'}">
 					                                		<i class="fa fa-square-o fa-lg"></i>
 					                                	</h:panelGroup>
 					                                </h:panelGroup>
@@ -88,18 +88,18 @@
 											<tr>
 												<td><h:outputText value="#{process_item.name}" /></td>
 												<td>
-													<h:outputText value="#{process_item.value}"
+													<h:outputText value="#{process_item.readValue}"
 														rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" /> 
 													<h:outputLink
-														value="#{process_item.value}" title="#{process_item.value}" target="_blank"
+														value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank"
 														rendered="#{process_item.type.name == 'link'}">
-														<h:outputText value="#{process_item.value}" />
+														<h:outputText value="#{process_item.readValue}" />
 													</h:outputLink>
 													<h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
-					                                	<h:panelGroup rendered="#{process_item.value eq 'true'}">
+					                                	<h:panelGroup rendered="#{process_item.readValue eq 'true'}">
 					                                		<i class="fa fa-check-square-o fa-lg"></i>
 					                                	</h:panelGroup>
-					                                	<h:panelGroup rendered="#{process_item.value ne 'true'}">
+					                                	<h:panelGroup rendered="#{process_item.readValue ne 'true'}">
 					                                		<i class="fa fa-square-o fa-lg"></i>
 					                                	</h:panelGroup>
 					                                </h:panelGroup>

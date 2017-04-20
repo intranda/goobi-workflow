@@ -88,21 +88,21 @@
 
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für Selection-->
-                                                    <h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                    <h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
                                                         <span class="btn margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.auswahl2}" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für Page-->
-                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
                                                         <span class="btn margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.trefferDieserSeite}" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8" onclick="if (!confirm('#{msgs.download}')) return false">
+                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
                                                         <span class="btn margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.gesamtesTrefferset}" />
                                                     </h:commandLink>

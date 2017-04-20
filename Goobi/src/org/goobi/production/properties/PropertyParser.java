@@ -123,6 +123,7 @@ public class PropertyParser {
                     pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
                     // (default) value
                     pp.setValue(config.getString("property(" + i + ").defaultvalue"));
+                    pp.setReadValue("");
 
                     // possible values
                     count = config.getMaxIndex("property(" + i + ").value");
@@ -221,7 +222,8 @@ public class PropertyParser {
                 pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
                 // (default) value
                 pp.setValue(config.getString("property(" + i + ").defaultvalue"));
-
+                pp.setReadValue("");
+                
                 // possible values
                 count = config.getMaxIndex("property(" + i + ").value");
                 for (int j = 0; j <= count; j++) {

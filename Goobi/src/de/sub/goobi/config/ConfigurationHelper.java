@@ -218,6 +218,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("RegelsaetzeVerzeichnis", "/opt/digiverso/goobi/rulesets/");
     }
 
+    public String getScriptsFolder() {
+        return getLocalString("scriptsFolder", "/opt/digiverso/goobi/scripts/");
+    }
+
     public String getUserFolder() {
         return getLocalString("dir_Users", "/home/");
     }
