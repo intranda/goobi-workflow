@@ -234,36 +234,64 @@
                             </div>
 	
                             <div class="form-actions" style="border-top: 1px solid #ddd;">
-                                <div class="row">
-                                    <div class="col-sm-9">
-                                        <h:panelGroup styleClass="col-sm-4">
-                                            <h:outputText value="#{msgs.process_log_firstContent}" />
-                                        </h:panelGroup>
-                                        <h:panelGroup styleClass="col-sm-8">
-                                            <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.content}" />
-                                        </h:panelGroup>
+                                
+                                <div class="row margin-no">
+										<div class="col-sm-9 ">
+											<div class="row ">
+												<h:outputText styleClass="col-sm-4 padding-left-no" value="#{msgs.process_log_firstContent}:" />
+												<h:panelGroup styleClass="col-sm-8">
+													<h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.content}"/>
+												</h:panelGroup>
+											</div>
+											<div class="row margin-top-10-no-block">
+												<h:outputText styleClass="col-sm-4 padding-left-no" value="#{msgs.process_log_secondContent}:" rendered="#{NavigationForm.showSecondLogField}"/>
+												<h:panelGroup styleClass="col-sm-8">
+													<h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.secondContent}" rendered="#{NavigationForm.showSecondLogField}"/>
+												</h:panelGroup>
+											</div>
+											<div class="row margin-top-10-no-block">
+												<h:outputText styleClass="col-sm-4 padding-left-no" value="#{msgs.process_log_thirdContent}:" rendered="#{NavigationForm.showThirdLogField}"/>
+												<h:panelGroup styleClass="col-sm-8">
+													<h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.thirdContent}" rendered="#{NavigationForm.showThirdLogField}"/>
+												</h:panelGroup>
+											</div>
+										</div>
+										<div class="col-sm-3 margin-right-10-no-block padding-left-no">
+											<h:commandButton id="addToLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" />
+										</div>
+									</div>
+                                
+                                
+<!--                                 <div class="row"> -->
+<!--                                     <div class="col-sm-9"> -->
+<!--                                         <h:panelGroup styleClass="col-sm-4"> -->
+<!--                                             <h:outputText value="#{msgs.process_log_firstContent}" /> -->
+<!--                                         </h:panelGroup> -->
+<!--                                         <h:panelGroup styleClass="col-sm-8"> -->
+<!--                                             <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.content}" /> -->
+<!--                                         </h:panelGroup> -->
 
 
-                                        <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-                                            <h:outputText value="#{msgs.process_log_secondContent}" />
-                                        </h:panelGroup>
-                                        <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-                                            <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.secondContent}" />
-                                        </h:panelGroup>
+<!--                                         <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}"> -->
+<!--                                             <h:outputText value="#{msgs.process_log_secondContent}" /> -->
+<!--                                         </h:panelGroup> -->
+<!--                                         <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}"> -->
+<!--                                             <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.secondContent}" /> -->
+<!--                                         </h:panelGroup> -->
 
 
-                                        <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-                                            <h:outputText value="#{msgs.process_log_thirdContent}" />
-                                        </h:panelGroup>
-                                        <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-                                            <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.thirdContent}" />
-                                        </h:panelGroup>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <h:commandButton id="saveLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" />
-                                    </div>
+<!--                                         <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}"> -->
+<!--                                             <h:outputText value="#{msgs.process_log_thirdContent}" /> -->
+<!--                                         </h:panelGroup> -->
+<!--                                         <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}"> -->
+<!--                                             <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.thirdContent}" /> -->
+<!--                                         </h:panelGroup> -->
+<!--                                     </div> -->
+<!--                                     <div class="col-sm-3"> -->
+<!--                                         <h:commandButton id="saveLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{AktuelleSchritteForm.addLogEntry}" /> -->
+<!--                                     </div> -->
 
-                                </div>
+<!--                                 </div> -->
                             </div>
 	                        </div>
 		                </div>

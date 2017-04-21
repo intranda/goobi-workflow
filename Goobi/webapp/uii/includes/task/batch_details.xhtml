@@ -216,37 +216,29 @@
 							</ui:repeat>
 						</table>
                     </div>
-                    <div class="form-actions" style="border-top: 1px solid #ddd;">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <h:panelGroup styleClass="col-sm-4">
-                                    <h:outputText value="#{msgs.process_log_firstContent}" />
-                                </h:panelGroup>
-                                <h:panelGroup styleClass="col-sm-8">
-                                    <h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.content}" />
-                                </h:panelGroup>
+                    <div class="form-actions" style="border-top: 1px solid #ddd;padding-bottom:5px;">
+                        		<div class="row" style="margin-left:0px;margin-right:0px;">
+									<h:outputText styleClass="col-sm-4 padding-sides-no" value="#{msgs.process_log_firstContent}:" />
+									<h:panelGroup styleClass="col-sm-8 padding-sides-no">
+										<h:inputText id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.content}"/>
+									</h:panelGroup>
+								</div>
+								<div class="row margin-top-10-no-block" style="margin-left:0px;margin-right:0px;">
+									<h:outputText styleClass="col-sm-4 padding-sides-no" value="#{msgs.process_log_secondContent}:" rendered="#{NavigationForm.showSecondLogField}"/>
+									<h:panelGroup styleClass="col-sm-8 padding-sides-no">
+										<h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.secondContent}" rendered="#{NavigationForm.showSecondLogField}"/>
+									</h:panelGroup>
+								</div>
+								<div class="row margin-top-10-no-block" style="margin-left:0px;margin-right:0px;">
+									<h:outputText styleClass="col-sm-4 padding-sides-no" value="#{msgs.process_log_thirdContent}:" rendered="#{NavigationForm.showThirdLogField}"/>
+									<h:panelGroup styleClass="col-sm-8 padding-sides-no">
+										<h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.thirdContent}" rendered="#{NavigationForm.showThirdLogField}"/>
+									</h:panelGroup>
+								</div>
+							
+                     </div>
 
-
-                                <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-                                    <h:outputText value="#{msgs.process_log_secondContent}" />
-                                </h:panelGroup>
-                                <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showSecondLogField}">
-                                    <h:inputText id="addToTextArea2" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.secondContent}" />
-                                </h:panelGroup>
-
-
-                                <h:panelGroup styleClass="col-sm-4 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-                                    <h:outputText value="#{msgs.process_log_thirdContent}" />
-                                </h:panelGroup>
-                                <h:panelGroup styleClass="col-sm-8 margin-top-10" rendered="#{NavigationForm.showThirdLogField}">
-                                    <h:inputText id="addToTextArea3" styleClass="form-control" value="#{AktuelleSchritteForm.batchHelper.thirdContent}" />
-                                </h:panelGroup>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="form-actions">
+                    <div class="form-actions" style="padding-top:0px;">
                         <div class="row">
                             <div class="col-sm-12">
                                 <h:commandButton id="addToAll" type="submit" styleClass="btn btn-primary margin-left-5 margin-top-regular font-size-s pull-right" value="#{msgs.nachrichtHinzufuegenForAll}" action="#{AktuelleSchritteForm.batchHelper.addLogEntryForAll}" />
