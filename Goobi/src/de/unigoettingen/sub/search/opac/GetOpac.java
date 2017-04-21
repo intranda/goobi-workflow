@@ -653,7 +653,8 @@ public class GetOpac {
             }
 
             String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
-            result = StringEscapeUtils.unescapeHtml(result);
+            // TODO add it again after uci is fixed
+//            result = StringEscapeUtils.unescapeHtml(result);
             return result;
         } finally {
             opacRequest.releaseConnection();
