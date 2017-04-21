@@ -44,7 +44,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -653,8 +652,7 @@ public class GetOpac {
             }
 
             String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
-            // TODO add it again after uci is fixed
-//            result = StringEscapeUtils.unescapeHtml(result);
+            result = StringEscapeUtils.unescapeHtml(result);
             return result;
         } finally {
             opacRequest.releaseConnection();
