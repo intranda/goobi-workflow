@@ -137,6 +137,13 @@
 		}
 		var ctx = canvas.getContext('2d');
 		var d = canvas.dataset;
+		
+		if(!d) {
+		    //fix for ie not supporting element.dataset
+		    d = {};
+		    d.image_small = canvas.getAttribute('data-image_large');
+		    d.image_large = canvas.getAttribute('data-image_large');
+		}
 			
 		var img = new Image();
 		img.onload = function() {
