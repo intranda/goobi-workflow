@@ -1,214 +1,215 @@
-      function toggle(id) {
-        var element = document.getElementById(id);
-        if(element.style.display == 'block') {
-          element.style.display = 'none';
-        } else {
-          element.style.display = 'block';
-        }
-      }
-  
-    
-    function submitEnter(commandId, e) {
-	var keycode;
-	if (window.event)
-		keycode = window.event.keyCode;
-	else if (e)
-		keycode = e.which;
-	else
-		return true;
-	if (keycode == 13) {
-		document.getElementById(commandId)
-				.click();
-		return false;
-	} else
-		return true;
+function toggle( id ) {
+    var element = document.getElementById( id );
+    if ( element.style.display == 'block' ) {
+        element.style.display = 'none';
+    }
+    else {
+        element.style.display = 'block';
+    }
 }
 
-///**
+function submitEnter( commandId, e ) {
+    var keycode;
+    if ( window.event )
+        keycode = window.event.keyCode;
+    else if ( e )
+        keycode = e.which;
+    else
+        return true;
+    if ( keycode == 13 ) {
+        document.getElementById( commandId ).click();
+        return false;
+    }
+    else
+        return true;
+}
+
+// /**
 // * Handler for onkeypress that clicks {@code targetElement} if the
 // * enter key is pressed.
 // */
-//function ifEnterClick(event, targetElement) {
-//	event = event || window.event;
-//	if (event.keyCode == 13) {
-//		// normalize event target, so it looks the same for all browsers
-//		if (!event.target) {
-//			event.target = event.srcElement;
-//		}
+// function ifEnterClick(event, targetElement) {
+// event = event || window.event;
+// if (event.keyCode == 13) {
+// // normalize event target, so it looks the same for all browsers
+// if (!event.target) {
+// event.target = event.srcElement;
+// }
 //
-//		// don't do anything if the element handles the enter key on its own
-//		if (event.target.nodeName == 'A') {
-//			return;
-//		}
-//		if (event.target.nodeName == 'INPUT') {
-//			if (event.target.type == 'button'
-//					|| event.target.type == 'submit') {
-//				if (strEndsWith(
-//						event.target.id,
-//						'focusKeeper')) {
-//					// inside some Richfaces component such as rich:listShuttle
-//				} else {
-//					return;
-//				}
-//			}
-//		}
-//		if (event.target.nodeName == 'TEXTAREA') {
-//			return;
-//		}
+// // don't do anything if the element handles the enter key on its own
+// if (event.target.nodeName == 'A') {
+// return;
+// }
+// if (event.target.nodeName == 'INPUT') {
+// if (event.target.type == 'button'
+// || event.target.type == 'submit') {
+// if (strEndsWith(
+// event.target.id,
+// 'focusKeeper')) {
+// // inside some Richfaces component such as rich:listShuttle
+// } else {
+// return;
+// }
+// }
+// }
+// if (event.target.nodeName == 'TEXTAREA') {
+// return;
+// }
 //
-//		// swallow event
-//		if (event.preventDefault) {
-//			// Firefox
-//			event.stopPropagation();
-//			event.preventDefault();
-//		} else {
-//			// IE
-//			event.cancelBubble = true;
-//			event.returnValue = false;
-//		}
+// // swallow event
+// if (event.preventDefault) {
+// // Firefox
+// event.stopPropagation();
+// event.preventDefault();
+// } else {
+// // IE
+// event.cancelBubble = true;
+// event.returnValue = false;
+// }
 //
-//		document.getElementById(
-//				targetElement).click();
-//	}
-//}
-	
-	/**
-	 * Handler for onkeypress that clicks {@code targetElement} if the
-	 * enter key is pressed.
-	 */
-	function submitOnEnter(event, classname) {
-		classname = name || 'submitOnEnter';
-		event = event || window.event;
-		if (event.keyCode == 13) {
-			// normalize event target, so it looks the same for all browsers
-			if (!event.target) {
-				event.target = event.srcElement;
-			}
+// document.getElementById(
+// targetElement).click();
+// }
+// }
 
-			// don't do anything if the element handles the enter key on its own
-			if (event.target.nodeName == 'A') {
-				return;
-			}
-			if (event.target.nodeName == 'INPUT') {
-				if (event.target.type == 'button'
-						|| event.target.type == 'submit') {
-					if (strEndsWith(
-							event.target.id,
-							'focusKeeper')) {
-						// inside some Richfaces component such as rich:listShuttle
-					} else {
-						return;
-					}
-				}
-			}
-			if (event.target.nodeName == 'TEXTAREA') {
-				return;
-			}
-
-			// swallow event
-			if (event.preventDefault) {
-				// Firefox
-				event.stopPropagation();
-				event.preventDefault();
-			} else {
-				// IE
-				event.cancelBubble = true;
-				event.returnValue = false;
-			}
-			
-			document.getElementsByClassName(classname)[0].click();
-		}
-	
-	
+/**
+ * Handler for onkeypress that clicks {@code targetElement} if the enter key is pressed.
+ */
+function submitOnEnter( event, classname ) {
+    classname = name || 'submitOnEnter';
+    event = event || window.event;
+    if ( event.keyCode == 13 ) {
+        // normalize event target, so it looks the same for all browsers
+        if ( !event.target ) {
+            event.target = event.srcElement;
+        }
+        
+        // don't do anything if the element handles the enter key on its own
+        if ( event.target.nodeName == 'A' ) {
+            return;
+        }
+        if ( event.target.nodeName == 'INPUT' ) {
+            if ( event.target.type == 'button' || event.target.type == 'submit' ) {
+                if ( strEndsWith( event.target.id, 'focusKeeper' ) ) {
+                    // inside some Richfaces component such as rich:listShuttle
+                }
+                else {
+                    return;
+                }
+            }
+        }
+        if ( event.target.nodeName == 'TEXTAREA' ) {
+            return;
+        }
+        
+        // swallow event
+        if ( event.preventDefault ) {
+            // Firefox
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        else {
+            // IE
+            event.cancelBubble = true;
+            event.returnValue = false;
+        }
+        
+        document.getElementsByClassName( classname )[ 0 ].click();
+    }
+    
 }
-	
+
 // Thumbnails in METS Editor
-	
-	function loadImages() {
-		intrandaImages = {};
-		$('.thumb-canvas').each(function(index, el) {
-			drawOnCanvas(el);
-		});
-	}
 
-	function drawOnCanvas(canvas) {
-		if(canvas == null) {
-			return;
-		}
-		var ctx = canvas.getContext('2d');
-		var d = canvas.dataset;
-		
-		if(!d) {
-		    //fix for ie not supporting element.dataset
-		    d = {};
-		    d.image_small = canvas.getAttribute('data-image_small');
-		    d.image_large = canvas.getAttribute('data-image_large');
-		}
-			
-		var img = new Image();
-		img.onload = function() {
-			var scale = (canvas.width*2)/this.width;
-			canvas.width = this.width;
-			canvas.height = this.height;
-			ctx.drawImage(img,0,0,this.width,this.height);
-			intrandaImages[canvas.id] = {smallWidth: this.width-10, smallHeight: this.height-10, largeUrl: d.image_large};
-		};
-		var image = d.image_small;
-		//console.log(image);
-		img.src = image;
-		canvas.addEventListener('mouseout', drawOnCanvasMouseOut, false);
-		canvas.addEventListener('mousemove', onMouseMove, false);
-	}
+function loadImages() {
+    intrandaImages = {};
+    $( '.thumb-canvas' ).each( function( index, el ) {
+        drawOnCanvas( el );
+    } );
+}
 
-	function drawOnCanvasMouseOut(event) {
-		drawOnCanvas(event.currentTarget);
-	}
+function drawOnCanvas( canvas ) {
+    setTimeout( function() {
+        
+        if ( canvas == null ) {
+            return;
+        }
+        var ctx = canvas.getContext( '2d' );
+        var d = canvas.dataset;
+        
+        if ( !d ) {
+            // fix for ie not supporting element.dataset
+            d = {};
+            d.image_small = canvas.getAttribute( 'data-image_small' );
+            d.image_large = canvas.getAttribute( 'data-image_large' );
+        }
+        
+        var img = new Image();
+        img.onload = function() {
+            var scale = ( canvas.width * 2 ) / this.width;
+            canvas.width = this.width;
+            canvas.height = this.height;
+            ctx.drawImage( img, 0, 0, this.width, this.height );
+            intrandaImages[ canvas.id ] = {
+                smallWidth: this.width - 10,
+                smallHeight: this.height - 10,
+                largeUrl: d.image_large
+            };
+        };
+        var image = d.image_small;
+        // console.log(image);
+        img.src = image;
+        canvas.addEventListener( 'mouseout', drawOnCanvasMouseOut, false );
+        canvas.addEventListener( 'mousemove', onMouseMove, false );
+    }, 100 );
+}
 
-	function getMousePos(canvas, event) {
-		var rect = canvas.getBoundingClientRect();
-		return {
-			x: event.clientX - rect.left-5,
-			y: event.clientY - rect.top-5
-		};
-	}
+function drawOnCanvasMouseOut( event ) {    
+    drawOnCanvas( event.currentTarget );
+}
 
-	function onMouseMove(event) {
-		var canvas = event.currentTarget;
-		img = new Image();
-		img.onload = function() {
-			if(intrandaImages[canvas.id] == null) {
-				return;
-			}
-			intrandaImages[canvas.id].scaleX = (img.width-intrandaImages[canvas.id].smallWidth) / intrandaImages[canvas.id].smallWidth;
-			intrandaImages[canvas.id].scaleY = (img.height-intrandaImages[canvas.id].smallHeight) / intrandaImages[canvas.id].smallHeight;
-			var pos = getMousePos(canvas, event);
-			//check if mouse is still hovering over canvas
-			if($('#'+canvas.id+':hover').length == 0) {
-			    return;
-			}
-			var scaleX = intrandaImages[canvas.id].scaleX;
-			var scaleY = intrandaImages[canvas.id].scaleY;
-			var ctx = canvas.getContext('2d');
-			ctx.fillStyle='white';
-			ctx.fillRect(0,0,canvas.width, canvas.height);
-			var posX = pos.x*scaleX;
-			var posY = pos.y*scaleY;
-			if(posX < 0) {
-				posX = 0;
-			}
-			if(posY < 0) {
-				posY = 0;
-			}
-			if(img.width-posX < canvas.width) {
-				posX = img.width - canvas.width;
-			}
-			if(img.height-posY < canvas.height) {
-				posY = img.height - canvas.height;
-			}
-			ctx.drawImage(img, -posX, -posY);
-			}
-		img.src = intrandaImages[canvas.id].largeUrl;
-	}
+function getMousePos( canvas, event ) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: event.clientX - rect.left - 5,
+        y: event.clientY - rect.top - 5
+    };
+}
 
-	
-	
+function onMouseMove( event ) {
+    var canvas = event.currentTarget;
+    img = new Image();
+    img.onload = function() {
+        if ( intrandaImages[ canvas.id ] == null ) {
+            return;
+        }
+        intrandaImages[ canvas.id ].scaleX = ( img.width - intrandaImages[ canvas.id ].smallWidth ) / intrandaImages[ canvas.id ].smallWidth;
+        intrandaImages[ canvas.id ].scaleY = ( img.height - intrandaImages[ canvas.id ].smallHeight ) / intrandaImages[ canvas.id ].smallHeight;
+        var pos = getMousePos( canvas, event );
+        // check if mouse is still hovering over canvas
+        if ( $( '#' + canvas.id + ':hover' ).length == 0 ) {
+            return;
+        }
+        var scaleX = intrandaImages[ canvas.id ].scaleX;
+        var scaleY = intrandaImages[ canvas.id ].scaleY;
+        var ctx = canvas.getContext( '2d' );
+        ctx.fillStyle = 'white';
+        ctx.fillRect( 0, 0, canvas.width, canvas.height );
+        var posX = pos.x * scaleX;
+        var posY = pos.y * scaleY;
+        if ( posX < 0 ) {
+            posX = 0;
+        }
+        if ( posY < 0 ) {
+            posY = 0;
+        }
+        if ( img.width - posX < canvas.width ) {
+            posX = img.width - canvas.width;
+        }
+        if ( img.height - posY < canvas.height ) {
+            posY = img.height - canvas.height;
+        }
+        ctx.drawImage( img, -posX, -posY );
+    }
+    img.src = intrandaImages[ canvas.id ].largeUrl;
+}
