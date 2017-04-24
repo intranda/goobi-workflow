@@ -164,7 +164,7 @@ function drawOnCanvas( canvas ) {
     }, 100 );
 }
 
-function drawOnCanvasMouseOut( event ) {    
+function drawOnCanvasMouseOut( event ) {
     drawOnCanvas( event.currentTarget );
 }
 
@@ -211,5 +211,7 @@ function onMouseMove( event ) {
         }
         ctx.drawImage( img, -posX, -posY );
     }
-    img.src = intrandaImages[ canvas.id ].largeUrl;
+    if ( intrandaImages[ canvas.id ] ) {
+        img.src = intrandaImages[ canvas.id ].largeUrl;
+    }
 }
