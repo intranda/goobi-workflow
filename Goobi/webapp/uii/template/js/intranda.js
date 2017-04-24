@@ -141,7 +141,7 @@
 		if(!d) {
 		    //fix for ie not supporting element.dataset
 		    d = {};
-		    d.image_small = canvas.getAttribute('data-image_large');
+		    d.image_small = canvas.getAttribute('data-image_small');
 		    d.image_large = canvas.getAttribute('data-image_large');
 		}
 			
