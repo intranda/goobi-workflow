@@ -73,6 +73,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -875,5 +876,24 @@ public class MassImportForm {
 
     public void addProcessToProgressBar() {
         currentProcessNo = currentProcessNo + 1;
+    }
+    
+    
+    public Process cloneTemplate() {
+        Process process = new Process();
+
+        process.setIstTemplate(false);
+        process.setInAuswahllisteAnzeigen(false);
+        process.setProjekt(template.getProjekt());
+        process.setRegelsatz(template.getRegelsatz());
+        process.setDocket(template.getDocket());
+
+        BeanHelper bHelper = new BeanHelper();
+        bHelper.SchritteKopieren(template, process);
+        bHelper.ScanvorlagenKopieren(template, process);
+        bHelper.WerkstueckeKopieren(template, process);
+        bHelper.EigenschaftenKopieren(template, process);
+
+        return process;
     }
 }
