@@ -1004,19 +1004,19 @@ public class Metadaten {
             Helper.setFehlerMeldung(e.getMessage());
             return Helper.getRequestParameter("zurueck");
         } catch (PreferencesException e) {
-            Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
+            Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         } catch (WriteException e) {
-            Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
+            Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         } catch (IOException e) {
-            Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
+            Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
+            Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("error while loading metadata" + e.getMessage());
+            Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         }
         getAddDocStructType2();
