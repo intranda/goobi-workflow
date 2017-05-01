@@ -21,16 +21,6 @@ package de.sub.goobi;
 import org.goobi.io.BackupFileRotationTest;
 import org.goobi.pagination.IntegerSequenceTest;
 import org.goobi.pagination.RomanNumberSequenceTest;
-import org.goobi.production.GoobiVersionTest;
-import org.goobi.production.flow.statistics.enums.CalculationUnitTest;
-import org.goobi.production.flow.statistics.enums.ResultOutputTest;
-import org.goobi.production.flow.statistics.enums.StatisticsModeTest;
-import org.goobi.production.flow.statistics.enums.TimeUnitTest;
-import org.goobi.production.flow.statistics.hibernate.ConverterTest;
-import org.goobi.production.flow.statistics.hibernate.SQLHelperTest;
-import org.goobi.production.flow.statistics.hibernate.SQLProductionTest;
-import org.goobi.production.flow.statistics.hibernate.SQLStepRequestsTest;
-import org.goobi.production.flow.statistics.hibernate.SQLStorageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -38,14 +28,10 @@ import org.junit.runners.Suite.SuiteClasses;
 import de.sub.goobi.helper.archive.ProcessSwapOutTaskTest;
 import de.sub.goobi.helper.encryption.DesEncrypterTest;
 import de.sub.goobi.helper.importer.ImportOpacTest;
-import de.sub.goobi.samples.BenutzerTest;
-import de.sub.goobi.samples.BenutzergruppenTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, BenutzergruppenTest.class, BenutzerTest.class,
-        BackupFileRotationTest.class, GoobiVersionTest.class, CalculationUnitTest.class, ResultOutputTest.class, StatisticsModeTest.class,
-        TimeUnitTest.class, ConverterTest.class, SQLHelperTest.class, SQLProductionTest.class, SQLStepRequestsTest.class, SQLStorageTest.class,
-         IntegerSequenceTest.class, RomanNumberSequenceTest.class })
+@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class,
+        BackupFileRotationTest.class, IntegerSequenceTest.class, RomanNumberSequenceTest.class })
 public class OldTests {
 
 }
