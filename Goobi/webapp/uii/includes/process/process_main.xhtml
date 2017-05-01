@@ -31,7 +31,7 @@
                                     </h:commandLink>
 
                                     <!-- Metadaten-Schaltknopf -->
-                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action14" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
                                         <i class="fa fa-book" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <f:param name="nurLesen" value="true" />
@@ -41,7 +41,7 @@
                                     </h:commandLink>
 
                                     <!-- Metadaten-Schaltknopf -->
-                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action15" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
+                                    <h:commandLink action="#{Metadaten.XMLlesen}" id="action15" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
                                         <i class="fa fa-book " />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
@@ -113,13 +113,13 @@
                                     </div>
 
                                     <!-- DMS-Export-Schaltknopf -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" styleClass="btn btn-mini font-light" title="#{msgs.importDms}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" styleClass="btn btn-mini font-light" title="#{msgs.importDms}" rel="tooltip" rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="fa fa-globe" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
 
                                     <!-- DMS-Export-Schaltknopf greyed -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" styleClass="btn btn-mini" disabled="true" title="#{msgs.importDms}" rel="tooltip" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" styleClass="btn btn-mini" disabled="true" title="#{msgs.importDms}" rel="tooltip" rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="font-light fa fa-globe" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
