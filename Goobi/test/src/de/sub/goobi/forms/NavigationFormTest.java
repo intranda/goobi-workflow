@@ -60,20 +60,6 @@ public class NavigationFormTest {
     }
 
     @Test
-    public void testGetShowTaskManager() {
-        NavigationForm form = new NavigationForm();
-        assertNotNull(form);
-        assertFalse(form.getShowTaskManager());
-    }
-
-    @Test
-    public void testGetShowModuleManager() {
-        NavigationForm form = new NavigationForm();
-        assertNotNull(form);
-        assertFalse(form.getShowModuleManager());
-    }
-
-    @Test
     public void testIsShowHelp() {
         NavigationForm form = new NavigationForm();
         assertNotNull(form);

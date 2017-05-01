@@ -153,11 +153,6 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void testGetApplicationURL() {
-        assertNull(ConfigurationHelper.getInstance().getApplicationURL());
-    }
-
-    @Test
     public void testGetApplicationHeaderTitle() {
         assertEquals("Goobi", ConfigurationHelper.getInstance().getApplicationHeaderTitle());
     }
@@ -168,25 +163,8 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void testGetApplicationTitleStyle() {
-        assertEquals("font-size:17; font-family:verdana; color: white;", ConfigurationHelper.getInstance().getApplicationTitleStyle());
-    }
-
-    @Test
-    public void testGetApplicationIndividualHeader() {
-        assertEquals(
-                "<table><tr><td><a style=\"color:white\" target=\"_blank\" href=\"http://www.digiverso.com/de/\">digiverso</a></td></tr><tr><td><a style=\"color:white\" target=\"_blank\" href=\"http://www.goobi.org\">Goobi Community</a></td></tr></table>",
-                ConfigurationHelper.getInstance().getApplicationIndividualHeader());
-    }
-
-    @Test
     public void testGetOcrUrl() {
         assertEquals("", ConfigurationHelper.getInstance().getOcrUrl());
-    }
-
-    @Test
-    public void testGetAdminPassword() {
-        assertNotNull(ConfigurationHelper.getInstance().getAdminPassword());
     }
 
     @Test
@@ -484,53 +462,8 @@ public class ConfigurationHelperTest {
     }
     
     @Test
-    public void testGetActiveMQHostURL() {
-        assertNull(ConfigurationHelper.getInstance().getActiveMQHostURL());
-    }
-
-    @Test
-    public void testGgtActiveMQResultsTopic() {
-        assertNull(ConfigurationHelper.getInstance().getActiveMQResultsTopic());
-    }
-
-    @Test
-    public void testGetActiveMQNewProcessQueue() {
-        assertNull(ConfigurationHelper.getInstance().getActiveMQNewProcessQueue());
-    }
-
-    @Test
-    public void testGetActiveMQFinalizeProcessQueue() {
-        assertNull(ConfigurationHelper.getInstance().getActiveMQFinalizeProcessQueue());
-    }
-
-    @Test
-    public void testGetActiveMQTTL() {
-        assertEquals(604800000, ConfigurationHelper.getInstance().getActiveMQTTL());
-    }
-
-    @Test
     public void testIsUseSwapping() {
         assertFalse(ConfigurationHelper.getInstance().isUseSwapping());
-    }
-
-    @Test
-    public void testIsShowTaskmanager() {
-        assertFalse(ConfigurationHelper.getInstance().isShowTaskmanager());
-    }
-
-    @Test
-    public void testIsShowModulmanager() {
-        assertFalse(ConfigurationHelper.getInstance().isShowModulmanager());
-    }
-
-    @Test
-    public void testIsRunHotfolder() {
-        assertFalse(ConfigurationHelper.getInstance().isRunHotfolder());
-    }
-
-    @Test
-    public void testIsImportUseOldConfiguration() {
-        assertFalse(ConfigurationHelper.getInstance().isImportUseOldConfiguration());
     }
 
     @Test

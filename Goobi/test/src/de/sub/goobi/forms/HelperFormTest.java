@@ -137,14 +137,6 @@ public class HelperFormTest {
     }
 
     @Test
-    public void testGetApplicationTitleStyle() {
-        HelperForm helperForm = new HelperForm();
-        assertNotNull(helperForm);
-        String fixture = helperForm.getApplicationTitlexe();
-        assertNotNull(fixture);
-    }
-
-    @Test
     public void testGetApplicationWebsiteUrl() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -165,30 +157,6 @@ public class HelperFormTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getApplicationHomepageMsg();
-        assertNotNull(fixture);
-    }
-
-    @Test
-    public void testGetApplicationTechnicalBackgroundMsg() {
-        HelperForm helperForm = new HelperForm();
-        assertNotNull(helperForm);
-        String fixture = helperForm.getApplicationTechnicalBackgroundMsg();
-        assertNotNull(fixture);
-    }
-
-    @Test
-    public void testGetApplicationImpressumMsg() {
-        HelperForm helperForm = new HelperForm();
-        assertNotNull(helperForm);
-        String fixture = helperForm.getApplicationImpressumMsg();
-        assertNotNull(fixture);
-    }
-
-    @Test
-    public void testGetApplicationIndividualHeader() {
-        HelperForm helperForm = new HelperForm();
-        assertNotNull(helperForm);
-        String fixture = helperForm.getApplicationIndividualHeader();
         assertNotNull(fixture);
     }
 

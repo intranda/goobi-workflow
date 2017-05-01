@@ -80,9 +80,13 @@ public class ConfigurationHelper implements Serializable {
         return instance;
     }
 
+    public String getGoobiFolder() {
+        String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
+        return goobiFolder;
+    }
+    
     private String getConfigLocalPath() {
-        String configLocalPath = config.getString("configFolder", "/opt/digiverso/goobi/config/");
-        return configLocalPath;
+    	return getGoobiFolder() + "config/";
     }
 
     private int getLocalInt(String inPath, int inDefault) {
@@ -110,11 +114,6 @@ public class ConfigurationHelper implements Serializable {
             logger.error(e.getMessage(), e);
             return inDefault;
         }
-    }
-
-    @SuppressWarnings("unused")
-    private float getLocalFloat(String inPath) {
-        return configLocal.getFloat(inPath, config.getFloat(inPath));
     }
 
     private String getLocalString(String inPath, String inDefault) {
@@ -199,27 +198,27 @@ public class ConfigurationHelper implements Serializable {
     // folder
 
     public String getConfigurationFolder() {
-        return getLocalString("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
+    	return getGoobiFolder() + "config/";
     }
 
     public String getTemporaryFolder() {
-        return getLocalString("tempfolder", "/opt/digiverso/goobi/tmp/");
+    	return getGoobiFolder() + "tmp/";
     }
 
     public String getXsltFolder() {
-        return getLocalString("xsltFolder", "/opt/digiverso/goobi/xslt/");
+    	return getGoobiFolder() + "xslt/";
     }
 
     public String getMetadataFolder() {
-        return getLocalString("MetadatenVerzeichnis", "/opt/digiverso/goobi/metadata/");
+    	return getGoobiFolder() + "metadata/";
     }
 
     public String getRulesetFolder() {
-        return getLocalString("RegelsaetzeVerzeichnis", "/opt/digiverso/goobi/rulesets/");
+    	return getGoobiFolder() + "rulesets/";
     }
 
     public String getScriptsFolder() {
-        return getLocalString("scriptsFolder", "/opt/digiverso/goobi/scripts/");
+    	return getGoobiFolder() + "scripts/";
     }
 
     public String getUserFolder() {
@@ -231,11 +230,11 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getPluginFolder() {
-        return getLocalString("pluginFolder", "/opt/digiverso/goobi/plugins/");
+    	return getGoobiFolder() + "plugins/";
     }
 
     public String getPathForLocalMessages() {
-        return getLocalString("localMessages", "/opt/digiverso/goobi/messages/");
+    	return getGoobiFolder() + "config/";
     }
 
     public String getDoneDirectoryName() {
@@ -280,51 +279,24 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("goobiContentServerTimeOut", 60000);
     }
 
-    public String getApplicationURL() {
-        return getLocalString("ApplicationWebsiteUrl");
+    public String getApplicationHomepageMsg() {
+        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
     }
 
     public String getApplicationHeaderTitle() {
-        return getLocalString("ApplicationHeaderTitle", "Goobi intranda edition");
+        return getLocalString("ApplicationHeaderTitle", "Goobi");
     }
 
     public String getApplicationTitle() {
         return getLocalString("ApplicationTitle", "http://goobi.intranda.com");
     }
 
-    public String getApplicationTitleStyle() {
-        return getLocalString("ApplicationTitleStyle", "font-size:17; font-family:verdana; color: black;");
-    }
-
     public String getApplicationWebsiteMsg() {
         return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
     }
 
-    public String getApplicationHomepageMsg() {
-        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
-
-    }
-
-    public String getApplicationTechnicalBackgroundMsg() {
-        return getLocalString("ApplicationTechnicalBackgroundMsg", getServletPathAsUrl());
-
-    }
-
-    public String getApplicationImpressumMsg() {
-        return getLocalString("ApplicationImpressumMsg", getServletPathAsUrl());
-
-    }
-
-    public String getApplicationIndividualHeader() {
-        return getLocalString("ApplicationIndividualHeader", "");
-    }
-
     public String getOcrUrl() {
         return getLocalString("ocrUrl");
-    }
-
-    public String getAdminPassword() {
-        return getLocalString("superadminpassword");
     }
 
     public String getDefaultLanguage() {
@@ -598,56 +570,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("http_proxyPort", 8080);
     }
 
-    // active mq, unused, remove it
-    @Deprecated
-    public String getActiveMQHostURL() {
-        return getLocalString("activeMQ.hostURL", null);
-    }
-
-    @Deprecated
-    public String getActiveMQResultsTopic() {
-        return getLocalString("activeMQ.results.topic", null);
-    }
-
-    @Deprecated
-    public String getActiveMQNewProcessQueue() {
-        return getLocalString("activeMQ.createNewProcess.queue", null);
-    }
-
-    @Deprecated
-    public String getActiveMQFinalizeProcessQueue() {
-        return getLocalString("activeMQ.finaliseStep.queue", null);
-    }
-
-    @Deprecated
-    public long getActiveMQTTL() {
-        return getLocalLong("activeMQ.results.timeToLive", 604800000);
-    }
-
     // old parameter, remove them
     @Deprecated
     public boolean isUseSwapping() {
         return getLocalBoolean("useSwapping", false);
-    }
-
-    @Deprecated
-    public boolean isShowTaskmanager() {
-        return getLocalBoolean("show_taskmanager", false);
-    }
-
-    @Deprecated
-    public boolean isShowModulmanager() {
-        return getLocalBoolean("show_modulmanager", false);
-    }
-
-    @Deprecated
-    public boolean isRunHotfolder() {
-        return getLocalBoolean("runHotfolder", false);
-    }
-
-    @Deprecated
-    public boolean isImportUseOldConfiguration() {
-        return getLocalBoolean("importUseOldConfiguration", false);
     }
 
     @Deprecated

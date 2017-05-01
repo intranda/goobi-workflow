@@ -177,7 +177,7 @@
 
                     <intranda:formInputCheckBox id="schrittBeimAnnehmenAbschliessen" label="#{msgs.schrittBeimAnnehmenAbschliessen}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" help="#{msgs.helpProcessStepFinish}" name="chkmanuell1" />
 
-                    <h:panelGroup rendered="#{NavigationForm.showModuleManager}">
+                    <h:panelGroup rendered="#{false}">
                         <intranda:formInputCheckBox id="beimAnnehmenModulStarten" label="#{msgs.beimAnnehmenModulStarten}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}" help="#{msgs.helpProcessStepStartModule}" name="chkmanuell2" />
 
                         <intranda:formInputCheckBox id="beimAnnehmenModulStartenUndSchrittAbschliessen" label="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}" help="#{msgs.helpProcessStepStartModuleAndFinish}" name="chkmanuell3" />
@@ -224,10 +224,7 @@
                             <x:message for="chkautomatisch" style="color: red" replaceIdWithLabel="true" />
                         </div>
                     </div>
-                    <h:panelGroup rendered="#{NavigationForm.showModuleManager}">
-                        <intranda:formInputText id="moduleName" name="moduleName" label="#{msgs.modul}" field="#{ProzessverwaltungForm.mySchritt.typModulName}" help="#{msgs.helpProcessStepModule}" fieldStyle="form-control" />
-                    </h:panelGroup>
-
+                    
                     <intranda:formInputDropDown id="status" label="#{msgs.status}" field="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusAsString}" help="#{msgs.helpProcessStepStatus}" name="status" selectItems="#{HelperForm.stepStatusList}" fieldStyle="form-control" required="true" />
 
                     <intranda:formInputCheckBox id="batchStep" label="#{msgs.batchStep}" field="#{ProzessverwaltungForm.mySchritt.batchStep}" help="#{msgs.helpProcessStepBatch}" name="batch" />

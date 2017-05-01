@@ -87,11 +87,6 @@ public class HelperForm {
         return rueck;
     }
 
-    public String getApplicationTitlexe() {
-        String rueck = ConfigurationHelper.getInstance().getApplicationTitleStyle();
-        return rueck;
-    }
-
     public String getApplicationWebsiteUrl() {
         return getServletPathAsUrl();
     }
@@ -104,21 +99,6 @@ public class HelperForm {
     public String getApplicationHomepageMsg() {
         String rueck = ConfigurationHelper.getInstance().getApplicationHomepageMsg();
         return Helper.getTranslation(rueck);
-    }
-
-    public String getApplicationTechnicalBackgroundMsg() {
-        String rueck = ConfigurationHelper.getInstance().getApplicationTechnicalBackgroundMsg();
-        return Helper.getTranslation(rueck);
-    }
-
-    public String getApplicationImpressumMsg() {
-        String rueck = ConfigurationHelper.getInstance().getApplicationImpressumMsg();
-        return Helper.getTranslation(rueck);
-    }
-
-    public String getApplicationIndividualHeader() {
-        String rueck = ConfigurationHelper.getInstance().getApplicationIndividualHeader();
-        return rueck;
     }
 
     public boolean getAnonymized() {

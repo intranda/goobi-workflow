@@ -47,8 +47,6 @@ import de.sub.goobi.helper.encryption.MD5;
 @SessionScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
-    private String passwort;
-    private boolean istPasswortRichtig = false;
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     private List<String> possibleAdministrationPluginNames;
@@ -62,31 +60,6 @@ public class AdministrationForm implements Serializable {
         Collections.sort(possibleAdministrationPluginNames);
     }
 
-    /* =============================================================== */
-
-    /**
-     * Passwort eingeben
-     */
-    public String Weiter() {
-        this.passwort = new MD5(this.passwort).getMD5();
-        String adminMd5 = ConfigurationHelper.getInstance().getAdminPassword();
-        this.istPasswortRichtig = (this.passwort.equals(adminMd5));
-        if (!this.istPasswortRichtig) {
-            Helper.setFehlerMeldung("wrong passworwd", "");
-        }
-        return "";
-    }
-
-    /* =============================================================== */
-
-    public String getPasswort() {
-        return this.passwort;
-    }
-
-    public void setPasswort(String passwort) {
-        this.passwort = passwort;
-    }
-
     public void startStorageCalculationForAllProcessesNow() {
         HistoryAnalyserJob job = new HistoryAnalyserJob();
         if (job.getIsRunning() == false) {
@@ -96,13 +69,6 @@ public class AdministrationForm implements Serializable {
             Helper.setMeldung("Job is already running, try again in a few minutes");
         }
     }
-
-
-    public boolean isIstPasswortRichtig() {
-        return this.istPasswortRichtig;
-    }
-
-   
 
     @Deprecated
     public void test() {
