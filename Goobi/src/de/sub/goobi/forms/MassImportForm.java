@@ -47,7 +47,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
@@ -67,51 +68,51 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import ugh.dl.Prefs;
-
-import org.goobi.beans.Process;
-import org.goobi.beans.Step;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import ugh.dl.Prefs;
 
 @ManagedBean(name = "MassImportForm")
 @SessionScoped
+@Log4j
 public class MassImportForm {
-    private static final Logger logger = Logger.getLogger(MassImportForm.class);
-    private Process template;
-    private List<Process> processes;
-    private List<String> digitalCollections;
-    private List<String> possibleDigitalCollections;
     // private List<String> recordList = new ArrayList<String>();
-    private List<String> ids = new ArrayList<String>();
     private ImportFormat format = null;
-    private String idList = "";
-    private String records = "";
     // private List<String> usablePlugins = new ArrayList<String>();
-    private List<String> usablePluginsForRecords = new ArrayList<String>();
-    private List<String> usablePluginsForIDs = new ArrayList<String>();
-    private List<String> usablePluginsForFiles = new ArrayList<String>();
-    private List<String> usablePluginsForFolder = new ArrayList<String>();
     private final ImportPluginLoader ipl = new ImportPluginLoader();
     private String currentPlugin = "";
-    private IImportPlugin plugin;
 
     private Path importFile = null;
     private final Helper help = new Helper();
     // private ImportConfiguration ic = null;
 
-    private Part uploadedFile = null;
-
-    private List<Process> processList;
-
     // progress bar
-    private Integer progress = 0;
+    @Setter private Integer progress = 0;
     private Integer currentProcessNo = 0;
-    private Integer totalProcessNo = 0;
+    @Setter private Integer totalProcessNo = 0;
+    
+    @Getter private IImportPlugin plugin;
+    @Getter @Setter private Process template;
+    @Getter @Setter private List<Process> process;
+    @Getter @Setter private List<Process> processList;
+    @Getter @Setter private List<String> digitalCollections;
+    @Getter @Setter private List<String> possibleDigitalCollection;
+    @Getter @Setter private List<String> ids = new ArrayList<String>();
+    @Getter @Setter private List<String> usablePluginsForRecords = new ArrayList<String>();
+    @Getter @Setter private List<String> usablePluginsForIDs = new ArrayList<String>();
+    @Getter @Setter private List<String> usablePluginsForFiles = new ArrayList<String>();
+    @Getter @Setter private List<String> usablePluginsForFolder = new ArrayList<String>();
+    @Getter @Setter private String records = "";
+    @Getter @Setter private String idList = "";
+    @Getter @Setter private Part uploadedFile = null;
+    @Getter @Setter private List<String> allFilenames = new ArrayList<String>();
+    @Getter @Setter private List<String> selectedFilenames = new ArrayList<String>();
     
     public MassImportForm() {
 
@@ -146,7 +147,7 @@ public class MassImportForm {
      */
 
     private void initializePossibleDigitalCollections() {
-        this.possibleDigitalCollections = new ArrayList<String>();
+        this.possibleDigitalCollection = new ArrayList<String>();
         ArrayList<String> defaultCollections = new ArrayList<String>();
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
         if (!Files.exists(Paths.get(filename))) {
@@ -191,43 +192,23 @@ public class MassImportForm {
                                     digitalCollections.add(col.getText());
                                 }
 
-                                this.possibleDigitalCollections.add(col.getText());
+                                this.possibleDigitalCollection.add(col.getText());
                             }
                         }
                     }
                 }
             }
         } catch (JDOMException e1) {
-            logger.error("error while parsing digital collections", e1);
+            log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         } catch (IOException e1) {
-            logger.error("error while parsing digital collections", e1);
+        	log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 
-        if (this.possibleDigitalCollections.size() == 0) {
-            this.possibleDigitalCollections = defaultCollections;
+        if (this.possibleDigitalCollection.size() == 0) {
+            this.possibleDigitalCollection = defaultCollections;
         }
-    }
-
-    private List<String> allFilenames = new ArrayList<String>();
-    private List<String> selectedFilenames = new ArrayList<String>();
-
-    public List<String> getAllFilenames() {
-
-        return this.allFilenames;
-    }
-
-    public void setAllFilenames(List<String> allFilenames) {
-        this.allFilenames = allFilenames;
-    }
-
-    public List<String> getSelectedFilenames() {
-        return this.selectedFilenames;
-    }
-
-    public void setSelectedFilenames(List<String> selectedFilenames) {
-        this.selectedFilenames = selectedFilenames;
     }
 
     public String convertData() {
@@ -237,7 +218,6 @@ public class MassImportForm {
             return "";
         }
         if (testForData()) {
-
 
             List<ImportObject> answer = new ArrayList<ImportObject>();
             Integer batchId = null;
@@ -358,7 +338,7 @@ public class MassImportForm {
             try {
                 Files.delete(this.importFile);
             } catch (IOException e) {
-                logger.error(e);
+            	log.error(e);
             }
             this.importFile = null;
         }
@@ -407,21 +387,21 @@ public class MassImportForm {
             Helper.setMeldung(Helper.getTranslation("uploadSuccessful", basename));
             // Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        	log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                	log.error(e.getMessage(), e);
                 }
             }
             if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                	log.error(e.getMessage(), e);
                 }
             }
 
@@ -436,14 +416,6 @@ public class MassImportForm {
             }
         }
         return null;
-    }
-
-    public Part getUploadedFile() {
-        return this.uploadedFile;
-    }
-
-    public void setUploadedFile(Part uploadedFile) {
-        this.uploadedFile = uploadedFile;
     }
 
     /**
@@ -507,109 +479,9 @@ public class MassImportForm {
         this.format = ImportFormat.getTypeFromTitle(formatTitle);
     }
 
-    /**
-     * @param idList the idList to set
-     */
-    public void setIdList(String idList) {
-        this.idList = idList;
-    }
-
-    /**
-     * @return the idList
-     */
-    public String getIdList() {
-        return this.idList;
-    }
-
-    /**
-     * @param records the records to set
-     */
-    public void setRecords(String records) {
-        this.records = records;
-    }
-
-    /**
-     * @return the records
-     */
-    public String getRecords() {
-        return this.records;
-    }
-
-    /**
-     * @param process the process to set
-     */
-    public void setProcess(List<Process> processes) {
-        this.processes = processes;
-    }
-
-    /**
-     * @return the process
-     */
-    public List<Process> getProcess() {
-        return this.processes;
-    }
-
-    /**
-     * @param template the template to set
-     */
-    public void setTemplate(Process template) {
-        // this.ic = new ImportConfiguration(template);
-        this.template = template;
-
-    }
-
-    /**
-     * @return the template
-     */
-    public Process getTemplate() {
-        return this.template;
-    }
-
-    /**
-     * @param digitalCollections the digitalCollections to set
-     */
-    public void setDigitalCollections(List<String> digitalCollections) {
-        this.digitalCollections = digitalCollections;
-    }
-
-    /**
-     * @return the digitalCollections
-     */
-    public List<String> getDigitalCollections() {
-        return this.digitalCollections;
-    }
-
-    /**
-     * @param possibleDigitalCollection the possibleDigitalCollection to set
-     */
-    public void setPossibleDigitalCollection(List<String> possibleDigitalCollection) {
-        this.possibleDigitalCollections = possibleDigitalCollection;
-    }
-
-    /**
-     * @return the possibleDigitalCollection
-     */
-    public List<String> getPossibleDigitalCollection() {
-        return this.possibleDigitalCollections;
-    }
-
     @Deprecated
     public void setProcesses(List<Process> processes) {
-        this.processes = processes;
-    }
-
-    /**
-     * @param ids the ids to set
-     */
-    public void setIds(List<String> ids) {
-        this.ids = ids;
-    }
-
-    /**
-     * @return the ids
-     */
-    public List<String> getIds() {
-        return this.ids;
+        this.process = processes;
     }
 
     /**
@@ -649,52 +521,6 @@ public class MassImportForm {
      */
     public String getCurrentPlugin() {
         return this.currentPlugin;
-    }
-
-    public IImportPlugin getPlugin() {
-        return plugin;
-    }
-
-    /**
-     * @param usablePluginsForRecords the usablePluginsForRecords to set
-     */
-    public void setUsablePluginsForRecords(List<String> usablePluginsForRecords) {
-        this.usablePluginsForRecords = usablePluginsForRecords;
-    }
-
-    /**
-     * @return the usablePluginsForRecords
-     */
-    public List<String> getUsablePluginsForRecords() {
-        return this.usablePluginsForRecords;
-    }
-
-    /**
-     * @param usablePluginsForIDs the usablePluginsForIDs to set
-     */
-    public void setUsablePluginsForIDs(List<String> usablePluginsForIDs) {
-        this.usablePluginsForIDs = usablePluginsForIDs;
-    }
-
-    /**
-     * @return the usablePluginsForIDs
-     */
-    public List<String> getUsablePluginsForIDs() {
-        return this.usablePluginsForIDs;
-    }
-
-    /**
-     * @param usablePluginsForFiles the usablePluginsForFiles to set
-     */
-    public void setUsablePluginsForFiles(List<String> usablePluginsForFiles) {
-        this.usablePluginsForFiles = usablePluginsForFiles;
-    }
-
-    /**
-     * @return the usablePluginsForFiles
-     */
-    public List<String> getUsablePluginsForFiles() {
-        return this.usablePluginsForFiles;
     }
 
     public boolean getHasNextPage() {
@@ -749,25 +575,9 @@ public class MassImportForm {
         return new ArrayList<ImportProperty>();
     }
 
-    public List<Process> getProcessList() {
-        return this.processList;
-    }
-
-    public void setProcessList(List<Process> processList) {
-        this.processList = processList;
-    }
-
-    public List<String> getUsablePluginsForFolder() {
-        return this.usablePluginsForFolder;
-    }
-
-    public void setUsablePluginsForFolder(List<String> usablePluginsForFolder) {
-        this.usablePluginsForFolder = usablePluginsForFolder;
-    }
-
     public String downloadDocket() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("generate docket for process list");
+        if (log.isDebugEnabled()) {
+        	log.debug("generate docket for process list");
         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
@@ -787,7 +597,7 @@ public class MassImportForm {
                 ern.startExport(this.processList, out, xsltfile.toString());
                 out.flush();
             } catch (IOException e) {
-                logger.error("IOException while exporting run note", e);
+            	log.error("IOException while exporting run note", e);
             }
 
             facesContext.responseComplete();
@@ -825,8 +635,6 @@ public class MassImportForm {
         return null;
     }
     
-    
-    
     public int getDocstructssize() {
         return getDocstructs().size();
     }
@@ -847,20 +655,11 @@ public class MassImportForm {
             if (progress > 100)
                 progress = 100;
         }
-
         return progress;
     }
 
     public void setCurrentProcess(Integer number) {
         currentProcessNo = number;
-    }
-
-    public void setTotalProcessNo(Integer totalProcessNo) {
-        this.totalProcessNo = totalProcessNo;
-    }
-
-    public void setProgress(Integer progress) {
-        this.progress = progress;
     }
 
     public void onComplete() {
