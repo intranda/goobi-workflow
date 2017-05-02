@@ -46,8 +46,6 @@ public interface IImportPlugin extends IPlugin {
 	
 	public void setData(Record r);
 	
-	public Fileformat convertData() throws ImportPluginException;
-	
 	public String getImportFolder();
 	
 	public String getProcessTitle();
@@ -62,6 +60,13 @@ public interface IImportPlugin extends IPlugin {
 
 	public List<Record> generateRecordsFromFile();
 
+	/**
+	 * Create records out of the selected files. Typically the record identifiers are the 
+	 * same as the file names and they can be used to request a catalogue
+	 * 
+	 * @param filenames List of all the files that where selected in the mass impoart mask
+	 * @return
+	 */
 	public List<Record> generateRecordsFromFilenames(List<String> filenames);
 	
 	public void setFile(File importFile);
@@ -72,6 +77,13 @@ public interface IImportPlugin extends IPlugin {
 	
 	public List<ImportProperty> getProperties();
 	
+	
+	/**
+	 * Returns a list of all the files that the plugin offers in the file multiselect box 
+	 * to pick from for an import. Each import decides what shall be listed here (files, folders etc.)
+	 * 
+	 * @return
+	 */
 	public List<String> getAllFilenames();
 
 	public void deleteFiles(List<String> selectedFilenames);	
@@ -87,4 +99,13 @@ public interface IImportPlugin extends IPlugin {
 	public DocstructElement getDocstruct();
 	
 	public void setDocstruct(DocstructElement dse);
+	
+	/**
+	 * should be an internal method for each plugin. Can very likely be removed from this interface. 
+	 * It is usually used to generate FileFormats and to put these into the ImportObjects then
+	 * 
+	 * @return
+	 * @throws ImportPluginException
+	 */
+	public Fileformat convertData() throws ImportPluginException;
 }

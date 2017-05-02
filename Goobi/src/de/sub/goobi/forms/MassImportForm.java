@@ -142,8 +142,6 @@ public class MassImportForm {
 
     /**
      * generate a list with all possible collections for given project
-     * 
-     * 
      */
 
     private void initializePossibleDigitalCollections() {
@@ -303,7 +301,7 @@ public class MassImportForm {
                                 selectedFilenames.remove(io.getImportFileName());
                             }
                         }
-                        Helper.setFehlerMeldung("import failed for " + io.getProcessTitle() + ", process generation failed");
+                        Helper.setFehlerMeldung("Import failed for " + io.getProcessTitle() + ", process generation failed");
 
                     } else {
                         Helper.setMeldung(ImportReturnValue.ExportFinished.getValue() + " for " + io.getProcessTitle());
