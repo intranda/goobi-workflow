@@ -550,7 +550,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isUseIntrandaUi() {
-        return getLocalBoolean("ui_useIntrandaUI", false);
+        return getLocalBoolean("ui_useIntrandaUI", true);
     }
 
     public String getDashboardPlugin() {
