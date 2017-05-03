@@ -84,12 +84,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetUserFolder() {
-        assertEquals("/home/", ConfigurationHelper.getInstance().getUserFolder());
-    }
-
-    @Test
-    public void testGetDebugFolder() {
-        assertEquals("/opt/digiverso/goobi/debug/", ConfigurationHelper.getInstance().getDebugFolder());
+        assertEquals("/opt/digiverso/goobi/users/", ConfigurationHelper.getInstance().getUserFolder());
     }
 
     @Test

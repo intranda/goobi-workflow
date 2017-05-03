@@ -222,7 +222,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getUserFolder() {
-        return getLocalString("dir_Users", "/home/");
+        return getLocalString("dir_Users", getGoobiFolder() + "users/");
     }
 
     public String getDebugFolder() {
