@@ -1,12 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-                xmlns:h="http://xmlns.jcp.org/jsf/html" 
-                xmlns:f="http://xmlns.jcp.org/jsf/core" 
-                template="/uii/template/template.html" 
-                xmlns:o="http://omnifaces.org/ui" 
-                xmlns:of="http://omnifaces.org/functions" 
-                xmlns:x="http://myfaces.apache.org/tomahawk" 
-                xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" template="/uii/template/template.html" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param name="myPageTitle" value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
 
@@ -21,11 +13,10 @@
 
     <ui:define name="content">
         <script type="text/javascript">
-									window.onload = function() {
-										document.getElementById('nachname')
-												.focus();
-									}
-								</script>
+                                    window.onload = function() {
+                                        document.getElementById( 'nachname' ).focus();
+                                    }
+                                </script>
         <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Users')}">
 
             <div class="row">
@@ -87,9 +78,9 @@
                                     </div>
 
                                     <intranda:formInputText id="ldapname" label="#{msgs.ldaplogin}" required="false" field="#{BenutzerverwaltungForm.myClass.ldaplogin}" help="#{msgs.helpLdaplogin}" name="ldaplogin" fieldStyle="form-control" />
-
-                                    <intranda:formInputSecretText id="password" label="#{msgs.passwort}" field="#{BenutzerverwaltungForm.myClass.passwort}" help="#{msgs.helpPasswort}" name="password" fieldStyle="form-control" />
-
+                                    <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
+                                        <intranda:formInputSecretText id="password" label="#{msgs.passwort}" field="#{BenutzerverwaltungForm.myClass.passwort}" help="#{msgs.helpPasswort}" name="password" fieldStyle="form-control" />
+                                    </h:panelGroup>
                                     <intranda:formInputDropDown id="ldapgroup" label="#{msgs.ldapgruppe}" field="#{BenutzerverwaltungForm.ldapGruppeAuswahl}" help="#{msgs.helpLdapGruppe}" name="ldapGruppe" selectItems="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}" fieldStyle="form-control" />
 
                                     <intranda:formInputText id="email" label="#{msgs.email}" field="#{BenutzerverwaltungForm.myClass.email}" help="#{msgs.helpEmail}" required="false" name="email" fieldStyle="form-control" />
