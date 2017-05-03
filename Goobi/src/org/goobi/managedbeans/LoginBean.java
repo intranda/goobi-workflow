@@ -41,6 +41,8 @@ import javax.faces.bean.SessionScoped;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
@@ -207,6 +209,11 @@ public class LoginBean {
                 User temp = UserManager.getUserById(this.myBenutzer.getId());
                // TODO
 //                temp.setPasswortCrypt(this.passwortAendernNeu1);
+                
+                RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+                Object salt = rng.nextBytes();
+                temp.setPasswordSalt(salt.toString());
+                temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
                 UserManager.saveUser(temp);
                 this.myBenutzer = temp;
 
