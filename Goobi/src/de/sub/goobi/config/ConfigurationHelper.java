@@ -326,19 +326,19 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirMeta() {
-        return getGoobiFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
+        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
     }
 
     public String getScriptCreateDirUserHome() {
-        return getGoobiFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
+        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
     }
 
     public String getScriptDeleteSymLink() {
-        return getGoobiFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
+        return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
     }
 
     public String getScriptCreateSymLink() {
-        return getGoobiFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
+        return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
     }
 
     public boolean isMassImportAllowed() {
