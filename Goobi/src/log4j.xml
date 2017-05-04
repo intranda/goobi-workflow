@@ -10,11 +10,11 @@
 <!--         <param name="includeMappedDiagnosticContext" value="false" /> -->
 <!--     </appender> -->
 
-<!--     <appender name="TEXT-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender"> -->
-<!--         <param name="path" value="/opt/digiverso/logs/text-vanilla-chronicle" /> -->
-<!--         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" /> -->
-<!--         <param name="stackTradeDepth" value="3" /> -->
-<!--     </appender> -->
+    <appender name="TEXT-VANILLA-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextVanillaChronicleAppender">
+        <param name="path" value="/opt/digiverso/logs/text-vanilla-chronicle" />
+        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" />
+        <param name="stackTradeDepth" value="3" />
+    </appender>
 
 <!--     <appender name="BINARY-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.BinaryIndexedChronicleAppender"> -->
 <!--         <param name="path" value="/opt/digiverso/logs/binary-indexed-chronicle" /> -->
@@ -22,11 +22,23 @@
 <!--         <param name="includeMappedDiagnosticContext" value="false" /> -->
 <!--     </appender> -->
 
-    <appender name="TEXT-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender">
-        <param name="path" value="/opt/digiverso/logs/text-indexed-chronicle" />
-        <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" />
-        <param name="stackTradeDepth" value="3" />
+<!--     <appender name="TEXT-INDEXED-CHRONICLE" class="net.openhft.chronicle.logger.log4j1.TextIndexedChronicleAppender"> -->
+<!--         <param name="path" value="/opt/digiverso/logs/text-indexed-chronicle" /> -->
+<!--         <param name="dateFormat" value="yyyy.MM.dd-HH:mm:ss.SSS" /> -->
+<!--         <param name="stackTradeDepth" value="3" /> -->
+<!--     </appender> -->
+
+
+    <appender name="file" class="org.apache.log4j.RollingFileAppender">
+        <param name="append" value="false" />
+        <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="5" />
+        <param name="file" value="/opt/digiverso/logs/goobi.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
     </appender>
+    
 
     <!-- ******************************************************************* -->
     <!-- STDOUT                                                              -->
@@ -37,7 +49,7 @@
         <layout class="org.apache.log4j.PatternLayout">
 <!--             <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" /> -->
 <!--             <param name="ConversionPattern" value="%-5p %d %C.%M(%F:%L) - %m%n" /> -->
-			<param name="ConversionPattern" value="%-4r %-5p (%F:%L) - %m%n" />
+            <param name="ConversionPattern" value="%-4r %-5p (%F:%L) - %m%n" />
         </layout>
     </appender>
   
@@ -48,56 +60,61 @@
 
     <logger name="de.sub.goobi" additivity="false">
         <level value="debug" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
-         <appender-ref ref="STDOUT" />
+        <appender-ref ref="file" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
     <logger name="org.goobi" additivity="false">
         <level value="debug" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
 
     <logger name="de.unigoettingen.sub.search.opac" additivity="false">
         <level value="error" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
+
     </logger>
 
     <logger name="ugh" additivity="false">
         <level value="debug" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
     <logger name="de.sub.goobi.persistence" additivity="false">
         <level value="error" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
-<!--     <logger name="de.sub.goobi.Metadaten" additivity="false"> -->
-<!--         <level value="debug" /> -->
-<!--         <appender-ref ref="TEXT-INDEXED-CHRONICLE" /> -->
-<!--         <appender-ref ref="STDOUT" /> -->
-<!--     </logger> -->
+
 
     <logger name="de.unigoettingen.gdz.goobi.contentserver" additivity="false">
         <level value="error" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
 
     <logger name="de.intranda.goobi" additivity="false">
         <level value="debug" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
     <logger name="org.quartz" additivity="false">
         <level value="error" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </logger>
 
 
@@ -107,8 +124,9 @@
 
     <root>
         <level value="error" />
-        <appender-ref ref="TEXT-INDEXED-CHRONICLE" />
+        <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
     </root>
 
 </log4j:configuration>
