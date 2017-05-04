@@ -146,8 +146,12 @@ class TemplateMysqlHelper implements Serializable {
                 template.setId(id);
             } else {
                 sql = "UPDATE vorlagen set Herkunft = ?, ProzesseID = ? WHERE VorlagenID =" + template.getId();
-                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
-                run.update(connection, sql, param);
+                try {
+	                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
+	                run.update(connection, sql, param);
+                }catch (NullPointerException e){
+                	// Null pointer seems just to happen in embedded database
+                }
             }
         } finally {
             if (connection != null) {
