@@ -221,7 +221,13 @@ public class VariableReplacer {
             if (inString.contains("(prefs)")) {
                 inString = inString.replace("(prefs)", myprefs);
             }
-
+            if (inString.contains("(goobiFolder)")) {
+                inString = inString.replace("(goobiFolder)", ConfigurationHelper.getInstance().getGoobiFolder());
+            }
+            if (inString.contains("(scriptsFolder)")) {
+                inString = inString.replace("(scriptsFolder)", ConfigurationHelper.getInstance().getScriptsFolder());
+            }
+            
             if (this.step != null) {
                 String stepId = String.valueOf(this.step.getId());
                 String stepname = this.step.getTitel();
