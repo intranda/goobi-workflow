@@ -42,7 +42,7 @@ public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
     private static final Logger logger = Logger.getLogger(DatabasePaginator.class);
     private List<? extends DatabaseObject> results;
-    private int pageSize = 0;
+    private int pageSize = 10;
     private int page = 0;
     private int totalResults = 0;
     private String order = "";
