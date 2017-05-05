@@ -142,8 +142,12 @@ class MasterpieceMysqlHelper implements Serializable {
                 object.setId(id);
             } else {
                 sql = "UPDATE werkstuecke set  ProzesseID = ? WHERE WerkstueckeID =" + object.getId();
-                Object[] param = { object.getProzess().getId() };
-                run.update(connection, sql, param);
+                try{
+	                Object[] param = { object.getProzess().getId() };
+	                run.update(connection, sql, param);
+                }catch (NullPointerException e){
+                	// Null pointer seems just to happen in embedded database
+                }
             }
 
         } finally {

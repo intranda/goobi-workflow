@@ -143,8 +143,10 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query);
             if (num == 0) {
-                myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+            	if (myClass.getId()==null){
+            		myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
 //                myClass.setPasswort("");
+            	}
                 UserManager.saveUser(this.myClass);
                 paginator.load();
                 return FilterKein();

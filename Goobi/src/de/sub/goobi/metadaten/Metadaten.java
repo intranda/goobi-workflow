@@ -2077,10 +2077,11 @@ public class Metadaten {
                 }
             }
         }
-        if (StringUtils.isBlank(currentTifFolder) && allTifFolders.isEmpty()) {
+        if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
-        } else if (!this.allTifFolders.contains(this.currentTifFolder)) {
-            this.currentTifFolder = allTifFolders.get(0);
+        	if (!this.allTifFolders.contains(this.currentTifFolder)) {
+        		this.currentTifFolder = allTifFolders.get(0);
+            }
         }
     }
 
