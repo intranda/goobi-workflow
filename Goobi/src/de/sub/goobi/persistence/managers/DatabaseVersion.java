@@ -692,11 +692,13 @@ public class DatabaseVersion {
 				// create first user
 				User user = new User();
 				user.setVorname("Goobi");
-				user.setNachname("Admin");
+				user.setNachname("Administrator");
 				user.setPasswort("goobi");
 				user.setLogin("goobi");
 				user.setTabellengroesse(10);
 				user.setLdaplogin("goobi");
+				user.setMetadatenSprache("en");
+				user.setStandort("Göttingen");
 				RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 				Object salt = rng.nextBytes();
 				user.setPasswordSalt(salt.toString());
