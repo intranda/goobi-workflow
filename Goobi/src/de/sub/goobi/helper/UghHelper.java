@@ -28,6 +28,7 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -253,7 +254,14 @@ public class UghHelper {
         String temp = inString;
         /* Pfad zur Datei ermitteln */
         String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
-        //		}
+        
+        if (!new File(filename).exists()){
+            FacesContext context = FacesContextHelper.getCurrentFacesContext();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems
+                    .getDefault().getSeparator() + "goobi_opacUmlaut.txt";
+        }
+        
         /* Datei zeilenweise durchlaufen und die Sprache vergleichen */
         try {
             FileInputStream fis = new FileInputStream(filename);

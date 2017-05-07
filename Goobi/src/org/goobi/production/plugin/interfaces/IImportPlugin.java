@@ -79,7 +79,7 @@ public interface IImportPlugin extends IPlugin {
 	
 	
 	/**
-	 * Returns a list of all the files that the plugin offers in the file multiselect box 
+	 * Returns a list of all the files / objects that the plugin offers in the file multiselect box 
 	 * to pick from for an import. Each import decides what shall be listed here (files, folders etc.)
 	 * 
 	 * @return
