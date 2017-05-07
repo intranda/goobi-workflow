@@ -70,6 +70,7 @@ import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -4177,8 +4178,7 @@ public class Metadaten {
     }
 
     private void createImage(Image currentImage, boolean createImageLevels) {
-
-        String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
+    	String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
         currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
@@ -4188,6 +4188,8 @@ public class Metadaten {
                 currentImage.setSize(getActualImageSize(currentImage));
             }
             String contextPath = getContextPath();
+            HelperForm hf = (HelperForm) Helper.getManagedBeanValue("#{HelperForm}");
+            contextPath = hf.getServletPathWithHostAsUrl();
             for (String sizeString : imageSizes) {
                 try {
                     int size = Integer.parseInt(sizeString);
@@ -4226,8 +4228,8 @@ public class Metadaten {
     private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
         StringBuilder url = new StringBuilder(baseUrl);
         url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=").append("file://"
-                + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size);
-        return url.toString();
+                + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size).append("&steffen");
+        return url.toString().replaceAll("\\\\", "/");
     }
 
     public List<Image> getAllImages() {
@@ -4262,7 +4264,7 @@ public class Metadaten {
             HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
             String currentImageURL = session.getServletContext().getContextPath() + ConfigurationHelper.getTempImagesPath() + session.getId() + "_"
                     + image.getImageName() + "_large_" + ".jpg";
-            return currentImageURL;
+            return currentImageURL.replaceAll("\\\\", "/");
         }
     }
 

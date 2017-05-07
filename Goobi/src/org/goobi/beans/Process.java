@@ -1445,7 +1445,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
            
         String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
-        return rootpath + representativeImage;
+        return rootpath + representativeImage.replaceAll("\\\\", "/");
     }
 
 }
