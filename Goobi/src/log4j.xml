@@ -30,7 +30,7 @@
 
 
     <appender name="file" class="org.apache.log4j.RollingFileAppender">
-        <param name="append" value="false" />
+        <param name="append" value="true" />
         <param name="maxFileSize" value="10MB" />
         <param name="maxBackupIndex" value="5" />
         <param name="file" value="/opt/digiverso/logs/goobi.log" />
