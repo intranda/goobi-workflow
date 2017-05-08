@@ -151,7 +151,6 @@
 	<classpathentry kind="lib" path="lib-test/jai_imageio-1.0_01.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.1.42-bin.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-validator-1.6.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/batik-all-1.9.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fop-0.9.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
