@@ -50,6 +50,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
+        DatabaseVersion.checkIfEmptyDatabase();
     }
 
 }

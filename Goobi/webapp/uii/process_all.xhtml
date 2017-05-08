@@ -118,8 +118,7 @@
 														 or metadata.one == 'shelfmarksource'}"> 
                                                     <tr>
 	                                                	<td style="border: none #ddd;padding: 2px;vertical-align:top;">
-<!-- 	                                                		<h:outputText value="#{metadata.one}:" /> -->
-	                                                		<h:outputText value="#{msgs[metadata.one]}:" />
+															<h:outputText value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
 	                                                	</td>
 	                                                	<td style="border: none #ddd;padding: 2px; white-space: normal;">
 	                                                		<h:outputText value="#{metadata.two}" />

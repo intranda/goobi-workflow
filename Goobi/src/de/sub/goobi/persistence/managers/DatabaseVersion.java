@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -34,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -673,6 +675,43 @@ public class DatabaseVersion {
                 }
             }
         }
-
     }
+    
+    public static void checkIfEmptyDatabase() {
+		try {
+			int num = new UserManager().getHitSize(null, null);
+			if (num == 0) {
+				
+				// create administration group
+				Usergroup ug = new Usergroup();
+				ug.setTitel("Administration");
+				String r = "Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;";
+				ug.setUserRoles(Arrays.asList(r.split(";")));
+				UsergroupManager.saveUsergroup(ug);
+				
+				// create first user
+				User user = new User();
+				user.setVorname("Goobi");
+				user.setNachname("Administrator");
+				user.setPasswort("goobi");
+				user.setLogin("goobi");
+				user.setTabellengroesse(10);
+				user.setLdaplogin("goobi");
+				user.setMetadatenSprache("en");
+				user.setStandort("Göttingen");
+				RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+				Object salt = rng.nextBytes();
+				user.setPasswordSalt(salt.toString());
+				user.setEncryptedPassword(user.getPasswordHash(user.getPasswort()));
+				UserManager.saveUser(user);
+				
+				// add first user to administrator group
+				Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null).get(0);
+	            user.getBenutzergruppen().add(ug);
+	            UserManager.addUsergroupAssignment(user, usergroup.getId());
+			}
+		} catch (DAOException e) {
+			logger.error(e);
+		}
+	}
 }
