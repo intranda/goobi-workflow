@@ -37,7 +37,7 @@
 									
 									<td>
 										<h:commandLink id="editProperty" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ'}">
+			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="0" />
@@ -45,7 +45,7 @@
 			                            </h:commandLink>
 			                            
 			                             <h:commandLink id="duplicateProperty" action="#{AktuelleSchritteForm.duplicateProperty}" title="#{msgs.duplicate}" styleClass="btn btn-small margin-left-5"
-	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
 	                                          <i class="fa fa-plus"></i>
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.container}" value="0" />
@@ -86,14 +86,14 @@
 		                                <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 			                                <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 			                                    
-			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.containerAccess[container]}">
+			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.containerAccess[container] and process_item.type.name != 'metadata'}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="#{container}" />
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                                    </h:commandLink>
 			                                
 			                                	<h:commandLink id="duplicateContainer" action="#{AktuelleSchritteForm.duplicateContainer}" title="#{msgs.duplicate}"
-                                                    rendered="#{process_item.duplicationAllowed}" styleClass="btn btn-small margin-left-5">
+                                                    rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}" styleClass="btn btn-small margin-left-5">
                                                      <i class="fa fa-plus"></i>
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.container}" value="#{container}" />
                                                 </h:commandLink>

@@ -39,7 +39,9 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
+
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.persistence.managers.MetadataManager;
 
 public class PropertyParser {
     private static final Logger logger = Logger.getLogger(PropertyParser.class);
@@ -122,8 +124,14 @@ public class PropertyParser {
                     // type
                     pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
                     // (default) value
-                    pp.setValue(config.getString("property(" + i + ").defaultvalue"));
-                    pp.setReadValue("");
+                    String defaultValue = config.getString("property(" + i + ").defaultvalue");
+                    if (pp.getType().equals(Type.METADATA)) {
+                        String metadata = MetadataManager.getMetadataValue(mySchritt.getProzess().getId(), defaultValue);
+                        pp.setValue(metadata);
+                    } else {
+                        pp.setValue(defaultValue);
+                        pp.setReadValue("");
+                    }
 
                     // possible values
                     count = config.getMaxIndex("property(" + i + ").value");
@@ -221,9 +229,15 @@ public class PropertyParser {
                 // type
                 pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
                 // (default) value
-                pp.setValue(config.getString("property(" + i + ").defaultvalue"));
-                pp.setReadValue("");
-                
+                String defaultValue = config.getString("property(" + i + ").defaultvalue");
+                if (pp.getType().equals(Type.METADATA)) {
+                    String metadata = MetadataManager.getMetadataValue(process.getId(), defaultValue);
+                    pp.setValue(metadata);
+                } else {
+                    pp.setValue(defaultValue);
+                    pp.setReadValue("");
+                }
+
                 // possible values
                 count = config.getMaxIndex("property(" + i + ").value");
                 for (int j = 0; j <= count; j++) {
@@ -235,8 +249,8 @@ public class PropertyParser {
                 properties.add(pp);
 
             }
-        }// add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
-         // 'eigenschaften'
+        } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
+          // 'eigenschaften'
         List<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
         List<Processproperty> plist = process.getEigenschaftenList();
         for (Processproperty pe : plist) {

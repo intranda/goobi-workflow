@@ -92,7 +92,8 @@ class MetadataMysqlHelper implements Serializable {
 
     public static List<String> getDistinctMetadataNames() throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select distinct name from metadata where name like 'index.%' union select distinct name from metadata where name not like 'index.%'");
+        sql.append(
+                "select distinct name from metadata where name like 'index.%' union select distinct name from metadata where name not like 'index.%'");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -116,7 +117,19 @@ class MetadataMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
 
+    public static String getMetadataValue(int processId, String metadataName) throws SQLException {
+        String sql = "SELECT value FROM metadata WHERE processid = ? and name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, processId, metadataName);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 
     public static List<Integer> getAllProcessesWithMetadata(String name, String value) throws SQLException {

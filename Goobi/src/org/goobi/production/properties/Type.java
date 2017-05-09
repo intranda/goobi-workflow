@@ -3,12 +3,8 @@ package org.goobi.production.properties;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * Visit the websites for more information. - http://www.goobi.org - http://launchpad.net/goobi-production - http://gdz.sub.uni-goettingen.de -
+ * http://www.intranda.com - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,36 +25,47 @@ package org.goobi.production.properties;
  */
 
 public enum Type {
-	TEXT("text"), LIST("list"), LISTMULTISELECT("listmultiselect"), BOOLEAN("boolean"), DATE("date"), NUMBER("number"), LINK("link");
-	private String name;
+    TEXT("text"),
+    LIST("list"),
+    LISTMULTISELECT("listmultiselect"),
+    BOOLEAN("boolean"),
+    DATE("date"),
+    NUMBER("number"),
+    LINK("link"),
+    METADATA("metadata");
+    private String name;
 
-	private Type(String name) {
-		this.name = name;
-	}
+    private Type(String name) {
+        this.name = name;
+    }
 
-	public static Type getTypeByName(String inName) {
-		if (inName.equalsIgnoreCase("LIST")) {
-			return LIST;
-		}
-		if (inName.equalsIgnoreCase("LISTMULTISELECT")) {
-			return LISTMULTISELECT;
-		}
-		if (inName.equalsIgnoreCase("BOOLEAN")) {
-			return BOOLEAN;
-		}
-		if (inName.equalsIgnoreCase("DATE")) {
-			return DATE;
-		}
-		if (inName.equalsIgnoreCase("NUMBER")) {
-			return NUMBER;
-		} 
-		if (inName.equalsIgnoreCase("LINK")) {
-			return LINK;
-		}
-		return TEXT;
-	}
+    public static Type getTypeByName(String inName) {
+        if (inName.equalsIgnoreCase("LIST")) {
+            return LIST;
+        }
+        if (inName.equalsIgnoreCase("LISTMULTISELECT")) {
+            return LISTMULTISELECT;
+        }
+        if (inName.equalsIgnoreCase("BOOLEAN")) {
+            return BOOLEAN;
+        }
+        if (inName.equalsIgnoreCase("DATE")) {
+            return DATE;
+        }
+        if (inName.equalsIgnoreCase("NUMBER")) {
+            return NUMBER;
+        }
+        if (inName.equalsIgnoreCase("LINK")) {
+            return LINK;
+        }
+        if (inName.equalsIgnoreCase("METADATA")) {
+            return METADATA;
+        }
 
-	public String getName() {
-		return this.name;
-	}
+        return TEXT;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 }

@@ -37,7 +37,7 @@
 									
 									<td>
 										<h:commandLink id="editBatchProperty" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ'}">
+			                                rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
@@ -45,7 +45,7 @@
 			                            </h:commandLink>
 			                            
 			                             <h:commandLink id="duplicateBatchProperty" action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" styleClass="btn btn-small margin-left-5"
-	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
 	                                          <i class="fa fa-plus"></i>
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
@@ -86,7 +86,7 @@
                                    	<h:panelGroup rendered="#{propInd ==0}">
                                         <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 	                                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-			                                    <h:commandLink id="editContainer" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container]}">
+			                                    <h:commandLink id="editContainer" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container] and process_item.type.name != 'metadata'}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
@@ -94,7 +94,7 @@
 			                                    </h:commandLink>
 			                                
 			                                	<h:commandLink id="duplicateContainer" action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
-                                                    rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}" styleClass="btn btn-small margin-left-5">
+                                                    rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and process_item.type.name != 'metadata'}" styleClass="btn btn-small margin-left-5">
                                                      <i class="fa fa-plus"></i>
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />

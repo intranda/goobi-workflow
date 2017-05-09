@@ -47,9 +47,9 @@ public class MetadataManager implements Serializable {
     }
 
     public static void insertMetadata(int processId, Map<String, List<String>> metadata) {
-        
+
         generateIndexFields(metadata);
-        
+
         logger.trace("Insert new metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.insertMetadata(processId, metadata);
@@ -85,7 +85,16 @@ public class MetadataManager implements Serializable {
         }
         return new ArrayList<>();
     }
-    
+
+    public static String getMetadataValue(int processId, String metadataName) {
+        try {
+            return MetadataMysqlHelper.getMetadataValue(processId, metadataName);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return "";
+    }
+
     public static List<Integer> getProcessesWithMetadata(String name, String value) {
         try {
             return MetadataMysqlHelper.getAllProcessesWithMetadata(name, value);
@@ -94,9 +103,8 @@ public class MetadataManager implements Serializable {
         }
         return new ArrayList<>();
     }
-    
-    
-    private static void generateIndexFields(Map<String,List<String>> metadata) {
+
+    private static void generateIndexFields(Map<String, List<String>> metadata) {
         List<SearchIndexField> fields = ConfigurationHelper.getInstance().getIndexFields();
         if (!fields.isEmpty()) {
             for (SearchIndexField index : fields) {

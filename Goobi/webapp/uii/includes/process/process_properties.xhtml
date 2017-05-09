@@ -1,338 +1,292 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:p="http://primefaces.org/ui">
 
-	<composite:interface>
-	</composite:interface>
+    <composite:interface>
+    </composite:interface>
 
-	<composite:implementation>
+    <composite:implementation>
 
-		<ui:include src="../calendarJavaScript.xhtml" />
+        <ui:include src="../calendarJavaScript.xhtml" />
 
-		<!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
+        <!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
 
-		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
+        <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
 
-			<h:form id="propertyList">
+            <h:form id="propertyList">
 
-				<div class="box thin-margin box-bordered">
-					<div class="box-title">
-						<h3>
-							<i class="fa fa-list"></i>
-							<h:outputText value="#{msgs.eigenschaften}" />
-						</h3>
-					</div>
-					<div class="box-content nopadding">
+                <div class="box thin-margin box-bordered">
+                    <div class="box-title">
+                        <h3>
+                            <i class="fa fa-list"></i>
+                            <h:outputText value="#{msgs.eigenschaften}" />
+                        </h3>
+                    </div>
+                    <div class="box-content nopadding">
 
-						<div class="dataTables_wrapper">
+                        <div class="dataTables_wrapper">
 
-							<table class="table table-hover table-bordered" id="propertyTable">
-								<x:dataList var="container" value="#{ProzessverwaltungForm.containerList}" id="container"
-									rowCountVar="rowCount" rowIndexVar="rowIndex">
-									<x:dataList var="proc" value="#{ProzessverwaltungForm.containerlessProperties}" id="containerless"
-										rowCountVar="propCount" rowIndexVar="propInd">
-										<h:panelGroup rendered="#{container == 0}" >
+                            <table class="table table-hover table-bordered" id="propertyTable">
+                                <x:dataList var="container" value="#{ProzessverwaltungForm.containerList}" id="container" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                                    <x:dataList var="proc" value="#{ProzessverwaltungForm.containerlessProperties}" id="containerless" rowCountVar="propCount" rowIndexVar="propInd">
+                                        <h:panelGroup rendered="#{container == 0}">
 
-											<tr>
-												<td><h:outputText value="#{proc.name}" /></td>
-												<td>
-													<h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
-					                                <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank"
-					                                    rendered="#{proc.type.name == 'link'}">
-					                                    <h:outputText value="#{proc.readValue}" />
-					                                </h:outputLink>
-					                                <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
-					                                	<h:panelGroup rendered="#{proc.readValue eq 'true'}">
-					                                		<i class="fa fa-check-square-o fa-lg"></i>
-					                                	</h:panelGroup>
-					                                	<h:panelGroup rendered="#{proc.readValue ne 'true'}">
-					                                		<i class="fa fa-square-o fa-lg"></i>
-					                                	</h:panelGroup>
-					                                </h:panelGroup>
-												</td>
-												<c:if test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-													<td><h:commandLink action="process_edit" title="#{msgs.bearbeiten}" id="editProperty">
-														<i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
-														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}"
-															value="#{proc}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}"
-															value="eigenschaft" />
-													</h:commandLink> <h:commandLink action="#{ProzessverwaltungForm.duplicateProperty}"
-														title="#{msgs.duplicate}" id="duplicateProperty">
-														<i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
-														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.processProperty}"
-															value="#{proc}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
-													</h:commandLink></td>
-												</c:if>
-											</tr>
-										</h:panelGroup>
-									</x:dataList>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{proc.name}" />
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
+                                                    <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank" rendered="#{proc.type.name == 'link'}">
+                                                        <h:outputText value="#{proc.readValue}" />
+                                                    </h:outputLink>
+                                                    <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
+                                                        <h:panelGroup rendered="#{proc.readValue eq 'true'}">
+                                                            <i class="fa fa-check-square-o fa-lg"></i>
+                                                        </h:panelGroup>
+                                                        <h:panelGroup rendered="#{proc.readValue ne 'true'}">
+                                                            <i class="fa fa-square-o fa-lg"></i>
+                                                        </h:panelGroup>
+                                                    </h:panelGroup>
+                                                </td>
+                                                <c:if test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                                    <td>
+                                                        <h:commandLink action="process_edit" title="#{msgs.bearbeiten}" id="editProperty" rendered="#{proc.type.name != 'metadata'}">
+                                                            <i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
+                                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
+                                                        </h:commandLink>
+                                                        <h:commandLink action="#{ProzessverwaltungForm.duplicateProperty}" title="#{msgs.duplicate}" id="duplicateProperty" rendered="#{proc.type.name != 'metadata'}">
+                                                            <i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
+                                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
+                                                        </h:commandLink>
+                                                    </td>
+                                                </c:if>
+                                            </tr>
+                                        </h:panelGroup>
+                                    </x:dataList>
 
-									<h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
-										<tr>
-											<td colspan="3"><h:outputText value="&amp;nbsp;" escape="false" /></td>
-										</tr>
-									</h:panelGroup>
+                                    <h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
+                                        <tr>
+                                            <td colspan="3">
+                                                <h:outputText value="&amp;nbsp;" escape="false" />
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
 
-									<x:dataList var="process_item" id="container"
-										value="#{ProzessverwaltungForm.containers[container].propertyList}"
-										rowCountVar="propCount" rowIndexVar="propInd">
-										<h:panelGroup rendered="#{container != 0}" >
-											<tr>
-												<td><h:outputText value="#{process_item.name}" /></td>
-												<td>
-													<h:outputText value="#{process_item.readValue}"
-														rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" /> 
-													<h:outputLink
-														value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank"
-														rendered="#{process_item.type.name == 'link'}">
-														<h:outputText value="#{process_item.readValue}" />
-													</h:outputLink>
-													<h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
-					                                	<h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-					                                		<i class="fa fa-check-square-o fa-lg"></i>
-					                                	</h:panelGroup>
-					                                	<h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-					                                		<i class="fa fa-square-o fa-lg"></i>
-					                                	</h:panelGroup>
-					                                </h:panelGroup>
-												</td>
-												<h:panelGroup rendered="#{propInd == 0}" id="cont">
-													<td rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
-														<!-- edit container --> 
-														<h:commandLink action="process_edit" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-															title="#{msgs.bearbeiten}" id="editProperty2">
-															<i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
-															<f:passThroughAttribute name="data-toggle" value="tooltip" />
-															<x:updateActionListener property="#{ProzessverwaltungForm.container}"
-																value="#{container}" />
-															<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}"
-																value="eigenschaft" />
-														</h:commandLink> 
-														<!-- duplicate container --> 
-														<h:commandLink id="duplicateProperty2" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-															action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
-															<i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
-															<f:passThroughAttribute name="data-toggle" value="tooltip" />
-															<x:updateActionListener property="#{ProzessverwaltungForm.container}"
-																value="#{container}" />
-														</h:commandLink>
-													</td>
-												</h:panelGroup>
+                                    <x:dataList var="process_item" id="container" value="#{ProzessverwaltungForm.containers[container].propertyList}" rowCountVar="propCount" rowIndexVar="propInd">
+                                        <h:panelGroup rendered="#{container != 0}">
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{process_item.name}" />
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" />
+                                                    <h:outputLink value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank" rendered="#{process_item.type.name == 'link'}">
+                                                        <h:outputText value="#{process_item.readValue}" />
+                                                    </h:outputLink>
+                                                    <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
+                                                        <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
+                                                            <i class="fa fa-check-square-o fa-lg"></i>
+                                                        </h:panelGroup>
+                                                        <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
+                                                            <i class="fa fa-square-o fa-lg"></i>
+                                                        </h:panelGroup>
+                                                    </h:panelGroup>
+                                                </td>
+                                                <h:panelGroup rendered="#{propInd == 0}" id="cont">
+                                                    <td rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
+                                                        <!-- edit container -->
+                                                        <h:commandLink action="process_edit" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}" title="#{msgs.bearbeiten}" id="editProperty2">
+                                                            <i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
+                                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
+                                                        </h:commandLink>
+                                                        <!-- duplicate container -->
+                                                        <h:commandLink id="duplicateProperty2" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}" action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
+                                                            <i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
+                                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                            <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
+                                                        </h:commandLink>
+                                                    </td>
+                                                </h:panelGroup>
 
-											</tr>
-										</h:panelGroup>
-									</x:dataList>
-								</x:dataList>
-							</table>
-							<div class="dataTables_info">
-								<!-- Neu-Schaltknopf -->
-								<h:commandLink action="#{ProzessverwaltungForm.createNewProperty}" id="newProperty" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-									title="#{msgs.eigenschaftHinzufuegen}" styleClass="btn btn-lightgrey font-size-s">
-									<x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
-									<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}"
-										value="eigenschaft" />
-									<i class="fa fa-plus margin-right-5"></i>
-									<h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
-								</h:commandLink>
-							</div>
-						</div>
+                                            </tr>
+                                        </h:panelGroup>
+                                    </x:dataList>
+                                </x:dataList>
+                            </table>
+                            <div class="dataTables_info">
+                                <!-- Neu-Schaltknopf -->
+                                <h:commandLink action="#{ProzessverwaltungForm.createNewProperty}" id="newProperty" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}" title="#{msgs.eigenschaftHinzufuegen}" styleClass="btn btn-lightgrey font-size-s">
+                                    <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
+                                    <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
+                                    <i class="fa fa-plus margin-right-5"></i>
+                                    <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
+                                </h:commandLink>
+                            </div>
+                        </div>
 
-					</div>
-				</div>
-			</h:form>
-		</h:panelGroup>
+                    </div>
+                </div>
+            </h:form>
+        </h:panelGroup>
 
 
-		<!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
+        <!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
 
 
-		<h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
+        <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
 
-			<h:form id="myform" styleClass="form-horizontal form-bordered"
-				onkeypress="submitOnEnter(event);">
+            <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);">
 
-				<div class="row">
-					<div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12">
 
-						<div class="box box-color box-bordered orange">
-							<div class="box-title">
-								<h3>
-									<i class="fa fa-list"></i>
-									<h:outputText value="#{msgs.eigenschaft}" />
-								</h3>
-							</div>
-							<div class="box-content nopadding">
+                        <div class="box box-color box-bordered orange">
+                            <div class="box-title">
+                                <h3>
+                                    <i class="fa fa-list"></i>
+                                    <h:outputText value="#{msgs.eigenschaft}" />
+                                </h3>
+                            </div>
+                            <div class="box-content nopadding">
 
-								<x:dataList var="myprocess_item" value="#{ProzessverwaltungForm.containerProperties}">
-									<h:panelGroup>
-										<h:panelGroup rendered="#{myprocess_item.isNew}">
-											<intranda:formInputText id="title" name="title" label="#{msgs.titel}" field="#{myprocess_item.name}"
-												help="#{msgs.helpPropertyTitle}" fieldStyle="form-control" required="true" />
-										</h:panelGroup>
+                                <x:dataList var="myprocess_item" value="#{ProzessverwaltungForm.containerProperties}">
+                                    <h:panelGroup>
+                                        <h:panelGroup rendered="#{myprocess_item.isNew}">
+                                            <intranda:formInputText id="title" name="title" label="#{msgs.titel}" field="#{myprocess_item.name}" help="#{msgs.helpPropertyTitle}" fieldStyle="form-control" required="true" />
+                                        </h:panelGroup>
 
-									</h:panelGroup>
+                                    </h:panelGroup>
 
-									<!-- text -->
-									<h:panelGroup
-										rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
+                                    <!-- text -->
+                                    <h:panelGroup rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 
-										<div class="form-group">
-											<h:outputLabel for="value" styleClass="control-label col-sm-3"
-												value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-											<div class="col-sm-9">
-												<x:inputText id="value" forceId="true" styleClass="form-control"
-													value="#{myprocess_item.value}"
-													readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-												</x:inputText>
-												<h:message for="value" showDetail="true" styleClass="help-inline font-danger" />
-												<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-													value="#{msgs.helpPropertyValue}" />
-											</div>
-										</div>
-									</h:panelGroup>
+                                        <div class="form-group">
+                                            <h:outputLabel for="value" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <x:inputText id="value" forceId="true" styleClass="form-control" value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                </x:inputText>
+                                                <h:message for="value" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
 
-									<!-- numbers only -->
-									<h:panelGroup
-										rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
-										<div class="form-group">
-											<h:outputLabel for="number" styleClass="control-label col-sm-3"
-												value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-											<div class="col-sm-9">
-												<x:inputText id="number" forceId="true" styleClass="form-control"
-													value="#{myprocess_item.value}"
-													readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-													<f:validateLongRange minimum="0" />
-												</x:inputText>
-												<h:message for="number" showDetail="true" styleClass="help-inline font-danger" />
-												<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-													value="#{msgs.helpPropertyValue}" />
-											</div>
-										</div>
-									</h:panelGroup>
+                                    <!-- numbers only -->
+                                    <h:panelGroup rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
+                                        <div class="form-group">
+                                            <h:outputLabel for="number" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <x:inputText id="number" forceId="true" styleClass="form-control" value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                    <f:validateLongRange minimum="0" />
+                                                </x:inputText>
+                                                <h:message for="number" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
 
 
-									<!--  SelectOneMenu -->
-									<h:panelGroup rendered="#{(myprocess_item.type.name == 'list')}">
-										<div class="form-group">
-											<h:outputLabel for="select" styleClass="control-label col-sm-3"
-												value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-											<div class="col-sm-9">
-												<h:selectOneMenu id="select" styleClass="form-control"
-													readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
-													value="#{myprocess_item.value}">
-													<f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items"
-														itemLabel="#{myprocess_items}" itemValue="#{myprocess_items}" />
-												</h:selectOneMenu>
-												<h:message for="select" showDetail="true" styleClass="help-inline font-danger" />
-												<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-													value="#{msgs.helpPropertyValue}" />
-											</div>
-										</div>
-									</h:panelGroup>
+                                    <!--  SelectOneMenu -->
+                                    <h:panelGroup rendered="#{(myprocess_item.type.name == 'list')}">
+                                        <div class="form-group">
+                                            <h:outputLabel for="select" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <h:selectOneMenu id="select" styleClass="form-control" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}" value="#{myprocess_item.value}">
+                                                    <f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items" itemLabel="#{myprocess_items}" itemValue="#{myprocess_items}" />
+                                                </h:selectOneMenu>
+                                                <h:message for="select" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
 
-									<!--  SelectManyMenu -->
-									<h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
-										<div class="form-group">
-											<h:outputLabel for="selectmany" styleClass="control-label col-sm-3"
-												value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-											<div class="col-sm-9">
-												<h:selectManyListbox id="selectmany" value="#{myprocess_item.valueList}" size="5"
-													styleClass="form-control"
-													readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-													<f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items"
-														itemLabel="#{myprocess_items}" itemValue="#{myprocess_items}" />
-												</h:selectManyListbox>
-												<h:message for="selectmany" showDetail="true" styleClass="help-inline font-danger" />
-												<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-													value="#{msgs.helpPropertyValue}" />
-											</div>
-										</div>
-									</h:panelGroup>
+                                    <!--  SelectManyMenu -->
+                                    <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
+                                        <div class="form-group">
+                                            <h:outputLabel for="selectmany" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <h:selectManyListbox id="selectmany" value="#{myprocess_item.valueList}" size="5" styleClass="form-control" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                    <f:selectItems value="#{myprocess_item.possibleValues}" var="myprocess_items" itemLabel="#{myprocess_items}" itemValue="#{myprocess_items}" />
+                                                </h:selectManyListbox>
+                                                <h:message for="selectmany" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
 
 
-									<!-- Boolean  -->
-									<h:panelGroup rendered="#{(myprocess_item.type.name == 'boolean')}">
-										<div class="form-group">
-											<h:outputLabel for="boolean" styleClass="control-label col-sm-3"
-												value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-											<div class="col-sm-9">
-												<h:selectBooleanCheckbox id="boolean" value="#{myprocess_item.booleanValue}"
-													readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-												</h:selectBooleanCheckbox>
-												<h:message for="boolean" showDetail="true" styleClass="help-inline font-danger" />
-												<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-													value="#{msgs.helpPropertyValue}" />
-											</div>
-										</div>
-									</h:panelGroup>
+                                    <!-- Boolean  -->
+                                    <h:panelGroup rendered="#{(myprocess_item.type.name == 'boolean')}">
+                                        <div class="form-group">
+                                            <h:outputLabel for="boolean" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <h:selectBooleanCheckbox id="boolean" value="#{myprocess_item.booleanValue}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                </h:selectBooleanCheckbox>
+                                                <h:message for="boolean" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
 
 
-									<!--  Date   -->
-									<h:panelGroup rendered="#{(myprocess_item.type.name == 'date')}">
-										<div class="form-group">
-											<h:outputLabel for="date" styleClass="control-label col-sm-3"
-												value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-											<div class="col-sm-9">
-												<p:calendar id="date" value="#{myprocess_item.dateValue}" locale="#{SpracheForm.locale}" />
-												<h:message for="date" showDetail="true" styleClass="help-inline font-danger" />
-												<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-													value="#{msgs.helpPropertyValue}" />
-											</div>
-										</div>
-									</h:panelGroup>
+                                    <!--  Date   -->
+                                    <h:panelGroup rendered="#{(myprocess_item.type.name == 'date')}">
+                                        <div class="form-group">
+                                            <h:outputLabel for="date" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <p:calendar id="date" value="#{myprocess_item.dateValue}" locale="#{SpracheForm.locale}" />
+                                                <h:message for="date" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
 
 
 
-								</x:dataList>
-								<h:panelGroup>
-									<div class="form-actions">
+                                </x:dataList>
+                                <h:panelGroup>
+                                    <div class="form-actions">
 
-										<!-- Save -->
-										<h:commandLink id="save" styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-											action="#{ProzessverwaltungForm.saveCurrentProperty}">
-											<i class="fa fa-save margin-right-5"></i>
-											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-											<h:outputText value="#{msgs.speichern}" />
-										</h:commandLink>
+                                        <!-- Save -->
+                                        <h:commandLink id="save" styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" action="#{ProzessverwaltungForm.saveCurrentProperty}">
+                                            <i class="fa fa-save margin-right-5"></i>
+                                            <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                            <h:outputText value="#{msgs.speichern}" />
+                                        </h:commandLink>
 
-										<h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true"
-											action="#{NavigationForm.Reload}">
-											<h:outputText value="#{msgs.abbrechen}" />
-											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-										</h:commandLink>
+                                        <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}">
+                                            <h:outputText value="#{msgs.abbrechen}" />
+                                            <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                        </h:commandLink>
 
-										<h:commandLink id="delete" styleClass="btn btn-danger font-size-s"
-											action="#{ProzessverwaltungForm.deleteProperty}"
-											onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
-											<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-											<i class="fa fa-trash-o margin-right-5" />
-											<h:outputText value="#{msgs.loeschen}" />
-										</h:commandLink>
-									
-									</div>
-								</h:panelGroup>
+                                        <h:commandLink id="delete" styleClass="btn btn-danger font-size-s" action="#{ProzessverwaltungForm.deleteProperty}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
+                                            <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                            <i class="fa fa-trash-o margin-right-5" />
+                                            <h:outputText value="#{msgs.loeschen}" />
+                                        </h:commandLink>
+
+                                    </div>
+                                </h:panelGroup>
 
 
-							</div>
-						</div>
+                            </div>
+                        </div>
 
-					</div>
-				</div>
+                    </div>
+                </div>
 
-			</h:form>
+            </h:form>
 
-		</h:panelGroup>
+        </h:panelGroup>
 
 
-	</composite:implementation>
+    </composite:implementation>
 
 </ui:composition>
 
