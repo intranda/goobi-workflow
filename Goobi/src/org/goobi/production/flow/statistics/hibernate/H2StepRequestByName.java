@@ -1,4 +1,5 @@
 package org.goobi.production.flow.statistics.hibernate;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,11 +31,12 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Alternative;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
+
 
 /**
  * Class provides SQL for Step Requests statistics on the history table
@@ -45,14 +47,14 @@ import de.sub.goobi.helper.enums.HistoryEventType;
  *
  */
 
-@Default
-public class SQLStepRequests extends SQLGenerator implements IStepRequests{
+@Alternative
+public class H2StepRequestByName extends H2Generator implements IStepRequestByName {
 
-	public SQLStepRequests(Date timeFrom, Date timeTo, TimeUnit timeUnit,
+	public H2StepRequestByName(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {
 		// "history.processid - overrides the default value of prozesse.prozesseID
 		// which is set in super class SQLGenerator
-		super(timeFrom, timeTo, timeUnit, ids, "history.processID");
+        super(timeFrom, timeTo, timeUnit, ids, "processid");
 	}
 
 	/** This is an extended SQL generator for an SQL extracting data from the historyEvent log.
@@ -62,28 +64,28 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 	 * @see org.goobi.production.flow.statistics.hibernate.SQLGenerator#getSQL()
 	 * 
 	 * @param typeSelection - operates as additional filter
-	 * @param stepOrder - operates as additional filter
-	 * @param stepOrderGrouping - adding 'stepOrder' and 'stepName' fields in select and in group by clause 
+	 * @param stepName - operates as additional filter
+	 * @param stepOrderGrouping - 'stepName' fields in select and in group by clause 
 	 * @param includeCorrections - adding additional stepOpen from Correction and other loops 
 	 * 
 	 * @return SQLExpression for MySQL DBMS - default fields stepCount and intervall
 	 */
-	public String getSQL(HistoryEventType typeSelection, Integer stepOrder,
+	public String getSQL(HistoryEventType typeSelection, String stepName,
 			Boolean stepOrderGrouping, Boolean includeLoops) {
 
-		String timeLimiter = "history.date" ;
+		String timeLimiter = "h.date" ;
 		String groupInnerSelect = "";
 		
 		//evaluate if groupingFunction comes along with HistoryEventType
 		// and if so implement this function in sql
 		if (typeSelection.getGroupingFunction()!=null && !includeLoops){
-				timeLimiter = typeSelection.getGroupingFunction() + "(history.date)";
-				groupInnerSelect = " group by history.processid, history.numericvalue ";
+				timeLimiter = typeSelection.getGroupingFunction() + "(h.date)";
+				groupInnerSelect = " GROUP BY processid, numericvalue, stringvalue ";
 		}
 		
 		String subQuery = "";
 		String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(
-				this.myTimeFrom, this.myTimeTo, "timeLimiter");
+				myTimeFrom, myTimeTo, "timeLimiter");
 		String outerWhereClause = "";
 
 		if (outerWhereClauseTimeFrame.length() > 0) {
@@ -93,29 +95,34 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 		//inner table -> alias "table_1"
 		String innerWhereClause;
 
-		if (this.myIdsCondition != null) {
+		if (myIdsCondition != null) {
 			// adding ids to the where clause
-			innerWhereClause = "(history.type="
+			innerWhereClause = "(h.type="
 					+ typeSelection.getValue().toString() + ")  AND ("
-					+ this.myIdsCondition + ") ";
+					+ myIdsCondition + ") ";
 		} else {
-			innerWhereClause = "(history.type="
+			innerWhereClause = "(h.type="
 					+ typeSelection.getValue().toString() + ") ";
 		}
 
 		// adding a stepOrder filter to numericvalue if parameter is set
-		if (stepOrder != null) {
-			innerWhereClause = innerWhereClause + " AND history.numericvalue="
-					+ stepOrder.toString() + " ";
+		if (stepName != null) {
+			innerWhereClause = innerWhereClause + " AND h.stringvalue='"
+					+ stepName + "' ";
 		}
 
-		subQuery = "(SELECT numericvalue AS 'stepOrder', "
-				+ getIntervallExpression(this.myTimeUnit, "history.date")
+		subQuery = "(SELECT numericvalue AS stepOrder, "
+				+ getIntervallExpression(myTimeUnit, "history.date")
 				+ " "
-				+ "AS 'intervall', " + timeLimiter + " AS 'timeLimiter', history.stringvalue AS 'stepName' "
-				+ "FROM history WHERE " + innerWhereClause + groupInnerSelect + ") AS table_1";
+				+ "AS intervall, history.date AS timeLimiter, history.stringvalue AS stepName "
+				+ "FROM "
+				
+				+ "(SELECT DISTINCT h.numericvalue, h.stringvalue, " + timeLimiter + " as date, h.processid, h.type " 
+				+ "FROM history h "
+				+ "WHERE "  + innerWhereClause + groupInnerSelect + ") AS history " 
+				+ ") AS table_1";
 
-		this.mySql = "SELECT count(table_1.stepOrder) AS 'stepCount', table_1.intervall AS 'intervall' "
+		mySql = "SELECT count(table_1.stepName) AS stepCount, table_1.intervall AS intervall "
 				+ addedListing(stepOrderGrouping)
 				+ "FROM "
 				+ subQuery
@@ -126,7 +133,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 				+ " ORDER BY  table_1.intervall"
 				+ addedSorting(stepOrderGrouping);
 
-		return this.mySql;
+		return mySql;
 	}
 
 	/** Method is purposfully not implemented. Method getSQL is overloaded   
@@ -163,7 +170,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 	 */
 	private String addedListing(Boolean include) {
 		if (include) {
-			return ", table_1.stepOrder, 'bogus' as 'stepName' ";
+			return ",table_1.stepName ";
 		} else {
 			return "";
 		}
@@ -176,7 +183,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 	 */
 	private String addedGrouping(Boolean include) {
 		if (include) {
-			return ", table_1.stepOrder ";
+			return ", table_1.stepName ";
 		} else {
 			return "";
 		}
@@ -191,17 +198,17 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 
 		String timeRestriction;
 		String innerWhereClause = null;
-		if (this.myIdsCondition != null) {
+		if (myIdsCondition != null) {
 			// adding ids to the where clause
 			innerWhereClause = "(history.type="
 					+ eventSelection.getValue().toString() + ")  AND ("
-					+ this.myIdsCondition + ") ";
+					+ myIdsCondition + ") ";
 		} else {
 			innerWhereClause = "(history.type="
 					+ eventSelection.getValue().toString() + ") ";
 		}
 
-		timeRestriction = getWhereClauseForTimeFrame(this.myTimeFrom, this.myTimeTo,
+		timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo,
 				"history.date");
 
 		if (timeRestriction.length() > 0) {
@@ -212,7 +219,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 		return "SELECT max(history.numericvalue) AS maxStep FROM history WHERE "
 				+ innerWhereClause;
 	}
-
+	
 	/**
 	 * 
 	 * @param eventSelection
@@ -222,17 +229,17 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 
 		String timeRestriction;
 		String innerWhereClause = null;
-		if (this.myIdsCondition != null) {
+		if (myIdsCondition != null) {
 			// adding ids to the where clause
 			innerWhereClause = "(history.type="
 					+ eventSelection.getValue().toString() + ")  AND ("
-					+ this.myIdsCondition + ") ";
+					+ myIdsCondition + ") ";
 		} else {
 			innerWhereClause = "(history.type="
 					+ eventSelection.getValue().toString() + ") ";
 		}
 
-		timeRestriction = getWhereClauseForTimeFrame(this.myTimeFrom, this.myTimeTo,
+		timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo,
 				"history.date");
 
 		if (timeRestriction.length() > 0) {
@@ -244,4 +251,5 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 				+ innerWhereClause;
 	}
 
+	
 }

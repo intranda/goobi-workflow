@@ -30,6 +30,8 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.Date;
 import java.util.List;
 
+import javax.enterprise.inject.Default;
+
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -42,7 +44,9 @@ import de.sub.goobi.helper.enums.HistoryEventType;
  * @author Wulf Riebensahm
  *
  */
-public class SQLStepRequestsImprovedDiscrimination extends SQLGenerator {
+
+@Default
+public class SQLStepRequestsImprovedDiscrimination extends SQLGenerator implements IStepRequestsImprovedDiscrimination{
 
 	public SQLStepRequestsImprovedDiscrimination(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {

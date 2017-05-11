@@ -30,7 +30,7 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Alternative;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
@@ -45,14 +45,14 @@ import de.sub.goobi.helper.enums.HistoryEventType;
  *
  */
 
-@Default
-public class SQLStepRequests extends SQLGenerator implements IStepRequests{
+@Alternative
+public class H2StepRequests extends H2Generator implements IStepRequests{
 
-	public SQLStepRequests(Date timeFrom, Date timeTo, TimeUnit timeUnit,
+	public H2StepRequests(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {
 		// "history.processid - overrides the default value of prozesse.prozesseID
 		// which is set in super class SQLGenerator
-		super(timeFrom, timeTo, timeUnit, ids, "history.processID");
+        super(timeFrom, timeTo, timeUnit, ids, "history.processID");
 	}
 
 	/** This is an extended SQL generator for an SQL extracting data from the historyEvent log.
@@ -109,13 +109,13 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 					+ stepOrder.toString() + " ";
 		}
 
-		subQuery = "(SELECT numericvalue AS 'stepOrder', "
+		subQuery = "(SELECT numericvalue AS stepOrder, "
 				+ getIntervallExpression(this.myTimeUnit, "history.date")
 				+ " "
-				+ "AS 'intervall', " + timeLimiter + " AS 'timeLimiter', history.stringvalue AS 'stepName' "
+				+ "AS intervall, " + timeLimiter + " AS timeLimiter, history.stringvalue AS stepName "
 				+ "FROM history WHERE " + innerWhereClause + groupInnerSelect + ") AS table_1";
 
-		this.mySql = "SELECT count(table_1.stepOrder) AS 'stepCount', table_1.intervall AS 'intervall' "
+		this.mySql = "SELECT count(table_1.stepOrder) AS stepCount, table_1.intervall AS intervall "
 				+ addedListing(stepOrderGrouping)
 				+ "FROM "
 				+ subQuery
@@ -163,7 +163,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests{
 	 */
 	private String addedListing(Boolean include) {
 		if (include) {
-			return ", table_1.stepOrder, 'bogus' as 'stepName' ";
+			return ", table_1.stepOrder, 'bogus' as stepName ";
 		} else {
 			return "";
 		}
