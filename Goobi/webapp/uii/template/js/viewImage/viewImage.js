@@ -9,7 +9,8 @@ var viewImage = ( function() {
     var _defaults = {  
         global: {
             divId: "map",
-            zoomSlider: "slider-id",
+            zoomSlider: "#slider-id",
+            zoomSliderHandle: '.zoomslider-handle',
             overlayGroups: [ {
                 name: "searchHighlighting",
                 styleClass: "searchHighlight",
@@ -67,49 +68,59 @@ var viewImage = ( function() {
             
             // constructor
             $.extend( true, _defaults, config );
-            //convert mimeType "image/jpeg" to "image/jpg" to provide correct iiif calls
+            // convert mimeType "image/jpeg" to "image/jpg" to provide correct iiif calls
             _defaults.image.mimeType = _defaults.image.mimeType.replace("jpeg","jpg");
             _container = $( "#" + _defaults.global.divId );
             
             var result = Q.defer();
+            
             viewImage.tileSourceResolver.resolveAsJson(_defaults.image.tileSource)
-            .then(function(imageInfo) {
-                        if(_debug) {
-                            console.log("IIIF image info ", imageInfo);
-                        }
-                        if(_defaults.global.useTiles) {                            
-                            var tileSource = new OpenSeadragon.IIIFTileSource(imageInfo);
-                            return osViewer.loadImage(tileSource);
-                        } else {
-                            var tileSource  = osViewer.createPyramid(imageInfo);
-                            return osViewer.loadImage(tileSource);
-                        }
-                    },
-                 function(error) {
-                    if(viewImage.tileSourceResolver.isURI(_defaults.image.tileSource)) {                    
-                        if(_debug) {
-                            console.log("Image URL", _defaults.image.tileSource);
-                        }
-                        var tileSource = new OpenSeadragon.ImageTileSource( {
-                            url: _defaults.image.tileSource,
-                            buildPyramid: true,
-                            crossOriginPolicy: false
-                        } );
-                        return osViewer.loadImage(tileSource);
-                    } else {
-                        var errorMsg = "Failed to load tilesource from " + tileSource;
-                        if(_debug) {
-                            console.log(errorMsg);
-                        }
-                        return Q.reject(errorMsg);
+            .then(function(imageInfo) {                        
+                if(_debug) {                
+                    console.log("IIIF image info ", imageInfo);                        
+                }                
+                viewImage.setImageSizes(imageInfo, _defaults.global.imageSizes);                
+                viewImage.setTileSizes(imageInfo, _defaults.global.tileSizes);                
+                var tileSource;
+                
+                if(_defaults.global.useTiles) {
+                    tileSource = new OpenSeadragon.IIIFTileSource(imageInfo);                    
+                } else {                
+                    tileSource  = osViewer.createPyramid(imageInfo);                    
+                }
+                
+                return osViewer.loadImage(tileSource);                
+            },
+                 
+            function(error) {            
+                if(viewImage.tileSourceResolver.isURI(_defaults.image.tileSource)) {
+                    if(_debug) {                    
+                        console.log("Image URL", _defaults.image.tileSource);                        
                     }
-              })
-          .then(function(viewer) {
-              result.resolve(viewer);
-          })
-          .catch(function(errorMessage) {
-              result.reject(errorMessage);
-          })
+                    
+                    var tileSource = new OpenSeadragon.ImageTileSource( {                    
+                        url: _defaults.image.tileSource,                        
+                        buildPyramid: true,                        
+                        crossOriginPolicy: false                        
+                    } );
+
+                    return osViewer.loadImage(tileSource);                    
+                } else {                
+                    var errorMsg = "Failed to load tilesource from " + tileSource;
+                    
+                    if(_debug) {                    
+                        console.log(errorMsg);                        
+                    }
+                    
+                    return Q.reject(errorMsg);
+                    
+                }              
+            }).then(function(viewer) {              
+                result.resolve(viewer);          
+            }).catch(function(errorMessage) {              
+                result.reject(errorMessage);          
+            });
+            
             return result.promise;
         },
         loadImage : function(tileSource) {
@@ -117,8 +128,7 @@ var viewImage = ( function() {
                 console.log( 'Loading image with tilesource: ', tileSource );
             }
               
-            osViewer.loadFooter();
-            
+            osViewer.loadFooter();            
          
             osViewer.viewer = new OpenSeadragon( {
                 immediateRender: false,
@@ -151,52 +161,50 @@ var viewImage = ( function() {
 
             var result = Q.defer();
                 
-                osViewer.observables = createObservables(window, osViewer.viewer);  
+            osViewer.observables = createObservables(window, osViewer.viewer);  
                 
-                osViewer.observables.viewerOpen
-                .subscribe(function(event) {
-                        result.resolve(osViewer);
-                    },   
-                    function(error) {
-                        result.reject(error);
-                    }
-               )
+// .zip(osViewer.observables.firstTileLoaded)
+            
+            osViewer.observables.viewerOpen.subscribe(function(openevent, loadevent) {            
+                result.resolve(osViewer);                
+            }, function(error) {            
+                result.reject(error);                
+            });                
                 
                 
-                //Calculate sizes if redraw is required
-                osViewer.observables.redrawRequired
-                .subscribe(function(event) {
-                    if(_debug) {                    
-                        console.log("viewer " + event.osState + "ed with target location ", event.targetLocation);
-                    }  
-                    osViewer.controls.setPanning( true );
-                    _calculateSizes(osViewer);
-                });
-
-                if ( osViewer.controls ) {
-                    osViewer.controls.init( _defaults );
-                    
+            // Calculate sizes if redraw is required
+            
+            osViewer.observables.redrawRequired.subscribe(function(event) {            
+                if(_debug) {
+                    console.log("viewer " + event.osState + "ed with target location ", event.targetLocation);                    
                 }
                 
-                if ( osViewer.zoomSlider ) {
-                    osViewer.zoomSlider.init( _defaults );
-                }
-                if ( osViewer.overlays ) {
-                    
-                    osViewer.overlays.init( _defaults );
-                }
+                osViewer.redraw();
+            });
                 
-                if ( osViewer.drawRect ) {
-                    osViewer.drawRect.init();
-                }
-                
-                if ( osViewer.transformRect ) {
-                    osViewer.transformRect.init();
-                }
-                
-                osViewer.observables.redrawRequired.connect();
-                
-                return result.promise;
+            if ( osViewer.controls ) {                    
+                osViewer.controls.init( _defaults );
+            }
+            
+            if ( osViewer.zoomSlider ) {
+                osViewer.zoomSlider.init( _defaults );                
+            }
+            
+            if ( osViewer.overlays ) {
+                osViewer.overlays.init( _defaults );                
+            }                
+            
+            if ( osViewer.drawRect ) {
+                osViewer.drawRect.init();                
+            }   
+            
+            if ( osViewer.transformRect ) {            
+                osViewer.transformRect.init();                
+            }                
+            
+            osViewer.observables.redrawRequired.connect();                
+            
+            return result.promise;
         },
         hasFooter: function() {
             return _footerImage != null;
@@ -205,29 +213,27 @@ var viewImage = ( function() {
             return _defaults;
         },
         loadFooter: function() {
-            if ( _defaults.image.baseFooterUrl && _defaults.global.footerHeight > 0 ) {
-                
+            if ( _defaults.image.baseFooterUrl && _defaults.global.footerHeight > 0 ) {                
                 _footerImage = new Image();
-                _footerImage.src = _defaults.image.baseFooterUrl.replace( "{width}", Math.round( _container.width() ) ).replace( "{height}",
-                        Math.round( _defaults.global.footerHeight ) );
-                
+                _footerImage.src = _defaults.image.baseFooterUrl.replace( "{width}", Math.round( _container.width() ) ).replace( "{height}", Math.round( _defaults.global.footerHeight ) );                
                 _footerImage.onload = function() {
                     if ( _debug ) {
                         console.log( "loading footer image ", _footerImage );
                         console.log( "Calculating image Footer size" );
                     }
+                    
                     osViewer.drawFooter();
-                }
+                };
             }
         },
         drawFooter: function() {
             if ( osViewer.viewer ) {
                 _overlayFooter();
             }
+            
             osViewer.viewer.removeHandler( 'update-viewport', _overlayFooter );
             osViewer.viewer.addHandler( 'update-viewport', _overlayFooter );
-        },
-        
+        },        
         getOverlayGroup: function( name ) {
             return _defaults.getOverlayGroup( name );
         },
@@ -239,23 +245,37 @@ var viewImage = ( function() {
             fileExtension = fileExtension.replace( "image/", "" );
             fileExtension = fileExtension.replace("jpeg", "jpg").replace("tiff", "tif");
             var imageLevels = [];
-            imageInfo.sizes.forEach(function(size) {
-                if(_debug) {                    
-                    console.log("Image level width = ", size.width)
-                    console.log("Image level height = ", size.height)
-                }
-                var level = {
-                    mimetype: _defaults.image.mimeType,
-                    url: imageInfo["@id"].replace( "/info.json", "" ) + "/full/" + size.width + ",/0/default." + fileExtension,
-                    width: imageInfo.width,
-                    height: imageInfo.height
-                };
-                if(_debug) {
-                    console.log("Created level ", level);
-                }
-                imageLevels.push( level );
-            })
-            var tileSource = new OpenSeadragon.LegacyTileSource(imageLevels);
+            var tileSource;
+            if(imageInfo.sizes) {
+	            imageInfo.sizes.forEach(function(size) {
+	                if(_debug) {                    
+	                    console.log("Image level width = ", size.width)
+	                    console.log("Image level height = ", size.height)
+	                }
+	                
+	                var level = {
+	                    mimetype: _defaults.image.mimeType,
+	                    url: imageInfo["@id"].replace( "/info.json", "" ) + "/full/" + size.width + ",/0/default." + fileExtension,
+	                    width: imageInfo.width,
+	                    height: imageInfo.height
+	                };
+	                
+	                if(_debug) {
+	                    console.log("Created level ", level);
+	                }
+	                
+	                imageLevels.push( level );
+	            });
+	            
+	            tileSource = new OpenSeadragon.LegacyTileSource(imageLevels);
+            } else {
+            	tileSource = new OpenSeadragon.ImageTileSource({
+            		url: imageInfo["@id"].replace( "/info.json", "" ) + "/full/full/0/default." + fileExtension,
+            		crossOriginPolicy: "Anonymous",
+            		buildPyramid: false
+            	});
+            }
+            
             return tileSource;
         },
         getSizes: function() {
@@ -314,7 +334,6 @@ var viewImage = ( function() {
             var displaySize = osViewer.viewer.viewport.contentSize.x;
             return value * displaySize / osViewer.getImageInfo().width;
         },
-        
         close: function() {
             if ( _debug ) {
                 console.log( "Closing openSeadragon viewer" );
@@ -323,6 +342,52 @@ var viewImage = ( function() {
             if ( osViewer.viewer ) {
                 osViewer.viewer.destroy();
             }
+        },
+        redraw: function() {
+            if(osViewer.controls) {                    	
+            	osViewer.controls.setPanning( true );
+            }
+            _calculateSizes(osViewer);
+        },
+        setImageSizes: function(imageInfo, sizes) {
+			var string = sizes.replace(/[\{\}]/, "");
+			var sizes = JSON.parse(sizes);
+			var iiifSizes = [];
+			sizes.forEach(function(size) {
+				iiifSizes.push({"width": parseInt(size), "height": parseInt(size)});
+			});
+			if(iiifSizes.length > 0) {				
+				imageInfo.sizes = iiifSizes;
+			} else {
+				delete imageInfo.sizes;
+			}
+        },
+        setTileSizes: function(imageInfo, tiles) {
+			var tileString = configViewer.global.tileSizes.replace(/(\d+)/, '"$1"').replace("=", ":");
+			var tiles = JSON.parse(tileString);
+			var iiifTiles = [];
+			
+			Object.keys(tiles).forEach(function(size) {
+				var scaleFactors = tiles[size];
+				iiifTiles.push({"width": parseInt(size), "height": parseInt(size), "scaleFactors": scaleFactors})
+			});
+			
+			imageInfo.tiles = iiifTiles;
+        },
+        onFirstTileLoaded: function() {
+        	var defer = Q.defer();
+        	
+        	if(viewImage.observables) {
+        		viewImage.observables.firstTileLoaded.subscribe(function(event) {
+        			defer.resolve(event);
+        		}, function(error) {
+        			defer.reject(error)
+        		});
+        	} else {
+        		defer.reject("No observables defined");
+        	}
+        	
+        	return defer.promise;
         }
     };
     
@@ -332,18 +397,35 @@ var viewImage = ( function() {
         observables.viewerOpen = Rx.Observable.create(function(observer) {
             viewer.addOnceHandler( 'open', function( event ) {
                 event.osState = "open";
+                
                 if(Number.isNaN(event.eventSource.viewport.getHomeBounds().x)) {
                     return observer.onError("Unknow error loading image from ", _defaults.image.tileSource);
                 } else {                    
                     return observer.onNext(event);
                 }
             } );
-            viewer.addHandler( 'open-failed', function( event ) {
+            viewer.addOnceHandler( 'open-failed', function( event ) {
                 event.osState = "open-failed";
-                console.log("Failed to Open");
+                console.log("Failed to open openseadragon ");
+                
                 return observer.onError(event);
             } );
         });
+        
+        observables.firstTileLoaded = Rx.Observable.create(function(observer) {
+        	viewer.addOnceHandler( 'tile-loaded', function( event ) {
+                event.osState = "tile-loaded";
+                
+                return observer.onNext(event);
+            } );
+        	viewer.addOnceHandler( 'tile-load-failed', function( event ) {
+                event.osState = "tile-load-failed";
+                console.log("Failed to load tile");
+                
+                return observer.onError(event);
+            } );
+        });
+        
         observables.viewerZoom = Rx.Observable.create(function(observer) {
             viewer.addHandler( 'zoom', function( event ) {
                 return observer.onNext(event);
@@ -363,12 +445,13 @@ var viewImage = ( function() {
         observables.canvasResize = Rx.Observable.create(function(observer) {
             viewer.addHandler( 'resize', function( event ) {
                 event.osState = "resize";
+                
                 return observer.onNext(event);
             } );
         });
-        observables.windowResize = Rx.Observable.fromEvent(window, "resize")
-        .map(function(event) {
+        observables.windowResize = Rx.Observable.fromEvent(window, "resize").map(function(event) {
             event.osState = "window resize";
+            
             return event;
         });
         observables.overlayRemove = Rx.Observable.create(function(observer) {
@@ -386,24 +469,24 @@ var viewImage = ( function() {
                 return observer.onNext(event);
             } );
         });
-        observables.redrawRequired = observables.viewerOpen
-        .merge(observables.viewerRotate)
-        .merge(observables.windowResize)
-        .map(function(event) {
+        observables.redrawRequired = observables.viewerOpen.merge(observables.viewerRotate).merge(observables.canvasResize).debounce(10).map(function(event) {
             var location = {};
+            
             if(osViewer.controls) {
                 location = osViewer.controls.getLocation();
             }
+            
             if(event.osState === "open") {
                 location.zoom = osViewer.viewer.viewport.getHomeZoom();
                 if(_defaults.image.location) {
                    location = _defaults.image.location;
                 }
             }
+            
             event.targetLocation = location;
+            
             return event;
-        })
-        .publish();
+        }).publish();
         
         return observables;
     }
@@ -452,10 +535,7 @@ var viewImage = ( function() {
     function _timeout(promise, time) {
         var deferred = new jQuery.Deferred();
 
-        $.when(promise)
-            .done(deferred.resolve)
-            .fail(deferred.reject)
-            .progress(deferred.notify);
+        $.when(promise).done(deferred.resolve).fail(deferred.reject).progress(deferred.notify);
 
         setTimeout(function() {
             deferred.reject("timeout");
@@ -464,13 +544,12 @@ var viewImage = ( function() {
         return deferred.promise();
     }
     
-    return osViewer;
-    
+    return osViewer;    
 }
 
 )( jQuery, OpenSeadragon );
 
-//browser backward compability
+// browser backward compability
 if(!String.prototype.startsWith) {
     String.prototype.startsWith = function(subString) {
         var start = this.substring(0,subString.length);

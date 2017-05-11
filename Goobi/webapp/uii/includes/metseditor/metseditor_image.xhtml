@@ -36,34 +36,32 @@
                                     <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null}" />
 
                                     <script type="text/javascript">
-                                    $('#mainImage').height($('#mainImage').width() * #{Metadaten.imageHeight}/#{Metadaten.imageWidth});
-                                    var imageViewConfig = {
-                                            global: {
-                                                divId : 'mainImage',
-                                                zoomSlider : 'zoomSlider',
-                                                maxZoomLevel: 10
-                                            },
-                                            image: {
-                                                mimeType: "image/jpg",
-                                                imageLevels: #{Metadaten.image.imageLevels},
-                                                imageOriginalWidth: #{Metadaten.imageWidth},
-                                                imageOriginalHeight: #{Metadaten.imageHeight},
-                                                imageViewWidth: $('#mainImage').width(),
-                                                imageViewHeight: $('#mainImage').height(),
-                                                tileUrl: null                                
-                                          
-                                            }
-                                        }; 
-                                    viewImage.close();
-                                    viewImage.init(imageViewConfig);
-                                    
-//                                     ,
-//                                     location: {
-//                                     rotation: 90,
-//                                     	x: 0.5,
-//                                     	y: 0.6172839506172839,
-//                                     	zoom: 0.7290000000000001
-//                                     }
+									var configViewer = {
+									    global: {
+									    	divId: 'mainImage',
+									        useTiles: false,
+									        footerHeight: 0,
+									        imageSizes: "[600, 900, 1800]",
+									        tileSizes: "{512=[1, 32]}",
+									        adaptContainerHeight: true,
+									        persistZoom: true,
+								            persistRotation: true,
+								            persistenceId: "#{Metadaten.myProzess.id}",
+									    },
+									    image: {
+									        mimeType: "image/jpeg",
+ 									        tileSource : '#{Metadaten.image.mainImageUrl}',
+									    }
+									};									
+									    viewImage.init( configViewer )
+									    .then(function(osViewer) {
+									    	console.info( 'viewer opened' );
+									        //TODO: Hide loader?
+									    })
+									    .catch(function(error){
+									        console.error( 'Error opening image', error );
+									        $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
+									    });
                                     </script>
                                 </h:panelGroup>
                             </div>

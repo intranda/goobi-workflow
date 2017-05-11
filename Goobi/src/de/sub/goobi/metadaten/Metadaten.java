@@ -1119,6 +1119,7 @@ public class Metadaten {
             List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
             if (imageNames != null && !imageNames.isEmpty()) {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
+                imageFolderName = imageFolderName.replaceAll("\\\\", "/");
                 int order = 1;
                 for (String imagename : imageNames) {
                     Image currentImage = new Image(imagename, order++, "", "", imagename);
@@ -4183,7 +4184,7 @@ public class Metadaten {
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
         currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
 
-        if (createImageLevels && !currentImage.hasImageLevels()) {
+        if (createImageLevels && StringUtils.isBlank(currentImage.getMainImageUrl())) {
             if (currentImage.getSize() == null) {
                 currentImage.setSize(getActualImageSize(currentImage));
             }
@@ -4199,7 +4200,6 @@ public class Metadaten {
                     logger.error("Cannot build image with size " + sizeString);
                 }
             }
-            Collections.sort(currentImage.getImageLevels());
         }
     }
 
@@ -4213,7 +4213,7 @@ public class Metadaten {
     private Dimension getActualImageSize(Image image) {
         Dimension dim;
         try {
-            String imagePath = imageFolderName + image.getImageName();
+            String imagePath = imageFolderName + image.getImageName().replaceAll("\\\\", "/");
             String dimString = new GetImageDimensionAction().getDimensions(imagePath);
             int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
             int height = Integer.parseInt(dimString.replaceAll(".*::", ""));

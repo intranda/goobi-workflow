@@ -6,7 +6,7 @@ var viewImage = ( function( osViewer ) {
     var _zoomedOut = true;
     var _panning = false;
     var _fadeout = null;
-    var _config = {};
+    var _defaults = {};
       
     osViewer.controls = {
         init: function( config ) {
@@ -16,42 +16,55 @@ var viewImage = ( function( osViewer ) {
                 console.log( '##############################' );
             }
             
-            _config = config;
+            $.extend( true, _defaults, config );
+            
             if(osViewer.controls.persistance) {
-                osViewer.controls.persistance.init(_config);
+                osViewer.controls.persistance.init(_defaults);
             }
             if(_debug) {                
-                console.log("Setting viewer location to", _config.image.location);
+                console.log("Setting viewer location to", _defaults.image.location);
             }
             
-            //set location after viewport update
-            osViewer.observables.redrawRequired
-            .sample(osViewer.observables.viewportUpdate)
-            .filter(function(event) {return osViewer.controls ? true : false})
-            .subscribe(function(event) {
-                setLocation(event, osViewer)
-                osViewer.controls.setPanning( false );
-            });
-            
-            //zoom home if min zoom reached
-            osViewer.observables.viewerZoom.subscribe( function( event ) {
-                if ( _debug ) {
-                    console.log( "zoom to " + osViewer.viewer.viewport.getZoom( true ) );
-                }
-                if ( !osViewer.controls.isPanning() ) {
-                    var currentZoom = osViewer.viewer.viewport.getZoom();
-                    
-                    if ( currentZoom <= osViewer.viewer.viewport.minZoomLevel ) {
-                        if ( _debug ) {
-                            console.log( "Zoomed out: Panning home" );
-                        }
-                        osViewer.controls.setPanning(true);
-                        osViewer.controls.goHome( true );
-                        osViewer.controls.setPanning(false);
+            if( osViewer.observables ) {
+                // set location after viewport update
+                osViewer.observables.redrawRequired
+                .sample(osViewer.observables.viewportUpdate)
+                .filter(function(event) {return osViewer.controls ? true : false})
+                .subscribe(function(event) {
+                    setLocation(event, osViewer)
+                    osViewer.controls.setPanning( false );
+                });
+                
+                // zoom home if min zoom reached
+                osViewer.observables.viewerZoom.subscribe( function( event ) {
+                    if ( _debug ) {
+                        console.log( "zoom to " + osViewer.viewer.viewport.getZoom( true ) );
                     }
-                }
-            } );
+                    if ( !osViewer.controls.isPanning() ) {
+                        var currentZoom = osViewer.viewer.viewport.getZoom();
+                        
+//                        console.log("Current zoom = ", currentZoom);
+//                        console.log("minZoom = ", osViewer.viewer.viewport.minZoomLevel);
+//                        
+                        if ( currentZoom <= osViewer.viewer.viewport.minZoomLevel ) {
+                            if ( _debug ) {
+                                console.log( "Zoomed out: Panning home" );
+                            }
+                            
+                            osViewer.controls.setPanning(true);
+                            osViewer.controls.goHome( true );
+                            osViewer.controls.setPanning(false);
+                        }
+                    }
+                } );
+            }
             
+            // fade out fullscreen controls
+            if ( $( '#fullscreenTemplate' ).length > 0 ) {
+                $( '#fullscreenTemplate' ).on( 'mousemove', function() {
+                    osViewer.controls.fullscreenControlsFadeout();
+                } );
+            }
         },
         getLocation: function() {
             return {
@@ -124,17 +137,17 @@ var viewImage = ( function( osViewer ) {
         },
         zoomIn: function() {
             if ( _debug ) {
-                console.log( 'osViewer.controls.zoomIn: zoomSpeed - ' + _config.global.zoomSpeed );
+                console.log( 'osViewer.controls.zoomIn: zoomSpeed - ' + _defaults.global.zoomSpeed );
             }
             
-            osViewer.viewer.viewport.zoomBy( _config.global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
+            osViewer.viewer.viewport.zoomBy( _defaults.global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
         },
         zoomOut: function() {
             if ( _debug ) {
-                console.log( 'osViewer.controls.zoomOut: zoomSpeed - ' + _config.global.zoomSpeed );
+                console.log( 'osViewer.controls.zoomOut: zoomSpeed - ' + _defaults.global.zoomSpeed );
             }
             
-            osViewer.viewer.viewport.zoomBy( 1 / _config.global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
+            osViewer.viewer.viewport.zoomBy( 1 / _defaults.global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
         },
         getHomeZoom: function( rotated ) {
             if ( rotated && osViewer.getCanvasSize().x / osViewer.getCanvasSize().y <= osViewer.getImageSize().x / osViewer.getImageSize().y ) {
@@ -204,23 +217,35 @@ var viewImage = ( function( osViewer ) {
             return _panning;
         },
         fullscreenControlsFadeout: function() {
-            if ( _fadeout ) {
-                clearTimeout( _fadeout );
-                osViewer.controls.showFullscreenControls();
+            if ( _debug ) {
+                console.log( '---------- osViewer.controls.fullscreenControlsFadeout() ----------' );
             }
             
-            _fadeout = setTimeout( osViewer.controls.hideFullscreenControls, 3000 );
+            if ( _fadeout ) {
+                clearTimeout( _fadeout );
+                this.showFullscreenControls();
+            }
+            
+            _fadeout = setTimeout( this.hideFullscreenControls, 3000 );
         },
         hideFullscreenControls: function() {
+            if ( _debug ) {
+                console.log( '---------- osViewer.controls.hideFullscreenControls() ----------' );
+            }
+            
             $( '#fullscreenRotateControlsWrapper, #fullscreenZoomSliderWrapper, #fullscreenExitWrapper, #fullscreenPrevWrapper, #fullscreenNextWrapper' ).stop().fadeOut( 'slow' );
         },
         showFullscreenControls: function() {
+            if ( _debug ) {
+                console.log( '---------- osViewer.controls.showFullscreenControls() ----------' );
+            }
+            
             $( '#fullscreenRotateControlsWrapper, #fullscreenZoomSliderWrapper, #fullscreenExitWrapper, #fullscreenPrevWrapper, #fullscreenNextWrapper' ).show();
         }
     };
     
     
-    //set correct location, zooming and rotation once viewport has been updated after redraw
+    // set correct location, zooming and rotation once viewport has been updated after redraw
     function setLocation(event, osViewer) {
         if(_debug) {                    
             console.log("Viewer changed from " + event.osState + " event");
@@ -231,8 +256,8 @@ var viewImage = ( function( osViewer ) {
          var targetZoom = event.targetLocation.zoom;
          var targetLocation = new OpenSeadragon.Point(event.targetLocation.x, event.targetLocation.y);
          var zoomDiff = targetZoom * osViewer.viewer.viewport.getHomeZoom() - (osViewer.viewer.viewport.minZoomLevel);
-//         console.log("zoomDiff: " + targetZoom + " * " + osViewer.viewer.viewport.getHomeZoom() + " - " + osViewer.viewer.viewport.minZoomLevel + " = ", zoomDiff);
-//         console.log("zoomDiff: " + targetZoom + " - " + osViewer.viewer.viewport.minZoomLevel + "/" + osViewer.controls.getCurrentRotationZooming() + " = ", zoomDiff);
+// console.log("zoomDiff: " + targetZoom + " * " + osViewer.viewer.viewport.getHomeZoom() + " - " + osViewer.viewer.viewport.minZoomLevel + " = ", zoomDiff);
+// console.log("zoomDiff: " + targetZoom + " - " + osViewer.viewer.viewport.minZoomLevel + "/" + osViewer.controls.getCurrentRotationZooming() + " = ", zoomDiff);
          var zoomedOut = zoomDiff < 0.001 || !targetZoom;
          if(zoomedOut) {
              if(_debug) {                         

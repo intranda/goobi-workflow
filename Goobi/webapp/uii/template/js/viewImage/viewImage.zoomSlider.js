@@ -3,7 +3,15 @@ var viewImage = ( function( osViewer ) {
     
     var _debug = false;
     var _zoomSlider = {};
-    var _defaults = {};
+    var _defaults = {
+        global: {
+            /**
+             * The position of the zoom-slider is "dilated" by a function d(zoom) = 1/sliderDilation*tan[atan(sliderDilation)*zoom] This makes the slider position change slower for
+             * small zoom and faster for larger zoom The function is chosen so that d(0) = 0 and d(1) = 1
+             */
+            sliderDilation: 12
+        }
+    };
     
     osViewer.zoomSlider = {
         init: function( config ) {
@@ -15,7 +23,7 @@ var viewImage = ( function( osViewer ) {
             
             $.extend( true, _defaults, config );
             
-            if ( $( '#' + _defaults.global.zoomSlider ) ) {
+            if ( $( _defaults.global.zoomSlider ) ) {
                 osViewer.zoomSlider.addZoomSlider( _defaults.global.zoomSlider );
                 
                 // handler for openSeadragon Object
@@ -42,8 +50,9 @@ var viewImage = ( function( osViewer ) {
             } );
             _zoomSlider.buttonPosition = newPos;
             var factor = ( newPos / ( _zoomSlider.absoluteWidth - offset * 2 ) );
-            var newScale = osViewer.viewer.viewport.getMinZoom() + ( osViewer.viewer.viewport.getMaxZoom() - osViewer.viewer.viewport.getMinZoom() )
-                    * factor;
+            factor = 1 / _defaults.global.sliderDilation * Math.tan( Math.atan( _defaults.global.sliderDilation ) * factor );
+            
+            var newScale = osViewer.viewer.viewport.getMinZoom() + ( osViewer.viewer.viewport.getMaxZoom() - osViewer.viewer.viewport.getMinZoom() ) * factor;
             
             if ( _debug ) {
                 console.log( 'osViewer.zoomSlider.buttonToMouse: newScale - ' + newScale );
@@ -59,9 +68,20 @@ var viewImage = ( function( osViewer ) {
             if ( !_zoomSlider || !osViewer.viewer.viewport ) {
                 return;
             }
-            var newPos = ( ( scale - osViewer.viewer.viewport.getMinZoom() ) / ( osViewer.viewer.viewport.getMaxZoom() - osViewer.viewer.viewport
-                    .getMinZoom() ) )
-                    * ( _zoomSlider.absoluteWidth - _zoomSlider.$button.width() );
+            
+            // console.log("Dilation = ", osViewer.viewer.viewport.getMinZoom())
+            // console.log("minZoom = ", osViewer.viewer.viewport.getMinZoom());
+            // console.log("maxZoom = ", osViewer.viewer.viewport.getMaxZoom())
+            // console.log("scale = ", scale);
+            
+            var factor = ( scale - osViewer.viewer.viewport.getMinZoom() ) / ( osViewer.viewer.viewport.getMaxZoom() - osViewer.viewer.viewport.getMinZoom() );
+            // console.log( "factor = ", factor );
+            //            
+            factor = 1 / Math.atan( _defaults.global.sliderDilation ) * Math.atan( _defaults.global.sliderDilation * factor );
+            var newPos = factor * ( _zoomSlider.absoluteWidth - _zoomSlider.$button.width() );
+            // var newPos = ( ( scale - osViewer.viewer.viewport.getMinZoom() ) / ( osViewer.viewer.viewport.getMaxZoom() - osViewer.viewer.viewport.getMinZoom() ) )
+            // * ( _zoomSlider.absoluteWidth - _zoomSlider.$button.width() );
+            // console.log( "pos = ", newPos );
             
             if ( Math.abs( osViewer.viewer.viewport.getMaxZoom() - scale ) < 0.0000000001 ) {
                 newPos = _zoomSlider.absoluteWidth - _zoomSlider.$button.width();
@@ -118,17 +138,13 @@ var viewImage = ( function( osViewer ) {
             
             return false;
         },
-        addZoomSlider: function( elementId ) {
+        addZoomSlider: function( element ) {
             if ( _debug ) {
-                console.log( 'osViewer.zoomSlider.addZoomSlider: elementId - ' + elementId );
+                console.log( 'osViewer.zoomSlider.addZoomSlider: element - ' + element );
             }
             
-            _zoomSlider.$element = $( '#' + elementId );
-            _zoomSlider.$button = _zoomSlider.$element.children( '.zoomslider-handle' );
-            _zoomSlider.$button.css( {
-                position: 'relative',
-                display: 'block'
-            } );
+            _zoomSlider.$element = $( element );
+            _zoomSlider.$button = _zoomSlider.$element.children( _defaults.global.zoomSliderHandle );
             _zoomSlider.buttonPosition = 0;
             _zoomSlider.absoluteWidth = _zoomSlider.$element.innerWidth();
             _zoomSlider.mousedown = false;
