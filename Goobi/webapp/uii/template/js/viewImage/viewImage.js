@@ -251,7 +251,6 @@ var viewImage = ( function() {
             	imageInfo.forEach(function(level) {
             		level.mimetype = _defaults.image.mimeType;
             	});
-            	console.log("TILE SOURCE LEVELS ", imageInfo);
             	tileSource = new OpenSeadragon.LegacyTileSource(imageInfo);
             } else if(imageInfo.sizes) {
 	            imageInfo.sizes.forEach(function(size) {

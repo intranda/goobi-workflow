@@ -4,6 +4,14 @@
     </composite:interface>
 
     <composite:implementation>
+    
+    <style>
+
+	#mainImage {
+	    height: 800px;
+	}
+	</style>
+    
         <h:panelGroup id="BildArea2" style="#{Metadaten.treeProperties.imageSticky?('position: fixed;left: ').concat(Metadaten.treeWidth + 560).concat('px;z-index: 998;'):''}" rendered="#{Metadaten.bildAnzeigen==true}">
 
             <div class="box">
@@ -42,6 +50,7 @@
 									        useTiles: false,
 									        footerHeight: 0,
 									        adaptContainerHeight: true,
+									        zoomSlider: "#zoomSlider",
 									        persistZoom: true,
 								            persistRotation: true,
 								            persistenceId: "#{Metadaten.myProzess.id}",
