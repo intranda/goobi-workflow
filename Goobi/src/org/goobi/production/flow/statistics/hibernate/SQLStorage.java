@@ -1,5 +1,9 @@
 package org.goobi.production.flow.statistics.hibernate;
 
+import java.util.Date;
+import java.util.List;
+import org.goobi.production.flow.statistics.enums.TimeUnit;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,12 +32,8 @@ package org.goobi.production.flow.statistics.hibernate;
  * exception statement from your version.
  */
 
-import java.util.Date;
-import java.util.List;
-
 import javax.enterprise.inject.Default;
 
-import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
 
@@ -47,6 +47,8 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 @Default
 public class SQLStorage extends SQLGenerator implements IStorage{
 
+    
+    
 	public SQLStorage(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {
 		// "history.processid overrides the defautl value of prozesseID

@@ -641,4 +641,9 @@ public class ConfigurationHelper implements Serializable {
      return getLocalBoolean("ProcessLogShowThirdField", false);
         
     }
+    
+    public boolean isUseH2DB() {
+        return getLocalBoolean("useH2DB", false);
+    }
+    
 }

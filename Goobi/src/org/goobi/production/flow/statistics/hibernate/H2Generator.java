@@ -1,4 +1,5 @@
 package org.goobi.production.flow.statistics.hibernate;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,9 +37,8 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 /**
  * 
- * This is the superclass for SQL generation and it provides some common
- * data collection in the constructor and abstract methods which needs to 
- * be implemented in the sub classes (  
+ * This is the superclass for SQL generation and it provides some common data collection in the constructor and abstract methods which needs to be
+ * implemented in the sub classes (
  * 
  * 
  * @author Wulf Riebensahm
@@ -48,140 +48,149 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
 @Alternative
 public abstract class H2Generator implements IGenerator {
 
-	String mySql = null;
-	Date myTimeFrom = null;
-	Date myTimeTo = null;
-	TimeUnit myTimeUnit = null;
-	String myIdsCondition = null;
-	String myIdFieldName = "prozesse.prozesseid";
-	List<Integer> ids;
-	private H2Generator() {
-		super();
-	}
+    String mySql = null;
+    Date myTimeFrom = null;
+    Date myTimeTo = null;
+    TimeUnit myTimeUnit = null;
+    String myIdsCondition = null;
+    String myIdFieldName = "prozesse.prozesseid";
+    List<Integer> ids;
 
-	public H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit,
-			List<Integer> ids, String idFieldName) {
-		this();
-		myTimeFrom = timeFrom;
-		myTimeTo = timeTo;
-		myTimeUnit = timeUnit;
-		this.ids = ids;
-		if (idFieldName != null) {
-			this.myIdFieldName = idFieldName;
-		}
+    public H2Generator() {
+        super();
+    }
 
-		// if ids are passed on build a where clause about ids
-		// this will be a condition of the inner table
-		conditionGeneration();
+    public H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
+        this();
+        myTimeFrom = timeFrom;
+        myTimeTo = timeTo;
+        myTimeUnit = timeUnit;
+        this.ids = ids;
+        if (idFieldName != null) {
+            this.myIdFieldName = idFieldName;
+        }
 
-	}
+        // if ids are passed on build a where clause about ids
+        // this will be a condition of the inner table
+        conditionGeneration();
 
-	private void conditionGeneration() {
-		if (ids != null) {
-			myIdsCondition = myIdFieldName + " in (";
-			for (Integer i : ids) {
-				myIdsCondition = myIdsCondition.concat(i.toString() + ",");
-			}
-			myIdsCondition = myIdsCondition.substring(0, myIdsCondition
-					.length()
-					- ",".length())
-					+ ")";
-		}
-	}
+    }
 
-	/************************************************************************
+    public void setTimeFrom(Date myTimeFrom) {
+        this.myTimeFrom = myTimeFrom;
+    }
+
+    public void setTimeTo(Date myTimeTo) {
+        this.myTimeTo = myTimeTo;
+    }
+
+    public void setTimeUnit(TimeUnit myTimeUnit) {
+        this.myTimeUnit = myTimeUnit;
+    }
+
+    public void setIds(List<Integer> ids) {
+        this.ids = ids;
+    }
+
+    public void setIdFieldName(String name) {
+        myIdFieldName = name;
+    }
+    
+    public void conditionGeneration() {
+        if (ids != null) {
+            myIdsCondition = myIdFieldName + " in (";
+            for (Integer i : ids) {
+                myIdsCondition = myIdsCondition.concat(i.toString() + ",");
+            }
+            myIdsCondition = myIdsCondition.substring(0, myIdsCondition.length() - ",".length()) + ")";
+        }
+    }
+
+    /************************************************************************
 	 * get actual SQL Query as String. Depends on the done step of process.
 	 * 
 	 * @return String - SQL Query as String
 	 ***********************************************************************/
 	public abstract String getSQL();
 
-	/*****************************************************************
-	 * generates SQL-WHERE for the time frame 
-	 * 
-	 * @param timeFrom start time 
-	 * @param timeTo   end time
-	 * @param timeLimiter name of field used to apply the timeframe
-	 ******************************************************************/
-	protected static String getWhereClauseForTimeFrame(Date timeFrom,
-			Date timeTo, String timeLimiter) {
+    /*****************************************************************
+     * generates SQL-WHERE for the time frame
+     * 
+     * @param timeFrom start time
+     * @param timeTo end time
+     * @param timeLimiter name of field used to apply the timeframe
+     ******************************************************************/
+    protected static String getWhereClauseForTimeFrame(Date timeFrom, Date timeTo, String timeLimiter) {
 
-		if (timeFrom == null && timeTo == null) {
-			return "";
-		}
+        if (timeFrom == null && timeTo == null) {
+            return "";
+        }
 
-		if (timeFrom != null && timeTo != null) {
-			return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
-		}
+        if (timeFrom != null && timeTo != null) {
+            return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
+        }
 
-		if (timeFrom != null) {
-			return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
-		}
+        if (timeFrom != null) {
+            return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
+        }
 
-		if (timeTo != null) {
-			return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
-		}
-		return "";
+        if (timeTo != null) {
+            return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
+        }
+        return "";
 
-	}
+    }
 
-	/*****************************************************************
-	 * generates time format from {@link TimeUnit}
-	 * 
-	 * @param fieldExpression  
-	 * @param timeUnit
-	 * @return String - simple date format 
-	 ******************************************************************/
-	protected static String getIntervallExpression(TimeUnit timeUnit,
-			String fieldExpression) {
+    /*****************************************************************
+     * generates time format from {@link TimeUnit}
+     * 
+     * @param fieldExpression
+     * @param timeUnit
+     * @return String - simple date format
+     ******************************************************************/
+    protected static String getIntervallExpression(TimeUnit timeUnit, String fieldExpression) {
 
-		if (timeUnit == null) {
-			return "'Total'";
-		}
+        if (timeUnit == null) {
+            return "'Total'";
+        }
 
-		switch (timeUnit) {
+        switch (timeUnit) {
 
-		case years:
-			return "year(" + fieldExpression + ")";
+            case years:
+                return "year(" + fieldExpression + ")";
 
-		case months:
-			return "concat(year(" + fieldExpression + ") , '/' , month("
-					+ fieldExpression + "))";
+            case months:
+                return "concat(year(" + fieldExpression + ") , '/' , month(" + fieldExpression + "))";
 
-		case quarters:
-			return "concat(year(" + fieldExpression + ") , '/' , quarter("
-					+ fieldExpression + "))";
+            case quarters:
+                return "concat(year(" + fieldExpression + ") , '/' , quarter(" + fieldExpression + "))";
 
-		case weeks:
-			return "concat(left(yearweek(" + fieldExpression
-					+ ",3),4), '/', right(yearweek(" + fieldExpression
-					+ ",3),2))";
+            case weeks:
+                return "concat(left(yearweek(" + fieldExpression + ",3),4), '/', right(yearweek(" + fieldExpression + ",3),2))";
 
-		case days:
-			return "concat(year(" + fieldExpression + ") , '-' , month("
-					+ fieldExpression + ") , '-' , day("
-					+ fieldExpression + "))";
+            case days:
+                return "concat(year(" + fieldExpression + ") , '-' , month(" + fieldExpression + ") , '-' , day(" + fieldExpression + "))";
 
-		default:
-			return "'timeUnit(" + timeUnit.getTitle() + ") undefined'";
+            default:
+                return "'timeUnit(" + timeUnit.getTitle() + ") undefined'";
 
-		}
-	}
+        }
+    }
 
-	/**
-	 *  converts the format of a date to match MySQL Timestamp format
-	 * @param date
-	 * @return 
-	 */
-	private static Timestamp dateToSqlTimestamp(Date date) {
-		Timestamp timestamp = new Timestamp(date.getTime());
-		return timestamp;
-	}
-	
-	public void setMyIdFieldName(String name) {
-		myIdFieldName = name;
-		conditionGeneration();
-	}
-	
+    /**
+     * converts the format of a date to match MySQL Timestamp format
+     * 
+     * @param date
+     * @return
+     */
+    private static Timestamp dateToSqlTimestamp(Date date) {
+        Timestamp timestamp = new Timestamp(date.getTime());
+        return timestamp;
+    }
+
+    public void setMyIdFieldName(String name) {
+        myIdFieldName = name;
+        conditionGeneration();
+    }
 
 }

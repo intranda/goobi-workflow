@@ -1,5 +1,8 @@
 package org.goobi.production.flow.statistics.hibernate;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,8 +31,6 @@ package org.goobi.production.flow.statistics.hibernate;
  * exception statement from your version.
  */
 
-import java.util.Date;
-import java.util.List;
 
 import javax.enterprise.inject.Default;
 
@@ -50,6 +51,8 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 @Default
 public class SQLStepRequestByName extends SQLGenerator implements IStepRequestByName {
 
+ 
+    
 	public SQLStepRequestByName(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {
 		// "history.processid - overrides the default value of prozesse.prozesseID

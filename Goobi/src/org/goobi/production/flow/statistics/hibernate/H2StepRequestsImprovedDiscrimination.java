@@ -37,8 +37,7 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
 import de.sub.goobi.helper.enums.HistoryEventType;
 
 /**
- * Class provides SQL for Step Requests statistics on the history table
- * it offers a little more functionallity compared to the other SQL Source 
+ * Class provides SQL for Step Requests statistics on the history table it offers a little more functionallity compared to the other SQL Source
  * classes. There are a little more parameters which can be set
  * 
  * @author Wulf Riebensahm
@@ -48,206 +47,179 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 @Alternative
 public class H2StepRequestsImprovedDiscrimination extends H2Generator implements IStepRequestsImprovedDiscrimination {
 
-	public H2StepRequestsImprovedDiscrimination(Date timeFrom, Date timeTo, TimeUnit timeUnit,
-			List<Integer> ids) {
-		// "history.processid - overrides the default value of prozesse.prozesseID
-		// which is set in super class SQLGenerator
-        super(timeFrom, timeTo, timeUnit, ids, "processid");
-	}
+    public H2StepRequestsImprovedDiscrimination() {
+        super();
+    }
 
-	/** This is an extended SQL generator for an SQL extracting data from the historyEvent log.
-	 *  depending on the parameters the query returns up to four fields 
-	 * 
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.hibernate.SQLGenerator#getSQL()
-	 * 
-	 * @param typeSelection - operates as additional filter
-	 * @param stepOrder - operates as additional filter
-	 * @param stepOrderGrouping - adding 'stepOrder' and 'stepName' fields in select and in group by clause 
-	 * @param includeCorrections - adding additional stepOpen from Correction and other loops 
-	 * 
-	 * @return SQLExpression for MySQL DBMS - default fields stepCount and intervall
-	 */
-	public String getSQL(HistoryEventType typeSelection, Integer stepOrder,
-			Boolean stepOrderGrouping, Boolean includeLoops) {
+    	public H2StepRequestsImprovedDiscrimination(Date timeFrom, Date timeTo, TimeUnit timeUnit,
+    			List<Integer> ids) {
+    		// "history.processid - overrides the default value of prozesse.prozesseID
+    		// which is set in super class SQLGenerator
+            super(timeFrom, timeTo, timeUnit, ids, "processid");
+    	}
 
-		String timeLimiter = "h.date" ;
-		String groupInnerSelect = "";
-		
-		//evaluate if groupingFunction comes along with HistoryEventType
-		// and if so implement this function in sql
-		if (typeSelection.getGroupingFunction()!=null && !includeLoops){
-				timeLimiter = typeSelection.getGroupingFunction() + "(h.date)";
-				groupInnerSelect = " GROUP BY processid, numericvalue, stringvalue ";
-		}
-		
-		String subQuery = "";
-		String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(
-				myTimeFrom, myTimeTo, "timeLimiter");
-		String outerWhereClause = "";
+    /**
+     * This is an extended SQL generator for an SQL extracting data from the historyEvent log. depending on the parameters the query returns up to
+     * four fields
+     * 
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.flow.statistics.hibernate.SQLGenerator#getSQL()
+     * 
+     * @param typeSelection - operates as additional filter
+     * @param stepOrder - operates as additional filter
+     * @param stepOrderGrouping - adding 'stepOrder' and 'stepName' fields in select and in group by clause
+     * @param includeCorrections - adding additional stepOpen from Correction and other loops
+     * 
+     * @return SQLExpression for MySQL DBMS - default fields stepCount and intervall
+     */
+    public String getSQL(HistoryEventType typeSelection, Integer stepOrder, Boolean stepOrderGrouping, Boolean includeLoops) {
 
-		if (outerWhereClauseTimeFrame.length() > 0) {
-			outerWhereClause = "WHERE " + outerWhereClauseTimeFrame;
-		}
+        String timeLimiter = "h.date";
+        String groupInnerSelect = "";
 
-		//inner table -> alias "table_1"
-		String innerWhereClause;
+        //evaluate if groupingFunction comes along with HistoryEventType
+        // and if so implement this function in sql
+        if (typeSelection.getGroupingFunction() != null && !includeLoops) {
+            timeLimiter = typeSelection.getGroupingFunction() + "(h.date)";
+            groupInnerSelect = " GROUP BY processid, numericvalue, stringvalue ";
+        }
 
-		if (myIdsCondition != null) {
-			// adding ids to the where clause
-			innerWhereClause = "(h.type="
-					+ typeSelection.getValue().toString() + ")  AND ("
-					+ myIdsCondition + ") ";
-		} else {
-			innerWhereClause = "(h.type="
-					+ typeSelection.getValue().toString() + ") ";
-		}
+        String subQuery = "";
+        String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "timeLimiter");
+        String outerWhereClause = "";
 
-		// adding a stepOrder filter to numericvalue if parameter is set
-		if (stepOrder != null) {
-			innerWhereClause = innerWhereClause + " AND h.numericvalue="
-					+ stepOrder.toString() + " ";
-		}
+        if (outerWhereClauseTimeFrame.length() > 0) {
+            outerWhereClause = "WHERE " + outerWhereClauseTimeFrame;
+        }
 
-		subQuery = "(SELECT numericvalue AS stepOrder, "
-				+ getIntervallExpression(myTimeUnit, "history.date")
-				+ " "
-				+ "AS intervall, history.date AS timeLimiter, history.stringvalue AS stepName "
-				+ "FROM "
-				
-				+ "(SELECT DISTINCT h.numericvalue, h.stringvalue, " + timeLimiter + " as date, h.processid, h.type " 
-				+ "FROM history h "
-				+ "WHERE "  + innerWhereClause + groupInnerSelect + ") AS history " 
-				+ ") AS table_1";
+        //inner table -> alias "table_1"
+        String innerWhereClause;
 
-		mySql = "SELECT count(table_1.stepOrder) AS stepCount, table_1.intervall AS intervall "
-				+ addedListing(stepOrderGrouping)
-				+ "FROM "
-				+ subQuery
-				+ " "
-				+ outerWhereClause
-				+ " GROUP BY table_1.intervall"
-				+ addedGrouping(stepOrderGrouping)
-				+ " ORDER BY  table_1.intervall"
-				+ addedSorting(stepOrderGrouping);
+        if (myIdsCondition != null) {
+            // adding ids to the where clause
+            innerWhereClause = "(h.type=" + typeSelection.getValue().toString() + ")  AND (" + myIdsCondition + ") ";
+        } else {
+            innerWhereClause = "(h.type=" + typeSelection.getValue().toString() + ") ";
+        }
 
-		return mySql;
-	}
+        // adding a stepOrder filter to numericvalue if parameter is set
+        if (stepOrder != null) {
+            innerWhereClause = innerWhereClause + " AND h.numericvalue=" + stepOrder.toString() + " ";
+        }
 
-	/** Method is purposfully not implemented. Method getSQL is overloaded   
-	 *  with parametered method.
-	 *   
-	 * @see org.goobi.production.flow.statistics.hibernate.SQLGenerator#getSQL()
-	 */
-	@Override
-	public String getSQL() {
-		throw new UnsupportedOperationException(
-				"The class "
-						+ this.getClass().getName()
-						+ " does not support the parameterless getSQL() method. Instead you need to use getSQL() with parameters.");
-	}
+        subQuery = "(SELECT numericvalue AS stepOrder, " + getIntervallExpression(myTimeUnit, "history.date") + " "
+                + "AS intervall, history.date AS timeLimiter, history.stringvalue AS stepName " + "FROM "
 
-	/** 
-	 * 
-	 * @param include
-	 * @return SQL snippet for Order by clause
-	 */
+                + "(SELECT DISTINCT h.numericvalue, h.stringvalue, " + timeLimiter + " as date, h.processid, h.type " + "FROM history h " + "WHERE "
+                + innerWhereClause + groupInnerSelect + ") AS history " + ") AS table_1";
 
-	private String addedSorting(Boolean include) {
-		if (include) {
-			return ", table_1.stepOrder";
-		} else {
-			return "";
-		}
-	}
+        mySql = "SELECT count(table_1.stepOrder) AS stepCount, table_1.intervall AS intervall " + addedListing(stepOrderGrouping) + "FROM " + subQuery
+                + " " + outerWhereClause + " GROUP BY table_1.intervall" + addedGrouping(stepOrderGrouping) + " ORDER BY  table_1.intervall"
+                + addedSorting(stepOrderGrouping);
 
-	/** 
-	 * 
-	 * @param include
-	 * @return SQL snippet for Select clause
-	 */
-	private String addedListing(Boolean include) {
-		if (include) {
-			return ", table_1.stepOrder, table_1.stepName ";
-		} else {
-			return "";
-		}
-	}
+        return mySql;
+    }
 
-	/** 
-	 * 
-	 * @param include
-	 * @return SQL snippet for Group by clause
-	 */
-	private String addedGrouping(Boolean include) {
-		if (include) {
-			return ", table_1.stepOrder, table_1.stepName ";
-		} else {
-			return "";
-		}
-	}
+    /**
+     * Method is purposfully not implemented. Method getSQL is overloaded with parametered method.
+     * 
+     * @see org.goobi.production.flow.statistics.hibernate.SQLGenerator#getSQL()
+     */
+    @Override
+    public String getSQL() {
+        throw new UnsupportedOperationException("The class " + this.getClass().getName()
+                + " does not support the parameterless getSQL() method. Instead you need to use getSQL() with parameters.");
+    }
 
-	/**
-	 * 
-	 * @param eventSelection
-	 * @return SQL String to retrieve the highest numericvalue (stepOrder) for the event defined in eventSelection
-	 */
-	public String SQLMaxStepOrder(HistoryEventType eventSelection) {
+    /**
+     * 
+     * @param include
+     * @return SQL snippet for Order by clause
+     */
 
-		String timeRestriction;
-		String innerWhereClause = null;
-		if (myIdsCondition != null) {
-			// adding ids to the where clause
-			innerWhereClause = "(history.type="
-					+ eventSelection.getValue().toString() + ")  AND ("
-					+ myIdsCondition + ") ";
-		} else {
-			innerWhereClause = "(history.type="
-					+ eventSelection.getValue().toString() + ") ";
-		}
+    private String addedSorting(Boolean include) {
+        if (include) {
+            return ", table_1.stepOrder";
+        } else {
+            return "";
+        }
+    }
 
-		timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo,
-				"history.date");
+    /**
+     * 
+     * @param include
+     * @return SQL snippet for Select clause
+     */
+    private String addedListing(Boolean include) {
+        if (include) {
+            return ", table_1.stepOrder, table_1.stepName ";
+        } else {
+            return "";
+        }
+    }
 
-		if (timeRestriction.length() > 0) {
-			innerWhereClause = innerWhereClause.concat(" AND "
-					+ timeRestriction);
-		}
+    /**
+     * 
+     * @param include
+     * @return SQL snippet for Group by clause
+     */
+    private String addedGrouping(Boolean include) {
+        if (include) {
+            return ", table_1.stepOrder, table_1.stepName ";
+        } else {
+            return "";
+        }
+    }
 
-		return "SELECT max(history.numericvalue) AS maxStep FROM history WHERE "
-				+ innerWhereClause;
-	}
-	
-	/**
-	 * 
-	 * @param eventSelection
-	 * @return SQL String to retrieve the lowest numericvalue (stepOrder) for the event defined in eventSelection
-	 */
-	public String SQLMinStepOrder(HistoryEventType eventSelection) {
+    /**
+     * 
+     * @param eventSelection
+     * @return SQL String to retrieve the highest numericvalue (stepOrder) for the event defined in eventSelection
+     */
+    public String SQLMaxStepOrder(HistoryEventType eventSelection) {
 
-		String timeRestriction;
-		String innerWhereClause = null;
-		if (myIdsCondition != null) {
-			// adding ids to the where clause
-			innerWhereClause = "(history.type="
-					+ eventSelection.getValue().toString() + ")  AND ("
-					+ myIdsCondition + ") ";
-		} else {
-			innerWhereClause = "(history.type="
-					+ eventSelection.getValue().toString() + ") ";
-		}
+        String timeRestriction;
+        String innerWhereClause = null;
+        if (myIdsCondition != null) {
+            // adding ids to the where clause
+            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ")  AND (" + myIdsCondition + ") ";
+        } else {
+            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ") ";
+        }
 
-		timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo,
-				"history.date");
+        timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "history.date");
 
-		if (timeRestriction.length() > 0) {
-			innerWhereClause = innerWhereClause.concat(" AND "
-					+ timeRestriction);
-		}
+        if (timeRestriction.length() > 0) {
+            innerWhereClause = innerWhereClause.concat(" AND " + timeRestriction);
+        }
 
-		return "SELECT min(history.numericvalue) AS minStep FROM history WHERE "
-				+ innerWhereClause;
-	}
+        return "SELECT max(history.numericvalue) AS maxStep FROM history WHERE " + innerWhereClause;
+    }
 
-	
+    /**
+     * 
+     * @param eventSelection
+     * @return SQL String to retrieve the lowest numericvalue (stepOrder) for the event defined in eventSelection
+     */
+    public String SQLMinStepOrder(HistoryEventType eventSelection) {
+
+        String timeRestriction;
+        String innerWhereClause = null;
+        if (myIdsCondition != null) {
+            // adding ids to the where clause
+            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ")  AND (" + myIdsCondition + ") ";
+        } else {
+            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ") ";
+        }
+
+        timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "history.date");
+
+        if (timeRestriction.length() > 0) {
+            innerWhereClause = innerWhereClause.concat(" AND " + timeRestriction);
+        }
+
+        return "SELECT min(history.numericvalue) AS minStep FROM history WHERE " + innerWhereClause;
+    }
+
 }

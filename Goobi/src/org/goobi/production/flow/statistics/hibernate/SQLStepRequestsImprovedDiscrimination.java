@@ -27,6 +27,7 @@ package org.goobi.production.flow.statistics.hibernate;
  * exception statement from your version.
  */
 
+
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,8 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 @Default
 public class SQLStepRequestsImprovedDiscrimination extends SQLGenerator implements IStepRequestsImprovedDiscrimination{
 
+
+    
 	public SQLStepRequestsImprovedDiscrimination(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {
 		// "history.processid - overrides the default value of prozesse.prozesseID
