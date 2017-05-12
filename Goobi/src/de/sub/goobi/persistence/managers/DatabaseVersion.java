@@ -305,7 +305,9 @@ public class DatabaseVersion {
                                 dateString = r.group();
                                 entry = entry.replace(r.group(), "");
                             }
-                            for (MatchResult r : findRegexMatches("\\(([A-Za-zÖÜÄöüäß]+?, [A-Za-zÖÜÄöüäß]+?)\\)", entry)) {
+
+                            //  \((([^)]*)[^(]*)\)$
+                            for (MatchResult r : findRegexMatches("\\(([A-Za-z ÖÜÄöüäß-]+?, [A-Za-z ÖÜÄöüäß-]+?)\\)", entry)) {
                                 username = r.group(1);
                                 entry = entry.replace(r.group(), "");
                             }
@@ -340,7 +342,7 @@ public class DatabaseVersion {
                             sb.append(StringEscapeUtils.escapeSql(entry));
                             sb.append("\")");
 
-                            if (i % 50 == 0 || i == rawData.size()) {
+                            if (i % 50 == 0 || i == rawData.size() - 1) {
                                 sb.append(";");
                                 try {
                                     runner.update(connection, header + sb.toString());
