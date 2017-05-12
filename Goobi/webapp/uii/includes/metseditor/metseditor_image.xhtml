@@ -41,8 +41,6 @@
 									    	divId: 'mainImage',
 									        useTiles: false,
 									        footerHeight: 0,
-									        imageSizes: "[600, 900, 1800]",
-									        tileSizes: "{512=[1, 32]}",
 									        adaptContainerHeight: true,
 									        persistZoom: true,
 								            persistRotation: true,
@@ -50,7 +48,7 @@
 									    },
 									    image: {
 									        mimeType: "image/jpeg",
- 									        tileSource : '#{Metadaten.image.mainImageUrl}',
+ 									        tileSource : #{Metadaten.image.imageLevels},
 									    }
 									};									
 									    viewImage.init( configViewer )

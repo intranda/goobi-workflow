@@ -25,31 +25,25 @@ package de.sub.goobi.metadaten;
 
 import java.awt.Dimension;
 
+import javax.json.Json;
+
+import com.fasterxml.jackson.core.JsonFactory;
+
 public class ImageLevel implements Comparable<ImageLevel>{
     
     private String url;
     private Dimension size;
-    private int rotation;
     
     public ImageLevel(String url, Dimension size) {
         super();
         this.url = url;
         this.size = size;
-        this.rotation = 0;
     }
     
     public ImageLevel(String url, int width, int height) {
         super();
         this.url = url;
         this.size = new Dimension(width, height);
-        this.rotation = 0;
-    }
-
-    public ImageLevel(String url, Dimension size, int currentRotate) {
-        super();
-        this.url = url;
-        this.size = size;
-        this.rotation = currentRotate;
     }
 
     public String getUrl() {
@@ -57,24 +51,26 @@ public class ImageLevel implements Comparable<ImageLevel>{
     }
 
     public Dimension getSize() {
-        if(rotation % 180 == 0) {            
-            return size;
-        } else {
-            return new Dimension(size.height, size.width);
-        }
+        return size;
     }
     
     public int getWidth() {
-        return rotation%180 == 90 ? size.height : size.width;
+        return size.width;
     }
     
     public int getHeight() {
-        return rotation%180 == 90 ? size.width : size.height;
+        return size.height;
     }
 
     @Override
     public String toString() {
-        return "[\"" + url + "\"," + getWidth() + "," + getHeight() + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("{")
+        .append("url : '").append(this.url).append("',")
+        .append("width : ").append(this.size.width).append(",")
+        .append("height : ").append(this.size.height).append(",")
+        .append("}");
+        return sb.toString();
     }
 
     @Override

@@ -35,7 +35,7 @@ public @Data class Image {
     private int order;
     private String thumbnailUrl;
     private String largeThumbnailUrl;
-    private String mainImageUrl;
+    private List<ImageLevel> imageLevels = new ArrayList<ImageLevel>();
     private String bookmarkUrl;
     private String tooltip;
     private Dimension size = null;
@@ -50,7 +50,14 @@ public @Data class Image {
 
     public void addImageLevel(String imageUrl, int size) {
 
-        this.mainImageUrl = imageUrl;
+        double scale = size / (double) (Math.max(getSize().height, getSize().width));
+        Dimension dim = new Dimension((int) (getSize().width * scale), (int) (getSize().height * scale));
+        ImageLevel layer = new ImageLevel(imageUrl, dim);
+        imageLevels.add(layer);
+    }
+
+    public boolean hasImageLevels() {
+        return !imageLevels.isEmpty();
     }
 
 }
