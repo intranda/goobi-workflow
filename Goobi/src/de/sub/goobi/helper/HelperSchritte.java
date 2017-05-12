@@ -72,10 +72,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
 import ugh.exceptions.UGHException;
-import ugh.exceptions.WriteException;
 
 public class HelperSchritte {
     private static final Logger logger = Logger.getLogger(HelperSchritte.class);

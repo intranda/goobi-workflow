@@ -21,6 +21,8 @@ package de.sub.goobi.persistence.managers;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -46,6 +48,8 @@ public class DatabaseVersion {
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
+
+    private static final SimpleDateFormat processLogGermanDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     public static int getCurrentVersion() {
 
@@ -250,16 +254,19 @@ public class DatabaseVersion {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private static void updateToVersion13() {
         Connection connection = null;
         String sqlStatement =
                 "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+        QueryRunner runner = new QueryRunner();
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner runner = new QueryRunner();
-
             runner.update(connection, sqlStatement);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+
+        try {
             logger.info("Convert old wikifield to new process log. This might run a while.");
             String sql = "SELECT ProzesseID, wikifield from prozesse where wikifield !=''";
             List<Object> rawData = ProcessManager.runSQL(sql);
@@ -274,6 +281,7 @@ public class DatabaseVersion {
                     String[] entries = oldLog.split("<br/>");
 
                     for (String entry : entries) {
+
                         if (!entry.trim().isEmpty()) {
                             LogType type;
                             if (entry.startsWith("<font color=\"#FF0000\">")) {
@@ -297,14 +305,14 @@ public class DatabaseVersion {
                                 dateString = r.group();
                                 entry = entry.replace(r.group(), "");
                             }
-                            for (MatchResult r : findRegexMatches("\\((.*?)\\)", entry)) {
+                            for (MatchResult r : findRegexMatches("\\(([A-Za-zÖÜÄöüäß]+?, [A-Za-zÖÜÄöüäß]+?)\\)", entry)) {
                                 username = r.group(1);
                                 entry = entry.replace(r.group(), "");
                             }
 
                             if (!dateString.isEmpty()) {
                                 try {
-                                    date = new Date(dateString.substring(0, dateString.length() - 1));
+                                    date = getDate(dateString.substring(0, dateString.length() - 1));
                                 } catch (Exception e) {
                                     if (logger.isDebugEnabled())
                                         logger.debug("Process " + processId + ": cannot convert date " + dateString);
@@ -327,13 +335,18 @@ public class DatabaseVersion {
                             sb.append("\",\"");
                             sb.append(type.getTitle());
                             sb.append("\",\"");
+                            entry = entry.replace("\"", "").replace(";", "");
 
-                            sb.append(StringEscapeUtils.escapeSql(entry.replace("\"", "'")));
+                            sb.append(StringEscapeUtils.escapeSql(entry));
                             sb.append("\")");
 
                             if (i % 50 == 0 || i == rawData.size()) {
                                 sb.append(";");
-                                runner.update(connection, header + sb.toString());
+                                try {
+                                    runner.update(connection, header + sb.toString());
+                                } catch (SQLException e) {
+                                    logger.error(e);
+                                }
 
                                 sb = new StringBuilder();
                             } else {
@@ -342,10 +355,9 @@ public class DatabaseVersion {
                         }
                     }
                 }
+                sb.append(";");
             }
-            logger.info("Finished conversion of old wikifield to new process log.");
-        } catch (SQLException e) {
-            logger.error(e);
+
         } finally {
             if (connection != null) {
                 try {
@@ -355,6 +367,24 @@ public class DatabaseVersion {
                 }
             }
         }
+        logger.info("Finished conversion of old wikifield to new process log.");
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Date getDate(String dateString) {
+        Date date = null;
+        try {
+            date = new Date(dateString);
+        } catch (Exception e) {
+        }
+        if (date == null) {
+            try {
+                date = processLogGermanDateFormat.parse(dateString);
+            } catch (ParseException e) {
+            }
+        }
+
+        return date;
     }
 
     public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
@@ -676,42 +706,43 @@ public class DatabaseVersion {
             }
         }
     }
-    
+
     public static void checkIfEmptyDatabase() {
-		try {
-			int num = new UserManager().getHitSize(null, null);
-			if (num == 0) {
-				
-				// create administration group
-				Usergroup ug = new Usergroup();
-				ug.setTitel("Administration");
-				String r = "Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;";
-				ug.setUserRoles(Arrays.asList(r.split(";")));
-				UsergroupManager.saveUsergroup(ug);
-				
-				// create first user
-				User user = new User();
-				user.setVorname("Goobi");
-				user.setNachname("Administrator");
-				user.setPasswort("goobi");
-				user.setLogin("goobi");
-				user.setTabellengroesse(10);
-				user.setLdaplogin("goobi");
-				user.setMetadatenSprache("en");
-				user.setStandort("Göttingen");
-				RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-				Object salt = rng.nextBytes();
-				user.setPasswordSalt(salt.toString());
-				user.setEncryptedPassword(user.getPasswordHash(user.getPasswort()));
-				UserManager.saveUser(user);
-				
-				// add first user to administrator group
-				Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null).get(0);
-	            user.getBenutzergruppen().add(ug);
-	            UserManager.addUsergroupAssignment(user, usergroup.getId());
-			}
-		} catch (DAOException e) {
-			logger.error(e);
-		}
-	}
+        try {
+            int num = new UserManager().getHitSize(null, null);
+            if (num == 0) {
+
+                // create administration group
+                Usergroup ug = new Usergroup();
+                ug.setTitel("Administration");
+                String r =
+                        "Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;";
+                ug.setUserRoles(Arrays.asList(r.split(";")));
+                UsergroupManager.saveUsergroup(ug);
+
+                // create first user
+                User user = new User();
+                user.setVorname("Goobi");
+                user.setNachname("Administrator");
+                user.setPasswort("goobi");
+                user.setLogin("goobi");
+                user.setTabellengroesse(10);
+                user.setLdaplogin("goobi");
+                user.setMetadatenSprache("en");
+                user.setStandort("Göttingen");
+                RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+                Object salt = rng.nextBytes();
+                user.setPasswordSalt(salt.toString());
+                user.setEncryptedPassword(user.getPasswordHash(user.getPasswort()));
+                UserManager.saveUser(user);
+
+                // add first user to administrator group
+                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null).get(0);
+                user.getBenutzergruppen().add(ug);
+                UserManager.addUsergroupAssignment(user, usergroup.getId());
+            }
+        } catch (DAOException e) {
+            logger.error(e);
+        }
+    }
 }
