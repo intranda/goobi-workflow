@@ -652,6 +652,17 @@ public class ProzesskopieForm {
         //          return "";
         //      }
 
+        if (addToWikiField != null && !addToWikiField.equals("")) {
+            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(addToWikiField);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(prozessKopie.getId());
+            logEntry.setType(LogType.INFO);
+            logEntry.setUserName(user.getNachVorname());
+            ProcessManager.saveLogEntry(logEntry);
+        }
+        
         /*
          * wenn noch keine RDF-Datei vorhanden ist (weil keine Opac-Abfrage stattfand, dann jetzt eine anlegen
          */
@@ -1498,15 +1509,6 @@ public class ProzesskopieForm {
 
     public void setAddToWikiField(String addToWikiField) {
         this.addToWikiField = addToWikiField;
-        if (addToWikiField != null && !addToWikiField.equals("")) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(addToWikiField);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(prozessKopie.getId());
-            logEntry.setType(LogType.INFO);
-            logEntry.setUserName(user.getNachVorname());
-        }
     }
 
     public Integer getRulesetSelection() {
