@@ -485,7 +485,7 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
 
-    public boolean isRestProcesslog() {
+    public boolean isResetProcesslog() {
         return getLocalBoolean("ProcessCreationResetLog", false);
     }
 

@@ -147,7 +147,7 @@ public class ProzesskopieForm {
     public String Prepare() {
         atstsl = "";
         opacSuchbegriff = "";
-        if (ConfigurationHelper.getInstance().isRestProcesslog()) {
+        if (ConfigurationHelper.getInstance().isResetProcesslog()) {
             addToWikiField = "";
         }
 
