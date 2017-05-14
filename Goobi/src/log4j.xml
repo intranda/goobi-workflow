@@ -82,7 +82,7 @@
     </logger>
 
     <logger name="ugh" additivity="false">
-        <level value="debug" />
+        <level value="error" />
         <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
         <appender-ref ref="TEXT-VANILLA-CHRONICLE" />
