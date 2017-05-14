@@ -205,6 +205,10 @@ public class UserManager implements IManager, Serializable {
         r.setMetsDisplayPageAssignments(rs.getBoolean("metsDisplayPageAssignments"));
         r.setMetsDisplayTitle(rs.getBoolean("metsDisplayTitle"));
         r.setMetsLinkImage(rs.getBoolean("metsLinkImage"));
+        r.setMetsDisplayProcessID(rs.getBoolean("metsDisplayProcessID"));
+        r.setDisplayGridView(rs.getBoolean("displayGridView"));
+        r.setDisplayMetadataColumn(rs.getBoolean("displayMetadataColumn"));
+        r.setDisplayThumbColumn(rs.getBoolean("displayThumbColumn"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
