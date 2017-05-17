@@ -44,7 +44,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 16;
+    public static final int EXPECTED_VERSION = 17;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -157,6 +157,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 16.");
                 }
                 updateToVersion16();
+            case 16:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 17.");
+                }
+                updateToVersion17();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -166,6 +171,31 @@ public class DatabaseVersion {
         }
     }
 
+    private static void updateToVersion17() {
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+
+            runner.update(connection, "alter table benutzer add column displayMetadataColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayThumbColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayGridView boolean default false;");
+            runner.update(connection, "alter table benutzer add column metsDisplayProcessID boolean default false;");
+            
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+    
     private static void updateToVersion16() {
         Connection connection = null;
 
