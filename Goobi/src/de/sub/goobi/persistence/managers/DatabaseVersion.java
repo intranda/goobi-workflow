@@ -175,20 +175,9 @@ public class DatabaseVersion {
 
             runner.update(connection, "alter table benutzer add column salt text DEFAULT NULL");
             runner.update(connection, "alter table benutzer add column encryptedPassword text DEFAULT NULL");
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
-                    logger.error(e);
-                }
-            }
-        }
 
-        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-        try {
+            RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+
             List<User> allUsers = UserManager.getUsers("", "", null, null);
             for (User user : allUsers) {
                 Object salt = rng.nextBytes();
@@ -199,8 +188,16 @@ public class DatabaseVersion {
                 UserManager.saveUser(user);
             }
 
-        } catch (DAOException e) {
+        } catch (SQLException | DAOException e) {
             logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    logger.error(e);
+                }
+            }
         }
 
     }
