@@ -199,16 +199,16 @@
                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
 										</td>
 										<td>
-											 <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" />
+											 <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}"  escape="false"/>
 										</td>
 										<h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
 											<td>
-												<h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" />
+												<h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}"  escape="false"/>
 											</td>
 										</h:panelGroup>
 										<h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
 											<td>
-												<h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" />
+												<h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}"  escape="false" />
 											</td>
 										</h:panelGroup>
 									</tr>  
