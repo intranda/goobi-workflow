@@ -661,8 +661,9 @@ public class ProzesskopieForm {
             logEntry.setType(LogType.INFO);
             logEntry.setUserName(user.getNachVorname());
             ProcessManager.saveLogEntry(logEntry);
+            prozessKopie.getProcessLog().add(logEntry);
         }
-        
+
         /*
          * wenn noch keine RDF-Datei vorhanden ist (weil keine Opac-Abfrage stattfand, dann jetzt eine anlegen
          */
@@ -1174,11 +1175,11 @@ public class ProzesskopieForm {
     }
 
     public Map<String, String> getAllSearchFields() {
-        if (co.getCatalogueByName(opacKatalog)!=null){
-        	return co.getCatalogueByName(opacKatalog).getSearchFields();
-    	}else{
-    		return ConfigOpac.getInstance().getSearchFieldMap();
-    	}
+        if (co.getCatalogueByName(opacKatalog) != null) {
+            return co.getCatalogueByName(opacKatalog).getSearchFields();
+        } else {
+            return ConfigOpac.getInstance().getSearchFieldMap();
+        }
     }
 
     public List<String> getAllOpacCatalogues() {
