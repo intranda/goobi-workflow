@@ -68,8 +68,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
             idp.initialize(step, "");
             if (idp.execute()) {
                 hs.CloseStepObjectAutomatic(step);
-            } else {
-                hs.errorStep(step);
             }
         } else if (this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
