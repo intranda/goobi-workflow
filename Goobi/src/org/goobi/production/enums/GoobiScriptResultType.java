@@ -18,6 +18,7 @@ package org.goobi.production.enums;
 
 public enum GoobiScriptResultType {
     WAITING,
+    RUNNING,
     ERROR,
     OK;
 }

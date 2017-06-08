@@ -30,7 +30,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -50,6 +50,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.updateTimestamp();
 					try {
 		                String metdatdaPath = p.getMetadataFilePath();
 		                String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
@@ -72,6 +73,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 		                gsr.setResultMessage("Error while updating metadata: " + e1.getMessage());
 						gsr.setResultType(GoobiScriptResultType.ERROR);
 		            }
+					gsr.updateTimestamp();
 				}
 			}
 		}

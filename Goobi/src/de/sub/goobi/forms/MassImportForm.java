@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,6 +50,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
+import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
@@ -62,6 +64,7 @@ import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.ImportPluginLoader;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
+import org.goobi.production.plugin.interfaces.IImportPluginVersion2;
 import org.goobi.production.properties.ImportProperty;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -215,8 +218,58 @@ public class MassImportForm {
             Helper.setFehlerMeldung("missingPlugin");
             return "";
         }
+        
         if (testForData()) {
 
+        	// if the mass import plugin can be run as GoobiScript do it
+        	if (this.plugin instanceof IImportPluginVersion2) {
+        		IImportPluginVersion2 plugin2 = (IImportPluginVersion2) this.plugin;
+                if (plugin2.isRunnableAsGoobiScript()){
+                	GoobiScriptImport igs = new GoobiScriptImport();
+                	
+                	String myIdentifiers ="";
+                	if (StringUtils.isNotEmpty(this.idList)) {
+                        List<String> ids = this.plugin.splitIds(this.idList);
+                        for (String id : ids) {
+                        	myIdentifiers += id + ",";
+                        }
+                    } else if (this.importFile != null) {
+                        this.plugin.setFile(this.importFile.toFile());
+                        List<Record> recordList = this.plugin.generateRecordsFromFile();
+                        for (Record r : recordList) {
+                        	myIdentifiers += r.getId() + ",";
+                        }
+                    } else if (StringUtils.isNotEmpty(this.records)) {
+                        List<Record> recordList = this.plugin.splitRecords(this.records);
+                        for (Record r : recordList) {
+                        	myIdentifiers += r.getId() + ",";
+                        }
+                    } else if (this.selectedFilenames.size() > 0) {
+                    	List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
+                		for (Record r : recordList) {
+                			myIdentifiers += r.getId() + ",";
+                		}
+                    }
+                	if (myIdentifiers.endsWith(",")){
+                		myIdentifiers = myIdentifiers.substring(0, myIdentifiers.lastIndexOf(","));
+                	}
+                	
+                	HashMap<String,String> myParameters = new HashMap<String, String>();
+                    myParameters.put("template", String.valueOf(this.template.getId()));
+                    myParameters.put("identifiers", myIdentifiers);
+                    myParameters.put("action", "import");
+                    myParameters.put("plugin", plugin2.getTitle());
+                	
+                	boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(), "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers, myParameters);
+                	if(scriptCallIsValid){
+                		Helper.setMeldung("Import has started");
+                		igs.execute();
+                	}
+                	return "";
+                }
+        	}
+        	
+        	// if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<ImportObject>();
             Integer batchId = null;
 
