@@ -178,11 +178,8 @@ public class DatabaseVersion {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
 
-            runner.update(connection, "alter table benutzer add column displayMetadataColumn boolean default false;");
-            runner.update(connection, "alter table benutzer add column displayThumbColumn boolean default false;");
-            runner.update(connection, "alter table benutzer add column displayGridView boolean default false;");
-            runner.update(connection, "alter table benutzer add column metsDisplayProcessID boolean default false;");
-            
+            createUserColumns(connection, runner);
+
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -195,13 +192,16 @@ public class DatabaseVersion {
             }
         }
     }
-    
+
     private static void updateToVersion16() {
         Connection connection = null;
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
+
+            // fix to get users when version17 is expected
+            createUserColumns(connection, runner);
 
             runner.update(connection, "alter table benutzer add column salt text DEFAULT NULL");
             runner.update(connection, "alter table benutzer add column encryptedPassword text DEFAULT NULL");
@@ -218,7 +218,9 @@ public class DatabaseVersion {
                 UserManager.saveUser(user);
             }
 
-        } catch (SQLException | DAOException e) {
+        } catch (SQLException |
+
+                DAOException e) {
             logger.error(e);
         } finally {
             if (connection != null) {
@@ -230,6 +232,17 @@ public class DatabaseVersion {
             }
         }
 
+    }
+
+    private static void createUserColumns(Connection connection, QueryRunner runner) throws SQLException {
+        String checkColumn = "SELECT count(*) FROM information_schema.COLUMNS WHERE column_name='displayMetadataColumn' and table_name='benutzer'";
+        int numberofColumns = runner.query(connection, checkColumn, MySQLHelper.resultSetToIntegerHandler);
+        if (numberofColumns == 0) {
+            runner.update(connection, "alter table benutzer add column displayMetadataColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayThumbColumn boolean default false;");
+            runner.update(connection, "alter table benutzer add column displayGridView boolean default false;");
+            runner.update(connection, "alter table benutzer add column metsDisplayProcessID boolean default false;");
+        }
     }
 
     private static void updateToVersion15() {
