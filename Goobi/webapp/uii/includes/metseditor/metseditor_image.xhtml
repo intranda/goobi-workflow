@@ -51,24 +51,30 @@
 									        footerHeight: 0,
 									        adaptContainerHeight: true,
 									        zoomSlider: "#zoomSlider",
-									        persistZoom: true,
-								            persistRotation: true,
+								            zoomSliderHandle: '.zoomslider-handle',
+									        persistZoom: false,
+								            persistRotation: false,
 								            persistenceId: "#{Metadaten.myProzess.id}",
 									    },
 									    image: {
 									        mimeType: "image/jpeg",
- 									        tileSource : #{Metadaten.image.imageLevels},
+ 									        tileSource : [#{Metadaten.image.imageLevels}],
 									    }
 									};									
 									    viewImage.init( configViewer )
 									    .then(function(osViewer) {
 									    	console.info( 'viewer opened' );
 									        //TODO: Hide loader?
+									       	if(configViewer.global.persistZoom || configViewer.global.persistRotation) {									       		
+											    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", viewImage.controls.persistence.storeLocation);
+											    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", viewImage.controls.persistence.storeLocation);
+									       	}
 									    })
 									    .catch(function(error){
 									        console.error( 'Error opening image', error );
 									        $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
 									    });
+									    
                                     </script>
                                 </h:panelGroup>
                             </div>

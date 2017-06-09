@@ -25,7 +25,7 @@
 var viewImage = ( function( osViewer ) {
     'use strict';
     
-    var _debug = false;
+    var _debug = true;
     
     osViewer.controls.persistence = {
             
@@ -75,14 +75,18 @@ var viewImage = ( function( osViewer ) {
                      * save current location to local storage before navigating away
                      */
                         window.onbeforeunload = function() {
-                            var loc = osViewer.controls.getLocation();
-                            loc.persistenceId = osViewer.getConfig().global.persistenceId;
-                            localStorage.imageLocation = JSON.stringify(loc);
-                            if(_debug) {                                
-                                console.log("storing zoom " + localStorage.imageLocation);
-                            }
+                        	viewImage.controls.persistence.storeLocation();
                         }
+
                     }
+                }
+            },
+            storeLocation: function() {
+                var loc = osViewer.controls.getLocation();
+                loc.persistenceId = osViewer.getConfig().global.persistenceId;
+                localStorage.imageLocation = JSON.stringify(loc);
+                if(_debug) {                                
+                    console.log("storing zoom " + localStorage.imageLocation);
                 }
             }
     }
