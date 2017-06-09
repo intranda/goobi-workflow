@@ -1,5 +1,26 @@
 /**
- * @author Florian Alpers, intranda GmbH
+ * This file is part of the Goobi Viewer - a content presentation and management
+ * application for digitized objects.
+ * 
+ * Visit these websites for more information. - http://www.intranda.com -
+ * http://digiverso.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this
+ * program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Module which contains all image informations like size, scale etc.
+ * 
+ * @version 3.2.0
+ * @module viewImage.Measures
+ * @requires jQuery
  */
 
 var viewImage = ( function( osViewer ) {
@@ -10,11 +31,11 @@ var viewImage = ( function( osViewer ) {
     osViewer.Measures = function(osViewer) {
         this.config = osViewer.getConfig();
         this.$container = $( "#" + this.config.global.divId );
-        this.imageInfo = osViewer.getImageInfo();
         
         this.outerCanvasSize = new OpenSeadragon.Point( this.$container.outerWidth(), this.$container.outerHeight() );
         this.innerCanvasSize = new OpenSeadragon.Point( this.$container.width(), this.$container.height() );
-        this.originalImageSize = new OpenSeadragon.Point( this.imageInfo.width, this.imageInfo.height );
+        this.originalImageSize = new OpenSeadragon.Point( this.getTotalImageWidth( osViewer.getImageInfo() ), this.getMaxImageHeight( osViewer.getImageInfo() ) );
+        // console.log("Original image size = ", this.originalImageSize);
         this.footerHeight = this.config.global.footerHeight;
         this.rotation = osViewer.viewer != null ? osViewer.viewer.viewport.getRotation() : 0;
         this.xPadding = this.outerCanvasSize.x - this.innerCanvasSize.x;
@@ -32,7 +53,65 @@ var viewImage = ( function( osViewer ) {
             this.imageDisplaySize = this.getRotatedSize( this.imageDisplaySize );
         }
     };
-    
+    osViewer.Measures.prototype.getMaxImageWidth = function( imageInfo ) {
+        var width = 0;
+        if ( imageInfo && imageInfo.length > 0 ) {
+            for ( var i = 0; i < imageInfo.length; i++ ) {
+                var tileSource = imageInfo[ i ];
+                if ( tileSource.tileSource ) {
+                    correction = tileSource.width;
+                    tileSource = tileSource.tileSource;
+                }
+                width = Math.max( width, tileSource.width * correction );
+            }
+        }
+        return width;
+    };
+    osViewer.Measures.prototype.getMaxImageHeight = function( imageInfo ) {
+        var height = 0;
+        if ( imageInfo && imageInfo.length > 0 ) {
+            for ( var i = 0; i < imageInfo.length; i++ ) {
+                var tileSource = imageInfo[ i ];
+                var correction = 1;
+                if ( tileSource.tileSource ) {
+                    correction = tileSource.width;
+                    tileSource = tileSource.tileSource;
+                }
+                height = Math.max( height, tileSource.height * correction );
+            }
+        }
+        return height;
+    };
+    osViewer.Measures.prototype.getTotalImageWidth = function( imageInfo ) {
+        var width = 0;
+        if ( imageInfo && imageInfo.length > 0 ) {
+            for ( var i = 0; i < imageInfo.length; i++ ) {
+                var tileSource = imageInfo[ i ];
+                var correction = 1;
+                if ( tileSource.tileSource ) {
+                    correction = tileSource.width;
+                    tileSource = tileSource.tileSource;
+                }
+                width += ( tileSource.width * correction );
+            }
+        }
+        return width;
+    };
+    osViewer.Measures.prototype.getTotalImageHeight = function( imageInfo ) {
+        var height = 0;
+        if ( imageInfo && imageInfo.length > 0 ) {
+            for ( var i = 0; i < imageInfo.length; i++ ) {
+                var tileSource = imageInfo[ i ];
+                var aspectRatio
+                if ( tileSource.tileSource ) {
+                    correction = tileSource.width;
+                    tileSource = tileSource.tileSource;
+                }
+                height += tileSource.height * correction;
+            }
+        }
+        return height;
+    };
     osViewer.Measures.prototype.getImageHomeSize = function() {
         var ratio = this.rotated() ? 1 / this.ratio( this.originalImageSize ) : this.ratio( this.originalImageSize );
         if ( this.fitToHeight() ) {
@@ -58,8 +137,7 @@ var viewImage = ( function( osViewer ) {
         return new OpenSeadragon.Point( this.rotated() ? size.y : size.x, this.rotated() ? size.x : size.y );
     };
     osViewer.Measures.prototype.fitToHeight = function() {
-        return !this.config.global.adaptContainerHeight
-        && this.ratio( this.getRotatedSize( this.originalImageSize ) ) > this.ratio( this.innerCanvasSize );
+        return !this.config.global.adaptContainerHeight && this.ratio( this.getRotatedSize( this.originalImageSize ) ) > this.ratio( this.innerCanvasSize );
     };
     osViewer.Measures.prototype.resizeCanvas = function() {
      // Set height of container if required

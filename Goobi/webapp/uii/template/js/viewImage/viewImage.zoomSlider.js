@@ -1,3 +1,27 @@
+/**
+ * This file is part of the Goobi Viewer - a content presentation and management
+ * application for digitized objects.
+ * 
+ * Visit these websites for more information. - http://www.intranda.com -
+ * http://digiverso.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this
+ * program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Module which handles the zoomslider functionality.
+ * 
+ * @version 3.2.0
+ * @module viewImage.zoomSlider
+ * @requires jQuery
+ */
 var viewImage = ( function( osViewer ) {
     'use strict';
     
@@ -6,8 +30,10 @@ var viewImage = ( function( osViewer ) {
     var _defaults = {
         global: {
             /**
-             * The position of the zoom-slider is "dilated" by a function d(zoom) = 1/sliderDilation*tan[atan(sliderDilation)*zoom] This makes the slider position change slower for
-             * small zoom and faster for larger zoom The function is chosen so that d(0) = 0 and d(1) = 1
+             * The position of the zoom-slider is "dilated" by a function d(zoom) =
+             * 1/sliderDilation*tan[atan(sliderDilation)*zoom] This makes the slider
+             * position change slower for small zoom and faster for larger zoom The
+             * function is chosen so that d(0) = 0 and d(1) = 1
              */
             sliderDilation: 12
         }
@@ -79,7 +105,9 @@ var viewImage = ( function( osViewer ) {
             //            
             factor = 1 / Math.atan( _defaults.global.sliderDilation ) * Math.atan( _defaults.global.sliderDilation * factor );
             var newPos = factor * ( _zoomSlider.absoluteWidth - _zoomSlider.$button.width() );
-            // var newPos = ( ( scale - osViewer.viewer.viewport.getMinZoom() ) / ( osViewer.viewer.viewport.getMaxZoom() - osViewer.viewer.viewport.getMinZoom() ) )
+            // var newPos = ( ( scale - osViewer.viewer.viewport.getMinZoom() ) / (
+            // osViewer.viewer.viewport.getMaxZoom() -
+            // osViewer.viewer.viewport.getMinZoom() ) )
             // * ( _zoomSlider.absoluteWidth - _zoomSlider.$button.width() );
             // console.log( "pos = ", newPos );
             

@@ -1,3 +1,27 @@
+/**
+ * This file is part of the Goobi Viewer - a content presentation and management
+ * application for digitized objects.
+ * 
+ * Visit these websites for more information. - http://www.intranda.com -
+ * http://digiverso.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this
+ * program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Module which initializes the viewerJS module.
+ * 
+ * @version 3.2.0
+ * @module viewImage
+ * @requires jQuery
+ */
 var viewImage = ( function() {
     'use strict';
     
@@ -9,8 +33,8 @@ var viewImage = ( function() {
     var _defaults = {  
         global: {
             divId: "map",
-            zoomSlider: "#slider-id",
-            zoomSliderHandle: '.zoomslider-handle',
+            zoomSlider: ".zoom-slider",
+            zoomSliderHandle: '.zoom-slider-handle',
             overlayGroups: [ {
                 name: "searchHighlighting",
                 styleClass: "searchHighlight",
@@ -68,65 +92,58 @@ var viewImage = ( function() {
             
             // constructor
             $.extend( true, _defaults, config );
-            // convert mimeType "image/jpeg" to "image/jpg" to provide correct iiif calls
+            // convert mimeType "image/jpeg" to "image/jpg" to provide correct
+			// iiif calls
             _defaults.image.mimeType = _defaults.image.mimeType.replace("jpeg","jpg");
             _container = $( "#" + _defaults.global.divId );
             
-            var result = Q.defer();
-            
-            viewImage.tileSourceResolver.resolveAsJson(_defaults.image.tileSource)
-            .then(
-	            function(imageInfo) {                        
-	                if(_debug) {                
-	                    console.log("IIIF image info ", imageInfo);                        
+            var sources = _defaults.image.tileSource;
+            if(typeof sources === 'string' && sources.startsWith("[")) {
+            	sources = JSON.parse(sources);
+            } else if(!$.isArray(sources)) {
+            	sources = [sources];
+            }
+            var promises = [];
+            for ( var i=0; i<sources.length; i++) {
+            	var source = sources[i];
+            	// returns the OpenSeadragon.TileSource if it can be created,
+				// otherweise
+                // rejects the promise
+            	var promise = viewImage.createTileSource(source);
+            	promises.push(promise);	
 	                }                
-	                viewImage.setImageSizes(imageInfo, _defaults.global.imageSizes);                
-	                viewImage.setTileSizes(imageInfo, _defaults.global.tileSizes);                
-	                var tileSource;
-	                
-	                if(_defaults.global.useTiles) {
-	                    tileSource = new OpenSeadragon.IIIFTileSource(imageInfo);                    
-	                } else {                
-	                    tileSource  = osViewer.createPyramid(imageInfo);                    
+            return Q.all(promises).then(function(tileSources) {
+            	var minWidth = Number.MAX_VALUE;  
+            	var minHeight = Number.MAX_VALUE;
+            	var minAspectRatio = Number.MAX_VALUE;
+            	for ( var j=0; j<tileSources.length; j++) {
+            		var tileSource = tileSources[j];
+            		minWidth = Math.min(minWidth, tileSource.width);
+            		minHeight = Math.min(minHeight, tileSource.height);
+            		minAspectRatio = Math.min(minAspectRatio, tileSource.aspectRatio);
 	                }
-	                
-	                return osViewer.loadImage(tileSource);                
-	            },
-	                 
-	            function(error) {            
-	                if(viewImage.tileSourceResolver.isURI(_defaults.image.tileSource)) {
 	                    if(_debug) {                    
-	                        console.log("Image URL", _defaults.image.tileSource);                        
+            	    console.log("Min aspect ratio = " + minAspectRatio);            	    
 	                    }
-	                    
-	                    var tileSource = new OpenSeadragon.ImageTileSource( {                    
-	                        url: _defaults.image.tileSource,                        
-	                        buildPyramid: true,                        
-	                        crossOriginPolicy: false                        
-	                    } );
-	
-	                    return osViewer.loadImage(tileSource);                    
-	                } else {                
-	                    var errorMsg = "Failed to load tilesource from " + tileSource;
-	                    
-	                    if(_debug) {                    
-	                        console.log(errorMsg);                        
+            	var x = 0;
+            	for ( var i=0; i<tileSources.length; i++) {
+	        		var tileSource = tileSources[i];
+	        		tileSources[i] = {
+	        				tileSource: tileSource,
+	        				width: tileSource.aspectRatio/minAspectRatio,
+// height: minHeight/tileSource.height,
+	                		x : x,
+	                		y: 0,
 	                    }
-	                    
-	                    return Q.reject(errorMsg);
-	                    
+	        		x += tileSources[i].width;
 	                }              
-            }).then(function(viewer) {              
-                result.resolve(viewer);          
-            }).catch(function(errorMessage) {              
-                result.reject(errorMessage);          
+            	return viewImage.loadImage(tileSources);
             });
             
-            return result.promise;
         },
-        loadImage : function(tileSource) {
+        loadImage : function(tileSources) {
             if ( _debug ) {
-                console.log( 'Loading image with tilesource: ', tileSource );
+                console.log( 'Loading image with tilesource: ', tileSources );
             }
               
             osViewer.loadFooter();            
@@ -148,7 +165,7 @@ var viewImage = ( function() {
                 showHomeControl: false,
                 showFullPageControl: true,
                 timeout: _defaults.global.loadImageTimeout,
-                tileSources: tileSource,
+                tileSources: tileSources,
                 blendTime: .5,
                 alwaysBlend: false,
                 imageLoaderLimit: _defaults.global.maxParallelImageLoads,
@@ -164,8 +181,6 @@ var viewImage = ( function() {
                 
             osViewer.observables = createObservables(window, osViewer.viewer);  
                 
-// .zip(osViewer.observables.firstTileLoaded)
-            
             osViewer.observables.viewerOpen.subscribe(function(openevent, loadevent) {            
                 result.resolve(osViewer);                
             }, function(error) {            
@@ -206,6 +221,10 @@ var viewImage = ( function() {
             osViewer.observables.redrawRequired.connect();                
             
             return result.promise;
+        },
+        getObservables: function() {
+        	console.log("Observables = ", osViewer.observables);
+        	return osViewer.observables;
         },
         hasFooter: function() {
             return _footerImage != null;
@@ -320,25 +339,36 @@ var viewImage = ( function() {
             }
             return null;
         },
-        getScaleToOriginalSize: function() {
-            var displaySize = osViewer.viewer.viewport.contentSize.x;
-            return osViewer.getImageInfo().width / displaySize;
+        getScaleToOriginalSize: function(imageNo) {
+        	if(!imageNo) {
+        		imageNo = 0;
+        	}
+            var displaySize = osViewer.viewer.viewport._contentSize.x;
+            return osViewer.getImageInfo()[imageNo].tileSource.width / displaySize;
         },
-        scaleToOriginalSize: function( value ) {
+        scaleToOriginalSize: function( value, imageNo ) {
             if ( _debug ) {
                 console.log( 'Overlays _scaleToOriginalSize: value - ' + value );
             }
             
-            var displaySize = osViewer.viewer.viewport.contentSize.x;
-            return value / displaySize * osViewer.getImageInfo().width;
+            if(!imageNo) {
+        		imageNo = 0;
+        	}
+            
+            var displaySize = osViewer.viewer.viewport._contentSize.x;
+            return value / displaySize * osViewer.getImageInfo()[imageNo].tileSource.width;
         },
-        scaleToImageSize: function( value ) {
+        scaleToImageSize: function( value, imageNo ) {
             if ( _debug ) {
                 console.log( 'Overlays _scaleToImageSize: value - ' + value );
             }
             
-            var displaySize = osViewer.viewer.viewport.contentSize.x;
-            return value * displaySize / osViewer.getImageInfo().width;
+            if(!imageNo) {
+        		imageNo = 0;
+        	}
+            
+            var displaySize = osViewer.viewer.viewport._contentSize.x;
+            return value * displaySize / osViewer.getImageInfo()[imageNo].tileSource.width;
         },
         close: function() {
             if ( _debug ) {
@@ -398,6 +428,58 @@ var viewImage = ( function() {
         	}
         	
         	return defer.promise;
+        },
+        createTileSource: function(source) {
+
+        	var result = Q.defer();
+
+            viewImage.tileSourceResolver.resolveAsJson(source)
+            .then(
+            		function(imageInfo) {                        
+		                if(_debug) {                
+		                    console.log("IIIF image info ", imageInfo);                        
+		                }               
+		                viewImage.setImageSizes(imageInfo, _defaults.global.imageSizes);       
+		                viewImage.setTileSizes(imageInfo, _defaults.global.tileSizes);                
+		                var tileSource;
+		                if(_defaults.global.useTiles) {
+		                    tileSource = new OpenSeadragon.IIIFTileSource(imageInfo);                    
+		                } else {                
+		                    tileSource  = osViewer.createPyramid(imageInfo);                    
+		                }
+		                
+		                return tileSource;                
+            		},
+		            function(error) {            
+		                if(viewImage.tileSourceResolver.isURI(_defaults.image.tileSource)) {
+		                    if(_debug) {                    
+		                        console.log("Image URL", _defaults.image.tileSource);                        
+		                    }
+		                    
+		                    var tileSource = new OpenSeadragon.ImageTileSource( {                    
+		                        url: _defaults.image.tileSource,                        
+		                        buildPyramid: true,                        
+		                        crossOriginPolicy: false                        
+		                    } );
+		
+		                    return tileSource;                    
+		                } else {                
+		                    var errorMsg = "Failed to load tilesource from " + tileSource;
+		                    
+		                    if(_debug) {                    
+		                        console.log(errorMsg);                        
+        }
+		                    
+		                    return Q.reject(errorMsg);
+		                    
+		                }              
+		            })
+            .then(function(tileSource) {              
+                result.resolve(tileSource);          
+            }).catch(function(errorMessage) {              
+                result.reject(errorMessage);          
+            });
+            return result.promise;
         }
     };
     
@@ -479,7 +561,11 @@ var viewImage = ( function() {
                 return observer.onNext(event);
             } );
         });
-        observables.redrawRequired = observables.viewerOpen.merge(observables.viewerRotate).merge(observables.canvasResize).debounce(10).map(function(event) {
+        observables.redrawRequired = observables.viewerOpen
+        .merge(observables.viewerRotate
+        		.merge(observables.canvasResize)
+        		.debounce(10))
+        .map(function(event) {
             var location = {};
             
             if(osViewer.controls) {

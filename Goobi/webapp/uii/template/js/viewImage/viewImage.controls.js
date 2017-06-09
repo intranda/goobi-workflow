@@ -1,3 +1,27 @@
+/**
+ * This file is part of the Goobi Viewer - a content presentation and management
+ * application for digitized objects.
+ * 
+ * Visit these websites for more information. - http://www.intranda.com -
+ * http://digiverso.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this
+ * program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Module which handles the image controls of the image view.
+ * 
+ * @version 3.2.0
+ * @module viewImage.controls
+ * @requires jQuery
+ */
 var viewImage = ( function( osViewer ) {
     'use strict';
     
@@ -6,7 +30,6 @@ var viewImage = ( function( osViewer ) {
     var _zoomedOut = true;
     var _panning = false;
     var _fadeout = null;
-    var _defaults = {};
       
     osViewer.controls = {
         init: function( config ) {
@@ -16,13 +39,12 @@ var viewImage = ( function( osViewer ) {
                 console.log( '##############################' );
             }
             
-            $.extend( true, _defaults, config );
             
-            if(osViewer.controls.persistance) {
-                osViewer.controls.persistance.init(_defaults);
+            if(osViewer.controls.persistence) {
+                osViewer.controls.persistence.init(config);
             }
             if(_debug) {                
-                console.log("Setting viewer location to", _defaults.image.location);
+                console.log("Setting viewer location to", config.image.location);
             }
             
             if( osViewer.observables ) {
@@ -42,10 +64,6 @@ var viewImage = ( function( osViewer ) {
                     }
                     if ( !osViewer.controls.isPanning() ) {
                         var currentZoom = osViewer.viewer.viewport.getZoom();
-                        
-//                        console.log("Current zoom = ", currentZoom);
-//                        console.log("minZoom = ", osViewer.viewer.viewport.minZoomLevel);
-//                        
                         if ( currentZoom <= osViewer.viewer.viewport.minZoomLevel ) {
                             if ( _debug ) {
                                 console.log( "Zoomed out: Panning home" );
@@ -137,17 +155,17 @@ var viewImage = ( function( osViewer ) {
         },
         zoomIn: function() {
             if ( _debug ) {
-                console.log( 'osViewer.controls.zoomIn: zoomSpeed - ' + _defaults.global.zoomSpeed );
+                console.log( 'osViewer.controls.zoomIn: zoomSpeed - ' + osViewer.getConfig().global.zoomSpeed );
             }
             
-            osViewer.viewer.viewport.zoomBy( _defaults.global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
+            osViewer.viewer.viewport.zoomBy( osViewer.getConfig().global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
         },
         zoomOut: function() {
             if ( _debug ) {
-                console.log( 'osViewer.controls.zoomOut: zoomSpeed - ' + _defaults.global.zoomSpeed );
+                console.log( 'osViewer.controls.zoomOut: zoomSpeed - ' + osViewer.getConfig().global.zoomSpeed );
             }
             
-            osViewer.viewer.viewport.zoomBy( 1 / _defaults.global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
+            osViewer.viewer.viewport.zoomBy( 1 / osViewer.getConfig().global.zoomSpeed, osViewer.viewer.viewport.getCenter( false ), false );
         },
         getHomeZoom: function( rotated ) {
             if ( rotated && osViewer.getCanvasSize().x / osViewer.getCanvasSize().y <= osViewer.getImageSize().x / osViewer.getImageSize().y ) {
@@ -245,7 +263,8 @@ var viewImage = ( function( osViewer ) {
     };
     
     
-    // set correct location, zooming and rotation once viewport has been updated after redraw
+    // set correct location, zooming and rotation once viewport has been updated after
+    // redraw
     function setLocation(event, osViewer) {
         if(_debug) {                    
             console.log("Viewer changed from " + event.osState + " event");
@@ -256,8 +275,10 @@ var viewImage = ( function( osViewer ) {
          var targetZoom = event.targetLocation.zoom;
          var targetLocation = new OpenSeadragon.Point(event.targetLocation.x, event.targetLocation.y);
          var zoomDiff = targetZoom * osViewer.viewer.viewport.getHomeZoom() - (osViewer.viewer.viewport.minZoomLevel);
-// console.log("zoomDiff: " + targetZoom + " * " + osViewer.viewer.viewport.getHomeZoom() + " - " + osViewer.viewer.viewport.minZoomLevel + " = ", zoomDiff);
-// console.log("zoomDiff: " + targetZoom + " - " + osViewer.viewer.viewport.minZoomLevel + "/" + osViewer.controls.getCurrentRotationZooming() + " = ", zoomDiff);
+// console.log("zoomDiff: " + targetZoom + " * " + osViewer.viewer.viewport.getHomeZoom()
+// + " - " + osViewer.viewer.viewport.minZoomLevel + " = ", zoomDiff);
+// console.log("zoomDiff: " + targetZoom + " - " + osViewer.viewer.viewport.minZoomLevel +
+// "/" + osViewer.controls.getCurrentRotationZooming() + " = ", zoomDiff);
          var zoomedOut = zoomDiff < 0.001 || !targetZoom;
          if(zoomedOut) {
              if(_debug) {                         
