@@ -38,7 +38,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -58,6 +58,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.updateTimestamp();
 					Step s = new Step();
 		            s.setTitel(parameters.get("steptitle"));
 		            s.setReihenfolge(Integer.parseInt(parameters.get("number")));
@@ -77,6 +78,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
 		                gsr.setResultMessage("A problem occurred while adding a workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "': " + e.getMessage());
 						gsr.setResultType(GoobiScriptResultType.ERROR);
 		            }
+		            gsr.updateTimestamp();
 				}
 			}
 		}

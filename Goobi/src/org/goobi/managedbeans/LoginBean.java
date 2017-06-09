@@ -254,6 +254,10 @@ public class LoginBean {
             temp.setMetsDisplayTitle(myBenutzer.isMetsDisplayTitle());
             temp.setMetsLinkImage(myBenutzer.isMetsLinkImage());
             temp.setDisplayOtherTasks(myBenutzer.isDisplayOtherTasks());
+            temp.setDisplayGridView(myBenutzer.isDisplayGridView());
+            temp.setMetsDisplayProcessID(myBenutzer.isMetsDisplayProcessID());
+            temp.setDisplayThumbColumn(myBenutzer.isDisplayThumbColumn());
+            temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

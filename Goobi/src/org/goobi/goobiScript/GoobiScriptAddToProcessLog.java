@@ -38,7 +38,7 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
 		
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -58,7 +58,8 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
+					
 					LogEntry logEntry = new LogEntry();
 	                logEntry.setContent(parameters.get("message"));
 	                logEntry.setCreationDate(new Date());
@@ -71,6 +72,7 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
 	
 					gsr.setResultMessage("Process log updated.");
 					gsr.setResultType(GoobiScriptResultType.OK);
+					gsr.updateTimestamp();
 				}
 			}
 		}

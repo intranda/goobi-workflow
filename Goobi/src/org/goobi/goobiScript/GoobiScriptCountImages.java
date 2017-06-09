@@ -21,7 +21,7 @@ public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoo
 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		return true;
@@ -41,7 +41,8 @@ public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoo
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
+					
 					if (p.getSortHelperImages() == 0) {
 		                int value = HistoryManager.getNumberOfImages(p.getId());
 		                if (value > 0) {
@@ -51,7 +52,8 @@ public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoo
 		                 }
 		            }
 					gsr.setResultMessage("Images counted successfully.");
-					gsr.setResultType(GoobiScriptResultType.OK);	
+					gsr.setResultType(GoobiScriptResultType.OK);
+					gsr.updateTimestamp();
 				}
 			}
 		}

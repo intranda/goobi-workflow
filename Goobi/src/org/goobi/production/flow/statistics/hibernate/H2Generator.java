@@ -31,7 +31,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Alternative;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
@@ -45,8 +45,8 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
  *
  */
 
-@Default
-public abstract class SQLGenerator implements IGenerator {
+@Alternative
+public abstract class H2Generator implements IGenerator {
 
     String mySql = null;
     Date myTimeFrom = null;
@@ -56,11 +56,11 @@ public abstract class SQLGenerator implements IGenerator {
     String myIdFieldName = "prozesse.prozesseid";
     List<Integer> ids;
 
-    private SQLGenerator() {
+    public H2Generator() {
         super();
     }
 
-    public SQLGenerator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
+    public H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
         this();
         myTimeFrom = timeFrom;
         myTimeTo = timeTo;
@@ -76,6 +76,26 @@ public abstract class SQLGenerator implements IGenerator {
 
     }
 
+    public void setTimeFrom(Date myTimeFrom) {
+        this.myTimeFrom = myTimeFrom;
+    }
+
+    public void setTimeTo(Date myTimeTo) {
+        this.myTimeTo = myTimeTo;
+    }
+
+    public void setTimeUnit(TimeUnit myTimeUnit) {
+        this.myTimeUnit = myTimeUnit;
+    }
+
+    public void setIds(List<Integer> ids) {
+        this.ids = ids;
+    }
+
+    public void setIdFieldName(String name) {
+        myIdFieldName = name;
+    }
+    
     public void conditionGeneration() {
         if (ids != null) {
             myIdsCondition = myIdFieldName + " in (";
@@ -107,16 +127,15 @@ public abstract class SQLGenerator implements IGenerator {
         }
 
         if (timeFrom != null && timeTo != null) {
-            return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0>=date_format('" + dateToSqlTimestamp(timeFrom) + "','%Y%m%d%H%i%s')+0 AND "
-                    + " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0<=date_format('" + dateToSqlTimestamp(timeTo) + "','%Y%m%d%H%i%s')+0 ";
+            return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
         }
 
         if (timeFrom != null) {
-            return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0>=date_format('" + dateToSqlTimestamp(timeFrom) + "','%Y%m%d%H%i%s')+0";
+            return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
         }
 
         if (timeTo != null) {
-            return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0<=date_format('" + dateToSqlTimestamp(timeTo) + "','%Y%m%d%H%i%s')+0";
+            return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
         }
         return "";
 
@@ -141,7 +160,7 @@ public abstract class SQLGenerator implements IGenerator {
                 return "year(" + fieldExpression + ")";
 
             case months:
-                return "concat(year(" + fieldExpression + ") , '/' , date_format(" + fieldExpression + ",'%m'))";
+                return "concat(year(" + fieldExpression + ") , '/' , month(" + fieldExpression + "))";
 
             case quarters:
                 return "concat(year(" + fieldExpression + ") , '/' , quarter(" + fieldExpression + "))";
@@ -150,8 +169,7 @@ public abstract class SQLGenerator implements IGenerator {
                 return "concat(left(yearweek(" + fieldExpression + ",3),4), '/', right(yearweek(" + fieldExpression + ",3),2))";
 
             case days:
-                return "concat(year(" + fieldExpression + ") , '-' , date_format(" + fieldExpression + ",'%m') , '-' , date_format(" + fieldExpression
-                        + ",'%d'))";
+                return "concat(year(" + fieldExpression + ") , '-' , month(" + fieldExpression + ") , '-' , day(" + fieldExpression + "))";
 
             default:
                 return "'timeUnit(" + timeUnit.getTitle() + ") undefined'";

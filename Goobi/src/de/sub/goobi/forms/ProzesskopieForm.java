@@ -147,7 +147,7 @@ public class ProzesskopieForm {
     public String Prepare() {
         atstsl = "";
         opacSuchbegriff = "";
-        if (ConfigurationHelper.getInstance().isRestProcesslog()) {
+        if (ConfigurationHelper.getInstance().isResetProcesslog()) {
             addToWikiField = "";
         }
 
@@ -651,6 +651,18 @@ public class ProzesskopieForm {
         //          myLogger.error("error on save: ", e);
         //          return "";
         //      }
+
+        if (addToWikiField != null && !addToWikiField.equals("")) {
+            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            LogEntry logEntry = new LogEntry();
+            logEntry.setContent(addToWikiField);
+            logEntry.setCreationDate(new Date());
+            logEntry.setProcessId(prozessKopie.getId());
+            logEntry.setType(LogType.INFO);
+            logEntry.setUserName(user.getNachVorname());
+            ProcessManager.saveLogEntry(logEntry);
+            prozessKopie.getProcessLog().add(logEntry);
+        }
 
         /*
          * wenn noch keine RDF-Datei vorhanden ist (weil keine Opac-Abfrage stattfand, dann jetzt eine anlegen
@@ -1163,11 +1175,11 @@ public class ProzesskopieForm {
     }
 
     public Map<String, String> getAllSearchFields() {
-        if (co.getCatalogueByName(opacKatalog)!=null){
-        	return co.getCatalogueByName(opacKatalog).getSearchFields();
-    	}else{
-    		return ConfigOpac.getInstance().getSearchFieldMap();
-    	}
+        if (co.getCatalogueByName(opacKatalog) != null) {
+            return co.getCatalogueByName(opacKatalog).getSearchFields();
+        } else {
+            return ConfigOpac.getInstance().getSearchFieldMap();
+        }
     }
 
     public List<String> getAllOpacCatalogues() {
@@ -1498,15 +1510,6 @@ public class ProzesskopieForm {
 
     public void setAddToWikiField(String addToWikiField) {
         this.addToWikiField = addToWikiField;
-        if (addToWikiField != null && !addToWikiField.equals("")) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(addToWikiField);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(prozessKopie.getId());
-            logEntry.setType(LogType.INFO);
-            logEntry.setUserName(user.getNachVorname());
-        }
     }
 
     public Integer getRulesetSelection() {

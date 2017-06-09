@@ -50,7 +50,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 	        
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -70,6 +70,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.updateTimestamp();
 					
 					for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
 		                Step s = iterator.next();
@@ -95,6 +96,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 		                    }
 		                }
 		            }
+					gsr.updateTimestamp();
 				}
 			}
 		}

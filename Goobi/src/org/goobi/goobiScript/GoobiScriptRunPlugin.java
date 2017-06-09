@@ -1,7 +1,6 @@
 package org.goobi.goobiScript;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,8 +14,6 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperSchritte;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -34,7 +31,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		return true;
@@ -56,7 +53,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
 					for (Step step : p.getSchritteList()) {
 						if (step.getTitel().equalsIgnoreCase(steptitle)) {
 							Step so = StepManager.getStepById(step.getId());
@@ -87,6 +84,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 							}
 						}
 					}
+					gsr.updateTimestamp();
 				}
 			}
 		}

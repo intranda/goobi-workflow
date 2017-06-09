@@ -39,9 +39,7 @@ import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.encryption.MD5;
 
 @ManagedBean(name = "AdministrationForm")
 @SessionScoped

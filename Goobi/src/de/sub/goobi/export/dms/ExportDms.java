@@ -56,6 +56,7 @@ import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -115,7 +116,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
         String atsPpnBand = myProzess.getTitel();
-
+        
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
@@ -137,7 +138,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         }
 
         trimAllMetadata(gdzfile.getDigitalDocument().getLogicalDocStruct());
-
+        VariableReplacer replacer = new VariableReplacer(gdzfile.getDigitalDocument(), this.myPrefs, myProzess, null);
+        
         /*
          * -------------------------------- Metadaten validieren --------------------------------
          */
@@ -150,7 +152,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             	return false;
             }
         }
-
+        
+        
         /*
          * -------------------------------- Speicherort vorbereiten und downloaden --------------------------------
          */
@@ -158,6 +161,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         Path benutzerHome;
         if (myProzess.getProjekt().isUseDmsImport()) {
             zielVerzeichnis = myProzess.getProjekt().getDmsImportImagesPath();
+            zielVerzeichnis = replacer.replace(zielVerzeichnis);
             benutzerHome = Paths.get(zielVerzeichnis);
 
             /* ggf. noch einen Vorgangsordner anlegen */
@@ -171,14 +175,18 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     return false;
                 }
                 /* alte Success-Ordner löschen */
-                Path successFile = Paths.get(myProzess.getProjekt().getDmsImportSuccessPath(), myProzess.getTitel());
+                String successPath = myProzess.getProjekt().getDmsImportSuccessPath();
+                successPath = replacer.replace(successPath);
+                Path successFile = Paths.get(successPath, myProzess.getTitel());
                 if (!NIOFileUtils.deleteDir(successFile)) {
                     Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Success folder could not be cleared");
                     problems.add("Export cancelled: Success folder could not be cleared.");
                     return false;
                 }
                 /* alte Error-Ordner löschen */
-                Path errorfile = Paths.get(myProzess.getProjekt().getDmsImportErrorPath(), myProzess.getTitel());
+                String importPath = myProzess.getProjekt().getDmsImportErrorPath();
+                importPath = replacer.replace(importPath);
+                Path errorfile = Paths.get(importPath, myProzess.getTitel());
                 if (!NIOFileUtils.deleteDir(errorfile)) {
                     Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Error folder could not be cleared");
                     problems.add("Export cancelled: Error folder could not be cleared.");
@@ -192,6 +200,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
         } else {
             zielVerzeichnis = inZielVerzeichnis + atsPpnBand;
+            zielVerzeichnis = replacer.replace(zielVerzeichnis);
             // wenn das Home existiert, erst löschen und dann neu anlegen
             benutzerHome = Paths.get(zielVerzeichnis);
             if (!NIOFileUtils.deleteDir(benutzerHome)) {
@@ -201,7 +210,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
             prepareUserDirectory(zielVerzeichnis);
         }
-
         /*
          * -------------------------------- der eigentliche Download der Images --------------------------------
          */
@@ -212,10 +220,13 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             } else if (this.exportFulltext) {
                 fulltextDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
             }
-
-            Path exportFolder = Paths.get(myProzess.getExportDirectory());
+            
+           
+            String ed = myProzess.getExportDirectory();
+            ed = replacer.replace(ed);
+            Path exportFolder = Paths.get(ed);
             if (Files.exists(exportFolder) && Files.isDirectory(exportFolder)) {
-                List<Path> subdir = NIOFileUtils.listFiles(myProzess.getExportDirectory());
+                List<Path> subdir = NIOFileUtils.listFiles(ed);
 
                 for (Path dir : subdir) {
                     if (Files.isDirectory(dir) && !NIOFileUtils.list(dir.toString()).isEmpty()) {
@@ -279,7 +290,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
                     /* Success-Ordner wieder löschen */
                     if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {
-                        Path successFile = Paths.get(myProzess.getProjekt().getDmsImportSuccessPath(), myProzess.getTitel());
+                    	String sf = myProzess.getProjekt().getDmsImportSuccessPath();
+                    	sf = replacer.replace(sf);
+                        Path successFile = Paths.get(sf, myProzess.getTitel());
                         NIOFileUtils.deleteDir(successFile);
                     }
                 }

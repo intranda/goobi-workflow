@@ -1,5 +1,6 @@
 package org.goobi.goobiScript;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -51,7 +52,8 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
+					
 					IExportPlugin export = null;
 					String pluginName = ProcessManager.getExportPluginName(p.getId());
 					if (StringUtils.isNotEmpty(pluginName)) {
@@ -98,6 +100,7 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 						gsr.setResultType(GoobiScriptResultType.ERROR);
 						logger.error("Exception during the export of process " + p.getId(), e);
 					}
+					gsr.updateTimestamp();
 				}
 			}
 		}

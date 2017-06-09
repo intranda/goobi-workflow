@@ -485,7 +485,7 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
 
-    public boolean isRestProcesslog() {
+    public boolean isResetProcesslog() {
         return getLocalBoolean("ProcessCreationResetLog", false);
     }
 
@@ -641,4 +641,9 @@ public class ConfigurationHelper implements Serializable {
      return getLocalBoolean("ProcessLogShowThirdField", false);
         
     }
+    
+    public boolean isUseH2DB() {
+        return getLocalBoolean("useH2DB", false);
+    }
+    
 }

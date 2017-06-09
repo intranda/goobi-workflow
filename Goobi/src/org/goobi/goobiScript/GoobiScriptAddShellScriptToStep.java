@@ -38,7 +38,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
         
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -58,7 +58,8 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
+					
 					if (p.getSchritte() != null) {
 		                for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
 		                    Step s = iterator.next();
@@ -82,6 +83,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
 		                    }
 		                }
 		            }
+					gsr.updateTimestamp();
 				}
 			}
 		}

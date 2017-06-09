@@ -130,6 +130,17 @@ public class GoobiScriptManager {
 			Collections.sort(goobiScriptResults, new SortByCommand(false));
 		} else if (sort.equals("command desc")) {
 			Collections.sort(goobiScriptResults, new SortByCommand(true));
+		
+		} else if (sort.equals("user")) {
+			Collections.sort(goobiScriptResults, new SortByUser(false));
+		} else if (sort.equals("user desc")) {
+			Collections.sort(goobiScriptResults, new SortByUser(true));
+		
+		} else if (sort.equals("timestamp")) {
+			Collections.sort(goobiScriptResults, new SortByTimestamp(false));
+		} else if (sort.equals("timestamp desc")) {
+			Collections.sort(goobiScriptResults, new SortByTimestamp(true));
+		
 		} else if (sort.equals("description")) {
 			Collections.sort(goobiScriptResults, new SortByDescription(false));
 		} else if (sort.equals("description desc")) {
@@ -199,6 +210,38 @@ public class GoobiScriptManager {
 				return g1.getCommand().compareTo(g2.getCommand());
 			} else{
 				return g2.getCommand().compareTo(g1.getCommand());
+			}
+		}
+	}
+	
+	private class SortByUser implements Comparator<GoobiScriptResult> {
+		private boolean reverse = false;
+		
+		public SortByUser(boolean reverse) {
+			this.reverse = reverse;
+		}
+		@Override
+		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
+			if (reverse){
+				return g1.getUsername().compareTo(g2.getUsername());
+			} else{
+				return g2.getUsername().compareTo(g1.getUsername());
+			}
+		}
+	}
+	
+	private class SortByTimestamp implements Comparator<GoobiScriptResult> {
+		private boolean reverse = false;
+		
+		public SortByTimestamp(boolean reverse) {
+			this.reverse = reverse;
+		}
+		@Override
+		public int compare(GoobiScriptResult g1, GoobiScriptResult g2) {
+			if (reverse){
+				return g1.getTimestamp().compareTo(g2.getTimestamp());
+			} else{
+				return g2.getTimestamp().compareTo(g1.getTimestamp());
 			}
 		}
 	}

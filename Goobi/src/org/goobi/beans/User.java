@@ -37,6 +37,8 @@ import java.util.Set;
 
 import jgravatar.Gravatar;
 import jgravatar.GravatarRating;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -54,57 +56,61 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 public class User implements DatabaseObject {
 
     private static final Logger logger = Logger.getLogger(User.class);
-    private Integer id;
-    private String vorname;
-    private String nachname;
-    private String login;
-    private String ldaplogin;
-    private String passwort;
-    private boolean istAktiv = true;
-    private String isVisible;
-    private String standort;
+    @Getter @Setter private Integer id;
+    @Getter @Setter private String vorname;
+    @Getter @Setter private String nachname;
+    @Getter @Setter private String login;
+    @Getter @Setter private String ldaplogin;
+    @Getter @Setter private String passwort;
+    @Getter @Setter private boolean istAktiv = true;
+    @Getter @Setter private String isVisible;
+    @Getter @Setter private String standort;
     private Integer tabellengroesse = Integer.valueOf(10);
     private Integer sessiontimeout = 7200;
     //	private boolean confVorgangsdatumAnzeigen = false;
-    private String metadatenSprache;
+    @Getter @Setter private String metadatenSprache;
     private List<Usergroup> benutzergruppen;
-    private List<Step> schritte;
-    private List<Step> bearbeitungsschritte;
+    @Getter @Setter private List<Step> schritte;
+    @Getter @Setter private List<Step> bearbeitungsschritte;
     private List<Project> projekte;
-    private List<UserProperty> eigenschaften;
-    private boolean mitMassendownload = false;
-    private Ldap ldapGruppe;
+    @Getter @Setter private List<UserProperty> eigenschaften;
+    @Getter @Setter private boolean mitMassendownload = false;
+    @Getter @Setter private Ldap ldapGruppe;
     private String css;
-    private String email;
-    private String shortcutPrefix = "ctrl+shift";
+    @Getter @Setter private String email;
+    @Getter @Setter private String shortcutPrefix = "ctrl+shift";
 
     private String encryptedPassword;
     private String passwordSalt;
 
-    private boolean displayDeactivatedProjects = false;
-    private boolean displayFinishedProcesses = false;
-    private boolean displaySelectBoxes = false;
-    private boolean displayIdColumn = false;
-    private boolean displayBatchColumn = false;
-    private boolean displayProcessDateColumn = false;
-    private boolean displayLocksColumn = false;
-    private boolean displaySwappingColumn = false;
-    private boolean displayModulesColumn = false;
+    @Getter @Setter private boolean displayDeactivatedProjects = false;
+    @Getter @Setter private boolean displayFinishedProcesses = false;
+    @Getter @Setter private boolean displaySelectBoxes = false;
+    @Getter @Setter private boolean displayIdColumn = false;
+    @Getter @Setter private boolean displayBatchColumn = false;
+    @Getter @Setter private boolean displayProcessDateColumn = false;
+    @Getter @Setter private boolean displayLocksColumn = false;
+    @Getter @Setter private boolean displaySwappingColumn = false;
+    @Getter @Setter private boolean displayModulesColumn = false;
+    @Getter @Setter private boolean displayMetadataColumn = false;
+    @Getter @Setter private boolean displayThumbColumn = false;
+    @Getter @Setter private boolean displayGridView = false;
 
-    private boolean displayAutomaticTasks = false;
-    private boolean hideCorrectionTasks = false;
-    private boolean displayOnlySelectedTasks = false;
-    private boolean displayOnlyOpenTasks = false;
-    private boolean displayOtherTasks = false;
+    @Getter @Setter private boolean displayAutomaticTasks = false;
+    @Getter @Setter private boolean hideCorrectionTasks = false;
+    @Getter @Setter private boolean displayOnlySelectedTasks = false;
+    @Getter @Setter private boolean displayOnlyOpenTasks = false;
+    @Getter @Setter private boolean displayOtherTasks = false;
 
-    private boolean metsDisplayTitle = false;
-    private boolean metsLinkImage = false;
-    private boolean metsDisplayPageAssignments = false;
-    private boolean metsDisplayHierarchy = false;
+    @Getter @Setter private boolean metsDisplayTitle = false;
+    @Getter @Setter private boolean metsLinkImage = false;
+    @Getter @Setter private boolean metsDisplayPageAssignments = false;
+    @Getter @Setter private boolean metsDisplayHierarchy = false;
+    @Getter @Setter private boolean metsDisplayProcessID = false;
+    
+    @Getter @Setter private Integer metsEditorTime;
 
-    private Integer metsEditorTime;
-
-    private static final int IMAGE_SIZE = 27;
+    @Getter private static final int IMAGE_SIZE = 27;
 
     public void lazyLoad() {
         try {
@@ -113,38 +119,6 @@ public class User implements DatabaseObject {
         } catch (DAOException e) {
             logger.error("error during lazy loading of User", e);
         }
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return this.login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getNachname() {
-        return this.nachname;
-    }
-
-    public void setNachname(String nachname) {
-        this.nachname = nachname;
-    }
-
-    public String getPasswort() {
-        return this.passwort;
-    }
-
-    public void setPasswort(String inpasswort) {
-        this.passwort = inpasswort;
     }
 
     public String getPasswortCrypt() {
@@ -175,38 +149,6 @@ public class User implements DatabaseObject {
         this.passwordSalt = passwordSalt;
     }
 
-    public boolean isIstAktiv() {
-        return this.istAktiv;
-    }
-
-    public void setIstAktiv(boolean istAktiv) {
-        this.istAktiv = istAktiv;
-    }
-
-    public void setIsVisible(String isVisible) {
-        this.isVisible = isVisible;
-    }
-
-    public String getIsVisible() {
-        return this.isVisible;
-    }
-
-    public String getStandort() {
-        return this.standort;
-    }
-
-    public void setStandort(String instandort) {
-        this.standort = instandort;
-    }
-
-    public String getVorname() {
-        return this.vorname;
-    }
-
-    public void setVorname(String vorname) {
-        this.vorname = vorname;
-    }
-
     public Integer getTabellengroesse() {
         if (this.tabellengroesse == null) {
             return Integer.valueOf(10);
@@ -216,22 +158,6 @@ public class User implements DatabaseObject {
 
     public void setTabellengroesse(Integer tabellengroesse) {
         this.tabellengroesse = tabellengroesse;
-    }
-
-    public boolean isMitMassendownload() {
-        return this.mitMassendownload;
-    }
-
-    public void setMitMassendownload(boolean mitMassendownload) {
-        this.mitMassendownload = mitMassendownload;
-    }
-
-    public Ldap getLdapGruppe() {
-        return this.ldapGruppe;
-    }
-
-    public void setLdapGruppe(Ldap ldapGruppe) {
-        this.ldapGruppe = ldapGruppe;
     }
 
     public int getBenutzergruppenSize() {
@@ -257,28 +183,12 @@ public class User implements DatabaseObject {
         return benutzergruppen;
     }
 
-    public List<Step> getSchritte() {
-        return this.schritte;
-    }
-
-    public void setSchritte(List<Step> schritte) {
-        this.schritte = schritte;
-    }
-
     public int getSchritteSize() {
         if (this.schritte == null) {
             return 0;
         } else {
             return this.schritte.size();
         }
-    }
-
-    public List<Step> getBearbeitungsschritte() {
-        return this.bearbeitungsschritte;
-    }
-
-    public void setBearbeitungsschritte(List<Step> bearbeitungsschritte) {
-        this.bearbeitungsschritte = bearbeitungsschritte;
     }
 
     public int getBearbeitungsschritteSize() {
@@ -320,22 +230,6 @@ public class User implements DatabaseObject {
     //	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
     //		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
     //	}
-
-    public String getMetadatenSprache() {
-        return this.metadatenSprache;
-    }
-
-    public void setMetadatenSprache(String metadatenSprache) {
-        this.metadatenSprache = metadatenSprache;
-    }
-
-    public String getLdaplogin() {
-        return this.ldaplogin;
-    }
-
-    public void setLdaplogin(String ldaplogin) {
-        this.ldaplogin = ldaplogin;
-    }
 
     public boolean istPasswortKorrekt(String inPasswort) {
         if (inPasswort == null || inPasswort.length() == 0) {
@@ -425,14 +319,6 @@ public class User implements DatabaseObject {
 
     public void setCss(String css) {
         this.css = css;
-    }
-
-    public List<UserProperty> getEigenschaften() {
-        return this.eigenschaften;
-    }
-
-    public void setEigenschaften(List<UserProperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
     }
 
     public int getEigenschaftenSize() {
@@ -545,117 +431,6 @@ public class User implements DatabaseObject {
         return true;
     }
 
-    public boolean isDisplayDeactivatedProjects() {
-        return displayDeactivatedProjects;
-    }
-
-    public boolean isDisplayFinishedProcesses() {
-        return displayFinishedProcesses;
-    }
-
-    public boolean isDisplaySelectBoxes() {
-        return displaySelectBoxes;
-    }
-
-    public boolean isDisplayIdColumn() {
-        return displayIdColumn;
-    }
-
-    public boolean isDisplayBatchColumn() {
-        return displayBatchColumn;
-    }
-
-    public boolean isDisplayProcessDateColumn() {
-        return displayProcessDateColumn;
-    }
-
-    public boolean isDisplayLocksColumn() {
-        return displayLocksColumn;
-    }
-
-    public boolean isDisplaySwappingColumn() {
-        return displaySwappingColumn;
-    }
-
-    public boolean isDisplayAutomaticTasks() {
-        return displayAutomaticTasks;
-    }
-
-    public boolean isHideCorrectionTasks() {
-        return hideCorrectionTasks;
-    }
-
-    public boolean isDisplayOnlySelectedTasks() {
-        return displayOnlySelectedTasks;
-    }
-
-    public boolean isDisplayOnlyOpenTasks() {
-        return displayOnlyOpenTasks;
-    }
-
-    public void setDisplayDeactivatedProjects(boolean displayDeactivatedProjects) {
-        this.displayDeactivatedProjects = displayDeactivatedProjects;
-    }
-
-    public void setDisplayFinishedProcesses(boolean displayFinishedProcesses) {
-        this.displayFinishedProcesses = displayFinishedProcesses;
-    }
-
-    public void setDisplaySelectBoxes(boolean displaySelectBoxes) {
-        this.displaySelectBoxes = displaySelectBoxes;
-    }
-
-    public void setDisplayIdColumn(boolean displayIdColumn) {
-        this.displayIdColumn = displayIdColumn;
-    }
-
-    public void setDisplayBatchColumn(boolean displayBatchColumn) {
-        this.displayBatchColumn = displayBatchColumn;
-    }
-
-    public void setDisplayProcessDateColumn(boolean displayProcessDateColumn) {
-        this.displayProcessDateColumn = displayProcessDateColumn;
-    }
-
-    public void setDisplayLocksColumn(boolean displayLocksColumn) {
-        this.displayLocksColumn = displayLocksColumn;
-    }
-
-    public void setDisplaySwappingColumn(boolean displaySwappingColumn) {
-        this.displaySwappingColumn = displaySwappingColumn;
-    }
-
-    public void setDisplayAutomaticTasks(boolean displayAutomaticTasks) {
-        this.displayAutomaticTasks = displayAutomaticTasks;
-    }
-
-    public void setHideCorrectionTasks(boolean hideCorrectionTasks) {
-        this.hideCorrectionTasks = hideCorrectionTasks;
-    }
-
-    public void setDisplayOnlySelectedTasks(boolean displayOnlySelectedTasks) {
-        this.displayOnlySelectedTasks = displayOnlySelectedTasks;
-    }
-
-    public void setDisplayOnlyOpenTasks(boolean displayOnlyOpenTasks) {
-        this.displayOnlyOpenTasks = displayOnlyOpenTasks;
-    }
-
-    public boolean isDisplayModulesColumn() {
-        return displayModulesColumn;
-    }
-
-    public void setDisplayModulesColumn(boolean displayModulesColumn) {
-        this.displayModulesColumn = displayModulesColumn;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public void setImageUrl(String url) {
 
@@ -671,62 +446,6 @@ public class User implements DatabaseObject {
             return url;
         }
         return null;
-    }
-
-    public String getShortcutPrefix() {
-        return shortcutPrefix;
-    }
-
-    public void setShortcutPrefix(String shortcutPrefix) {
-        this.shortcutPrefix = shortcutPrefix;
-    }
-
-    public Integer getMetsEditorTime() {
-        return metsEditorTime;
-    }
-
-    public void setMetsEditorTime(Integer metsEditorTime) {
-        this.metsEditorTime = metsEditorTime;
-    }
-
-    public boolean isMetsDisplayHierarchy() {
-        return metsDisplayHierarchy;
-    }
-
-    public boolean isMetsDisplayPageAssignments() {
-        return metsDisplayPageAssignments;
-    }
-
-    public boolean isMetsDisplayTitle() {
-        return metsDisplayTitle;
-    }
-
-    public boolean isMetsLinkImage() {
-        return metsLinkImage;
-    }
-
-    public void setMetsDisplayHierarchy(boolean metsDisplayHierarchy) {
-        this.metsDisplayHierarchy = metsDisplayHierarchy;
-    }
-
-    public void setMetsDisplayPageAssignments(boolean metsDisplayPageAssignments) {
-        this.metsDisplayPageAssignments = metsDisplayPageAssignments;
-    }
-
-    public void setMetsDisplayTitle(boolean metsDisplayTitle) {
-        this.metsDisplayTitle = metsDisplayTitle;
-    }
-
-    public void setMetsLinkImage(boolean metsLinkImage) {
-        this.metsLinkImage = metsLinkImage;
-    }
-
-    public boolean isDisplayOtherTasks() {
-        return displayOtherTasks;
-    }
-
-    public void setDisplayOtherTasks(boolean displayOtherTasks) {
-        this.displayOtherTasks = displayOtherTasks;
     }
 
     public List<String> getAllUserRoles() {

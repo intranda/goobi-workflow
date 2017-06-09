@@ -50,462 +50,459 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 /*****************************************************************************
- * Imlpementation of {@link IStatisticalQuestion}. Statistical Request with
- * predefined Values in data Table
+ * Imlpementation of {@link IStatisticalQuestion}. Statistical Request with predefined Values in data Table
  * 
  * @author Wulf Riebensahm
  ****************************************************************************/
 public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe {
     final private Logger logger = Logger.getLogger(StatQuestThroughput.class);
 
-	private Date timeFilterFrom;
-	private TimeUnit timeGrouping;
-	private Date timeFilterTo;
-	private List<Integer> myIDlist;
-	private Boolean flagIncludeLoops = false;
+    private Date timeFilterFrom;
+    private TimeUnit timeGrouping;
+    private Date timeFilterTo;
+    private List<Integer> myIDlist;
+    private Boolean flagIncludeLoops = false;
 
-	/**
-	 * loops included means that all step open all stepdone are considered loops
-	 * not included means that only min(date) or max(date) - depending on option
-	 * in
-	 * 
-	 * @see historyEventType
-	 * 
-	 * @return status of loops included or not
-	 */
-	public Boolean getIncludeLoops() {
-		return this.flagIncludeLoops;
-	}
+    /**
+     * loops included means that all step open all stepdone are considered loops not included means that only min(date) or max(date) - depending on
+     * option in
+     * 
+     * @see historyEventType
+     * 
+     * @return status of loops included or not
+     */
+    public Boolean getIncludeLoops() {
+        return this.flagIncludeLoops;
+    }
 
-	/**
-	 * Set status of loops included
-	 * 
-	 * @param includeLoops
-	 */
-	public void setIncludeLoops(Boolean includeLoops) {
-		this.flagIncludeLoops = includeLoops;
-	}
+    /**
+     * Set status of loops included
+     * 
+     * @param includeLoops
+     */
+    public void setIncludeLoops(Boolean includeLoops) {
+        this.flagIncludeLoops = includeLoops;
+    }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit
+     * (org.goobi.production.flow.statistics.enums.TimeUnit)
+     */
+    @Override
+    public void setTimeUnit(TimeUnit timeGrouping) {
+        this.timeGrouping = timeGrouping;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit
-	 * (org.goobi.production.flow.statistics.enums.TimeUnit)
-	 */
-	@Override
-	public void setTimeUnit(TimeUnit timeGrouping) {
-		this.timeGrouping = timeGrouping;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables
+     * (org.goobi.production.flow.statistics.IDataSource)
+     */
+    @Override
+    public List<DataTable> getDataTables(String filter, String originalFilter) {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables
-	 * (org.goobi.production.flow.statistics.IDataSource)
-	 */
-	@Override
-	public List<DataTable> getDataTables(String filter, String originalFilter) {
+        List<DataTable> allTables = new ArrayList<DataTable>();
 
-		List<DataTable> allTables = new ArrayList<DataTable>();
+        //		IEvaluableFilter originalFilter;
+        //
+        //		if (dataSource instanceof IEvaluableFilter) {
+        //			originalFilter = (IEvaluableFilter) dataSource;
+        //		} else {
+        //			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
+        //		}
 
-//		IEvaluableFilter originalFilter;
-//
-//		if (dataSource instanceof IEvaluableFilter) {
-//			originalFilter = (IEvaluableFilter) dataSource;
-//		} else {
-//			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-//		}
+        // gathering IDs from the filter passed by dataSource
+        //		try {
+        this.myIDlist = ProcessManager.getIDList(filter);
+        //		} catch (UnsupportedOperationException e) {
+        //		}
+        //
+        //		if (myIDlist == null || myIDlist.size() == 0) {
+        //			return null;
+        //		}
+        /*
+         * ======================================================================
+         * ==============
+         */
 
-		// gathering IDs from the filter passed by dataSource
-//		try {
-			this.myIDlist = ProcessManager.getIDList(filter);
-//		} catch (UnsupportedOperationException e) {
-//		}
-//
-//		if (myIDlist == null || myIDlist.size() == 0) {
-//			return null;
-//		}
-		/*
-		 * ======================================================================
-		 * ==============
-		 */
+        // a list of DataTables is expected as return Object, even if there is
+        // only one
+        // Data Table as it is here in this implementation
+        DataTable tableStepOpenAndDone = getAllSteps(HistoryEventType.stepOpen);
+        tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
+        tableStepOpenAndDone.setName(StatisticsMode.getByClassName(this.getClass()).getTitle() + " (" + Helper.getTranslation("openSteps") + ")");
+        tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
+        tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
+        tableStepOpenAndDone.setShowableInChart(false);
+        allTables.add(tableStepOpenAndDone);
 
-		// a list of DataTables is expected as return Object, even if there is
-		// only one
-		// Data Table as it is here in this implementation
-		DataTable tableStepOpenAndDone = getAllSteps(HistoryEventType.stepOpen);
-		tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
-		tableStepOpenAndDone.setName(StatisticsMode.getByClassName(this.getClass()).getTitle() + " (" + Helper.getTranslation("openSteps") + ")");
-		tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
-		tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
-		tableStepOpenAndDone.setShowableInChart(false);
-		allTables.add(tableStepOpenAndDone);
+        tableStepOpenAndDone = getAllSteps(HistoryEventType.stepDone);
+        tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
+        tableStepOpenAndDone.setName(StatisticsMode.getByClassName(this.getClass()).getTitle() + " (" + Helper.getTranslation("doneSteps") + ")");
+        tableStepOpenAndDone.setShowableInChart(false);
+        tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
+        tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
+        allTables.add(tableStepOpenAndDone);
 
-		tableStepOpenAndDone = getAllSteps(HistoryEventType.stepDone);
-		tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
-		tableStepOpenAndDone.setName(StatisticsMode.getByClassName(this.getClass()).getTitle() + " (" + Helper.getTranslation("doneSteps") + ")");
-		tableStepOpenAndDone.setShowableInChart(false);
-		tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
-		tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
-		allTables.add(tableStepOpenAndDone);
+        /*
+         * ======================================================================
+         * ==============
+         */
 
-		/*
-		 * ======================================================================
-		 * ==============
-		 */
+        // what do we do here?
+        // okay ... first we find out how many steps the selected set has
+        // finding lowest step and highest step (no step name discrimination)
+        Integer uBound;
+        Integer uBoundOpen = getMaxStepCount(HistoryEventType.stepOpen);
+        Integer uBoundDone = getMaxStepCount(HistoryEventType.stepDone);
+        if (uBoundOpen < uBoundDone) {
+            uBound = uBoundDone;
+        } else {
+            uBound = uBoundOpen;
+        }
 
-		// what do we do here?
-		// okay ... first we find out how many steps the selected set has
-		// finding lowest step and highest step (no step name discrimination)
-		Integer uBound;
-		Integer uBoundOpen = getMaxStepCount(HistoryEventType.stepOpen);
-		Integer uBoundDone = getMaxStepCount(HistoryEventType.stepDone);
-		if (uBoundOpen < uBoundDone) {
-			uBound = uBoundDone;
-		} else {
-			uBound = uBoundOpen;
-		}
+        Integer lBound;
+        Integer lBoundOpen = getMinStepCount(HistoryEventType.stepOpen);
+        Integer lBoundDone = getMinStepCount(HistoryEventType.stepDone);
 
-		Integer lBound;
-		Integer lBoundOpen = getMinStepCount(HistoryEventType.stepOpen);
-		Integer lBoundDone = getMinStepCount(HistoryEventType.stepDone);
+        if (lBoundOpen < lBoundDone) {
+            lBound = lBoundDone;
+        } else {
+            lBound = lBoundOpen;
+        }
 
-		if (lBoundOpen < lBoundDone) {
-			lBound = lBoundDone;
-		} else {
-			lBound = lBoundOpen;
-		}
+        // then for each step we get both the open and the done count within the
+        // selected intervalls and merge it within one table
+        for (Integer i = lBound; i <= uBound; i++) {
 
-		// then for each step we get both the open and the done count within the
-		// selected intervalls and merge it within one table
-		for (Integer i = lBound; i <= uBound; i++) {
+            DataTable tableStepOpen;
+            tableStepOpen = getSpecificSteps(i, HistoryEventType.stepOpen);
 
-			DataTable tableStepOpen;
-			tableStepOpen = getSpecificSteps(i, HistoryEventType.stepOpen);
-			
-			tableStepOpen.setShowableInTable(true);
+            tableStepOpen.setShowableInTable(true);
 
-			DataTable tableStepDone;
-			tableStepDone = getSpecificSteps(i, HistoryEventType.stepDone);
-			
-			tableStepDone.setShowableInTable(true);
+            DataTable tableStepDone;
+            tableStepDone = getSpecificSteps(i, HistoryEventType.stepDone);
 
-			// to merge we just take each table and dump the entire content in a
-			// row for the open step
-			DataRow rowOpenSteps = new DataRow(Helper.getTranslation("openSteps") + " " + i.toString());
-			for (DataRow dtr : tableStepOpen.getDataRows()) {
-				rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
-			}
+            tableStepDone.setShowableInTable(true);
 
-			// adding the first row
-			String title = "";
-			if (tableStepOpen.getName().length() > 0) {
-				title = tableStepOpen.getName();
-			} else {
-				title = tableStepDone.getName();
-			}
+            // to merge we just take each table and dump the entire content in a
+            // row for the open step
+            DataRow rowOpenSteps = new DataRow(Helper.getTranslation("openSteps") + " " + i.toString());
+            for (DataRow dtr : tableStepOpen.getDataRows()) {
+                rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
+            }
 
-			tableStepOpenAndDone = new DataTable(Helper.getTranslation("throughput") + " " + Helper.getTranslation("steps") + " " + title);
-			tableStepOpenAndDone.addDataRow(rowOpenSteps);
+            // adding the first row
+            String title = "";
+            if (tableStepOpen.getName().length() > 0) {
+                title = tableStepOpen.getName();
+            } else {
+                title = tableStepDone.getName();
+            }
 
-			// row for the done step
-			rowOpenSteps = new DataRow(Helper.getTranslation("doneSteps") + " " + i.toString());
-			for (DataRow dtr : tableStepDone.getDataRows()) {
-				rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
-			}
+            tableStepOpenAndDone = new DataTable(Helper.getTranslation("throughput") + " " + Helper.getTranslation("steps") + " " + title);
+            tableStepOpenAndDone.addDataRow(rowOpenSteps);
 
-			// adding that row
-			tableStepOpenAndDone.addDataRow(rowOpenSteps);
+            // row for the done step
+            rowOpenSteps = new DataRow(Helper.getTranslation("doneSteps") + " " + i.toString());
+            for (DataRow dtr : tableStepDone.getDataRows()) {
+                rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
+            }
 
-			// turning off table rendering
-			tableStepOpenAndDone.setShowableInTable(false);
+            // adding that row
+            tableStepOpenAndDone.addDataRow(rowOpenSteps);
 
-			// inverting the orientation
-			tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
-			tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
+            // turning off table rendering
+            tableStepOpenAndDone.setShowableInTable(false);
 
-			// Dates may not be all in the right order because of it's
-			// composition from 2 tables
-			List<DataRow> allTempRows = tableStepOpenAndDone.getDataRows();
-			// this fixes the sorting problem
-			Collections.sort(allTempRows, new DataTableComparator());
+            // inverting the orientation
+            tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
+            tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
 
-			allTables.add(tableStepOpenAndDone);
+            // Dates may not be all in the right order because of it's
+            // composition from 2 tables
+            List<DataRow> allTempRows = tableStepOpenAndDone.getDataRows();
+            // this fixes the sorting problem
+            Collections.sort(allTempRows, new DataTableComparator());
 
-		}
+            allTables.add(tableStepOpenAndDone);
 
-		return allTables;
-	}
+        }
 
-	private static class DataTableComparator implements Comparator<DataRow> {
-		@Override
-		public int compare(DataRow o1, DataRow o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-	}
+        return allTables;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit
-	 * (org.goobi.production.flow.statistics.enums.CalculationUnit)
-	 */
-	@Override
-	public void setCalculationUnit(CalculationUnit cu) {
-	}
+    private static class DataTableComparator implements Comparator<DataRow> {
+        @Override
+        public int compare(DataRow o1, DataRow o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe
-	 * #setTimeFrame(java.util.Date, java.util.Date)
-	 */
-	@Override
-	public void setTimeFrame(Date timeFrom, Date timeTo) {
-		this.timeFilterFrom = timeFrom;
-		this.timeFilterTo = timeTo;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit
+     * (org.goobi.production.flow.statistics.enums.CalculationUnit)
+     */
+    @Override
+    public void setCalculationUnit(CalculationUnit cu) {
+    }
 
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe
+     * #setTimeFrame(java.util.Date, java.util.Date)
+     */
+    @Override
+    public void setTimeFrame(Date timeFrom, Date timeTo) {
+        this.timeFilterFrom = timeFrom;
+        this.timeFilterTo = timeTo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted
-	 * (de.intranda.commons.chart.renderer.IRenderer)
-	 */
-	@Override
-	public Boolean isRendererInverted(IRenderer inRenderer) {
-		return inRenderer instanceof ChartRenderer;
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#
-	 * getNumberFormatPattern()
-	 */
-	@Override
-	public String getNumberFormatPattern() {
-		return "#";
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted
+     * (de.intranda.commons.chart.renderer.IRenderer)
+     */
+    @Override
+    public Boolean isRendererInverted(IRenderer inRenderer) {
+        return inRenderer instanceof ChartRenderer;
+    }
 
-	/**
-	 * returns a DataTable populated with the specified events
-	 * 
-	 * @param requestedType
-	 * @return
-	 */
-	private DataTable getAllSteps(HistoryEventType requestedType) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#
+     * getNumberFormatPattern()
+     */
+    @Override
+    public String getNumberFormatPattern() {
+        return "#";
+    }
 
-		// adding time restrictions
-		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist).getSQL(requestedType, null,
-				true, this.flagIncludeLoops);
+    /**
+     * returns a DataTable populated with the specified events
+     * 
+     * @param requestedType
+     * @return
+     */
+    private DataTable getAllSteps(HistoryEventType requestedType) {
 
-		// this one is supposed to make sure, that all possible headers will be
-		// thrown out in the first row to build header columns
-		String headerFromSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, null, this.myIDlist).getSQL(requestedType, null,
-				true, true);
+        IStepRequestsImprovedDiscrimination sqlGenerator = StatisticsFactory.getStepRequestsImprovedDiscrimination(timeFilterFrom, timeFilterTo,
+                timeGrouping, myIDlist);
 
-		this.logger.trace(natSQL);
-		this.logger.trace(headerFromSQL);
+        // adding time restrictions
+        String natSQL = sqlGenerator.getSQL(requestedType, null, true, this.flagIncludeLoops);
 
-		return buildDataTableFromSQL(natSQL, headerFromSQL);
-	}
+        // this one is supposed to make sure, that all possible headers will be
+        // thrown out in the first row to build header columns
+        String headerFromSQL = sqlGenerator.getSQL(requestedType, null, true, true);
 
-	/**
-	 * returns a DataTable populated with the specified events
-	 * 
-	 * @param step
-	 * @param requestedType
-	 * @return
-	 */
+        this.logger.trace(natSQL);
+        this.logger.trace(headerFromSQL);
 
-	private DataTable getSpecificSteps(Integer step, HistoryEventType requestedType) {
+        return buildDataTableFromSQL(natSQL, headerFromSQL);
+    }
 
-		// adding time restrictions
-		String natSQL = new SQLStepRequests(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist).getSQL(requestedType, step, true, this.flagIncludeLoops);
+    /**
+     * returns a DataTable populated with the specified events
+     * 
+     * @param step
+     * @param requestedType
+     * @return
+     */
 
-		this.logger.trace(natSQL);
+    private DataTable getSpecificSteps(Integer step, HistoryEventType requestedType) {
+        IStepRequestsImprovedDiscrimination sqlGenerator = StatisticsFactory.getStepRequestsImprovedDiscrimination(timeFilterFrom, timeFilterTo,
+                timeGrouping, myIDlist);
 
-		return buildDataTableFromSQL(natSQL, null);
-	}
+        // adding time restrictions
+        String natSQL = sqlGenerator.getSQL(requestedType, step, true, this.flagIncludeLoops);
 
-	/**
-	 * Method generates a DataTable based on the input SQL. Methods success is
-	 * depending on a very specific data structure ... so don't use it if you
-	 * don't exactly understand it
-	 * 
-	 * 
-	 * @param natSQL
-	 *            , headerFromSQL -> to be used, if headers need to be read in
-	 *            first in order to get a certain sorting
-	 * @return DataTable
-	 */
+        this.logger.trace(natSQL);
 
-	// TODO Remove redundant code
-	private DataTable buildDataTableFromSQL(String natSQL, String headerFromSQL) {
+        return buildDataTableFromSQL(natSQL, null);
+    }
 
+    /**
+     * Method generates a DataTable based on the input SQL. Methods success is depending on a very specific data structure ... so don't use it if you
+     * don't exactly understand it
+     * 
+     * 
+     * @param natSQL , headerFromSQL -> to be used, if headers need to be read in first in order to get a certain sorting
+     * @return DataTable
+     */
 
-		// creating header row from headerSQL (gets all columns in one row
-		DataRow headerRow = null;
-		if (headerFromSQL != null) {
-			headerRow = new DataRow(null);
-//			SQLQuery headerQuery = session.createSQLQuery(headerFromSQL);
-//
-//			// needs to be there otherwise an exception is thrown
-//			headerQuery.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-//			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
-//			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
-//			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
-			@SuppressWarnings("rawtypes")
+    // TODO Remove redundant code
+    private DataTable buildDataTableFromSQL(String natSQL, String headerFromSQL) {
+
+        // creating header row from headerSQL (gets all columns in one row
+        DataRow headerRow = null;
+        if (headerFromSQL != null) {
+            headerRow = new DataRow(null);
+            //			SQLQuery headerQuery = session.createSQLQuery(headerFromSQL);
+            //
+            //			// needs to be there otherwise an exception is thrown
+            //			headerQuery.addScalar("stepCount", StandardBasicTypes.DOUBLE);
+            //			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
+            //			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
+            //			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
+            @SuppressWarnings("rawtypes")
             List headerList = ProcessManager.runSQL(headerFromSQL);
-//			List headerList = headerQuery.list();
-			for (Object obj : headerList) {
-				Object[] objArr = (Object[]) obj;		
-				try {
-					headerRow.setName(new Converter(objArr[3]).getString() + "");
-					headerRow.addValue(new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", (new Converter(objArr[0]).getDouble()));
+            //			List headerList = headerQuery.list();
+            for (Object obj : headerList) {
+                Object[] objArr = (Object[]) obj;
+                try {
+                    headerRow.setName(new Converter(objArr[3]).getString() + "");
+                    headerRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", (new Converter(
+                            objArr[0]).getDouble()));
 
-				} catch (Exception e) {
-					headerRow.addValue(e.getMessage(), new Double(0));
-				}
-			}
+                } catch (Exception e) {
+                    headerRow.addValue(e.getMessage(), new Double(0));
+                }
+            }
 
-		}
+        }
 
-//		SQLQuery query = session.createSQLQuery(natSQL);
-//
-//		// needs to be there otherwise an exception is thrown
-//		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-//		query.addScalar("stepName", StandardBasicTypes.STRING);
-//		query.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
-//		query.addScalar("intervall", StandardBasicTypes.STRING);
+        //		SQLQuery query = session.createSQLQuery(natSQL);
+        //
+        //		// needs to be there otherwise an exception is thrown
+        //		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
+        //		query.addScalar("stepName", StandardBasicTypes.STRING);
+        //		query.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
+        //		query.addScalar("intervall", StandardBasicTypes.STRING);
 
-		@SuppressWarnings("rawtypes")
-//		List list = query.list();
-		List list = ProcessManager.runSQL(natSQL);
-		DataTable dtbl = new DataTable("");
+        @SuppressWarnings("rawtypes")
+        //		List list = query.list();
+        List list = ProcessManager.runSQL(natSQL);
+        DataTable dtbl = new DataTable("");
 
-		// if headerRow is set then add it to the DataTable to set columns
-		// needs to be removed later
-		if (headerRow != null) {
-			dtbl.addDataRow(headerRow);
-		}
+        // if headerRow is set then add it to the DataTable to set columns
+        // needs to be removed later
+        if (headerRow != null) {
+            dtbl.addDataRow(headerRow);
+        }
 
-		DataRow dataRow = null;
+        DataRow dataRow = null;
 
-		// each data row comes out as an Array of Objects
-		// the only way to extract the data is by knowing
-		// in which order they come out
+        // each data row comes out as an Array of Objects
+        // the only way to extract the data is by knowing
+        // in which order they come out
 
-		// checks if intervall has changed which then triggers the start for a
-		// new row
-		// intervall here is the timeGroup Expression (e.g. "2006/05" or
-		// "2006-10-05")
-		String observeIntervall = "";
+        // checks if intervall has changed which then triggers the start for a
+        // new row
+        // intervall here is the timeGroup Expression (e.g. "2006/05" or
+        // "2006-10-05")
+        String observeIntervall = "";
 
-		for (Object obj : list) {
-			Object[] objArr = (Object[]) obj;
-			try {
-				// objArr[1]
-				if (!observeIntervall.equals(new Converter(objArr[1]).getString())) {
-					observeIntervall = new Converter(objArr[1]).getString();
+        for (Object obj : list) {
+            Object[] objArr = (Object[]) obj;
+            try {
+                // objArr[1]
+                if (!observeIntervall.equals(new Converter(objArr[1]).getString())) {
+                    observeIntervall = new Converter(objArr[1]).getString();
 
-					// row cannot be added before it is filled because the add
-					// process triggers
-					// a testing for header alignement -- this is where we add
-					// it after iterating it first
-					if (dataRow != null) {
-						dtbl.addDataRow(dataRow);
-					}
+                    // row cannot be added before it is filled because the add
+                    // process triggers
+                    // a testing for header alignement -- this is where we add
+                    // it after iterating it first
+                    if (dataRow != null) {
+                        dtbl.addDataRow(dataRow);
+                    }
 
-					dataRow = new DataRow(null);
-					// setting row name with localized time group and the
-					// date/time extraction based on the group
-					dataRow.setName(new Converter(objArr[1]).getString() + "");
-				}
-				dataRow.addValue(
-				        new Converter(objArr[2]).getString()+ " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[0]).getDouble());
-//						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
-//						(new Converter(objArr[0]).getDouble()));
+                    dataRow = new DataRow(null);
+                    // setting row name with localized time group and the
+                    // date/time extraction based on the group
+                    dataRow.setName(new Converter(objArr[1]).getString() + "");
+                }
+                dataRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[0])
+                        .getDouble());
+                //						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
+                //						(new Converter(objArr[0]).getDouble()));
 
-			} catch (Exception e) {
-				dataRow.addValue(e.getMessage(), new Double(0));
-			}
-		}
-		// to add the last row
-		if (dataRow != null) {
-			dtbl.addDataRow(dataRow);
-		}
+            } catch (Exception e) {
+                dataRow.addValue(e.getMessage(), new Double(0));
+            }
+        }
+        // to add the last row
+        if (dataRow != null) {
+            dtbl.addDataRow(dataRow);
+        }
 
-		// now removing headerRow
-		if (headerRow != null) {
-			dtbl.removeDataRow(headerRow);
-		
-		}
+        // now removing headerRow
+        if (headerRow != null) {
+            dtbl.removeDataRow(headerRow);
 
-		return dtbl;
-	}
+        }
 
-	/**
-	 * method retrieves the highest step order in the requested history range
-	 * 
-	 * @param requestedType
-	 */
-	private Integer getMaxStepCount(HistoryEventType requestedType) {
+        return dtbl;
+    }
 
-		// adding time restrictions
-//		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
-//				.SQLMaxStepOrder(requestedType);
-//
-//		Session session = Helper.getHibernateSession();
-//		SQLQuery query = session.createSQLQuery(natSQL);
-//
-//		// needs to be there otherwise an exception is thrown
-//		query.addScalar("maxStep", StandardBasicTypes.DOUBLE);
-//
-//		@SuppressWarnings("rawtypes")
-//		List list = query.list();
-//
-//		if (list != null && list.size() > 0 && list.get(0) != null) {
-//			return new Converter(list.get(0)).getInteger();
-//		} else {
-			return 0;
-//		}
+    /**
+     * method retrieves the highest step order in the requested history range
+     * 
+     * @param requestedType
+     */
+    private Integer getMaxStepCount(HistoryEventType requestedType) {
 
-	}
+        // adding time restrictions
+        //		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
+        //				.SQLMaxStepOrder(requestedType);
+        //
+        //		Session session = Helper.getHibernateSession();
+        //		SQLQuery query = session.createSQLQuery(natSQL);
+        //
+        //		// needs to be there otherwise an exception is thrown
+        //		query.addScalar("maxStep", StandardBasicTypes.DOUBLE);
+        //
+        //		@SuppressWarnings("rawtypes")
+        //		List list = query.list();
+        //
+        //		if (list != null && list.size() > 0 && list.get(0) != null) {
+        //			return new Converter(list.get(0)).getInteger();
+        //		} else {
+        return 0;
+        //		}
 
-	/**
-	 * method retrieves the lowest step order in the requested history range
-	 * 
-	 * @param requestedType
-	 */
-	private Integer getMinStepCount(HistoryEventType requestedType) {
-		// adding time restrictions
-//		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
-//				.SQLMinStepOrder(requestedType);
-//
-//		Session session = Helper.getHibernateSession();
-//		SQLQuery query = session.createSQLQuery(natSQL);
-//
-//		// needs to be there otherwise an exception is thrown
-//		query.addScalar("minStep", StandardBasicTypes.DOUBLE);
-//
-//		@SuppressWarnings("rawtypes")
-//		List list = query.list();
-//
-//		if (list != null && list.size() > 0 && list.get(0) != null) {
-//			return new Converter(list.get(0)).getInteger();
-//		} else {
-			return 0;
-//		}
+    }
 
-	}
+    /**
+     * method retrieves the lowest step order in the requested history range
+     * 
+     * @param requestedType
+     */
+    private Integer getMinStepCount(HistoryEventType requestedType) {
+        // adding time restrictions
+        //		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
+        //				.SQLMinStepOrder(requestedType);
+        //
+        //		Session session = Helper.getHibernateSession();
+        //		SQLQuery query = session.createSQLQuery(natSQL);
+        //
+        //		// needs to be there otherwise an exception is thrown
+        //		query.addScalar("minStep", StandardBasicTypes.DOUBLE);
+        //
+        //		@SuppressWarnings("rawtypes")
+        //		List list = query.list();
+        //
+        //		if (list != null && list.size() > 0 && list.get(0) != null) {
+        //			return new Converter(list.get(0)).getInteger();
+        //		} else {
+        return 0;
+        //		}
+
+    }
 
 }

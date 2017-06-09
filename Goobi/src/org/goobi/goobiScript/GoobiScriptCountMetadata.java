@@ -23,7 +23,7 @@ public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IG
 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -46,7 +46,8 @@ public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IG
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
+					
 		            try {
 		                DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
 		                p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
@@ -61,7 +62,7 @@ public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IG
 		                gsr.setResultMessage("Error while counting the metadata: " + e.getMessage());
 						gsr.setResultType(GoobiScriptResultType.ERROR);
 		            }
-					
+		            gsr.updateTimestamp();
 				}
 			}
 		}

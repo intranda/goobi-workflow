@@ -40,7 +40,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 		
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		return true;
@@ -59,7 +59,8 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
-
+					gsr.updateTimestamp();
+					
 					for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
 		                Step s = iterator.next();
 		                if (s.getTitel().equals(parameters.get("steptitle"))) {
@@ -78,6 +79,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 		                    break;
 		                }
 		            }
+					gsr.updateTimestamp();
 				}
 			}
 		}

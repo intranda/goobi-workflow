@@ -110,6 +110,26 @@
 											<h:outputText value="#{item.command}" title="#{item.command}" />
 										</x:column>
 										
+										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'user desc'?'sorting_desc':SessionForm.gsm.sort=='user'?'sorting_asc':'sorting'}">
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+													<h:outputText value="#{msgs.goobiScript_user}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.username}" title="#{item.username}" />
+										</x:column>
+										
+										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'timestamp desc'?'sorting_desc':SessionForm.gsm.sort=='timestamp'?'sorting_asc':'sorting'}">
+											<f:facet name="header">
+												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+													<h:outputText value="#{msgs.goobiScript_timestamp}" />
+													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
+	                                            </h:commandLink>
+											</f:facet>
+											<h:outputText value="#{item.timestamp}" title="#{item.timestamp}" />
+										</x:column>
+										
 										<x:column headerstyleClass="#{SessionForm.gsm.sort eq 'status desc'?'sorting_desc':SessionForm.gsm.sort=='status'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
@@ -117,8 +137,8 @@
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
 	                                            </h:commandLink>
 											</f:facet>
-											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':'badge-intranda-red'}">
-			                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':'fa-exclamation-triangle'} margin-right-5"></i>
+											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
+			                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5"></i>
 			                                    #{msgs['goobiScript_status_'.concat(item.resultType)]}
 			                                </span>
 										</x:column>

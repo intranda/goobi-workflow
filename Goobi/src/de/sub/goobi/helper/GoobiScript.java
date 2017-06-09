@@ -21,6 +21,7 @@ import org.goobi.goobiScript.GoobiScriptCountMetadata;
 import org.goobi.goobiScript.GoobiScriptDeleteProcess;
 import org.goobi.goobiScript.GoobiScriptDeleteStep;
 import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
 import org.goobi.goobiScript.GoobiScriptSetRuleset;
@@ -138,6 +139,8 @@ public class GoobiScript {
                 igs = new GoobiScriptCountImages();
             } else if (myParameters.get("action").equalsIgnoreCase("countMetadata")) {
                 igs = new GoobiScriptCountMetadata();
+            } else if (myParameters.get("action").equalsIgnoreCase("import")) {
+                igs = new GoobiScriptImport();
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }

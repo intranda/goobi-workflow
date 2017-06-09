@@ -42,7 +42,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
         
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
 			resultList.add(gsr);
 		}
 		
@@ -63,6 +63,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.updateTimestamp();
 	                p.setRegelsatz(regelsatz);
 	                try {
 						ProcessManager.saveProcess(p);
@@ -74,6 +75,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
 						gsr.setResultMessage("Problem assigning new ruleset: " + e.getMessage());
 						gsr.setResultType(GoobiScriptResultType.OK);
 					}
+	                gsr.updateTimestamp();
 				}
 			}
 		}
