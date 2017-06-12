@@ -27,6 +27,7 @@ package org.goobi.production.plugin;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.goobi.production.enums.ImportType;
@@ -45,6 +46,7 @@ public class ImportPluginLoader extends PluginLoader {
 				pluginList.add(p.getTitle());
 			}
 		}
+		Collections.sort(pluginList);
 		return pluginList;
 	}
 	
