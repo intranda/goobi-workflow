@@ -142,7 +142,7 @@ public class JobCreation {
                 logger.error(e);
             }
         } else {
-            logger.error("title " + processTitle + "is invalid");
+            logger.error("Title " + processTitle + " is invalid");
         }
         return p;
     }
