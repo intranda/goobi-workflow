@@ -34,6 +34,7 @@
 	                    	<div class="dataTables_wrapper">
 								<div class="dataTables_length" style="margin-bottom: 10px;">
 									<h:outputText value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResults.size()}" />
+									<h:outputText value=" - #{msgs.goobiScript_showMax}: #{SessionForm.gsm.showMax}" styleClass="font-light margin-left-10" rendered="#{SessionForm.gsm.goobiScriptResults.size() gt SessionForm.gsm.showMax}" />
 								</div>
 								
 								<h:form id="searchform">
