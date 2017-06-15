@@ -246,7 +246,9 @@
                                             </h:commandLink>
                                         </f:facet>
 
-                                        <h:outputText value="#{item.erstellungsdatum}" />
+                                        <h:outputText value="#{item.erstellungsdatum}" >
+                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/>
+	                                    </h:outputText>
                                     </x:column>
 
                                     <!-- +++++++++++++++++  Status ++++++++++++++++++++++++ -->

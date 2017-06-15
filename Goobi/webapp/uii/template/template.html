@@ -156,7 +156,9 @@
                                                     <h:outputText value="#{SessionForm.aktuelleZeit}" />
                                                 </span>
                                                 <span>
-                                                    <h:outputText value="#{SessionForm.date}" />
+                                                    <h:outputText value="#{SessionForm.date}">
+                                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                                </h:outputText>
                                                 </span>
                                             </div>
                                         </li>

@@ -189,7 +189,9 @@
 												<h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
 													<tr>
 														<td>
-															<h:outputText value="#{entry.date}" styleClass="log_color_#{entry.type.title}" />
+															<h:outputText value="#{entry.creationDate}" styleClass="log_color_#{entry.type.title}" >
+																<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                                		</h:outputText>
 			                                                <br />
 			                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
 														</td>
