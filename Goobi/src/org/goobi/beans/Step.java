@@ -778,7 +778,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         Integer batchNumber = getProzess().getBatchID();
         if (batchNumber != null) {
             // only steps with same title and batchId
-            String sql = "schritte.titel = \"" + titel + "\" and prozesse.batchID = " + batchNumber;
+            String sql = "schritte.titel = '" + titel + "' and prozesse.batchID = " + batchNumber;
             try {
                 int number = StepManager.countSteps(null, sql);
                 if (number > 1) {

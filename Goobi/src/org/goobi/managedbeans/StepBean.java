@@ -337,7 +337,7 @@ public class StepBean extends BasicBean {
         Integer batchNumber = this.mySchritt.getProzess().getBatchID();
         if (batchNumber != null) {
             // only steps with same title
-            currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = \"" + steptitle + "\" and prozesse.batchID = " + batchNumber, 0,
+            currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0,
                     Integer.MAX_VALUE);
 
         } else {
@@ -408,8 +408,8 @@ public class StepBean extends BasicBean {
         Integer batchNumber = this.mySchritt.getProzess().getBatchID();
         if (batchNumber != null) {
             // only steps with same title
-            currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = \"" + steptitle
-                    + "\"  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = " + batchNumber
+            currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = '" + steptitle
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = " + batchNumber
                     + ")", 0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
