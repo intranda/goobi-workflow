@@ -58,6 +58,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.setResultType(GoobiScriptResultType.RUNNING);
 					gsr.updateTimestamp();
 					
 					if (p.getSchritte() != null) {

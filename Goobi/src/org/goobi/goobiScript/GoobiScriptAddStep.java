@@ -58,6 +58,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.setResultType(GoobiScriptResultType.RUNNING);
 					gsr.updateTimestamp();
 					Step s = new Step();
 		            s.setTitel(parameters.get("steptitle"));

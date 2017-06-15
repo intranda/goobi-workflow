@@ -60,6 +60,7 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.setResultType(GoobiScriptResultType.RUNNING);
 					gsr.updateTimestamp();
 					
 					for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {

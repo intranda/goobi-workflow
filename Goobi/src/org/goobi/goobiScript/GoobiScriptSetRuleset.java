@@ -63,6 +63,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.setResultType(GoobiScriptResultType.RUNNING);
 					gsr.updateTimestamp();
 	                p.setRegelsatz(regelsatz);
 	                try {

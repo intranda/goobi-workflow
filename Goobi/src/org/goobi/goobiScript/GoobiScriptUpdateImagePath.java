@@ -46,6 +46,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.setResultType(GoobiScriptResultType.RUNNING);
 					gsr.updateTimestamp();
 					try {
 						Fileformat myRdf = p.readMetadataFile();

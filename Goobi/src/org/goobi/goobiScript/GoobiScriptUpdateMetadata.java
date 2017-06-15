@@ -50,6 +50,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
+					gsr.setResultType(GoobiScriptResultType.RUNNING);
 					gsr.updateTimestamp();
 					try {
 		                String metdatdaPath = p.getMetadataFilePath();
