@@ -128,7 +128,9 @@
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
 	                                            </h:commandLink>
 											</f:facet>
-											<h:outputText value="#{item.timestamp}" title="#{item.timestamp}" />
+											<h:outputText value="#{item.timestamp}" title="#{item.timestamp}"  >
+												<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+											</h:outputText>
 										</x:column>
 										
 										<x:column headerstyleClass="#{SessionForm.gsm.sort eq 'status desc'?'sorting_desc':SessionForm.gsm.sort=='status'?'sorting_asc':'sorting'}">

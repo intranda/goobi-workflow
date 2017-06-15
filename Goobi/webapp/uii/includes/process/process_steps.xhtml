@@ -118,10 +118,14 @@
                                                         </h:panelGroup>
 
                                                         <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-                                                        <h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungsbeginn}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" >
+                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                                        </h:outputText>
 
                                                         <h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-                                                        <h:outputText value="#{item.bearbeitungszeitpunktAsFormattedString}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+                                                        <h:outputText value="#{item.bearbeitungszeitpunkt}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" >
+                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                                        </h:outputText>
 
                                                         <h:outputText value="#{msgs.letzteAktualisierungDurch}:" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
                                                         <h:outputText value="#{item.bearbeitungsbenutzer.nachVorname}" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />

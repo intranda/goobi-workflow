@@ -89,10 +89,14 @@
 	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer!=null and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id!=0?(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.vorname).concat(' ').concat(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.nachname):''}" rendered="#{!HelperForm.anonymized}" />
 	
 	                                    <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginnAsFormattedString}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" >
+	                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                    </h:outputText>
 	
 	                                    <h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+	                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                    </h:outputText>
 	                                </h:panelGrid>
 	                            </h:panelGroup>
 	                            <!-- / do not show the whole workflow -->
@@ -153,10 +157,14 @@
 	                                                        <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer!=null and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id!=0?(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.vorname).concat(' ').concat(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.nachname):''}" rendered="#{!HelperForm.anonymized}" />
 	
 	                                                        <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-	                                                        <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginnAsFormattedString}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+	                                                        <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+	                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                                        </h:outputText>
 	
 	                                                        <h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-	                                                        <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+	                                                        <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" >
+	                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                                        </h:outputText>
 	
 	
 	
@@ -171,12 +179,16 @@
 	                                                    <h:outputText styleClass="font-light" value="#{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?(step.bearbeitungsbenutzer.vorname).concat(' ').concat(step.bearbeitungsbenutzer.nachname):''}" />
 	                                                </td>
 	                                                <td>
-	                                                    <h:outputText styleClass="font-light" value="#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}" />
+	                                                    <h:outputText styleClass="font-light" value="#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunkt:''}" >
+	                                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                              			</h:outputText>
 	                                                </td>
 	                                            </h:panelGroup>
 	                                            <h:panelGroup rendered="#{(step.bearbeitungsstatusEnum == 'DONE') and HelperForm.anonymized}">
 	                                                <td colspan="2">
-	                                                    <h:outputText styleClass="font-light" value="#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}" />
+	                                                    <h:outputText styleClass="font-light" value="#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunkt:''}">
+	                                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                                        </h:outputText>
 	                                                </td>
 	                                            </h:panelGroup>
 	
