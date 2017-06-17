@@ -135,17 +135,41 @@ public class Helper implements Serializable, Observer {
         inException.printStackTrace(new PrintWriter(sw));
         return sw.toString();
     }
+    
+    public static void setFehlerMeldungUntranslated(String meldung) {
+        setMeldung(null, meldung, "", false, false);
+    }
 
+    public static void setFehlerMeldungUntranslated(String meldung, String beschreibung) {
+        setMeldung(null, meldung, beschreibung, false, false);
+    }
+
+    public static void setFehlerMeldungUntranslated(String control, String meldung, String beschreibung) {
+        setMeldung(control, meldung, beschreibung, false, false);
+    }
+
+    public static void setFehlerMeldungUntranslated(Exception e) {
+        setFehlerMeldungUntranslated("Error (" + e.getClass().getName() + "): ", getExceptionMessage(e));
+    }
+
+    public static void setFehlerMeldungUntranslated(String meldung, Exception e) {
+    	setFehlerMeldungUntranslated(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+    }
+
+    public static void setFehlerMeldungUntranslated(String control, String meldung, Exception e) {
+    	setFehlerMeldungUntranslated(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+    }
+    
     public static void setFehlerMeldung(String meldung) {
-        setMeldung(null, meldung, "", false);
+        setMeldung(null, meldung, "", false, true);
     }
 
     public static void setFehlerMeldung(String meldung, String beschreibung) {
-        setMeldung(null, meldung, beschreibung, false);
+        setMeldung(null, meldung, beschreibung, false, true);
     }
 
     public static void setFehlerMeldung(String control, String meldung, String beschreibung) {
-        setMeldung(control, meldung, beschreibung, false);
+        setMeldung(control, meldung, beschreibung, false, true);
     }
 
     public static void setFehlerMeldung(Exception e) {
@@ -159,6 +183,10 @@ public class Helper implements Serializable, Observer {
     public static void setFehlerMeldung(String control, String meldung, Exception e) {
         setFehlerMeldung(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
+    
+    
+    
+    
 
     private static String getExceptionMessage(Throwable e) {
         String message = e.getMessage();
@@ -171,15 +199,15 @@ public class Helper implements Serializable, Observer {
     }
 
     public static void setMeldung(String meldung) {
-        setMeldung(null, meldung, "", true);
+        setMeldung(null, meldung, "", true, true);
     }
 
     public static void setMeldung(String meldung, String beschreibung) {
-        setMeldung(null, meldung, beschreibung, true);
+        setMeldung(null, meldung, beschreibung, true, true);
     }
 
     public static void setMeldung(String control, String meldung, String beschreibung) {
-        setMeldung(control, meldung, beschreibung, true);
+        setMeldung(control, meldung, beschreibung, true, true);
     }
 
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
@@ -204,7 +232,7 @@ public class Helper implements Serializable, Observer {
     /**
      * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
      */
-    private static void setMeldung(String control, String meldung, String beschreibung, boolean nurInfo) {
+    private static void setMeldung(String control, String meldung, String beschreibung, boolean nurInfo, boolean useTranslation) {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
         // Never forget: Strings are immutable
@@ -213,23 +241,20 @@ public class Helper implements Serializable, Observer {
         beschreibung = beschreibung.replaceAll("<", "&lt;");
         beschreibung = beschreibung.replaceAll(">", "&gt;");
 
-        String msg = "";
-        String beschr = "";
+        String msg = meldung;
+        String beschr = beschreibung;
         Locale language = Locale.ENGLISH;
         SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
         if (sf != null) {
             language = sf.getLocale();
         }
 
-        try {
-            msg = getString(language, meldung);
-        } catch (RuntimeException e) {
-            msg = meldung;
-        }
-        try {
-            beschr = getString(language, beschreibung);
-        } catch (RuntimeException e) {
-            beschr = beschreibung;
+        if (useTranslation){
+	        try {
+	            msg = getString(language, meldung);
+	            beschr = getString(language, beschreibung);
+	        } catch (RuntimeException e) {
+	        }
         }
 
         String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
