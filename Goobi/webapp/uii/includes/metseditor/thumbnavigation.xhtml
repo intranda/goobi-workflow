@@ -32,12 +32,12 @@
             <h:commandLink id="thumNext" styleClass="btn btn-primary font-size-s" action="#{Metadaten.cmdMoveNext}">
                 <h:outputText value="#{msgs.pageNext} " />
                 <i class="fa fa-angle-right"></i>
-                <x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
+                <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                 <f:ajax execute="@form" render="@form " />
             </h:commandLink>
             <h:commandLink id="thumbLast" styleClass="btn font-size-s margin-sides-10" action="#{Metadaten.cmdMoveLast}">
                 <i class="fa fa-double-angle-right"></i>
-                <x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
+                <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                 <f:ajax execute="@form" render="@form" />
             </h:commandLink>
 
