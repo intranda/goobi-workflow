@@ -109,11 +109,13 @@
 	             
 			             <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
 							<div class="goobi-thumbnail #{Metadaten.image.imageName eq image.imageName ? 'img-active' : 'font-light'}">
-                                <div class="thumb">
-									<h:commandLink id="thumbnailImage" title="#{image.tooltip}" action="#{Metadaten.checkSelectedThumbnail(image.order -1)}">
+                                <div class="thumb" id="#{image.imageName.replace('.tif','')}">
+									<h:commandLink id="thumbnailImage" title="#{image.tooltip}" action="#{Metadaten.checkSelectedThumbnail(image.order -1)}" onclick="selectClickedThumbnail(this)">
 										<canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{image.tooltip}" id="thumbnail-#{status.index}"></canvas>
+<!-- 										<x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
 										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
-										<f:ajax render="@form :bigimage :myform"/>
+										<f:ajax render=":myform" execute="@form" />
+<!-- 										<f:ajax render="@form :bigimage :myform"/> -->
 									</h:commandLink>
 								</div>
 								<div class="goobi-thumbnail-caption">
@@ -199,7 +201,6 @@
 						                <f:selectItem itemValue="24" itemLabel="24" />
 						                <f:selectItem itemValue="48" itemLabel="48" />
 						                <f:selectItem itemValue="96" itemLabel="96" />
-						                <f:ajax event="change" render="@form"></f:ajax>
 						            </h:selectOneMenu>
 	                            </div>
 	                            <div class="col-sm-3">
@@ -367,8 +368,16 @@
    
 	window.onload = function() {
     	loadImages();
-    	
     }
+	
+	function selectClickedThumbnail(element) {
+ 		var galleryLinks;
+		galleryLinks = document.getElementsByClassName('goobi-thumbnail');
+		for (var i = 0; i &lt; galleryLinks.length; i++)
+			galleryLinks[i].className = "goobi-thumbnail font-light";
+		element.parentElement.parentElement.className = "goobi-thumbnail img-active";
+		return true;
+	}
 	
 	function loadThumbnails() {
 //		 var height = parseInt('#{Metadaten.thumbnailSize}');
@@ -378,6 +387,16 @@
     		$('.goobi-thumbnail .thumb').css('max-height', height + 'px');
     		$('.goobi-thumbnail .thumb canvas').css('max-height', height + 'px');
     		$('.goobi-thumbnail').css('max-width', (height) + 'px');
+		
+    		var thumb = $("##{Metadaten.image.imageName.replace('.tif','')}");
+    		var shallScroll = '#{NavigationForm.uiStatus.mets_scrollToThumb}';
+    		console.log('soll scrollen: ', shallScroll);
+    		if (thumb != null &amp;&amp; thumb.position() != null) {
+    			var thumbScroll = thumb.position().top;
+				$(document).scrollTop(thumbScroll - 22);
+    		//} else {
+    		//	$(document).scrollTop(0);
+    		}
 		}
 	}
 $( document ).ready(function() {

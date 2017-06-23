@@ -9,11 +9,13 @@
         <div>
             <h:commandLink id="thumbFirst" styleClass="btn font-size-s margin-sides-10" action="#{Metadaten.cmdMoveFirst}">
                 <i class="fa fa-double-angle-left"></i>
+<!--                 <x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
                 <f:ajax execute="@form" render="@form" />
             </h:commandLink>
             <h:commandLink id="thumbPrev" styleClass="btn btn-primary font-size-s" action="#{Metadaten.cmdMovePrevious}">
                 <i class="fa fa-angle-left"></i>
                 <f:ajax execute="@form" render="@form" />
+<!--                 <x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
                 <h:outputText value=" #{msgs.pagePrevious}" />
             </h:commandLink>
 
@@ -30,10 +32,12 @@
             <h:commandLink id="thumNext" styleClass="btn btn-primary font-size-s" action="#{Metadaten.cmdMoveNext}">
                 <h:outputText value="#{msgs.pageNext} " />
                 <i class="fa fa-angle-right"></i>
+<!--                 <x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
                 <f:ajax execute="@form" render="@form " />
             </h:commandLink>
             <h:commandLink id="thumbLast" styleClass="btn font-size-s margin-sides-10" action="#{Metadaten.cmdMoveLast}">
                 <i class="fa fa-double-angle-right"></i>
+<!--                 <x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
                 <f:ajax execute="@form" render="@form" />
             </h:commandLink>
 
