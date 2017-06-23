@@ -63,8 +63,7 @@
 									};									
 									    viewImage.init( configViewer )
 									    .then(function(osViewer) {
-									    	console.info( 'viewer opened' );
-									        //TODO: Hide loader?
+									    	//TODO: Hide loader?
 									       	if(configViewer.global.persistZoom || configViewer.global.persistRotation) {									       		
 											    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", viewImage.controls.persistence.storeLocation);
 											    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", viewImage.controls.persistence.storeLocation);
@@ -112,13 +111,13 @@
 <!--                                 <div class="thumb" id="#{image.imageName.replace('.tif','').replace('.jpg','')}"> -->
 									<div class="thumb" id="thumb_#{image.order}">
 <!-- 									onclick="selectClickedThumbnail(this)" -->
-										<h:commandLink id="thumbnailImage" title="#{image.tooltip}" action="#{Metadaten.checkSelectedThumbnail(image.order -1)}" >
+										<h:commandLink id="thumbnailImage" title="#{image.tooltip}" action="#{Metadaten.checkSelectedThumbnail(image.order -1)}" onclick="selectClickedThumbnail(this)">
 										<canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{image.tooltip}" id="thumbnail-#{status.index}"></canvas>
 										<x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
 										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
-<!-- 										<f:ajax render=":myform" execute="@form" /> -->
+										<f:ajax render=":myform :menu-form" execute="@form" />
 <!-- 										<f:ajax render="@form :myform"/> -->
-										<f:ajax render="@form :bigimage :myform"/>
+<!-- 										<f:ajax render="@form :bigimage :myform"/> -->
 									</h:commandLink>
 								</div>
 								<div class="goobi-thumbnail-caption">
@@ -139,18 +138,18 @@
                     <f:subview id="bottom">
 	                    <ui:include  src="thumbnavigation.xhtml" />
                         </f:subview>
-	                    <x:inputText id="hiddenImageNoThumb" style="display: none" value="#{Metadaten.imageIndex}" />
+<!-- 	                    <x:inputText id="hiddenImageNoThumb" style="display: none" value="#{Metadaten.imageIndex}" /> -->
 	                </div>
 	                
 	                <script type="text/javascript">
 					  	function scrollToThumbnail() {
 					  		var thumb = $("#thumb_#{Metadaten.image.order}");
+					  		var useScroll = document.getElementById('menu-form:scrollToThumb').value;
 					  		var shallScroll = '#{NavigationForm.uiStatus.mets_scrollToThumb}';
-					  		if (shallScroll == 'true'){
-						  		if (thumb != null &amp;&amp; thumb.position() != null) {
+					  		if (shallScroll == 'true' &amp;&amp; useScroll == "true"){
+					  			if (thumb != null &amp;&amp; thumb.position() != null) {
 						  			var thumbScroll = thumb.position().top;
-						  			console.log('scroll now to: ', thumbScroll);
-									$(document).scrollTop(thumbScroll - 22);
+						  			$(document).scrollTop(thumbScroll - 22);
 						  		} else {
 						  			$(document).scrollTop(0);
 						  		}
@@ -391,6 +390,7 @@
 			for (var i = 0; i &lt; galleryLinks.length; i++)
 				galleryLinks[i].className = "goobi-thumbnail font-light";
 			element.parentElement.parentElement.className = "goobi-thumbnail img-active";
+			document.getElementById('menu-form:scrollToThumb').value = "false";
 			return true;
 		}
 	
