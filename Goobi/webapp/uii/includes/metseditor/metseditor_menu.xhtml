@@ -89,7 +89,7 @@
                             <h:commandLink id="toggleImageView" action="#{Metadaten.toggleImageView}" title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
                                 <i class="fa fa-picture-o"></i>
                                 <i class="fa #{!Metadaten.treeProperties.showThumbnails?'fa-picture-o':''}"></i>
-<!--                                 <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
+                                <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                                 <x:updateActionListener value="#{Metadaten.treeProperties.showThumbnails?false:true}" property="#{Metadaten.treeProperties.showThumbnails}" />
                             </h:commandLink>
                         </li>
