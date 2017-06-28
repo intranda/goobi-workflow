@@ -37,6 +37,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -69,9 +70,14 @@ public class FilesystemHelper {
 
 	public static void createDirectory(String dirName) throws IOException, InterruptedException {
 		if (!Files.exists(Paths.get(dirName))) {
-			ShellScript createDirScript = new ShellScript(
-					Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
-			createDirScript.run(Arrays.asList(new String[] { dirName }));
+			if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()) {
+				File confFile = new File(dirName);
+				confFile.mkdirs();
+			} else {
+				ShellScript createDirScript = new ShellScript(
+				        Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
+				createDirScript.run(Arrays.asList(new String[] { dirName }));
+			}
 		}
 	}
 
@@ -94,9 +100,14 @@ public class FilesystemHelper {
 	public static void createDirectoryForUser(String dirName, String userName)
 			throws IOException, InterruptedException {
 		if (!Files.exists(Paths.get(dirName))) {
-			ShellScript createDirScript = new ShellScript(
+			if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
+				File confFile = new File(dirName);
+				confFile.mkdirs();
+			} else {
+				ShellScript createDirScript = new ShellScript(
 					Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
-			createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
+					createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
+			}
 		}
 	}
 

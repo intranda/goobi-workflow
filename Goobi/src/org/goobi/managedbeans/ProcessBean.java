@@ -124,6 +124,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.Paginator;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -363,6 +364,7 @@ public class ProcessBean extends BasicBean {
         } else {
             Helper.setFehlerMeldung("titleEmpty");
         }
+        paginator.load();
         return "";
     }
 

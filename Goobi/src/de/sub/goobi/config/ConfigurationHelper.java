@@ -326,11 +326,23 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirMeta() {
-        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
+//        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
+    	String s = getLocalString("script_createDirMeta", "");
+    	if (s.isEmpty()){
+    		return "";
+    	} else{
+    		return getScriptsFolder() + s;
+    	}
     }
 
     public String getScriptCreateDirUserHome() {
-        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
+//        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
+    	String s = getLocalString("script_createDirUserHome", "");
+    	if (s.isEmpty()){
+    		return "";
+    	} else{
+    		return getScriptsFolder() + s;
+    	}
     }
 
     public String getScriptDeleteSymLink() {

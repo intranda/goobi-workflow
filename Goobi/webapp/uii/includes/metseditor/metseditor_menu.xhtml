@@ -14,7 +14,6 @@
 										console.log(structdata);
 										if (structdata != null) {
 										    var pos = structdata.scrollTop();
-										    console.log(pos);
 										    document.getElementById('menu-form:scrollPositionStructData').value = pos;
 										}
 									}
@@ -27,17 +26,17 @@
 														$('#left').scrollTop(position);
 														
 														var structdata = $('#structdata');
-														
-														
 														if (structdata != null) {
 														    structdata.scrollTop(pos2);
 														}
+														
 													});
 								</script>
 
         <h:form id="menu-form">
             <h:inputHidden id="scrollPosition" value="#{NavigationForm.uiStatus.mets_scrollPosition}" />
-             <h:inputHidden id="scrollPositionStructData" value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
+            <h:inputHidden id="scrollPositionStructData" value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
+            <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
             
             <a href="index.xhtml" id="brand">&#160;</a>
 
@@ -90,6 +89,7 @@
                             <h:commandLink id="toggleImageView" action="#{Metadaten.toggleImageView}" title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
                                 <i class="fa fa-picture-o"></i>
                                 <i class="fa #{!Metadaten.treeProperties.showThumbnails?'fa-picture-o':''}"></i>
+                                <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                                 <x:updateActionListener value="#{Metadaten.treeProperties.showThumbnails?false:true}" property="#{Metadaten.treeProperties.showThumbnails}" />
                             </h:commandLink>
                         </li>
