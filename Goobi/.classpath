@@ -51,11 +51,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/oscache-2.3.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/pdfbox-1.7.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-3.6-20091214.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-contrib-3.6-20091214.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-ooxml-3.6-20091214.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-ooxml-schemas-3.6-20091214.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-scratchpad-3.6-20091214.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-all-1.6.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9-dom.jar"/>
@@ -152,6 +147,11 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.1.42-bin.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-validator-1.6.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fop-0.9.5.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-3.16.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-excelant-3.16.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-ooxml-3.16.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-ooxml-schemas-3.16.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-scratchpad-3.16.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
@@ -174,5 +174,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/cdi-api-1.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/primefaces-5.0.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
