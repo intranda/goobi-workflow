@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="info">
-		<p:poll interval="2" update="header" />
+		<p:poll interval="5" update="header" />
     </ui:define>
 
     <ui:define name="content">
@@ -38,8 +38,9 @@
 								</div>
 								
 								<h:form id="searchform">
-									<div class="btn-group pull-right margin-right-10 margin-top-10" data-toggle="tooltip" title="#{msgs.goobiScript_limitList}">
-							            <a class="btn dropdown-toggle" data-toggle="dropdown">
+								
+									<div class="btn-group font-size-s pull-right margin-right-10 margin-top-10" data-toggle="tooltip" title="#{msgs.goobiScript_limitList}">
+							            <a class="btn font-size-s dropdown-toggle" data-toggle="dropdown">
 							                <i class="fa fa-table margin-right-5" />
 							                <span class="caret"></span>
 							            </a>
@@ -72,11 +73,18 @@
 							            </ul>
 							
 							        </div>
+							        
+							        <!-- Reset button -->
+									<h:commandLink id="resettop" styleClass="btn font-size-s pull-right margin-right-10 margin-top-10" action="#{SessionForm.gsm.goobiScriptResultsReset}">
+										<i class="fa fa-trash margin-right-5"></i>
+										<h:outputText value="#{msgs.goobiScript_resetList}" />
+									</h:commandLink>
+							        
         						</h:form>
 
 								<!-- Datentabelle -->
 		                    	<h:form id="allGoobiScripts">
-		                    		<p:poll interval="2" update="gsr" />
+		                    		<p:poll interval="120" update="gsr" />
 									<x:dataTable id="gsr"
 										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 										var="item" value="#{SessionForm.gsm.shortGoobiScriptResults}">

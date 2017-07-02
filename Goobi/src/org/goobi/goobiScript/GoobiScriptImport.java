@@ -24,6 +24,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 	private static final Logger logger = Logger.getLogger(GoobiScriptImport.class);
 	private MassImportForm mi;
 	private Integer batchId = null;
+	private List<Record> records;
 	
 	@Override
 	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -61,6 +62,10 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 		return true;
 	}
 
+	public void setRecords(List<Record> records) {
+		this.records = records;
+	}
+	
 	@Override
 	public void execute() {
 		ImportThread et = new ImportThread();
@@ -89,11 +94,28 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 		            plugin.setImportFolder(tempfolder);
 		            
 		            List<Record> recordList = new ArrayList<Record>();
-		            Record r = new Record();
-		            r.setData(gsr.getProcessTitle());
-		            r.setId(gsr.getProcessTitle());
-                    r.setCollections(mi.getDigitalCollections());
-		            recordList.add(r);
+		            Record r = null;
+		            
+		            // there are records already to lets find the right one
+		            if (records!=null){
+		            	for (Record record : records) {
+							if (record.getId().equals(gsr.getProcessTitle())){
+								r = record;
+								break;
+							}
+						}
+		            }
+		            
+		            //Record not found so we create a new one here
+		            if (r==null){
+		            	r = new Record();
+		            	r.setData(gsr.getProcessTitle());
+		            	r.setId(gsr.getProcessTitle());
+		            	r.setCollections(mi.getDigitalCollections());
+		            }
+                    
+                    recordList.add(r);
+		            
 		            answer = plugin.generateFiles(recordList);
 		            
 		            for (ImportObject io : answer) {

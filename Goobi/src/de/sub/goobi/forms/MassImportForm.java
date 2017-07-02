@@ -239,6 +239,7 @@ public class MassImportForm {
                         for (Record r : recordList) {
                         	myIdentifiers += r.getId() + ",";
                         }
+                        igs.setRecords(plugin2.generateRecordsFromFile());
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {

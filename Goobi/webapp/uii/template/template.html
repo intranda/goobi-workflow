@@ -130,7 +130,7 @@
 	                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 	                                                    <div class="details">
 	                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-	                                                        <span>#{SessionForm.gsm.goobiScriptResults.size()}</span>
+	                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResults.size()}</span>
 	                                                    </div>
 	                                                </h:commandLink>
 	                                        </li>

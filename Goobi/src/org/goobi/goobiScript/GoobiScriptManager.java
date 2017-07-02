@@ -25,7 +25,7 @@ public class GoobiScriptManager {
 	@Getter
 	private List<GoobiScriptResult> goobiScriptResults = new ArrayList<>();
 	@Getter @Setter
-	private int showMax = 1000;
+	private int showMax = 100;
 	
 	@Getter	@Setter
 	private String sort = "";
@@ -36,7 +36,7 @@ public class GoobiScriptManager {
 	public void goobiScriptResultsReset() {
 		goobiScriptResults = new ArrayList<>();
 		sort = "";
-		showMax = 1000;
+		showMax = 100;
 	}
 
 	/**
@@ -48,6 +48,25 @@ public class GoobiScriptManager {
 		} else {
 			return goobiScriptResults.subList(0, showMax);
 		}
+	}
+	
+
+	/**
+	 * Check if there are currently GoobiScripts in the list with a specific
+	 * status
+	 * 
+	 * @param status
+	 *            one of the {@link GoobiScriptResultType} values
+	 * @return boolean if elements with this status exist
+	 */
+	public int getNumberOfFinishedScripts() {
+		int count = 0;
+		for (GoobiScriptResult gsr : goobiScriptResults) {
+			if (gsr.getResultType() != GoobiScriptResultType.WAITING) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	/**
