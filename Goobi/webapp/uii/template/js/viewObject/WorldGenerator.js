@@ -66,11 +66,13 @@ var WorldGenerator = (function() {
 			this.config = config;
 			this.time = 0;
 			this.container = document.getElementById(config.container.id);
+			console.log("container width = " + this.container.clientWidth);
+			console.log("container height = " + this.container.clientHeight);
 			this.scene = new THREE.Scene();
 			// CAMERA//
 			this.camera = new THREE.PerspectiveCamera(
 					config.camera.fieldOfView,
-					container.clientWidth / container.clientHeight,
+					this.container.clientWidth / this.container.clientHeight,
 					config.camera.nearPlane,
 					config.camera.farPlane);
 			this.camera.position.set(config.camera.position.x, config.camera.position.y, config.camera.position.z)
@@ -221,6 +223,9 @@ var WorldGenerator = (function() {
 			this.zoomToPosition(object.position, 2*r+padding, fieldOfView);
 		}
 		zoomToPosition(position, size, fieldOfView) {
+			console.log("zoom to ", position);
+			console.log("object size = ", size);
+			console.log("field of view = ", fieldOfView);
 			this.camera.position.set(position.x, position.y, position.z);
 			var d = size/(2*Math.sin(Math.PI / 180 * fieldOfView/2));
 			this.camera.position.add(new THREE.Vector3(0,0,d));

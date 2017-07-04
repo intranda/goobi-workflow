@@ -85,6 +85,7 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
@@ -4179,29 +4180,39 @@ public class Metadaten {
     }
 
     private void createImage(Image currentImage, boolean createImageLevels) {
-    	String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
-        currentImage.setThumbnailUrl(thumbUrl);
-        currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
-        currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
-
-        if (createImageLevels && !currentImage.hasImageLevels()) {
-            if (currentImage.getSize() == null) {
-                currentImage.setSize(getActualImageSize(currentImage));
-            }
-            String contextPath = getContextPath();
-            HelperForm hf = (HelperForm) Helper.getManagedBeanValue("#{HelperForm}");
-            contextPath = hf.getServletPathWithHostAsUrl();
-            for (String sizeString : imageSizes) {
-                try {
-                    int size = Integer.parseInt(sizeString);
-                    String imageUrl = createImageUrl(currentImage, size, MAINIMAGE_FORMAT, contextPath);
-                    currentImage.addImageLevel(imageUrl, size);
-                } catch (NullPointerException | NumberFormatException e) {
-                    logger.error("Cannot build image with size " + sizeString);
+        String contextPath = getContextPath();
+        HelperForm hf = (HelperForm) Helper.getManagedBeanValue("#{HelperForm}");
+        contextPath = hf.getServletPathWithHostAsUrl();
+        if(currentImage.getType().equals(Type.image)) {
+            
+            String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
+            currentImage.setThumbnailUrl(thumbUrl);
+            currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
+            currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
+            
+            if (createImageLevels && !currentImage.hasImageLevels()) {
+                if (currentImage.getSize() == null) {
+                    currentImage.setSize(getActualImageSize(currentImage));
                 }
+                for (String sizeString : imageSizes) {
+                    try {
+                        int size = Integer.parseInt(sizeString);
+                        String imageUrl = createImageUrl(currentImage, size, MAINIMAGE_FORMAT, contextPath);
+                        currentImage.addImageLevel(imageUrl, size);
+                    } catch (NullPointerException | NumberFormatException e) {
+                        logger.error("Cannot build image with size " + sizeString);
+                    }
+                }
+                Collections.sort(currentImage.getImageLevels());
             }
-            Collections.sort(currentImage.getImageLevels());
+            
+        } else if(currentImage.getType().equals(Type.object)) {
+            String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName();
+            currentImage.setObjectUrl(url);
+        } else {
+            Helper.setFehlerMeldung("No representation for file " + currentImage.getImageName());
         }
+        
     }
 
     private String getContextPath() {

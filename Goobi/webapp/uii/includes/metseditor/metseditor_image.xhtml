@@ -60,19 +60,98 @@
 									        mimeType: "image/jpeg",
  									        tileSource : [#{Metadaten.image.imageLevels}],
 									    }
-									};									
-									    viewImage.init( configViewer )
-									    .then(function(osViewer) {
-									    	//TODO: Hide loader?
-									       	if(configViewer.global.persistZoom || configViewer.global.persistRotation) {									       		
-											    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", viewImage.controls.persistence.storeLocation);
-											    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", viewImage.controls.persistence.storeLocation);
-									       	}
-									    })
-									    .catch(function(error){
-									        console.error( 'Error opening image', error );
-									        $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
-									    });
+									};		
+									
+									 var worldConfig = {
+									    		camera: {
+									    			fieldOfView: 35,
+									    			viewPadding: 0,
+									    			nearPlane: 0.1,
+									    			farPlane: 10000,
+									    			position:  { x:0, y:0, z: 0 },
+									    		},
+									    		container: {
+									    			id: "mainImage"
+									    		},
+									    		light: {
+									    			background: {
+									    				color: 0x3399ff
+									    			},
+									    			ambient: {
+									    				color: 0x909090,
+									    				intensity: 0.8
+									    			},
+									    			directional: {
+									    				color: 0xaaaaaa,
+									    				intensity: 1,
+									    				position: { x:100, y:100, z:100 },
+									    				castShadow: true
+									    			}
+									    		}
+										 };
+									
+									 	var mediaType = "#{Metadaten.image.type}";
+									 	if(mediaType == "image") {
+									 		
+										    viewImage.init( configViewer )
+										    .then(function(osViewer) {
+										    	//TODO: Hide loader?
+										       	if(configViewer.global.persistZoom || configViewer.global.persistRotation) {									       		
+												    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", viewImage.controls.persistence.storeLocation);
+												    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", viewImage.controls.persistence.storeLocation);
+										       	}
+										    })
+										    .catch(function(error){
+										        console.error( 'Error opening image', error );
+										        $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
+										    });
+									    
+									 	} else if(mediaType == "object") {
+									 		
+									 		var world = WorldGenerator.create(worldConfig);
+									 		world.loadObject({
+									 	 		 url: "#{Metadaten.image.objectUrl}",
+									 			 position: { x:0, y:0, z:0 },
+									 			 rotation:  { x:0, y:0, z:0 },
+									 			 size:  10,
+									 			 material: {
+									 					color: 0x44bb33
+									 				},
+									 			focus: true,
+									 			onTick: function(object, time) {
+									 				if(object) {
+//									 	 				object.rotation.set(0,  Math.PI/180 * time, Math.PI/180 * time* 0.5);
+									 				}
+									 			}
+									 		 }).then(function(object) {
+									 			 console.log("loaded ", object);
+									 			 var box = new THREE.Box3().setFromObject( object );
+												console.log("object size = " + world.getBoundingSphere(object).radius);
+// 									 			 world.addPlane({
+// 									 					offset: { x:0, y:box.min.y, z:0 },
+// 									 					rotation: {x:-90, y:0, z:0},
+// 									 					size: 10000,
+// 									 					material: {
+// 									 						color: 0xaa5577,
+// 									 						opacity: 1
+// 									 					}
+// 									 			 })
+// 									 	 		world.addSphere({
+// 									 	 			position: { x:0, y:0, z:0 },
+// 									 	 			size: world.getBoundingSphere(object).radius*2,
+// 									 	 			material: {
+// 									 	 				color: 0xff55ff,
+// 									 	 				opacity: 0.6
+// 									 	 			}
+// 									 	 	 	});
+									 	 		console.log("render");
+									 		 	world.render();
+									 		 }).catch(function(error) {
+									 			 console.err("failed to load: ", error);
+									 		 })
+									 		
+									 	}
+									 
 									    
                                     </script>
                                 </h:panelGroup>

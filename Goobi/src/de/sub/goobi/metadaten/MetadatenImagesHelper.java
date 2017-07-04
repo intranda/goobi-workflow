@@ -48,6 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -210,8 +211,9 @@ public class MetadatenImagesHelper {
             DocStruct currentPage = pagesWithoutFiles.get(i);
             currentPage.setImageName(folder.toString() + FileSystems.getDefault().getSeparator() + currentFile);
             if (logger.isDebugEnabled()) {
-                logger.debug("set image " + currentFile + " to docstruct "
-                        + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+                logger.debug(
+                        "set image " + currentFile + " to docstruct " + currentPage.getAllMetadataByType(
+                                myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
             }
         }
     }
@@ -516,13 +518,12 @@ public class MetadatenImagesHelper {
                 logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
                 Dimension outputResolution = new Dimension(144, 144);
                 logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-                Dimension dim =
-                        new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
-                                / inputResolution.height);
+                Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
+                        / inputResolution.height);
                 logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
                 RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
                 logger.trace("ri");
-                 pi = new JpegInterpreter(ri);
+                pi = new JpegInterpreter(ri);
                 logger.trace("pi");
                 pi.setXResolution(outputResolution.width);
                 logger.trace("xres = " + pi.getXResolution());
@@ -543,9 +544,8 @@ public class MetadatenImagesHelper {
                 }
             }
         } else {
-            String cs =
-                    ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
-                            + "&format=jpg";
+            String cs = ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
+                    + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);
@@ -746,7 +746,22 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> imageDateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> objectDateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.objectNameFilter);
+
+        //Only import image file if no corresponding object file is present
+        List<String> dateien = new ArrayList<>(objectDateien);
+        for (String filename : imageDateien) {
+            boolean exists = false;
+            for (String existingName : dateien) {
+                if(FilenameUtils.getBaseName(filename).equals(FilenameUtils.getBaseName(existingName))) {
+                    exists = true;
+                }
+            }
+            if(!exists) {
+                dateien.add(filename);
+            }
+        }
 
         List<String> orderedFilenameList = new ArrayList<String>();
         if (dateien != null && !dateien.isEmpty()) {

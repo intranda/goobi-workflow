@@ -221,6 +221,24 @@ public class NIOFileUtils {
             return fileOk;
         }
     };
+    
+    public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
+        @Override
+        public boolean accept(Path path) {
+            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+            String name = path.getFileName().toString();
+            boolean fileOk = false;
+            if (name.matches(prefix + "\\.[Oo][bB][jJ]?")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
+                fileOk = true;
+            }
+            return fileOk;
+        }
+    };
+
 
     public static final DirectoryStream.Filter<Path> folderFilter = new DirectoryStream.Filter<Path>() {
         @Override
