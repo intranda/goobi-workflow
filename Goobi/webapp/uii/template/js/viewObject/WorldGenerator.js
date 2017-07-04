@@ -38,8 +38,10 @@ var WorldGenerator = (function() {
 			return new THREE.OBJMTLLoader(manager);
 		case "ply":
 			return new THREE.PLYMeshLoader(manager, config.material.color);
+		case "stl":
+			return new THREE.STLMeshLoader(manager, config.material.color);
 		default:
-			console.err("not loader defined for " + suffix);
+			console.log("not loader defined for " + suffix);
 		}
 	}
 	
@@ -97,12 +99,21 @@ var WorldGenerator = (function() {
 				this.scene.add(light);
 			}
 			if(config.light.directional) {
-				var light = this.createShadowedLight(
-						config.light.directional.position,
-						config.light.directional.color,
-						config.light.directional.intensity,
-						_getDistance(config.light.directional.position));
-				this.scene.add(light);
+				var lights = config.light.directional
+				if(!$.isArray(lights)) {
+					lights = [lights];
+				}
+				for(var i=0; i < lights.length; i++) {		
+					var lightConfig = lights[i];
+					var light = this.createShadowedLight(
+							lightConfig.position,
+							lightConfig.color,
+							lightConfig.intensity,
+							_getDistance(lightConfig.position),
+							lightConfig.castShadow,
+							lightConfig.showHelper);
+					this.scene.add(light);
+				}			
 			}
 			
 			this.tick = new Rx.Subject();
@@ -230,11 +241,11 @@ var WorldGenerator = (function() {
 			var d = size/(2*Math.sin(Math.PI / 180 * fieldOfView/2));
 			this.camera.position.add(new THREE.Vector3(0,0,d));
 		}
-		createShadowedLight( position, color, intensity, d) {
+		createShadowedLight( position, color, intensity, d, castShadow, showHelper) {
 			var directionalLight = new THREE.DirectionalLight( color, intensity );
 			directionalLight.position.set( position.x, position.y, position.z );
 			this.scene.add( directionalLight );
-			directionalLight.castShadow = true;
+			directionalLight.castShadow = castShadow;
 			directionalLight.shadow.camera.left = -d;
 			directionalLight.shadow.camera.right = d;
 			directionalLight.shadow.camera.top = d;
@@ -244,6 +255,12 @@ var WorldGenerator = (function() {
 			directionalLight.shadow.mapSize.width = 1024;
 			directionalLight.shadow.mapSize.height = 1024;
 			directionalLight.shadow.bias = -0.005;
+			
+			if(showHelper) {				
+				var helper = new THREE.DirectionalLightHelper( directionalLight, d/10 );
+				this.scene.add( helper );
+			}
+			
 			return directionalLight;
 		}
 		render() {
