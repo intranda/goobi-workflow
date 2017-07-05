@@ -86,7 +86,7 @@ var WorldGenerator = (function() {
 			this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 			this.container.appendChild(this.renderer.domElement);
 			// CONTROLS//
-			this.controls = new THREE.OrbitControls( this.camera );
+			this.controls = new THREE.OrbitControls( this.camera, this.container );
 			// LOADING MANAGER//
 			this.loadingManager = new THREE.LoadingManager();
 			this.loadingManager.onProgress = function(item, loaded, total) {
