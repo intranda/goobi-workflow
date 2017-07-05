@@ -16,7 +16,7 @@ var WorldGenerator = (function() {
     		},
     		light: {
     			background: {
-    				color: 0x3399ff
+    				color: 0xffffff
     			},
     			ambient: {
     				color: 0x909090,
@@ -40,6 +40,8 @@ var WorldGenerator = (function() {
 			return new THREE.PLYMeshLoader(manager, config.material.color);
 		case "stl":
 			return new THREE.STLMeshLoader(manager, config.material.color);
+		case "fbx":
+			return new THREE.FBXLoader(manager, config.material.color);
 		default:
 			console.log("not loader defined for " + suffix);
 		}
@@ -68,8 +70,6 @@ var WorldGenerator = (function() {
 			this.config = config;
 			this.time = 0;
 			this.container = document.getElementById(config.container.id);
-			console.log("container width = " + this.container.clientWidth);
-			console.log("container height = " + this.container.clientHeight);
 			this.scene = new THREE.Scene();
 			// CAMERA//
 			this.camera = new THREE.PerspectiveCamera(
@@ -125,7 +125,6 @@ var WorldGenerator = (function() {
 		 * from point 0
 		 */
 		addSphere(config) {
-			console.log("Creating sphere ", config);
 			var sphereGeometry = new THREE.SphereGeometry(config.size/2, 64,64);
 			var sphereMaterial = new THREE.MeshLambertMaterial({
 				color: config.material.color,
@@ -144,6 +143,29 @@ var WorldGenerator = (function() {
 				})
 			}
 			this.scene.add(sphere);
+		}
+		addBlock(config) {
+			var geometry = new THREE.BoxGeometry(
+					config.box.max.x-config.box.min.x, 
+					config.box.max.y-config.box.min.y, 
+					config.box.max.z-config.box.min.z);
+			var material = new THREE.MeshLambertMaterial({
+				color: config.material.color,
+				transparent: config.material.opacity ? true : false,
+				opacity: config.material.opacity
+			});
+			var box = new THREE.Mesh(geometry, material);
+
+			this.center(box, config.position);
+			if(config.focus) {							
+				this.zoomToObject(box, this.config.camera.viewPadding, this.config.camera.fieldOfView);
+			}
+			if(config.onTick) {
+				this.tick.subscribe(function(time) {
+					config.onTick(box, time);
+				})
+			}
+			this.scene.add(box);
 		}
 		addPlane(config) {
 			var geometry = new THREE.PlaneGeometry(config.size, config.size);
@@ -178,7 +200,6 @@ var WorldGenerator = (function() {
 			return deferred.promise;
 		}
 		addObject(object, config) {
-			console.log("object = ", object);
 			
 			this.setSize(object, config.size);
 			this.center(object, config.position);
@@ -199,12 +220,8 @@ var WorldGenerator = (function() {
 			object.rotation.set(rotation.x * Math.PI / 180, rotation.y * Math.PI / 180, rotation.z * Math.PI / 180);
 		}
 		center(object, position) {
-			var box = new THREE.Box3().setFromObject( object );
-			var offset = {
-					x:(box.max.x + box.min.x)/2,
-					y:(box.max.y + box.min.y)/2,
-					z:(box.max.z + box.min.z)/2
-			}
+			var sphere = this.getBoundingSphere(object);
+			var offset = sphere.center;
 			object.position.set(position.x-offset.x, position.y-offset.y, position.z-offset.z);
 		}
 		setSize(object, size) {
@@ -230,16 +247,13 @@ var WorldGenerator = (function() {
 			}
 		}
 		zoomToObject(object, padding, fieldOfView) {
-			var r = this.getBoundingSphere(object).radius;
-			this.zoomToPosition(object.position, 2*r+padding, fieldOfView);
+			var sphere = this.getBoundingSphere(object);
+			this.zoomToPosition(sphere.center, 2*sphere.radius+padding, fieldOfView);
 		}
 		zoomToPosition(position, size, fieldOfView) {
-			console.log("zoom to ", position);
-			console.log("object size = ", size);
-			console.log("field of view = ", fieldOfView);
-			this.camera.position.set(position.x, position.y, position.z);
 			var d = size/(2*Math.sin(Math.PI / 180 * fieldOfView/2));
-			this.camera.position.add(new THREE.Vector3(0,0,d));
+			this.camera.position.set(position.x, position.y, position.z+d);
+//			this.camera.lookAt(position);
 		}
 		createShadowedLight( position, color, intensity, d, castShadow, showHelper) {
 			var directionalLight = new THREE.DirectionalLight( color, intensity );

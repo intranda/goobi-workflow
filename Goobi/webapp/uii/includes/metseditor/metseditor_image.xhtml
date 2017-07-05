@@ -75,17 +75,38 @@
 									    		},
 									    		light: {
 									    			background: {
-									    				color: 0x3399ff
+									    				color: 0xffffff
 									    			},
 									    			ambient: {
 									    				color: 0x909090,
 									    				intensity: 0.8
 									    			},
 									    			directional: [
-									    				{
+									    				{//front camery
 										    				color: 0xaaaaaa,
 										    				intensity: 1,
-										    				position: { x:10, y:10, z:10 },
+										    				position: { x:0, y:0, z:10 },
+										    				castShadow: true,
+										    				showHelper: false
+										    			},
+										    			{//back camera
+										    				color: 0xaaaaaa,
+										    				intensity: 1,
+										    				position: { x:0, y:0, z:-10 },
+										    				castShadow: true,
+										    				showHelper: false
+										    			},
+										    			{//top camera
+										    				color: 0xaaaaaa,
+										    				intensity: 1,
+										    				position: { x:0, y:10, z:0 },
+										    				castShadow: true,
+										    				showHelper: false
+										    			},
+										    			{//bottom camera
+										    				color: 0xaaaaaa,
+										    				intensity: 1,
+										    				position: { x:0, y:-10, z:0 },
 										    				castShadow: true,
 										    				showHelper: false
 										    			}
@@ -123,28 +144,38 @@
 									 			focus: true,
 									 			onTick: function(object, time) {
 									 				if(object) {
-//									 	 				object.rotation.set(0,  Math.PI/180 * time, Math.PI/180 * time* 0.5);
+// 									 	 				object.rotation.set(0,  Math.PI/180 * time, 0);
 									 				}
 									 			}
 									 		 }).then(function(object) {
 									 			 console.log("loaded ", object);
-									 			 var box = new THREE.Box3().setFromObject( object );
-												console.log("object size = " + world.getBoundingSphere(object).radius);
+// 									 			 var box = new THREE.Box3().setFromObject( object );
+// 									 			 var sphere = world.getBoundingSphere(object);
 // 									 			 world.addPlane({
-// 									 					offset: { x:0, y:box.min.y, z:0 },
-// 									 					rotation: {x:-90, y:0, z:0},
+// 									 					offset: { x:0, y:0, z:-(box.max.z-box.min.z)*0.5},
+// 									 					rotation: {x:0, y:0, z:0},
 // 									 					size: 10000,
 // 									 					material: {
 // 									 						color: 0xaa5577,
 // 									 						opacity: 1
 // 									 					}
 // 									 			 })
-// 									 	 		world.addSphere({
-// 									 	 			position: { x:0, y:0, z:0 },
-// 									 	 			size: world.getBoundingSphere(object).radius*2,
+// 												world.addBlock({
+// 									 	 			position: world.getBoundingSphere(object).center,
+// 									 	 			box: box,
 // 									 	 			material: {
 // 									 	 				color: 0xff55ff,
 // 									 	 				opacity: 0.6
+// 									 	 			}
+// 									 	 	 	});
+// 												var sphere = world.getBoundingSphere(object);
+// 												console.log("adding sphere ", sphere);
+// 									 	 		world.addSphere({
+// 									 	 			position: sphere.center,
+// 									 	 			size: sphere.radius*2,
+// 									 	 			material: {
+// 									 	 				color: 0x111111,
+// 									 	 				opacity: 0.2
 // 									 	 			}
 // 									 	 	 	});
 									 	 		console.log("render");
