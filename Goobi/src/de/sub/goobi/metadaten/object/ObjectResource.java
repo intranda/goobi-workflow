@@ -90,6 +90,23 @@ public class ObjectResource {
             return new ObjectStreamingOutput(objectPath);
         }
     }
+    
+    @GET
+    @Path("/{processId}/{foldername}/{subfolder}/{filename}")
+    @Produces({ MediaType.APPLICATION_OCTET_STREAM })
+    public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
+            @PathParam("foldername") String foldername ,@PathParam("subfolder") String subfolder, @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+
+//        response.addHeader("Access-Control-Allow-Origin", "*");
+        
+        Process process = ProcessManager.getProcessById(processId);
+        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
+        if(!objectPath.toFile().isFile()) {
+            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+        } else {
+            return new ObjectStreamingOutput(objectPath);
+        }
+    }
 
     
     public static class ObjectStreamingOutput implements StreamingOutput {
