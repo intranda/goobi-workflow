@@ -236,6 +236,8 @@ public class NIOFileUtils {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
                 fileOk = true;
+            } else if (name.matches(prefix + "\\.3[dD][sS]")) {
+                fileOk = true;
             }
             return fileOk;
         }

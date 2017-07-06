@@ -74,7 +74,7 @@ public @Data class Image {
 
     public enum Type {
         image("jpg", "tif", "png", "jp2"),
-        object("obj", "stl", "ply", "fbx"),
+        object("obj", "stl", "ply", "fbx", "3ds"),
         unknown("");
 
         private final List<String> extensions;

@@ -42,6 +42,8 @@ var WorldGenerator = (function() {
 			return new THREE.STLMeshLoader(manager, config.material.color);
 		case "fbx":
 			return new THREE.FBXLoader(manager, config.material.color);
+		case "3ds":
+			return new THREE.TDSMeshLoader(manager);
 		default:
 			console.log("not loader defined for " + suffix);
 		}
