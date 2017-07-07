@@ -20,35 +20,46 @@ THREE.TDSMeshLoader.prototype = {
 
 	load : function(url, onLoad, onProgress, onError) {
 		
-		var baseResourceUrl = url.substring(0, url.lastIndexOf("/"));
-		var filename = "/jabiru/Jabiru_160C_paint.png";
-
+		var geometryLoader = new THREE.TDSLoader(this.manager);
 		var textureLoader = new THREE.TextureLoader();
 		
-		var geometryLoader = new THREE.TDSLoader(this.manager);
-		var color = this.color;
-		geometryLoader.load(url, function(object) {
-			console.log("LOADING 3DS OBJECT");
-			var texture = textureLoader.load( baseResourceUrl + filename );
-			//geometry.computeVertexNormals();
-			
-			if(object instanceof THREE.Mesh) {
-				console.log("object is already a mesh");
-			}
-			
-			object.traverse( function ( child ) {
+		Q($.getJSON(url))
+		.then(function(info) {
+			console.log("loading object info = ", info);
+			var objUrl = info.uri;
+			var textureUrls = info.resources.filter(function(resource) {
+				return resource.match(/je?pg|png$/i);
+			});
 
-				if ( child instanceof THREE.Mesh ) {
-					console.log("Found mesh inside object");
-					child.material.map = texture;
+		
+			geometryLoader.load(objUrl, function(object) {
+				console.log("LOADING 3DS OBJECT", object);
+				// geometry.computeVertexNormals();
+				
+				if(object instanceof THREE.Mesh) {
+					console.log("object is already a mesh");
 				}
 
-			} );
-			
-			object.castShadow = true;
-			object.receiveShadow = true;
-			onLoad(object);
-		}, onProgress, onError);
+				var textures = textureUrls
+				.map(function(url) {
+					return textureLoader.load( url );
+				})
+				console.log("loaded textures ", textures);
+				
+				object.traverse( function ( child ) {
+	
+					if ( child instanceof THREE.Mesh ) {
+						var texture = textures.shift();
+						child.material.map = texture;
+					}
+	
+				} );
+				
+				object.castShadow = true;
+				object.receiveShadow = true;
+				onLoad(object);
+			}, onProgress, onError);
 
+		});
 	}
 }

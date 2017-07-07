@@ -25,7 +25,8 @@ import org.apache.commons.io.FilenameUtils;
 public enum ObjectFormat {
     PLY,
     OBJ,
-    STL;
+    STL,
+    TDS;
 
     /**
      * @param substring
@@ -39,6 +40,8 @@ public enum ObjectFormat {
                 return OBJ;
             case "stl":
                 return STL;
+            case "3ds":
+                return TDS;
             default:
                 return null;
         }

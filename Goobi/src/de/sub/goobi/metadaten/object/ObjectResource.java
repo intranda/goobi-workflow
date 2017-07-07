@@ -20,8 +20,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +41,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.ws.WebServiceException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.goobi.beans.Process;
 import org.slf4j.Logger;
@@ -51,40 +58,97 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 @Path("/view/object")
 public class ObjectResource {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ObjectResource.class);
 
     @GET
     @Path("/{processId}/{foldername}/{filename}/info.json")
     @Produces({ MediaType.APPLICATION_JSON })
-    public ObjectInfo getInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") String processId,
+    public ObjectInfo getInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
             @PathParam("foldername") String foldername, @PathParam("filename") String filename) {
-        
+
         response.addHeader("Access-Control-Allow-Origin", "*");
 
         String objectURI = request.getRequestURL().toString().replace("/info.json", "");
-                
+        String baseURI = objectURI.replace(filename, "");
+        String baseFilename = FilenameUtils.getBaseName(filename);
+        Process process = ProcessManager.getProcessById(processId);
+
+
         try {
+            List<URI> resourceURIs = getResources(Paths.get(process.getImagesDirectory(), foldername).toString(), baseFilename, baseURI);
             ObjectInfo info = new ObjectInfo(objectURI);
+            info.setResources(resourceURIs);
             return info;
-        } catch (URISyntaxException e) {
-           throw new WebServiceException(e);
+        } catch (IOException | InterruptedException | SwapException | DAOException | URISyntaxException e) {
+            throw new WebServiceException(e);
+        }
+
+    }
+
+    /**
+     * @param foldername
+     * @param baseFilename
+     * @param baseURI
+     * @param process
+     * @return 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
+     * @throws URISyntaxException
+     */
+    private List<URI> getResources(String baseFolder, String baseFilename, String baseURI) throws IOException, InterruptedException,
+            SwapException, DAOException, URISyntaxException {
+        List<URI> resourceURIs = new ArrayList<>();
+
+        java.nio.file.Path mtlFilePath = Paths.get(baseFolder, baseFilename + ".mtl");
+        if(mtlFilePath.toFile().isFile()) {
+            resourceURIs.add(new URI(baseURI + Paths.get(baseFolder).relativize(mtlFilePath)));
         }
         
-        
+        java.nio.file.Path resourceFolderPath = Paths.get(baseFolder, baseFilename);
+        if (resourceFolderPath.toFile().isDirectory()) {
+            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) {
+                for (java.nio.file.Path path : directoryStream) {
+                    resourceURIs.add(new URI(baseURI + resourceFolderPath.getParent().relativize(path)));
+                }
+            }
+        }
+        Collections.sort(resourceURIs);
+        return resourceURIs;
     }
-    
+
     @GET
     @Path("/{processId}/{foldername}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
-    public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+    public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") String filename)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
-//        response.addHeader("Access-Control-Allow-Origin", "*");
-        
+        //        response.addHeader("Access-Control-Allow-Origin", "*");
+
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
-        if(!objectPath.toFile().isFile()) {
+        if (!objectPath.toFile().isFile()) {
+            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+        } else {
+            return new ObjectStreamingOutput(objectPath);
+        }
+    }
+
+    @GET
+    @Path("/{processId}/{foldername}/{subfolder}/{filename}")
+    @Produces({ MediaType.APPLICATION_OCTET_STREAM })
+    public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder") String subfolder,
+            @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+
+        //        response.addHeader("Access-Control-Allow-Origin", "*");
+
+        Process process = ProcessManager.getProcessById(processId);
+        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
+        if (!objectPath.toFile().isFile()) {
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
             return new ObjectStreamingOutput(objectPath);
@@ -92,23 +156,23 @@ public class ObjectResource {
     }
     
     @GET
-    @Path("/{processId}/{foldername}/{subfolder}/{filename}")
+    @Path("/{processId}/{foldername}/{subfolder1}/{subfolder2}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
-    public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername ,@PathParam("subfolder") String subfolder, @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+    public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1, @PathParam("subfolder2") String subfolder2,
+            @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
 
-//        response.addHeader("Access-Control-Allow-Origin", "*");
-        
+        //        response.addHeader("Access-Control-Allow-Origin", "*");
+
         Process process = ProcessManager.getProcessById(processId);
-        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
-        if(!objectPath.toFile().isFile()) {
+        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename);
+        if (!objectPath.toFile().isFile()) {
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
             return new ObjectStreamingOutput(objectPath);
         }
     }
 
-    
     public static class ObjectStreamingOutput implements StreamingOutput {
 
         private java.nio.file.Path filePath;
@@ -124,8 +188,8 @@ public class ObjectResource {
                     StreamUtils.copy(inputStream, output);
                     return;
                 }
-//            } catch (LostConnectionException e) {
-//                logger.trace("aborted writing 3d object from  " + this.filePath);
+                //            } catch (LostConnectionException e) {
+                //                logger.trace("aborted writing 3d object from  " + this.filePath);
             } catch (Throwable e) {
                 throw new WebApplicationException(e);
             }

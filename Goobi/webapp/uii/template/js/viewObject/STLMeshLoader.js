@@ -22,17 +22,23 @@ THREE.STLMeshLoader.prototype = {
 
 		var loader = new THREE.STLLoader(this.manager);
 		var color = this.color;
-		loader.load(url, function(geometry) {
-			geometry.computeVertexNormals();
-			var material = new THREE.MeshStandardMaterial({
-				color : color,
-				shading : THREE.FlatShading
-			});
-			var mesh = new THREE.Mesh(geometry, material);
-			mesh.castShadow = true;
-			mesh.receiveShadow = true;
-			onLoad(mesh);
-		}, onProgress, onError);
 
+		Q($.getJSON(url)).then(function(info) {
+			console.log("loading object info = ", info);
+			var baseResourceUrl = info.uri.substring(0, info.uri.lastIndexOf("/"));
+			var objUrl = info.uri;
+		
+			loader.load(url, function(geometry) {
+				geometry.computeVertexNormals();
+				var material = new THREE.MeshStandardMaterial({
+					color : color,
+					shading : THREE.FlatShading
+				});
+				var mesh = new THREE.Mesh(geometry, material);
+				mesh.castShadow = true;
+				mesh.receiveShadow = true;
+				onLoad(mesh);
+			}, onProgress, onError);
+		});
 	}
 }

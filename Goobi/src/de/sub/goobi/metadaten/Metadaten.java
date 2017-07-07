@@ -4207,7 +4207,7 @@ public class Metadaten {
             }
             
         } else if(currentImage.getType().equals(Type.object)) {
-            String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName();
+            String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName() + "/info.json";
             currentImage.setObjectUrl(url);
         } else {
             Helper.setFehlerMeldung("No representation for file " + currentImage.getImageName());

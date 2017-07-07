@@ -32,7 +32,10 @@ var WorldGenerator = (function() {
     };
 	
 	var _getObjectLoader = function(config, manager) {
-		var suffix = config.url.substring(config.url.lastIndexOf(".")+1);
+		
+		var objectInfoUrl = config.url;
+		var objectMainUrl = config.url.replace("/info.json", "");
+		var suffix = objectMainUrl.substring(objectMainUrl.lastIndexOf(".")+1);
 		switch(suffix.toLowerCase()) {
 		case "obj":
 			return new THREE.OBJMTLLoader(manager);
@@ -41,7 +44,7 @@ var WorldGenerator = (function() {
 		case "stl":
 			return new THREE.STLMeshLoader(manager, config.material.color);
 		case "fbx":
-			return new THREE.FBXLoader(manager, config.material.color);
+			return new THREE.FBXMeshLoader(manager, config.material.color);
 		case "3ds":
 			return new THREE.TDSMeshLoader(manager);
 		default:
@@ -233,7 +236,8 @@ var WorldGenerator = (function() {
 		}
 		getBoundingSphere(object) {
 			var sphere;
-			if(object.geometry) {				
+			if(object.geometry && object.geometry.computeBoundingSphere) {
+				console.log("geometry = ", object.geometry);
 				if(!object.geometry.boundingSphere) {				
 					object.geometry.computeBoundingSphere();
 				}

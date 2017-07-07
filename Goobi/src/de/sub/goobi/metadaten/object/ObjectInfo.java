@@ -18,6 +18,7 @@ package de.sub.goobi.metadaten.object;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 
 /**
@@ -29,9 +30,9 @@ public class ObjectInfo {
     
     private ObjectFormat format;
     private URI uri;
+    private List<URI> resources;    
     private Point3D center = new Point3D(0, 0, 0);
     private Point3D rotation = new Point3D(0, 0, 0);
-    private double distance = 0;
     
     public ObjectInfo(URI uri) {
         this.uri = uri;
@@ -98,7 +99,13 @@ public class ObjectInfo {
         this.rotation = rotation;
     }
     
+    public List<URI> getResources() {
+        return resources;
+    }
     
+    public void setResources(List<URI> resources) {
+        this.resources = resources;
+    }
     
 
 }

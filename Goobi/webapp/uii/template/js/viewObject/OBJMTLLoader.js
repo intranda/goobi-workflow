@@ -20,19 +20,24 @@ THREE.OBJMTLLoader.prototype = {
 
 	load : function(url, onLoad, onProgress, onError) {
 
-		var objUrl = url;
-		var mtlUrl = url.replace(".obj", ".mtl");
-		var baseResourceUrl = url.substring(0, url.lastIndexOf("/"));
-		var textureLoader = new THREE.MTLLoader(this.manager);
-		var objectLoader = new THREE.OBJLoader(this.manager);
+		Q($.getJSON(url)).then(function(info) {
+			console.log("loading object info = ", info);
+			var baseResourceUrl = info.uri.substring(0, info.uri.lastIndexOf("/"));
+			var objUrl = info.uri;
+			var mtlUrl = info.resources.filter(function(resource) {
+				return resource.endsWith(".mtl");
+			}).shift();
+			var textureLoader = new THREE.MTLLoader(this.manager);
+			var objectLoader = new THREE.OBJLoader(this.manager);
 
-		textureLoader.setTexturePath(baseResourceUrl);
+			textureLoader.setTexturePath(baseResourceUrl);
 
-		var texture = textureLoader.load(mtlUrl, function(materials) {
-			materials.preload();
-			objectLoader.setMaterials(materials);
-			objectLoader.load(objUrl, onLoad, onProgress, onError);
+			var texture = textureLoader.load(mtlUrl, function(materials) {
+				materials.preload();
+				objectLoader.setMaterials(materials);
+				objectLoader.load(objUrl, onLoad, onProgress, onError);
 
-		}, onProgress, onError);
+			}, onProgress, onError);
+		});
 	}
 }
