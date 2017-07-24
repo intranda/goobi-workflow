@@ -646,9 +646,7 @@ public class ConfigurationHelper implements Serializable {
      return getLocalBoolean("ProcessLogShowSecondField", false);
         
     }
-
     
-
     public boolean isShowThirdLogField() {
      return getLocalBoolean("ProcessLogShowThirdField", false);
         
@@ -656,6 +654,10 @@ public class ConfigurationHelper implements Serializable {
     
     public boolean isUseH2DB() {
         return getLocalBoolean("useH2DB", false);
+    }
+    
+    public List<String> getExcludeMonitoringAgentNames(){
+        return getLocalList("excludeMonitoringAgentName");
     }
     
 }

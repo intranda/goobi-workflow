@@ -44,6 +44,7 @@ import javax.servlet.http.HttpSession;
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
@@ -66,8 +67,6 @@ public class SessionForm {
     private String bitteAusloggen = "";
     @Getter
     private GoobiScriptManager gsm = new GoobiScriptManager();
-    
-    private static final String MONITORING_CHECK = "nagios-plugins";
 
     public int getAktiveSessions() {
         if (this.alleSessions == null) {
@@ -116,8 +115,11 @@ public class SessionForm {
             if (mybrowser == null) {
                 mybrowser = "-";
             }
-            if (mybrowser.contains(MONITORING_CHECK)) {
-                return;
+            List<String> monitoringChecks = ConfigurationHelper.getInstance().getExcludeMonitoringAgentNames();
+            for (String agent : monitoringChecks) {
+                if (mybrowser.contains(agent)) {
+                    return;
+                }
             }
             map.put("browser", mybrowser);
             if (mybrowser.indexOf("Gecko") > 0) {
@@ -265,5 +267,5 @@ public class SessionForm {
     public void setDateFormatter(SimpleDateFormat dateFormatter) {
         this.dateFormatter = dateFormatter;
     }
-    
+
 }
