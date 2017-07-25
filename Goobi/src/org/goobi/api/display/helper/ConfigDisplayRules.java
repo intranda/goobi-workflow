@@ -100,7 +100,7 @@ public final class ConfigDisplayRules {
 
                     List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
                     List<Item> listOfItems = new ArrayList<>();
-                    if (items != null) {
+                    if (items != null && !items.isEmpty()) {
                         for (HierarchicalConfiguration item : items) {
                             Item myItem = new Item(item.getString("label"), item.getString("value"), item.getBoolean("@selected"));
                             listOfItems.add(myItem);
