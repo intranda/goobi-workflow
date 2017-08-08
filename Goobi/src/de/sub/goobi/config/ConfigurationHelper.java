@@ -346,11 +346,23 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptDeleteSymLink() {
-        return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
+        //  return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
+    	String s = getLocalString("script_deleteSymLink", "");
+    	if (s.isEmpty()){
+    		return "";
+    	} else{
+    		return getScriptsFolder() + s;
+    	}
     }
 
     public String getScriptCreateSymLink() {
-        return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
+    	// return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
+        String s = getLocalString("script_createSymLink", "");
+    	if (s.isEmpty()){
+    		return "";
+    	} else{
+    		return getScriptsFolder() + s;
+    	}
     }
 
     public boolean isMassImportAllowed() {

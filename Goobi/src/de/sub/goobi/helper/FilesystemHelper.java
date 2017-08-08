@@ -113,19 +113,21 @@ public class FilesystemHelper {
 
 	public static void deleteSymLink(String symLink) {
 		String command = ConfigurationHelper.getInstance().getScriptDeleteSymLink();
-		ShellScript deleteSymLinkScript;
-		try {
-			deleteSymLinkScript = new ShellScript(Paths.get(command));
-			deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
-		} catch (FileNotFoundException e) {
-			logger.error("FileNotFoundException in deleteSymLink()", e);
-			Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
-		} catch (IOException e) {
-			logger.error("IOException in deleteSymLink()", e);
-			Helper.setFehlerMeldung("Aborted deleteSymLink(), error", e.getMessage());
-		} catch (InterruptedException e) {
-			logger.error("InterruptedException in deleteSymLink()", e);
-			Helper.setFehlerMeldung("Command '" + command + "' is interrupted in deleteSymLink()!");
+		if (!command.isEmpty()){
+			ShellScript deleteSymLinkScript;
+			try {
+				deleteSymLinkScript = new ShellScript(Paths.get(command));
+				deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
+			} catch (FileNotFoundException e) {
+				logger.error("FileNotFoundException in deleteSymLink()", e);
+				Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
+			} catch (IOException e) {
+				logger.error("IOException in deleteSymLink()", e);
+				Helper.setFehlerMeldung("Aborted deleteSymLink(), error", e.getMessage());
+			} catch (InterruptedException e) {
+				logger.error("InterruptedException in deleteSymLink()", e);
+				Helper.setFehlerMeldung("Command '" + command + "' is interrupted in deleteSymLink()!");
+			}
 		}
 	}
 

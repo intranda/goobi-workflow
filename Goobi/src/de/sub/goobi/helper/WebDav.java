@@ -204,21 +204,23 @@ public class WebDav implements Serializable {
 		}
 
 		String command = ConfigurationHelper.getInstance().getScriptCreateSymLink()+ " "; 
-		command += imagePfad + " " + benutzerHome + " ";
-		if (inNurLesen) {
-			command += ConfigurationHelper.getInstance().getUserForImageReading();
-		} else {
-			command += aktuellerBenutzer.getLogin();
-		}
-		try {
-            	ShellScript.legacyCallShell2(command, myProzess.getId());
-            } catch (java.io.IOException ioe) {
-			logger.error("IOException DownloadToHome()", ioe);
-			Helper.setFehlerMeldung("Download aborted, IOException", ioe.getMessage());
-		} catch (InterruptedException e) {
-			logger.error("InterruptedException DownloadToHome()", e);
-			Helper.setFehlerMeldung("Download aborted, InterruptedException", e.getMessage());
-			logger.error(e);
+		if (!command.isEmpty()){
+			command += imagePfad + " " + benutzerHome + " ";
+			if (inNurLesen) {
+				command += ConfigurationHelper.getInstance().getUserForImageReading();
+			} else {
+				command += aktuellerBenutzer.getLogin();
+			}
+			try {
+	            	ShellScript.legacyCallShell2(command, myProzess.getId());
+	            } catch (java.io.IOException ioe) {
+				logger.error("IOException DownloadToHome()", ioe);
+				Helper.setFehlerMeldung("Download aborted, IOException", ioe.getMessage());
+			} catch (InterruptedException e) {
+				logger.error("InterruptedException DownloadToHome()", e);
+				Helper.setFehlerMeldung("Download aborted, InterruptedException", e.getMessage());
+				logger.error(e);
+			}
 		}
 	}
 
