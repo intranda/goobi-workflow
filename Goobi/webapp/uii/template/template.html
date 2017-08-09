@@ -224,8 +224,19 @@
         }
     });
 
-
-
+	$(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
+		var myButton = $("a[id$=':navnext']")
+    	if (myButton!=null) {
+    		myButton.click();
+    	} 
+    });
+    
+    $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {            	
+    	var myButton = $("a[id$=':navprev']")
+    	if (myButton!=null) {
+    		myButton.click();
+    	} 
+    });
 
 </script>
 </html>
