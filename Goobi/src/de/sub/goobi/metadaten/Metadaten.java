@@ -2538,6 +2538,7 @@ public class Metadaten {
         this.ajaxSeiteEnde = this.pagesEndCurrentElement;
 
         AjaxSeitenStartUndEndeSetzen();
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     public String getPagesEndCurrentElement() {
@@ -2630,6 +2631,7 @@ public class Metadaten {
             }
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return null;
     }
 
@@ -2742,6 +2744,7 @@ public class Metadaten {
             }
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.alleSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -2758,6 +2761,7 @@ public class Metadaten {
             this.myDocStruct.removeReferenceTo(this.structSeitenNeu[aktuelleID].getMd().getDocStruct());
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.structSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";

@@ -479,7 +479,7 @@
                                         <div class="pull-right margin-top-10">
                                             <h:commandLink id="setPages2" action="#{Metadaten.setPages}" styleClass="btn btn-lightgrey font-size-s" onclick="setScrollPosition();">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
-                                                <f:ajax render="pageallocation" />
+                                                <f:ajax render="pageallocation :treeform" />
                                             </h:commandLink>
                                         </div>
 
@@ -499,11 +499,11 @@
                                             <div class="col-sm-2" style="margin-top: 100px;">
                                                 <h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}" styleClass="btn margin-top-5 block" title="#{msgs.mets_addTheseImages}">
                                                     <i class="fa fa-arrow-right" />
-                                                    <f:ajax execute="@form" render="@form" />
+                                                    <f:ajax execute="@form" render="@form :treeform" />
                                                 </h:commandLink>
                                                 <h:commandLink id="s2" action="#{Metadaten.SeitenWeg}" styleClass="btn margin-top-5 block" title="#{msgs.mets_removeTheseImages}">
                                                     <i class="fa fa-arrow-left" />
-                                                    <f:ajax execute="@form" render="@form" />
+                                                    <f:ajax execute="@form" render="@form :treeform" />
                                                 </h:commandLink>
                                             </div>
                                             <div class="col-sm-5">
