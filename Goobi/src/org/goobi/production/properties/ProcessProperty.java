@@ -362,10 +362,12 @@ public class ProcessProperty implements IProperty, Serializable {
 	}
 
 	public List<String> getValueList() {
-		String[] values = this.value.split("; ");
 		List<String> answer = new ArrayList<String>();
-		for (String val : values) {
-			answer.add(val);
+		if (this.value != null && this.value.contains("; ")){
+			String[] values = this.value.split("; ");
+			for (String val : values) {
+				answer.add(val);
+			}
 		}
 		return answer;
 	}
