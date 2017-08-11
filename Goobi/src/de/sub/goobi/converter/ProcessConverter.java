@@ -32,44 +32,41 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-
-import org.apache.log4j.Logger;
+import javax.faces.convert.FacesConverter;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 
-
+@Log4j
+@FacesConverter("ProcessConverter")
 public class ProcessConverter implements Converter {
-   public static final String CONVERTER_ID = "ProcessConverter";
-   private static final Logger logger = Logger.getLogger(ProcessConverter.class);
-   
-   @Override
-public Object getAsObject(FacesContext context, UIComponent component, String value)
-         throws ConverterException {
-      if (value == null) {
-         return null;
-      } else {
-         try {
-				return ProcessManager.getProcessById(new Integer(value));
-			} catch (NumberFormatException e) {
-				logger.error(e);
-				return "0";
-			}
-      }
-   }
 
-   @Override
-public String getAsString(FacesContext context, UIComponent component, Object value)
-         throws ConverterException {
-      if (value == null) {
-         return null;
-      } else if (value instanceof Process) {
-         return String.valueOf(((Process) value).getId().intValue());
-      } else if (value instanceof String) {
-         return (String) value;
-      } else {
-         throw new ConverterException("Falscher Typ: " + value.getClass() + " muss 'Prozess' sein!");
-      }
-   }
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            return null;
+        } else {
+            try {
+                return ProcessManager.getProcessById(new Integer(value));
+            } catch (NumberFormatException e) {
+                log.error(e);
+                return "0";
+            }
+        }
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null) {
+            return null;
+        } else if (value instanceof Process) {
+            return String.valueOf(((Process) value).getId().intValue());
+        } else if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new ConverterException("Falscher Typ: " + value.getClass() + " muss 'Prozess' sein!");
+        }
+    }
 
 }
