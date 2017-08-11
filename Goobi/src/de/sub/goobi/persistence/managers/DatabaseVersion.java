@@ -183,7 +183,6 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            runner.update(connection, "alter table batchproperties change column IstObligatorisch IstObligatorisch tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table benutzer change column IstAktiv IstAktiv tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table benutzer change column mitMassendownload mitMassendownload tinyint(1) DEFAULT '0'");
             
