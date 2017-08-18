@@ -1695,7 +1695,8 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    public int getGoobiScriptCountSelection() {
+    @SuppressWarnings("unchecked")
+	public int getGoobiScriptCountSelection() {
         List<Integer> idList = new ArrayList<>();
         for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {

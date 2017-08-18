@@ -363,7 +363,8 @@ public class DatabaseVersion {
         try {
             logger.info("Convert old wikifield to new process log. This might run a while.");
             String sql = "SELECT ProzesseID, wikifield from prozesse where wikifield !=''";
-            List<Object> rawData = ProcessManager.runSQL(sql);
+            @SuppressWarnings("unchecked")
+			List<Object> rawData = ProcessManager.runSQL(sql);
             if (rawData != null && !rawData.isEmpty()) {
                 String header = "INSERT INTO processlog (processID, creationDate, userName, type , content) VALUES ";
                 StringBuilder sb = new StringBuilder();

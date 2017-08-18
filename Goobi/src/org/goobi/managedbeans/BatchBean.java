@@ -92,7 +92,8 @@ public class BatchBean extends BasicBean {
         this.currentProcesses = currentProcesses;
     }
 
-    public void loadBatchData() {
+    @SuppressWarnings("unlikely-arg-type")
+	public void loadBatchData() {
         this.currentBatches = new ArrayList<Batch>();
         this.selectedBatches = new ArrayList<String>();
         for (Process p : this.selectedProcesses) {

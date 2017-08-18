@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.ImportReturnValue;
@@ -21,7 +20,6 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
-	private static final Logger logger = Logger.getLogger(GoobiScriptImport.class);
 	private MassImportForm mi;
 	private Integer batchId = null;
 	private List<Record> records;

@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
+@SuppressWarnings("deprecation")
 public class JettyServer {
 
     private Server server;
