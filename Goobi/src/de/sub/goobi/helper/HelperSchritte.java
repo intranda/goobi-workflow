@@ -78,10 +78,10 @@ public class HelperSchritte {
     private static final Logger logger = Logger.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
-	private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
-	private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-    
-	/**
+    private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+    private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
+
+    /**
      * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
      */
 
@@ -110,7 +110,7 @@ public class HelperSchritte {
             StepManager.saveStep(currentStep);
             Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
         } catch (DAOException e) {
-        	logger.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
+            logger.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
         }
 
         if (currentStep.isUpdateMetadataIndex()) {
@@ -129,7 +129,7 @@ public class HelperSchritte {
                 MetadataManager.updateMetadata(processId, pairs);
 
             } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
-            	logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
+                logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
             }
         }
 
@@ -137,7 +137,7 @@ public class HelperSchritte {
         List<Step> stepsToFinish = new ArrayList<Step>();
         HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
                 .getValue(), processId);
-        
+
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
         List<Step> allehoeherenSchritte = new ArrayList<Step>();
@@ -150,7 +150,7 @@ public class HelperSchritte {
                 allehoeherenSchritte.add(so);
             }
         }
-        
+
         /* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
         if (offeneSchritteGleicherReihenfolge == 0) {
             int reihenfolge = 0;
@@ -181,7 +181,7 @@ public class HelperSchritte {
                         StepManager.saveStep(myStep);
                         Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
                     } catch (DAOException e) {
-                    	logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                        logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
                     }
                     matched = true;
 
@@ -202,7 +202,7 @@ public class HelperSchritte {
             }
 
         } catch (Exception e) {
-        	logger.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
+            logger.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
         }
 
         updateProcessStatus(processId);
@@ -215,9 +215,10 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel() + "' started to work automatically.");
+                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
+                        + "' started to work automatically.");
             } catch (DAOException e) {
-            	logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
+                logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
             // save 
             if (logger.isDebugEnabled()) {
@@ -309,14 +310,21 @@ public class HelperSchritte {
             }
             dd = ff.getDigitalDocument();
         } catch (Exception e2) {
-        	logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
+            logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
 
         script = replacer.replace(script);
         int rueckgabe = -1;
         try {
-            logger.info("Calling the shell: " + script  + " for process with ID " + step.getProcessId());
+            logger.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
+
+            StringBuilder message = new StringBuilder();
+            message.append("Calling the shell: ");
+            message.append(script);
+
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message.toString());
+
             rueckgabe = ShellScript.legacyCallShell2(script, step.getProcessId());
             if (automatic) {
                 if (rueckgabe == 0) {
@@ -341,14 +349,17 @@ public class HelperSchritte {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
-                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe);
-                        logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId() + ". Return code: " + rueckgabe);
+                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
+                                + "' did not finish successfully. Return code: " + rueckgabe);
+                        logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
+                                + ". Return code: " + rueckgabe);
                     }
                 }
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Exception while executing a script for '" + step.getTitel() + "': " + e
+                    .getMessage());
             logger.error("Exception occurered while running a script for process with ID " + step.getProcessId(), e);
         }
         return rueckgabe;
@@ -362,12 +373,12 @@ public class HelperSchritte {
             } catch (Exception e) {
                 logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-//                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+                //                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
             }
         }
         if (dms == null) {
-        	dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-//            dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+            dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+            //            dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
         }
         if (!ConfigurationHelper.getInstance().isAutomaticExportWithOcr()) {
             dms.setExportFulltext(false);
@@ -376,16 +387,19 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
-            	Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
+                Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
+                        + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
-            	Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId() + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
+                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
                 | ExportFileException e) {
             logger.error("Exception occurered while trying to export process with ID " + step.getProcessId(), e);
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "An exception occurred during the export for process with ID " + step
+                    .getProcessId() + ": " + e.getMessage());
             errorStep(step);
             return;
         }
@@ -413,32 +427,33 @@ public class HelperSchritte {
             logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
         }
     }
-    
-    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException, IOException {
-	    SAXBuilder builder = new SAXBuilder();
-	    Document doc = builder.build(metadataFile.toString());
-	    Element root = doc.getRootElement();
-	    try {
-	        Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
-	                .getChild("extension", mods).getChild("goobi", goobiNamespace);
-	        List<Element> metadataList = goobi.getChildren();
-	        metadataPairs = getMetadata(metadataList, metadataPairs);
-	        for (Element el : root.getChildren("dmdSec", mets)) {
-	            if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
-	                Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
-	                        "goobi", goobiNamespace);
-	                List<Element> physList = phys.getChildren();
-	                metadataPairs = getMetadata(physList, metadataPairs);
-	            }
-	        }
-	
-	    } catch (Exception e) {
-	        logger.error("Cannot extract metadata from " + metadataFile.toString());
-	    }
-	    return metadataPairs;
-	}
-	
-	private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
+
+    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,
+            IOException {
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(metadataFile.toString());
+        Element root = doc.getRootElement();
+        try {
+            Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
+                    .getChild("extension", mods).getChild("goobi", goobiNamespace);
+            List<Element> metadataList = goobi.getChildren();
+            metadataPairs = getMetadata(metadataList, metadataPairs);
+            for (Element el : root.getChildren("dmdSec", mets)) {
+                if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
+                    Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
+                            "goobi", goobiNamespace);
+                    List<Element> physList = phys.getChildren();
+                    metadataPairs = getMetadata(physList, metadataPairs);
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Cannot extract metadata from " + metadataFile.toString());
+        }
+        return metadataPairs;
+    }
+
+    private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
             String metadataValue = "";
@@ -454,9 +469,9 @@ public class HelperSchritte {
 
                 if (metadataPairs.containsKey(metadataType)) {
                     List<String> oldValue = metadataPairs.get(metadataType);
-                    if (!oldValue.contains(metadataValue)){
-                    	oldValue.add(metadataValue);
-                    	metadataPairs.put(metadataType, oldValue);
+                    if (!oldValue.contains(metadataValue)) {
+                        oldValue.add(metadataValue);
+                        metadataPairs.put(metadataType, oldValue);
                     }
                 } else {
                     List<String> list = new ArrayList<>();
