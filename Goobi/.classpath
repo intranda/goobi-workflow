@@ -55,7 +55,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9-dom.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/simplemets-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/truezip-6.6.jar"/>
