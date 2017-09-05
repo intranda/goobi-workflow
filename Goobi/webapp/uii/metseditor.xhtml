@@ -578,10 +578,10 @@
 
                                 <div class="col-sm-8">
                                     <!-- search button? -->
-                                    <x:inputText value="#{Metadaten.currentPlugin.searchValue}" styleClass="form-control input" id="danteInput" />
+                                    <x:inputText value="#{Metadaten.gndSearchValue}" styleClass="form-control input" id="danteInput" />
                                 </div>
                                 <div class="col-sm-4">
-                                    <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 " action="#{Metadaten.currentPlugin.search}" title="#{msgs.search}">
+                                    <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 " action="#{Metadaten.search}" title="#{msgs.search}">
                                         <i class="fa fa-search margin-right-5"></i>
                                         <h:outputText value="#{msgs.search}" />
                                         <f:ajax execute="@form" render="resultList" />

@@ -35,7 +35,9 @@ public enum DisplayType {
     geonames("7", "geonames", "GeonamesPlugin"),
     danteLicence("8", "danteLicence", "DanteLicencePlugin"),
     danteIconclass("9", "danteIconclass", "DanteIconclassPlugin"),
-    danteLanguage("10", "danteLanguage", "DanteLanguagePlugin");
+    danteLanguage("10", "danteLanguage", "DanteLanguagePlugin"),
+    danteColor("11", "danteColor", "DanteColorPlugin")
+    ;
 
     private String id;
     private String title;
