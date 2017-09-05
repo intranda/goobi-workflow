@@ -2026,8 +2026,6 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
- 
-
     public int getNumberOfNavigation() {
         return numberOfNavigation;
     }
@@ -2040,8 +2038,6 @@ public class Metadaten {
         BildErmitteln(numberOfNavigation);
         return "";
     }
-  
-
 
     public String BildGeheZu() {
         int eingabe;
@@ -2054,8 +2050,6 @@ public class Metadaten {
 
         return "";
     }
-
-
 
     public List<String> getAllTifFolders() {
         return this.allTifFolders;
@@ -2081,8 +2075,8 @@ public class Metadaten {
         }
         if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
-        	if (!this.allTifFolders.contains(this.currentTifFolder)) {
-        		this.currentTifFolder = allTifFolders.get(0);
+            if (!this.allTifFolders.contains(this.currentTifFolder)) {
+                this.currentTifFolder = allTifFolders.get(0);
             }
         }
     }
@@ -2094,7 +2088,7 @@ public class Metadaten {
         if (!this.bildAnzeigen) {
             return;
         }
-       
+
         // try {
         if (dataList == null || dataList.isEmpty() || tiffFolderHasChanged) {
             tiffFolderHasChanged = false;
@@ -2130,7 +2124,6 @@ public class Metadaten {
                 }
             }
         }
-
 
         if (dataList != null && dataList.size() > 0) {
             this.myBildLetztes = dataList.size();
@@ -2209,7 +2202,7 @@ public class Metadaten {
             this.myBildNummer = -1;
         }
     }
-    
+
     private boolean SperrungAktualisieren() {
         /*
          * wenn die Sperrung noch aktiv ist und auch für den aktuellen Nutzer gilt, Sperrung aktualisieren
@@ -2776,7 +2769,7 @@ public class Metadaten {
 
     private String getOcrFileNameForImage() {
         String ocrFile = "";
-            ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+        ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
         return ocrFile;
     }
 
@@ -2802,9 +2795,9 @@ public class Metadaten {
         String ocrResult = "";
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             String myOcrUrl = "";
-          
-                myOcrUrl = getOcrBasisUrl(image.getOrder());
-            
+
+            myOcrUrl = getOcrBasisUrl(image.getOrder());
+
             CloseableHttpClient client = null;
             HttpGet method = new HttpGet(myOcrUrl);
             InputStream stream = null;
@@ -2838,7 +2831,7 @@ public class Metadaten {
             }
         } else {
             String ocrFile = "";
-                ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+            ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
             logger.trace("myPicture: " + ocrFile);
             ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
         }
@@ -3476,9 +3469,9 @@ public class Metadaten {
 
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-    
-            loadCurrentImages(false);
-        
+
+        loadCurrentImages(false);
+
     }
 
     private void setPhysicalOrder(List<DocStruct> pages) {
@@ -3533,9 +3526,9 @@ public class Metadaten {
         setPhysicalOrder(allPages);
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-     
-            loadCurrentImages(false);
-        
+
+        loadCurrentImages(false);
+
     }
 
     public void deleteSeltectedPages() {
@@ -3604,9 +3597,9 @@ public class Metadaten {
 
             BildErsteSeiteAnzeigen();
         } else {
-        
-                setImageIndex(myBildNummer - 1);
-            
+
+            setImageIndex(myBildNummer - 1);
+
         }
     }
 
@@ -4183,7 +4176,7 @@ public class Metadaten {
     }
 
     private void createImage(Image currentImage, boolean createImageLevels) {
-    	String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
+        String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
         currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));

@@ -32,8 +32,10 @@ public enum DisplayType {
     readonly("4", "readonly", "ReadOnlyPlugin"),
     gnd("5", "gnd", "GndInputPlugin"),
     person("6", "person", "PersonPlugin"),
-    geonames("7", "geonames", "GeonamesPlugin")
-    ;
+    geonames("7", "geonames", "GeonamesPlugin"),
+    danteLicence("8", "danteLicence", "DanteLicencePlugin"),
+    danteIconclass("9", "danteIconclass", "DanteIconclassPlugin"),
+    danteLanguage("10", "danteLanguage", "DanteLanguagePlugin");
 
     private String id;
     private String title;

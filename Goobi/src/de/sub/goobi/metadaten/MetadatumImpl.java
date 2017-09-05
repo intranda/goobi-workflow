@@ -169,6 +169,10 @@ public class MetadatumImpl implements Metadatum {
      *****************************************************/
 
     public String getOutputType() {
+        String type = this.myValues.getDisplayType().getTitle();
+        if (type.toLowerCase().startsWith("dante")) {
+            return "dante";
+        }
         return this.myValues.getDisplayType().getTitle();
     }
 

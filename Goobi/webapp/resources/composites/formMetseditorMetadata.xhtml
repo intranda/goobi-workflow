@@ -26,7 +26,7 @@
                 </x:inputTextarea>
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'}">
+                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
 
@@ -92,6 +92,14 @@
                         <i class="fa fa-search" style="margin-left: 3px" />
                     </a>
                 </h:panelGroup>
+                
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#danteIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                    data-datatype="#{cc.attrs.datatype}" data-target="#danteSearchBox">
+                        <i class="fa fa-search" style="margin-left: 3px" />
+                    </a>
+                </h:panelGroup>
+                
             </div>
         </div>
 
