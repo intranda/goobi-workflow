@@ -45,8 +45,8 @@
                 <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
                 <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
-                <!-- ++++++++++++++++++ Authority data ++++++++++++++++++ -->
-                <h:panelGroup rendered="#{cc.attrs.metadata.normdata}">
+                <!-- ++++++++++++++++++ Authority data - no dante ++++++++++++++++++ -->
+                <h:panelGroup rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
                     <div class="row" style="margin-top: 5px;">
                         <div class="col-sm-6">
                             <h:selectOneMenu id="normDatabase" value="#{cc.attrs.metadata.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
@@ -56,6 +56,17 @@
                         </div>
                         <div class="col-sm-6">
                             <h:inputText id="normdataValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                                <f:ajax execute="@form" event="valueChange" />
+                            </h:inputText>
+                        </div>
+                    </div>
+                </h:panelGroup>
+                
+                <!-- ++++++++++++++++++ Authority data - dante ++++++++++++++++++ -->
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                    <div class="row" style="margin-top: 5px;">
+                        <div class="col-sm-12">
+                            <h:inputText id="danteValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>

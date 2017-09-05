@@ -36,7 +36,8 @@ public enum DisplayType {
     danteLicence("8", "danteLicence", "DanteLicencePlugin"),
     danteIconclass("9", "danteIconclass", "DanteIconclassPlugin"),
     danteLanguage("10", "danteLanguage", "DanteLanguagePlugin"),
-    danteColor("11", "danteColor", "DanteColorPlugin")
+    danteColor("11", "danteColor", "DanteColorPlugin"),
+    danteGender("12", "danteGender", "DanteGenderPlugin")
     ;
 
     private String id;
