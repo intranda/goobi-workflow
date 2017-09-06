@@ -259,6 +259,7 @@ public class Metadaten {
     private String gndSearchValue;
     private String geonamesSearchValue;
     private String searchOption;
+    private String danteSearchValue;
 
     private IMetadataPlugin currentPlugin;
 
@@ -3303,7 +3304,10 @@ public class Metadaten {
 
     public String search() {
         if (currentPlugin != null) {
-            if (StringUtils.isNotBlank(gndSearchValue)) {
+
+            if (currentPlugin.getTitle().toLowerCase().startsWith("dante")) {
+                currentPlugin.setSearchValue(danteSearchValue);
+            } else if (StringUtils.isNotBlank(gndSearchValue)) {
                 currentPlugin.setSearchOption(searchOption);
                 currentPlugin.setSearchValue(gndSearchValue);
             } else {
@@ -3312,6 +3316,7 @@ public class Metadaten {
             currentPlugin.search();
             gndSearchValue = "";
             geonamesSearchValue = "";
+            danteSearchValue = "";
         }
         return "";
     }
@@ -4563,5 +4568,13 @@ public class Metadaten {
 
     public void setCurrentPlugin(IMetadataPlugin currentPlugin) {
         this.currentPlugin = currentPlugin;
+    }
+
+    public String getDanteSearchValue() {
+        return danteSearchValue;
+    }
+
+    public void setDanteSearchValue(String danteSearchValue) {
+        this.danteSearchValue = danteSearchValue;
     }
 }
