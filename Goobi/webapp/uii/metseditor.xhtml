@@ -556,7 +556,7 @@
 
             <!-- dante search modal -->
             <div class="modal fade" id="danteSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" style="width:700px" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
@@ -599,8 +599,7 @@
                                 </script>
                             </div>
 
-
-                            <h:panelGroup layout="block" id="resultList" class="row pre-scrollable">
+                            <h:panelGroup layout="block" id="resultList" class="row pre-scrollable" style="max-height:550px;">
                                 <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">
                                     <hr />
                                     <div class="row" style="margin: 20px;">
