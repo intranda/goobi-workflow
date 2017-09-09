@@ -267,7 +267,8 @@
 
                                     <h:commandLink id="runPlugin" rendered="#{item.stepPlugin != '' and item.stepPlugin != null}" action="#{ProzessverwaltungForm.startPlugin}">
                                         <span class="btn fa fa-puzzle-piece margin-right-5" />
-                                        <x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
+                                        <x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{true}" />
+                                    	<x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
                                     </h:commandLink>
                                 </h:column>
 
