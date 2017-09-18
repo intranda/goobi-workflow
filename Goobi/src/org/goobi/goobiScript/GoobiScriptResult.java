@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.goobi.production.enums.GoobiScriptResultType;
 
+import de.sub.goobi.helper.Helper;
 import lombok.Data;
 
 @Data
@@ -31,4 +32,8 @@ public class GoobiScriptResult {
 		timestamp = new Date();
 	}
 
+	public String getFormattedTimestamp() {
+	    return Helper.getDateAsFormattedString(timestamp);
+	}
+	
 }
