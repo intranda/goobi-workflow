@@ -46,7 +46,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 logger.debug("Database version is up to date.");
             }
         } else {
-            logger.warn("Database version is to old, updating schema from version " + currentVersion + " to current version "
+            logger.warn("Database version is too old, updating schema from version " + currentVersion + " to current version "
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
