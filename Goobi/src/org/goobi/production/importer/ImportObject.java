@@ -30,16 +30,20 @@ package org.goobi.production.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Batch;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.enums.ImportReturnValue;
 
+import lombok.Data;
+
+@Data
 public class ImportObject {
 
     // must end with ".xml" in current implementation
     private String processTitle = "";
-    private Integer batchId;
+    private Batch batch;
 
     private String metsFilename = "";
 
@@ -54,80 +58,6 @@ public class ImportObject {
     private List<Masterpieceproperty> workProperties = new ArrayList<Masterpieceproperty>();
     private List<Templateproperty> templateProperties = new ArrayList<Templateproperty>();
 
-    public ImportObject() {
-
-    }
-
-    public String getProcessTitle() {
-        return this.processTitle;
-    }
-
-    public void setProcessTitle(String processTitle) {
-        this.processTitle = processTitle;
-    }
-
-    public String getMetsFilename() {
-        return this.metsFilename;
-    }
-
-    public void setMetsFilename(String metsFilename) {
-        this.metsFilename = metsFilename;
-    }
-
-    public ImportReturnValue getImportReturnValue() {
-        return this.importReturnValue;
-    }
-
-    public void setImportReturnValue(ImportReturnValue importReturnValue) {
-        this.importReturnValue = importReturnValue;
-    }
-
-    public String getErrorMessage() {
-        return this.errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public List<Processproperty> getProcessProperties() {
-        return this.processProperties;
-    }
-
-    public void setProcessProperties(List<Processproperty> processProperties) {
-        this.processProperties = processProperties;
-    }
-
-    public List<Masterpieceproperty> getWorkProperties() {
-        return this.workProperties;
-    }
-
-    public void setWorkProperties(List<Masterpieceproperty> workProperties) {
-        this.workProperties = workProperties;
-    }
-
-    public List<Templateproperty> getTemplateProperties() {
-        return this.templateProperties;
-    }
-
-    public void setTemplateProperties(List<Templateproperty> templateProperties) {
-        this.templateProperties = templateProperties;
-    }
-
-    public Integer getBatchId() {
-        return batchId;
-    }
-
-    public void setBatchId(Integer batchId) {
-        this.batchId = batchId;
-    }
-
-    public String getImportFileName() {
-        return importFileName;
-    }
-
-    public void setImportFileName(String importFileName) {
-        this.importFileName = importFileName;
-    }
+    
 
 }

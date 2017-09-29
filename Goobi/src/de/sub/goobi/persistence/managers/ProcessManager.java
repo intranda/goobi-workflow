@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -86,7 +88,7 @@ public class ProcessManager implements IManager, Serializable {
 
         return p;
     }
-    
+
     public static Process getProcessByTitle(String inTitle) {
         Process p = null;
         try {
@@ -118,7 +120,6 @@ public class ProcessManager implements IManager, Serializable {
 
     public static void saveProcess(Process o) throws DAOException {
         ProcessMysqlHelper.saveProcess(o, false);
-
     }
 
     public static void saveProcessInformation(Process o) {
@@ -147,35 +148,9 @@ public class ProcessManager implements IManager, Serializable {
         return answer;
     }
 
-    public static void updateBatchList(List<Process> processList) {
-        try {
-            ProcessMysqlHelper.updateBatchList(processList);
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-    }
-
-    public static void insertBatchProcessList(List<Process> processList) {
-        try {
-            ProcessMysqlHelper.insertBatchProcessList(processList);
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-    }
-
     public static int countProcessTitle(String title) {
         try {
             return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'");
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-        return 0;
-    }
-
-    public static int getMaxBatchNumber() {
-
-        try {
-            return ProcessMysqlHelper.getMaxBatchNumber();
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -191,6 +166,14 @@ public class ProcessManager implements IManager, Serializable {
         return 0;
     }
 
+    public static void saveBatch(Batch batch) {
+        try {
+            ProcessMysqlHelper.saveBatch(batch);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
     public static List<Integer> getIDList(String filter) {
 
         try {
@@ -201,14 +184,24 @@ public class ProcessManager implements IManager, Serializable {
         return new ArrayList<Integer>();
     }
 
-    public static List<Integer> getBatchIds(int limit) {
+    public static List<Batch> getBatches(int limit) {
 
         try {
-            return ProcessMysqlHelper.getBatchIds(limit);
+            return ProcessMysqlHelper.getBatches(limit);
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<Integer>();
+        return new ArrayList<>();
+    }
+    
+    public static Batch getBatchById(int id) {
+
+        try {
+            return ProcessMysqlHelper.loadBatch(id);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return null;
     }
 
     @SuppressWarnings("rawtypes")
@@ -277,7 +270,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         return answer;
     }
-    
+
     public static String getExportPluginName(int processId) {
         String answer = "";
         try {
@@ -285,12 +278,12 @@ public class ProcessManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error("Cannot not load information about process with id " + processId, e);
         }
-        
+
         return answer;
     }
-    
+
     @Override
-    public List<Integer> getIdList( String filter) {
+    public List<Integer> getIdList(String filter) {
         List<Integer> idList = new LinkedList<>();
         try {
             idList = ProcessMysqlHelper.getIDList(filter);

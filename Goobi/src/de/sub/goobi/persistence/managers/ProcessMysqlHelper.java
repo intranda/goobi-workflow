@@ -32,17 +32,15 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Batch;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.enums.UserRole;
 
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 class ProcessMysqlHelper implements Serializable {
@@ -87,6 +85,10 @@ class ProcessMysqlHelper implements Serializable {
         try {
             o.setSortHelperStatus(o.getFortschritt());
 
+            if (o.getBatch() != null) {
+                saveBatch(o.getBatch());
+            }
+
             if (o.getId() == null) {
                 // new process
                 insertProcess(o);
@@ -124,6 +126,48 @@ class ProcessMysqlHelper implements Serializable {
             //            logger.error("Error while saving process " + o.getTitel(), e);
             throw new DAOException(e);
         }
+    }
+
+    public static void saveBatch(Batch batch) throws SQLException {
+        Connection connection = null;
+        Timestamp start = null;
+        Timestamp end = null;
+
+        if (batch.getStartDate() != null) {
+            start = new Timestamp(batch.getStartDate().getTime());
+        }
+
+        if (batch.getBatchId() == null) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("INSERT INTO batches (batchName, startDate, endDate) VALUES (?,?,?)");
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, batch.getBatchName(), start, end);
+                if (id != null) {
+                    batch.setBatchId(id);
+                }
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+
+        } else {
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE batches set batchName = ?, startDate = ?, endDate= ? where id = ?");
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                run.update(connection, sql.toString(), batch.getBatchName(), start, end, batch.getBatchId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+
+        }
+
     }
 
     public static void deleteProcess(Process o) throws SQLException {
@@ -368,14 +412,15 @@ class ProcessMysqlHelper implements Serializable {
         if (!includeProcessID) {
             Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(), o
                     .getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
-                    o.getSortHelperDocstructs(), o.getSortHelperMetadata(),  o.getBatchID(), o.getDocket() == null ? null : o.getDocket().getId() };
+                    o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(), o
+                            .getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
         } else {
             Object[] param = { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o
                     .isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o
-                            .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatchID(), o
-                                            .getDocket() == null ? null : o.getDocket().getId() };
+                            .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null
+                                    ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
         }
@@ -397,7 +442,7 @@ class ProcessMysqlHelper implements Serializable {
         sql.append(" MetadatenKonfigurationID = ?,");
         sql.append(" sortHelperDocstructs = ?,");
         sql.append(" sortHelperMetadata = ?,");
-//        sql.append(" wikifield = ?,");
+        //        sql.append(" wikifield = ?,");
         sql.append(" batchID = ?,");
         sql.append(" docketID = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
@@ -435,13 +480,14 @@ class ProcessMysqlHelper implements Serializable {
         p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
         p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
         p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
-//        p.setWikifield(rs.getString("wikifield"));
+        //        p.setWikifield(rs.getString("wikifield"));
         Integer batchID = rs.getInt("batchID");
-        if (rs.wasNull()) {
-            batchID = null;
-        }
-        p.setBatchID(batchID);
+        if (!rs.wasNull()) {
+            Batch batch = loadBatch(batchID);
+            p.setBatch(batch);
 
+        } else {
+        }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
 
         p.setProcessLog(getLogEntriesForProcess(p.getId()));
@@ -449,89 +495,16 @@ class ProcessMysqlHelper implements Serializable {
         return p;
     }
 
-    public static void insertBatchProcessList(List<Process> processList) throws SQLException {
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO prozesse " + generateInsertQuery(false));
-        List<Object[]> paramArray = new ArrayList<Object[]>();
-        for (Process o : processList) {
-            sql.append(" " + generateValueQuery(false) + ",");
-            Object[] param = generateParameter(o, false, false);
-            paramArray.add(param);
-        }
-        String values = sql.toString();
-
-        values = values.substring(0, values.length() - 1);
-
+    public static Batch loadBatch(Integer batchID) throws SQLException {
+        String sql = "SELECT * FROM batches WHERE id = ?";
         Connection connection = null;
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            run.update(connection, values, paramArray);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
             }
-        }
-    }
-
-    public static void updateBatchList(List<Process> processList) throws SQLException {
-
-        String tablename = "a" + String.valueOf(new Date().getTime());
-        String tempTable = "CREATE TEMPORARY TABLE IF NOT EXISTS " + tablename + " LIKE prozesse;";
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO " + tablename + " " + generateInsertQuery(true));
-        List<Object[]> paramList = new ArrayList<Object[]>();
-        for (Process o : processList) {
-            sql.append(" " + generateValueQuery(true) + ",");
-            Object[] param = generateParameter(o, true, true);
-            paramList.add(param);
-        }
-        Object[][] paramArray = new Object[paramList.size()][];
-        paramList.toArray(paramArray);
-
-        String insertQuery = sql.toString();
-        insertQuery = insertQuery.substring(0, insertQuery.length() - 1);
-
-        StringBuilder joinQuery = new StringBuilder();
-        joinQuery.append("UPDATE prozesse SET prozesse.Titel = " + tablename + ".Titel, prozesse.ausgabename = " + tablename + ".ausgabename,"
-                + "prozesse.IstTemplate = " + tablename + ".IstTemplate, " + "prozesse.swappedOut = " + tablename + ".swappedOut, "
-                + "prozesse.inAuswahllisteAnzeigen = " + tablename + ".inAuswahllisteAnzeigen, " + "prozesse.sortHelperStatus = " + tablename
-                + ".sortHelperStatus, " + "prozesse.sortHelperImages = " + tablename + ".sortHelperImages, " + "prozesse.sortHelperArticles = "
-                + tablename + ".sortHelperArticles, " + "prozesse.erstellungsdatum = " + tablename + ".erstellungsdatum, " + "prozesse.ProjekteID = "
-                + tablename + ".ProjekteID, " + "prozesse.MetadatenKonfigurationID = " + tablename + ".MetadatenKonfigurationID, "
-                + "prozesse.sortHelperDocstructs = " + tablename + ".sortHelperDocstructs, " + "prozesse.sortHelperMetadata = " + tablename
-                + ".sortHelperMetadata, " + "prozesse.wikifield = " + tablename + ".wikifield, " + "prozesse.batchID = " + tablename + ".batchID, "
-                + "prozesse.docketID = " + tablename + ".docketID " + " WHERE prozesse.ProzesseID = " + tablename + ".ProzesseID;");
-
-        String deleteTempTable = "DROP TEMPORARY TABLE " + tablename + ";";
-
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            // create temporary table
-            run.update(connection, tempTable);
-            // insert bulk into a temp table
-            run.batch(connection, insertQuery, paramArray);
-            // update process table using join
-            run.update(connection, joinQuery.toString());
-            // delete temporary table
-            run.update(connection, deleteTempTable);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static int getMaxBatchNumber() throws SQLException {
-        Connection connection = null;
-        String sql = "SELECT max(batchId) FROM prozesse";
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), resultSetToBatchHandler, batchID);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -580,23 +553,17 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getBatchIds(int limit) throws SQLException {
-        String sql = "SELECT distinct batchID FROM prozesse";
+    public static List<Batch> getBatches(int limit) throws SQLException {
+        String sql = "SELECT * FROM batches";
 
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-            sql += " WHERE prozesse.ProjekteID in (SELECT ProjekteID FROM projektbenutzer WHERE projektbenutzer.BenutzerID = " + login.getMyBenutzer()
-                    .getId() + ")";
-        }
-
-        sql += " ORDER BY batchID desc ";
+        sql += " ORDER BY id desc ";
         if (limit > 0) {
             sql += " limit " + limit;
         }
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerListHandler);
+            return new QueryRunner().query(connection, sql, resultSetToBatchListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -850,6 +817,55 @@ class ProcessMysqlHelper implements Serializable {
             }
         }
 
+    }
+
+    public static ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<Batch>() {
+        @Override
+        public Batch handle(ResultSet rs) throws SQLException {
+
+            try {
+                if (rs.next()) {
+                    return convertBatch(rs);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return null;
+        }
+    };
+
+    public static ResultSetHandler<List<Batch>> resultSetToBatchListHandler = new ResultSetHandler<List<Batch>>() {
+        @Override
+        public List<Batch> handle(ResultSet rs) throws SQLException {
+            List<Batch> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    answer.add(convertBatch(rs));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
+
+    private static Batch convertBatch(ResultSet rs) throws SQLException {
+        Batch batch = new Batch();
+        batch.setBatchId(rs.getInt("id"));
+        batch.setBatchName(rs.getString("batchName"));
+        Timestamp start = rs.getTimestamp("startDate");
+        if (start != null) {
+            batch.setStartDate(new Date(start.getTime()));
+        }
+        Timestamp end = rs.getTimestamp("endDate");
+        if (end != null) {
+            batch.setEndDate(new Date(end.getTime()));
+        }
+        return batch;
     }
 
     public static ResultSetHandler<List<LogEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<LogEntry>>() {

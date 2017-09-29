@@ -775,16 +775,18 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public boolean isBatchSize() {
-        Integer batchNumber = getProzess().getBatchID();
-        if (batchNumber != null) {
-            // only steps with same title and batchId
-            String sql = "schritte.titel = '" + titel + "' and prozesse.batchID = " + batchNumber;
-            try {
-                int number = StepManager.countSteps(null, sql);
-                if (number > 1) {
-                    return true;
+        if (prozess.getBatch() != null) {
+            Integer batchNumber = getProzess().getBatch().getBatchId();
+            if (batchNumber != null) {
+                // only steps with same title and batchId
+                String sql = "schritte.titel = '" + titel + "' and prozesse.batchID = " + batchNumber;
+                try {
+                    int number = StepManager.countSteps(null, sql);
+                    if (number > 1) {
+                        return true;
+                    }
+                } catch (DAOException e) {
                 }
-            } catch (DAOException e) {
             }
         }
         return false;

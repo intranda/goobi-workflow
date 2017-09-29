@@ -42,34 +42,39 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+import org.goobi.beans.Batch;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Batch;
 import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 //import de.sub.goobi.persistence.ProzessDAO;
 
 @ManagedBean(name = "BatchForm")
 @SessionScoped
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class BatchBean extends BasicBean {
 
     private static final long serialVersionUID = 8234897225425856549L;
 
     private static final Logger logger = Logger.getLogger(BatchBean.class);
 
-    private List<Process> currentProcesses = new ArrayList<Process>();
-    private List<Process> selectedProcesses = new ArrayList<Process>();
-    private List<Batch> currentBatches = new ArrayList<Batch>();
-    private List<String> selectedBatches = new ArrayList<String>();
+    private List<Process> currentProcesses = new ArrayList<>();
+    private List<Process> selectedProcesses = new ArrayList<>();
+    private List<Batch> currentBatches = new ArrayList<>();
+    private List<Batch> selectedBatches = new ArrayList<>();
     private String batchfilter;
     private String processfilter;
     //	private IEvaluableFilter myFilteredDataSource;
@@ -84,42 +89,37 @@ public class BatchBean extends BasicBean {
         return batchsize;
     }
 
-    public List<Process> getCurrentProcesses() {
-        return this.currentProcesses;
-    }
-
-    public void setCurrentProcesses(List<Process> currentProcesses) {
-        this.currentProcesses = currentProcesses;
-    }
-
-    @SuppressWarnings("unlikely-arg-type")
-	public void loadBatchData() {
-        this.currentBatches = new ArrayList<Batch>();
-        this.selectedBatches = new ArrayList<String>();
+    public void loadBatchData() {
+        this.currentBatches = new ArrayList<>();
+        this.selectedBatches = new ArrayList<>();
         for (Process p : this.selectedProcesses) {
-            if (p.getBatchID() != null && !this.currentBatches.contains(p.getBatchID())) {
-                this.currentBatches.add(generateBatch(p.getBatchID()));
+            if (p.getBatch() != null && !this.currentBatches.contains(p.getBatch())) {
+                generateBatch(p.getBatch());
             }
         }
     }
 
-    private Batch generateBatch(Integer id) {
+    private Batch generateBatch(Batch batch) {
         //		Session session = Helper.getHibernateSession();
         String filter = "";
-        if (id != null) {
-            filter = " batchID = " + id + " AND istTemplate = false ";
+        if (batch != null) {
+            filter = " batchID = " + batch.getBatchId() + " AND istTemplate = false ";
         } else {
             filter = " batchID is NULL AND istTemplate = false ";
         }
 
         String msg1 = Helper.getTranslation("batch");
         String msg2 = Helper.getTranslation("prozesse");
-        if (id != null) {
-            String text = msg1 + " " + id + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
-            return new Batch(id, text);
+        if (batch != null) {
+            String text = msg1 + " " + batch.getBatchId() + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
+            batch.setBatchLabel(text);
+            return batch;
         } else {
             String text = Helper.getTranslation("withoutBatch") + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
-            return new Batch(null, text);
+            batch = new Batch();
+            batch.setBatchId(null);
+            batch.setBatchLabel(text);
+            return batch;
         }
     }
 
@@ -127,23 +127,23 @@ public class BatchBean extends BasicBean {
 
         String filter = " istTemplate = false ";
 
-        List<Integer> ids = new ArrayList<Integer>();
-        for (String s : this.selectedBatches) {
-            if (s != null && !s.equals("") && !s.equals("null")) {
-                ids.add(new Integer(s));
+        List<Integer> ids = new ArrayList<>();
+        for (Batch b : this.selectedBatches) {
+            if (b != null) {
+                ids.add(b.getBatchId());
             }
         }
+
         if (this.selectedBatches.size() > 0) {
-            if (this.selectedBatches.contains(null) || this.selectedBatches.contains("null")) {
+
+            if (ids.contains(null)) {
                 filter += " AND batchID is null ";
-                //				crit.add(Restrictions.isNull("batchID"));
             } else {
                 filter += " AND (";
                 for (Integer id : ids) {
                     filter += " batchID = " + id + " OR";
                 }
                 filter = filter.substring(0, filter.length() - 3) + ")";
-                //				crit.add(Restrictions.in("batchID", ids));
             }
         }
         this.currentProcesses = ProcessManager.getProcesses(null, filter, 0, getBatchMaxSize());
@@ -164,27 +164,47 @@ public class BatchBean extends BasicBean {
     }
 
     public void filterBatches() {
-        Integer number = null;
-        try {
-            number = new Integer(this.batchfilter);
-        } catch (Exception e) {
-            logger.trace("NAN Exception: " + this.batchfilter);
-        }
-        if (number != null) {
-            List<Integer> allBatches = ProcessManager.getBatchIds(getBatchMaxSize());
+
+        if (StringUtils.isNotBlank(batchfilter)) {
+            List<Batch> allBatches = ProcessManager.getBatches(getBatchMaxSize());
             this.currentBatches = new ArrayList<Batch>();
-            for (Integer in : allBatches) {
-                if (in != null && Integer.toString(in).contains(this.batchfilter)) {
+            for (Batch in : allBatches) {
+                if ((in.getBatchName() != null && in.getBatchName().contains(this.batchfilter)) || Integer.toString(in.getBatchId()).contains(this.batchfilter)) {
                     this.currentBatches.add(generateBatch(in));
                 }
             }
         } else {
-            List<Integer> ids = ProcessManager.getBatchIds(getBatchMaxSize());
-            this.currentBatches = new ArrayList<Batch>();
-            for (Integer in : ids) {
-                this.currentBatches.add(generateBatch(in));
+            currentBatches = ProcessManager.getBatches(getBatchMaxSize());
+
+            for (Batch in : currentBatches) {
+                generateBatch(in);
             }
         }
+    }
+
+    public List<SelectItem> getCurrentBatchesAsSelectItems() {
+        List<SelectItem> answer = new ArrayList<SelectItem>();
+        for (Batch p : this.currentBatches) {
+            answer.add(new SelectItem(String.valueOf(p.getBatchId()), p.getBatchLabel()));
+        }
+        return answer;
+    }
+
+    public void setSelectedBatchIds(List<String> processIds) {
+        selectedBatches = new ArrayList<>();
+        for (String idString : processIds) {
+            Integer id = new Integer(idString);
+
+            selectedBatches.add(ProcessManager.getBatchById(id));
+        }
+    }
+
+    public List<String> getSelectedBatchIds() {
+        List<String> idList = new ArrayList<String>();
+        for (Batch p : selectedBatches) {
+            idList.add(String.valueOf(p.getBatchId()));
+        }
+        return idList;
     }
 
     public List<SelectItem> getCurrentProcessesAsSelectItems() {
@@ -193,38 +213,6 @@ public class BatchBean extends BasicBean {
             answer.add(new SelectItem(String.valueOf(p.getId()), p.getTitel()));
         }
         return answer;
-    }
-
-    public String getBatchfilter() {
-        return this.batchfilter;
-    }
-
-    public void setBatchfilter(String batchfilter) {
-        this.batchfilter = batchfilter;
-    }
-
-    public String getProcessfilter() {
-        return this.processfilter;
-    }
-
-    public void setProcessfilter(String processfilter) {
-        this.processfilter = processfilter;
-    }
-
-    public List<Batch> getCurrentBatches() {
-        return this.currentBatches;
-    }
-
-    public void setCurrentBatches(List<Batch> currentBatches) {
-        this.currentBatches = currentBatches;
-    }
-
-    public List<Process> getSelectedProcesses() {
-        return this.selectedProcesses;
-    }
-
-    public void setSelectedProcesses(List<Process> selectedProcesses) {
-        this.selectedProcesses = selectedProcesses;
     }
 
     public void setSelectedProcessIds(List<String> processIds) {
@@ -242,14 +230,6 @@ public class BatchBean extends BasicBean {
             idList.add(String.valueOf(p.getId()));
         }
         return idList;
-    }
-
-    public List<String> getSelectedBatches() {
-        return this.selectedBatches;
-    }
-
-    public void setSelectedBatches(List<String> selectedBatches) {
-        this.selectedBatches = selectedBatches;
     }
 
     public String FilterAlleStart() {
@@ -272,7 +252,7 @@ public class BatchBean extends BasicBean {
 
             //            Session session = Helper.getHibernateSession();
             //            Criteria crit = session.createCriteria(Process.class);
-            docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches.get(0)), 0,
+            docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0,
                     getBatchMaxSize());
 
         } else {
@@ -308,11 +288,11 @@ public class BatchBean extends BasicBean {
         } else if (this.selectedBatches.size() == 1) {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
 
-                List<Process> deleteList = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(this.selectedBatches
-                        .get(0)), 0, getBatchMaxSize());
+                List<Process> deleteList = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0)
+                        .getBatchId(), 0, getBatchMaxSize());
                 {
                     for (Process p : deleteList) {
-                        p.setBatchID(null);
+                        p.setBatch(null);
                         ProcessManager.saveProcessInformation(p);
 
                     }
@@ -336,12 +316,12 @@ public class BatchBean extends BasicBean {
         } else {
             try {
                 //				Session session = Helper.getHibernateSession();
-                Integer batchid = new Integer(this.selectedBatches.get(0));
+                Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
-                    p.setBatchID(batchid);
+                    p.setBatch(batch);
 
                     LogEntry logEntry = new LogEntry();
-                    logEntry.setContent("added process to batch " + batchid);
+                    logEntry.setContent("added process to batch " + batch.getBatchId());
                     logEntry.setCreationDate(new Date());
                     logEntry.setProcessId(p.getId());
                     logEntry.setType(LogType.DEBUG);
@@ -362,14 +342,14 @@ public class BatchBean extends BasicBean {
         //		Session session = Helper.getHibernateSession();
         for (Process p : this.selectedProcesses) {
             LogEntry logEntry = new LogEntry();
-            logEntry.setContent("removed process from batch " + p.getBatchID());
+            logEntry.setContent("removed process from batch " + p.getBatch().getBatchId());
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(p.getId());
             logEntry.setType(LogType.DEBUG);
             logEntry.setUserName("-batch-");
             ProcessManager.saveLogEntry(logEntry);
 
-            p.setBatchID(null);
+            p.setBatch(null);
             ProcessManager.saveProcessInformation(p);
         }
 
@@ -378,23 +358,18 @@ public class BatchBean extends BasicBean {
 
     public void createNewBatch() {
         if (this.selectedProcesses.size() > 0) {
-            //            Session session = Helper.getHibernateSession();
-            Integer newBatchId = 1;
-            try {
-                newBatchId += ProcessManager.getMaxBatchNumber();
-            } catch (Exception e1) {
-            }
 
+            Batch batch = new Batch();
             for (Process p : this.selectedProcesses) {
-                p.setBatchID(newBatchId);
+                p.setBatch(batch);
+                ProcessManager.saveProcessInformation(p);
                 LogEntry logEntry = new LogEntry();
-                logEntry.setContent("added process to batch " + newBatchId);
+                logEntry.setContent("added process to batch " + batch.getBatchId());
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(p.getId());
                 logEntry.setType(LogType.DEBUG);
                 logEntry.setUserName("-batch-");
                 ProcessManager.saveLogEntry(logEntry);
-                ProcessManager.saveProcessInformation(p);
             }
 
         }
@@ -410,15 +385,8 @@ public class BatchBean extends BasicBean {
             return "";
         } else {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-                //                Session session = Helper.getHibernateSession();
-                //                Criteria crit = session.createCriteria(Process.class);
-                //                crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-                //                //				List<Integer> ids = new ArrayList<Integer>();
-                //                crit.add(Restrictions.eq("batchID", new Integer(this.selectedBatches.get(0))));
-                //                List<Process> propertyBatch = crit.list();
-
-                List<Process> propertyBatch = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + new Integer(
-                        this.selectedBatches.get(0)), 0, getBatchMaxSize());
+                List<Process> propertyBatch = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0)
+                        .getBatchId(), 0, getBatchMaxSize());
                 this.batchHelper = new BatchProcessHelper(propertyBatch);
                 return "batch_edit";
             } else {
@@ -428,19 +396,4 @@ public class BatchBean extends BasicBean {
         }
     }
 
-    public BatchProcessHelper getBatchHelper() {
-        return this.batchHelper;
-    }
-
-    public void setBatchHelper(BatchProcessHelper batchHelper) {
-        this.batchHelper = batchHelper;
-    }
-
-    public String getModusBearbeiten() {
-        return this.modusBearbeiten;
-    }
-
-    public void setModusBearbeiten(String modusBearbeiten) {
-        this.modusBearbeiten = modusBearbeiten;
-    }
 }
