@@ -179,12 +179,22 @@ public class ExportXmlLog implements IProcessDataExport {
             commentLine.setText(entry.getContent());
             comment.addContent(commentLine);
         }
-        
+
         processElements.add(comment);
 
-        if (process.getBatchID() != null) {
+        if (process.getBatch() != null) {
             Element batch = new Element("batch", xmlns);
-            batch.setText(String.valueOf(process.getBatchID()));
+            batch.setText(String.valueOf(process.getBatch().getBatchId()));
+            if (StringUtils.isNotBlank(process.getBatch().getBatchName())) {
+                batch.setAttribute("batchName", process.getBatch().getBatchName());
+            }
+            if (process.getBatch().getStartDate() != null) {
+                batch.setAttribute("startDate", Helper.getDateAsFormattedString(process.getBatch().getStartDate()));            }
+           
+            if (process.getBatch().getEndDate() != null) {
+                batch.setAttribute("endDate", Helper.getDateAsFormattedString(process.getBatch().getEndDate()));
+            }
+           
             processElements.add(batch);
         }
 

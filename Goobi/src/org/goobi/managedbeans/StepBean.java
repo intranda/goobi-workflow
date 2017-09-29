@@ -124,7 +124,7 @@ public class StepBean extends BasicBean {
     private Integer container;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
-    private HashMap <Integer, Boolean> containerAccess;
+    private HashMap<Integer, Boolean> containerAccess;
 
     @Getter
     @Setter
@@ -334,7 +334,10 @@ public class StepBean extends BasicBean {
         List<Step> currentStepsOfBatch = new ArrayList<Step>();
 
         String steptitle = this.mySchritt.getTitel();
-        Integer batchNumber = this.mySchritt.getProzess().getBatchID();
+        Integer batchNumber = null;
+        if (mySchritt.getProzess().getBatch() != null) {
+            batchNumber = this.mySchritt.getProzess().getBatch().getBatchId();
+        }
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0,
@@ -405,7 +408,10 @@ public class StepBean extends BasicBean {
         List<Step> currentStepsOfBatch = new ArrayList<Step>();
 
         String steptitle = this.mySchritt.getTitel();
-        Integer batchNumber = this.mySchritt.getProzess().getBatchID();
+        Integer batchNumber = null;
+        if (mySchritt.getProzess().getBatch() != null) {
+            batchNumber = this.mySchritt.getProzess().getBatch().getBatchId();
+        }
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null, "schritte.titel = '" + steptitle
@@ -463,7 +469,7 @@ public class StepBean extends BasicBean {
         } catch (DAOException e) {
         }
         // calcHomeImages();
-//        return "task_all";
+        //        return "task_all";
         return FilterAlleStart();
     }
 
@@ -637,10 +643,10 @@ public class StepBean extends BasicBean {
             //					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
             //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Step step : alleSchritteDazwischen) {
-                
-            	if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
-            		step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
-            	}
+
+                if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+                    step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+                }
                 step.setCorrectionStep();
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
@@ -716,8 +722,8 @@ public class StepBean extends BasicBean {
             //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                 Step step = iter.next();
-                if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
-                	step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+                    step.setBearbeitungsstatusEnum(StepStatus.DONE);
                 }
                 step.setBearbeitungsende(now);
                 step.setCorrectionStep();
@@ -988,10 +994,10 @@ public class StepBean extends BasicBean {
             if (myPlugin == null) {
                 Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
             } else {
-            	if (mySchritt.isBatchStep() && mySchritt.isBatchSize()){
-            		myPlugin.initialize(mySchritt, "/task_edit_batch");
-            	}else{
-            		myPlugin.initialize(mySchritt, "/task_edit");
+                if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
+                    myPlugin.initialize(mySchritt, "/task_edit_batch");
+                } else {
+                    myPlugin.initialize(mySchritt, "/task_edit");
                 }
                 //                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
                 //                    runPlugin();
@@ -1216,19 +1222,19 @@ public class StepBean extends BasicBean {
     }
 
     public HashMap<Integer, Boolean> getContainerAccess() {
-		return containerAccess;
-	}
-    
+        return containerAccess;
+    }
+
     private void loadProcessProperties() {
         containerAccess = new HashMap<>();
-    	this.containers = new TreeMap<Integer, PropertyListObject>();
+        this.containers = new TreeMap<Integer, PropertyListObject>();
         this.processPropertyList = PropertyParser.getPropertiesForStep(this.mySchritt);
 
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getContainer()!=0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ){
-            	containerAccess.put(pt.getContainer(), true);
+            if (pt.getContainer() != 0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {
+                containerAccess.put(pt.getContainer(), true);
             }
-        	if (pt.getProzesseigenschaft() == null) {
+            if (pt.getProzesseigenschaft() == null) {
                 Processproperty pe = new Processproperty();
                 pe.setProzess(this.mySchritt.getProzess());
                 pt.setProzesseigenschaft(pe);
@@ -1499,7 +1505,7 @@ public class StepBean extends BasicBean {
             isp.initialize(mySchritt, "");
             if (isp instanceof IStepPluginVersion2) {
                 IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
-                 plugin.run();
+                plugin.run();
             } else {
                 isp.execute();
             }

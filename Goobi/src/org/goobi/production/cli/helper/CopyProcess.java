@@ -844,9 +844,8 @@ public class CopyProcess extends ProzesskopieForm {
             }
 
         }
-
-        if (io.getBatchId() != null) {
-            this.prozessKopie.setBatchID(io.getBatchId());
+        if (io.getBatch() != null) {
+            this.prozessKopie.setBatch(io.getBatch());
         }
         try {
             //			ProzessDAO dao = new ProzessDAO();
