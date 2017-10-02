@@ -235,7 +235,7 @@
 								<td><h:outputText value="#{item.erstellungsdatum}" /></td>
 								<!-- Batch -->
 								<td><h:outputText value="#{msgs.process_grid_batch}:" /></td>
-								<td><h:outputText value="#{item.batchID}" /></td>
+								<td><h:outputText value="#{item.batch.batchID}" rendered="#{item.batch != null}" /></td>
 							</tr>
 						</table>
 					
