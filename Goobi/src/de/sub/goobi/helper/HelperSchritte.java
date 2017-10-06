@@ -271,7 +271,7 @@ public class HelperSchritte {
         int count = 1;
         int size = scriptpaths.size();
         int returnParameter = 0;
-        for (String script : scriptpaths) {
+        outerloop: for (String script : scriptpaths) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
@@ -283,11 +283,31 @@ public class HelperSchritte {
                     returnParameter = executeScriptForStepObject(step, script, false);
                 }
             }
-            // return code 99 means wait for finishing
-            if (returnParameter != 0 && automatic && returnParameter != 99) {
-                errorStep(step);
-                break;
+
+            if (automatic) {
+                switch (returnParameter) {
+                    // return code 99 means wait for finishing
+                    case 99:
+
+                        break;
+                    // return code 98: re-open task
+                    case 98:
+                        reOpenStep(step);
+                        break;
+                    // return code 0: script returned without error
+                    case 0:
+                        break;
+                    // everything else: error
+                    default:
+                        errorStep(step);
+                        break outerloop;
+
+                }
             }
+            //            if (returnParameter != 0 && automatic && returnParameter != 99) {
+            //                errorStep(step);
+            //                break;
+            //            }
             count++;
         }
         return returnParameter;
@@ -345,7 +365,7 @@ public class HelperSchritte {
                     }
 
                 } else {
-                    if (rueckgabe != 99) {
+                    if (rueckgabe != 99 && rueckgabe != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
@@ -405,27 +425,28 @@ public class HelperSchritte {
         }
     }
 
-    //    private void abortStep(Step step) {
-    //
-    //        step.setBearbeitungsstatusEnum(StepStatus.OPEN);
-    //        step.setEditTypeEnum(StepEditType.AUTOMATIC);
-    //
-    //        try {
-    //            StepManager.saveStep(step);
-    //        } catch (DAOException e) {
-    //            logger.error(e);
-    //        }
-    //    }
-
     public void errorStep(Step step) {
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
-        step.setBearbeitungsende(new Date());
         try {
             StepManager.saveStep(step);
         } catch (DAOException e) {
             logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
         }
+    }
+
+    private void reOpenStep(Step step) {
+        if (!step.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+            step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+            step.setBearbeitungsende(new Date());
+            try {
+                StepManager.saveStep(step);
+            } catch (DAOException e) {
+                logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
+            }
+        }
+
     }
 
     public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,
