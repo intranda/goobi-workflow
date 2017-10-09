@@ -1410,6 +1410,7 @@ public class Metadaten {
 
     @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
+        rowIndex = null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(inStruct);
