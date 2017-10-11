@@ -84,6 +84,12 @@ xmlns:p="http://primefaces.org/ui">
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="5" />
                                         </h:commandLink>
                                     </li>
+                                    <li>
+                                        <h:commandLink id="doublepages" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.doublepages}" onclick="setScrollPosition();">
+                                            <h:outputText value="6 - #{msgs.doublepages}" />
+                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="6" />
+                                        </h:commandLink>
+                                    </li>
 
                                 </ul>
                             </div>
