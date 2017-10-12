@@ -44,7 +44,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 19;
+    public static final int EXPECTED_VERSION = 20;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -172,12 +172,34 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 19.");
                 }
                 updateToVersion19();
+            case 19:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 20.");
+                }
+                updateToVersion20();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion20() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            new QueryRunner().update(connection, "CREATE FULLTEXT INDEX `idx_metadata_value`  ON `goobi`.`metadata` (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
