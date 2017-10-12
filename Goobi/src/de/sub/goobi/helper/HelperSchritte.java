@@ -161,27 +161,29 @@ public class HelperSchritte {
                 }
 
                 if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep
-                        .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && !myStep.getBearbeitungsstatusEnum().equals(
-                                StepStatus.INWORK)) {
+                        .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
                     /*
-                     * den Schritt aktivieren, wenn es kein vollautomatischer ist
+                     * open step, if it is locked, otherwise stop
                      */
-                    myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                    myStep.setBearbeitungszeitpunkt(myDate);
-                    myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
-                            .getValue(), processId);
-                    /* wenn es ein automatischer Schritt mit Script ist */
-                    if (myStep.isTypAutomatisch()) {
-                        automatischeSchritte.add(myStep);
-                    } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
-                        stepsToFinish.add(myStep);
-                    }
-                    try {
-                        StepManager.saveStep(myStep);
-                        Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
-                    } catch (DAOException e) {
-                        logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+
+                    if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                        myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                        myStep.setBearbeitungszeitpunkt(myDate);
+                        myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
+                                HistoryEventType.stepOpen.getValue(), processId);
+                        /* wenn es ein automatischer Schritt mit Script ist */
+                        if (myStep.isTypAutomatisch()) {
+                            automatischeSchritte.add(myStep);
+                        } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
+                            stepsToFinish.add(myStep);
+                        }
+                        try {
+                            StepManager.saveStep(myStep);
+                            Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
+                        } catch (DAOException e) {
+                            logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                        }
                     }
                     matched = true;
 
