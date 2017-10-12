@@ -1410,6 +1410,7 @@ public class Metadaten {
 
     @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
+        rowIndex = null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(inStruct);
@@ -1961,6 +1962,9 @@ public class Metadaten {
             case 5:
                 mode = Paginator.Mode.RECTOVERSO_FOLIATION;
                 break;
+            case 6:
+            	mode = Paginator.Mode.DOUBLE_PAGES;
+            	break;
             default:
                 mode = Paginator.Mode.PAGES;
         }
