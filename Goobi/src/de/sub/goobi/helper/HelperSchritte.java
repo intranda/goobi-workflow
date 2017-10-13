@@ -46,6 +46,7 @@ import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -65,7 +66,6 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.HistoryManager;
-import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.DigitalDocument;
@@ -126,7 +126,8 @@ public class HelperSchritte {
                 if (Files.exists(anchorFile)) {
                     pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
-                MetadataManager.updateMetadata(processId, pairs);
+
+                HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
             } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
                 logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);

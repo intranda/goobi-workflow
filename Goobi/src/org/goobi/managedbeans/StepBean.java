@@ -53,7 +53,6 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
@@ -484,19 +483,6 @@ public class StepBean extends BasicBean {
                 }
             } else {
                 Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
-            }
-        }
-
-        /*
-         * -------------------------------- if step allows writing of images, then count all images here --------------------------------
-         */
-        if (this.mySchritt.isTypImagesSchreiben()) {
-            try {
-                // this.mySchritt.getProzess().setSortHelperImages(
-                // FileUtils.getNumberOfFiles(Paths.get(this.mySchritt.getProzess().getImagesOrigDirectory())));
-                HistoryAnalyserJob.updateHistory(this.mySchritt.getProzess());
-            } catch (Exception e) {
-                Helper.setFehlerMeldung("Error while calculation of storage and images", e);
             }
         }
 
