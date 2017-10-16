@@ -137,6 +137,11 @@ class ProcessMysqlHelper implements Serializable {
             start = new Timestamp(batch.getStartDate().getTime());
         }
 
+        if (batch.getEndDate() != null) {
+            end = new Timestamp(batch.getEndDate().getTime());
+        }
+
+        
         if (batch.getBatchId() == null) {
             StringBuilder sql = new StringBuilder();
             sql.append("INSERT INTO batches (batchName, startDate, endDate) VALUES (?,?,?)");
