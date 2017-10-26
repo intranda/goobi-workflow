@@ -104,23 +104,23 @@ public class BatchProcessHelperTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullValue() {
-        new BatchProcessHelper(null);
+        new BatchProcessHelper(null, null);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testConstructorEmptyList() {
-        new BatchProcessHelper(new ArrayList<Process>());
+        new BatchProcessHelper(new ArrayList<Process>(), null);
     }
 
     @Test
     public void testConstructor() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         assertNotNull(helper);
     }
 
     @Test
     public void testCurrentProcess() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         assertNotNull(helper);
         helper.setCurrentProcess(processList.get(0));
         assertEquals(processList.get(0).getTitel(), helper.getCurrentProcess().getTitel());
@@ -128,14 +128,14 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testProcesses() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         helper.setProcesses(processList);
         assertEquals(processList.size(), helper.getProcesses().size());
     }
 
     @Test
     public void testProcessPropertyList() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> list = new ArrayList<>();
         ProcessProperty pp = new ProcessProperty();
         list.add(pp);
@@ -145,7 +145,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testProcessProperty() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         ProcessProperty pp = new ProcessProperty();
         helper.setProcessProperty(pp);
         assertEquals(pp, helper.getProcessProperty());
@@ -154,7 +154,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testPropertyListSize() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> list = new ArrayList<>();
         ProcessProperty pp = new ProcessProperty();
         list.add(pp);
@@ -164,7 +164,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testProcessProperties() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> list = new ArrayList<>();
         ProcessProperty pp = new ProcessProperty();
         list.add(pp);
@@ -174,7 +174,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testProcessNameList() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
 
         List<String> fixture = new ArrayList<>();
         fixture.add("test");
@@ -185,14 +185,14 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testProcessName() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         helper.setProcessName("process");
         assertEquals("process", helper.getProcessName());
     }
 
     @Test
     public void testSaveCurrentProperty() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         ProcessProperty pp = new ProcessProperty();
         pp.setContainer(0);
         pp.setType(Type.TEXT);
@@ -204,7 +204,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testSaveCurrentPropertyForAll() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         ProcessProperty pp = new ProcessProperty();
         pp.setContainer(0);
         pp.setType(Type.TEXT);
@@ -216,7 +216,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testContainers() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
 
         Map<Integer, PropertyListObject> fixture = helper.getContainers();
         assertEquals(3, fixture.size());
@@ -224,20 +224,20 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testContainerSize() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         assertEquals(3, helper.getContainersSize());
     }
 
     @Test
     public void testSortedProperties() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> fixture = helper.getSortedProperties();
         assertEquals(12, fixture.size());
     }
 
     @Test
     public void testContainerlessProperties() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> fixture = helper.getContainerlessProperties();
         assertEquals(6, fixture.size());
 
@@ -245,7 +245,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testContainer() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> list = new ArrayList<>();
         ProcessProperty pp = new ProcessProperty();
         pp.setContainer(1);
@@ -261,7 +261,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testDuplicateContainerForSingle() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> list = new ArrayList<>();
         ProcessProperty pp = new ProcessProperty();
         pp.setContainer(1);
@@ -276,7 +276,7 @@ public class BatchProcessHelperTest {
 
     @Test
     public void testDuplicateContainerForAll() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList);
+        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> list = new ArrayList<>();
         ProcessProperty pp = new ProcessProperty();
         pp.setContainer(1);

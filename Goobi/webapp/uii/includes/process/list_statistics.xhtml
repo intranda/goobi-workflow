@@ -151,9 +151,15 @@
 											<h:outputText value="#{element.title}" />
 										</h4>
 										<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" />
-										<h:commandLink id="createExcel" action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}">
+										<h:commandLink id="createExcel" action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}" title="#{msgs.download_excel}">
 											<span class="btn margin-right-10 fa fa-floppy-o" />
-											<h:outputText value="#{msgs.createExcel}" />
+											<h:outputText value="#{msgs.download_excel}" />
+											<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
+										</h:commandLink>
+										
+										<h:commandLink id="createCsv" action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}" title="#{msgs.download_csv}">
+											<span class="btn margin-right-10 fa fa-floppy-o" />
+											<h:outputText value="#{msgs.download_csv}" />
 											<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
 										</h:commandLink>
 									</h:panelGroup>
@@ -170,9 +176,15 @@
 												<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
 											</h:panelGroup>
 											<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
-											<h:commandLink id="createExcel2" action="#{ProzessverwaltungForm.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable}">
+											<h:commandLink id="createExcel2" action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}" title="#{msgs.download_excel}" rendered="#{element.dataTable.showableInTable}" styleClass="margin-right-10">
 												<span class="btn margin-right-10 fa fa-floppy-o" />
-												<h:outputText value="#{msgs.createExcel}" />
+												<h:outputText value="#{msgs.download_excel}" />
+												<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
+											</h:commandLink>
+											
+											<h:commandLink id="createCsv2" action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}" title="#{msgs.download_csv}" rendered="#{element.dataTable.showableInTable}">
+												<span class="btn margin-right-10 fa fa-floppy-o" />
+												<h:outputText value="#{msgs.download_csv}" />
 												<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
 											</h:commandLink>
 										</h:panelGroup>

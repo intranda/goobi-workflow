@@ -113,7 +113,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Integer sortHelperMetadata;
     private Integer sortHelperDocstructs;
     private Ruleset regelsatz;
-    private Integer batchID;
+    //    private Integer batchID;
+    private Batch batch;
     private Boolean swappedOut = false;
     private Boolean panelAusgeklappt = false;
     private Boolean selected = false;
@@ -581,12 +582,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.projekt = projekt;
     }
 
-    public Integer getBatchID() {
-        return this.batchID;
+    public Batch getBatch() {
+        return this.batch;
     }
 
-    public void setBatchID(Integer batch) {
-        this.batchID = batch;
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 
     public Ruleset getRegelsatz() {

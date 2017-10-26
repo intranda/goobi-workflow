@@ -46,6 +46,7 @@ import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -65,7 +66,6 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.HistoryManager;
-import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.DigitalDocument;
@@ -126,7 +126,8 @@ public class HelperSchritte {
                 if (Files.exists(anchorFile)) {
                     pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
-                MetadataManager.updateMetadata(processId, pairs);
+
+                HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
             } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
                 logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
@@ -161,27 +162,29 @@ public class HelperSchritte {
                 }
 
                 if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep
-                        .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && !myStep.getBearbeitungsstatusEnum().equals(
-                                StepStatus.INWORK)) {
+                        .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
                     /*
-                     * den Schritt aktivieren, wenn es kein vollautomatischer ist
+                     * open step, if it is locked, otherwise stop
                      */
-                    myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                    myStep.setBearbeitungszeitpunkt(myDate);
-                    myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                    HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(), HistoryEventType.stepOpen
-                            .getValue(), processId);
-                    /* wenn es ein automatischer Schritt mit Script ist */
-                    if (myStep.isTypAutomatisch()) {
-                        automatischeSchritte.add(myStep);
-                    } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
-                        stepsToFinish.add(myStep);
-                    }
-                    try {
-                        StepManager.saveStep(myStep);
-                        Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
-                    } catch (DAOException e) {
-                        logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+
+                    if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                        myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                        myStep.setBearbeitungszeitpunkt(myDate);
+                        myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
+                                HistoryEventType.stepOpen.getValue(), processId);
+                        /* wenn es ein automatischer Schritt mit Script ist */
+                        if (myStep.isTypAutomatisch()) {
+                            automatischeSchritte.add(myStep);
+                        } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
+                            stepsToFinish.add(myStep);
+                        }
+                        try {
+                            StepManager.saveStep(myStep);
+                            Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
+                        } catch (DAOException e) {
+                            logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                        }
                     }
                     matched = true;
 
@@ -271,7 +274,7 @@ public class HelperSchritte {
         int count = 1;
         int size = scriptpaths.size();
         int returnParameter = 0;
-        for (String script : scriptpaths) {
+        outerloop: for (String script : scriptpaths) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
@@ -283,11 +286,31 @@ public class HelperSchritte {
                     returnParameter = executeScriptForStepObject(step, script, false);
                 }
             }
-            // return code 99 means wait for finishing
-            if (returnParameter != 0 && automatic && returnParameter != 99) {
-                errorStep(step);
-                break;
+
+            if (automatic) {
+                switch (returnParameter) {
+                    // return code 99 means wait for finishing
+                    case 99:
+
+                        break;
+                    // return code 98: re-open task
+                    case 98:
+                        reOpenStep(step);
+                        break;
+                    // return code 0: script returned without error
+                    case 0:
+                        break;
+                    // everything else: error
+                    default:
+                        errorStep(step);
+                        break outerloop;
+
+                }
             }
+            //            if (returnParameter != 0 && automatic && returnParameter != 99) {
+            //                errorStep(step);
+            //                break;
+            //            }
             count++;
         }
         return returnParameter;
@@ -345,7 +368,7 @@ public class HelperSchritte {
                     }
 
                 } else {
-                    if (rueckgabe != 99) {
+                    if (rueckgabe != 99 && rueckgabe != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
@@ -405,27 +428,28 @@ public class HelperSchritte {
         }
     }
 
-    //    private void abortStep(Step step) {
-    //
-    //        step.setBearbeitungsstatusEnum(StepStatus.OPEN);
-    //        step.setEditTypeEnum(StepEditType.AUTOMATIC);
-    //
-    //        try {
-    //            StepManager.saveStep(step);
-    //        } catch (DAOException e) {
-    //            logger.error(e);
-    //        }
-    //    }
-
     public void errorStep(Step step) {
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
-        step.setBearbeitungsende(new Date());
         try {
             StepManager.saveStep(step);
         } catch (DAOException e) {
             logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
         }
+    }
+
+    private void reOpenStep(Step step) {
+        if (!step.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+            step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+            step.setBearbeitungsende(new Date());
+            try {
+                StepManager.saveStep(step);
+            } catch (DAOException e) {
+                logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
+            }
+        }
+
     }
 
     public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,

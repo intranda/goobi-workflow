@@ -44,6 +44,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -65,7 +67,9 @@ import org.joda.time.Months;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 
+import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.renderer.ChartRenderer;
+import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -686,7 +690,7 @@ public class ProjectBean extends BasicBean {
         return this.myCurrentTable;
     }
 
-    public void CreateExcel() {
+    public void downloadStatisticsAsExcel() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
@@ -707,6 +711,52 @@ public class ProjectBean extends BasicBean {
 
             } catch (IOException e) {
 
+            }
+        }
+    }
+    
+    public void downloadStatisticsAsCsv() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        CSVPrinter csvFilePrinter = null;
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            try {
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType("export.csv");
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
+
+                CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
+                csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat);
+                CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
+                
+                // add all headers
+                List<Object> csvHead = new ArrayList<Object>();
+                csvHead.add(csvr.getDataTable().getUnitLabel());
+            	for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
+                	csvHead.add(s);
+				}
+                csvFilePrinter.printRecord(csvHead);
+
+                // add all rows
+                for (DataRow dr : csvr.getDataTable().getDataRows()) {
+                	List<Object> csvColumns = new ArrayList<Object>();
+                	csvColumns.add(dr.getName());
+                	for (int j = 0; j < dr.getNumberValues(); j++) {
+						csvColumns.add(dr.getValue(j));
+					}
+                	csvFilePrinter.printRecord(csvColumns);
+				}
+                
+                facesContext.responseComplete();
+            } catch (Exception e) {
+                
+            } finally {
+                try {
+                    csvFilePrinter.close();
+                } catch (IOException e) {
+            
+                }
             }
         }
     }

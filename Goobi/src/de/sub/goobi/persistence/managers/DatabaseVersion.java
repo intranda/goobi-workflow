@@ -44,7 +44,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 18;
+    public static final int EXPECTED_VERSION = 20;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -167,12 +167,68 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 18.");
                 }
                 updateToVersion18();
+            case 18:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 19.");
+                }
+                updateToVersion19();
+            case 19:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 20.");
+                }
+                updateToVersion20();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion20() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            new QueryRunner().update(connection, "CREATE FULLTEXT INDEX `idx_metadata_value`  ON `goobi`.`metadata` (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+    }
+
+    private static void updateToVersion19() {
+        String dropBatches = "drop table if exists batches;";
+        StringBuilder createBatches = new StringBuilder();
+        createBatches.append("CREATE TABLE batches (");
+        createBatches.append("id int(10) unsigned NOT NULL AUTO_INCREMENT,");
+        createBatches.append("startDate datetime DEFAULT NULL,");
+        createBatches.append("endDate datetime DEFAULT NULL,");
+        createBatches.append("batchName varchar(255) DEFAULT NULL,");
+        createBatches.append("PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
+        String insertBatches = "INSERT INTO batches (id) select distinct (batchId) from prozesse where batchID is not NULL";
+        
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            new QueryRunner().update(connection, dropBatches);
+            new QueryRunner().update(connection, createBatches.toString());
+            new QueryRunner().update(connection, insertBatches);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -185,11 +241,13 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table benutzer change column IstAktiv IstAktiv tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table benutzer change column mitMassendownload mitMassendownload tinyint(1) DEFAULT '0'");
-            
+
             runner.update(connection, "alter table benutzereigenschaften change column IstObligatorisch IstObligatorisch tinyint(1) DEFAULT '0'");
-            runner.update(connection, "alter table metadatenkonfigurationen change column orderMetadataByRuleset orderMetadataByRuleset tinyint(1) DEFAULT '0'");
+            runner.update(connection,
+                    "alter table metadatenkonfigurationen change column orderMetadataByRuleset orderMetadataByRuleset tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table projekte change column useDmsImport useDmsImport tinyint(1) DEFAULT '0'");
-            runner.update(connection, "alter table projekte change column dmsImportCreateProcessFolder dmsImportCreateProcessFolder tinyint(1) DEFAULT '0'");
+            runner.update(connection,
+                    "alter table projekte change column dmsImportCreateProcessFolder dmsImportCreateProcessFolder tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table projekte change column projectIsArchived projectIsArchived tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table prozesse change column IstTemplate IstTemplate tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table prozesse change column swappedOut swappedOut tinyint(1) DEFAULT '0'");
@@ -203,9 +261,12 @@ public class DatabaseVersion {
             runner.update(connection, "alter table schritte change column typImagesSchreiben typImagesSchreiben tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table schritte change column typExportDMS typExportDMS tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table schritte change column typBeimAnnehmenModul typBeimAnnehmenModul tinyint(1) DEFAULT '0'");
-            runner.update(connection, "alter table schritte change column typBeimAnnehmenAbschliessen typBeimAnnehmenAbschliessen tinyint(1) DEFAULT '0'");
-            runner.update(connection, "alter table schritte change column typBeimAnnehmenModulUndAbschliessen typBeimAnnehmenModulUndAbschliessen tinyint(1) DEFAULT '0'");
-            runner.update(connection, "alter table schritte change column typBeimAbschliessenVerifizieren typBeimAbschliessenVerifizieren tinyint(1) DEFAULT '0'");
+            runner.update(connection,
+                    "alter table schritte change column typBeimAnnehmenAbschliessen typBeimAnnehmenAbschliessen tinyint(1) DEFAULT '0'");
+            runner.update(connection,
+                    "alter table schritte change column typBeimAnnehmenModulUndAbschliessen typBeimAnnehmenModulUndAbschliessen tinyint(1) DEFAULT '0'");
+            runner.update(connection,
+                    "alter table schritte change column typBeimAbschliessenVerifizieren typBeimAbschliessenVerifizieren tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table schritte change column typScriptStep typScriptStep tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table schritte change column batchStep batchStep tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table schritte change column delayStep delayStep tinyint(1) DEFAULT '0'");
@@ -364,7 +425,7 @@ public class DatabaseVersion {
             logger.info("Convert old wikifield to new process log. This might run a while.");
             String sql = "SELECT ProzesseID, wikifield from prozesse where wikifield !=''";
             @SuppressWarnings("unchecked")
-			List<Object> rawData = ProcessManager.runSQL(sql);
+            List<Object> rawData = ProcessManager.runSQL(sql);
             if (rawData != null && !rawData.isEmpty()) {
                 String header = "INSERT INTO processlog (processID, creationDate, userName, type , content) VALUES ";
                 StringBuilder sb = new StringBuilder();

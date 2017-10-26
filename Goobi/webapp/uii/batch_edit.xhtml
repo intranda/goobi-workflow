@@ -23,7 +23,78 @@
 		<ui:include src="includes/calendarJavaScript.xhtml" />
 
 		<div class="row">
-			<div class="col-sm-6">
+            <div class="col-sm-12">
+                <div class="box box-color box-bordered">
+                    <div class="box-title">
+                        <h3 class="tableColumnMaxWidthLonger">
+                            <i class="fa fa-table"></i>
+                            <h:outputText
+                                value="#{msgs.batch}"
+                                class="margin-right-5" />
+                        </h3>
+                    </div>
+                    <h:form
+                        id="batchDetails"
+                        styleClass="form-horizontal form-bordered">
+                        <div class="box-content nopadding">
+                            <intranda:formInputText
+                                id="batchId"
+                                name="batchId"
+                                label="#{msgs.id}"
+                                field="#{BatchForm.batchHelper.batch.batchId}"
+                                fieldStyle="form-control"
+                                readonly="true"
+                                required="false" />
+
+                            <intranda:formInputText
+                                id="batchName"
+                                name="batchName"
+                                label="#{msgs.name}"
+                                field="#{BatchForm.batchHelper.batch.batchName}"
+                                help="#{msgs.helpBatchName}"
+                                fieldStyle="form-control"
+                                readonly="false"
+                                required="false" />
+
+                            <!-- startdate -->
+                            <intranda:formInputCalendar
+                                id="startDate"
+                                name="startdate"
+                                label="#{msgs.startdate}"
+                                field="#{BatchForm.batchHelper.batch.startDate}"
+                                help="#{msgs.helpStartdate}"
+                                required="false" />
+
+                            <!-- enddate -->
+                            <intranda:formInputCalendar
+                                id="endDate"
+                                name="enddate"
+                                label="#{msgs.enddate}"
+                                field="#{BatchForm.batchHelper.batch.endDate}"
+                                help="#{msgs.helpEnddate}"
+                                required="false" />
+
+                        </div>
+                        <div class="form-actions">
+
+                            <!-- Save -->
+                            <h:commandLink
+                                styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
+                                id="absenden"
+                                action="#{BatchForm.batchHelper.saveBatchDetails}">
+                                <i class="fa fa-save margin-right-5"></i>
+                                <h:outputText value="#{msgs.speichern}" />
+                            </h:commandLink>
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-sm-6">
 				<div class="box box-color box-bordered">
 					<div class="box-title">
 						<h3>

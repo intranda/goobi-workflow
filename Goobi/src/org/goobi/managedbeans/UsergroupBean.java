@@ -131,5 +131,20 @@ public class UsergroupBean extends BasicBean {
     	return myroles;
     }
 
+    
+    public String cloneUsergroup( ) {
+        Usergroup group = new Usergroup();
+        group.setTitel(myBenutzergruppe.getTitel() + "_copy");
+        for (String role : myBenutzergruppe.getUserRoles()) {
+            group.addUserRole(role);
+        }
+        try {
+            UsergroupManager.saveUsergroup(group);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error, could not save", e.getMessage());
+        }
+        paginator.load();
+        return "";
+    }
 	
 }

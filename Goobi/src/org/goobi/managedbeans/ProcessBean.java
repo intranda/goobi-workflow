@@ -52,6 +52,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -64,8 +66,9 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
-import org.goobi.beans.Project;
+import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
@@ -73,7 +76,6 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptResult;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -101,8 +103,8 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import org.goobi.beans.Process;
-
+import de.intranda.commons.chart.renderer.CSVRenderer;
+import de.intranda.commons.chart.results.DataRow;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
@@ -278,6 +280,11 @@ public class ProcessBean extends BasicBean {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
                     return "";
+                } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
+                    this.modusBearbeiten = "prozess";
+                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse")); 
+                   return "";
+                    
                 } else {
                     /* Prozesseigenschaften */
                     if (myProzess.getEigenschaftenList() != null && !myProzess.getEigenschaftenList().isEmpty()) {
@@ -2002,7 +2009,7 @@ public class ProcessBean extends BasicBean {
         return this.myCurrentTable;
     }
 
-    public void CreateExcel() {
+    public void downloadStatisticsAsExcel() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
@@ -2023,6 +2030,52 @@ public class ProcessBean extends BasicBean {
 
             } catch (IOException e) {
 
+            }
+        }
+    }
+    
+    public void downloadStatisticsAsCsv() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        CSVPrinter csvFilePrinter = null;
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            try {
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType("export.csv");
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
+
+                CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
+                csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat);
+                CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
+                
+                // add all headers
+                List<Object> csvHead = new ArrayList<Object>();
+                csvHead.add(csvr.getDataTable().getUnitLabel());
+            	for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
+                	csvHead.add(s);
+				}
+                csvFilePrinter.printRecord(csvHead);
+
+                // add all rows
+                for (DataRow dr : csvr.getDataTable().getDataRows()) {
+                	List<Object> csvColumns = new ArrayList<Object>();
+                	csvColumns.add(dr.getName());
+                	for (int j = 0; j < dr.getNumberValues(); j++) {
+						csvColumns.add(dr.getValue(j));
+					}
+                	csvFilePrinter.printRecord(csvColumns);
+				}
+                
+                facesContext.responseComplete();
+            } catch (Exception e) {
+                
+            } finally {
+                try {
+                    csvFilePrinter.close();
+                } catch (IOException e) {
+            
+                }
             }
         }
     }
