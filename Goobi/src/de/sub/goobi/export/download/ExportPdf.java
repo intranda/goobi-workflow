@@ -162,6 +162,9 @@ public class ExportPdf extends ExportMets {
                  */
 
                 if (!context.getResponseComplete()) {
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("Redirecting pdf request to " + goobiContentServerUrl.toString());
+                    }
                     HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
                     String fileName = myProzess.getTitel() + ".pdf";
                     ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
@@ -184,6 +187,7 @@ public class ExportPdf extends ExportMets {
                 String text = "error while pdf creation: " + e.getMessage();
                 Path file = Paths.get(zielVerzeichnis, myProzess.getTitel() + ".PDF-ERROR.log");
                 try {
+                    logger.error(e);
                     output = new BufferedWriter(new FileWriter(file.toFile()));
                     output.write(text);
                     output.close();
