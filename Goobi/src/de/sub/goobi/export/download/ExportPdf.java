@@ -64,7 +64,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
 import de.sub.goobi.metadaten.MetadatenHelper;
-import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 public class ExportPdf extends ExportMets {
 
@@ -124,7 +123,7 @@ public class ExportPdf extends ExportMets {
                  * -------------------------------- using mets file --------------------------------
                  */
 
-                if (new MetadatenVerifizierung().validate(myProzess) && metsTempFile.toUri().toURL() != null) {
+                if (metsTempFile.toUri().toURL() != null) {
                     /* if no contentserverurl defined use internal goobiContentServerServlet */
                     if (contentServerUrl == null || contentServerUrl.length() == 0) {
                         contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";
