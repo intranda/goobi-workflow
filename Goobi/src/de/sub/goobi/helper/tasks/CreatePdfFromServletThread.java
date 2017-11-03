@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
@@ -69,6 +70,9 @@ public class CreatePdfFromServletThread extends LongRunningTask {
     private Path targetFolder;
     private String internalServletPath;
     private URL metsURL;
+    private Path imagePath = null;
+    private Path pdfPath = null;
+    private Path altoPath = null;
 
     @Override
     public void initialize(Process inProzess) {
@@ -100,6 +104,20 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             Path finalPdf = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".pdf");
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 
+            String imageSource = "";
+            String pdfSource = "";
+            String altoSource = "";
+            
+            if(StringUtils.isNotBlank(imageSource)) {                
+                imageSource = "&imageSource=" + getImagePath().toUri();
+            }
+            if(StringUtils.isNotBlank(pdfSource)) {                
+                pdfSource = "&pdfSource=" + getPdfPath().toUri();
+            }
+            if(StringUtils.isNotBlank(altoSource)) {                
+                altoSource = "&altoSource=" + getAltoPath().toUri();
+            }
+            
             /* --------------------------------
              * using mets file
              * --------------------------------*/
@@ -109,7 +127,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 if (contentServerUrl == null || contentServerUrl.length() == 0) {
                     contentServerUrl = this.internalServletPath + "/gcs/gcs?action=pdf&metsFile=";
                 }
-                goobiContentServerUrl = new URL(contentServerUrl + this.metsURL);
+                goobiContentServerUrl = new URL(contentServerUrl + this.metsURL + imageSource + pdfSource + altoSource);
 
                 /* --------------------------------
                  * mets data does not exist or is invalid
@@ -134,7 +152,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 }
                 String imageString = url.substring(0, url.length() - 1);
                 String targetFileName = "&targetFileName=" + this.getProzess().getTitel() + ".pdf";
-                goobiContentServerUrl = new URL(contentServerUrl + imageString + targetFileName);
+                goobiContentServerUrl = new URL(contentServerUrl + imageString +  imageSource + pdfSource + altoSource + targetFileName);
             }
 
             /* --------------------------------
@@ -257,5 +275,49 @@ public class CreatePdfFromServletThread extends LongRunningTask {
     public void setMetsURL(URL metsURL) {
         this.metsURL = metsURL;
     }
+
+    /**
+     * @return the imagePath
+     */
+    public Path getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * @param imagePath the imagePath to set
+     */
+    public void setImagePath(Path imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    /**
+     * @return the pdfPath
+     */
+    public Path getPdfPath() {
+        return pdfPath;
+    }
+
+    /**
+     * @param pdfPath the pdfPath to set
+     */
+    public void setPdfPath(Path pdfPath) {
+        this.pdfPath = pdfPath;
+    }
+
+    /**
+     * @return the altoPath
+     */
+    public Path getAltoPath() {
+        return altoPath;
+    }
+
+    /**
+     * @param altoPath the altoPath to set
+     */
+    public void setAltoPath(Path altoPath) {
+        this.altoPath = altoPath;
+    }
+    
+    
 
 }

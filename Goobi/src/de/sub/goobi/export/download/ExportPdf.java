@@ -28,6 +28,7 @@ package de.sub.goobi.export.download;
  * exception statement from your version.
  */
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -64,6 +65,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
 import de.sub.goobi.metadaten.MetadatenHelper;
+import de.unigoettingen.sub.commons.util.Filters;
 
 public class ExportPdf extends ExportMets {
 
@@ -96,6 +98,13 @@ public class ExportPdf extends ExportMets {
         String servletpath = context.getExternalContext().getRequestServletPath();
         String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
+        Path imagesPath = Paths.get(myProzess.getImagesTifDirectory(true));
+        if(!Files.exists(imagesPath) || NIOFileUtils.list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
+            imagesPath = Paths.get(myProzess.getImagesOrigDirectory(true));
+        }
+        Path pdfPath = Paths.get(myProzess.getPdfDirectory());
+        Path altoPath = Paths.get(myProzess.getAltoDirectory());
+        
         if (!ConfigurationHelper.getInstance().isPdfAsDownload()) {
             /*
              * -------------------------------- use contentserver api for creation of pdf-file --------------------------------
@@ -104,6 +113,9 @@ public class ExportPdf extends ExportMets {
             pdf.setMetsURL(metsTempFile.toUri().toURL());
             pdf.setTargetFolder(Paths.get(zielVerzeichnis));
             pdf.setInternalServletPath(myBasisUrl);
+            pdf.setImagePath(imagesPath);
+            pdf.setPdfPath(pdfPath);
+            pdf.setAltoPath(altoPath);
             if (logger.isDebugEnabled()) {
                 logger.debug("Taget directory: " + zielVerzeichnis);
                 logger.debug("Using ContentServer2 base URL: " + myBasisUrl);
@@ -119,17 +131,22 @@ public class ExportPdf extends ExportMets {
                 URL goobiContentServerUrl = null;
                 String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
 
+                String imageSource = "&imageSource=" + imagesPath.toUri();
+                String pdfSource = "&pdfSource=" + pdfPath.toUri();
+                String altoSource = "&altoSource=" + altoPath.toUri();
+                
                 /*
                  * -------------------------------- using mets file --------------------------------
                  */
 
-                if (metsTempFile.toUri().toURL() != null) {
+                if (Files.exists(metsTempFile)) {
                     /* if no contentserverurl defined use internal goobiContentServerServlet */
                     if (contentServerUrl == null || contentServerUrl.length() == 0) {
                         contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";
                     }
+
                     goobiContentServerUrl =
-                            new URL(contentServerUrl + metsTempFile.toUri().toURL() + "&targetFileName=" + myProzess.getTitel() + ".pdf");
+                            new URL(contentServerUrl + metsTempFile.toUri().toURL() +  imageSource + pdfSource + altoSource + "&targetFileName=" + myProzess.getTitel() + ".pdf");
                     /*
                      * -------------------------------- mets data does not exist or is invalid --------------------------------
                      */
@@ -152,7 +169,8 @@ public class ExportPdf extends ExportMets {
                     }
                     String imageString = url.substring(0, url.length() - 1);
                     String targetFileName = "&targetFileName=" + myProzess.getTitel() + ".pdf";
-                    goobiContentServerUrl = new URL(contentServerUrl + imageString + targetFileName);
+
+                    goobiContentServerUrl = new URL(contentServerUrl + imageString + imageSource + pdfSource + altoSource + targetFileName);
 
                 }
 
@@ -173,10 +191,10 @@ public class ExportPdf extends ExportMets {
                     response.sendRedirect(goobiContentServerUrl.toString());
                     context.responseComplete();
                 }
-                if (metsTempFile.toUri().toURL() != null) {
-                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
-                    Files.delete(tempMets);
-                }
+//                if (Files.exists(metsTempFile)) {
+//                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
+//                    Files.delete(metsTempFile);
+//                }
             } catch (Exception e) {
 
                 /*
