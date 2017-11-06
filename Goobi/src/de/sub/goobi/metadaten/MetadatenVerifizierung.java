@@ -364,7 +364,7 @@ public class MetadatenVerifizierung {
             /* jetzt die Typen prüfen */
             if (number.equals("1m") && real != 1) {
                 inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
-                        "MetadataNotOneElement") + " " + real + Helper.getTranslation("MetadataTimes"));
+                        "MetadataNotOneElement") + " " + real + " " + Helper.getTranslation("MetadataTimes"));
             }
             if (number.equals("1o") && real > 1) {
                 inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
