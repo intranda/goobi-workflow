@@ -111,8 +111,13 @@ public class BatchBean extends BasicBean {
         String msg1 = Helper.getTranslation("batch");
         String msg2 = Helper.getTranslation("prozesse");
         if (batch != null) {
-            String text = msg1 + " " + batch.getBatchId() + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
-            batch.setBatchLabel(text);
+            if (StringUtils.isNotBlank(batch.getBatchName())) {
+                batch.setBatchLabel(batch.getBatchName() + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")");
+            } else {
+                String text = msg1 + " " + batch.getBatchId() + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
+
+                batch.setBatchLabel(text);
+            }
             return batch;
         } else {
             String text = Helper.getTranslation("withoutBatch") + " (" + ProcessManager.countProcesses(filter) + " " + msg2 + ")";
