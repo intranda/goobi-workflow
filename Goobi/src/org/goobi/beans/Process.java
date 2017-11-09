@@ -632,9 +632,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Processproperty> getEigenschaftenList() {
-
-        return new ArrayList<Processproperty>(getEigenschaften());
-
+        return getEigenschaften();
     }
 
     public int getWerkstueckeSize() {
