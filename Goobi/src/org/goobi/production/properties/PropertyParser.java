@@ -146,6 +146,7 @@ public class PropertyParser {
         // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
         // 'eigenschaften'
         ArrayList<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
+        mySchritt.getProzess().setEigenschaften(null);
         List<Processproperty> plist = mySchritt.getProzess().getEigenschaftenList();
         for (Processproperty pe : plist) {
 
