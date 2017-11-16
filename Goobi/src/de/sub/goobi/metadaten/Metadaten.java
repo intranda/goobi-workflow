@@ -263,6 +263,8 @@ public class Metadaten {
 
     private IMetadataPlugin currentPlugin;
 
+    private boolean displayHiddenMetadata = false;
+    
     /**
      * Konstruktor ================================================================
      */
@@ -1244,7 +1246,7 @@ public class Metadaten {
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
         List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper
-                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
+                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -1257,7 +1259,7 @@ public class Metadaten {
          * -------------------------------- alle Personen und die DefaultDisplay-Werte ermitteln --------------------------------
          */
         myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
+                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
@@ -4109,7 +4111,7 @@ public class Metadaten {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
                     List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
+                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4129,7 +4131,7 @@ public class Metadaten {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
                     List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
+                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
