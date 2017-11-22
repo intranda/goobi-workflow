@@ -227,6 +227,18 @@
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
+                            
+                                                                <!--  HTML   -->
+                             <h:panelGroup rendered="#{(myprocess_item.type.name == 'html')}">
+                                <div class="form-group">
+                                    <h:outputLabel for="date" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+ 	                                <div class="col-sm-9">
+	                                    <x:inputTextarea id="valueArea" forceId="true" styleClass="form-control" value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
+	                                    <h:message for="valueArea" showDetail="true" styleClass="help-inline font-danger" />
+	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                    </div>
+                                </div>
+                             </h:panelGroup>
                         </div>
                         </div>    
                 </x:dataList>
