@@ -34,7 +34,8 @@
                                                     <h:outputText value="#{proc.name}" />
                                                 </td>
                                                 <td>
-                                                    <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
+                                                    <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name == 'html'}" escape="false" />
+                                                    <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
                                                     <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank" rendered="#{proc.type.name == 'link'}">
                                                         <h:outputText value="#{proc.readValue}" />
                                                     </h:outputLink>
@@ -83,7 +84,8 @@
                                                     <h:outputText value="#{process_item.name}" />
                                                 </td>
                                                 <td>
-                                                    <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" />
+                                                    <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name == 'html'}" escape="false" />
+										            <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html'}" />
                                                     <h:outputLink value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank" rendered="#{process_item.type.name == 'link'}">
                                                         <h:outputText value="#{process_item.readValue}" />
                                                     </h:outputLink>

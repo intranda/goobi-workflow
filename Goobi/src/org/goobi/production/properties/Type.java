@@ -32,7 +32,9 @@ public enum Type {
     DATE("date"),
     NUMBER("number"),
     LINK("link"),
-    METADATA("metadata");
+    METADATA("metadata"),
+    HTML("html");
+
     private String name;
 
     private Type(String name) {
@@ -60,6 +62,9 @@ public enum Type {
         }
         if (inName.equalsIgnoreCase("METADATA")) {
             return METADATA;
+        }
+        if (inName.equalsIgnoreCase("HTML")) {
+            return HTML;
         }
 
         return TEXT;
