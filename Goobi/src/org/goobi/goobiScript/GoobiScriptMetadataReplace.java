@@ -1,6 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -70,7 +71,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
 	class UpdateMetadataThread extends Thread {
 		public void run() {
 			// execute all jobs that are still in waiting state
-			for (GoobiScriptResult gsr : resultList) {
+			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
+            for (GoobiScriptResult gsr : templist) {
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());

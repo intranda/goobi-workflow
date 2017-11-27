@@ -1,5 +1,6 @@
 package org.goobi.goobiScript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 			boolean exportImages = exportImagesParameter.toLowerCase().equals("true");
 
 			// execute all jobs that are still in waiting state
-			for (GoobiScriptResult gsr : resultList) {
+			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
+            for (GoobiScriptResult gsr : templist) {
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
