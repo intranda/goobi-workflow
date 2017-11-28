@@ -136,8 +136,28 @@
 	 										 </ui:repeat>
                                          </table>
                                      </x:column>
+                                     
+                                     <!-- +++++++++++++++++  Tests with properties ++++++++++++++++++++++++ 
+                                     <x:column styleClass="tableColumnOverflow maxWidth300"  rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}">
+                                         <f:facet name="header">
+                                             <h:outputText value="#{msgs.eigenschaften}" />
+                                         </f:facet>
+                                         <table>
+    	                                     <ui:repeat var="prop" value="#{item.eigenschaften}" varStatus="propstatus" id="proplist">
+                                                    <tr>
+	                                                	<td style="border: none #ddd;padding: 2px;vertical-align:top;">
+															<h:outputText value="#{prop.titel}:" />
+	                                                	</td>
+	                                                	<td style="border: none #ddd;padding: 2px; white-space: normal;">
+	                                                		<h:outputText value="#{prop.wert}" />
+	                                                	</td>
+		 										 	</tr>
+	 										 </ui:repeat>
+                                         </table>
+                                     </x:column>
+									-->
 
-                                        <!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
+                                    <!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
                                     <x:column styleClass="tableColumnOverflow width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{ProzessverwaltungForm.sortierung=='batchDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">
                                             <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
