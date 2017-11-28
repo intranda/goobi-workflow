@@ -66,7 +66,8 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 	class AddUserGroupThread extends Thread {
 		public void run() {
 			// execute all jobs that are still in waiting state
-			for (GoobiScriptResult gsr : resultList) {
+			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
+            for (GoobiScriptResult gsr : templist) {
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());

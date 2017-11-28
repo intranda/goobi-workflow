@@ -78,7 +78,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 
             // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : resultList) {
+            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
+            for (GoobiScriptResult gsr : templist) {
                 if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
                     gsr.updateTimestamp();
                     gsr.setResultType(GoobiScriptResultType.RUNNING);
