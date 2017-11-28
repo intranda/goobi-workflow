@@ -42,126 +42,47 @@ import java.util.regex.Pattern;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 public class ProcessProperty implements IProperty, Serializable {
 
 	private static final long serialVersionUID = 6413183995622426678L;
+	@Getter @Setter
 	private String name;
-	private Integer container;
+	@Getter @Setter
+	private int container;
+	@Getter @Setter
 	private String validation;
+	@Getter @Setter
 	private Type type;
+	@Getter
 	private String value;
+	@Getter @Setter
 	private String readValue;
+	@Getter @Setter
 	private List<String> possibleValues;
+	@Getter @Setter
 	private List<String> projects;
+	@Getter @Setter
+	private List<String> workflows;
+	@Getter @Setter
 	private List<ShowStepCondition> showStepConditions;
+	@Getter @Setter
 	private AccessCondition showProcessGroupAccessCondition;
+	@Getter @Setter
 	private Processproperty prozesseigenschaft;
+	@Getter @Setter
 	private AccessCondition currentStepAccessCondition;
-	private boolean currentStepDuplicationAllowed = false;
+	@Getter @Setter
+	private boolean duplicationAllowed = false;
 	
 	public ProcessProperty() {
 		this.possibleValues = new ArrayList<String>();
 		this.projects = new ArrayList<String>();
+		this.workflows = new ArrayList<String>();
 		this.showStepConditions = new ArrayList<ShowStepCondition>();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getName()
-	 */
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setName(java.lang.String)
-	 */
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getContainer()
-	 */
-	@Override
-	public int getContainer() {
-		return this.container;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setContainer(int)
-	 */
-	@Override
-	public void setContainer(int container) {
-		this.container = container;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getValidation()
-	 */
-	@Override
-	public String getValidation() {
-		return this.validation;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setValidation(java.lang.String)
-	 */
-	@Override
-	public void setValidation(String validation) {
-		this.validation = validation;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getType()
-	 */
-	@Override
-	public Type getType() {
-		return this.type;
-	}
-
-	public String getReadValue() {
-		return readValue;
-	}
-	
-	public void setReadValue(String readValue) {
-		this.readValue = readValue;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setType(org.goobi.production.properties.Type)
-	 */
-	@Override
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getValue()
-	 */
-	@Override
-	public String getValue() {
-		return this.value;
 	}
 
 	/*
@@ -174,27 +95,6 @@ public class ProcessProperty implements IProperty, Serializable {
 		this.value = value;
 		this.readValue = value;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getPossibleValues()
-	 */
-	@Override
-	public List<String> getPossibleValues() {
-		return this.possibleValues;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setPossibleValues(java.util.ArrayList)
-	 */
-	@Override
-	public void setPossibleValues(List<String> possibleValues) {
-		this.possibleValues = possibleValues;
-	}
-
 	
 	public void setDateValue(Date inDate) {
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -215,67 +115,6 @@ public class ProcessProperty implements IProperty, Serializable {
 		} catch (NullPointerException e) {
 			return new Date();
 		}
-	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getProjects()
-	 */
-	@Override
-	public List<String> getProjects() {
-		return this.projects;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setProjects(java.util.ArrayList)
-	 */
-	@Override
-	public void setProjects(List<String> projects) {
-		this.projects = projects;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getShowStepConditions()
-	 */
-	@Override
-	public List<ShowStepCondition> getShowStepConditions() {
-		return this.showStepConditions;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setShowStepConditions(java.util.ArrayList)
-	 */
-	@Override
-	public void setShowStepConditions(List<ShowStepCondition> showStepConditions) {
-		this.showStepConditions = showStepConditions;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getShowProcessGroupAccessCondition()
-	 */
-	@Override
-	public AccessCondition getShowProcessGroupAccessCondition() {
-		return this.showProcessGroupAccessCondition;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setShowProcessGroupAccessCondition(org.goobi.production.properties.AccessCondition)
-	 */
-	@Override
-	public void setShowProcessGroupAccessCondition(AccessCondition showProcessGroupAccessCondition) {
-		this.showProcessGroupAccessCondition = showProcessGroupAccessCondition;
 	}
 
 	/*
@@ -309,26 +148,6 @@ public class ProcessProperty implements IProperty, Serializable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.goobi.production.properties.IProperty#getProzesseigenschaft()
-	 */
-
-	public Processproperty getProzesseigenschaft() {
-		return this.prozesseigenschaft;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setProzesseigenschaft(de.sub.goobi.Beans.Prozesseigenschaft)
-	 */
-
-	public void setProzesseigenschaft(Processproperty prozesseigenschaft) {
-		this.prozesseigenschaft = prozesseigenschaft;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.goobi.production.properties.IProperty#getClone()
 	 */
 	@Override
@@ -340,7 +159,7 @@ public class ProcessProperty implements IProperty, Serializable {
 		p.setType(this.type);
 		p.setValue(this.value);
 		p.setShowProcessGroupAccessCondition(this.showProcessGroupAccessCondition);
-		p.setDuplicationAllowed(this.getDuplicationAllowed());
+		p.setDuplicationAllowed(this.isDuplicationAllowed());
 		p.setShowStepConditions(new ArrayList<ShowStepCondition>(getShowStepConditions()));
 		p.setPossibleValues(new ArrayList<String>(getPossibleValues()));
 		p.setProjects(new ArrayList<String>(getProjects()));
@@ -358,7 +177,6 @@ public class ProcessProperty implements IProperty, Serializable {
 			this.prozesseigenschaft.setWert(this.value);
 			this.prozesseigenschaft.setTitel(this.name);
 			this.prozesseigenschaft.setContainer(this.container);
-		// }
 	}
 
 	public List<String> getValueList() {
@@ -398,12 +216,10 @@ public class ProcessProperty implements IProperty, Serializable {
 	}
 
 	public static class CompareProperties implements Comparator<ProcessProperty>, Serializable {
-
 		private static final long serialVersionUID = 8047374873015931547L;
 
 		@Override
 		public int compare(ProcessProperty o1, ProcessProperty o2) {
-
 			return new Integer(o1.getContainer()).compareTo(new Integer(o2.getContainer()));
 		}
 
@@ -416,19 +232,4 @@ public class ProcessProperty implements IProperty, Serializable {
 		return false;
 	}
 
-	public AccessCondition getCurrentStepAccessCondition() {
-		return currentStepAccessCondition;
-	}
-
-	public void setCurrentStepAccessCondition(AccessCondition currentStepAccessCondition) {
-		this.currentStepAccessCondition = currentStepAccessCondition;
-	}
-
-	public void setDuplicationAllowed(boolean duplicate) {
-		currentStepDuplicationAllowed = duplicate;
-	}
-	
-	public boolean getDuplicationAllowed() {
-		return currentStepDuplicationAllowed;
-	}
 }

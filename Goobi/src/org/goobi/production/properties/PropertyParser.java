@@ -49,15 +49,22 @@ public class PropertyParser {
     public static void main(String[] args) {
         PropertyParser parser = new PropertyParser();
         parser.readConfigAsSample();
-        //		System.out.println("finish");
     }
 
     public static ArrayList<ProcessProperty> getPropertiesForStep(Step mySchritt) {
 
         String stepTitle = mySchritt.getTitel();
         String projectTitle = mySchritt.getProzess().getProjekt().getTitel();
+        String workflowTitle = "";
         ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
 
+        // find out original workflow template
+        for (Processproperty p : mySchritt.getProzess().getEigenschaften()) {
+        	if (p.getTitel().equals("Template")){
+        		workflowTitle = p.getWert();
+        	}
+		}
+        
         if (mySchritt.getProzess().isIstTemplate()) {
             return properties;
         }
@@ -87,9 +94,18 @@ public class PropertyParser {
             for (int j = 0; j <= count; j++) {
                 pp.getProjects().add(config.getString("property(" + i + ").project(" + j + ")"));
             }
+            
+            // workflows
+            count = config.getMaxIndex("property(" + i + ").workflow");
+            for (int j = 0; j <= count; j++) {
+                pp.getWorkflows().add(config.getString("property(" + i + ").workflow(" + j + ")"));
+            }
 
-            // project is configured
-            if (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle)) {
+            // project and workflows are configured correct?
+            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().size()==0;
+            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().size()==0;
+            
+            if (projectOk && workflowOk) {
 
                 // showStep
                 boolean containsCurrentStepTitle = false;
@@ -100,7 +116,7 @@ public class PropertyParser {
                     String access = config.getString("property(" + i + ").showStep(" + j + ")[@access]");
                     boolean duplicate = config.getBoolean("property(" + i + ").showStep(" + j + ")[@duplicate]", false);
                     ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
-                    if (ssc.getName().equals(stepTitle)) {
+                    if (ssc.getName().equals(stepTitle) || ssc.getName().equals("*")) {
                         containsCurrentStepTitle = true;
                         pp.setDuplicationAllowed(duplicate);
                         pp.setCurrentStepAccessCondition(AccessCondition.getAccessConditionByName(access));
