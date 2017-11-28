@@ -4,11 +4,11 @@ package org.goobi.production.properties;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *          - http://www.goobi.org
+ *          - http://launchpad.net/goobi-production
+ *          - http://gdz.sub.uni-goettingen.de
+ *          - http://www.intranda.com
+ *          - http://digiverso.com 
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -191,7 +191,7 @@ public class PropertyParser {
     }
 
     public static List<ProcessProperty> getPropertiesForProcess(Process process) {
-        //		Hibernate.initialize(process.getProjekt());
+        //      Hibernate.initialize(process.getProjekt());
         String projectTitle = process.getProjekt().getTitel();
         ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
         if (process.isIstTemplate()) {
@@ -269,6 +269,7 @@ public class PropertyParser {
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
           // 'eigenschaften'
         List<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
+        process.setEigenschaften(null);
         List<Processproperty> plist = process.getEigenschaftenList();
         for (Processproperty pe : plist) {
 
