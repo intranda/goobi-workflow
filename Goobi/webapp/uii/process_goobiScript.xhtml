@@ -109,7 +109,7 @@
 											<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
 										</x:column>
 										
-										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'command desc'?'sorting_desc':SessionForm.gsm.sort=='command'?'sorting_asc':'sorting'}">
+										<x:column styleClass="tableColumnOverflow maxWidth300" headerstyleClass="#{SessionForm.gsm.sort eq 'command desc'?'sorting_desc':SessionForm.gsm.sort=='command'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
 												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_command}" />
