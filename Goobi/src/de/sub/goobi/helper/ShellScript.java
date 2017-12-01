@@ -153,7 +153,6 @@ public class ShellScript {
             String[] callSequence = commandLine.toArray(new String[commandLine.size()]);
             process = new ProcessBuilder(callSequence).start();
 
-
             outputChannel = inputStreamToLinkedList(process.getInputStream());
             errorChannel = inputStreamToLinkedList(process.getErrorStream());
         } catch (IOException error) {
@@ -207,6 +206,43 @@ public class ShellScript {
         }
     }
 
+    public static int callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
+        int err = ShellScript.ERRORLEVEL_ERROR;
+
+        if (parameter.isEmpty()) {
+            return 0;
+        }
+        String scriptname = parameter.get(0);
+        List<String> parameterWithoutCommand = parameter.subList(0, parameter.size());
+        try {
+            ShellScript s = new ShellScript(Paths.get(scriptname));
+
+            err = s.run(parameterWithoutCommand);
+            String msg = "";
+            for (String line : s.getStdOut()) {
+                msg += line + "\n";
+                //            Helper.setMeldung(line);
+            }
+            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + msg);
+            Helper.setMeldung(msg);
+            if (s.getStdErr().size() > 0) {
+                err = ShellScript.ERRORLEVEL_ERROR;
+                String message = "";
+                for (String line : s.getStdErr()) {
+                    message += line + "\n";
+                }
+                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + message);
+                Helper.setFehlerMeldung(message);
+            }
+        } catch (FileNotFoundException e) {
+            logger.error("FileNotFoundException in callShell2()", e);
+            Helper.addMessageToProcessLog(processID, LogType.ERROR, "Exception occured while executing script '" + scriptname + "': " + e
+                    .getMessage());
+            Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
+        }
+        return err;
+    }
+
     /**
      * This implements the legacy Helper.callShell2() command. This is subject to whitespace problems and is maintained here for backward
      * compatibility only. Please don’t use.
@@ -254,7 +290,7 @@ public class ShellScript {
             String msg = "";
             for (String line : s.getStdOut()) {
                 msg += line + "\n";
-//                Helper.setMeldung(line);
+                //                Helper.setMeldung(line);
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + msg);
             Helper.setMeldung(msg);
@@ -264,12 +300,14 @@ public class ShellScript {
                 for (String line : s.getStdErr()) {
                     message += line + "\n";
                 }
-                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + nonSpacesafeScriptingCommand + "': " + message);
+                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + nonSpacesafeScriptingCommand
+                        + "': " + message);
                 Helper.setFehlerMeldung(message);
             }
         } catch (FileNotFoundException e) {
             logger.error("FileNotFoundException in callShell2()", e);
-            Helper.addMessageToProcessLog(processID, LogType.ERROR, "Exception occured while executing script '" + nonSpacesafeScriptingCommand + "': " + e.getMessage());
+            Helper.addMessageToProcessLog(processID, LogType.ERROR, "Exception occured while executing script '" + nonSpacesafeScriptingCommand
+                    + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
         return err;

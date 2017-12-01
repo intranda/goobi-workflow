@@ -336,8 +336,8 @@ public class HelperSchritte {
             logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-
-        script = replacer.replace(script);
+        List<String> parameterList = replacer.replaceBashScript(script);
+        //        script = replacer.replace(script);
         int rueckgabe = -1;
         try {
             logger.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
@@ -348,7 +348,7 @@ public class HelperSchritte {
 
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message.toString());
 
-            rueckgabe = ShellScript.legacyCallShell2(script, step.getProcessId());
+            rueckgabe = ShellScript.callShell(parameterList, step.getProcessId());
             if (automatic) {
                 if (rueckgabe == 0) {
                     step.setEditTypeEnum(StepEditType.AUTOMATIC);

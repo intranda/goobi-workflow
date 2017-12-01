@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
@@ -90,6 +91,28 @@ public class VariableReplacer {
         this.uhelp = new UghHelper();
         this.process = p;
         this.step = s;
+    }
+
+    /**
+     * converts input string into list of arguments. 
+     * 
+     * First the input string gets tokenized, either on double quotation or on white space. Afterwards each parameter gets replaced
+     * 
+     * @param inString
+     * @return
+     */
+    
+    public List<String> replaceBashScript(String inString) {
+        List<String> returnList = new ArrayList<>();
+        StrTokenizer tokenizer = new StrTokenizer(inString, ' ', '\"');
+
+        while (tokenizer.hasNext()) {
+            String parameter = tokenizer.nextToken();
+            parameter = replace(parameter);
+            returnList.add(parameter);
+        }
+
+        return returnList;
     }
 
     /**
@@ -160,7 +183,8 @@ public class VariableReplacer {
                 ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
             }
             if (ocrPlaintextPath.endsWith(FileSystems.getDefault().getSeparator())) {
-                ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+                ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length())
+                        .replace("\\", "/");
             }
             if (inString.contains("(tifurl)")) {
                 if (SystemUtils.IS_OS_WINDOWS) {
@@ -227,7 +251,7 @@ public class VariableReplacer {
             if (inString.contains("(scriptsFolder)")) {
                 inString = inString.replace("(scriptsFolder)", ConfigurationHelper.getInstance().getScriptsFolder());
             }
-            
+
             if (this.step != null) {
                 String stepId = String.valueOf(this.step.getId());
                 String stepname = this.step.getTitel();
@@ -352,7 +376,7 @@ public class VariableReplacer {
                 case ALL:
                     if (resultFirst != null && !resultFirst.isEmpty()) {
                         result = resultFirst;
-                    } else if (resultTop!= null && !resultTop.isEmpty()) {
+                    } else if (resultTop != null && !resultTop.isEmpty()) {
                         result = resultTop;
                     } else {
                         result = "";
@@ -362,12 +386,12 @@ public class VariableReplacer {
 
             }
             return result;
-            
+
         } else {
             return "";
         }
-    }    
-    
+    }
+
     /**
      * Metadatum von übergebenen Docstruct ermitteln, im Fehlerfall wird null zurückgegeben
      * ================================================================
