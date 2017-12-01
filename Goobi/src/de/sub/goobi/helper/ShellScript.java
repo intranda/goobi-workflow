@@ -212,6 +212,11 @@ public class ShellScript {
         if (parameter.isEmpty()) {
             return 0;
         }
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug(parameter);
+        }
+        
         String scriptname = parameter.get(0);
         List<String> parameterWithoutCommand = null;
         if (parameter.size() > 1) {
