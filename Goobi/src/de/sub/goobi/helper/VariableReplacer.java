@@ -35,7 +35,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.properties.ProcessProperty;
@@ -362,7 +361,7 @@ public class VariableReplacer {
                     break;
 
             }
-            return result.replace("\"", "\\\"");
+            return result;
             
         } else {
             return "";
