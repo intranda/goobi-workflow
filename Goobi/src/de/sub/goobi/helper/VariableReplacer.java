@@ -362,7 +362,7 @@ public class VariableReplacer {
                     break;
 
             }
-            return result.replace("\"", "\\\"").replace("'", "\\'");
+            return result.replace("\"", "\\\"");
             
         } else {
             return "";
