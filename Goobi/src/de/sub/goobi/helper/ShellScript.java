@@ -213,7 +213,10 @@ public class ShellScript {
             return 0;
         }
         String scriptname = parameter.get(0);
-        List<String> parameterWithoutCommand = parameter.subList(0, parameter.size());
+        List<String> parameterWithoutCommand = null;
+        if (parameter.size() > 1) {
+            parameterWithoutCommand =  parameter.subList(1, parameter.size());
+        }
         try {
             ShellScript s = new ShellScript(Paths.get(scriptname));
 
