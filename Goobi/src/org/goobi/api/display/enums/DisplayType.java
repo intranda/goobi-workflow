@@ -81,7 +81,11 @@ public enum DisplayType {
     dantePersonRelation("dantePersonRelation", "DantePersonRelationPlugin"),
     danteOberbegriffsdatei("danteOberbegriffsdatei", "DanteOberbegriffsdateiPlugin"),
     danteBkgGn250("danteBkgGn250", "DanteBkgGn250Plugin"),
-    danteAmhMaterial("danteAmhMaterial", "DanteAmhMaterialPlugin")
+    danteAmhMaterial("danteAmhMaterial", "DanteAmhMaterialPlugin"),
+    dantePrizepapersDokumenttyp("dantePrizepapersDokumenttyp", "DantePrizepapersDokumenttypPlugin"),
+    dantePrizepapersObjekttyp("dantePrizepapersObjekttyp", "DantePrizepapersObjekttypPlugin"),
+    dantePrizepapersFalttechnik("dantePrizepapersFalttechnik", "DantePrizepapersFalttechnikPlugin"),
+    danteMarcrelator("danteMarcrelator", "DanteMarcrelatorPlugin")
     ;
 
     private String title;
