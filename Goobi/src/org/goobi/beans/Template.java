@@ -138,5 +138,9 @@ public class Template implements Serializable {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+    		return super.hashCode();
+    }
     
 }

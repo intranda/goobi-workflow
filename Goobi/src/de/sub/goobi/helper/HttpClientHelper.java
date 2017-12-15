@@ -179,7 +179,7 @@ public class HttpClientHelper {
         }
 
         try {
-            response = (String) client.execute(method, stringResponseHandler);
+            response = client.execute(method, stringResponseHandler);
         } catch (IOException e) {
             logger.error("Cannot execute URL " + url, e);
         } finally {

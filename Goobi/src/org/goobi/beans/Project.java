@@ -531,4 +531,8 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         return p;
     }
 
+    @Override
+    public int hashCode() {
+    		return super.hashCode();
+    }
 }

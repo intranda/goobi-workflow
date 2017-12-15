@@ -63,6 +63,11 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     public boolean equals(Object obj) {
         return this == obj;
     }
+    
+    @Override
+    public int hashCode() {
+    		return super.hashCode();
+    }
 
     public void setSortierart(String sortierart) {
         this.Sortierart = sortierart;

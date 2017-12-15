@@ -136,7 +136,7 @@
             <fileset file="${dir.build}/index.xhtml" />
             <fileset dir="." includes="WEB-INF/*.*, index.xhtml" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
             <fileset dir="." includes="js/**/*.*" />
-            <zipfileset dir="WEB-INF" file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
+            <zipfileset  file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
             <zipfileset dir="webapp/uii" prefix="uii">
                 <patternset>
                     <include name="**/*.*" />

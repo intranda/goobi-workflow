@@ -3410,7 +3410,7 @@ public class Metadaten {
     }
 
     public List<String> autocomplete(String suggest) {
-        String pref = (String) suggest;
+        String pref = suggest;
         ArrayList<String> result = new ArrayList<String>();
         ArrayList<String> alle = new ArrayList<String>();
         for (SelectItem si : this.alleSeiten) {

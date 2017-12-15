@@ -179,4 +179,9 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     public boolean equals(Object obj) {
         return this.getTitel().equals(((Usergroup) obj).getTitel());
     }
+    
+    @Override
+    public int hashCode() {
+    		return super.hashCode();
+    }
 }

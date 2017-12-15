@@ -732,7 +732,7 @@ public class MassImportForm {
         } else if (totalProcessNo == 0) {
             progress = 100;
         } else {
-            progress = (int) (currentProcessNo * 100 / totalProcessNo);
+            progress = (currentProcessNo * 100 / totalProcessNo);
 
             if (progress > 100)
                 progress = 100;
