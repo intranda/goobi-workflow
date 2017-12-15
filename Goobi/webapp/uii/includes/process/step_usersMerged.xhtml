@@ -25,9 +25,8 @@
 								value="#{ProzessverwaltungForm.usergroupPaginator.list}" id="possibleGroups">
 
 								<h:column>
-									<h:outputText value="#{item.titel}" />
 									<!-- Hinzufügen-Schaltknopf -->
-									<h:commandLink id="use" styleClass="btn btn-primary pull-right" title="#{msgs.uebernehmen}" rel="tooltip"
+									<h:commandLink id="use" styleClass="btn btn-primary margin-right-10" title="#{msgs.uebernehmen}" rel="tooltip"
 										action="#{ProzessverwaltungForm.BenutzergruppeHinzufuegen}">
 										<i class="fa fa-plus"></i>
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -35,6 +34,7 @@
 										<f:setPropertyActionListener target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
 										<f:ajax render=":myform" />
 									</h:commandLink>
+									<h:outputText value="#{item.titel}" />
 								</h:column>
 							</x:dataTable>
 
@@ -74,9 +74,8 @@
 								value="#{ProzessverwaltungForm.userPaginator.list}" id="possibleUser">
 
 								<h:column>
-									<h:outputText value="#{item.nachname}, #{item.vorname}" />
 									<!-- Hinzufügen-Schaltknopf -->
-									<h:commandLink styleClass="btn btn-primary pull-right" title="#{msgs.uebernehmen}" rel="tooltip"
+									<h:commandLink styleClass="btn btn-primary margin-right-10" title="#{msgs.uebernehmen}" rel="tooltip"
 										action="#{ProzessverwaltungForm.BenutzerHinzufuegen}" id="addUser">
 										<i class="fa fa-plus"></i>
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -84,6 +83,7 @@
 										<f:setPropertyActionListener target="#{ProzessverwaltungForm.userDisplayMode}" value="" />
 										<f:ajax render=":myform" />
 									</h:commandLink>
+									<h:outputText value="#{item.nachname}, #{item.vorname}" />
 								</h:column>
 							</x:dataTable>
 

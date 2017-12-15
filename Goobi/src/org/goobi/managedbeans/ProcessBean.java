@@ -52,6 +52,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -64,8 +66,9 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
-import org.goobi.beans.Project;
+import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
@@ -73,7 +76,6 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptResult;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -101,8 +103,8 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import org.goobi.beans.Process;
-
+import de.intranda.commons.chart.renderer.CSVRenderer;
+import de.intranda.commons.chart.results.DataRow;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
@@ -124,7 +126,6 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.metadaten.Paginator;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -209,11 +210,11 @@ public class ProcessBean extends BasicBean {
             this.anzeigeAnpassen.put("processId", login.getMyBenutzer().isDisplayIdColumn());
             this.anzeigeAnpassen.put("batchId", login.getMyBenutzer().isDisplayBatchColumn());
             this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isDisplayProcessDateColumn());
-            
+
             this.anzeigeAnpassen.put("thumbnail", login.getMyBenutzer().isDisplayThumbColumn());
             this.anzeigeAnpassen.put("metadatadetails", login.getMyBenutzer().isDisplayMetadataColumn());
             this.anzeigeAnpassen.put("gridview", login.getMyBenutzer().isDisplayGridView());
-            
+
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
         } else {
@@ -279,6 +280,11 @@ public class ProcessBean extends BasicBean {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
                     return "";
+                } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
+                    this.modusBearbeiten = "prozess";
+                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse")); 
+                   return "";
+                    
                 } else {
                     /* Prozesseigenschaften */
                     if (myProzess.getEigenschaftenList() != null && !myProzess.getEigenschaftenList().isEmpty()) {
@@ -364,7 +370,9 @@ public class ProcessBean extends BasicBean {
         } else {
             Helper.setFehlerMeldung("titleEmpty");
         }
-        paginator.load();
+        if (paginator != null) {
+            paginator.load();
+        }
         return "";
     }
 
@@ -460,19 +468,19 @@ public class ProcessBean extends BasicBean {
         return "process_all";
     }
 
-    public String FilterAktuelleProzesseOfGoobiScript(String status){
-    	SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-		List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
-		filter = "\"id:";
-		for (GoobiScriptResult gsr : resultList) {
-			if (gsr.getResultType().toString().equals(status)){
-				filter += gsr.getProcessId() + " ";
-			}
-		}
-		filter += "\"";
-		return FilterAktuelleProzesse();
+    public String FilterAktuelleProzesseOfGoobiScript(String status) {
+        SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+        List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
+        filter = "\"id:";
+        for (GoobiScriptResult gsr : resultList) {
+            if (gsr.getResultType().toString().equals(status)) {
+                filter += gsr.getProcessId() + " ";
+            }
+        }
+        filter += "\"";
+        return FilterAktuelleProzesse();
     }
-    
+
     public String FilterVorlagen() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
@@ -1034,31 +1042,31 @@ public class ProcessBean extends BasicBean {
     }
 
     public void DownloadToHome() {
-    	doDownloadToHome(this.myProzess);
+        doDownloadToHome(this.myProzess);
     }
 
-    private void doDownloadToHome(Process p){
+    private void doDownloadToHome(Process p) {
         /*
          * zunächst prüfen, ob dieser Band gerade von einem anderen Nutzer in Bearbeitung ist und in dessen Homeverzeichnis abgelegt wurde, ansonsten
          * Download
          */
-    	if (!p.isImageFolderInUse()) {
+        if (!p.isImageFolderInUse()) {
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, false);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory incl. writing access from process list.");
         } else {
-            Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"),
-                    p.getImageFolderInUseUser().getNachVorname());
+            Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"), p
+                    .getImageFolderInUseUser().getNachVorname());
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, true);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory with reading access from process list.");
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public void DownloadToHomePage() {
         for (Process proz : (List<Process>) this.paginator.getList()) {
-        	doDownloadToHome(proz);
+            doDownloadToHome(proz);
         }
         Helper.setMeldung(null, "createdInUserHome", "");
     }
@@ -1067,7 +1075,7 @@ public class ProcessBean extends BasicBean {
     public void DownloadToHomeSelection() {
         for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
-            	doDownloadToHome(proz);
+                doDownloadToHome(proz);
             }
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
@@ -1076,7 +1084,7 @@ public class ProcessBean extends BasicBean {
     @SuppressWarnings("unchecked")
     public void DownloadToHomeHits() {
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-        	doDownloadToHome(proz);
+            doDownloadToHome(proz);
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
     }
@@ -1114,13 +1122,14 @@ public class ProcessBean extends BasicBean {
                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                     new HelperSchritte().CloseStepObjectAutomatic(so);
                 } else {
-//                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-//                    if (ben != null) {
-//                        so.setBearbeitungsbenutzer(ben);
-//                    }
-                	ProcessManager.saveProcess(proz);
+                    //                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                    //                    if (ben != null) {
+                    //                        so.setBearbeitungsbenutzer(ben);
+                    //                    }
+                    ProcessManager.saveProcess(proz);
                 }
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusUp' mass manipulation for step " + so.getTitel());
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusUp' mass manipulation for step " + so
+                        .getTitel());
                 break;
             }
         }
@@ -1135,12 +1144,13 @@ public class ProcessBean extends BasicBean {
             if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
                 step.setEditTypeEnum(StepEditType.ADMIN);
                 step.setBearbeitungszeitpunkt(new Date());
-//                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-//                if (ben != null) {
-//                    mySchritt.setBearbeitungsbenutzer(ben);
-//                }
+                //                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                //                if (ben != null) {
+                //                    mySchritt.setBearbeitungsbenutzer(ben);
+                //                }
                 step.setBearbeitungsstatusDown();
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusDown' mass manipulation for step " + step.getTitel());
+                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusDown' mass manipulation for step " + step
+                        .getTitel());
                 break;
             }
         }
@@ -1175,15 +1185,16 @@ public class ProcessBean extends BasicBean {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to "
+                    + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
             } else {
                 mySchritt.setBearbeitungszeitpunkt(new Date());
-//                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-//                if (ben != null) {
-//                    mySchritt.setBearbeitungsbenutzer(ben);
-//                }
+                //                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                //                if (ben != null) {
+                //                    mySchritt.setBearbeitungsbenutzer(ben);
+                //                }
             }
         }
         try {
@@ -1198,12 +1209,13 @@ public class ProcessBean extends BasicBean {
     public String SchrittStatusDown() {
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-//        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-//        if (ben != null) {
-//            mySchritt.setBearbeitungsbenutzer(ben);
-//        }
+        //        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        //        if (ben != null) {
+        //            mySchritt.setBearbeitungsbenutzer(ben);
+        //        }
         this.mySchritt.setBearbeitungsstatusDown();
-        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
+        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to "
+                + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
         try {
             StepManager.saveStep(mySchritt);
             new HelperSchritte().updateProcessStatus(myProzess.getId());
@@ -1344,7 +1356,8 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() - 1));
         try {
             StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
+                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1357,7 +1370,8 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
         try {
             StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
+                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1688,7 +1702,8 @@ public class ProcessBean extends BasicBean {
         }
     }
 
-    public int getGoobiScriptCountSelection() {
+    @SuppressWarnings("unchecked")
+	public int getGoobiScriptCountSelection() {
         List<Integer> idList = new ArrayList<>();
         for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
@@ -1994,7 +2009,7 @@ public class ProcessBean extends BasicBean {
         return this.myCurrentTable;
     }
 
-    public void CreateExcel() {
+    public void downloadStatisticsAsExcel() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
@@ -2015,6 +2030,52 @@ public class ProcessBean extends BasicBean {
 
             } catch (IOException e) {
 
+            }
+        }
+    }
+    
+    public void downloadStatisticsAsCsv() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        CSVPrinter csvFilePrinter = null;
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            try {
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType("export.csv");
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
+
+                CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
+                csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat);
+                CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
+                
+                // add all headers
+                List<Object> csvHead = new ArrayList<Object>();
+                csvHead.add(csvr.getDataTable().getUnitLabel());
+            	for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
+                	csvHead.add(s);
+				}
+                csvFilePrinter.printRecord(csvHead);
+
+                // add all rows
+                for (DataRow dr : csvr.getDataTable().getDataRows()) {
+                	List<Object> csvColumns = new ArrayList<Object>();
+                	csvColumns.add(dr.getName());
+                	for (int j = 0; j < dr.getNumberValues(); j++) {
+						csvColumns.add(dr.getValue(j));
+					}
+                	csvFilePrinter.printRecord(csvColumns);
+				}
+                
+                facesContext.responseComplete();
+            } catch (Exception e) {
+                
+            } finally {
+                try {
+                    csvFilePrinter.close();
+                } catch (IOException e) {
+            
+                }
             }
         }
     }

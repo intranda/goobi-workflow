@@ -25,10 +25,6 @@ package de.sub.goobi.metadaten;
 
 import java.awt.Dimension;
 
-import javax.json.Json;
-
-import com.fasterxml.jackson.core.JsonFactory;
-
 public class ImageLevel implements Comparable<ImageLevel>{
     
     private String url;

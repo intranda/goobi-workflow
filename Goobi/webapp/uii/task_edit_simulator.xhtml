@@ -1,10 +1,13 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <ui:param name="myPageTitle" value="#{msgs.detailsDesArbeitsschritts}" />
+    <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{ProzessverwaltungForm.mySchritt.titel}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="taskAll" label="#{msgs.aktuelleSchritte}" action="#{AktuelleSchritteForm.paginator.returnToPreviousPage}" />
+  		<intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+		<c:if test="#{LoginForm.hasRole('Workflow_Processes')}">
+			<intranda:breadcrumb id="processAll" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}" action="process_all" navId="a1" />
+		</c:if>
+		<intranda:breadcrumb id="processEdit" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessDetails:msgs.process_templateDetails}" action="process_edit" />
         <intranda:breadcrumb id="taskEdit" label="#{myPageTitle}" action="task_edit" noSeparator="#{true}" />
     </ui:define>
 

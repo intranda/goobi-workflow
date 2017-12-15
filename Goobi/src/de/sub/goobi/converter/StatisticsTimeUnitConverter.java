@@ -30,6 +30,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
@@ -39,8 +40,8 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
  * @author Steffen Hankiewicz
  * @version 21.05.2009
  **************************************************************************************/
+@FacesConverter("StatisticsTimeUnitConverter")
 public class StatisticsTimeUnitConverter implements Converter {
-	public static final String CONVERTER_ID = "StatisticsTimeUnitConverter";
 
 	/**
 	 * convert String to TimeUnit 

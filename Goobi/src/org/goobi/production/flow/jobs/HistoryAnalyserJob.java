@@ -28,12 +28,16 @@ package org.goobi.production.flow.jobs;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.HistoryEvent;
@@ -191,9 +195,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                     }
 
                     // for each step done we need to create a step open event on that step based on the latest timestamp for the previous step
-                    he =
-                            addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
-                                    HistoryEventType.stepOpen, inProcess);
+                    he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
+                            HistoryEventType.stepOpen, inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -225,9 +228,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                         isDirty = true;
                     }
 
-                    he =
-                            addHistoryEvent(step.getBearbeitungsbeginn(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepInWork,
-                                    inProcess);
+                    he = addHistoryEvent(step.getBearbeitungsbeginn(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepInWork,
+                            inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -235,9 +237,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                     //
                     // for each step inwork we need to create a step open event on that step based on the latest timestamp from the previous step
-                    he =
-                            addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
-                                    HistoryEventType.stepOpen, inProcess);
+                    he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
+                            HistoryEventType.stepOpen, inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -269,9 +270,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                         isDirty = true;
                     }
 
-                    he =
-                            addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
-                                    inProcess);
+                    he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
+                            inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -408,7 +408,54 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         if (!Files.exists(directory)) {
             throw new IOException("History Manager error while calculating size of " + inProcess.getTitel());
         }
-        return Files.size(directory);
+        if (Files.isDirectory(directory)) {
+            return size(directory);
+        } else {
+            return Files.size(directory);
+        }
+    }
+
+    /**
+     * Calculate the size of a directory by using NIOs walkFileTree 
+     * it ignores symlinks, folders without permissions and concurrent modification
+     * 
+     */
+    
+    private static long size(Path path) {
+
+        final AtomicLong size = new AtomicLong(0);
+
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+
+                    size.addAndGet(attrs.size());
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException e) {
+
+                    logger.debug("skipped: " + file , e);
+                    // Skip folders that can't be traversed
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+
+                    if (e != null)
+                        logger.debug("had trouble traversing: " + dir , e);
+                    // Ignore errors traversing a folder
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new AssertionError("walkFileTree will not throw IOException if the FileVisitor does not");
+        }
+
+        return size.get();
     }
 
     /***************************************************************************

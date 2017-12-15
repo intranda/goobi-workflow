@@ -1,4 +1,5 @@
 package de.sub.goobi.converter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,48 +31,46 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Docket;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
+import lombok.extern.log4j.Log4j;
 
-
+@Log4j
+@FacesConverter("DocketConverter")
 public class DocketConverter implements Converter {
-   public static final String CONVERTER_ID = "DocketConverter";
-   private static final Logger logger = Logger.getLogger(DocketConverter.class);
-   
-   @Override
-public Object getAsObject(FacesContext context, UIComponent component, String value)
-         throws ConverterException {
-      if (value == null || value.length() == 0) {
-         return null;
-      } else {
-         try {
-				return DocketManager.getDocketById(new Integer(value));
-			} catch (NumberFormatException e) {
-				logger.error(e);
-				return "0";
-			} catch (DAOException e) {
-				logger.error(e);
-				return "0";
-			}
-      }
-   }
 
-   @Override
-public String getAsString(FacesContext context, UIComponent component, Object value)
-         throws ConverterException {
-      if (value == null) {
-         return null;
-      } else if (value instanceof Docket) {
-         return String.valueOf(((Docket) value).getId().intValue());
-      } else if (value instanceof String) {
-         return (String) value;
-      } else {
-         throw new ConverterException("Falscher Typ: " + value.getClass() + " muss 'Docket' sein!");
-      }
-   }
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null || value.length() == 0) {
+            return null;
+        } else {
+            try {
+                return DocketManager.getDocketById(new Integer(value));
+            } catch (NumberFormatException e) {
+                log.error(e);
+                return "0";
+            } catch (DAOException e) {
+                log.error(e);
+                return "0";
+            }
+        }
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null) {
+            return null;
+        } else if (value instanceof Docket) {
+            return String.valueOf(((Docket) value).getId().intValue());
+        } else if (value instanceof String) {
+            return (String) value;
+        } else {
+            throw new ConverterException("Falscher Typ: " + value.getClass() + " muss 'Docket' sein!");
+        }
+    }
 
 }

@@ -37,11 +37,15 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import lombok.Data;
 
+@Data
 public class BatchProcessHelper {
 
     private List<Process> processes;
@@ -53,8 +57,10 @@ public class BatchProcessHelper {
     private Integer container;
     private List<String> processNameList = new ArrayList<String>();
     private String processName = "";
+    private Batch batch;
 
-    public BatchProcessHelper(List<Process> processes) {
+    public BatchProcessHelper(List<Process> processes, Batch batch) {
+        this.batch = batch;
         this.processes = processes;
         for (Process p : processes) {
 
@@ -68,56 +74,12 @@ public class BatchProcessHelper {
         loadProcessProperties(this.currentProcess);
     }
 
-    public Process getCurrentProcess() {
-        return this.currentProcess;
-    }
-
-    public void setCurrentProcess(Process currentProcess) {
-        this.currentProcess = currentProcess;
-    }
-
-    public List<Process> getProcesses() {
-        return this.processes;
-    }
-
-    public void setProcesses(List<Process> processes) {
-        this.processes = processes;
-    }
-
-    public List<ProcessProperty> getProcessPropertyList() {
-        return this.processPropertyList;
-    }
-
-    public void setProcessPropertyList(List<ProcessProperty> processPropertyList) {
-        this.processPropertyList = processPropertyList;
-    }
-
-    public ProcessProperty getProcessProperty() {
-        return this.processProperty;
-    }
-
-    public void setProcessProperty(ProcessProperty processProperty) {
-        this.processProperty = processProperty;
-    }
-
     public int getPropertyListSize() {
         return this.processPropertyList.size();
     }
 
     public List<ProcessProperty> getProcessProperties() {
         return this.processPropertyList;
-    }
-
-    public List<String> getProcessNameList() {
-        return this.processNameList;
-    }
-
-    public void setProcessNameList(List<String> processNameList) {
-        this.processNameList = processNameList;
-    }
-
-    public String getProcessName() {
-        return this.processName;
     }
 
     public void setProcessName(String processName) {
@@ -155,7 +117,8 @@ public class BatchProcessHelper {
                     p.getEigenschaften().remove(pe);
                 }
             }
-            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
+            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty
+                    .getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
@@ -241,10 +204,6 @@ public class BatchProcessHelper {
 
     }
 
-    public Map<Integer, PropertyListObject> getContainers() {
-        return this.containers;
-    }
-
     public int getContainersSize() {
         if (this.containers == null) {
             return 0;
@@ -266,10 +225,6 @@ public class BatchProcessHelper {
             }
         }
         return answer;
-    }
-
-    public Integer getContainer() {
-        return this.container;
     }
 
     public List<Integer> getContainerList() {
@@ -366,4 +321,12 @@ public class BatchProcessHelper {
         return "";
     }
 
+    /**
+     * store the current state of the batch in the database
+     */
+    
+    public void saveBatchDetails() {
+        ProcessManager.saveBatch(batch);
+    }
+    
 }

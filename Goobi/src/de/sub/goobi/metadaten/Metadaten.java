@@ -260,9 +260,12 @@ public class Metadaten {
     private String gndSearchValue;
     private String geonamesSearchValue;
     private String searchOption;
+    private String danteSearchValue;
 
     private IMetadataPlugin currentPlugin;
 
+    private boolean displayHiddenMetadata = false;
+    
     /**
      * Konstruktor ================================================================
      */
@@ -1244,7 +1247,7 @@ public class Metadaten {
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
         List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper
-                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
+                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -1257,7 +1260,7 @@ public class Metadaten {
          * -------------------------------- alle Personen und die DefaultDisplay-Werte ermitteln --------------------------------
          */
         myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
+                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
@@ -1410,6 +1413,7 @@ public class Metadaten {
 
     @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
+        rowIndex = null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(inStruct);
@@ -1961,6 +1965,9 @@ public class Metadaten {
             case 5:
                 mode = Paginator.Mode.RECTOVERSO_FOLIATION;
                 break;
+            case 6:
+            	mode = Paginator.Mode.DOUBLE_PAGES;
+            	break;
             default:
                 mode = Paginator.Mode.PAGES;
         }
@@ -2027,8 +2034,6 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
- 
-
     public int getNumberOfNavigation() {
         return numberOfNavigation;
     }
@@ -2041,8 +2046,6 @@ public class Metadaten {
         BildErmitteln(numberOfNavigation);
         return "";
     }
-  
-
 
     public String BildGeheZu() {
         int eingabe;
@@ -2055,8 +2058,6 @@ public class Metadaten {
 
         return "";
     }
-
-
 
     public List<String> getAllTifFolders() {
         return this.allTifFolders;
@@ -2082,8 +2083,8 @@ public class Metadaten {
         }
         if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
-        	if (!this.allTifFolders.contains(this.currentTifFolder)) {
-        		this.currentTifFolder = allTifFolders.get(0);
+            if (!this.allTifFolders.contains(this.currentTifFolder)) {
+                this.currentTifFolder = allTifFolders.get(0);
             }
         }
     }
@@ -2095,7 +2096,7 @@ public class Metadaten {
         if (!this.bildAnzeigen) {
             return;
         }
-       
+
         // try {
         if (dataList == null || dataList.isEmpty() || tiffFolderHasChanged) {
             tiffFolderHasChanged = false;
@@ -2131,7 +2132,6 @@ public class Metadaten {
                 }
             }
         }
-
 
         if (dataList != null && dataList.size() > 0) {
             this.myBildLetztes = dataList.size();
@@ -2210,7 +2210,7 @@ public class Metadaten {
             this.myBildNummer = -1;
         }
     }
-    
+
     private boolean SperrungAktualisieren() {
         /*
          * wenn die Sperrung noch aktiv ist und auch für den aktuellen Nutzer gilt, Sperrung aktualisieren
@@ -2539,6 +2539,7 @@ public class Metadaten {
         this.ajaxSeiteEnde = this.pagesEndCurrentElement;
 
         AjaxSeitenStartUndEndeSetzen();
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
     public String getPagesEndCurrentElement() {
@@ -2631,6 +2632,7 @@ public class Metadaten {
             }
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return null;
     }
 
@@ -2743,6 +2745,7 @@ public class Metadaten {
             }
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.alleSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -2759,6 +2762,7 @@ public class Metadaten {
             this.myDocStruct.removeReferenceTo(this.structSeitenNeu[aktuelleID].getMd().getDocStruct());
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.structSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -2773,7 +2777,7 @@ public class Metadaten {
 
     private String getOcrFileNameForImage() {
         String ocrFile = "";
-            ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+        ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
         return ocrFile;
     }
 
@@ -2799,9 +2803,9 @@ public class Metadaten {
         String ocrResult = "";
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             String myOcrUrl = "";
-          
-                myOcrUrl = getOcrBasisUrl(image.getOrder());
-            
+
+            myOcrUrl = getOcrBasisUrl(image.getOrder());
+
             CloseableHttpClient client = null;
             HttpGet method = new HttpGet(myOcrUrl);
             InputStream stream = null;
@@ -2835,7 +2839,7 @@ public class Metadaten {
             }
         } else {
             String ocrFile = "";
-                ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+            ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
             logger.trace("myPicture: " + ocrFile);
             ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
         }
@@ -3307,7 +3311,10 @@ public class Metadaten {
 
     public String search() {
         if (currentPlugin != null) {
-            if (StringUtils.isNotBlank(gndSearchValue)) {
+
+            if (currentPlugin.getTitle().toLowerCase().startsWith("dante")) {
+                currentPlugin.setSearchValue(danteSearchValue);
+            } else if (StringUtils.isNotBlank(gndSearchValue)) {
                 currentPlugin.setSearchOption(searchOption);
                 currentPlugin.setSearchValue(gndSearchValue);
             } else {
@@ -3316,6 +3323,7 @@ public class Metadaten {
             currentPlugin.search();
             gndSearchValue = "";
             geonamesSearchValue = "";
+            danteSearchValue = "";
         }
         return "";
     }
@@ -3473,9 +3481,9 @@ public class Metadaten {
 
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-    
-            loadCurrentImages(false);
-        
+
+        loadCurrentImages(false);
+
     }
 
     private void setPhysicalOrder(List<DocStruct> pages) {
@@ -3530,9 +3538,9 @@ public class Metadaten {
         setPhysicalOrder(allPages);
         alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-     
-            loadCurrentImages(false);
-        
+
+        loadCurrentImages(false);
+
     }
 
     public void deleteSeltectedPages() {
@@ -3601,9 +3609,9 @@ public class Metadaten {
 
             BildErsteSeiteAnzeigen();
         } else {
-        
-                setImageIndex(myBildNummer - 1);
-            
+
+            setImageIndex(myBildNummer - 1);
+
         }
     }
 
@@ -4104,7 +4112,7 @@ public class Metadaten {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
                     List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess);
+                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4124,7 +4132,7 @@ public class Metadaten {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
                     List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess);
+                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
@@ -4577,5 +4585,13 @@ public class Metadaten {
 
     public void setCurrentPlugin(IMetadataPlugin currentPlugin) {
         this.currentPlugin = currentPlugin;
+    }
+
+    public String getDanteSearchValue() {
+        return danteSearchValue;
+    }
+
+    public void setDanteSearchValue(String danteSearchValue) {
+        this.danteSearchValue = danteSearchValue;
     }
 }

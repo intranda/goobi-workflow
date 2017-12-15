@@ -113,7 +113,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Integer sortHelperMetadata;
     private Integer sortHelperDocstructs;
     private Ruleset regelsatz;
-    private Integer batchID;
+    //    private Integer batchID;
+    private Batch batch;
     private Boolean swappedOut = false;
     private Boolean panelAusgeklappt = false;
     private Boolean selected = false;
@@ -581,12 +582,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.projekt = projekt;
     }
 
-    public Integer getBatchID() {
-        return this.batchID;
+    public Batch getBatch() {
+        return this.batch;
     }
 
-    public void setBatchID(Integer batch) {
-        this.batchID = batch;
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 
     public Ruleset getRegelsatz() {
@@ -631,9 +632,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<Processproperty> getEigenschaftenList() {
-
-        return new ArrayList<Processproperty>(getEigenschaften());
-
+        return getEigenschaften();
     }
 
     public int getWerkstueckeSize() {
@@ -753,39 +752,32 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public String getFortschritt() {
-        double offen = 0;
-        double inBearbeitung = 0;
-        double error = 0;
-        double abgeschlossen = 0;
+        int offen = 0;
+        int inBearbeitung = 0;
+        int abgeschlossen = 0;
         for (Step step : getSchritte()) {
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-                error++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
-                // nothing
             } else {
                 inBearbeitung++;
             }
         }
         double offen2 = 0;
         double inBearbeitung2 = 0;
-        double error2 = 0;
         double abgeschlossen2 = 0;
 
-        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
+        if ((offen + inBearbeitung + abgeschlossen) == 0) {
             offen = 1;
         }
-
-        offen2 = (offen * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
-        error2 = (error * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
-        abgeschlossen2 = 100 - offen2 - error2 - inBearbeitung2;
+        offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
+        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
+        abgeschlossen2 = 100 - offen2 - inBearbeitung2;
         // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
-        java.text.DecimalFormat df = new java.text.DecimalFormat("###.#");
-        return df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(error2) + df.format(offen2);
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
+        return df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
+
     }
 
     public double getFortschritt1() {
@@ -893,6 +885,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         abgeschlossen2 = 100 - offen2 - inBearbeitung2 - error2;
         return abgeschlossen2;
     }
+
     public String getMetadataFilePath() throws IOException, InterruptedException, SwapException, DAOException {
         return getProcessDataDirectory() + "meta.xml";
     }
@@ -1428,22 +1421,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
             try {
-            	List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                if (images == null || images.size() == 0){
-                	images = NIOFileUtils.listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
+                List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+                if (images == null || images.size() == 0) {
+                    images = NIOFileUtils.listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
                 }
-            	
-            	if (images != null && !images.isEmpty()) {
+
+                if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();
-                }else{
-                	return "uii/template/img/thumbnail-placeholder.png?version=1";
+                } else {
+                    return "uii/template/img/thumbnail-placeholder.png?version=1";
                 }
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error(e);
             }
 
         }
-           
+
         String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
         return rootpath + representativeImage.replaceAll("\\\\", "/");
     }

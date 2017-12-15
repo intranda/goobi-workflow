@@ -35,4 +35,11 @@ public class LogEntry {
     private String secondContent;
     private String thirdContent;
 
+
+    
+    
+    public String getFormattedCreationDate() {
+        return Helper.getDateAsFormattedString(creationDate);
+    }
+    
 }

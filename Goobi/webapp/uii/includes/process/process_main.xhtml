@@ -158,8 +158,9 @@
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.id}" styleClass="font-light" />
 
                                     <h:outputText value="#{msgs.batch}:" styleClass="font-light" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batchID}" styleClass="font-light" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batch.batchId}" rendered="#{ProzessverwaltungForm.myProzess.batch!=null}" styleClass="font-light" />
 
+                                    <h:outputText value="" rendered="#{ProzessverwaltungForm.myProzess.batch==null}" styleClass="font-light" />
                                 </h:panelGrid>
                             </div>
                         </div>
@@ -189,8 +190,7 @@
 												<h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
 													<tr>
 														<td>
-															<h:outputText value="#{entry.creationDate}" styleClass="log_color_#{entry.type.title}" >
-																<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+															<h:outputText value="#{entry.formattedCreationDate}" styleClass="log_color_#{entry.type.title}" >
 	                                                		</h:outputText>
 			                                                <br />
 			                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />

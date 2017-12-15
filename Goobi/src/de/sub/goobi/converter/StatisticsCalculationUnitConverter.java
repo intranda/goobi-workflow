@@ -31,6 +31,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
 
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 
@@ -40,8 +41,10 @@ import org.goobi.production.flow.statistics.enums.CalculationUnit;
  * @author Steffen Hankiewicz
  * @version 21.05.2009
  **************************************************************************************/
+
+
+@FacesConverter("StatisticsCalculationUnitConverter")
 public class StatisticsCalculationUnitConverter implements Converter {
-	public static final String CONVERTER_ID = "StatisticsCalculationUnitConverter";
 
 	/**
 	 * convert String to CalculationUnit 

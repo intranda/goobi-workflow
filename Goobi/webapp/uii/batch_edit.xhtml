@@ -23,7 +23,78 @@
 		<ui:include src="includes/calendarJavaScript.xhtml" />
 
 		<div class="row">
-			<div class="col-sm-6">
+            <div class="col-sm-12">
+                <div class="box box-color box-bordered">
+                    <div class="box-title">
+                        <h3 class="tableColumnMaxWidthLonger">
+                            <i class="fa fa-table"></i>
+                            <h:outputText
+                                value="#{msgs.batch}"
+                                class="margin-right-5" />
+                        </h3>
+                    </div>
+                    <h:form
+                        id="batchDetails"
+                        styleClass="form-horizontal form-bordered">
+                        <div class="box-content nopadding">
+                            <intranda:formInputText
+                                id="batchId"
+                                name="batchId"
+                                label="#{msgs.id}"
+                                field="#{BatchForm.batchHelper.batch.batchId}"
+                                fieldStyle="form-control"
+                                readonly="true"
+                                required="false" />
+
+                            <intranda:formInputText
+                                id="batchName"
+                                name="batchName"
+                                label="#{msgs.name}"
+                                field="#{BatchForm.batchHelper.batch.batchName}"
+                                help="#{msgs.helpBatchName}"
+                                fieldStyle="form-control"
+                                readonly="false"
+                                required="false" />
+
+                            <!-- startdate -->
+                            <intranda:formInputCalendar
+                                id="startDate"
+                                name="startdate"
+                                label="#{msgs.startdate}"
+                                field="#{BatchForm.batchHelper.batch.startDate}"
+                                help="#{msgs.helpStartdate}"
+                                required="false" />
+
+                            <!-- enddate -->
+                            <intranda:formInputCalendar
+                                id="endDate"
+                                name="enddate"
+                                label="#{msgs.enddate}"
+                                field="#{BatchForm.batchHelper.batch.endDate}"
+                                help="#{msgs.helpEnddate}"
+                                required="false" />
+
+                        </div>
+                        <div class="form-actions">
+
+                            <!-- Save -->
+                            <h:commandLink
+                                styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
+                                id="absenden"
+                                action="#{BatchForm.batchHelper.saveBatchDetails}">
+                                <i class="fa fa-save margin-right-5"></i>
+                                <h:outputText value="#{msgs.speichern}" />
+                            </h:commandLink>
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-sm-6">
 				<div class="box box-color box-bordered">
 					<div class="box-title">
 						<h3>
@@ -78,16 +149,17 @@
 																<h:outputText value="#{proc.name}" />
 															</td>
 															<td>
-																<h:outputText value="#{proc.value}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean'}" />
-								                                <h:outputLink value="#{proc.value}" title="#{proc.value}" target="_blank"
+                                                                <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name == 'html'}" escape="false" />
+                                                                <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
+								                                <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank"
 								                                    rendered="#{proc.type.name == 'link'}">
-								                                    <h:outputText value="#{proc.value}" />
+								                                    <h:outputText value="#{proc.readValue}" />
 								                                </h:outputLink>
 								                                <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
-								                                	<h:panelGroup rendered="#{proc.value eq 'true'}">
+								                                	<h:panelGroup rendered="#{proc.readValue eq 'true'}">
 								                                		<i class="fa fa-check-square-o fa-lg"></i>
 								                                	</h:panelGroup>
-								                                	<h:panelGroup rendered="#{proc.value ne 'true'}">
+								                                	<h:panelGroup rendered="#{proc.readValue ne 'true'}">
 								                                		<i class="fa fa-square-o fa-lg"></i>
 								                                	</h:panelGroup>
 								                                </h:panelGroup>
@@ -126,16 +198,17 @@
 																<h:outputText value="#{process_item.name}" />
 															</td>
 															<td>
-																<h:outputText value="#{process_item.value}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean'}" />
-								                                <h:outputLink value="#{process_item.value}" title="#{process_item.value}" target="_blank"
+                                                                <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name == 'html'}" escape="false" />
+                                                                <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
+								                                <h:outputLink value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank"
 								                                    rendered="#{process_item.type.name == 'link'}">
-								                                    <h:outputText value="#{process_item.value}" />
+								                                    <h:outputText value="#{process_item.readValue}" />
 								                                </h:outputLink>
 								                                <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
-								                                	<h:panelGroup rendered="#{process_item.value eq 'true'}">
+								                                	<h:panelGroup rendered="#{process_item.readValue eq 'true'}">
 								                                		<i class="fa fa-check-square-o fa-lg"></i>
 								                                	</h:panelGroup>
-								                                	<h:panelGroup rendered="#{process_item.value ne 'true'}">
+								                                	<h:panelGroup rendered="#{process_item.readValue ne 'true'}">
 								                                		<i class="fa fa-square-o fa-lg"></i>
 								                                	</h:panelGroup>
 								                                </h:panelGroup>
@@ -299,7 +372,19 @@
 										</div>
 									</div>
 								</h:panelGroup>
-																								
+											
+                                                                                <!--  HTML   -->
+                                    <h:panelGroup rendered="#{(myprocess_item.type.name == 'html')}">
+                                        <div class="form-group">
+                                            <h:outputLabel for="date" styleClass="control-label col-sm-3" value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            <div class="col-sm-9">
+                                                <x:inputTextarea id="valueArea" forceId="true" styleClass="form-control" value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
+                                                <h:message for="valueArea" showDetail="true" styleClass="help-inline font-danger" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+                                            													
 							</x:dataList>
 										
 							<h:panelGroup>

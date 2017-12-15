@@ -112,6 +112,16 @@
 												value="#{item}" />
 										</h:commandLink>
 
+
+                                        <!-- Duplicate user group -->
+                                        <h:commandLink action="#{BenutzergruppenForm.cloneUsergroup}" styleClass="btn" rel="tooltip" title="#{msgs.duplicateUsergroup}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <i class="fa fa-clipboard" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
+                                        </h:commandLink>
+
+
 									</x:column>
 
 								</x:dataTable>

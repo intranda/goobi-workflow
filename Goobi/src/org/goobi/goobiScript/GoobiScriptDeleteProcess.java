@@ -3,6 +3,7 @@ package org.goobi.goobiScript;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,8 +55,9 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
 			boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
 
 			// execute all jobs that are still in waiting state
-			for (GoobiScriptResult gsr : resultList) {
-				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
+            for (GoobiScriptResult gsr : templist) {
+            		if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
 					gsr.setResultType(GoobiScriptResultType.RUNNING);

@@ -21,7 +21,7 @@
 					<i class="fa fa-double-angle-left"></i>
 					<f:ajax render=":myform" />
 				</h:commandLink>
-				<h:commandLink styleClass="btn btn-primary font-size-s"
+				<h:commandLink styleClass="btn btn-primary font-size-s navigator-previous"
 					action="#{cc.attrs.paginator.cmdMovePrevious}" id="navprev">
 					<i class="fa fa-angle-left"></i>
 					<h:outputText value=" #{msgs.pagePrevious}"/>
@@ -49,7 +49,7 @@
 					</x:commandButton>
 				</div>
 
-				<h:commandLink styleClass="btn btn-primary font-size-s"
+				<h:commandLink styleClass="btn btn-primary font-size-s navigator-next"
 					action="#{cc.attrs.paginator.cmdMoveNext}" id="navnext">
 					<h:outputText value="#{msgs.pageNext} "/>
 							<i class="fa fa-angle-right"></i>

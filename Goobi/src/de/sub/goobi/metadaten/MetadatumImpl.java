@@ -43,6 +43,7 @@ import ugh.dl.Prefs;
 
 import org.goobi.beans.Process;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
+import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
 import de.sub.goobi.helper.Helper;
 
@@ -73,16 +74,13 @@ public class MetadatumImpl implements Metadatum {
         this.myProcess = inProcess;
         myValues = new DisplayCase(this.myProcess, this.md.getType());
 
-        try {
-            plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + myValues.getDisplayType().getPluginName()).newInstance();
-            if (plugin != null) {
-                plugin.setMetadata(md);
-                plugin.setBean(bean);
-                initializeValues();
-            }
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            plugin = null;
+        plugin = myValues.getDisplayType().getPlugin();
+        if (plugin != null) {
+            plugin.setMetadata(md);
+            plugin.setBean(bean);
+            initializeValues();
         }
+        
     }
 
     private void initializeValues() {
@@ -169,7 +167,11 @@ public class MetadatumImpl implements Metadatum {
      *****************************************************/
 
     public String getOutputType() {
-        return this.myValues.getDisplayType().getTitle();
+        String type = this.myValues.getDisplayType().name();
+        if (type.toLowerCase().startsWith("dante")) {
+            return "dante";
+        }
+        return this.myValues.getDisplayType().name();
     }
 
     public List<SelectItem> getItems() {

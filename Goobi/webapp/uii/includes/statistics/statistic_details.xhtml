@@ -123,9 +123,15 @@
                     <h:outputText id="uaid34" value="#{element.htmlTableRenderer.rendering}" escape="false"
                         rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}" />
 
-					<h:commandLink id="createExcel" action="#{Form.CreateExcel}" title="#{msgs.createExcel}" rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}">
+					<h:commandLink id="createExcel" action="#{Form.downloadStatisticsAsExcel}" title="#{msgs.download_excel}" rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}">
 						<span class="btn margin-right-10 fa fa-floppy-o" />
-						<h:outputText value="#{msgs.createExcel}" />
+						<h:outputText value="#{msgs.download_excel}" />
+						 <x:updateActionListener value="#{element}" property="#{Form.myCurrentTable}" />
+					</h:commandLink>
+					
+					<h:commandLink id="createCsv" action="#{Form.downloadStatisticsAsCsv}" title="#{msgs.download_csv}" rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}">
+						<span class="btn margin-right-10 fa fa-floppy-o" />
+						<h:outputText value="#{msgs.download_csv}" />
 						 <x:updateActionListener value="#{element}" property="#{Form.myCurrentTable}" />
 					</h:commandLink>
 

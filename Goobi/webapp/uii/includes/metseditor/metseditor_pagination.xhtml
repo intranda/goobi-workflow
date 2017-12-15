@@ -53,7 +53,7 @@ xmlns:p="http://primefaces.org/ui">
                                     <h:outputText value=" #{Metadaten.paginierungSeitenProImage}" />
                                     <span class="caret"></span>
                                 </a>
-                                <ul class="dropdown-menu dropdown">
+                                <ul class="dropdown-menu dropdown dropdown-menu-right">
                                     <li>
                                         <h:commandLink id="seitenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlung}">
                                             <h:outputText value="1 - #{msgs.seitenzaehlung}" />
@@ -82,6 +82,12 @@ xmlns:p="http://primefaces.org/ui">
                                         <h:commandLink id="seitenzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlungrectoverso}" onclick="setScrollPosition();">
                                             <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="5" />
+                                        </h:commandLink>
+                                    </li>
+                                    <li>
+                                        <h:commandLink id="doublepages" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.doublepages}" onclick="setScrollPosition();">
+                                            <h:outputText value="6 - #{msgs.doublepages}" />
+                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="6" />
                                         </h:commandLink>
                                     </li>
 
@@ -131,7 +137,7 @@ xmlns:p="http://primefaces.org/ui">
                                     <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
                                     <h:outputText value="#{msgs.nurDieMarkiertenSeiten}" />
                                     <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
-                                    <f:ajax execute="@form" render="@form" onevent="addPaginationButtons" />
+                                    <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
                                 </h:commandLink>
                             </li>
                             <li class="action-li">
@@ -139,7 +145,7 @@ xmlns:p="http://primefaces.org/ui">
                                     <span class="btn margin-right-10 fa fa-files-o fa-lg width-40" />
                                     <h:outputText value="#{msgs.abDerErstenMarkiertenSeite}" />
                                     <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
-                                    <f:ajax execute="@form" render="@form" onevent="addPaginationButtons" />
+                                    <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
                                 </h:commandLink>
                             </li>
                         </ul>

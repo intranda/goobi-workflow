@@ -763,7 +763,7 @@ public class CopyProcess extends ProzesskopieForm {
                             }
                         }
                         Metadata newmd = new Metadata(mdt);
-                        newmd.setValue("./" + this.prozessKopie.getTitel() + DIRECTORY_SUFFIX);
+                        newmd.setValue(prozessKopie.getImagesTifDirectory(false));
                         this.myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
                     }
                     /* Rdf-File schreiben */
@@ -844,9 +844,8 @@ public class CopyProcess extends ProzesskopieForm {
             }
 
         }
-
-        if (io.getBatchId() != null) {
-            this.prozessKopie.setBatchID(io.getBatchId());
+        if (io.getBatch() != null) {
+            this.prozessKopie.setBatch(io.getBatch());
         }
         try {
             //			ProzessDAO dao = new ProzessDAO();

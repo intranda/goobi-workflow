@@ -123,6 +123,7 @@ public class GoobiScriptManager {
 				workbook.write(out);
 				out.flush();
 				facesContext.responseComplete();
+				workbook.close();
 			} catch (IOException e) {
 
 			}

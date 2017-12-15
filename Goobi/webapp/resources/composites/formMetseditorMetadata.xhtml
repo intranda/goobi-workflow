@@ -26,7 +26,7 @@
                 </x:inputTextarea>
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'}">
+                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
 
@@ -45,8 +45,8 @@
                 <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
                 <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
-                <!-- ++++++++++++++++++ Authority data ++++++++++++++++++ -->
-                <h:panelGroup rendered="#{cc.attrs.metadata.normdata}">
+                <!-- ++++++++++++++++++ Authority data - no dante ++++++++++++++++++ -->
+                <h:panelGroup rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
                     <div class="row" style="margin-top: 5px;">
                         <div class="col-sm-6">
                             <h:selectOneMenu id="normDatabase" value="#{cc.attrs.metadata.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
@@ -56,6 +56,17 @@
                         </div>
                         <div class="col-sm-6">
                             <h:inputText id="normdataValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                                <f:ajax execute="@form" event="valueChange" />
+                            </h:inputText>
+                        </div>
+                    </div>
+                </h:panelGroup>
+                
+                <!-- ++++++++++++++++++ Authority data - dante ++++++++++++++++++ -->
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                    <div class="row" style="margin-top: 5px;">
+                        <div class="col-sm-12">
+                            <h:inputText id="danteValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>
@@ -92,6 +103,14 @@
                         <i class="fa fa-search" style="margin-left: 3px" />
                     </a>
                 </h:panelGroup>
+                
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#danteIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                    data-datatype="#{cc.attrs.datatype}" data-target="#danteSearchBox">
+                        <i class="fa fa-search" style="margin-left: 3px" />
+                    </a>
+                </h:panelGroup>
+                
             </div>
         </div>
 

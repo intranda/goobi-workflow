@@ -155,7 +155,6 @@ public class RulesetManager implements IManager, Serializable {
 
     @Override
     public List<Integer> getIdList(String filter) {
-        // TODO Auto-generated method stub
         return null;
     }
 

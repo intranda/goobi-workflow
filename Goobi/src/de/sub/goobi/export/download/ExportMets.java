@@ -71,7 +71,7 @@ import de.sub.goobi.metadaten.MetadatenImagesHelper;
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
-    private List<String> problems = new ArrayList<>();
+    protected List<String> problems = new ArrayList<>();
     
     protected static final Logger logger = Logger.getLogger(ExportMets.class);
 

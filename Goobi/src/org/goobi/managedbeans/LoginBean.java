@@ -69,7 +69,7 @@ public class LoginBean {
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
     private List<String> roles;
-    
+
     public String Ausloggen() {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
@@ -204,12 +204,15 @@ public class LoginBean {
         } else {
             try {
                 /* wenn alles korrekt, dann jetzt speichern */
-                LdapAuthentication myLdap = new LdapAuthentication();
-                myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+                if (ConfigurationHelper.getInstance().isUseLdap()) {
+
+                    LdapAuthentication myLdap = new LdapAuthentication();
+                    myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+                }
                 User temp = UserManager.getUserById(this.myBenutzer.getId());
-               // TODO
-//                temp.setPasswortCrypt(this.passwortAendernNeu1);
-                
+                // TODO
+                //                temp.setPasswortCrypt(this.passwortAendernNeu1);
+
                 RandomNumberGenerator rng = new SecureRandomNumberGenerator();
                 Object salt = rng.nextBytes();
                 temp.setPasswordSalt(salt.toString());
@@ -279,7 +282,8 @@ public class LoginBean {
             for (String filename : dateien) {
                 Path file = Paths.get(myPfad + filename);
                 try {
-                    if ((System.currentTimeMillis() - Files.readAttributes(file, BasicFileAttributes.class).lastModifiedTime().toMillis()) > 7200000) {
+                    if ((System.currentTimeMillis() - Files.readAttributes(file, BasicFileAttributes.class).lastModifiedTime()
+                            .toMillis()) > 7200000) {
                         Files.delete(file);
                     }
                 } catch (IOException e) {
@@ -361,8 +365,8 @@ public class LoginBean {
     public boolean isSchonEingeloggt() {
         return this.schonEingeloggt;
     }
-    
-    public boolean hasRole(String inRole){
-    	return roles.contains(inRole);
+
+    public boolean hasRole(String inRole) {
+        return roles.contains(inRole);
     }
 }

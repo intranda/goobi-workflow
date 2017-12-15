@@ -251,7 +251,8 @@ public class SearchResultHelper {
         return;
     }
 
-    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
+    @SuppressWarnings("deprecation")
+	public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
         for (SearchColumn sc : columnList) {
@@ -308,7 +309,7 @@ public class SearchResultHelper {
         return wb;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct prozesse.ProzesseID, ");

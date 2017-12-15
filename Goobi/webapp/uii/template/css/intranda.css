@@ -13,6 +13,10 @@ body {
     font-size: 12px !important;
 }
 
+#main .page-header .pull-left h1 {
+    line-height: 1.2;
+}
+
 @media ( max-width : 1200px) {
     .icon-nav {
         display: block !important;

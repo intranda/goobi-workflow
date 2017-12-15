@@ -1,4 +1,8 @@
-package de.sub.goobi.helper;
+package org.goobi.beans;
+
+import java.util.Date;
+
+import lombok.Data;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -23,30 +27,32 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+@Data
 public class Batch {
+    
+    /**
+     * internal id of the batch
+     */
+    private Integer batchId;
+    
+    /**
+     * optional batch name
+     */
+    private String batchName;
+    
+    /**
+     * optional start date of the batch
+     */
+    private Date startDate;
+    
+    /**
+     * optional date when the batch gets finalized
+     */
+    private Date endDate;
 
-    private String batchId;
+    /**
+     * label is not stored in the database, needed to display information in the UI  
+     */
     private String batchLabel;
-
-    public Batch(Integer id, String label) {
-        this.batchId = String.valueOf(id);
-        this.batchLabel = label;
-    }
-
-    public String getBatchId() {
-        return this.batchId;
-    }
-
-    public void setBatchId(String batchId) {
-        this.batchId = batchId;
-    }
-
-    public String getBatchLabel() {
-        return this.batchLabel;
-    }
-
-    public void setBatchLabel(String batchLabel) {
-        this.batchLabel = batchLabel;
-    }
-
 }

@@ -68,19 +68,16 @@ public class MetaPerson {
         this.myDocStruct = inStruct;
         this.mdh = new MetadatenHelper(inPrefs, null);
         myValues = new DisplayCase(inProcess, p.getType());
-
-        try {
-            plugin = (IPersonPlugin) Class.forName("de.intranda.goobi.plugins." + myValues.getDisplayType().getPluginName()).newInstance();
-            if (plugin != null) {
-                plugin.setPerson(p);
-                plugin.setBean(bean);
-                plugin.setDocStruct(myDocStruct);
-                plugin.setMetadatenHelper(mdh);
-                //                    initializeValues();
-            }
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            plugin = null;
+       
+        plugin = (IPersonPlugin) myValues.getDisplayType().getPlugin();
+        if (plugin != null) {
+            plugin.setPerson(p);
+            plugin.setBean(bean);
+            plugin.setDocStruct(myDocStruct);
+            plugin.setMetadatenHelper(mdh);
+            //                    initializeValues();
         }
+       
     }
 
     /*#####################################################

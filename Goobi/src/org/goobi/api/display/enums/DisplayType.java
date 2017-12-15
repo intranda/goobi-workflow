@@ -1,5 +1,9 @@
 package org.goobi.api.display.enums;
 
+import org.goobi.production.plugin.interfaces.IMetadataPlugin;
+
+import lombok.extern.log4j.Log4j;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,48 +27,91 @@ package org.goobi.api.display.enums;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+@Log4j
 public enum DisplayType {
 
-    input("0", "input", "InputPlugin"),
-    select("1", "select", "MultiSelectPlugin"),
-    select1("2", "select1", "SingleSelectPlugin"),
-    textarea("3", "textarea", "TextAreaPlugin"),
-    readonly("4", "readonly", "ReadOnlyPlugin"),
-    gnd("5", "gnd", "GndInputPlugin"),
-    person("6", "person", "PersonPlugin"),
-    geonames("7", "geonames", "GeonamesPlugin")
+    input,
+    select,
+    select1,
+    textarea,
+    readonly,
+    gnd,
+    person,
+    geonames,
+  
+    danteX11ColorNames,
+    danteAmhTechnik,
+    danteAmhEigentumsstatus,
+    danteGender,
+    danteBiographieChronicleEvent,
+    dantePlaceTypeGeonames,
+    danteAtkisObjektartenkatalog,
+    danteEthnie,
+    danteCssColorNames,
+    danteRalClassicColors,
+    danteAmhWertart,
+    danteLicence,
+    dantePersonRole,
+    danteFileType,
+    danteSignatureType,
+    danteOntologicRelation,
+    danteLanguagesGnd,
+    danteHessischeSystematik,
+    danteBszStilepochen,
+    danteAmhSachgruppe,
+    danteAmhWarenart,
+    danteAmhWertgruppe,
+    danteParty,
+    danteCitizenshipIso3166,
+    danteNamePrefix,
+    danteRecordType,
+    dantePlaceTypeGnd,
+    danteIconclass,
+    danteHornbostelsachs,
+    danteCurrencyCodeIso4271,
+    danteAmhDatierung,
+    danteAmhKulturgruppe,
+    danteReligion,
+    dantePartOfSpeech,
+    danteHistoricFlag,
+    danteTypeOfDefinitionNote,
+    danteLexicalLabelType,
+    danteBk,
+    danteIkmkMaterial,
+    danteAmhObjektbezeichnung,
+    danteAmhEpoche,
+    danteLanguageIso6391,
+    danteUriMappingProperty,
+    danteOtherFlag,
+    dantePersonRelation,
+    danteOberbegriffsdatei,
+    danteBkgGn250,
+    danteAmhMaterial,
+    dantePrizepapersDokumenttyp,
+    dantePrizepapersObjekttyp,
+    dantePrizepapersFalttechnik,
+    danteMarcrelator
     ;
 
-    private String id;
-    private String title;
-    private String pluginName;
-
-    private DisplayType(String myId, String myTitle, String pluginName) {
-        this.id = myId;
-        this.title = myTitle;
-        this.pluginName = pluginName;
+    public IMetadataPlugin getPlugin() {
+    		IMetadataPlugin plugin = null;
+    		String pluginName = name().substring(0,1).toUpperCase() + name().substring(1) + "Plugin";
+    		try {
+    			plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + pluginName).newInstance();
+	    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+	    		log.error("Metadata plugin for " + pluginName + " could not be loaded");
+	    }
+    		return plugin;
     }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public static DisplayType getByTitle(String inTitle) {
-        if (inTitle != null) {
+    
+    public static DisplayType getByTitle(String inName) {
+        if (inName != null) {
             for (DisplayType type : DisplayType.values()) {
-                if (type.getTitle().equals(inTitle)) {
+                if (type.name().equals(inName)) {
                     return type;
                 }
             }
         }
-        return input; // textarea is default
+        return input; // input is default
     }
 }
