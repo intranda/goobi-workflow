@@ -3524,7 +3524,7 @@ public class Metadaten {
         List<String> newSelectionList = new ArrayList<String>();
         for (Integer pageIndex : selectedPages) {
             if (pageIndex + positions > allPages.size()) {
-                positions = allPages.size() - pageIndex;
+                positions = allPages.size() - pageIndex-1;
             }
             DocStruct image = allPages.get(pageIndex);
             allPages.remove(image);
@@ -4582,5 +4582,13 @@ public class Metadaten {
 
     public void setDanteSearchValue(String danteSearchValue) {
         this.danteSearchValue = danteSearchValue;
+    }
+    
+    public boolean isDisplayHiddenMetadata() {
+        return displayHiddenMetadata;
+    }
+    
+    public void setDisplayHiddenMetadata(boolean displayHiddenMetadata) {
+        this.displayHiddenMetadata = displayHiddenMetadata;
     }
 }
