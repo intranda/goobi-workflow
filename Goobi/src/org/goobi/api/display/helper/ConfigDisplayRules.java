@@ -112,19 +112,19 @@ public final class ConfigDisplayRules {
                     }
                     if (allValues.containsKey(projectName)) {
                         Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
-                        if (typeList.containsKey(type.getTitle())) {
-                            Map<String, List<Item>> currentType = typeList.get(type.getTitle()); 
+                        if (typeList.containsKey(type.name())) {
+                            Map<String, List<Item>> currentType = typeList.get(type.name()); 
                             currentType.put(metadataName, listOfItems);
                         } else {
                             Map<String, List<Item>> currentType = new HashMap<>();
                             currentType.put(metadataName, listOfItems);
-                            typeList.put(type.getTitle(), currentType);
+                            typeList.put(type.name(), currentType);
                         }
                     } else {
                         Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
                         Map<String, List<Item>> currentType = new HashMap<>();
                         currentType.put(metadataName, listOfItems);
-                        typeList.put(type.getTitle(), currentType);
+                        typeList.put(type.name(), currentType);
                         allValues.put(projectName, typeList);
                     }
 
@@ -197,8 +197,8 @@ public final class ConfigDisplayRules {
                 return getItemsByNameAndType("*", projectTitle, displayType);
             }
         }
-        if (itemsByType.containsKey(displayType.getTitle())) {
-            Map<String, List<Item>> typeList = itemsByType.get(displayType.getTitle());
+        if (itemsByType.containsKey(displayType.name())) {
+            Map<String, List<Item>> typeList = itemsByType.get(displayType.name());
             if (typeList.containsKey(elementName)) {
                 values = typeList.get(elementName);
 

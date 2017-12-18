@@ -1,5 +1,9 @@
 package org.goobi.api.display.enums;
 
+import org.goobi.production.plugin.interfaces.IMetadataPlugin;
+
+import lombok.extern.log4j.Log4j;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,91 +27,91 @@ package org.goobi.api.display.enums;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+@Log4j
 public enum DisplayType {
 
-    input("input", "InputPlugin"),
-    select("select", "MultiSelectPlugin"),
-    select1("select1", "SingleSelectPlugin"),
-    textarea("textarea", "TextAreaPlugin"),
-    readonly("readonly", "ReadOnlyPlugin"),
-    gnd("gnd", "GndInputPlugin"),
-    person("person", "PersonPlugin"),
-    geonames("geonames", "GeonamesPlugin"),
+    input,
+    select,
+    select1,
+    textarea,
+    readonly,
+    gnd,
+    person,
+    geonames,
   
-    danteX11ColorNames("danteX11ColorNames", "DanteX11ColorNamesPlugin"),
-    danteAmhTechnik("danteAmhTechnik", "DanteAmhTechnikPlugin"),
-    danteAmhEigentumsstatus("danteAmhEigentumsstatus", "DanteAmhEigentumsstatusPlugin"),
-    danteGender("danteGender", "DanteGenderPlugin"),
-    danteBiographieChronicleEvent("danteBiographieChronicleEvent", "DanteBiographieChronicleEventPlugin"),
-    dantePlaceTypeGeonames("dantePlaceTypeGeonames", "DantePlaceTypeGeonamesPlugin"),
-    danteAtkisObjektartenkatalog("danteAtkisObjektartenkatalog", "DanteAtkisObjektartenkatalogPlugin"),
-    danteEthnie("danteEthnie", "DanteEthniePlugin"),
-    danteCssColorNames("danteCssColorNames", "DanteCssColorNamesPlugin"),
-    danteRalClassicColors("danteRalClassicColors", "DanteRalClassicColorsPlugin"),
-    danteAmhWertart("danteAmhWertart", "DanteAmhWertartPlugin"),
-    danteLicence("danteLicence", "DanteLicencePlugin"),
-    dantePersonRole("dantePersonRole", "DantePersonRolePlugin"),
-    danteFileType("danteFileType", "DanteFileTypePlugin"),
-    danteSignatureType("danteSignatureType", "DanteSignatureTypePlugin"),
-    danteOntologicRelation("danteOntologicRelation", "DanteOntologicRelationPlugin"),
-    danteLanguagesGnd("danteLanguagesGnd", "DanteLanguagesGndPlugin"),
-    danteHessischeSystematik("danteHessischeSystematik", "DanteHessischeSystematikPlugin"),
-    danteBszStilepochen("danteBszStilepochen", "DanteBszStilepochenPlugin"),
-    danteAmhSachgruppe("danteAmhSachgruppe", "DanteAmhSachgruppePlugin"),
-    danteAmhWarenart("danteAmhWarenart", "DanteAmhWarenartPlugin"),
-    danteAmhWertgruppe("danteAmhWertgruppe", "DanteAmhWertgruppePlugin"),
-    danteParty("danteParty", "DantePartyPlugin"),
-    danteCitizenshipIso3166("danteCitizenshipIso3166", "DanteCitizenshipIso3166Plugin"),
-    danteNamePrefix("danteNamePrefix", "DanteNamePrefixPlugin"),
-    danteRecordType("danteRecordType", "DanteRecordTypePlugin"),
-    dantePlaceTypeGnd("dantePlaceTypeGnd", "DantePlaceTypeGndPlugin"),
-    danteIconclass("danteIconclass", "DanteIconclassPlugin"),
-    danteHornbostelsachs("danteHornbostelsachs", "DanteHornbostelsachsPlugin"),
-    danteCurrencyCodeIso4271("danteCurrencyCodeIso4271", "DanteCurrencyCodeIso4271Plugin"),
-    danteAmhDatierung("danteAmhDatierung", "DanteAmhDatierungPlugin"),
-    danteAmhKulturgruppe("danteAmhKulturgruppe", "DanteAmhKulturgruppePlugin"),
-    danteReligion("danteReligion", "DanteReligionPlugin"),
-    dantePartOfSpeech("dantePartOfSpeech", "DantePartOfSpeechPlugin"),
-    danteHistoricFlag("danteHistoricFlag", "DanteHistoricFlagPlugin"),
-    danteTypeOfDefinitionNote("danteTypeOfDefinitionNote", "DanteTypeOfDefinitionNotePlugin"),
-    danteLexicalLabelType("danteLexicalLabelType", "DanteLexicalLabelTypePlugin"),
-    danteBk("danteBk", "DanteBkPlugin"),
-    danteIkmkMaterial("danteIkmkMaterial", "DanteIkmkMaterialPlugin"),
-    danteAmhObjektbezeichnung("danteAmhObjektbezeichnung", "DanteAmhObjektbezeichnungPlugin"),
-    danteAmhEpoche("danteAmhEpoche", "DanteAmhEpochePlugin"),
-    danteLanguageIso6391("danteLanguageIso6391", "DanteLanguageIso6391Plugin"),
-    danteUriMappingProperty("danteUriMappingProperty", "DanteUriMappingPropertyPlugin"),
-    danteOtherFlag("danteOtherFlag", "DanteOtherFlagPlugin"),
-    dantePersonRelation("dantePersonRelation", "DantePersonRelationPlugin"),
-    danteOberbegriffsdatei("danteOberbegriffsdatei", "DanteOberbegriffsdateiPlugin"),
-    danteBkgGn250("danteBkgGn250", "DanteBkgGn250Plugin"),
-    danteAmhMaterial("danteAmhMaterial", "DanteAmhMaterialPlugin")
+    danteX11ColorNames,
+    danteAmhTechnik,
+    danteAmhEigentumsstatus,
+    danteGender,
+    danteBiographieChronicleEvent,
+    dantePlaceTypeGeonames,
+    danteAtkisObjektartenkatalog,
+    danteEthnie,
+    danteCssColorNames,
+    danteRalClassicColors,
+    danteAmhWertart,
+    danteLicence,
+    dantePersonRole,
+    danteFileType,
+    danteSignatureType,
+    danteOntologicRelation,
+    danteLanguagesGnd,
+    danteHessischeSystematik,
+    danteBszStilepochen,
+    danteAmhSachgruppe,
+    danteAmhWarenart,
+    danteAmhWertgruppe,
+    danteParty,
+    danteCitizenshipIso3166,
+    danteNamePrefix,
+    danteRecordType,
+    dantePlaceTypeGnd,
+    danteIconclass,
+    danteHornbostelsachs,
+    danteCurrencyCodeIso4271,
+    danteAmhDatierung,
+    danteAmhKulturgruppe,
+    danteReligion,
+    dantePartOfSpeech,
+    danteHistoricFlag,
+    danteTypeOfDefinitionNote,
+    danteLexicalLabelType,
+    danteBk,
+    danteIkmkMaterial,
+    danteAmhObjektbezeichnung,
+    danteAmhEpoche,
+    danteLanguageIso6391,
+    danteUriMappingProperty,
+    danteOtherFlag,
+    dantePersonRelation,
+    danteOberbegriffsdatei,
+    danteBkgGn250,
+    danteAmhMaterial,
+    dantePrizepapersDokumenttyp,
+    dantePrizepapersObjekttyp,
+    dantePrizepapersFalttechnik,
+    danteMarcrelator
     ;
 
-    private String title;
-    private String pluginName;
-
-    private DisplayType(String myTitle, String pluginName) {
-        this.title = myTitle;
-        this.pluginName = pluginName;
+    public IMetadataPlugin getPlugin() {
+    		IMetadataPlugin plugin = null;
+    		String pluginName = name().substring(0,1).toUpperCase() + name().substring(1) + "Plugin";
+    		try {
+    			plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + pluginName).newInstance();
+	    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+	    		log.error("Metadata plugin for " + pluginName + " could not be loaded");
+	    }
+    		return plugin;
     }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public static DisplayType getByTitle(String inTitle) {
-        if (inTitle != null) {
+    
+    public static DisplayType getByTitle(String inName) {
+        if (inName != null) {
             for (DisplayType type : DisplayType.values()) {
-                if (type.getTitle().equals(inTitle)) {
+                if (type.name().equals(inName)) {
                     return type;
                 }
             }
         }
-        return input; // textarea is default
+        return input; // input is default
     }
 }
