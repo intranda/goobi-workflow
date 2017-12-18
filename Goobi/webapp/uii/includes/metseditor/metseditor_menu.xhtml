@@ -184,10 +184,10 @@
                                 </li>
                                 
                                 <li>
-                                    <h:commandLink id="toggleHiddenFields" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_showHiddenFields?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}">
-                                        <i class="fa fa-eye margin-right-10 #{NavigationForm.uiStatus.mets_showHiddenFields?'font-light':''}"></i>
-                                        <h:outputText value="#{NavigationForm.uiStatus.mets_showHiddenFields?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}" />
-                                        <x:updateActionListener value="#{NavigationForm.uiStatus.mets_showHiddenFields?false:true}" property="#{NavigationForm.uiStatus.mets_showHiddenFields}" />
+                                    <h:commandLink id="toggleHiddenFields" action="#{Metadaten.reloadMetadataList}" title="#{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}">
+                                        <i class="fa fa-eye margin-right-10 #{Metadaten.displayHiddenMetadata?'font-light':''}"></i>
+                                        <h:outputText value="#{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}" />
+                                        <x:updateActionListener value="#{!Metadaten.displayHiddenMetadata}" property="#{Metadaten.displayHiddenMetadata}" />
                                     </h:commandLink>
                                 </li>
                                 

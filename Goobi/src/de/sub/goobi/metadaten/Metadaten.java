@@ -4591,4 +4591,8 @@ public class Metadaten {
     public void setDisplayHiddenMetadata(boolean displayHiddenMetadata) {
         this.displayHiddenMetadata = displayHiddenMetadata;
     }
+    
+    public void reloadMetadataList() {
+        MetadatenalsBeanSpeichern(currentTopstruct);
+    }
 }
