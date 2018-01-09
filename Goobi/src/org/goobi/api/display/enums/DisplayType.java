@@ -87,9 +87,9 @@ public enum DisplayType {
     danteOberbegriffsdatei,
     danteBkgGn250,
     danteAmhMaterial,
-    dantePrizepapersDokumenttyp,
-    dantePrizepapersObjekttyp,
-    dantePrizepapersFalttechnik,
+    dantePrizepapersDocumenttype,
+    dantePrizepapersObjecttype,
+    dantePrizepapersFoldingtechnique,
     danteMarcrelator
     ;
 
