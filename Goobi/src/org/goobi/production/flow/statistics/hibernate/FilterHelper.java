@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
@@ -100,7 +101,8 @@ public class FilterHelper {
         } else if (userAssignedStepsOnly) {
             answer.append(" BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2 ");
         } else if (hideStepsFromOtherUsers) {
-            answer.append(" ((BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2) OR (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 4)) ");
+            answer.append(" ((BearbeitungsBenutzerID = " + userId
+                    + " AND  Bearbeitungsstatus = 2) OR (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 4)) ");
         } else {
             answer.append(" (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 2 OR  Bearbeitungsstatus = 4) ");
 
@@ -700,9 +702,16 @@ public class FilterHelper {
                     if (substring.contains(" ")) {
                         substring = substring.substring(0, substring.indexOf(" "));
                     }
-                    int value = Integer.valueOf(substring);
-                    filter = checkStringBuilder(filter, true);
-                    filter.append(" prozesse.batchID = " + value);
+                    if (StringUtils.isNumeric(substring)) {
+
+                        int value = Integer.valueOf(substring);
+                        filter = checkStringBuilder(filter, true);
+                        filter.append(" prozesse.batchID = " + value);
+                    } else {
+                        filter = checkStringBuilder(filter, true);
+                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring) + rightTruncationCharacter + "'");
+                    }
+
                 } catch (NumberFormatException e) {
                     logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
                 }
@@ -749,7 +758,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPERROR)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.ERROR, true));
-                
+
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDEACTIVATED)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, true));

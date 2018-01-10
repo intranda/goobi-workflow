@@ -221,7 +221,7 @@ class ProcessMysqlHelper implements Serializable {
 
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProzesseID) FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -245,7 +245,7 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT  * FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT  * FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
