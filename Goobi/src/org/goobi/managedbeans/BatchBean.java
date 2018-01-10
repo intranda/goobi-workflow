@@ -174,17 +174,16 @@ public class BatchBean extends BasicBean {
             List<Batch> allBatches = ProcessManager.getBatches(getBatchMaxSize());
             this.currentBatches = new ArrayList<Batch>();
             for (Batch in : allBatches) {
-                if ((in.getBatchName() != null && in.getBatchName().contains(this.batchfilter)) || Integer.toString(in.getBatchId()).contains(
+                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase())) || Integer.toString(in.getBatchId()).contains(
                         this.batchfilter)) {
                     this.currentBatches.add(generateBatch(in));
                 }
             }
         } else {
             currentBatches = ProcessManager.getBatches(getBatchMaxSize());
-
-            for (Batch in : currentBatches) {
-                generateBatch(in);
-            }
+        }
+        for (Batch in : currentBatches) {
+            generateBatch(in);
         }
     }
 
