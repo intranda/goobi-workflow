@@ -181,9 +181,9 @@ public class BatchBean extends BasicBean {
             }
         } else {
             currentBatches = ProcessManager.getBatches(getBatchMaxSize());
-        }
-        for (Batch in : currentBatches) {
-            generateBatch(in);
+            for (Batch in : currentBatches) {
+                generateBatch(in);
+            }
         }
     }
 
