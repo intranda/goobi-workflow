@@ -33,7 +33,8 @@
 
         <h:form
             id="myform"
-            rendered="#{LoginForm.hasRole('Workflow_General_Batches')}">
+            rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
+             onkeypress="submitOnEnter(event);">
 
             <div class="row">
                 <div class="col-sm-6">
@@ -57,7 +58,7 @@
                                         <h:commandLink
                                             id="filterBatches"
                                             action="#{BatchForm.filterBatches}"
-                                            styleClass="btn btn-primary font-size-s"
+                                            styleClass="btn btn-primary font-size-s submitOnEnter"
                                             title="#{msgs.filter}">
                                             <i class="fa fa-search margin-right-5"></i>
                                             <h:outputText value="#{msgs.filter}" />
