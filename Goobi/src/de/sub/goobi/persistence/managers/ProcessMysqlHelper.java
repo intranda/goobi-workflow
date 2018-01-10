@@ -141,7 +141,6 @@ class ProcessMysqlHelper implements Serializable {
             end = new Timestamp(batch.getEndDate().getTime());
         }
 
-        
         if (batch.getBatchId() == null) {
             StringBuilder sql = new StringBuilder();
             sql.append("INSERT INTO batches (batchName, startDate, endDate) VALUES (?,?,?)");
@@ -173,6 +172,25 @@ class ProcessMysqlHelper implements Serializable {
 
         }
 
+    }
+
+    public static void deleteBatch(Batch batch) throws SQLException {
+        Connection connection = null;
+        if (batch != null && batch.getBatchId() != null) {
+            String deleteBatchIdFromProcess = "UPDATE prozesse set batchID = NULL WHERE batchID = ?";
+            String deleteBatchFromBatches = "DELETE from batches where id = ?";
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                run.update(connection, deleteBatchIdFromProcess, batch.getBatchId());
+                run.update(connection, deleteBatchFromBatches, batch.getBatchId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+
+        }
     }
 
     public static void deleteProcess(Process o) throws SQLException {
@@ -221,7 +239,8 @@ class ProcessMysqlHelper implements Serializable {
 
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append(
+                "SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -245,7 +264,8 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT  * FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append(
+                "SELECT  * FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }

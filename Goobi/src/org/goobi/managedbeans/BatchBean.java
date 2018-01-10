@@ -174,8 +174,8 @@ public class BatchBean extends BasicBean {
             List<Batch> allBatches = ProcessManager.getBatches(getBatchMaxSize());
             this.currentBatches = new ArrayList<Batch>();
             for (Batch in : allBatches) {
-                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase())) || Integer.toString(in.getBatchId()).contains(
-                        this.batchfilter)) {
+                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase())) || Integer.toString(in
+                        .getBatchId()).contains(this.batchfilter)) {
                     this.currentBatches.add(generateBatch(in));
                 }
             }
@@ -291,18 +291,8 @@ public class BatchBean extends BasicBean {
         if (this.selectedBatches.size() == 0) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
-            if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-
-                List<Process> deleteList = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0)
-                        .getBatchId(), 0, getBatchMaxSize());
-                {
-                    for (Process p : deleteList) {
-                        p.setBatch(null);
-                        ProcessManager.saveProcessInformation(p);
-
-                    }
-
-                }
+            if (this.selectedBatches.get(0) != null) {
+                ProcessManager.deleteBatch(selectedBatches.get(0));
             } else {
                 Helper.setFehlerMeldung("noBatchSelected");
             }
