@@ -88,7 +88,7 @@ public enum DisplayType {
     danteBkgGn250,
     danteAmhMaterial,
     dantePrizepapersDocumenttype,
-    dantePrizepapersObjecttype,
+    dantePrizepapersArtefacttype,
     dantePrizepapersFoldingtechnique,
     danteMarcrelator,
     danteLanguageIso6392;
