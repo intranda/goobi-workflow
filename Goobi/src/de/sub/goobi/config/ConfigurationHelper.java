@@ -300,7 +300,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getDefaultLanguage() {
-        return getLocalString("language.force-default");
+        return getLocalString("defaultLanguage");
     }
 
     public boolean isAnonymizeData() {

@@ -40,6 +40,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
@@ -187,31 +188,43 @@ public class DatabaseVersion {
     }
 
     private static void updateToVersion20() {
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            new QueryRunner().update(connection, "CREATE FULLTEXT INDEX `idx_metadata_value`  ON `goobi`.`metadata` (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
-                }
-            }
-        }
+    		// just enhance the fulltext index for mysql databases
+    		if (!ConfigurationHelper.getInstance().isUseH2DB()) {
+	    		Connection connection = null;
+	        try {
+	            connection = MySQLHelper.getInstance().getConnection();
+	            new QueryRunner().update(connection, "CREATE FULLTEXT INDEX 'idx_metadata_value'  ON 'goobi'.'metadata' (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
+	        } catch (SQLException e) {
+	            logger.error(e);
+	        } finally {
+	            if (connection != null) {
+	                try {
+	                    MySQLHelper.closeConnection(connection);
+	                } catch (SQLException e) {
+	                }
+	            }
+	        }
+    		}
     }
 
     private static void updateToVersion19() {
         String dropBatches = "drop table if exists batches;";
         StringBuilder createBatches = new StringBuilder();
-        createBatches.append("CREATE TABLE batches (");
-        createBatches.append("id int(10) unsigned NOT NULL AUTO_INCREMENT,");
-        createBatches.append("startDate datetime DEFAULT NULL,");
-        createBatches.append("endDate datetime DEFAULT NULL,");
-        createBatches.append("batchName varchar(255) DEFAULT NULL,");
-        createBatches.append("PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
+        if (ConfigurationHelper.getInstance().isUseH2DB()) {
+            createBatches.append("CREATE TABLE `batches` (");
+            createBatches.append("`id` int(11) NOT NULL AUTO_INCREMENT,");
+            createBatches.append("`startDate` DATETIME DEFAULT NULL,");
+            createBatches.append("`endDate` DATETIME DEFAULT NULL,");
+            createBatches.append("`batchName` VARCHAR(255) DEFAULT NULL,");
+            createBatches.append("PRIMARY KEY (`id`));");
+        } else {
+            createBatches.append("CREATE TABLE batches (");
+            createBatches.append("id int(10) unsigned NOT NULL AUTO_INCREMENT,");
+            createBatches.append("startDate datetime DEFAULT NULL,");
+            createBatches.append("endDate datetime DEFAULT NULL,");
+            createBatches.append("batchName varchar(255) DEFAULT NULL,");
+            createBatches.append("PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
+        }
         String insertBatches = "INSERT INTO batches (id) select distinct (batchId) from prozesse where batchID is not NULL";
         
         Connection connection = null;
@@ -412,7 +425,7 @@ public class DatabaseVersion {
     private static void updateToVersion13() {
         Connection connection = null;
         String sqlStatement =
-                "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+                "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
         QueryRunner runner = new QueryRunner();
         try {
             connection = MySQLHelper.getInstance().getConnection();

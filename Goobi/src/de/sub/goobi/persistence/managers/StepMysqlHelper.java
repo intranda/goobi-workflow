@@ -70,7 +70,7 @@ class StepMysqlHelper implements Serializable {
 
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(SchritteID) FROM schritte, prozesse, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT COUNT(SchritteID) FROM schritte, prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -94,7 +94,7 @@ class StepMysqlHelper implements Serializable {
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM schritte, prozesse, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT * FROM schritte, prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }

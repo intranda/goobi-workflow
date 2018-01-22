@@ -158,9 +158,9 @@
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.id}" styleClass="font-light" />
 
                                     <h:outputText value="#{msgs.batch}:" styleClass="font-light" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batch.batchId}" rendered="#{ProzessverwaltungForm.myProzess.batch!=null}" styleClass="font-light" />
-
                                     <h:outputText value="" rendered="#{ProzessverwaltungForm.myProzess.batch==null}" styleClass="font-light" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batch.batchId}" rendered="#{ProzessverwaltungForm.myProzess.batch!=null and ProzessverwaltungForm.myProzess.batch.batchName ==null}" styleClass="font-light" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batch.batchId} (#{ProzessverwaltungForm.myProzess.batch.batchName})" rendered="#{ProzessverwaltungForm.myProzess.batch!=null and ProzessverwaltungForm.myProzess.batch.batchName !=null}" styleClass="font-light" />
                                 </h:panelGrid>
                             </div>
                         </div>

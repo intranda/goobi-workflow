@@ -66,6 +66,7 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.DigitalDocument;
@@ -127,6 +128,8 @@ public class HelperSchritte {
                     pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
 
+                MetadataManager.updateMetadata(currentStep.getProzess().getId(), pairs);
+                
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
             } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {

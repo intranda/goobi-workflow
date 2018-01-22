@@ -87,11 +87,11 @@ public enum DisplayType {
     danteOberbegriffsdatei,
     danteBkgGn250,
     danteAmhMaterial,
-    dantePrizepapersDokumenttyp,
-    dantePrizepapersObjekttyp,
-    dantePrizepapersFalttechnik,
-    danteMarcrelator
-    ;
+    dantePrizepapersDocumenttype,
+    dantePrizepapersArtefacttype,
+    dantePrizepapersFoldingtechnique,
+    danteMarcrelator,
+    danteLanguageIso6392;
 
     public IMetadataPlugin getPlugin() {
     		IMetadataPlugin plugin = null;

@@ -63,7 +63,7 @@
 
         <!-- ++++++++++++++++++ Role ++++++++++++++++++ -->
         <div class="row margin-top-regular">
-            <h:outputText styleClass="control-label col-sm-3" value="#{msgs.rolle}" />
+            <h:outputText styleClass="control-label col-sm-3" value="#{msgs.rolle}" title="#{cc.attrs.person.p.role}"/>
             <div class="col-sm-8 nopadding">
                 <h:selectOneMenu id="role" value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />

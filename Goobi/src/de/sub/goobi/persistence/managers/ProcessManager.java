@@ -204,6 +204,14 @@ public class ProcessManager implements IManager, Serializable {
         return null;
     }
 
+    public static void deleteBatch(Batch batch) {
+        try {
+            ProcessMysqlHelper.deleteBatch(batch);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+    
     @SuppressWarnings("rawtypes")
     public static List runSQL(String sql) {
         try {

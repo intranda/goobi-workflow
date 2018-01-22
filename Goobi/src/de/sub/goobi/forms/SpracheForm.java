@@ -56,10 +56,9 @@ public class SpracheForm {
 	 * The constructor of this class loads the required MessageBundle
 	 */
 	public SpracheForm() {
-	    // TODO get languages from web.xml
 		String p = ConfigurationHelper.getInstance().getDefaultLanguage();
 		if (p != null && p.length() > 0) {
-		    FacesContextHelper.getCurrentFacesContext().getViewRoot().setLocale(new Locale(p));
+		    switchLanguage(p);
 		}
 	}
 
@@ -90,7 +89,6 @@ public class SpracheForm {
 	public List<Map<String, Object>> getSupportedLocales() {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		Locale currentDisplayLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
-		// It seems we have an old Faces API, Faces 2.1’s getSupportedLocales() returns Iterator<Locale> → TODO: Update JSF API
 		Iterator<Locale> localesIterator = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
 		while (localesIterator.hasNext()) {
 			Locale supportedLocale = localesIterator.next();
