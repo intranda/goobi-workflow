@@ -102,9 +102,20 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     public static Boolean updateHistory(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
         boolean updated = false;
         /* storage */
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference, getCurrentStorageSize(inProcess))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference, getCurrentStorageSize(Paths.get(inProcess
+                .getProcessDataDirectory())))) {
             updated = true;
         }
+
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference, getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(
+                true))))) {
+            updated = true;
+        }
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference, getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(
+                true))))) {
+            updated = true;
+        }
+
         /* imagesWork */
         Integer numberWork = NIOFileUtils.getNumberOfFiles(Paths.get(inProcess.getImagesTifDirectory(true)), ".tif");
         if (updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue())) {
@@ -402,11 +413,9 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @throws InterruptedException
      * @throws IOException
      ***************************************************************************/
-    private static long getCurrentStorageSize(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
-        String dirAsString = inProcess.getProcessDataDirectory();
-        Path directory = Paths.get(dirAsString);
+    private static long getCurrentStorageSize(Path directory) throws IOException {
         if (!Files.exists(directory)) {
-            throw new IOException("History Manager error while calculating size of " + inProcess.getTitel());
+            return 0;
         }
         if (Files.isDirectory(directory)) {
             return size(directory);
@@ -416,11 +425,10 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     }
 
     /**
-     * Calculate the size of a directory by using NIOs walkFileTree 
-     * it ignores symlinks, folders without permissions and concurrent modification
+     * Calculate the size of a directory by using NIOs walkFileTree it ignores symlinks, folders without permissions and concurrent modification
      * 
      */
-    
+
     private static long size(Path path) {
 
         final AtomicLong size = new AtomicLong(0);
@@ -437,7 +445,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                 @Override
                 public FileVisitResult visitFileFailed(Path file, IOException e) {
 
-                    logger.debug("skipped: " + file , e);
+                    logger.debug("skipped: " + file, e);
                     // Skip folders that can't be traversed
                     return FileVisitResult.CONTINUE;
                 }
@@ -446,7 +454,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                 public FileVisitResult postVisitDirectory(Path dir, IOException e) {
 
                     if (e != null)
-                        logger.debug("had trouble traversing: " + dir , e);
+                        logger.debug("had trouble traversing: " + dir, e);
                     // Ignore errors traversing a folder
                     return FileVisitResult.CONTINUE;
                 }
