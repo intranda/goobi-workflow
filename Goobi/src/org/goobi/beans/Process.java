@@ -331,6 +331,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (verzeichnisse != null) {
             for (int i = 0; i < verzeichnisse.size(); i++) {
                 tifOrdner = verzeichnisse.get(i);
+                if (tifOrdner.equals(titel + "_" + DIRECTORY_SUFFIX)) {
+                    break;
+                }
             }
         }
 
