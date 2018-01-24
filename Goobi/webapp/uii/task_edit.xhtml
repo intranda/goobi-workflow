@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{AktuelleSchritteForm.mySchritt.titel}" />
+    <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{AktuelleSchritteForm.mySchritt.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
@@ -43,7 +43,7 @@
 	                            <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow ne 'full'}">
 	                                <h:panelGrid columns="2" class="table table-bordered" style="border: 1px solid #ddd;">
 	                                    <h:outputText value="#{msgs.arbeitsschritt}:" />
-	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.titel}" />
+	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.titelLokalisiert}" title="#{AktuelleSchritteForm.mySchritt.titel}"/>
 	
 	                                    <h:outputText value="#{msgs.prioritaet}:" />
 	                                    <h:panelGroup>
@@ -108,7 +108,7 @@
 	                                                <ul class="colors small13">
 	                                                    <li class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
 	                                                </ul>
-	                                                <h:outputText value="#{step.titelLokalisiert}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
+	                                                <h:outputText value="#{step.titelLokalisiert}" title="#{step.titel}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
 	
 	                                                <div class="row" style="padding-left: 160px; padding-right: 20px">
 	                                                    <h:panelGrid columns="2" class="table table-bordered" style="border: 1px solid #ddd;" rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and step.id eq AktuelleSchritteForm.mySchritt.id}">

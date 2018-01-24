@@ -63,7 +63,7 @@
                                             </h:panelGroup>
                                             <x:updateActionListener value="#{item.panelAusgeklappt?false:true}" property="#{item.panelAusgeklappt}" />
                                             <f:ajax render="possibleActions1" />
-                                            <h:outputText value="#{item.titel}"  styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
+                                            <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}" styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                         </h:commandLink>
 
                                         <h:panelGroup styleClass="margin-top-10 block" rendered="#{item.panelAusgeklappt}">
@@ -80,7 +80,7 @@
                                                     <h:panelGrid columns="2" columnClasses="tableColumnWidthLong" class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" >
 
                                                         <h:outputText value="#{msgs.titel}:" />
-                                                        <h:outputText value="#{item.titel}" />
+                                                        <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}"/>
 
                                                         <h:outputText value="#{msgs.prioritaet}:" />
                                                         <h:panelGroup>

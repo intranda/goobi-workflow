@@ -28,7 +28,7 @@
                     <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow ne 'full'}">
                         <h:panelGrid columns="2" class="table table-bordered" style="border: 1px solid #ddd;">
                             <h:outputText value="#{msgs.arbeitsschritt}:" />
-                            <h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.titel}" />
+                            <h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
 
                             <h:outputText value="#{msgs.prioritaet}:" />
                             <h:panelGroup>
@@ -92,7 +92,7 @@
                                         <ul class="colors small13">
                                             <li class="#{step.bearbeitungsstatusEnum.color} margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
                                         </ul>
-                                        <h:outputText value="#{step.titelLokalisiert}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
+                                        <h:outputText value="#{step.titelLokalisiert}" title="#{step.titel}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
 
                                         <div class="row" style="padding-left: 160px; padding-right: 20px">
                                             <h:panelGrid columns="2" class="table table-bordered" style="border: 1px solid #ddd;" rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and step.id eq AktuelleSchritteForm.batchHelper.currentStep.id}">

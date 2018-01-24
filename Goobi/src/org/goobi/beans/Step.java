@@ -324,7 +324,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public String getTitelLokalisiert() {
-        return Helper.getTranslation(this.titel);
+        String translatedTitle = Helper.getTranslation("stepname_" + this.titel);
+        return translatedTitle.startsWith("stepname_") ? titel : translatedTitle;
     }
 
     public String getTitel() {

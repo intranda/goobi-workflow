@@ -1444,4 +1444,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return rootpath + representativeImage.replaceAll("\\\\", "/");
     }
 
+    
+    // this method is needed for ajaxPlusMinusButton.xhtml
+    public String getTitelLokalisiert() {
+        return titel;
+    }
 }
