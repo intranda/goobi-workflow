@@ -33,6 +33,7 @@ import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
 import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
 import org.goobi.goobiScript.GoobiScriptSwapSteps;
+import org.goobi.goobiScript.GoobiScriptUpdateHistory;
 import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
 import org.goobi.goobiScript.GoobiScriptUpdateMetadata;
 import org.goobi.goobiScript.IGoobiScript;
@@ -121,6 +122,8 @@ public class GoobiScript {
                 igs = new GoobiScriptAddPluginToStep();
             } else if (this.myParameters.get("action").equals("updateImagePath")) {
                 igs = new GoobiScriptUpdateImagePath();
+            } else if (this.myParameters.get("action").equals("updateHistory")) {
+                igs = new GoobiScriptUpdateHistory();
             } else if (this.myParameters.get("action").equals("updateContentFiles")) {
                 updateContentFiles(inProzesse);
             } else if (this.myParameters.get("action").equals("deleteTiffHeaderFile")) {
