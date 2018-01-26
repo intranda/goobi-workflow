@@ -74,7 +74,7 @@ public class Multipage {
         /* alle tifs durchlaufen */
         String pfad = inProzess.getImagesDirectory();
 
-        List<String> dateien = NIOFileUtils.list(pfad, NIOFileUtils.imageNameFilter);
+        List<String> dateien = NIOFileUtils.list(pfad, NIOFileUtils.imageOrObjectNameFilter);
 
         /* keine Tifs vorhanden, also raus */
         if (dateien == null) {

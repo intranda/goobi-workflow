@@ -96,7 +96,7 @@ public void run() {
            listAllTifFiles(folder, inFiles);
        }
 
-       List<Path> files = NIOFileUtils.listFiles(dir.toString(), NIOFileUtils.imageNameFilter);
+       List<Path> files = NIOFileUtils.listFiles(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 
        inFiles.addAll(files);
 

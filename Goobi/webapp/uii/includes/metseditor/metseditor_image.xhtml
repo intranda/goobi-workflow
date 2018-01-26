@@ -115,6 +115,7 @@
 										 };
 									
 									 	var mediaType = "#{Metadaten.image.type}";
+									 	console.log("Media type = ", mediaType);
 									 	if(mediaType == "image") {
 									 		
 										    viewImage.init( configViewer )
@@ -149,41 +150,24 @@
 									 			}
 									 		 }).then(function(object) {
 									 			 console.log("loaded ", object);
-// 									 			 var box = new THREE.Box3().setFromObject( object );
-// 									 			 var sphere = world.getBoundingSphere(object);
-// 									 			 world.addPlane({
-// 									 					offset: { x:0, y:0, z:-(box.max.z-box.min.z)*0.5},
-// 									 					rotation: {x:0, y:0, z:0},
-// 									 					size: 10000,
-// 									 					material: {
-// 									 						color: 0xaa5577,
-// 									 						opacity: 1
-// 									 					}
-// 									 			 })
-// 												world.addBlock({
-// 									 	 			position: world.getBoundingSphere(object).center,
-// 									 	 			box: box,
-// 									 	 			material: {
-// 									 	 				color: 0xff55ff,
-// 									 	 				opacity: 0.6
-// 									 	 			}
-// 									 	 	 	});
-// 												var sphere = world.getBoundingSphere(object);
-// 												console.log("adding sphere ", sphere);
-// 									 	 		world.addSphere({
-// 									 	 			position: sphere.center,
-// 									 	 			size: sphere.radius*2,
-// 									 	 			material: {
-// 									 	 				color: 0x111111,
-// 									 	 				opacity: 0.2
-// 									 	 			}
-// 									 	 	 	});
 									 	 		console.log("render");
 									 		 	world.render();
 									 		 }).catch(function(error) {
 									 			 console.err("failed to load: ", error);
 									 		 })
 									 		
+									 	} else if(mediaType == "x3dom") {
+									 	    var objectUrl = "#{Metadaten.image.objectUrl}";
+									 	    new X3DLoader().load($('#mainImage'), objectUrl, 
+									 	            function(){
+									 	        		console.log("loaded");
+									 	            },
+									 	           function(){
+									 	               console.log("progress");
+									 	            },
+									 	           function(error){
+									 	               console.log("error", error);
+									 	            })
 									 	}
 									 
 									    
@@ -223,6 +207,132 @@
 										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
 										<f:ajax render=":myform :menu-form" execute="@form" />
 									</h:commandLink>
+                                    
+                                    <script type="text/javascript">
+                                    var configViewer = {
+                                        global: {
+                                            divId: 'thumb_#{image.order}',
+                                            useTiles: false,
+                                            footerHeight: 0,
+                                            adaptContainerHeight: true,
+                                            zoomSlider: "#zoomSlider",
+                                            zoomSliderHandle: '.zoomslider-handle',
+                                            persistZoom: false,
+                                            persistRotation: false,
+                                        },
+                                        image: {
+                                            mimeType: "image/jpeg",
+                                            tileSource : [#{image.imageLevels}],
+                                        }
+                                    };      
+                                    
+                                     var worldConfig = {
+                                                camera: {
+                                                    fieldOfView: 35,
+                                                    viewPadding: 0,
+                                                    nearPlane: 0.1,
+                                                    farPlane: 10000,
+                                                    position:  { x:0, y:0, z: 0 },
+                                                },
+                                                container: {
+                                                    id: "mainImage"
+                                                },
+                                                light: {
+                                                    background: {
+                                                        color: 0xffffff
+                                                    },
+                                                    ambient: {
+                                                        color: 0x909090,
+                                                        intensity: 0.8
+                                                    },
+                                                    directional: [
+                                                        {//front camery
+                                                            color: 0xaaaaaa,
+                                                            intensity: 1,
+                                                            position: { x:0, y:0, z:10 },
+                                                            castShadow: true,
+                                                            showHelper: false
+                                                        },
+                                                        {//back camera
+                                                            color: 0xaaaaaa,
+                                                            intensity: 1,
+                                                            position: { x:0, y:0, z:-10 },
+                                                            castShadow: true,
+                                                            showHelper: false
+                                                        },
+                                                        {//top camera
+                                                            color: 0xaaaaaa,
+                                                            intensity: 1,
+                                                            position: { x:0, y:10, z:0 },
+                                                            castShadow: true,
+                                                            showHelper: false
+                                                        },
+                                                        {//bottom camera
+                                                            color: 0xaaaaaa,
+                                                            intensity: 1,
+                                                            position: { x:0, y:-10, z:0 },
+                                                            castShadow: true,
+                                                            showHelper: false
+                                                        }
+                                                    ]
+                                                }
+                                         };
+                                    
+                                        var mediaType = "#{image.type}";
+                                        console.log("Media type = ", mediaType);
+                                        if(mediaType == "image") {
+                                            
+                                            viewImage.init( configViewer )
+                                            .then(function(osViewer) {
+                                                //TODO: Hide loader?
+                                            })
+                                            .catch(function(error){
+                                                console.error( 'Error opening image', error );
+                                                $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
+                                            });
+                                        
+                                        } else if(mediaType == "object") {
+                                            
+                                            var world = WorldGenerator.create(worldConfig);
+                                            world.loadObject({
+                                                 url: "#{image.objectUrl}",
+                                                 position: { x:0, y:0, z:0 },
+                                                 rotation:  { x:0, y:0, z:0 },
+                                                 size:  10,
+                                                 material: {
+                                                        color: 0x44bb33
+                                                    },
+                                                focus: true,
+                                                onTick: function(object, time) {
+                                                    if(object) {
+//                                                      object.rotation.set(0,  Math.PI/180 * time, 0);
+                                                    }
+                                                }
+                                             }).then(function(object) {
+                                                 console.log("loaded ", object);
+                                                console.log("render");
+                                                world.render();
+                                             }).catch(function(error) {
+                                                 console.err("failed to load: ", error);
+                                             })
+                                            
+                                        } else if(mediaType == "x3dom") {
+                                            var objectUrl = "#{image.objectUrl}";
+                                            new X3DLoader().load($('#thumb_#{image.order}').parent(),objectUrl, 
+                                                    function(){
+                                                        console.log("loaded");
+                                                    },
+                                                   function(){
+                                                       console.log("progress");
+                                                    },
+                                                   function(error){
+                                                       console.log("error", error);
+                                                    })
+                                        }
+                                     
+                                        
+                                    </script>
+                                    
 								</div>
 								<div class="goobi-thumbnail-caption">
 									<h:outputText rendered="#{NavigationForm.uiStatus.mets_thumbFilename}" value="#{Metadaten.alleSeiten[image.order -1].label}" />

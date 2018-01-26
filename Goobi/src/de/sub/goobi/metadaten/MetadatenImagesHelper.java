@@ -114,7 +114,7 @@ public class MetadatenImagesHelper {
         // get image names in directory
         Path folder = Paths.get(myProzess.getImagesTifDirectory(true));
 
-        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageNameFilter);
+        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageOrObjectNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
             return;
@@ -702,7 +702,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 
         /* alle Dateien durchlaufen */
         if (dateien != null && !dateien.isEmpty()) {
@@ -746,22 +746,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> imageDateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
-        List<String> objectDateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.objectNameFilter);
-
-        //Only import image file if no corresponding object file is present
-        List<String> dateien = new ArrayList<>(objectDateien);
-        for (String filename : imageDateien) {
-            boolean exists = false;
-            for (String existingName : dateien) {
-                if(FilenameUtils.getBaseName(filename).equals(FilenameUtils.getBaseName(existingName))) {
-                    exists = true;
-                }
-            }
-            if(!exists) {
-                dateien.add(filename);
-            }
-        }
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 
         List<String> orderedFilenameList = new ArrayList<String>();
         if (dateien != null && !dateien.isEmpty()) {

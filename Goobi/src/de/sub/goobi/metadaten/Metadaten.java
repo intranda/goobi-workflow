@@ -4214,7 +4214,7 @@ public class Metadaten {
                 Collections.sort(currentImage.getImageLevels());
             }
             
-        } else if(currentImage.getType().equals(Type.object)) {
+        } else if(currentImage.getType().equals(Type.object) || currentImage.getType().equals(Type.x3dom)) {
             String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName() + "/info.json";
             currentImage.setObjectUrl(url);
         } else {
