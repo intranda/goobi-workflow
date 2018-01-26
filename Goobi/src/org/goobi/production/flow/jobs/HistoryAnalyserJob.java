@@ -585,10 +585,10 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     }
 
     public static Boolean updateHistoryForProzess(Process inProc) {
-        Boolean updated = false;
+        Boolean updated = true;
         try {
-            updated = updateHistory(inProc);
-            updated = updateHistoryForSteps(inProc);
+            updateHistory(inProc);
+            updateHistoryForSteps(inProc);
         } catch (Exception ex) {
             logger.warn("Updating history failed.", ex);
             updated = false;
