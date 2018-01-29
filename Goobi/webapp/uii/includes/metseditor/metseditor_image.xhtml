@@ -41,7 +41,12 @@
                                 	</h:panelGroup>
 
                                 <h:panelGroup styleClass="div-image" layout="block">
-                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null}" />
+                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null}">
+                                    <div id="ajaxloader_image">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </div>
+                                   
+                                    </h:panelGroup>
 
                                     <script type="text/javascript">
 									var configViewer = {
@@ -69,6 +74,7 @@
 									    			nearPlane: 0.1,
 									    			farPlane: 10000,
 									    			position:  { x:0, y:0, z: 0 },
+									    			offset:  { x:0, y:0, z:0 },
 									    		},
 									    		container: {
 									    			id: "mainImage"
@@ -82,28 +88,28 @@
 									    				intensity: 0.8
 									    			},
 									    			directional: [
-									    				{//front camery
+									    				{//front spot
 										    				color: 0xaaaaaa,
 										    				intensity: 1,
 										    				position: { x:0, y:0, z:10 },
 										    				castShadow: true,
 										    				showHelper: false
 										    			},
-										    			{//back camera
+										    			{//back spot
 										    				color: 0xaaaaaa,
 										    				intensity: 1,
 										    				position: { x:0, y:0, z:-10 },
 										    				castShadow: true,
 										    				showHelper: false
 										    			},
-										    			{//top camera
+										    			{//top spot
 										    				color: 0xaaaaaa,
 										    				intensity: 1,
 										    				position: { x:0, y:10, z:0 },
 										    				castShadow: true,
 										    				showHelper: false
 										    			},
-										    			{//bottom camera
+										    			{//bottom spot
 										    				color: 0xaaaaaa,
 										    				intensity: 1,
 										    				position: { x:0, y:-10, z:0 },
@@ -113,7 +119,6 @@
 									    			]
 									    		}
 										 };
-									
 									 	var mediaType = "#{Metadaten.image.type}";
 									 	console.log("Media type = ", mediaType);
 									 	if(mediaType == "image") {
@@ -132,7 +137,7 @@
 										    });
 									    
 									 	} else if(mediaType == "object") {
-									 		
+									 	   $('#ajaxloader_image').show();
 									 		var world = WorldGenerator.create(worldConfig);
 									 		world.loadObject({
 									 	 		 url: "#{Metadaten.image.objectUrl}",
@@ -149,23 +154,27 @@
 									 				}
 									 			}
 									 		 }).then(function(object) {
+									 	       	 $('#ajaxloader_image').fadeOut(2000);
 									 			 console.log("loaded ", object);
-									 	 		console.log("render");
 									 		 	world.render();
 									 		 }).catch(function(error) {
+									 		    $('#ajaxloader_image').fadeOut(2000);
 									 			 console.err("failed to load: ", error);
 									 		 })
 									 		
 									 	} else if(mediaType == "x3dom") {
 									 	    var objectUrl = "#{Metadaten.image.objectUrl}";
-									 	    new X3DLoader().load($('#mainImage'), objectUrl, 
+									 	   $('#ajaxloader_image').show();
+    									 	    new X3DLoader().load($('#mainImage'), objectUrl, 
 									 	            function(){
-									 	        		console.log("loaded");
+    									 	       		$('#ajaxloader_image').fadeOut(2000);
+    									 	       		console.log("loaded")
 									 	            },
 									 	           function(){
 									 	               console.log("progress");
 									 	            },
 									 	           function(error){
+									 	               $('#ajaxloader_image').fadeOut(2000);
 									 	               console.log("error", error);
 									 	            })
 									 	}
@@ -202,138 +211,17 @@
 							<div class="goobi-thumbnail #{Metadaten.image.imageName eq image.imageName ? 'img-active' : 'font-light'}">
 									<div class="thumb" id="thumb_#{image.order}">
 										<h:commandLink id="thumbnailImage" title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}" action="#{Metadaten.checkSelectedThumbnail(image.order -1)}" onclick="selectClickedThumbnail(this)">
-										<canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}" id="thumbnail-#{status.index}"></canvas>
-										<x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
-										<f:ajax render=":myform :menu-form" execute="@form" />
-									</h:commandLink>
-                                    
-                                    <script type="text/javascript">
-                                    var configViewer = {
-                                        global: {
-                                            divId: 'thumb_#{image.order}',
-                                            useTiles: false,
-                                            footerHeight: 0,
-                                            adaptContainerHeight: true,
-                                            zoomSlider: "#zoomSlider",
-                                            zoomSliderHandle: '.zoomslider-handle',
-                                            persistZoom: false,
-                                            persistRotation: false,
-                                        },
-                                        image: {
-                                            mimeType: "image/jpeg",
-                                            tileSource : [#{image.imageLevels}],
-                                        }
-                                    };      
-                                    
-                                     var worldConfig = {
-                                                camera: {
-                                                    fieldOfView: 35,
-                                                    viewPadding: 0,
-                                                    nearPlane: 0.1,
-                                                    farPlane: 10000,
-                                                    position:  { x:0, y:0, z: 0 },
-                                                },
-                                                container: {
-                                                    id: "mainImage"
-                                                },
-                                                light: {
-                                                    background: {
-                                                        color: 0xffffff
-                                                    },
-                                                    ambient: {
-                                                        color: 0x909090,
-                                                        intensity: 0.8
-                                                    },
-                                                    directional: [
-                                                        {//front camery
-                                                            color: 0xaaaaaa,
-                                                            intensity: 1,
-                                                            position: { x:0, y:0, z:10 },
-                                                            castShadow: true,
-                                                            showHelper: false
-                                                        },
-                                                        {//back camera
-                                                            color: 0xaaaaaa,
-                                                            intensity: 1,
-                                                            position: { x:0, y:0, z:-10 },
-                                                            castShadow: true,
-                                                            showHelper: false
-                                                        },
-                                                        {//top camera
-                                                            color: 0xaaaaaa,
-                                                            intensity: 1,
-                                                            position: { x:0, y:10, z:0 },
-                                                            castShadow: true,
-                                                            showHelper: false
-                                                        },
-                                                        {//bottom camera
-                                                            color: 0xaaaaaa,
-                                                            intensity: 1,
-                                                            position: { x:0, y:-10, z:0 },
-                                                            castShadow: true,
-                                                            showHelper: false
-                                                        }
-                                                    ]
-                                                }
-                                         };
-                                    
-                                        var mediaType = "#{image.type}";
-                                        console.log("Media type = ", mediaType);
-                                        if(mediaType == "image") {
-                                            
-                                            viewImage.init( configViewer )
-                                            .then(function(osViewer) {
-                                                //TODO: Hide loader?
-                                            })
-                                            .catch(function(error){
-                                                console.error( 'Error opening image', error );
-                                                $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
-                                            });
-                                        
-                                        } else if(mediaType == "object") {
-                                            
-                                            var world = WorldGenerator.create(worldConfig);
-                                            world.loadObject({
-                                                 url: "#{image.objectUrl}",
-                                                 position: { x:0, y:0, z:0 },
-                                                 rotation:  { x:0, y:0, z:0 },
-                                                 size:  10,
-                                                 material: {
-                                                        color: 0x44bb33
-                                                    },
-                                                focus: true,
-                                                onTick: function(object, time) {
-                                                    if(object) {
-//                                                      object.rotation.set(0,  Math.PI/180 * time, 0);
-                                                    }
-                                                }
-                                             }).then(function(object) {
-                                                 console.log("loaded ", object);
-                                                console.log("render");
-                                                world.render();
-                                             }).catch(function(error) {
-                                                 console.err("failed to load: ", error);
-                                             })
-                                            
-                                        } else if(mediaType == "x3dom") {
-                                            var objectUrl = "#{image.objectUrl}";
-                                            new X3DLoader().load($('#thumb_#{image.order}').parent(),objectUrl, 
-                                                    function(){
-                                                        console.log("loaded");
-                                                    },
-                                                   function(){
-                                                       console.log("progress");
-                                                    },
-                                                   function(error){
-                                                       console.log("error", error);
-                                                    })
-                                        }
-                                     
-                                        
-                                    </script>
-                                    
-								</div>
+    										<ui:fragment rendered="#{image.type == 'image'}">
+                                                <canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}" id="thumbnail-#{status.index}"></canvas>
+                                            </ui:fragment>
+                                            <ui:fragment rendered="#{image.type != 'image'}">
+                                                <img class="thumbnail_placeholder" src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/thumbnail-placeholder.png"/>
+                                            </ui:fragment>
+    										<x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
+    										<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
+    										<f:ajax render=":myform :menu-form" execute="@form" />
+									   </h:commandLink>
+								    </div>
 								<div class="goobi-thumbnail-caption">
 									<h:outputText rendered="#{NavigationForm.uiStatus.mets_thumbFilename}" value="#{Metadaten.alleSeiten[image.order -1].label}" />
 									<h:outputText rendered="#{not NavigationForm.uiStatus.mets_thumbFilename}" value="#{image.tooltip}" />

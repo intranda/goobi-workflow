@@ -1333,9 +1333,38 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
 }
 
 #mainImage {
+	position: relative;
     border: 1px solid #ccc;
     padding: 0;
     widht: 100%;
+}
+
+#ajaxloader_image {
+	display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 999;
+}
+
+#ajaxloader_image img {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+/*     width: 140px; */
+/*     height: 84px; */
+/*     margin-left: -70px; */
+/*     margin-top: -42px; */
+    width: 70px;
+    height: 42px;
+    margin-left: -35px;
+    margin-top: -21px;
+    border: none;
 }
 
 .massimportListHeight {

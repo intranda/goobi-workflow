@@ -16,8 +16,12 @@ X3DLoader.prototype = {
 
         return Q($.getJSON(url)).then(function(info) {
             console.log("Loading x3dom ", info);
-            $x3d = $('<x3d width="100%" height="100%"><scene><inline url="' + info.uri + '"></inline></scene></x3d>');
-            $image.append($x3d);
+            var imageWidth = $image.width() + "px";
+            var imageHeight =  $image.height() + "px";
+            var x3d = '<x3d width="' + imageWidth + '" height="' + imageHeight + '"><scene><inline url="' + info.uri + '"></inline></scene></x3d>';
+            $image.get(0).innerHTML += x3d;
+//            $image.append($x3d);
+            x3dom.reload()
             onLoad();
         });
     }

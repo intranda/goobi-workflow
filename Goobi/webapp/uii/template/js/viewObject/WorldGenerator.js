@@ -82,7 +82,8 @@ var WorldGenerator = (function() {
 					this.container.clientWidth / this.container.clientHeight,
 					config.camera.nearPlane,
 					config.camera.farPlane);
-			this.camera.position.set(config.camera.position.x, config.camera.position.y, config.camera.position.z)
+			this.camera.position.set(config.camera.position.x, config.camera.position.y, config.camera.position.z)              
+
 			// RENDERER//
 			this.renderer = new THREE.WebGLRenderer();
 			this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
@@ -222,6 +223,7 @@ var WorldGenerator = (function() {
 			return object;
 		}
 		rotate(object, rotation) {
+		    console.log("rotate object by ", rotation);
 			object.rotation.set(rotation.x * Math.PI / 180, rotation.y * Math.PI / 180, rotation.z * Math.PI / 180);
 		}
 		center(object, position) {
