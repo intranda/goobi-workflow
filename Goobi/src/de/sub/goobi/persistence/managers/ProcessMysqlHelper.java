@@ -141,7 +141,7 @@ class ProcessMysqlHelper implements Serializable {
         }
 
         if (batch.getEndDate() != null) {
-            LocalDate localDate = new LocalDate(batch.getStartDate());
+            LocalDate localDate = new LocalDate(batch.getEndDate());
             end =  new Timestamp(localDate.toDateTimeAtStartOfDay().getMillis());
         }
 
