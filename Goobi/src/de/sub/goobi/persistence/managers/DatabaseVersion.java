@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -921,4 +922,61 @@ public class DatabaseVersion {
             logger.error(e);
         }
     }
+    
+
+    /**
+     * check if a table exists in the current database
+     * 
+     * @param tableName name of the table to check
+     * @return true if table exists, false otherwise
+     */
+
+    public boolean checkIfTableExists(String tableName) {
+        String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, "goobi", tableName);
+            return StringUtils.isNotBlank(value);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a column exist within a given table
+     * 
+     * @param tableName the table to check
+     * @param columnName the name of the column
+     * @return true if the column exists, false otherwise
+     */
+
+    public boolean checkIfColumnExists(String tableName, String columnName) {
+        String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, "goobi", tableName, columnName);
+            return StringUtils.isNotBlank(value);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        return false;
+    }
+
 }
