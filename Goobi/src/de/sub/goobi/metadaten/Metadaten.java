@@ -795,7 +795,7 @@ public class Metadaten {
                 logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
-        if (StringUtils.isBlank(tempTyp)) {
+        if (StringUtils.isBlank(tempTyp) && !tempMetadatumList.isEmpty()) {
             tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
             selectedMetadatum = tempMetadatumList.get(0);
         }
