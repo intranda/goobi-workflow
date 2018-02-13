@@ -40,6 +40,7 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.production.enums.LogType;
+import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -134,11 +135,14 @@ class ProcessMysqlHelper implements Serializable {
         Timestamp end = null;
 
         if (batch.getStartDate() != null) {
-            start = new Timestamp(batch.getStartDate().getTime());
+            LocalDate localDate = new LocalDate(batch.getStartDate());
+            start = new Timestamp(localDate.toDateTimeAtStartOfDay().getMillis());
+           
         }
 
         if (batch.getEndDate() != null) {
-            end = new Timestamp(batch.getEndDate().getTime());
+            LocalDate localDate = new LocalDate(batch.getEndDate());
+            end =  new Timestamp(localDate.toDateTimeAtStartOfDay().getMillis());
         }
 
         if (batch.getBatchId() == null) {
@@ -884,11 +888,14 @@ class ProcessMysqlHelper implements Serializable {
         batch.setBatchName(rs.getString("batchName"));
         Timestamp start = rs.getTimestamp("startDate");
         if (start != null) {
-            batch.setStartDate(new Date(start.getTime()));
+            LocalDate localDate = new LocalDate(start);
+            
+            batch.setStartDate(localDate.toDate());
         }
         Timestamp end = rs.getTimestamp("endDate");
         if (end != null) {
-            batch.setEndDate(new Date(end.getTime()));
+            LocalDate localDate = new LocalDate(end);
+            batch.setEndDate(localDate.toDate());
         }
         return batch;
     }

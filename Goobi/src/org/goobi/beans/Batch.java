@@ -1,7 +1,9 @@
 package org.goobi.beans;
 
+import java.text.DateFormat;
 import java.util.Date;
 
+import de.sub.goobi.helper.Helper;
 import lombok.Data;
 
 /**
@@ -30,29 +32,46 @@ import lombok.Data;
 
 @Data
 public class Batch {
-    
+
     /**
      * internal id of the batch
      */
     private Integer batchId;
-    
+
     /**
      * optional batch name
      */
     private String batchName;
-    
+
     /**
      * optional start date of the batch
      */
     private Date startDate;
-    
+
     /**
      * optional date when the batch gets finalized
      */
     private Date endDate;
 
     /**
-     * label is not stored in the database, needed to display information in the UI  
+     * label is not stored in the database, needed to display information in the UI
      */
     private String batchLabel;
+
+    public String getStartDateAsString() {
+        if (startDate == null) {
+            return "";
+        } else {
+
+            return DateFormat.getDateInstance().format(startDate);
+        }
+    }
+
+    public String getEndDateAsString() {
+        if (endDate == null) {
+            return "";
+        } else {
+            return DateFormat.getDateInstance().format(endDate);
+        }
+    }
 }
