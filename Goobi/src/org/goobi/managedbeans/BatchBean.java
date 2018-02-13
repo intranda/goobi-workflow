@@ -28,16 +28,17 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -61,11 +62,13 @@ import lombok.EqualsAndHashCode;
 
 //import de.sub.goobi.persistence.ProzessDAO;
 
-@ManagedBean(name = "BatchForm")
+
+
+@Named("BatchForm")
 @SessionScoped
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BatchBean extends BasicBean {
+public class BatchBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 8234897225425856549L;
 

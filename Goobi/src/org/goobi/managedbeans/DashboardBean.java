@@ -1,8 +1,8 @@
 package org.goobi.managedbeans;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -10,7 +10,9 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
-@ManagedBean(name = "DashboardForm")
+
+
+@Named("DashboardForm")
 @SessionScoped
 public class DashboardBean {
 

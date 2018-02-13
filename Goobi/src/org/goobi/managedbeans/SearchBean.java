@@ -1,5 +1,6 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,9 +31,9 @@ package org.goobi.managedbeans;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
@@ -47,9 +48,14 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@ManagedBean(name = "SearchForm")
+@Named("SearchForm")
 @SessionScoped
-public class SearchBean {
+public class SearchBean implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4981330560006133964L;
 
     private List<String> projects = new ArrayList<String>(); // proj:
 
@@ -83,7 +89,7 @@ public class SearchBean {
             this.stepstatus.add(s);
         }
         
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         
         // projects
         String projectFilter = "";

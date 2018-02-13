@@ -96,7 +96,7 @@ public class HelperSchritte {
 
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
             if (lf != null) {
                 User ben = lf.getMyBenutzer();
                 if (ben != null) {

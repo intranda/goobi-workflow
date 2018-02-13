@@ -53,12 +53,19 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.ValueBinding;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -135,7 +142,7 @@ public class Helper implements Serializable, Observer {
         inException.printStackTrace(new PrintWriter(sw));
         return sw.toString();
     }
-    
+
     public static void setFehlerMeldungUntranslated(String meldung) {
         setMeldung(null, meldung, "", false, false);
     }
@@ -153,13 +160,13 @@ public class Helper implements Serializable, Observer {
     }
 
     public static void setFehlerMeldungUntranslated(String meldung, Exception e) {
-    	setFehlerMeldungUntranslated(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+        setFehlerMeldungUntranslated(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
 
     public static void setFehlerMeldungUntranslated(String control, String meldung, Exception e) {
-    	setFehlerMeldungUntranslated(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+        setFehlerMeldungUntranslated(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
-    
+
     public static void setFehlerMeldung(String meldung) {
         setMeldung(null, meldung, "", false, true);
     }
@@ -183,10 +190,6 @@ public class Helper implements Serializable, Observer {
     public static void setFehlerMeldung(String control, String meldung, Exception e) {
         setFehlerMeldung(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
-    
-    
-    
-    
 
     private static String getExceptionMessage(Throwable e) {
         String message = e.getMessage();
@@ -211,24 +214,24 @@ public class Helper implements Serializable, Observer {
     }
 
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = "- automatic -";
-	    if (login != null){
-	    	user = login.getMyBenutzer().getNachVorname();
-    	}
-		addMessageToProcessLog(processId, type, message, user);
-	}
-    
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        String user = "- automatic -";
+        if (login != null) {
+            user = login.getMyBenutzer().getNachVorname();
+        }
+        addMessageToProcessLog(processId, type, message, user);
+    }
+
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
-		LogEntry logEntry = new LogEntry();
+        LogEntry logEntry = new LogEntry();
         logEntry.setContent(message);
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processId);
         logEntry.setType(type);
         logEntry.setUserName(username);
         ProcessManager.saveLogEntry(logEntry);
-	}
-    
+    }
+
     /**
      * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
      */
@@ -244,21 +247,21 @@ public class Helper implements Serializable, Observer {
         String msg = meldung;
         String beschr = beschreibung;
         Locale language = Locale.ENGLISH;
-        SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
+        SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("SpracheForm", SpracheForm.class);
         if (sf != null) {
             language = sf.getLocale();
         }
 
-        if (useTranslation){
-	        try {
-	            msg = getString(language, meldung);
-	            beschr = getString(language, beschreibung);
-	        } catch (RuntimeException e) {
-	        }
+        if (useTranslation) {
+            try {
+                msg = getString(language, meldung);
+                beschr = getString(language, beschreibung);
+            } catch (RuntimeException e) {
+            }
         }
 
         String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
-        
+
         if (context != null) {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
@@ -302,15 +305,12 @@ public class Helper implements Serializable, Observer {
             value = getMessage(language, key.replace("metadata.", ""));
         } else if (key.startsWith("prozesseeigenschaften.")) {
             value = getMessage(language, key.replace("prozesseeigenschaften.", ""));
-        }
-        else if (key.startsWith("vorlageneigenschaften.")) {
+        } else if (key.startsWith("vorlageneigenschaften.")) {
             value = getMessage(language, key.replace("vorlageneigenschaften.", ""));
-        }
-        else if (key.startsWith("werkstueckeeigenschaften.")) {
+        } else if (key.startsWith("werkstueckeeigenschaften.")) {
             value = getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
         }
-        
-        
+
         if (value.isEmpty()) {
             value = key;
         }
@@ -325,28 +325,69 @@ public class Helper implements Serializable, Observer {
         }
     }
 
-    public static Object getManagedBeanValue(String expr) {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        if (context == null) {
-            return null;
-        } else {
-            Object value = null;
-            Application application = context.getApplication();
-            if (application != null) {
-                ValueBinding vb = application.createValueBinding(expr);
-                if (vb != null) {
-                    try {
-                        value = vb.getValue(context);
-                    } catch (PropertyNotFoundException e) {
-                        logger.error(e);
-                    } catch (EvaluationException e) {
-                        logger.error(e);
-                    }
-                }
+    private static BeanManager getBeanManager() {
+        BeanManager ret = null;
+
+        // Via CDI
+        try {
+            ret = CDI.current().getBeanManager();
+            if (ret != null) {
+                return ret;
             }
-            return value;
+        } catch (IllegalStateException e) {
+        }
+        // Via FacesContext
+        if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getExternalContext().getContext() != null) {
+            ret = (BeanManager) ((ServletContext) FacesContextHelper.getCurrentFacesContext().getExternalContext().getContext()).getAttribute(
+                    "javax.enterprise.inject.spi.BeanManager");
+            if (ret != null) {
+                return ret;
+            }
+        }
+        // Via JNDI
+        try {
+            InitialContext initialContext = new InitialContext();
+            return (BeanManager) initialContext.lookup("java:comp/BeanManager");
+        } catch (NamingException e) {
+            logger.error("Couldn't get BeanManager through JNDI", e);
+            return null;
         }
     }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Object getManagedBeanValue(String name, Class clazz) {
+        BeanManager bm = getBeanManager();
+        if (bm != null && bm.getBeans(name).iterator().hasNext()) {
+            Bean bean = bm.getBeans(name).iterator().next();
+            CreationalContext ctx = bm.createCreationalContext(bean);
+            return bm.getReference(bean, clazz, ctx);
+        }
+
+        return null;
+    }
+
+//    public static Object getManagedBeanValue(String expr) {
+//        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+//        if (context == null) {
+//            return null;
+//        } else {
+//            Object value = null;
+//            Application application = context.getApplication();
+//            if (application != null) {
+//                ValueBinding vb = application.createValueBinding(expr);
+//                if (vb != null) {
+//                    try {
+//                        value = vb.getValue(context);
+//                    } catch (PropertyNotFoundException e) {
+//                        logger.error(e);
+//                    } catch (EvaluationException e) {
+//                        logger.error(e);
+//                    }
+//                }
+//            }
+//            return value;
+//        }
+//    }
 
     private static void loadMsgs() {
         commonMessages = new HashMap<Locale, ResourceBundle>();
@@ -356,10 +397,10 @@ public class Helper implements Serializable, Observer {
             while (polyglot.hasNext()) {
                 Locale language = polyglot.next();
                 try {
-                	// load message bundles using UTF8 as here described:
-                	// http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
-//                	ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
-//                	commonMessages.put(language, common);
+                    // load message bundles using UTF8 as here described:
+                    // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
+                    //                	ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
+                    //                	commonMessages.put(language, common);
                     commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                 } catch (Exception e) {
                     logger.warn("Cannot load messages for language " + language.getLanguage());
@@ -475,84 +516,84 @@ public class Helper implements Serializable, Observer {
     }
 
     public static User getCurrentUser() {
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         return login.getMyBenutzer();
     }
 
-//    /**
-//     * Copies src file to dst file. If the dst file does not exist, it is created
-//     */
-//    public static void copyFile(File src, File dst) throws IOException {
-//        if (logger.isDebugEnabled()) {
-//            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
-//        }
-//        InputStream in = new FileInputStream(src);
-//        OutputStream out = new FileOutputStream(dst);
-//
-//        // Transfer bytes from in to out
-//        byte[] buf = new byte[1024];
-//        int len;
-//        while ((len = in.read(buf)) > 0) {
-//            out.write(buf, 0, len);
-//        }
-//        in.close();
-//        out.close();
-//    }
+    //    /**
+    //     * Copies src file to dst file. If the dst file does not exist, it is created
+    //     */
+    //    public static void copyFile(File src, File dst) throws IOException {
+    //        if (logger.isDebugEnabled()) {
+    //            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
+    //        }
+    //        InputStream in = new FileInputStream(src);
+    //        OutputStream out = new FileOutputStream(dst);
+    //
+    //        // Transfer bytes from in to out
+    //        byte[] buf = new byte[1024];
+    //        int len;
+    //        while ((len = in.read(buf)) > 0) {
+    //            out.write(buf, 0, len);
+    //        }
+    //        in.close();
+    //        out.close();
+    //    }
 
-//    /**
-//     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
-//     * to delete and returns false.
-//     */
-//    public static boolean deleteDir(File dir) {
-//        if (!dir.exists()) {
-//            return true;
-//        }
-//        if (dir.isDirectory()) {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++) {
-//                boolean success = deleteDir(Paths.get(dir, children[i]));
-//                if (!success) {
-//                    return false;
-//                }
-//            }
-//        }
-//        // The directory is now empty so delete it
-//        return dir.delete();
-//    }
-//
-//    /**
-//     * Deletes all files and subdirectories under dir. But not the dir itself
-//     */
-//    public static boolean deleteInDir(File dir) {
-//        if (dir.exists() && dir.isDirectory()) {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++) {
-//                boolean success = deleteDir(Paths.get(dir, children[i]));
-//                if (!success) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-//
-//    /**
-//     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
-//     */
-//    public static boolean deleteDataInDir(File dir) {
-//        if (dir.exists() && dir.isDirectory()) {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++) {
-//                if (!children[i].endsWith(".xml")) {
-//                    boolean success = deleteDir(Paths.get(dir, children[i]));
-//                    if (!success) {
-//                        return false;
-//                    }
-//                }
-//            }
-//        }
-//        return true;
-//    }
+    //    /**
+    //     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
+    //     * to delete and returns false.
+    //     */
+    //    public static boolean deleteDir(File dir) {
+    //        if (!dir.exists()) {
+    //            return true;
+    //        }
+    //        if (dir.isDirectory()) {
+    //            String[] children = dir.list();
+    //            for (int i = 0; i < children.length; i++) {
+    //                boolean success = deleteDir(Paths.get(dir, children[i]));
+    //                if (!success) {
+    //                    return false;
+    //                }
+    //            }
+    //        }
+    //        // The directory is now empty so delete it
+    //        return dir.delete();
+    //    }
+    //
+    //    /**
+    //     * Deletes all files and subdirectories under dir. But not the dir itself
+    //     */
+    //    public static boolean deleteInDir(File dir) {
+    //        if (dir.exists() && dir.isDirectory()) {
+    //            String[] children = dir.list();
+    //            for (int i = 0; i < children.length; i++) {
+    //                boolean success = deleteDir(Paths.get(dir, children[i]));
+    //                if (!success) {
+    //                    return false;
+    //                }
+    //            }
+    //        }
+    //        return true;
+    //    }
+    //
+    //    /**
+    //     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
+    //     */
+    //    public static boolean deleteDataInDir(File dir) {
+    //        if (dir.exists() && dir.isDirectory()) {
+    //            String[] children = dir.list();
+    //            for (int i = 0; i < children.length; i++) {
+    //                if (!children[i].endsWith(".xml")) {
+    //                    boolean success = deleteDir(Paths.get(dir, children[i]));
+    //                    if (!success) {
+    //                        return false;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        return true;
+    //    }
 
     public static String getTheme() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -587,5 +628,4 @@ public class Helper implements Serializable, Observer {
         }
     }
 
-  
 }

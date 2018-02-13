@@ -47,6 +47,7 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.managedbeans.StepBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -178,7 +179,7 @@ public class BatchStepHelper {
                 loadProcessProperties(this.currentStep);
                 
                 //try to load the same step in step-managed-bean
-                StepBean sb = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+                StepBean sb = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
                 sb.setMySchritt(s);
                 break;
             }
@@ -453,7 +454,7 @@ public class BatchStepHelper {
         saveStep();
         this.problemMessage = "";
         this.myProblemStep = "";
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
         return asf.FilterAlleStart();
     }
 
@@ -466,7 +467,7 @@ public class BatchStepHelper {
         }
         this.problemMessage = "";
         this.myProblemStep = "";
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
         return asf.FilterAlleStart();
     }
 
@@ -476,7 +477,8 @@ public class BatchStepHelper {
         this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         this.currentStep.setPrioritaet(Integer.valueOf(10));
         currentStep.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        LoginBean lf = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        User ben = lf.getMyBenutzer();
         if (ben != null) {
             currentStep.setBearbeitungsbenutzer(ben);
         }
@@ -581,7 +583,7 @@ public class BatchStepHelper {
         this.solutionMessage = "";
         this.mySolutionStep = "";
 
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
         return asf.FilterAlleStart();
     }
 
@@ -594,7 +596,7 @@ public class BatchStepHelper {
         this.solutionMessage = "";
         this.mySolutionStep = "";
 
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
         return asf.FilterAlleStart();
     }
 
@@ -605,7 +607,8 @@ public class BatchStepHelper {
         this.currentStep.setBearbeitungsende(now);
         this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         currentStep.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        LoginBean lf = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        User ben = lf.getMyBenutzer();
         if (ben != null) {
             currentStep.setBearbeitungsbenutzer(ben);
         }
@@ -710,7 +713,8 @@ public class BatchStepHelper {
 
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            User user = lf.getMyBenutzer();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
             logEntry.setSecondContent(secondContent);
@@ -729,7 +733,8 @@ public class BatchStepHelper {
 
     public void addLogEntryForAll() {
         if (StringUtils.isNotBlank(content)) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            User user = lf.getMyBenutzer();
             for (Step s : this.steps) {
                 LogEntry logEntry = new LogEntry();
                 logEntry.setContent(content);
@@ -807,7 +812,8 @@ public class BatchStepHelper {
             }
             s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
             currentStep.setBearbeitungszeitpunkt(new Date());
-            User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            User ben = lf.getMyBenutzer();
             if (ben != null) {
                 currentStep.setBearbeitungsbenutzer(ben);
             }
@@ -818,7 +824,7 @@ public class BatchStepHelper {
             } catch (DAOException e) {
             }
         }
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
         return asf.FilterAlleStart();
     }
 
@@ -893,7 +899,7 @@ public class BatchStepHelper {
                 helper.CloseStepObjectAutomatic(so);
             }
         }
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
+        StepBean asf = (StepBean) Helper.getManagedBeanValue("AktuelleSchritteForm", StepBean.class);
         return asf.FilterAlleStart();
     }
 

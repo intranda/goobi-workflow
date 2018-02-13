@@ -62,7 +62,7 @@ public class BasicBean implements Serializable {
 	
 	public User getUser() {
 		if(this.user==null) {
-			LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+			LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginBean", LoginBean.class);
 			this.user = login.getMyBenutzer();
 		}
 		return this.user;

@@ -3,6 +3,9 @@ package org.goobi.managedbeans;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,8 +33,7 @@ import java.util.List;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
 
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
@@ -40,7 +42,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "BenutzergruppenForm")
+@Named("BenutzergruppenForm")
 @SessionScoped
 public class UsergroupBean extends BasicBean {
     private static final long serialVersionUID = 8051160917458068675L;

@@ -31,8 +31,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -41,8 +41,9 @@ import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
 import de.sub.goobi.helper.Helper;
 
-@ManagedBean(name = "AdministrationForm")
+@Named("AdministrationForm")
 @SessionScoped
+
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
     public final static String DIRECTORY_SUFFIX = "_tif";
@@ -70,18 +71,23 @@ public class AdministrationForm implements Serializable {
 
     @Deprecated
     public void test() {
-        Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
-        Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
-        Helper.setFehlerMeldung("Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
+        Helper.setFehlerMeldung(
+                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
+        Helper.setFehlerMeldung(
+                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
+        Helper.setFehlerMeldung(
+                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
         Helper.setFehlerMeldung(
                 "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 4",
                 new Exception("eine Exception die eine Exception ist und damit eine Exception geworfen hat."));
 
-        Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
-        Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
-        Helper.setMeldung("Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
+        Helper.setMeldung(
+                "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
+        Helper.setMeldung(
+                "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
+        Helper.setMeldung(
+                "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
     }
-
 
     public List<String> getPossibleAdministrationPluginNames() {
         return possibleAdministrationPluginNames;

@@ -34,6 +34,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
@@ -53,7 +54,7 @@ public class DatabasePaginator implements Serializable {
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
         this.page = 0;
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginBean", LoginBean.class);
         if (login == null || login.getMyBenutzer() == null) {
             this.pageSize = 10;
         } else {

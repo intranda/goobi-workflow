@@ -43,10 +43,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -144,7 +144,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
-@ManagedBean(name = "ProzessverwaltungForm")
+@Named("ProzessverwaltungForm")
 @SessionScoped
 public class ProcessBean extends BasicBean {
     private static final long serialVersionUID = 2838270843176821134L;
@@ -202,7 +202,7 @@ public class ProcessBean extends BasicBean {
         /*
          * Vorgangsdatum generell anzeigen?
          */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         if (login.getMyBenutzer() != null) {
             this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
             this.anzeigeAnpassen.put("swappedOut", login.getMyBenutzer().isDisplaySwappingColumn());
@@ -469,7 +469,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public String FilterAktuelleProzesseOfGoobiScript(String status) {
-        SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+        SessionForm sf = (SessionForm)  Helper.getManagedBeanValue("SessionForm", SessionForm.class);
         List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
         filter = "\"id:";
         for (GoobiScriptResult gsr : resultList) {
@@ -522,7 +522,7 @@ public class ProcessBean extends BasicBean {
         FilterVorlagen();
         if (this.paginator.getTotalResults() == 1) {
             Process einziger = (Process) this.paginator.getList().get(0);
-            ProzesskopieForm pkf = (ProzesskopieForm) Helper.getManagedBeanValue("#{ProzesskopieForm}");
+            ProzesskopieForm pkf = (ProzesskopieForm) Helper.getManagedBeanValue("ProzesskopieForm", ProzesskopieForm.class);
             pkf.setProzessVorlage(einziger);
             return pkf.Prepare();
         } else {
@@ -705,7 +705,8 @@ public class ProcessBean extends BasicBean {
     public void SchrittUebernehmen() {
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        User ben = (User) bean.getMyBenutzer();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -1431,7 +1432,7 @@ public class ProcessBean extends BasicBean {
     public List<SelectItem> getProjektAuswahlListe() throws DAOException {
         List<SelectItem> myProjekte = new ArrayList<SelectItem>();
         List<Project> temp = null;
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = (LoginBean)Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
             temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
         } else {
@@ -1914,7 +1915,7 @@ public class ProcessBean extends BasicBean {
     public void CreateXML() {
         ExportXmlLog xmlExport = new ExportXmlLog();
         try {
-            LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
             String ziel = login.getMyBenutzer().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
             xmlExport.startExport(this.myProzess, ziel);
         } catch (IOException e) {

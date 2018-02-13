@@ -32,8 +32,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.beans.Docket;
 
@@ -43,7 +43,9 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@ManagedBean(name="DocketForm") 
+
+
+@Named("DocketForm")
 @SessionScoped
 public class DocketBean extends BasicBean {
 	private static final long serialVersionUID = 3006854499230483171L;

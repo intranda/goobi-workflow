@@ -67,7 +67,7 @@ public class FilterHelper {
     protected static String limitToUserAccessRights() {
         /* restriction to specific projects if not with admin rights */
         String answer = "";
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         User aktuellerNutzer = null;
         if (loginForm != null && loginForm.getMyBenutzer() != null) {
             aktuellerNutzer = Helper.getCurrentUser();
@@ -86,7 +86,7 @@ public class FilterHelper {
     public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
         /* show only open Steps or those in use by current user */
         /* identify current user */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         if (login == null || login.getMyBenutzer() == null) {
             return "";
         }

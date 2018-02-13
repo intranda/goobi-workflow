@@ -32,8 +32,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.beans.Ruleset;
 
@@ -43,7 +43,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 
-@ManagedBean(name = "RegelsaetzeForm")
+@Named("RegelsaetzeForm")
 @SessionScoped
 public class RulesetBean extends BasicBean {
 	private static final long serialVersionUID = -8994941188718721705L;

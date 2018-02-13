@@ -1,5 +1,8 @@
 package org.goobi.managedbeans;
 
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,8 +30,6 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
 import org.goobi.beans.Ldap;
 
@@ -36,7 +37,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.LdapManager;
 
-@ManagedBean(name="LdapGruppenForm") 
+@Named("LdapGruppenForm") 
 @SessionScoped
 public class LdapBean extends BasicBean {
 	private static final long serialVersionUID = -5644561256582235244L;
