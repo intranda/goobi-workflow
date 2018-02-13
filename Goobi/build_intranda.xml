@@ -21,6 +21,7 @@
     <path id="classpath">
         <fileset dir="${dir.lib}" />
         <fileset dir="/opt/digiverso/libs" />
+    		<fileset dir="${dir.lib.test}" />
     </path>
 
     <!-- Testing classpath -->
