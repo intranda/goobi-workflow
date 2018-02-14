@@ -1,4 +1,5 @@
 package org.goobi.managedbeans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -34,85 +35,82 @@ import org.goobi.beans.User;
 import de.sub.goobi.helper.Helper;
 
 public class BasicBean implements Serializable {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-	.getLogger(BasicBean.class);
-	private static final long serialVersionUID = 2950419497162710096L;
-	protected DatabasePaginator paginator;
-	protected String zurueck = "";
-	protected String temp = null;
-	protected String filter = null;
-	protected User user;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(BasicBean.class);
+    private static final long serialVersionUID = 2950419497162710096L;
+    protected DatabasePaginator paginator;
+    protected String zurueck = "";
+    protected String temp = null;
+    protected String filter = null;
+    protected User user;
 
-	protected String sortierung = "";
+    protected String sortierung = "";
 
-	
+    public DatabasePaginator getPaginator() {
+        return paginator;
+    }
 
-	public DatabasePaginator getPaginator() {
-		return paginator;
-	}
-	
-	public String getZurueck() {
-		return this.zurueck;
-	}
+    public String getZurueck() {
+        return this.zurueck;
+    }
 
-	public void setZurueck(String zurueck) {
-		this.zurueck = zurueck;
-	}
-	
-	public User getUser() {
-		if(this.user==null) {
-			LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-			this.user = login.getMyBenutzer();
-		}
-		return this.user;
-	}
-	
-	public String getFilter() {
-		return this.filter;
-	}
+    public void setZurueck(String zurueck) {
+        this.zurueck = zurueck;
+    }
 
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
+    public User getUser() {
+        if (this.user == null) {
+            LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            this.user = login.getMyBenutzer();
+        }
+        return this.user;
+    }
 
-	public String getSortierung() {
-		return this.sortierung;
-	}
+    public String getFilter() {
+        return this.filter;
+    }
 
-	public void setSortierung(String sortierung) {
-		this.sortierung = sortierung;
-	}
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
 
-	public String getTemp() {
-		return temp;
-	}
-	
-	public void setTemp(String temp) {
-		this.temp = temp;
-	}
-	
-	public void addFilterToUser(){
-		if (this.filter==null || this.filter.length()==0){
-			return;
-		}
-		this.user.addFilter(this.filter);
-//		try {
-//			new BenutzerDAO().save(this.user);
-//		} catch (DAOException e) {
-//			logger.error(e);
-//		}
-	}
-	
-	public void removeFilterFromUser(){
-		if (this.filter==null || this.filter.length()==0){
-			return;
-		}
-		this.user.removeFilter(this.filter);
-//		try {
-//			new BenutzerDAO().save(this.user);
-//		} catch (DAOException e) {
-//			logger.error(e);
-//		}		
-	}
+    public String getSortierung() {
+        return this.sortierung;
+    }
+
+    public void setSortierung(String sortierung) {
+        this.sortierung = sortierung;
+    }
+
+    public String getTemp() {
+        return temp;
+    }
+
+    public void setTemp(String temp) {
+        this.temp = temp;
+    }
+
+    public void addFilterToUser() {
+        if (this.filter == null || this.filter.length() == 0) {
+            return;
+        }
+        this.user.addFilter(this.filter);
+        //		try {
+        //			new BenutzerDAO().save(this.user);
+        //		} catch (DAOException e) {
+        //			logger.error(e);
+        //		}
+    }
+
+    public void removeFilterFromUser() {
+        if (this.filter == null || this.filter.length() == 0) {
+            return;
+        }
+        this.user.removeFilter(this.filter);
+        //		try {
+        //			new BenutzerDAO().save(this.user);
+        //		} catch (DAOException e) {
+        //			logger.error(e);
+        //		}		
+    }
 }

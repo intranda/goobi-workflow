@@ -277,7 +277,7 @@ public class Metadaten implements Serializable {
     public Metadaten() {
         this.treeProperties = new HashMap<String, Boolean>();
 
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         if (login != null && login.getMyBenutzer() != null) {
             this.treeProperties.put("showtreelevel", login.getMyBenutzer().isMetsDisplayHierarchy());
@@ -1252,7 +1252,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         String language = bean.getMyBenutzer().getMetadatenSprache();
         List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement,language, false, this.myProzess, displayHiddenMetadata);
@@ -1332,7 +1332,7 @@ public class Metadaten implements Serializable {
          * -------------------------------- Die Struktur als Tree3 aufbereiten --------------------------------
          */
         
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         String language = bean.getMyBenutzer().getMetadatenSprache();
         String label = inLogicalTopStruct.getType().getNameByLanguage(language);
@@ -1388,7 +1388,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- vom aktuellen Strukturelement alle Kinder in den Tree packen --------------------------------
          */
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         String language = bean.getMyBenutzer().getMetadatenSprache();
         List<DocStruct> meineListe = inStrukturelement.getAllChildren();
@@ -4123,7 +4123,7 @@ public class Metadaten implements Serializable {
                 DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
-                    LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+                    LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
                     String language = bean.getMyBenutzer().getMetadatenSprache();
                     List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds,language, false, this.myProzess, displayHiddenMetadata);
@@ -4144,7 +4144,7 @@ public class Metadaten implements Serializable {
                 DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
-                    LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+                    LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
                     String language = bean.getMyBenutzer().getMetadatenSprache();
                     List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, language, true, this.myProzess, displayHiddenMetadata);

@@ -83,7 +83,7 @@ public class MetadatenVerifizierung {
     }
 
     public boolean validate(Fileformat gdzfile, Prefs inPrefs, Process inProzess) {
- LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+ LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         
         String metadataLanguage =  bean.getMyBenutzer().getMetadatenSprache();
         if (metadataLanguage == null){
@@ -660,7 +660,7 @@ public class MetadatenVerifizierung {
     public boolean validateIdentifier(DocStruct uppermostStruct) {
 
         if (uppermostStruct.getType().isAnchor()) {
-            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
             
             String language = bean.getMyBenutzer().getMetadatenSprache();
             if (language==null){

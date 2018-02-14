@@ -128,7 +128,7 @@ public class MetadatumImpl implements Metadatum {
     }
 
     public String getTyp() {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
         
         String label = this.md.getType().getLanguage((String) bean.getMyBenutzer().getMetadatenSprache());
         if (label == null) {

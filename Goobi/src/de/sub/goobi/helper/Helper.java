@@ -365,6 +365,8 @@ public class Helper implements Serializable, Observer {
 
         return null;
     }
+    
+   
 
 //    public static Object getManagedBeanValue(String expr) {
 //        FacesContext context = FacesContextHelper.getCurrentFacesContext();

@@ -333,7 +333,7 @@ public class MetadatenHelper implements Comparator<Object> {
         while (it.hasNext()) {
             DocStructType dst = it.next();
 
-            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
             String label = bean.getMyBenutzer().getMetadatenSprache();
             if (label == null) {
@@ -571,7 +571,7 @@ public class MetadatenHelper implements Comparator<Object> {
      * @return localized Title of metadata type ================================================================
      */
     public String getMetadatatypeLanguage(MetadataType inMdt) {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         String label = bean.getMyBenutzer().getMetadatenSprache();
         if (label == null) {
@@ -581,7 +581,7 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     public String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         String label = bean.getMyBenutzer().getMetadatenSprache();
         if (label == null) {

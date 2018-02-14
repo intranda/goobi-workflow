@@ -100,7 +100,7 @@ public class MetadataGroupImpl {
     }
 
     public String getName() {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
         String language = bean.getMyBenutzer().getMetadatenSprache();
         

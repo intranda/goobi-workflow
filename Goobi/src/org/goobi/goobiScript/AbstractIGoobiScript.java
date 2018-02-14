@@ -26,7 +26,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 		this.command = command;
 		SessionForm sf = (SessionForm) Helper.getManagedBeanValue("SessionForm", SessionForm.class);
 		resultList = sf.getGsm().getGoobiScriptResults();
-		LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+		LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 		username = login.getMyBenutzer().getNachVorname();
 		return true;
 	}
