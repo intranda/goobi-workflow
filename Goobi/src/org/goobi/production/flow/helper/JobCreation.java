@@ -99,7 +99,7 @@ public class JobCreation {
 
         CopyProcess cp = new CopyProcess();
         cp.setProzessVorlage(vorlage);
-        cp.metadataFile = metsfilename;
+        cp.setMetadataFile( metsfilename);
         cp.Prepare(io);
         cp.getProzessKopie().setTitel(processTitle);
         logger.trace("testing title");

@@ -1,5 +1,7 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
@@ -14,7 +16,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 @Named("DashboardForm")
 @SessionScoped
-public class DashboardBean {
+public class DashboardBean implements Serializable {
 
     private IDashboardPlugin plugin = null;
 
