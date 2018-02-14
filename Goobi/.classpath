@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-net-3.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/EasySI-0.9.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/el-impl-2.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fontbox-1.7.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/goobi-api.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/htmLib.jar"/>
