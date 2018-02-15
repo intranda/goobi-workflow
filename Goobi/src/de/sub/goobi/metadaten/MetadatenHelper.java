@@ -335,7 +335,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
             LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
-            String label = bean.getMyBenutzer().getMetadatenSprache();
+            String label = dst.getNameByLanguage(bean.getMyBenutzer().getMetadatenSprache());
             if (label == null) {
                 label = dst.getName();
             }
@@ -573,7 +573,7 @@ public class MetadatenHelper implements Comparator<Object> {
     public String getMetadatatypeLanguage(MetadataType inMdt) {
         LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
-        String label = bean.getMyBenutzer().getMetadatenSprache();
+        String label = inMdt.getLanguage(bean.getMyBenutzer().getMetadatenSprache());
         if (label == null) {
             label = inMdt.getName();
         }
@@ -583,7 +583,7 @@ public class MetadatenHelper implements Comparator<Object> {
     public String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
         LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
 
-        String label = bean.getMyBenutzer().getMetadatenSprache();
+        String label = inMdt.getLanguage(bean.getMyBenutzer().getMetadatenSprache());
         if (label == null) {
             label = inMdt.getName();
         }
