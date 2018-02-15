@@ -223,7 +223,7 @@ public class DatabaseVersion {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 new QueryRunner().update(connection,
-                        "CREATE FULLTEXT INDEX 'idx_metadata_value'  ON 'goobi'.'metadata' (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
+                        "CREATE FULLTEXT INDEX idx_metadata_value ON metadata (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
             } catch (SQLException e) {
                 logger.error(e);
             } finally {
