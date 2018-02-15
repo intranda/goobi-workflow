@@ -20,7 +20,7 @@
                 <i class="#{Metadaten.bildZuStrukturelement?'fa fa-chain':'fa fa-chain-broken font-light'} fa-lg btn " />
                 <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                 <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}" />
-                <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform" />
+                <f:ajax execute="@form" render="@form :bigimage :openseadragonform :imageform :imagenavigation" />
             </h:commandLink>
             
             <h:commandLink id="showtitle" styleClass="text_head" action="#{NavigationForm.Reload}" rel="tooltip" style="position:absolute;left:#{Metadaten.treeWidth-43}px;top:30px;padding-left: 5px;padding-right: 5px;"
@@ -76,7 +76,7 @@
                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
                         <x:updateActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" />
-                        <f:ajax execute="@form" render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :bigimage ':''} :structureform :metadataform" />
+                        <f:ajax execute="@form" render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :imagenavigation :bigimage ':''} :structureform :metadataform" />
                       
                     </h:commandLink>
 
