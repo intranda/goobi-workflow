@@ -28,7 +28,6 @@ package org.goobi.production.cli.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,9 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
@@ -95,9 +92,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
-@SessionScoped
-@Named
-public class CopyProcess extends ProzesskopieForm implements Serializable {
+public class CopyProcess extends ProzesskopieForm {
 
     /**
      * 
@@ -116,7 +111,7 @@ public class CopyProcess extends ProzesskopieForm implements Serializable {
     /* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
     private boolean useOpac;
     private boolean useTemplates;
-    private String metadataFile;
+    public String metadataFile;
 
     private HashMap<String, Boolean> standardFields;
     private List<AdditionalField> additionalFields;
@@ -134,10 +129,6 @@ public class CopyProcess extends ProzesskopieForm implements Serializable {
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     /* =============================================================== */
-
-    public void setMetadataFile(String file) {
-        metadataFile = file;
-    }
 
     public String Prepare(ImportObject io) {
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
