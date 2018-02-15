@@ -46,7 +46,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 20;
+    public static final int EXPECTED_VERSION = 21;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -179,6 +179,12 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 20.");
                 }
                 updateToVersion20();
+
+            case 20:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 21.");
+                }
+                updateToVersion21();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -186,26 +192,49 @@ public class DatabaseVersion {
                     logger.trace("Database is up to date.");
                 }
         }
+
+    }
+
+    private static void updateToVersion21() {
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+           runner.update(connection, "alter table schritte add column generateDocket tinyint(1) DEFAULT '0'");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+    
+
     }
 
     private static void updateToVersion20() {
-    		// just enhance the fulltext index for mysql databases
-    		if (!ConfigurationHelper.getInstance().isUseH2DB()) {
-	    		Connection connection = null;
-	        try {
-	            connection = MySQLHelper.getInstance().getConnection();
-	            new QueryRunner().update(connection, "CREATE FULLTEXT INDEX 'idx_metadata_value'  ON 'goobi'.'metadata' (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
-	        } catch (SQLException e) {
-	            logger.error(e);
-	        } finally {
-	            if (connection != null) {
-	                try {
-	                    MySQLHelper.closeConnection(connection);
-	                } catch (SQLException e) {
-	                }
-	            }
-	        }
-    		}
+        // just enhance the fulltext index for mysql databases
+        if (!ConfigurationHelper.getInstance().isUseH2DB()) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                new QueryRunner().update(connection,
+                        "CREATE FULLTEXT INDEX 'idx_metadata_value'  ON 'goobi'.'metadata' (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
+            } catch (SQLException e) {
+                logger.error(e);
+            } finally {
+                if (connection != null) {
+                    try {
+                        MySQLHelper.closeConnection(connection);
+                    } catch (SQLException e) {
+                    }
+                }
+            }
+        }
     }
 
     private static void updateToVersion19() {
@@ -227,7 +256,7 @@ public class DatabaseVersion {
             createBatches.append("PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
         }
         String insertBatches = "INSERT INTO batches (id) select distinct (batchId) from prozesse where batchID is not NULL";
-        
+
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -427,10 +456,12 @@ public class DatabaseVersion {
         Connection connection = null;
         String sqlStatement = null;
         if (ConfigurationHelper.getInstance().isUseH2DB()) {
-            sqlStatement =  "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
-            
+            sqlStatement =
+                    "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+
         } else {
-            sqlStatement = "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+            sqlStatement =
+                    "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
         }
         QueryRunner runner = new QueryRunner();
         try {
@@ -922,7 +953,6 @@ public class DatabaseVersion {
             logger.error(e);
         }
     }
-    
 
     /**
      * check if a table exists in the current database
