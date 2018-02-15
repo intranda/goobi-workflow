@@ -99,10 +99,7 @@
         <copy todir="${dir.build.src}">
             <fileset dir="${dir.src}" />
         </copy>
-    	 	<copy todir="${dir.build}/WEB-INF">
-    	            <fileset file="webapp/WEB-INF/beans.xml" />
-    	    </copy>
-    		<copy todir="${dir.build}/WEB-INF">
+        <copy todir="${dir.build}/WEB-INF">
             <fileset file="webapp/WEB-INF/faces-config.xml" />
         </copy>
         <copy todir="${dir.build}">
@@ -140,8 +137,7 @@
             <fileset file="${dir.build}/index.xhtml" />
             <fileset dir="." includes="WEB-INF/*.*, index.xhtml" excludes="**/WEB-INF/web.xml, WEB-INF/lib/*.*" />
             <fileset dir="." includes="js/**/*.*" />
-        		<zipfileset file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
-        		<zipfileset file="webapp/WEB-INF/beans.xml" prefix="WEB-INF" />
+            <zipfileset file="webapp/WEB-INF/faces-config.xml" prefix="WEB-INF" />
             <zipfileset dir="webapp/uii" prefix="uii">
                 <patternset>
                     <include name="**/*.*" />
