@@ -28,7 +28,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        mi = (MassImportForm) Helper.getManagedBeanValue("MassImportForm", MassImportForm.class);
+        mi = (MassImportForm) Helper.getManagedBeanValue("#{MassImportForm}");
 
         if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");

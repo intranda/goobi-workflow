@@ -94,10 +94,6 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 public class CopyProcess extends ProzesskopieForm {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -7530283584607719287L;
     private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
     UghHelper ughHelp = new UghHelper();
     private BeanHelper bhelp = new BeanHelper();
@@ -622,7 +618,7 @@ public class CopyProcess extends ProzesskopieForm {
              */
             step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -829,7 +825,7 @@ public class CopyProcess extends ProzesskopieForm {
              */
             step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }

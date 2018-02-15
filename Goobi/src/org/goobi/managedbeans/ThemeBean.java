@@ -1,5 +1,4 @@
 package org.goobi.managedbeans;
-import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,18 +19,12 @@ import java.io.Serializable;
  */
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
-
-@Named( "ThemeBean")
+@ManagedBean(name = "ThemeBean")
 @ApplicationScoped
-public class ThemeBean implements Serializable{
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6124195344237328791L;
+public class ThemeBean {
 
     private List<String> themes;
 

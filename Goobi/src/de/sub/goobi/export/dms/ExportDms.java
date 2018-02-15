@@ -37,7 +37,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 
 import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
@@ -392,9 +391,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 /*
                  * wenn kein Agora-Import, dann den Ordner mit Benutzerberechtigung neu anlegen
                  */
-                LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginForm", LoginBean.class);
-
-                User myBenutzer = login.getMyBenutzer();
+                User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 try {
                 	if (myBenutzer == null){
                 		Files.createDirectories(zielTif);

@@ -42,7 +42,6 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 
 import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
@@ -128,9 +127,7 @@ public class MetadatumImpl implements Metadatum {
     }
 
     public String getTyp() {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-        
-        String label = this.md.getType().getLanguage((String) bean.getMyBenutzer().getMetadatenSprache());
+        String label = this.md.getType().getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
             label = this.md.getType().getName();
         }

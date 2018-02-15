@@ -50,7 +50,6 @@ import ugh.exceptions.PreferencesException;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -83,9 +82,7 @@ public class MetadatenVerifizierung {
     }
 
     public boolean validate(Fileformat gdzfile, Prefs inPrefs, Process inProzess) {
- LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-        
-        String metadataLanguage =  bean.getMyBenutzer().getMetadatenSprache();
+        String metadataLanguage = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
         if (metadataLanguage == null){
         	metadataLanguage = "en";
         }
@@ -660,9 +657,7 @@ public class MetadatenVerifizierung {
     public boolean validateIdentifier(DocStruct uppermostStruct) {
 
         if (uppermostStruct.getType().isAnchor()) {
-            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-            
-            String language = bean.getMyBenutzer().getMetadatenSprache();
+            String language = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
             if (language==null){
             	language = "en";
             }

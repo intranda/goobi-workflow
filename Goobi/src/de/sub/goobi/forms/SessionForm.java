@@ -1,6 +1,5 @@
 package de.sub.goobi.forms;
 
-import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,9 +35,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -56,14 +55,10 @@ import lombok.Getter;
  * @author Steffen Hankiewicz
  * @version 1.00 - 16.01.2005
  */
+@ManagedBean(name = "SessionForm")
 @ApplicationScoped
-@Named("SessionForm")
-public class SessionForm implements Serializable{
+public class SessionForm {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 8318723212274631533L;
     @SuppressWarnings("rawtypes")
     private List<Map> alleSessions = new ArrayList<>();
     private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -260,7 +255,7 @@ public class SessionForm implements Serializable{
     public String getDate() {
         if (dateFormatter == null) {
             Locale language = Locale.ENGLISH;
-            SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("SpracheForm", SpracheForm.class);
+            SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
             if (sf != null) {
                 language = sf.getLocale();
             }

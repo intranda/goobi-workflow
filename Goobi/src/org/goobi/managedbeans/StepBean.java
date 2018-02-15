@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -90,7 +90,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
 
-@Named("AktuelleSchritteForm")
+@ManagedBean(name = "AktuelleSchritteForm")
 @SessionScoped
 public class StepBean extends BasicBean {
     private static final long serialVersionUID = 5841566727939692509L;
@@ -141,7 +141,7 @@ public class StepBean extends BasicBean {
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
          */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && login.getMyBenutzer() != null) {
             this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
             this.anzeigeAnpassen.put("selectionBoxes", login.getMyBenutzer().isDisplaySelectBoxes());
@@ -1092,8 +1092,7 @@ public class StepBean extends BasicBean {
             /*
              * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
              */
-            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
-            if (this.paginator == null && bean.getMyBenutzer() != null) {
+            if (this.paginator == null && (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}") != null) {
                 FilterAlleStart();
             }
             Integer inParam = Integer.valueOf(param);
@@ -1179,8 +1178,7 @@ public class StepBean extends BasicBean {
 
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
-            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
-            User user = bean.getMyBenutzer();
+            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
             logEntry.setSecondContent(secondContent);

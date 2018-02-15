@@ -66,7 +66,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
-import org.goobi.managedbeans.LoginBean;
 import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -332,10 +331,7 @@ public class MetadatenHelper implements Comparator<Object> {
         Iterator<DocStructType> it = newTypes.iterator();
         while (it.hasNext()) {
             DocStructType dst = it.next();
-
-            LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-            String label = bean.getMyBenutzer().getMetadatenSprache();
+            String label = dst.getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
             if (label == null) {
                 label = dst.getName();
             }
@@ -571,9 +567,7 @@ public class MetadatenHelper implements Comparator<Object> {
      * @return localized Title of metadata type ================================================================
      */
     public String getMetadatatypeLanguage(MetadataType inMdt) {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-        String label = bean.getMyBenutzer().getMetadatenSprache();
+        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
             label = inMdt.getName();
         }
@@ -581,9 +575,7 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     public String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-        String label = bean.getMyBenutzer().getMetadatenSprache();
+        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
             label = inMdt.getName();
         }

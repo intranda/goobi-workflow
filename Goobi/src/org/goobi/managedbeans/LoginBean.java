@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,8 +36,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -58,13 +57,9 @@ import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
 
-@Named("LoginForm")
+@ManagedBean(name = "LoginForm")
 @SessionScoped
-public class LoginBean implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 7915623992500690037L;
+public class LoginBean {
     private String login;
     private String passwort;
     private User myBenutzer;
@@ -81,7 +76,7 @@ public class LoginBean implements Serializable {
         }
         this.myBenutzer = null;
         this.schonEingeloggt = false;
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("SessionForm", SessionForm.class);
+        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
@@ -127,7 +122,7 @@ public class LoginBean implements Serializable {
                 /* wenn passwort auch richtig ist, den benutzer übernehmen */
                 if (b.istPasswortKorrekt(this.passwort)) {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
-                    SessionForm temp = (SessionForm) Helper.getManagedBeanValue("SessionForm", SessionForm.class);
+                    SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
                     if (!temp.BenutzerInAndererSessionAktiv(mySession, b)) {
                         /* in der Session den Login speichern */
@@ -155,7 +150,7 @@ public class LoginBean implements Serializable {
     }
 
     public String NochmalEinloggen() {
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("SessionForm", SessionForm.class);
+        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         /* in der Session den Login speichern */
         temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
@@ -166,7 +161,7 @@ public class LoginBean implements Serializable {
     }
 
     public String EigeneAlteSessionsAufraeumen() {
-        SessionForm temp = (SessionForm)  Helper.getManagedBeanValue("SessionForm", SessionForm.class);
+        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         temp.alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
         /* in der Session den Login speichern */
@@ -186,7 +181,7 @@ public class LoginBean implements Serializable {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            SessionForm temp = (SessionForm)  Helper.getManagedBeanValue("SessionForm", SessionForm.class);
+            SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
             temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
             roles = myBenutzer.getAllUserRoles();

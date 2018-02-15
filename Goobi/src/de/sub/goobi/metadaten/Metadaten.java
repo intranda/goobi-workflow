@@ -32,7 +32,6 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -49,10 +48,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
@@ -118,14 +117,9 @@ import ugh.exceptions.WriteException;
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
-
-@Named("Metadaten")
+@ManagedBean(name = "Metadaten")
 @SessionScoped
-public class Metadaten implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 3478819203028051980L;
+public class Metadaten {
     private static final Logger logger = Logger.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
@@ -277,8 +271,7 @@ public class Metadaten implements Serializable {
     public Metadaten() {
         this.treeProperties = new HashMap<String, Boolean>();
 
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && login.getMyBenutzer() != null) {
             this.treeProperties.put("showtreelevel", login.getMyBenutzer().isMetsDisplayHierarchy());
             this.treeProperties.put("showtitle", login.getMyBenutzer().isMetsDisplayTitle());
@@ -1252,10 +1245,8 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-        String language = bean.getMyBenutzer().getMetadatenSprache();
-        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement,language, false, this.myProzess, displayHiddenMetadata);
+        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper
+                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -1267,15 +1258,16 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- alle Personen und die DefaultDisplay-Werte ermitteln --------------------------------
          */
-        
-        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, language, true, this.myProzess, displayHiddenMetadata);
+        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
+                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
             }
         }
 
-        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement,language, this.myProzess);
+        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
+                "#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
         if (groups != null) {
             for (MetadataGroup mg : groups) {
                 metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
@@ -1331,11 +1323,8 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- Die Struktur als Tree3 aufbereiten --------------------------------
          */
-        
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-        String language = bean.getMyBenutzer().getMetadatenSprache();
-        String label = inLogicalTopStruct.getType().getNameByLanguage(language);
+        String label = inLogicalTopStruct.getType().getNameByLanguage((String) Helper.getManagedBeanValue(
+                "#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
             label = inLogicalTopStruct.getType().getName();
         }
@@ -1388,14 +1377,11 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- vom aktuellen Strukturelement alle Kinder in den Tree packen --------------------------------
          */
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-        String language = bean.getMyBenutzer().getMetadatenSprache();
         List<DocStruct> meineListe = inStrukturelement.getAllChildren();
         if (meineListe != null) {
             /* es gibt Kinder-Strukturelemente */
             for (DocStruct kind : meineListe) {
-                String label = kind.getType().getNameByLanguage(language);
+                String label = kind.getType().getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
                 if (label == null) {
                     label = kind.getType().getName();
                 }
@@ -4123,10 +4109,9 @@ public class Metadaten implements Serializable {
                 DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
-                    LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
 
-                    String language = bean.getMyBenutzer().getMetadatenSprache();
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds,language, false, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
+                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4144,10 +4129,9 @@ public class Metadaten implements Serializable {
                 DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
-                    LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
 
-                    String language = bean.getMyBenutzer().getMetadatenSprache();
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, language, true, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
+                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
@@ -4213,7 +4197,7 @@ public class Metadaten implements Serializable {
                 currentImage.setSize(getActualImageSize(currentImage));
             }
             String contextPath = getContextPath();
-            HelperForm hf = (HelperForm) Helper.getManagedBeanValue("HelperForm", HelperForm.class);
+            HelperForm hf = (HelperForm) Helper.getManagedBeanValue("#{HelperForm}");
             contextPath = hf.getServletPathWithHostAsUrl();
             for (String sizeString : imageSizes) {
                 try {

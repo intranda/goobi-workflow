@@ -28,7 +28,6 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -41,9 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -110,15 +109,9 @@ import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
-
-
-@Named("ProzesskopieForm")
+@ManagedBean(name = "ProzesskopieForm")
 @SessionScoped
-public class ProzesskopieForm implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 7934148503885251497L;
+public class ProzesskopieForm {
     private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
     private Helper help = new Helper();
     UghHelper ughHelper = new UghHelper();
@@ -303,7 +296,7 @@ public class ProzesskopieForm implements Serializable {
         //      crit.addOrder(Order.asc("titel"));
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         User aktuellerNutzer = loginForm.getMyBenutzer();
 
         aktuellerNutzer = UserManager.getUserById(loginForm.getMyBenutzer().getId());
@@ -628,7 +621,7 @@ public class ProzesskopieForm implements Serializable {
              */
             step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -660,8 +653,7 @@ public class ProzesskopieForm implements Serializable {
         //      }
 
         if (addToWikiField != null && !addToWikiField.equals("")) {
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("LoginForm", LoginBean.class);
-            User user = loginForm.getMyBenutzer();
+            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(addToWikiField);
             logEntry.setCreationDate(new Date());

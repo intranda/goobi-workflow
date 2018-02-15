@@ -95,7 +95,7 @@ public class ExportMets {
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
             WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
             TypeNotAllowedForParentException {
-        LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginForm", LoginBean.class);
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         String benutzerHome = "";
         if (login != null) {
             benutzerHome = login.getMyBenutzer().getHomeDir();
@@ -148,9 +148,7 @@ public class ExportMets {
      */
     protected String prepareUserDirectory(String inTargetFolder) {
         String target = inTargetFolder;
-        LoginBean login = (LoginBean)  Helper.getManagedBeanValue("LoginForm", LoginBean.class);
-
-        User myBenutzer = login.getMyBenutzer();
+        User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
         if (myBenutzer != null) {
             try {
                 FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());

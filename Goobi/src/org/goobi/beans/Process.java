@@ -1349,7 +1349,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean)  Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -1389,7 +1389,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         entry.setCreationDate(new Date());
         entry.setType(LogType.USER);
         entry.setProcessId(id);
-        LoginBean loginForm = (LoginBean)  Helper.getManagedBeanValue("LoginBean", LoginBean.class);
+        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (loginForm != null) {
             entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
         }

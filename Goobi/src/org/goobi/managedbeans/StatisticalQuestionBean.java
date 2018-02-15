@@ -1,14 +1,13 @@
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginType;
@@ -17,14 +16,9 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStatisticPlugin;
 
-@Named("StatisticalQuestionBean")
+@ManagedBean(name = "StatisticalQuestionBean")
 @SessionScoped
-public class StatisticalQuestionBean implements Serializable{
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5418439937138681611L;
+public class StatisticalQuestionBean {
 
     private List<String> possiblePluginNames;
 

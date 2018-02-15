@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.helper.Helper;
 
@@ -100,11 +99,7 @@ public class MetadataGroupImpl {
     }
 
     public String getName() {
-        LoginBean bean = (LoginBean) Helper.getManagedBeanValue("LoginBean", LoginBean.class);
-
-        String language = bean.getMyBenutzer().getMetadatenSprache();
-        
-        String label = this.metadataGroup.getType().getLanguage(language);
+        String label = this.metadataGroup.getType().getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
         if (label == null) {
             label = this.metadataGroup.getType().getName();
         }

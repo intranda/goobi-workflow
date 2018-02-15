@@ -27,7 +27,6 @@
  */
 package de.sub.goobi.forms;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,10 +34,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -47,16 +46,11 @@ import de.sub.goobi.helper.Helper;
 /**
  * The SpracheForm class serves to switch the displayed language for the current user in the running application
  */
-
-@Named("SpracheForm")
+@ManagedBean(name="SpracheForm") 
 @SessionScoped
-public class SpracheForm implements Serializable {
+public class SpracheForm {
 
-	/**
-     * 
-     */
-    private static final long serialVersionUID = -3323667988305293854L;
-    public static final String SESSION_LOCALE_FIELD_ID = "lang";
+	public static final String SESSION_LOCALE_FIELD_ID = "lang";
 
 	/**
 	 * The constructor of this class loads the required MessageBundle

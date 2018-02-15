@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,9 +39,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -83,15 +82,10 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import ugh.dl.Prefs;
 
-
-@Named("MassImportForm")
+@ManagedBean(name = "MassImportForm")
 @SessionScoped
 @Log4j
-public class MassImportForm implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6633917374266533971L;
+public class MassImportForm {
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();

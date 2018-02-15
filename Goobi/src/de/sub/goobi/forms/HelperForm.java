@@ -1,7 +1,5 @@
 package de.sub.goobi.forms;
 
-import java.io.Serializable;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,11 +34,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.goobi.beans.Docket;
@@ -58,15 +56,9 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 
-
-@Named("HelperForm")
+@ManagedBean(name = "HelperForm")
 @SessionScoped
-public class HelperForm implements Serializable {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -711042155864772121L;
+public class HelperForm {
 
     private Boolean massImportAllowed = null;
 
