@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
-        <Manager className="org.apache.catalina.session.PersistentManager" debug="0" distributable="false" saveOnRestart="false">
-                <Store className="org.apache.catalina.session.FileStore"/>
-        </Manager>
+	<Manager className="org.apache.catalina.session.PersistentManager" distributable="false"
+		saveOnRestart="false">
+		<Store className="org.apache.catalina.session.FileStore" />
+	</Manager>
+
+	<Resource name="BeanManager" auth="Container" type="javax.enterprise.inject.spi.BeanManager" 
+		factory="org.jboss.weld.resources.ManagerObjectFactory" />
+
 </Context>
