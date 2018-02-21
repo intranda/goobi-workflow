@@ -109,7 +109,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.export.download.ExportPdf;
-import de.sub.goobi.export.download.Multipage;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.forms.SessionForm;
@@ -1796,11 +1795,6 @@ public class ProcessBean extends BasicBean {
     public void DownloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.myProzess);
         tiff.ExportStart();
-    }
-
-    public void DownloadMultiTiff() throws IOException, InterruptedException, SwapException, DAOException {
-        Multipage mp = new Multipage();
-        mp.ExportStart(this.myProzess);
     }
 
     public String getGoobiScript() {
