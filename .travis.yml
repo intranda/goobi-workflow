@@ -1,0 +1,11 @@
+language: java
+
+jdk:
+  - openjdk7
+  - openjdk8
+
+install:
+  - sudo mkdir -p /opt/digiverso/libs
+
+script:
+  - cd Goobi; ant -f build_intranda.xml
