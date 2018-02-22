@@ -1,11 +1,11 @@
 language: java
-
 jdk:
-  - openjdk7
-  - openjdk8
-
+- openjdk7
+- openjdk8
 install:
-  - sudo mkdir -p /opt/digiverso/libs
-
+- sudo mkdir -p /opt/digiverso/libs
 script:
-  - cd Goobi; ant -f build_intranda.xml
+- cd Goobi; ant -f build_intranda.xml
+notifications:
+  slack:
+    secure: hcBY6yKkEAP7QF6XuBdVlfHbERg5LRT6EuiDXzfAzdMBvIoB0yhTYouyDE7UdHFua19RfeA5ZaYfwSYIPlUUU7mBUS6lp9F7B9EqM0x2y5BCXT7HCU4jdeqt7qT+p6ykoViHOODnHCJCv4S09dga6nVl5Br/NjdIHP8MZmuUj632kTorJqJb6xrxQoNjOYOcLEMF7iTWPLbzBvop0Lm2hlpS+Q6KocGFkIySvTcgTuctJevxaY4qH3cCKYCnbqusLKPLTwIroJitgyUzbxy8sQQdKaOxBMWhNbsacn7fkFf8JgZw2p57qmbLGB8GEYNsx2c0fuFHr76OaASa718yHi9ID7qm4YAXgoxzPL6H6S56L5lQ1GvPK9iWfHlF45uVNDPj2BekA8G0TA+eyrNpLwL2LGxAwcpdOjtdo8ZRSFfw4eU62H9leeHxtpa/XYf/QT6JWkPN+4X/yePILfBc5zqPBeAw2oT/NciX2a3L8xFCLlJCZ9gH363RKFgHC59wiR3MLLGw/0KxG2QEAiAZVUxipI4Qo3hFHa8K7mSLRMSozKDu5o1c9CLp6y9d3o56bQsrVndPCMBjIH2M5YMYFIeWNQ0hVp3c1mbVykXfRMhVr7Gv8EIXfWanYUyvmq5HbT5xyE8/o8Z2FV9n9hl7LRJ9c2pjVXf9OquSpdJbIEw=
