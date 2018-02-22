@@ -882,9 +882,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         double error2 = 0;
         double abgeschlossen2 = 0;
 
-        offen2 = (offen * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
-        error2 = (error * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + error + abgeschlossen);
+        offen2 = (offen * 100) / (offen + inBearbeitung + error + abgeschlossen);
+        error2 = (error * 100) / (offen + inBearbeitung + error + abgeschlossen);
+        inBearbeitung2 = (inBearbeitung * 100) / (offen + inBearbeitung + error + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - inBearbeitung2 - error2;
         return abgeschlossen2;
     }
@@ -1444,7 +1444,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return rootpath + representativeImage.replaceAll("\\\\", "/");
     }
 
-    
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;
