@@ -104,7 +104,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lombok.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/juniversalchardet-1.0.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lombok-1.12.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-collections-3.2.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar"/>
