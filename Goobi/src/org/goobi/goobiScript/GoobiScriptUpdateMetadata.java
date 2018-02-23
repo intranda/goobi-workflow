@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-import org.jdom2.JDOMException;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;

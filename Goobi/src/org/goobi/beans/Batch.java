@@ -3,7 +3,6 @@ package org.goobi.beans;
 import java.text.DateFormat;
 import java.util.Date;
 
-import de.sub.goobi.helper.Helper;
 import lombok.Data;
 
 /**

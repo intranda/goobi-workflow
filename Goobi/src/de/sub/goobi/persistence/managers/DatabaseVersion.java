@@ -79,6 +79,7 @@ public class DatabaseVersion {
         return 0;
     }
 
+    @SuppressWarnings("fallthrough")
     public static void updateDatabase(int currentVersion) {
         switch (currentVersion) {
             case 0:

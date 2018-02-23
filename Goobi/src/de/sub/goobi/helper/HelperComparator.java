@@ -123,4 +123,12 @@ public class HelperComparator implements Comparator<Object>, Serializable {
         }
         return name1.compareToIgnoreCase(name2);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((Sortierart == null) ? 0 : Sortierart.hashCode());
+        return result;
+    }    
 }

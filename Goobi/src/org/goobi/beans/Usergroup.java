@@ -143,31 +143,31 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     }
 
     public List<String> getUserRoles() {
-        if (userRoles==null){
-        	userRoles= new ArrayList<String>();
+        if (userRoles == null) {
+            userRoles = new ArrayList<String>();
         }
-    	return userRoles;
+        return userRoles;
     }
 
     public void setUserRoles(List<String> userRoles) {
         this.userRoles = userRoles;
     }
-    
-    public void addUserRole(String inRole){
-    	if (userRoles==null){
-    		userRoles = new ArrayList<String>();
-    	}
-    	if (!userRoles.contains(inRole)){
-    		userRoles.add(inRole);
-    		Collections.sort(userRoles);
-    	}
+
+    public void addUserRole(String inRole) {
+        if (userRoles == null) {
+            userRoles = new ArrayList<String>();
+        }
+        if (!userRoles.contains(inRole)) {
+            userRoles.add(inRole);
+            Collections.sort(userRoles);
+        }
     }
-    
-    public void removeUserRole(String inRole){
-    	if (userRoles!=null){
-    		userRoles.remove(inRole);
-    		Collections.sort(userRoles);
-    	}
+
+    public void removeUserRole(String inRole) {
+        if (userRoles != null) {
+            userRoles.remove(inRole);
+            Collections.sort(userRoles);
+        }
     }
 
     @Override
@@ -179,9 +179,24 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     public boolean equals(Object obj) {
         return this.getTitel().equals(((Usergroup) obj).getTitel());
     }
-    
+
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((benutzer == null) ? 0 : benutzer.hashCode());
+        result = prime * result + ((berechtigung == null) ? 0 : berechtigung.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + (panelAusgeklappt ? 1231 : 1237);
+        result = prime * result + ((schritte == null) ? 0 : schritte.hashCode());
+        result = prime * result + ((titel == null) ? 0 : titel.hashCode());
+        result = prime * result + ((userRoles == null) ? 0 : userRoles.hashCode());
+        return result;
+    }
+
 }

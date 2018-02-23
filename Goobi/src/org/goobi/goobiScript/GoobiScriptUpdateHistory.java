@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -12,11 +11,7 @@ import org.goobi.production.enums.LogType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
 
 public class GoobiScriptUpdateHistory extends AbstractIGoobiScript implements IGoobiScript {
 	private static final Logger logger = Logger.getLogger(GoobiScriptUpdateHistory.class);

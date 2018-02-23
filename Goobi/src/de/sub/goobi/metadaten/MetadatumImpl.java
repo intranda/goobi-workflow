@@ -43,7 +43,6 @@ import ugh.dl.Prefs;
 
 import org.goobi.beans.Process;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
-import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
 import de.sub.goobi.helper.Helper;
 
