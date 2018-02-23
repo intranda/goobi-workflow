@@ -120,7 +120,7 @@
     <target name="compile" depends="copySources, git.revision" description="Normal build of application.">
 
         <javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="7" encoding="UTF8" source="7" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
-            <compilerarg value="-Xlint" />
+            <compilerarg value="-Xlint:-path" />
             <classpath refid="classpath" />
         </javac>
     </target>
@@ -193,7 +193,7 @@
         <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="7" encoding="UTF8" source="7">
 
             <classpath refid="test.classpath" />
-            <compilerarg value="-Xlint" />
+            <compilerarg value="-Xlint:-path" />
             <src path="${dir.build.src}" />
             <src path="${dir.tests}" />
         </javac>
@@ -212,7 +212,7 @@
         <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="7" encoding="UTF8" source="7">
 
             <classpath refid="test.classpath" />
-            <compilerarg value="-Xlint" />
+            <compilerarg value="-Xlint:-path" />
             <src path="${dir.build.src}" />
             <src path="${dir.tests}" />
         </javac>
