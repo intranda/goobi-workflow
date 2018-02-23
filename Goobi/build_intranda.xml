@@ -182,6 +182,24 @@
         <delete dir="${dir.build}/WEB-INF" />
         <echo>Alles ist gut</echo>
         <echo>building revision ${dist.name}-${git.revision}</echo>
+    	
+    		<echo>=======================================================================</echo>
+    		<echo> </echo>
+		<echo>        GGGGGGGG                                   bbb              i </echo>
+		<echo>    GGGGGG     GGG                                 bbb             iii</echo>
+		<echo>   GGG                                             bbb                </echo>
+		<echo>  GGG                                              bbb                </echo>
+		<echo> GGG                  oooooooooooooooooooooooooo   bbb bbbbbbbb    iii</echo>
+		<echo> GGG                 ooooo       oooo      oooooo  bbbb      bbbb  iii</echo>
+		<echo> GGG       GGGGGGGG  oooo  oooo      ooooo   oooo  bbb        bbb  iii</echo>
+		<echo> GGG            GGG  oooo ooooooo   ooooooo  oooo  bbb         bbb iii</echo>
+		<echo> GGGG           GGG  oooo ooooooo    oooooo  oooo  bbb         bb  iii</echo>
+		<echo>  GGGG          GGG  oooo   oo   oo    oo   ooooo  bbb        bbb  iii</echo>
+		<echo>    GGGGGG     GGGG  ooooooo   ooooooo   oooooooo  bb bb    bbbb   iii</echo>
+		<echo>       GGGGGGGGGG     ooooooooooooooooooooooooo    bb   bbbbb      iii</echo>
+		<echo> </echo>
+    		<echo>=======================================================================</echo>
+    	    		
     </target>
 
     <!-- Build all, not really needed yet. -->
