@@ -2775,7 +2775,11 @@ public class Metadaten {
      */
 
     public boolean isImageHasOcr() {
-        return FilesystemHelper.isOcrFileExists(myProzess, image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")));
+    		try {
+    			return FilesystemHelper.isOcrFileExists(myProzess, image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")));
+    		}catch(Exception e) {
+    			return false;
+    		}
     }
 
     public boolean isShowOcrButton() {
