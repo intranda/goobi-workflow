@@ -205,6 +205,12 @@
                                                             <f:facet name="header">
                                                                 <h:outputText value="#{msgs.titel}" style="white-space: normal;"/>
                                                             </f:facet>
+                                                        	   <h:panelGroup rendered="#{step.typAutomatisch}">
+							                                	   <i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
+						                                    </h:panelGroup>
+                                                            <h:panelGroup rendered="#{not step.typAutomatisch}">
+							                                	   <i class="fa fa-user-o font-light margin-right-10" title="#{msgs.normalerSchritt}"/>
+						                                    </h:panelGroup>
                                                             <h:outputText value="#{step.titelLokalisiert}" title="#{step.titel}" style="white-space: normal;" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
                                                         </h:column>
 
