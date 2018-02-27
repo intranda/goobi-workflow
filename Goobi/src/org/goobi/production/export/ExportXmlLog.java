@@ -246,12 +246,12 @@ public class ExportXmlLog implements IProcessDataExport {
 
             Element begin = new Element("time", xmlns);
             begin.setAttribute("type", "start time");
-            begin.setText(String.valueOf(s.getBearbeitungsbeginn()));
+            begin.setText(s.getBearbeitungsbeginnAsFormattedString());
             stepElement.addContent(begin);
 
             Element end = new Element("time", xmlns);
             end.setAttribute("type", "end time");
-            end.setText(String.valueOf(s.getBearbeitungsendeAsFormattedString()));
+            end.setText(s.getBearbeitungsendeAsFormattedString());
             stepElement.addContent(end);
 
             if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
