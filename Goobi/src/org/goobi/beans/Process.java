@@ -535,20 +535,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getProcessDataDirectory() + "ocr" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_txt" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getWordDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrWcDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_pdf" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
+    }
+    
+    public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+        return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
