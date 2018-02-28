@@ -94,7 +94,7 @@ public class H2Storage extends H2Generator implements IStorage {
 				+ " "
 				+ outerWhereClause
 				+ " GROUP BY table_1.intervall "
-				+ "ORDER BY table_1.timeLimiter";
+				+ "ORDER BY table_1.intervall";
 
 		return mySql;
 	}

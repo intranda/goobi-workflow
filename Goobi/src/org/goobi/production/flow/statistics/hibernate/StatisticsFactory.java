@@ -35,9 +35,17 @@ public class StatisticsFactory {
 
     public static IStorage getStorage(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
         if (ConfigurationHelper.getInstance().isUseH2DB()) {
-            return new SQLStorage(timeFrom, timeTo, timeUnit, ids);
-        } else {
             return new H2Storage(timeFrom, timeTo, timeUnit, ids);
+        } else {
+            return new SQLStorage(timeFrom, timeTo, timeUnit, ids);
+        }
+    }
+    
+    public static IProduction getProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
+        if (ConfigurationHelper.getInstance().isUseH2DB()) {
+            return new H2Production(timeFrom, timeTo, timeUnit, ids);
+        } else {
+            return new ImprovedSQLProduction(timeFrom, timeTo, timeUnit, ids);
         }
     }
 }

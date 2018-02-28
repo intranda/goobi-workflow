@@ -39,9 +39,9 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
  * @author Robert Sehr
  * 
  ***********************************************************************/
-class ImprovedSQLProduction extends SQLGenerator implements IProduction{
+class H2Production extends H2Generator implements IProduction{
 
-	public ImprovedSQLProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit,
+	public H2Production(Date timeFrom, Date timeTo, TimeUnit timeUnit,
 			List<Integer> ids) {
 		super(timeFrom, timeTo, timeUnit, ids, "h.processID");
 	}
@@ -82,13 +82,24 @@ class ImprovedSQLProduction extends SQLGenerator implements IProduction{
 				+ "AS intervall, BearbeitungsEnde AS timeLimiter "
 				+ "FROM  schritte inner join prozesse on schritte.prozesseid=prozesse.prozesseid "
 				+ "WHERE " + innerWhereClause
-				+ "GROUP BY prozesse.prozesseid) AS table_1";
+				+ ") AS table_1";
 
 		this.mySql = "SELECT count(table_1.singleProcess) AS volumes, "
 				+ "sum(table_1.pages) AS pages, table_1.intervall " + "FROM "
 				+ subQuery + " " + outerWhereClause + " GROUP BY intervall "
-				+ "ORDER BY timeLimiter";
+				+ "ORDER BY intervall";
 	
+		
+//		SELECT count(table_1.singleProcess) AS volumes, 
+//		sum(table_1.pages) AS pages, 
+//		table_1.intervall
+//		FROM
+//		(SELECT prozesse.prozesseid AS singleProcess, prozesse.sortHelperImages AS pages, concat(year(BearbeitungsEnde) , '/' , month(BearbeitungsEnde)) AS intervall,
+//		 BearbeitungsEnde AS timeLimiter 
+//		FROM  schritte inner join prozesse on schritte.prozesseid=prozesse.prozesseid WHERE (bearbeitungsende IS NOT NULL AND (prozesse.prozesseid in (3,4,5)))) AS table_1 
+//		 WHERE ( timeLimiter between '0000-01-01 00:00:00.000' and '2018-02-28 23:59:59.999')  
+//		group by table_1.intervall
+		
 		return this.mySql;
 	}
 	
