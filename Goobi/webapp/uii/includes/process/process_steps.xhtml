@@ -192,6 +192,19 @@
                                                         <h:outputText value="#{msgs.module}:" rendered="#{item.typModulName != null and item.typModulName != ''}" />
                                                         <h:outputText value="#{item.typModulName}" rendered="#{item.typModulName != null and item.typModulName != ''}" />
 
+                                                        <h:outputText value="#{msgs.usergroup_assignedRoles}" />
+                                                        <h:panelGroup>
+                                                            <x:dataList
+                                                                value="#{item.benutzergruppen}"
+                                                                var="group"
+                                                                rowCountVar="count"
+                                                                rowIndexVar="index">
+                                                                <h:outputText value="#{group.titel}" />
+                                                                <h:outputText
+                                                                    value=", "
+                                                                    rendered="#{index lt count-1}"></h:outputText>
+                                                            </x:dataList>
+                                                        </h:panelGroup>
                                                     </h:panelGrid>
 
                                                 </div>
