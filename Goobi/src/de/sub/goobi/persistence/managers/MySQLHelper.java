@@ -29,6 +29,7 @@ package de.sub.goobi.persistence.managers;
  */
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,9 +40,6 @@ import org.apache.log4j.Logger;
 
 public class MySQLHelper implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -1396485589047649760L;
     private static final int MAX_TRIES_NEW_CONNECTION = 5;
     private static final int TIME_FOR_CONNECTION_VALID_CHECK = 5;
@@ -55,6 +53,22 @@ public class MySQLHelper implements Serializable {
         this.cm = new ConnectionManager();
     }
 
+    /**
+     * Check if current database connection is based on H2. Otherwise it is Mysql or Mariadb
+     * @return
+     */
+    public static boolean isUsingH2() {
+		try {
+			Connection connection = MySQLHelper.getInstance().getConnection();
+			DatabaseMetaData meta = connection.getMetaData();
+			String dbType = meta.getDatabaseProductName();
+			return (dbType.equals("H2"));
+		} catch (SQLException e) {
+			logger.error("Error getting database provider information", e);
+		}
+		return false;
+    }
+    
     public Connection getConnection() throws SQLException {
 
         Connection connection = this.cm.getDataSource().getConnection();
