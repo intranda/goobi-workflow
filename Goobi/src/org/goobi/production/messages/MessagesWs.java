@@ -17,6 +17,14 @@ import com.google.gson.JsonObject;
 
 import lombok.extern.log4j.Log4j;
 
+/**
+ * This class serves as a websocket server to get messages for localization in JavaScript. <br>
+ * The server expects a JSON object with a language and the key that shall be localized, eg: {"lang":"de","key":"Content"} <br>
+ * The response is again a JSON object with the original key and the localized value as fields: {"key":"Content","value":"Inhalt"}
+ * 
+ * @author Oliver Paetzel
+ *
+ */
 @Log4j
 @ServerEndpoint("/messagesws")
 public class MessagesWs {
@@ -35,7 +43,6 @@ public class MessagesWs {
         JsonObject jo = new JsonObject();
         jo.addProperty("key", mr.key);
         jo.addProperty("value", locale2BundleMap.get(locale).getString(mr.key));
-        log.debug("sending answer:\n" + gson.toJson(jo));
         session.getBasicRemote().sendText(gson.toJson(jo));
     }
 
