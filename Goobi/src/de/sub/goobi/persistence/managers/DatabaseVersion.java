@@ -219,7 +219,7 @@ public class DatabaseVersion {
 
     private static void updateToVersion20() {
         // just enhance the fulltext index for mysql databases
-        if (!ConfigurationHelper.getInstance().isUseH2DB()) {
+        if (!MySQLHelper.isUsingH2()) {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -241,7 +241,7 @@ public class DatabaseVersion {
     private static void updateToVersion19() {
         String dropBatches = "drop table if exists batches;";
         StringBuilder createBatches = new StringBuilder();
-        if (ConfigurationHelper.getInstance().isUseH2DB()) {
+        if (MySQLHelper.isUsingH2()) {
             createBatches.append("CREATE TABLE `batches` (");
             createBatches.append("`id` int(11) NOT NULL AUTO_INCREMENT,");
             createBatches.append("`startDate` DATETIME DEFAULT NULL,");
@@ -456,7 +456,7 @@ public class DatabaseVersion {
     private static void updateToVersion13() {
         Connection connection = null;
         String sqlStatement = null;
-        if (ConfigurationHelper.getInstance().isUseH2DB()) {
+        if (MySQLHelper.isUsingH2()) {
             sqlStatement =
                     "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
 

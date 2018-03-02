@@ -28,7 +28,15 @@
                     <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow ne 'full'}">
                         <h:panelGrid columns="2" class="table table-bordered" style="border: 1px solid #ddd;">
                             <h:outputText value="#{msgs.arbeitsschritt}:" />
-                            <h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
+                            <h:panelGroup>
+                            		<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatisch}">
+                              		<i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
+                                 </h:panelGroup>
+                                 <h:panelGroup rendered="#{not AktuelleSchritteForm.batchHelper.currentStep.typAutomatisch}">
+                              	    <i class="fa fa-user-o font-light margin-right-10" title="#{msgs.normalerSchritt}"/>
+                                 </h:panelGroup>     
+	                            <h:outputText value="#{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
+                            </h:panelGroup>
 
                             <h:outputText value="#{msgs.prioritaet}:" />
                             <h:panelGroup>
@@ -92,6 +100,12 @@
                                         <ul class="colors small13">
                                             <li class="#{step.bearbeitungsstatusEnum.color} margin-top-lesser margin-right-regular" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}" />
                                         </ul>
+                                        <h:panelGroup rendered="#{step.typAutomatisch}">
+	                                	   		<i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
+	                                    </h:panelGroup>
+	                                    <h:panelGroup rendered="#{not step.typAutomatisch}">
+	                                	        <i class="fa fa-user-o font-light margin-right-10" title="#{msgs.normalerSchritt}"/>
+	                                    </h:panelGroup>
                                         <h:outputText value="#{step.titelLokalisiert}" title="#{step.titel}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
 
                                         <div class="row" style="padding-left: 160px; padding-right: 20px">

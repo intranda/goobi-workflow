@@ -87,7 +87,7 @@
                                             </h:commandLink>
                                         </f:facet>
 
-                                        <ui:include src="includes/ajaxPlusMinusButton.xhtml" />
+                                        <ui:include src="includes/ajaxPlusMinusButtonTask.xhtml" />
 
                                         <h:panelGroup styleClass="margin-top-10 block" id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
 
@@ -234,8 +234,8 @@
                                                 <f:ajax render=":myform" />
                                             </h:commandLink>
                                         </f:facet>
-
-                                        <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}" />
+                                        <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}"/>
+                                        <h:outputText value=" (#{item.prozess.batch.batchName})" rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}"/>
                                     </x:column>
 
                                     <!-- ===================== Status ====================== -->

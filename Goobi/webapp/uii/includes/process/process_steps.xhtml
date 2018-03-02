@@ -63,7 +63,14 @@
                                             </h:panelGroup>
                                             <x:updateActionListener value="#{item.panelAusgeklappt?false:true}" property="#{item.panelAusgeklappt}" />
                                             <f:ajax render="possibleActions1" />
-                                            <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}" styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
+											<h:panelGroup rendered="#{item.typAutomatisch}">
+												<i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{not item.typAutomatisch}">
+												<i class="fa fa-user-o font-light margin-right-10" title="#{msgs.normalerSchritt}"/>
+											</h:panelGroup>
+						                    <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}" styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
+                                        	   
                                         </h:commandLink>
 
                                         <h:panelGroup styleClass="margin-top-10 block" rendered="#{item.panelAusgeklappt}">
@@ -81,7 +88,7 @@
 
                                                         <h:outputText value="#{msgs.titel}:" />
                                                         <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}"/>
-
+                                                        
                                                         <h:outputText value="#{msgs.prioritaet}:" />
                                                         <h:panelGroup>
                                                             <h:panelGroup rendered="#{item.prioritaet == 0}">
@@ -185,6 +192,19 @@
                                                         <h:outputText value="#{msgs.module}:" rendered="#{item.typModulName != null and item.typModulName != ''}" />
                                                         <h:outputText value="#{item.typModulName}" rendered="#{item.typModulName != null and item.typModulName != ''}" />
 
+                                                        <h:outputText value="#{msgs.usergroup_assignedRoles}" />
+                                                        <h:panelGroup>
+                                                            <x:dataList
+                                                                value="#{item.benutzergruppen}"
+                                                                var="group"
+                                                                rowCountVar="count"
+                                                                rowIndexVar="index">
+                                                                <h:outputText value="#{group.titel}" />
+                                                                <h:outputText
+                                                                    value=", "
+                                                                    rendered="#{index lt count-1}"></h:outputText>
+                                                            </x:dataList>
+                                                        </h:panelGroup>
                                                     </h:panelGrid>
 
                                                 </div>
@@ -268,6 +288,7 @@
                                         <x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{true}" />
                                     	<x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
                                     </h:commandLink>
+                                    
                                 </h:column>
 
                             </x:dataTable>

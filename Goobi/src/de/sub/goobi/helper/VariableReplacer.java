@@ -155,7 +155,7 @@ public class VariableReplacer {
             String origpath = this.process.getImagesOrigDirectory(false).replace("\\", "/");
             String metaFile = this.process.getMetadataFilePath().replace("\\", "/");
             String ocrBasisPath = this.process.getOcrDirectory().replace("\\", "/");
-            String ocrPlaintextPath = this.process.getTxtDirectory().replace("\\", "/");
+            String ocrPlaintextPath = this.process.getOcrTxtDirectory().replace("\\", "/");
             String sourcePath = this.process.getSourceDirectory().replace("\\", "/");
             String importPath = this.process.getImportDirectory().replace("\\", "/");
             String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();

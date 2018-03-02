@@ -39,6 +39,7 @@ import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class ConfigurationHelper implements Serializable {
 
@@ -664,12 +665,18 @@ public class ConfigurationHelper implements Serializable {
         
     }
     
-    public boolean isUseH2DB() {
-        return getLocalBoolean("useH2DB", false);
-    }
-    
     public List<String> getExcludeMonitoringAgentNames(){
         return getLocalList("excludeMonitoringAgentName");
+    }
+    
+    /**
+     * Check if Mysql or H2 is used as internal database
+     *
+     * @deprecated use MySQLHelper.isUsingH2() for this instead
+     */
+    @Deprecated
+    public boolean isUseH2DB() {
+        return MySQLHelper.isUsingH2();
     }
     
 }
