@@ -234,8 +234,8 @@
                                                 <f:ajax render=":myform" />
                                             </h:commandLink>
                                         </f:facet>
-
-                                        <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}" />
+                                        <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}"/>
+                                        <h:outputText value=" (#{item.prozess.batch.batchName})" rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}"/>
                                     </x:column>
 
                                     <!-- ===================== Status ====================== -->
