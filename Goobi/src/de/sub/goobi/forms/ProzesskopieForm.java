@@ -54,6 +54,7 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
@@ -102,6 +103,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
@@ -1512,6 +1514,28 @@ public class ProzesskopieForm {
         this.addToWikiField = addToWikiField;
     }
 
+    public Integer getProjectSelection() {
+        if (this.prozessKopie.getProjekt() != null) {
+            return this.prozessKopie.getProjekt().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setProjectSelection(Integer inProjektAuswahl) {
+        if (inProjektAuswahl != null && inProjektAuswahl.intValue() != 0) {
+            try {
+                Project p = ProjectManager.getProjectById(inProjektAuswahl);
+                this.prozessKopie.setProjekt(p);
+                this.prozessKopie.setProjectId(inProjektAuswahl);
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
+                logger.error(e);
+            }
+        }
+    }
+    
+    
     public Integer getRulesetSelection() {
         if (this.prozessKopie.getRegelsatz() != null) {
             return this.prozessKopie.getRegelsatz().getId();
