@@ -148,11 +148,8 @@
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
 
                             		<intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{ProzesskopieForm.prozessVorlage.titel}" help="#{msgs.help_import_workflow}" name="workflow" />
-    							
-    								<intranda:formInputDropDown2 id="project" label="#{msgs.projekt}" field="#{ProzesskopieForm.projectSelection}" help="#{msgs.helpProcessProject}" name="prozess" selectItems="#{ProzessverwaltungForm.projektAuswahlListe}" fieldStyle="form-control" required="true" />
-    								
-<!--     								<intranda:formInputDropDown2 id="project" label="#{msgs.projekt}" field="#{ProzesskopieForm.rulesetSelection}" help="#{msgs.help_import_ruleset}" name="Project" selectItems="#{ProzesskopieForm.rulesetSelectionList}" fieldStyle="form-control" required="true" /> -->
-                                
+                            		<intranda:formOutputText label="#{msgs.projekt}" field="#{ProzesskopieForm.prozessKopie.projekt.titel}" help="#{msgs.help_import_project}" name="project" />
+
                                 <h:panelGroup rendered="#{ProzesskopieForm.standardFields.preferences}">
                                     <intranda:formInputDropDown2 id="ruleset" label="#{msgs.regelsatz}" field="#{ProzesskopieForm.rulesetSelection}" help="#{msgs.help_import_ruleset}" name="Regelsatz" selectItems="#{ProzesskopieForm.rulesetSelectionList}" fieldStyle="form-control" required="true" />
                                 </h:panelGroup>

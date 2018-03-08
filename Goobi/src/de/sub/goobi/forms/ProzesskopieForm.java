@@ -146,6 +146,19 @@ public class ProzesskopieForm {
 
     public final static String DIRECTORY_SUFFIX = "_tif";
 
+    public String Prepare(Integer projectId) {
+        String answer = Prepare();
+        try {
+            Project p = ProjectManager.getProjectById(projectId);
+            prozessKopie.setProjekt(p);
+            prozessKopie.setProjectId(projectId);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
+            logger.error(e);
+        }
+        return answer;
+    }
+    
     public String Prepare() {
         atstsl = "";
         opacSuchbegriff = "";
@@ -1514,28 +1527,6 @@ public class ProzesskopieForm {
         this.addToWikiField = addToWikiField;
     }
 
-    public Integer getProjectSelection() {
-        if (this.prozessKopie.getProjekt() != null) {
-            return this.prozessKopie.getProjekt().getId();
-        } else {
-            return Integer.valueOf(0);
-        }
-    }
-
-    public void setProjectSelection(Integer inProjektAuswahl) {
-        if (inProjektAuswahl != null && inProjektAuswahl.intValue() != 0) {
-            try {
-                Project p = ProjectManager.getProjectById(inProjektAuswahl);
-                this.prozessKopie.setProjekt(p);
-                this.prozessKopie.setProjectId(inProjektAuswahl);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                logger.error(e);
-            }
-        }
-    }
-    
-    
     public Integer getRulesetSelection() {
         if (this.prozessKopie.getRegelsatz() != null) {
             return this.prozessKopie.getRegelsatz().getId();
