@@ -551,12 +551,11 @@
 
 											<h:panelGroup
 												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
-												<div class="btn-group" title="#{msgs.additionalOptions}" data-toggle="tooltip">
+												<div class="btn-group" title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}" data-toggle="tooltip">
 													<a class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
 														style="padding-left: 4px; padding-right: 4px;" data-toggle="dropdown"> <span class="caret"></span>
 													</a>
-													<h:commandLink action="#{ProzesskopieForm.Prepare}" rel="tooltip"
-														title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}">
+													<h:commandLink action="#{ProzesskopieForm.Prepare}" rel="tooltip">
 														<i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " 
 															style="padding-left: 7px; padding-right: 7px;"/>
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -586,11 +585,11 @@
 											
 											<h:panelGroup
 												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
-												<div class="btn-group" title="#{msgs.additionalOptions}" data-toggle="tooltip">
+												<div class="btn-group" title="#{msgs.MassenImport}" data-toggle="tooltip">
 													<a class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
 														style="padding-left: 4px; padding-right: 4px;" data-toggle="dropdown"> <span class="caret"></span>
 													</a>
-													<h:commandLink action="#{MassImportForm.Prepare}" rel="tooltip" title="#{msgs.MassenImport}">
+													<h:commandLink action="#{MassImportForm.Prepare}" rel="tooltip" >
 														<i class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " 
 															style="padding-left: 7px; padding-right: 7px;"/>
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -728,7 +727,6 @@
 					</div>
 				</div>
 			</div>
-
 
 			<h:panelGroup
 				rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.paginator.list.size() gt 0}">

@@ -225,6 +225,14 @@
         }
     });
 
+    $(document).ready(function() {        
+	    	 $('[data-toggle="tooltip"]').tooltip();
+			  $('[data-toggle="popover"]').popover();
+			  if ($('.popover.fade.right.in').length > 0) {
+	             $('.popover.fade.right.in').remove();
+	         }
+    });
+    
 	$(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
 		var myButton = $("a[id$=':navnext']")
     	if (myButton!=null) {
