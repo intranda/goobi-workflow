@@ -146,19 +146,6 @@ public class ProzesskopieForm {
 
     public final static String DIRECTORY_SUFFIX = "_tif";
 
-    public String Prepare(Integer projectId) {
-        String answer = Prepare();
-        try {
-            Project p = ProjectManager.getProjectById(projectId);
-            prozessKopie.setProjekt(p);
-            prozessKopie.setProjectId(projectId);
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-            logger.error(e);
-        }
-        return answer;
-    }
-    
     public String Prepare() {
         atstsl = "";
         opacSuchbegriff = "";
@@ -1588,6 +1575,17 @@ public class ProzesskopieForm {
 
     public void setAdditionalFields(List<AdditionalField> list) {
         this.additionalFields = list;
+    }
+    
+    public List<Project> getAvailableProjects() throws DAOException{
+        List<Project> temp = null;
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
+        } else {
+            temp = ProjectManager.getAllProjects();
+        }
+        return temp;
     }
 
 }

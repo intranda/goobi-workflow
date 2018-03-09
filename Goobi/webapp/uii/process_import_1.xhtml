@@ -105,9 +105,9 @@
 
                                 <h:panelGroup layout="block" id="firsttab" class="tab-pane active border-bottom-light" rendered="#{NavigationForm.activeImportTab == 'recordImport'}">
 
-                                    <intranda:formOutputText label="#{msgs.project}" field="#{MassImportForm.template.projekt.titel}" name="project" />
+                                    <intranda:formOutputText label="#{msgs.project}" field="#{MassImportForm.template.projekt.titel}" name="project" fieldStyle="form-control"/>
 
-                                    <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="prozessvorlage" />
+                                    <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="prozessvorlage" fieldStyle="form-control"/>
 
                                     <intranda:formInputSelectMany id="collections" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="firsttab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
@@ -157,7 +157,7 @@
 
                                     <intranda:formOutputText label="#{msgs.project}" field="#{MassImportForm.template.projekt.titel}" name="forth_project" fieldStyle="form-control" />
 
-                                    <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="forth_prozessvorlage" />
+                                    <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="forth_prozessvorlage" fieldStyle="form-control"/>
 
                                     <intranda:formInputSelectMany id="collections4" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="forth_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
 

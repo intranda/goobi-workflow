@@ -543,30 +543,31 @@
 											<!-- ProzessKopie-Schaltknopf -->
 											<h:commandLink action="#{ProzesskopieForm.Prepare}" id="action22" rel="tooltip"
 												title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
-												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzessverwaltungForm.projektAuswahlListe.size() eq 1}">
+												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
 												<i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<x:updateActionListener property="#{ProzesskopieForm.prozessVorlage}" value="#{item}" />
 											</h:commandLink>
 
 											<h:panelGroup
-												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzessverwaltungForm.projektAuswahlListe.size() gt 1}">
+												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
 												<div class="btn-group" title="#{msgs.additionalOptions}" data-toggle="tooltip">
 													<a class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
 														style="padding-left: 4px; padding-right: 4px;" data-toggle="dropdown"> <span class="caret"></span>
 													</a>
 													<h:commandLink action="#{ProzesskopieForm.Prepare}" rel="tooltip"
-														title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
-														rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single')}">
-														<i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " style="padding-left: 7px; padding-right: 7px;"/>
+														title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}">
+														<i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " 
+															style="padding-left: 7px; padding-right: 7px;"/>
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 														<x:updateActionListener property="#{ProzesskopieForm.prozessVorlage}" value="#{item}" />
 													</h:commandLink>
 													<ul class="dropdown-menu  pull-right">
-														<ui:repeat var="proj" value="#{ProzessverwaltungForm.projektAuswahlListe}">
+														<ui:repeat var="proj" value="#{ProzesskopieForm.availableProjects}">
 															<li>
-																<h:commandLink action="#{ProzesskopieForm.Prepare(proj.value)}">
-																	<h:outputText value="#{proj.label}" />
+																<h:commandLink action="#{ProzesskopieForm.Prepare}">
+																	<h:outputText value="#{proj.titel}" />
+																	<x:updateActionListener property="#{item.projekt}" value="#{proj}" />
 																	<x:updateActionListener property="#{ProzesskopieForm.prozessVorlage}" value="#{item}" />
 																</h:commandLink>
 															</li>
@@ -577,11 +578,38 @@
 
 											<!-- MassenImport -->
 											<h:commandLink action="#{MassImportForm.Prepare}" id="action222" rel="tooltip" title="#{msgs.MassenImport}"
-												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi')}">
+												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
 												<i class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<x:updateActionListener property="#{MassImportForm.template}" value="#{item}" />
 											</h:commandLink>
+											
+											<h:panelGroup
+												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
+												<div class="btn-group" title="#{msgs.additionalOptions}" data-toggle="tooltip">
+													<a class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+														style="padding-left: 4px; padding-right: 4px;" data-toggle="dropdown"> <span class="caret"></span>
+													</a>
+													<h:commandLink action="#{MassImportForm.Prepare}" rel="tooltip" title="#{msgs.MassenImport}">
+														<i class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " 
+															style="padding-left: 7px; padding-right: 7px;"/>
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
+														<x:updateActionListener property="#{MassImportForm.template}" value="#{item}" />
+													</h:commandLink>
+													<ul class="dropdown-menu  pull-right">
+														<ui:repeat var="proj" value="#{ProzesskopieForm.availableProjects}">
+															<li>
+																<h:commandLink action="#{MassImportForm.Prepare}">
+																	<h:outputText value="#{proj.titel}" />
+																	<x:updateActionListener property="#{item.projekt}" value="#{proj}" />
+																	<x:updateActionListener property="#{MassImportForm.template}" value="#{item}" />
+																</h:commandLink>
+															</li>
+														</ui:repeat>
+													</ul>
+												</div>
+											</h:panelGroup>
+
 
 											<h:panelGroup
 												rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Linking'))}">
