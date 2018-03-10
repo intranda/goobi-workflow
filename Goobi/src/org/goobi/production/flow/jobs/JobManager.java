@@ -33,8 +33,6 @@ import java.util.Date;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
-import org.goobi.production.flow.delay.DelayJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -43,6 +41,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.extern.log4j.Log4j;
 
 /**
  * JobManager organizes all scheduled jobs
@@ -51,54 +50,52 @@ import de.sub.goobi.config.ConfigurationHelper;
  * @author Igor Toker
  * @version 21.10.2009
  */
+@Log4j
 public class JobManager implements ServletContextListener {
-    private static final Logger logger = Logger.getLogger(JobManager.class);
 
-    /***********************************************************************
+    /**
      * Restarts timed Jobs
      * 
      * @throws SchedulerException
-     **********************************************************************/
+     */
     public static void restartTimedJobs() throws SchedulerException {
         stopTimedJobs();
         startTimedJobs();
     }
 
-    /***************************************************************************
+    /**
      * Stops timed updates of HistoryManager
      * 
      * @throws SchedulerException
-     **************************************************************************/
+     */
     private static void stopTimedJobs() throws SchedulerException {
         SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
         schedFact.getScheduler().shutdown(false);
     }
 
-    /***************************************************************************
+    /**
      * Starts timed updates of {@link HistoryAnalyserJob}
      * 
      * @throws SchedulerException
-     **************************************************************************/
+     */
     private static void startTimedJobs() throws SchedulerException {
         SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
         Scheduler sched = schedFact.getScheduler();
         sched.start();
 
         initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
-        //		initializeJobNonConfigured(new DelayJob(), 1, sched);
+        // initializeJobNonConfigured(new DelayJob(), 1, sched);
         initializeJob(new DelayJob(), "dailyDelayJob", sched);
 
     }
 
-    /***************************************************************************
+    /**
      * initializes given SimpleGoobiJob at given time
      * 
      * @throws SchedulerException
-     **************************************************************************/
-    private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched) throws SchedulerException {
-        if (logger.isDebugEnabled()) {
-            logger.debug(goobiJob.getJobName());
-        }
+     */
+    private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched)
+            throws SchedulerException {
         JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 
         if (ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty) != -1) {
@@ -116,21 +113,20 @@ public class JobManager implements ServletContextListener {
             trigger.setStartTime(new Date());
             trigger.setName(goobiJob.getJobName() + "_trigger");
 
-            logger.info("daily Job " + goobiJob.getJobName() + " start time: " + hour + ":" + min);
+            log.info("Set the start time for daily Job '" + goobiJob.getJobName() + "' to: " + hour + ":" + min);
             sched.scheduleJob(jobDetail, trigger);
         }
     }
 
-    /***************************************************************************
+    /**
      * initializes given SimpleGoobiJob at given time
      * 
      * @throws SchedulerException
-     **************************************************************************/
+     */
     @SuppressWarnings("unused")
-    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime, Scheduler sched) throws SchedulerException {
-        if (logger.isDebugEnabled()) {
-            logger.debug(goobiJob.getJobName());
-        }
+    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime, Scheduler sched)
+            throws SchedulerException {
+        log.debug("Initialize job '" + goobiJob.getJobName() + "'");
         JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 
         // hier alle 60 sek. oder so
@@ -142,31 +138,28 @@ public class JobManager implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Stop daily JobManager scheduler");
-        }
+        log.debug("Stop daily JobManager scheduler");
         try {
             stopTimedJobs();
         } catch (SchedulerException e) {
-            logger.error("daily JobManager could not be stopped", e);
+            log.error("Daily JobManager could not be stopped", e);
         }
     }
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Start daily JobManager scheduler");
-        }
+        log.debug("Start daily JobManager scheduler");
         try {
             startTimedJobs();
         } catch (SchedulerException e) {
-            logger.error("daily JobManager could not be started", e);
+            log.error("daily JobManager could not be started", e);
         }
     }
 
-    /***************************************************************************
-     * get current time plus 60 seconds as milliseconds from midnight to debug jobmanager
-     **************************************************************************/
+    /**
+     * get current time plus 60 seconds as milliseconds from midnight to debug
+     * jobmanager
+     */
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -176,10 +169,9 @@ public class JobManager implements ServletContextListener {
 
         Calendar calNow = Calendar.getInstance();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(calNow.getTime() + " --- " + cal.getTime());
-            logger.debug("60 seconds from now in milliseconds from 0:00 are " + (calNow.getTimeInMillis() - cal.getTimeInMillis() + 60000));
-        }
+        log.debug(calNow.getTime() + " --- " + cal.getTime());
+        log.debug("60 seconds from now in milliseconds from 0:00 are "
+                + (calNow.getTimeInMillis() - cal.getTimeInMillis() + 60000));
     }
 
 }
