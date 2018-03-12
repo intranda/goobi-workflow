@@ -295,6 +295,7 @@
         }
     }
     
+    
         $(document).ready(function() {        
         		target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
 		  	$("#pagRight").css("width", target);
@@ -302,11 +303,10 @@
         
 		 	$('[data-toggle="tooltip"]').tooltip();
 			$('[data-toggle="popover"]').popover();
-			if ($('.popover.fade.right.in').length > 0) {
+			if ($('.popover.fade.right.in').length != 0) {
 	        		$('.popover.fade.right.in').remove();
 	         }
    		});
-        
 
 
 
