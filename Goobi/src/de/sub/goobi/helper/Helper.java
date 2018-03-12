@@ -337,10 +337,8 @@ public class Helper implements Serializable, Observer {
                 if (vb != null) {
                     try {
                         value = vb.getValue(context);
-                    } catch (PropertyNotFoundException e) {
-                        logger.error(e);
-                    } catch (EvaluationException e) {
-                        logger.error(e);
+                    } catch (Exception e) {
+                        logger.error("Error getting the object " + expr + " from context: " + e.getMessage());
                     }
                 }
             }
