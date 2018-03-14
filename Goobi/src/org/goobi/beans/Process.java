@@ -914,9 +914,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
-        if (logger.isDebugEnabled()) {
-            logger.debug("current meta.xml file type for id " + getId() + ": " + type);
-        }
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
         if (ff == null) {
             String[] parameter = { titel, type };
