@@ -82,6 +82,21 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
+    public static Process getProcessByExactTitle(String inTitle) throws SQLException {
+        Connection connection = null;
+        String sql = "SELECT * FROM prozesse WHERE Titel = ?";
+        Object[] param = { inTitle };
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Process p = new QueryRunner().query(connection, sql, resultSetToProcessHandler, param);
+            return p;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static void saveProcess(Process o, boolean processOnly) throws DAOException {
         try {
             o.setSortHelperStatus(o.getFortschritt());
@@ -137,12 +152,12 @@ class ProcessMysqlHelper implements Serializable {
         if (batch.getStartDate() != null) {
             LocalDate localDate = new LocalDate(batch.getStartDate());
             start = new Timestamp(localDate.toDateTimeAtStartOfDay().getMillis());
-           
+
         }
 
         if (batch.getEndDate() != null) {
             LocalDate localDate = new LocalDate(batch.getEndDate());
-            end =  new Timestamp(localDate.toDateTimeAtStartOfDay().getMillis());
+            end = new Timestamp(localDate.toDateTimeAtStartOfDay().getMillis());
         }
 
         if (batch.getBatchId() == null) {
@@ -889,7 +904,7 @@ class ProcessMysqlHelper implements Serializable {
         Timestamp start = rs.getTimestamp("startDate");
         if (start != null) {
             LocalDate localDate = new LocalDate(start);
-            
+
             batch.setStartDate(localDate.toDate());
         }
         Timestamp end = rs.getTimestamp("endDate");
