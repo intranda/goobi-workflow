@@ -77,6 +77,12 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             String pluginName = parameters.get("plugin");
             Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 
+            // set the overridden project if present
+            if (parameters.get("projectId") != null && !parameters.get("projectId").equals("")) {
+                int projectid = Integer.parseInt(parameters.get("projectId"));
+                template.setProjectId(projectid);
+            }
+            
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {

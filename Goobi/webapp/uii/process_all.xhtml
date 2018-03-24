@@ -601,6 +601,7 @@
 																<h:commandLink action="#{MassImportForm.Prepare}">
 																	<h:outputText value="#{proj.titel}" />
 																	<x:updateActionListener property="#{item.projekt}" value="#{proj}" />
+																	<x:updateActionListener property="#{item.projectId}" value="#{proj.id}" />
 																	<x:updateActionListener property="#{MassImportForm.template}" value="#{item}" />
 																</h:commandLink>
 															</li>

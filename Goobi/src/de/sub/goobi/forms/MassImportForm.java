@@ -294,7 +294,8 @@ public class MassImportForm {
                     myParameters.put("identifiers", myIdentifiers);
                     myParameters.put("action", "import");
                     myParameters.put("plugin", plugin2.getTitle());
-
+                    myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
+                    
                     boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(), "action:import plugin:" + plugin2.getTitle() + " template:"
                             + this.template.getId() + " identifiers:" + myIdentifiers, myParameters);
                     if (scriptCallIsValid) {
