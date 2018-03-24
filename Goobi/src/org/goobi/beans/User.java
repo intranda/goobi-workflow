@@ -115,7 +115,7 @@ public class User implements DatabaseObject {
     public void lazyLoad() {
         try {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
-            this.projekte = ProjectManager.getProjectsForUser(this);
+            this.projekte = ProjectManager.getProjectsForUser(this, false);
         } catch (DAOException e) {
             logger.error("error during lazy loading of User", e);
         }
@@ -214,7 +214,7 @@ public class User implements DatabaseObject {
     public List<Project> getProjekte() {
         if (projekte == null || projekte.size() == 0) {
             try {
-                this.projekte = ProjectManager.getProjectsForUser(this);
+                this.projekte = ProjectManager.getProjectsForUser(this, false);
             } catch (DAOException e) {
                 logger.error(e);
             }

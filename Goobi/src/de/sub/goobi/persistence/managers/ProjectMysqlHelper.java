@@ -70,8 +70,12 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Project> getProjectsForUser(User user) throws SQLException {
-        return getProjects("titel", "ProjekteID IN (SELECT ProjekteID FROM projektbenutzer WHERE BenutzerID=" + user.getId() + ")", null, null);
+    public static List<Project> getProjectsForUser(User user, boolean activeProjectsOnly) throws SQLException {
+        String activeOnly = "";
+        if (activeProjectsOnly) {
+            activeOnly = "projectisarchived = false AND ";
+        }
+        return getProjects("titel", activeOnly + "ProjekteID IN (SELECT ProjekteID FROM projektbenutzer WHERE BenutzerID=" + user.getId() + ")", null, null);
     }
 
     public static int getProjectCount(String order, String filter) throws SQLException {

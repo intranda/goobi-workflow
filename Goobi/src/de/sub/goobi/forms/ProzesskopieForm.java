@@ -1578,13 +1578,8 @@ public class ProzesskopieForm {
     }
     
     public List<Project> getAvailableProjects() throws DAOException{
-        List<Project> temp = null;
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-            temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
-        } else {
-            temp = ProjectManager.getAllProjects();
-        }
+        List<Project> temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), true);
         return temp;
     }
 
