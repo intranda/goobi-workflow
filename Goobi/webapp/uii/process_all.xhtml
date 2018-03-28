@@ -115,7 +115,7 @@
 										</x:column>
 
 										<!-- +++++++++++++++++  Thumbnail ++++++++++++++++++++++++ -->
-										<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}">
+										<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 											<f:facet name="header">
 												<h:outputText value="#{msgs.thumbnail}" />
 											</f:facet>
@@ -128,7 +128,7 @@
 
 										<!-- +++++++++++++++++  Embedded metadata ++++++++++++++++++++++++ -->
 										<x:column styleClass="tableColumnOverflow maxWidth300"
-											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}">
+											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 											<f:facet name="header">
 												<h:outputText value="#{msgs.metadata}" />
 											</f:facet>
@@ -143,9 +143,9 @@
 														 or metadata.one == 'CatalogIDDigital'
 														 or metadata.one == 'shelfmarksource'}">
 														<tr>
-															<td style="border: none #ddd; padding: 2px; vertical-align: top;"><h:outputText
+															<td style="border: none !important; padding: 2px; vertical-align: top;"><h:outputText
 																	value="#{msgs['process_grid_'.concat(metadata.one)]}:" /></td>
-															<td style="border: none #ddd; padding: 2px; white-space: normal;"><h:outputText
+															<td style="border: none !important; padding: 2px; white-space: normal;"><h:outputText
 																	value="#{metadata.two}" /></td>
 														</tr>
 													</h:panelGroup>
@@ -175,7 +175,7 @@
 
 										<!-- +++++++++++++++++  BatchID ++++++++++++++++++++++++ -->
 										<x:column styleClass="tableColumnOverflow width80"
-											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
+											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 											headerstyleClass="#{ProzessverwaltungForm.sortierung=='batchDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
 												<h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}">
