@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.websocket.OnClose;
@@ -42,7 +43,13 @@ public class MessagesWs {
 
         JsonObject jo = new JsonObject();
         jo.addProperty("key", mr.key);
-        jo.addProperty("value", locale2BundleMap.get(locale).getString(mr.key));
+        String translated = "???" + mr.key + "???";
+        try {
+            translated = locale2BundleMap.get(locale).getString(mr.key);
+        } catch (MissingResourceException e) {
+            //don't log
+        }
+        jo.addProperty("value", translated);
         session.getBasicRemote().sendText(gson.toJson(jo));
     }
 
