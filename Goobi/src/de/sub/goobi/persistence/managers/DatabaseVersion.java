@@ -41,12 +41,11 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 21;
+    public static final int EXPECTED_VERSION = 22;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -186,6 +185,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 21.");
                 }
                 updateToVersion21();
+            case 21:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 22.");
+                }
+                updateToVersion22();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -196,13 +200,17 @@ public class DatabaseVersion {
 
     }
 
-    private static void updateToVersion21() {
-
+    /**
+     * version 22 introduces a new table that holds metadata values in JSON format. This is useful when searching and sorting processes by metadata
+     * field.
+     */
+    private static void updateToVersion22() {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-           runner.update(connection, "alter table schritte add column generateDocket tinyint(1) DEFAULT '0'");
+            runner.update(connection,
+                    "CREATE TABLE `metadata_json` (`processid` int(11) DEFAULT NULL, `value` text DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -213,7 +221,26 @@ public class DatabaseVersion {
                 }
             }
         }
-    
+
+    }
+
+    private static void updateToVersion21() {
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table schritte add column generateDocket tinyint(1) DEFAULT '0'");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
 
     }
 
@@ -523,8 +550,9 @@ public class DatabaseVersion {
                                 try {
                                     date = getDate(dateString.substring(0, dateString.length() - 1));
                                 } catch (Exception e) {
-                                    if (logger.isDebugEnabled())
+                                    if (logger.isDebugEnabled()) {
                                         logger.debug("Process " + processId + ": cannot convert date " + dateString);
+                                    }
                                 }
                             }
 

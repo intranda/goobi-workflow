@@ -33,10 +33,19 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.production.cli.helper.StringPair;
 
+import com.google.gson.Gson;
+
 class MetadataMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = -8391750763010758774L;
+    private static final Gson gson = new Gson();
 
+    /**
+     * deletes metadata values for processId from `metadata` and `metadata_json` tables
+     * 
+     * @param processId
+     * @throws SQLException
+     */
     public static void removeMetadata(int processId) throws SQLException {
 
         Connection connection = null;
@@ -45,6 +54,8 @@ class MetadataMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             String sql = "DELETE FROM metadata WHERE processid = " + processId;
             run.update(connection, sql);
+            sql = "DELETE FROM metadata_json WHERE processid = " + processId;
+            run.update(connection, sql);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -52,6 +63,14 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
+    /**
+     * inserts metadata in two tables: `metadata` with one row per metadata value and `metadata_json` with one row per process and the values as json
+     * object
+     * 
+     * @param processid the process id for the metadata
+     * @param metadata the metadata
+     * @throws SQLException
+     */
     public static void insertMetadata(int processid, Map<String, List<String>> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
 
@@ -76,12 +95,18 @@ class MetadataMysqlHelper implements Serializable {
             }
 
         }
-        String sqlString = sql.toString().substring(0, sql.toString().length() - 1);
-        Object[] param = values.toArray(new Object[values.size()]);
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
+            String sqlString = sql.toString().substring(0, sql.toString().length() - 1);
+            Object[] param = values.toArray(new Object[values.size()]);
+            if (!values.isEmpty()) {
+                run.update(connection, sqlString, param);
+            }
+
+            sqlString = "INSERT INTO metadata_json (processid, value) VALUES (?,?)";
+            param = new Object[] { processid, gson.toJson(metadata) };
             run.update(connection, sqlString, param);
         } finally {
             if (connection != null) {
