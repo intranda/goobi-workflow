@@ -80,6 +80,9 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -89,6 +92,12 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 @ManagedBean(name = "AktuelleSchritteForm")
 @SessionScoped
@@ -134,6 +143,8 @@ public class StepBean extends BasicBean {
     @Getter
     @Setter
     private String thirdContent = "";
+
+    private IExportPlugin exportPlugin = null;
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<String, Boolean>();
@@ -972,14 +983,18 @@ public class StepBean extends BasicBean {
 
     public void setMySchritt(Step mySchritt) {
         myPlugin = null;
+        exportPlugin = null;
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
             if (myPlugin == null) {
+                exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
+            }
+            if (myPlugin == null && exportPlugin == null) {
                 Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
-            } else {
+            } else if (myPlugin != null) {
                 if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
                     myPlugin.initialize(mySchritt, "/task_edit_batch");
                 } else {
@@ -995,7 +1010,6 @@ public class StepBean extends BasicBean {
     public String runPlugin() {
         //        Helper.setMeldung("Starte Plugin");
         //        Helper.setMeldung(mySchritt.getStepPlugin());
-
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
             String mypath = myPlugin.getPagePath();
             if (logger.isDebugEnabled()) {
