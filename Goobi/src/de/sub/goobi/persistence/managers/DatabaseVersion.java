@@ -210,7 +210,7 @@ public class DatabaseVersion {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
             runner.update(connection,
-                    "CREATE TABLE `metadata_json` (`processid` int(11) DEFAULT NULL, `values` text DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+                    "CREATE TABLE `metadata_json` (`processid` int(11) DEFAULT NULL, `value` text DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
         } catch (SQLException e) {
             logger.error(e);
         } finally {
