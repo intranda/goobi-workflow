@@ -1010,31 +1010,20 @@ public class StepBean extends BasicBean {
     public String runPlugin() {
         //        Helper.setMeldung("Starte Plugin");
         //        Helper.setMeldung(mySchritt.getStepPlugin());
-        if (myPlugin != null) {
-            if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
-                String mypath = myPlugin.getPagePath();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Plugin is full GUI");
-                    //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
-                    logger.debug("open plugin GUI: " + mypath);
-                }
-                myPlugin.execute();
-                return mypath;
-            } else {
-                myPlugin.execute();
-                myPlugin.finish();
-                return "";
+        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+            String mypath = myPlugin.getPagePath();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Plugin is full GUI");
+                //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
+                logger.debug("open plugin GUI: " + mypath);
             }
-        } else if (exportPlugin != null) {
-            try {
-                exportPlugin.startExport(myProzess);
-            } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
-                    | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException | SwapException
-                    | DAOException e) {
-                logger.error(e);
-            }
+            myPlugin.execute();
+            return mypath;
+        } else {
+            myPlugin.execute();
+            myPlugin.finish();
+            return "";
         }
-        return "";
     }
 
     public IStepPlugin getMyPlugin() {
