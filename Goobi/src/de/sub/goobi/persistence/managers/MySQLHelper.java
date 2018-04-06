@@ -55,20 +55,86 @@ public class MySQLHelper implements Serializable {
 
     /**
      * Check if current database connection is based on H2. Otherwise it is Mysql or Mariadb
+     * 
      * @return
      */
     public static boolean isUsingH2() {
-		try {
-			Connection connection = MySQLHelper.getInstance().getConnection();
-			DatabaseMetaData meta = connection.getMetaData();
-			String dbType = meta.getDatabaseProductName();
-			return (dbType.equals("H2"));
-		} catch (SQLException e) {
-			logger.error("Error getting database provider information", e);
-		}
-		return false;
+        try {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            DatabaseMetaData meta = connection.getMetaData();
+            String dbType = meta.getDatabaseProductName();
+            return (dbType.equals("H2"));
+        } catch (SQLException e) {
+            logger.error("Error getting database provider information", e);
+        }
+        return false;
     }
-    
+
+    /**
+     * Checks connected database for MariaDB version >=10.2.3 (from which on mariadb is json capable)
+     * 
+     * @return true if MariaDB >= 10.2.3, else false
+     */
+    public static boolean isJsonCapable() {
+        try {
+            Connection connection = MySQLHelper.getInstance().getConnection();
+            DatabaseMetaData meta = connection.getMetaData();
+            String dbVersion = meta.getDatabaseProductVersion();
+            return (checkMariadbVersion(dbVersion));
+        } catch (SQLException e) {
+            logger.error("Error getting database provider information", e);
+        }
+        return false;
+    }
+
+    /**
+     * checks if dbVersion is a valid mariadb version string for mariadb >= 10.2.3
+     * 
+     * @param dbVersion
+     * @return
+     */
+    public static boolean checkMariadbVersion(String dbVersion) {
+        // example version string: "5.5.5-10.2.13-MariaDB-10.2.13+maria~stretch"
+        // other example: "10.0.34-MariaDB-0ubuntu0.16.04.1"
+        String dbv = dbVersion.toLowerCase();
+        int mariaIdx = dbv.indexOf("mariadb");
+        if (mariaIdx < 0) {
+            return false;
+        }
+        String version = null;
+        if (dbv.startsWith("5")) {
+            version = dbv.substring(mariaIdx + 8, dbv.indexOf('+'));
+        } else {
+            version = dbv.substring(0, dbv.indexOf('-'));
+        }
+        String[] numStrs = version.split("\\.");
+        int[] nums = new int[numStrs.length];
+        for (int i = 0; i < numStrs.length; i++) {
+            try {
+                nums[i] = Integer.parseInt(numStrs[i]);
+            } catch (NumberFormatException e) {
+                logger.error("error parsing database version: " + dbVersion);
+                return false;
+            }
+        }
+        if (nums[0] < 10) {
+            return false;
+        }
+        if (nums[0] > 10) {
+            return true;
+        }
+        if (nums[1] < 2) {
+            return false;
+        }
+        if (nums[1] > 2) {
+            return true;
+        }
+        if (nums[2] < 3) {
+            return false;
+        }
+        return true;
+    }
+
     public Connection getConnection() throws SQLException {
 
         Connection connection = this.cm.getDataSource().getConnection();
@@ -118,8 +184,8 @@ public class MySQLHelper implements Serializable {
                     Object object = rs.getObject(1);
                     if (object != null) {
                         if (object instanceof Long) {
-                        Long l = (Long) object;
-                        answer.add(l.intValue());
+                            Long l = (Long) object;
+                            answer.add(l.intValue());
                         } else if (object instanceof Integer) {
                             Integer in = (Integer) object;
                             answer.add(in);

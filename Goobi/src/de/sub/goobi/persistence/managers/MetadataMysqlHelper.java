@@ -64,7 +64,7 @@ class MetadataMysqlHelper implements Serializable {
     }
 
     /**
-     * inserts metadata in two tables: `metadata` with one row per metadata value and metadata_json with one row per process and the values as json
+     * inserts metadata in two tables: `metadata` with one row per metadata value and `metadata_json` with one row per process and the values as json
      * object
      * 
      * @param processid the process id for the metadata
