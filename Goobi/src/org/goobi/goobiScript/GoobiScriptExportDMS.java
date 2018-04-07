@@ -51,38 +51,38 @@ public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobi
 			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
 				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-					Process p = ProcessManager.getProcessById(gsr.getProcessId());
-					gsr.setProcessTitle(p.getTitel());
-					gsr.setResultType(GoobiScriptResultType.RUNNING);
-					gsr.updateTimestamp();
+				    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+				    try {
+        					gsr.setProcessTitle(p.getTitel());
+        					gsr.setResultType(GoobiScriptResultType.RUNNING);
+        					gsr.updateTimestamp();
+        					
+        					IExportPlugin export = null;
+        					String pluginName = ProcessManager.getExportPluginName(p.getId());
+        					if (StringUtils.isNotEmpty(pluginName)) {
+        						try {
+        							export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+        						} catch (Exception e) {
+        							logger.error("Can't load export plugin, use default plugin", e);
+        							export = new ExportDms();
+        						}
+        					}
+        					String logextension = "without ocr results";
+        					if (exportFulltext) {
+        						logextension = "including ocr results";
+        					}
+        					if (export == null) {
+        						export = new ExportDms();
+        					}
+        					export.setExportFulltext(exportFulltext);
+        					if (exportImages == false) {
+        						logextension = "without images and " + logextension;
+        						export.setExportImages(false);
+        					} else {
+        						logextension = "including images and " + logextension;
+        						export.setExportImages(true);
+        					}
 					
-					IExportPlugin export = null;
-					String pluginName = ProcessManager.getExportPluginName(p.getId());
-					if (StringUtils.isNotEmpty(pluginName)) {
-						try {
-							export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-						} catch (Exception e) {
-							logger.error("Can't load export plugin, use default plugin", e);
-							export = new ExportDms();
-						}
-					}
-					String logextension = "without ocr results";
-					if (exportFulltext) {
-						logextension = "including ocr results";
-					}
-					if (export == null) {
-						export = new ExportDms();
-					}
-					export.setExportFulltext(exportFulltext);
-					if (exportImages == false) {
-						logextension = "without images and " + logextension;
-						export.setExportImages(false);
-					} else {
-						logextension = "including images and " + logextension;
-						export.setExportImages(true);
-					}
-
-					try {
 						boolean success = export.startExport(p);
 						Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
 								"Export " + logextension + " using GoobiScript.", username);
