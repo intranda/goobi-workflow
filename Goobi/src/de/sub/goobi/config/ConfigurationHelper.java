@@ -211,7 +211,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getMetadataFolder() {
-    	return getGoobiFolder() + "metadata/";
+    	return getLocalString("dataFolder", getGoobiFolder() + "metadata/");
     }
 
     public String getRulesetFolder() {
