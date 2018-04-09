@@ -45,6 +45,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             return false;
         }
 
+        batch = mi.getBatch();
+        
         //		batchId = 1;
         //        try {
         //            batchId += ProcessManager.getMaxBatchNumber();
