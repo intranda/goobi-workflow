@@ -291,7 +291,7 @@ public class MassImportForm {
                         myIdentifiers = myIdentifiers.substring(0, myIdentifiers.lastIndexOf(","));
                     }
 
-                    if (myIdentifiers.contains(";")) {
+                    if (myIdentifiers.contains(",")) {
                         batch = new Batch();
                         ProcessManager.saveBatch(batch);
                     } else {
@@ -744,8 +744,9 @@ public class MassImportForm {
         } else {
             progress = (currentProcessNo * 100 / totalProcessNo);
 
-            if (progress > 100)
+            if (progress > 100) {
                 progress = 100;
+            }
         }
         return progress;
     }
