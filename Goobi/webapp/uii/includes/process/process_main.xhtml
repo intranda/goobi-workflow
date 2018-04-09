@@ -312,7 +312,9 @@
 														</h4>
 													</div>
 													<div class="modal-body">
-														<p>#{msgs.sollDerContentWirklichGeloeschtWerden}</p>
+														<p>
+															<h:outputText value="#{msgs.process_edit_delete_content_confirmation}"/>
+														</p>
 													</div>
 													<div class="modal-footer">
 														<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
@@ -333,7 +335,10 @@
 														</h4>
 													</div>
 													<div class="modal-body">
-														<p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+														<p>
+															<h:outputText rendered="#{!ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" value="#{msgs.process_edit_delete_confirmation}"/>
+															<h:outputText rendered="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" value="#{msgs.process_edit_delete_confirmation_although_inSelectlist}"/>
+														</p>
 													</div>
 													<div class="modal-footer">
 														<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
