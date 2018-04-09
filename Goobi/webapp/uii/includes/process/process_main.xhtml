@@ -293,17 +293,66 @@
                                         <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                     </h:commandLink>
 
-                                    <h:commandLink id="deleteContent" styleClass="btn btn-danger font-size-s margin-right-5" action="#{ProzessverwaltungForm.ContentLoeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-                                        <i class="fa fa-trash-o margin-right-5" />
-                                        <h:outputText value="#{msgs.contentLoeschen}" />
-                                    </h:commandLink>
-                                    <h:commandLink id="deleteAll" styleClass="btn btn-danger font-size-s" action="#{ProzessverwaltungForm.Loeschen}" onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-                                        <i class="fa fa-trash-o margin-right-5" />
-                                        <h:outputText value="#{msgs.loeschen}" />
-                                    </h:commandLink>
-
+	                                <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+									
+										<a href="#" class="btn btn-danger font-size-s margin-right-5" data-toggle="modal" data-target="#deleteContentModal"> <i
+											class="fa fa-trash-o margin-right-5" /> <h:outputText value="#{msgs.contentLoeschen}" />
+										</a>
+										
+										<a href="#" class="btn btn-danger font-size-s" data-toggle="modal" data-target="#deleteModal"> <i
+											class="fa fa-trash-o margin-right-5" /> <h:outputText value="#{msgs.loeschen}" />
+										</a>
+						
+										<div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+											<div class="modal-dialog" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h4 class="modal-title" id="myModalLabel">
+															<h:outputText value="#{msgs.contentLoeschen}" />
+														</h4>
+													</div>
+													<div class="modal-body">
+														<p>#{msgs.sollDerContentWirklichGeloeschtWerden}</p>
+													</div>
+													<div class="modal-footer">
+														<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
+														<h:commandLink styleClass="btn btn-danger" action="#{ProzessverwaltungForm.ContentLoeschen}">
+															<i class="fa fa-trash-o margin-right-5" />
+															<h:outputText value="#{msgs.loeschen}" />
+														</h:commandLink>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+											<div class="modal-dialog" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h4 class="modal-title" id="myModalLabel">
+															<h:outputText value="#{msgs.loeschen}" />
+														</h4>
+													</div>
+													<div class="modal-body">
+														<p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+													</div>
+													<div class="modal-footer">
+														<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
+														<h:commandLink styleClass="btn btn-danger" action="#{ProzessverwaltungForm.Loeschen}">
+															<i class="fa fa-trash-o margin-right-5" />
+															<h:outputText value="#{msgs.loeschen}" />
+														</h:commandLink>
+													</div>
+												</div>
+											</div>
+										</div>
+									</h:panelGroup>
+                                
+                                
                                 </div>
                             </h:panelGroup>
+
+							
+
 
                         </div>
                     </div>
