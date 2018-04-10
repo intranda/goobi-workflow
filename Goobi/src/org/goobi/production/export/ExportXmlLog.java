@@ -45,6 +45,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.IProcessDataExport;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
 import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -208,18 +210,19 @@ public class ExportXmlLog implements IProcessDataExport {
         }
 
         List<Element> processProperties = new ArrayList<Element>();
-        for (Processproperty prop : process.getEigenschaftenList()) {
+        List<ProcessProperty> propertyList =  PropertyParser.getPropertiesForProcess(process);
+        for (ProcessProperty prop : propertyList) {
             Element property = new Element("property", xmlns);
-            property.setAttribute("propertyIdentifier", prop.getTitel());
-            if (prop.getWert() != null) {
-                property.setAttribute("value", replacer(prop.getWert()));
+            property.setAttribute("propertyIdentifier", prop.getName());
+            if (prop.getValue() != null) {
+                property.setAttribute("value", replacer(prop.getValue()));
             } else {
                 property.setAttribute("value", "");
             }
 
             Element label = new Element("label", xmlns);
 
-            label.setText(prop.getTitel());
+            label.setText(prop.getName());
             property.addContent(label);
             processProperties.add(property);
         }
