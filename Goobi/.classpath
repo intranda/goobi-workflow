@@ -178,5 +178,7 @@
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-csv-1.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/alto.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>

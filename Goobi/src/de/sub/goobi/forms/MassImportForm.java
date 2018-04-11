@@ -151,6 +151,9 @@ public class MassImportForm {
     @Setter
     private List<String> selectedFilenames = new ArrayList<String>();
 
+    @Getter
+    private Batch batch;
+
     public MassImportForm() {
 
         // usablePlugins = ipl.getTitles();
@@ -254,7 +257,6 @@ public class MassImportForm {
         }
 
         if (testForData()) {
-
             // if the mass import plugin can be run as GoobiScript do it
             if (this.plugin instanceof IImportPluginVersion2) {
                 IImportPluginVersion2 plugin2 = (IImportPluginVersion2) this.plugin;
@@ -289,13 +291,20 @@ public class MassImportForm {
                         myIdentifiers = myIdentifiers.substring(0, myIdentifiers.lastIndexOf(","));
                     }
 
+                    if (myIdentifiers.contains(",")) {
+                        batch = new Batch();
+                        ProcessManager.saveBatch(batch);
+                    } else {
+                        batch = null;
+                    }
+
                     HashMap<String, String> myParameters = new HashMap<String, String>();
                     myParameters.put("template", String.valueOf(this.template.getId()));
                     myParameters.put("identifiers", myIdentifiers);
                     myParameters.put("action", "import");
                     myParameters.put("plugin", plugin2.getTitle());
                     myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
-                    
+
                     boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(), "action:import plugin:" + plugin2.getTitle() + " template:"
                             + this.template.getId() + " identifiers:" + myIdentifiers, myParameters);
                     if (scriptCallIsValid) {
@@ -735,8 +744,9 @@ public class MassImportForm {
         } else {
             progress = (currentProcessNo * 100 / totalProcessNo);
 
-            if (progress > 100)
+            if (progress > 100) {
                 progress = 100;
+            }
         }
         return progress;
     }
@@ -777,5 +787,5 @@ public class MassImportForm {
 
         return process;
     }
-    
+
 }

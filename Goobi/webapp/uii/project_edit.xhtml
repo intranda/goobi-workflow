@@ -59,9 +59,9 @@
                         </div>
                         <div class="box-content nopadding">
                             <div class="tab-content">
-                                <div id="t7" class="#{ProjekteForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
-
-                                    <!-- title -->
+                            	<h:panelGroup rendered="#{ProjekteForm.displayMode eq ''}">
+                            	
+                                   <!-- title -->
                                     <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.myProjekt.titel}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
                                     <!-- number of pages -->
@@ -79,9 +79,9 @@
                                     <!-- archived -->
                                     <intranda:formInputCheckBox id="inactive" label="#{msgs.projectIsArchived}" style="border-bottom: 1px solid #DDDDDD;" field="#{ProjekteForm.myProjekt.projectIsArchived}" help="#{msgs.helpProjectIsArchived}" name="check" />
 
-                                </div>
-                                <div id="t8" class="#{ProjekteForm.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
-
+								</h:panelGroup>
+								<h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab2'}">
+                               
                                     <!-- internes Speicherformat -->
                                     <intranda:formInputDropDown id="fileFormatInternal" label="#{msgs.internesSpeicherformat}" field="#{ProjekteForm.myProjekt.fileFormatInternal}" help="#{msgs.helpInternesSpeicherformat}" name="internesSpeicherformat" selectItems="#{HelperForm.fileFormatsInternalOnly}" fieldStyle="form-control" />
 
@@ -108,9 +108,9 @@
 
                                     <!-- Timeout -->
                                     <intranda:formInputText id="timeout" name="timeout" label="#{msgs.timeout} (ms)" field="#{ProjekteForm.myProjekt.dmsImportTimeOut}" help="#{msgs.helpTimeoutProject}" fieldStyle="form-control" style="border-bottom: 1px solid #DDDDDD;" />
-                                    
-                                </div>
-                                <div id="t9" class="#{ProjekteForm.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
+                                
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab3'}">
 
                                     <!-- metsRightsOwner -->
                                     <intranda:formInputText id="metsRightsOwner" name="metsRightsOwner" label="#{msgs.metsRightsOwner}" field="#{ProjekteForm.myProjekt.metsRightsOwner}" help="#{msgs.helpMetsRightsOwner}" fieldStyle="form-control" required="false" />
@@ -182,13 +182,9 @@
                                     </div>
 
 
-
-
-
-                                </div>
-
-                                <div id="t9" class="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'?'tab-pane active':'tab-pane'}">
-
+								</h:panelGroup>
+								<h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'}">
+                                
                                     <!-- ===================== file groups ====================== -->
 
                                     <div class="form-group" style="border-bottom: 1px solid #DDDDDD;">
@@ -293,7 +289,7 @@
 
                                         </div>
                                     </div>
-                                </div>
+                               </h:panelGroup>
                             </div>
 
                             <h:panelGroup rendered="#{ProjekteForm.displayMode ne 'filegroups'}">

@@ -1245,8 +1245,7 @@ public class Metadaten {
         /*
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
-        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper
-                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
+        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), false, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -1258,16 +1257,14 @@ public class Metadaten {
         /*
          * -------------------------------- alle Personen und die DefaultDisplay-Werte ermitteln --------------------------------
          */
-        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
+        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), true, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
             }
         }
 
-        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
+        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
         if (groups != null) {
             for (MetadataGroup mg : groups) {
                 metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
@@ -1323,8 +1320,7 @@ public class Metadaten {
         /*
          * -------------------------------- Die Struktur als Tree3 aufbereiten --------------------------------
          */
-        String label = inLogicalTopStruct.getType().getNameByLanguage((String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = inLogicalTopStruct.getType().getNameByLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inLogicalTopStruct.getType().getName();
         }
@@ -1381,7 +1377,7 @@ public class Metadaten {
         if (meineListe != null) {
             /* es gibt Kinder-Strukturelemente */
             for (DocStruct kind : meineListe) {
-                String label = kind.getType().getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+                String label = kind.getType().getNameByLanguage(Helper.getMetadataLanguage());
                 if (label == null) {
                     label = kind.getType().getName();
                 }
@@ -4115,8 +4111,7 @@ public class Metadaten {
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), false, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4135,8 +4130,7 @@ public class Metadaten {
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), true, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);

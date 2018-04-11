@@ -37,15 +37,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
+import org.goobi.beans.Ruleset;
+import org.reflections.Reflections;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HelperComparator;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -63,14 +70,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
-
-import org.goobi.beans.Process;
-import org.goobi.beans.Ruleset;
-import org.reflections.Reflections;
-
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperComparator;
 
 public class MetadatenHelper implements Comparator<Object> {
     private static final Logger logger = Logger.getLogger(MetadatenHelper.class);
@@ -331,7 +330,7 @@ public class MetadatenHelper implements Comparator<Object> {
         Iterator<DocStructType> it = newTypes.iterator();
         while (it.hasNext()) {
             DocStructType dst = it.next();
-            String label = dst.getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+            String label = dst.getNameByLanguage(Helper.getMetadataLanguage());
             if (label == null) {
                 label = dst.getName();
             }
@@ -561,13 +560,13 @@ public class MetadatenHelper implements Comparator<Object> {
 
         return "-";
     }
-
+    
     /**
      * @param inMdt
      * @return localized Title of metadata type ================================================================
      */
     public String getMetadatatypeLanguage(MetadataType inMdt) {
-        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inMdt.getName();
         }
@@ -575,7 +574,7 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     public String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
-        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inMdt.getName();
         }
@@ -754,7 +753,41 @@ public class MetadatenHelper implements Comparator<Object> {
         Map<String, List<String>> metadataList = new HashMap<>();
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
-
+            metadataList.put("DocStruct", Collections.singletonList(ds.getType().getName()));
+            if (ds.getAllMetadataGroups() != null) {
+                for (MetadataGroup mg : ds.getAllMetadataGroups()) {
+                    if (mg.getPersonList() != null) {
+                        for (Person p : mg.getPersonList()) {
+                            if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
+                                if (metadataList.containsKey(p.getType().getName())) {
+                                    List<String> oldValue = metadataList.get(p.getType().getName());
+                                    oldValue.add(p.getFirstname() + " " + p.getLastname());
+                                    metadataList.put(p.getType().getName(), oldValue);
+                                } else {
+                                    List<String> list = new ArrayList<>();
+                                    list.add(p.getFirstname() + " " + p.getLastname());
+                                    metadataList.put(p.getType().getName(), list);
+                                }
+                            }
+                        }
+                    }
+                    if (mg.getMetadataList() != null) {
+                        for (Metadata md : mg.getMetadataList()) {
+                            if (StringUtils.isNotBlank(md.getValue())) {
+                                if (metadataList.containsKey(md.getType().getName())) {
+                                    List<String> oldValue = metadataList.get(md.getType().getName());
+                                    oldValue.add(md.getValue());
+                                    metadataList.put(md.getType().getName(), oldValue);
+                                } else {
+                                    List<String> list = new ArrayList<>();
+                                    list.add(md.getValue());
+                                    metadataList.put(md.getType().getName(), list);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
                     if (StringUtils.isNotBlank(md.getValue())) {
