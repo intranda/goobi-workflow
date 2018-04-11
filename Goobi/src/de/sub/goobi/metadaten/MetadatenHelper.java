@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -329,7 +330,7 @@ public class MetadatenHelper implements Comparator<Object> {
         Iterator<DocStructType> it = newTypes.iterator();
         while (it.hasNext()) {
             DocStructType dst = it.next();
-            String label = dst.getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+            String label = dst.getNameByLanguage(Helper.getMetadataLanguage());
             if (label == null) {
                 label = dst.getName();
             }
@@ -559,13 +560,13 @@ public class MetadatenHelper implements Comparator<Object> {
 
         return "-";
     }
-
+    
     /**
      * @param inMdt
      * @return localized Title of metadata type ================================================================
      */
     public String getMetadatatypeLanguage(MetadataType inMdt) {
-        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inMdt.getName();
         }
@@ -573,7 +574,7 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     public String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
-        String label = inMdt.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inMdt.getName();
         }

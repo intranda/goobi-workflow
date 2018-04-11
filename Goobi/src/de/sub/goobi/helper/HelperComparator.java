@@ -71,8 +71,8 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     private int compareMetadatenTypen(Object o1, Object o2) {
         MetadataType s1 = (MetadataType) o1;
         MetadataType s2 = (MetadataType) o2;
-        String name1 = s1.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
-        String name2 = s2.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String name1 = s1.getLanguage(Helper.getMetadataLanguage());
+        String name2 = s2.getLanguage(Helper.getMetadataLanguage());
         if (name1 == null) {
             name1 = "";
         }
@@ -85,8 +85,8 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     private int compareMetadata(Object o1, Object o2) {
         Metadata s1 = (Metadata) o1;
         Metadata s2 = (Metadata) o2;
-        String name1 = s1.getType().getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
-        String name2 = s2.getType().getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String name1 = s1.getType().getNameByLanguage(Helper.getMetadataLanguage());
+        String name2 = s2.getType().getNameByLanguage(Helper.getMetadataLanguage());
         if (name1 == null) {
             name1 = s1.getType().getName();
         }
@@ -99,8 +99,8 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     private int compareDocStructTypen(Object o1, Object o2) {
         DocStructType s1 = (DocStructType) o1;
         DocStructType s2 = (DocStructType) o2;
-        String name1 = s1.getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
-        String name2 = s2.getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String name1 = s1.getNameByLanguage(Helper.getMetadataLanguage());
+        String name2 = s2.getNameByLanguage(Helper.getMetadataLanguage());
         if (name1 == null) {
             name1 = "";
         }
@@ -113,8 +113,8 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     private int compareMetadataGroupTypes(Object o1, Object o2) {
         MetadataGroupType s1 = (MetadataGroupType) o1;
         MetadataGroupType s2 = (MetadataGroupType) o2;
-        String name1 = s1.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
-        String name2 = s2.getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String name1 = s1.getLanguage(Helper.getMetadataLanguage());
+        String name2 = s2.getLanguage(Helper.getMetadataLanguage());
         if (name1 == null) {
             name1 = "";
         }
