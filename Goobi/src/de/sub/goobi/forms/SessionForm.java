@@ -29,11 +29,13 @@ package de.sub.goobi.forms;
  */
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -48,6 +50,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
@@ -55,16 +58,20 @@ import lombok.Getter;
  * @author Steffen Hankiewicz
  * @version 1.00 - 16.01.2005
  */
+@Log4j
 @ManagedBean(name = "SessionForm")
 @ApplicationScoped
 public class SessionForm {
 
     @SuppressWarnings("rawtypes")
-    private List<Map> alleSessions = new ArrayList<>();
+    private List<Map> alleSessions = Collections.synchronizedList(new ArrayList<Map>());
     private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
+    private SimpleDateFormat fullFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private String aktuelleZeit = this.formatter.format(new Date());
     private String bitteAusloggen = "";
+    @Getter
+    private String sessionListErrorTime = "";
     @Getter
     private GoobiScriptManager gsm = new GoobiScriptManager();
 
@@ -207,15 +214,22 @@ public class SessionForm {
     public boolean BenutzerInAndererSessionAktiv(HttpSession insession, User inBenutzer) {
         boolean rueckgabe = false;
         if (alleSessions != null && insession != null) {
-            for (Map map : alleSessions) {
-                if (map != null) {
-                    boolean sessiongleich = map.get("id").equals(insession.getId());
-                    boolean nutzergleich = inBenutzer.getId().intValue() == ((Integer) map.get("userid")).intValue();
-                    if (!sessiongleich && nutzergleich) {
-                        rueckgabe = true;
-                        break;
+            try {
+                for (Map map : alleSessions) {
+                    if (map != null) {
+                        boolean sessiongleich = map.get("id").equals(insession.getId());
+                        boolean nutzergleich = inBenutzer.getId().intValue() == ((Integer) map.get("userid")).intValue();
+                        if (!sessiongleich && nutzergleich) {
+                            rueckgabe = true;
+                            break;
+                        }
                     }
                 }
+            } catch (NoSuchElementException e) {
+                log.fatal("alleSessions ArrayList corrupted", e);
+                this.sessionListErrorTime = fullFormatter.format(new Date());
+                this.alleSessions = Collections.synchronizedList(new ArrayList<Map>());
+                return false;
             }
         }
         return rueckgabe;
