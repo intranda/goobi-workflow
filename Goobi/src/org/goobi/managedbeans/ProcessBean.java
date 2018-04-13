@@ -349,14 +349,7 @@ public class ProcessBean extends BasicBean {
                     /* Vorgangstitel */
                     this.myProzess.setTitel(this.myNewProcessTitle);
 
-                    if (!this.myProzess.isIstTemplate()) {
-                        /* Tiffwriter-Datei löschen */
-                        GoobiScript gs = new GoobiScript();
-                        List<Integer> pro = new ArrayList<>();
-                        pro.add(this.myProzess.getId());
-                        gs.deleteTiffHeaderFile(pro);
-                        gs.updateImagePath(pro);
-                    }
+                  
                 }
 
             }
@@ -365,6 +358,14 @@ public class ProcessBean extends BasicBean {
                 ProcessManager.saveProcess(this.myProzess);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
+            }
+            if (!this.myProzess.isIstTemplate()) {
+                /* Tiffwriter-Datei löschen */
+                GoobiScript gs = new GoobiScript();
+                List<Integer> pro = new ArrayList<>();
+                pro.add(this.myProzess.getId());
+                gs.deleteTiffHeaderFile(pro);
+                gs.updateImagePath(pro);
             }
         } else {
             Helper.setFehlerMeldung("titleEmpty");
