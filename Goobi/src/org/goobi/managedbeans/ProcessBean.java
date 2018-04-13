@@ -407,7 +407,7 @@ public class ProcessBean extends BasicBean {
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
-        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Deleted content for this process in process details.");
+        Helper.addMessageToProcessLog(mySchritt.getProzess().getId(), LogType.DEBUG, "Deleted content for this process in process details.");
 
         Helper.setMeldung("Content deleted");
         return "";
