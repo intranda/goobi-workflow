@@ -28,6 +28,7 @@ xmlns:p="http://primefaces.org/ui">
                         <h:selectManyCheckbox layout="pageDirection" id="myCheckboxes" styleClass="font-normal margin-right-5"
                             value="#{Metadaten.alleSeitenAuswahl}">
                             <f:selectItems value="#{Metadaten.alleSeiten}" id="myCheckbox" />
+                            <f:ajax execute="@this"/>
                         </h:selectManyCheckbox>
 
                     </div>
