@@ -354,8 +354,7 @@ public class ProcessBean extends BasicBean {
                     } catch (Exception e) {
                         logger.trace("could not rename folder", e);
                     }
-                    
-                    
+
                     if (!this.myProzess.isIstTemplate()) {
                         /* Tiffwriter-Datei löschen */
                         GoobiScript gs = new GoobiScript();
@@ -363,7 +362,6 @@ public class ProcessBean extends BasicBean {
                         pro.add(this.myProzess.getId());
                         gs.deleteTiffHeaderFile(pro);
 
-            
                         // update paths in metadata file
                         try {
                             Fileformat fileFormat = myProzess.readMetadataFile();
@@ -399,26 +397,24 @@ public class ProcessBean extends BasicBean {
                             myProzess.writeMetadataFile(fileFormat);
 
                         } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
-                            logger.info("Could not rename paths in metadata file",  e);
+                            logger.info("Could not rename paths in metadata file", e);
                         }
 
-                    /* Vorgangstitel */
-                    this.myProzess.setTitel(this.myNewProcessTitle);
+                        /* Vorgangstitel */
+                        this.myProzess.setTitel(this.myNewProcessTitle);
+
+                    }
 
                 }
 
             }
-
-            try {
-                ProcessManager.saveProcess(this.myProzess);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-            }
-            
-
-            }
         } else {
             Helper.setFehlerMeldung("titleEmpty");
+        }
+        try {
+            ProcessManager.saveProcess(this.myProzess);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
         }
         if (paginator != null) {
             paginator.load();
