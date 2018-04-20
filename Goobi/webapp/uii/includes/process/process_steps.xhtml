@@ -289,6 +289,10 @@
                                     	<x:updateActionListener property="#{ProzessverwaltungForm.mySchrittReload}" value="#{item}" />
                                     </h:commandLink>
                                     
+                                    <h:commandLink id="executeScript" rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}" action="#{HelperForm.executeScriptsForStep(item.id)}">
+                                        <span class="btn fa fa-cog margin-right-5" />
+                                    </h:commandLink>
+                                    
                                 </h:column>
 
                             </x:dataTable>
