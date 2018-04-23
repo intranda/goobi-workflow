@@ -40,4 +40,8 @@ public interface StorageProviderInterface {
     public boolean deleteInDir(Path dir);
 
     public boolean deleteDataInDir(Path dir);
+    
+    public boolean isFileExists(Path path);
+    
+    public boolean isDirectory(Path path);
 }

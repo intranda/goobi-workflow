@@ -1,5 +1,8 @@
 package de.sub.goobi.helper;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class StorageProvider {
     private static StorageProviderInterface instance;
 
