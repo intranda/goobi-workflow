@@ -538,4 +538,14 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
         return true;
     }
+    
+    @Override
+    public boolean isFileExists(Path path) {
+        return Files.exists(path);
+    }
+    
+    @Override
+    public boolean isDirectory(Path path) {
+        return Files.isDirectory(path);
+    }
 }
