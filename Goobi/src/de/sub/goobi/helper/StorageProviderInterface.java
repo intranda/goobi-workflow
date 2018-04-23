@@ -40,8 +40,30 @@ public interface StorageProviderInterface {
     public boolean deleteInDir(Path dir);
 
     public boolean deleteDataInDir(Path dir);
-    
+
     public boolean isFileExists(Path path);
-    
+
     public boolean isDirectory(Path path);
+
+    public void createDirectories(Path path) throws IOException;
+
+    public long getLastModifiedDate(Path path)throws IOException;
+
+    public long getCreationDate(Path path) throws IOException;
+
+    public Path createTemporaryFile(String prefix, String suffix) throws IOException;
+
+    public void deleteFile(Path path) throws IOException;
+    
+    public void move(Path oldPath, Path newPath) throws IOException;
+    
+    public boolean isWritable(Path path);
+    
+    public boolean isReadable(Path path);
+
+    public long getFileSize(Path path) throws IOException;
+    
+    public long getDirectorySize(Path path) throws IOException;
+    
+    public void createFile(Path path) throws IOException;
 }

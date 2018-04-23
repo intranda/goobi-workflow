@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -101,7 +100,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * --------------------------------*/
             URL goobiContentServerUrl = null;
             String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
-            Path tempPdf = Files.createTempFile(this.getProzess().getTitel(), ".pdf");
+            Path tempPdf = StorageProvider.getInstance().createTemporaryFile(this.getProzess().getTitel(), ".pdf");
             Path finalPdf = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".pdf");
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
 
@@ -218,10 +217,10 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             if (logger.isDebugEnabled()) {
                 logger.debug("pdf copied to " + finalPdf.toString() + "; now start cleaning up");
             }
-            Files.delete(tempPdf);
+            StorageProvider.getInstance().deleteDir(tempPdf);
             if (this.metsURL != null) {
                 Path tempMets = Paths.get(this.metsURL.toString());
-                Files.delete(tempMets);
+                StorageProvider.getInstance().deleteDir(tempMets);
             }
         } catch (Exception e) {
             logger.error("Error while creating pdf for " + this.getProzess().getTitel(), e);

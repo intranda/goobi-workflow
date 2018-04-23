@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -2176,7 +2175,7 @@ public class Metadaten {
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
                                 .getSeparator() + this.myBild;
-                        if (!Files.exists(Paths.get(tiffconverterpfad))) {
+                        if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
@@ -2199,8 +2198,8 @@ public class Metadaten {
         boolean exists = false;
         try {
             if (this.currentTifFolder != null && this.myBild != null) {
-                exists = Files.exists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator()
-                        + this.myBild));
+                exists = StorageProvider.getInstance().isFileExists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder
+                        + FileSystems.getDefault().getSeparator() + this.myBild));
             }
         } catch (Exception e) {
             this.myBildNummer = -1;
@@ -3659,7 +3658,7 @@ public class Metadaten {
                     Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
                     Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
                     try {
-                        Files.move(filename, newFileName);
+                        StorageProvider.getInstance().move(filename, newFileName);
                     } catch (IOException e) {
                         logger.error(e);
                     }
@@ -3668,7 +3667,7 @@ public class Metadaten {
 
             try {
                 Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (Files.exists(ocr)) {
+                if (StorageProvider.getInstance().isFileExists(ocr)) {
                     List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
@@ -3678,7 +3677,7 @@ public class Metadaten {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
                             Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
-                            Files.move(filename, newFileName);
+                            StorageProvider.getInstance().move(filename, newFileName);
                         }
                     }
                 }
@@ -3707,7 +3706,7 @@ public class Metadaten {
                     Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
                     Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
                     try {
-                        Files.move(tempFileName, sortedName);
+                        StorageProvider.getInstance().move(tempFileName, sortedName);
                     } catch (IOException e) {
                         logger.error(e);
                     }
@@ -3717,7 +3716,7 @@ public class Metadaten {
             try {
 
                 Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (Files.exists(ocr)) {
+                if (StorageProvider.getInstance().isFileExists(ocr)) {
                     List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
@@ -3726,7 +3725,7 @@ public class Metadaten {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
                             Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
-                            Files.move(tempFileName, sortedName);
+                            StorageProvider.getInstance().move(tempFileName, sortedName);
                         }
                     }
                 }
@@ -3762,22 +3761,22 @@ public class Metadaten {
                     String filename = currentFile.getFileName().toString();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");
                     if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        Files.delete(currentFile);
+                        StorageProvider.getInstance().deleteDir(currentFile);
                     }
                 }
             }
 
             Path ocr = Paths.get(myProzess.getOcrDirectory());
-            if (Files.exists(ocr)) {
+            if (StorageProvider.getInstance().isFileExists(ocr)) {
                 List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
                 for (Path dir : folder) {
-                    if (Files.isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
+                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
                         List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
                         for (Path currentFile : filesInFolder) {
                             String filename = currentFile.getFileName().toString();
                             String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
                             if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                Files.delete(currentFile);
+                                StorageProvider.getInstance().deleteDir(currentFile);
                             }
                         }
                     }

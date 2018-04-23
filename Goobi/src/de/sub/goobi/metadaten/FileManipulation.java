@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -130,7 +129,7 @@ public class FileManipulation {
 
             logger.trace("filename to import: " + filename);
 
-            if (Files.exists(Paths.get(filename))) {
+            if (StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
                 Helper.setFehlerMeldung(Helper.getTranslation("fileExists", basename));
                 return;
             }
@@ -333,7 +332,7 @@ public class FileManipulation {
             logger.error(e1);
         }
 
-        if (downloadFile == null || !Files.exists(downloadFile)) {
+        if (downloadFile == null || !StorageProvider.getInstance().isFileExists(downloadFile)) {
             String[] parameter = { filenamePrefix, currentFolder };
             Helper.setFehlerMeldung(Helper.getTranslation("MetsEditorMissingFile", parameter));
             return;
@@ -405,17 +404,17 @@ public class FileManipulation {
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
         Path fileuploadFolder = Paths.get(tempDirectory + "fileupload");
-        if (!Files.exists(fileuploadFolder)) {
+        if (!StorageProvider.getInstance().isFileExists(fileuploadFolder)) {
             try {
-                Files.createDirectory(fileuploadFolder);
+                StorageProvider.getInstance().createDirectories(fileuploadFolder);
             } catch (IOException e) {
                 logger.error(e);
             }
         }
         Path destination = Paths.get(fileuploadFolder.toString() + FileSystems.getDefault().getSeparator() + metadataBean.getMyProzess().getTitel());
-        if (!Files.exists(destination)) {
+        if (!StorageProvider.getInstance().isFileExists(destination)) {
             try {
-                Files.createDirectory(destination);
+                StorageProvider.getInstance().createDirectories(destination);
             } catch (IOException e) {
                 logger.error(e);
             }
@@ -433,12 +432,12 @@ public class FileManipulation {
                         String filenamePrefix = filenameInFolder.replace(Metadaten.getFileExtension(filenameInFolder), "");
                         if (filenamePrefix.equals(prefix)) {
                             Path tempFolder = Paths.get(destination.toString() + FileSystems.getDefault().getSeparator() + folder);
-                            if (!Files.exists(tempFolder)) {
-                                Files.createDirectory(tempFolder);
+                            if (!StorageProvider.getInstance().isFileExists(tempFolder)) {
+                                StorageProvider.getInstance().createDirectories(tempFolder);
                             }
 
                             Path destinationFile = Paths.get(tempFolder.toString(), processTitle + "_" + currentFile.getFileName().toString());
-                            Files.copy(currentFile, destinationFile);
+                            StorageProvider.getInstance().copyFile(currentFile, destinationFile);
                             break;
 
                         }
@@ -504,7 +503,7 @@ public class FileManipulation {
 
         allImportFolder = new ArrayList<String>();
 
-        if (Files.isDirectory(fileuploadFolder)) {
+        if (StorageProvider.getInstance().isDirectory(fileuploadFolder)) {
             allImportFolder.addAll(StorageProvider.getInstance().list(fileuploadFolder.toString(), NIOFileUtils.folderFilter));
         }
         return allImportFolder;
@@ -541,13 +540,13 @@ public class FileManipulation {
                         try {
                             String masterFolderName = currentProcess.getImagesOrigDirectory(false);
                             Path masterDirectory = Paths.get(masterFolderName);
-                            if (!Files.exists(masterDirectory)) {
-                                Files.createDirectories(masterDirectory);
+                            if (!StorageProvider.getInstance().isFileExists(masterDirectory)) {
+                                StorageProvider.getInstance().createDirectories(masterDirectory);
                             }
                             List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
                             for (Path object : objectInFolder) {
                                 Path dest = Paths.get(masterDirectory.toString(), object.getFileName().toString());
-                                Files.copy(object, dest, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                                StorageProvider.getInstance().copyFile(object, dest);
                             }
                         } catch (SwapException | DAOException | IOException | InterruptedException e) {
                             logger.error(e);
@@ -567,7 +566,7 @@ public class FileManipulation {
                                             importedFilenames.add(object.getFileName().toString());
                                         }
                                         Path dest = Paths.get(directory.toString(), object.getFileName().toString());
-                                        Files.copy(object, dest, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                                        StorageProvider.getInstance().copyFile(object, dest);
                                     }
 
                                 } catch (IOException | SwapException | DAOException | InterruptedException e) {
@@ -591,7 +590,7 @@ public class FileManipulation {
                                         importedFilenames.add(object.getFileName().toString());
                                     }
                                     Path dest = Paths.get(directory.toString(), object.getFileName().toString());
-                                    Files.copy(object, dest, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                                    StorageProvider.getInstance().copyFile(object, dest);
                                 } catch (IOException | SwapException | DAOException | InterruptedException e) {
                                     logger.error(e);
                                 }

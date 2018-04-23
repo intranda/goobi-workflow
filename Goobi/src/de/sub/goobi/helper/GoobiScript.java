@@ -1,6 +1,5 @@
 package de.sub.goobi.helper;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -251,7 +250,7 @@ public class GoobiScript {
         }
 
         Path sourceFolder = Paths.get(this.myParameters.get("sourcefolder"));
-        if (!Files.exists(sourceFolder) || !Files.isDirectory(sourceFolder)) {
+        if (!StorageProvider.getInstance().isFileExists(sourceFolder) || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
             Helper.setFehlerMeldung("goobiScriptfield", "", "Directory " + this.myParameters.get("sourcefolder") + " does not exisist");
             return;
         }
@@ -264,7 +263,7 @@ public class GoobiScript {
                             + "] has allready data in image folder");
                 } else {
                     Path sourceFolderProzess = Paths.get(sourceFolder.toString(), p.getTitel());
-                    if (!Files.exists(sourceFolderProzess) || !Files.isDirectory(sourceFolder)) {
+                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess) || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
                         Helper.setFehlerMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is not existing");
                     } else {
@@ -294,8 +293,8 @@ public class GoobiScript {
             Process proz = ProcessManager.getProcessById(processId);
             try {
                 Path tiffheaderfile = Paths.get(proz.getImagesDirectory() + "tiffwriter.conf");
-                if (Files.exists(tiffheaderfile)) {
-                    Files.delete(tiffheaderfile);
+                if (StorageProvider.getInstance().isFileExists(tiffheaderfile)) {
+                    StorageProvider.getInstance().deleteDir(tiffheaderfile);
                 }
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
                 logger.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());

@@ -28,7 +28,6 @@ package org.goobi.production.flow.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -69,28 +68,23 @@ public class JobCreation {
             logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
             // removing all data
             Path imagesFolder = Paths.get(basepath);
-            if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
+            if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
                 deleteDirectory(imagesFolder);
             } else {
                 imagesFolder = Paths.get(basepath + "_" + ConfigurationHelper.getInstance().getMediaDirectorySuffix());
-                if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
+                if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
                     deleteDirectory(imagesFolder);
                 }
             }
             try {
-                Files.delete(metsfile);
+                StorageProvider.getInstance().deleteDir(metsfile);
             } catch (Exception e) {
                 logger.error("Can not delete file " + processTitle, e);
                 return null;
             }
             Path anchor = Paths.get(basepath + "_anchor.xml");
-            if (Files.exists(anchor)) {
-                try {
-                    Files.delete(anchor);
-                } catch (IOException e) {
-                    logger.error("Can not delete file " + processTitle, e);
-                    return null;
-                }
+            if (StorageProvider.getInstance().isFileExists(anchor)) {
+                StorageProvider.getInstance().deleteDir(anchor);
             }
             return null;
         }
@@ -115,7 +109,7 @@ public class JobCreation {
                             myThread.start();
                         }
                     }
-                    Files.delete(Paths.get(io.getMetsFilename()));
+                    StorageProvider.getInstance().deleteDir(Paths.get(io.getMetsFilename()));
                 }
             } catch (ReadException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
@@ -163,12 +157,12 @@ public class JobCreation {
 
         // new folder structure for process imports
         Path importFolder = Paths.get(basepath);
-        if (Files.exists(importFolder) && Files.isDirectory(importFolder)) {
+        if (StorageProvider.getInstance().isFileExists(importFolder) && StorageProvider.getInstance().isDirectory(importFolder)) {
             List<Path> folderList = StorageProvider.getInstance().listFiles(basepath);
             for (Path directory : folderList) {
                 Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
-                if (Files.isDirectory(directory)) {
-                    //                    if (!Files.exists(destination)) {
+                if (StorageProvider.getInstance().isDirectory(directory)) {
+                    //                    if (!StorageProvider.getInstance().isFileExists(destination)) {
                     //                        Files.move(directory, destination);
                     //                    } else {
                     FileUtils.copyDirectory(directory.toFile(), destination.toFile());
@@ -177,10 +171,10 @@ public class JobCreation {
                     //                    }
 
                 } else {
-                    Files.move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
+                    StorageProvider.getInstance().move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
                 }
             }
-            Files.deleteIfExists(importFolder);
+            StorageProvider.getInstance().deleteDir(importFolder);
         }
 
     }

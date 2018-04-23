@@ -38,14 +38,10 @@ import de.intranda.digiverso.ocr.conversion.ConvertAbbyyToAltoStaX;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -58,157 +54,142 @@ import javax.xml.stream.XMLStreamException;
  * Helper class for file system operations.
  */
 public class FilesystemHelper {
-	private static final Logger logger = Logger.getLogger(FilesystemHelper.class);
+    private static final Logger logger = Logger.getLogger(FilesystemHelper.class);
 
-	/**
-	 * Creates a directory with a name given. Under Linux a script is used to
-	 * set the file system permissions accordingly. This cannot be done from
-	 * within java code before version 1.7.
-	 * 
-	 * @param dirName
-	 *            Name of directory to create
-	 * @throws InterruptedException
-	 *             If the thread running the script is interrupted by another
-	 *             thread while it is waiting, then the wait is ended and an
-	 *             InterruptedException is thrown.
-	 * @throws IOException
-	 *             If an I/O error occurs.
-	 */
+    /**
+     * Creates a directory with a name given. Under Linux a script is used to set the file system permissions accordingly. This cannot be done from
+     * within java code before version 1.7.
+     * 
+     * @param dirName Name of directory to create
+     * @throws InterruptedException If the thread running the script is interrupted by another thread while it is waiting, then the wait is ended and
+     *             an InterruptedException is thrown.
+     * @throws IOException If an I/O error occurs.
+     */
 
-	public static void createDirectory(String dirName) throws IOException, InterruptedException {
-		if (!Files.exists(Paths.get(dirName))) {
-			if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()) {
-				File confFile = new File(dirName);
-				confFile.mkdirs();
-			} else {
-				ShellScript createDirScript = new ShellScript(
-				        Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
-				createDirScript.run(Arrays.asList(new String[] { dirName }));
-			}
-		}
-	}
+    public static void createDirectory(String dirName) throws IOException, InterruptedException {
+        if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
+            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()) {
+                File confFile = new File(dirName);
+                confFile.mkdirs();
+            } else {
+                ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
+                createDirScript.run(Arrays.asList(new String[] { dirName }));
+            }
+        }
+    }
 
-	/**
-	 * Creates a directory with a name given and assigns permissions to the
-	 * given user. Under Linux a script is used to set the file system
-	 * permissions accordingly. This cannot be done from within java code before
-	 * version 1.7.
-	 * 
-	 * @param dirName
-	 *            Name of directory to create
-	 * @throws InterruptedException
-	 *             If the thread running the script is interrupted by another
-	 *             thread while it is waiting, then the wait is ended and an
-	 *             InterruptedException is thrown.
-	 * @throws IOException
-	 *             If an I/O error occurs.
-	 */
+    /**
+     * Creates a directory with a name given and assigns permissions to the given user. Under Linux a script is used to set the file system
+     * permissions accordingly. This cannot be done from within java code before version 1.7.
+     * 
+     * @param dirName Name of directory to create
+     * @throws InterruptedException If the thread running the script is interrupted by another thread while it is waiting, then the wait is ended and
+     *             an InterruptedException is thrown.
+     * @throws IOException If an I/O error occurs.
+     */
 
-	public static void createDirectoryForUser(String dirName, String userName)
-	        throws IOException, InterruptedException {
-		if (!Files.exists(Paths.get(dirName))) {
-			if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
-				File confFile = new File(dirName);
-				confFile.mkdirs();
-			} else {
-				ShellScript createDirScript = new ShellScript(
-				        Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
-				createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
-			}
-		}
-	}
+    public static void createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
+        if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
+            if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
+                File confFile = new File(dirName);
+                confFile.mkdirs();
+            } else {
+                ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
+                createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
+            }
+        }
+    }
 
-	public static void deleteSymLink(String symLink) {
-		String command = ConfigurationHelper.getInstance().getScriptDeleteSymLink();
-		if (!command.isEmpty()) {
-			ShellScript deleteSymLinkScript;
-			try {
-				deleteSymLinkScript = new ShellScript(Paths.get(command));
-				deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
-			} catch (FileNotFoundException e) {
-				logger.error("FileNotFoundException in deleteSymLink()", e);
-				Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
-			} catch (IOException e) {
-				logger.error("IOException in deleteSymLink()", e);
-				Helper.setFehlerMeldung("Aborted deleteSymLink(), error", e.getMessage());
-			} catch (InterruptedException e) {
-				logger.error("InterruptedException in deleteSymLink()", e);
-				Helper.setFehlerMeldung("Command '" + command + "' is interrupted in deleteSymLink()!");
-			}
-		}
-	}
+    public static void deleteSymLink(String symLink) {
+        String command = ConfigurationHelper.getInstance().getScriptDeleteSymLink();
+        if (!command.isEmpty()) {
+            ShellScript deleteSymLinkScript;
+            try {
+                deleteSymLinkScript = new ShellScript(Paths.get(command));
+                deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
+            } catch (FileNotFoundException e) {
+                logger.error("FileNotFoundException in deleteSymLink()", e);
+                Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
+            } catch (IOException e) {
+                logger.error("IOException in deleteSymLink()", e);
+                Helper.setFehlerMeldung("Aborted deleteSymLink(), error", e.getMessage());
+            } catch (InterruptedException e) {
+                logger.error("InterruptedException in deleteSymLink()", e);
+                Helper.setFehlerMeldung("Command '" + command + "' is interrupted in deleteSymLink()!");
+            }
+        }
+    }
 
-	public static String getFileEncoding(Path file) throws IOException {
-		byte[] buf = new byte[4096];
-		String encoding = null;
-		FileInputStream fis = new FileInputStream(file.toFile());
-		try {
-			UniversalDetector detector = new UniversalDetector(null);
-			int nread;
-			while (((nread = fis.read(buf)) > 0) && !detector.isDone()) {
-				detector.handleData(buf, 0, nread);
-			}
-			detector.dataEnd();
-			encoding = detector.getDetectedCharset();
-			detector.reset();
-		} finally {
-			if (fis != null) {
-				fis.close();
-			}
-		}
-		if (encoding == null) {
-			return "UTF-8";
-		} else {
-			return encoding;
-		}
-	}
+    public static String getFileEncoding(Path file) throws IOException {
+        byte[] buf = new byte[4096];
+        String encoding = null;
+        FileInputStream fis = new FileInputStream(file.toFile());
+        try {
+            UniversalDetector detector = new UniversalDetector(null);
+            int nread;
+            while (((nread = fis.read(buf)) > 0) && !detector.isDone()) {
+                detector.handleData(buf, 0, nread);
+            }
+            detector.dataEnd();
+            encoding = detector.getDetectedCharset();
+            detector.reset();
+        } finally {
+            if (fis != null) {
+                fis.close();
+            }
+        }
+        if (encoding == null) {
+            return "UTF-8";
+        } else {
+            return encoding;
+        }
+    }
 
-	public static boolean isOcrFileExists(Process inProcess, String ocrFile) {
-		try {
-			File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
-			File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
-			return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead());
-		} catch (SwapException | DAOException | IOException | InterruptedException e) {
-			return false;
-		}
-	}
+    public static boolean isOcrFileExists(Process inProcess, String ocrFile) {
+        try {
+            File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
+            File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
+            return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead());
+        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            return false;
+        }
+    }
 
-	public static String getOcrFileContent(Process inProcess, String ocrFile) {
-		try {
-			File ocrfile = null;
-			File textFolder = new File(inProcess.getOcrTxtDirectory());
-			File xmlFolder = new File(inProcess.getOcrXmlDirectory());
+    public static String getOcrFileContent(Process inProcess, String ocrFile) {
+        try {
+            File ocrfile = null;
+            File textFolder = new File(inProcess.getOcrTxtDirectory());
+            File xmlFolder = new File(inProcess.getOcrXmlDirectory());
 
-			if (textFolder.exists()) {
-				// try to return content from txt folder
-				ocrfile = new File(textFolder, ocrFile + ".txt");
-				List<String> contents = FileUtils.readLines(ocrfile,
-				        FilesystemHelper.getFileEncoding(ocrfile.toPath()));
-				StringBuilder response = new StringBuilder();
-				for (String line : contents) {
-					response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
-				}
-				return response.toString();
+            if (textFolder.exists()) {
+                // try to return content from txt folder
+                ocrfile = new File(textFolder, ocrFile + ".txt");
+                List<String> contents = FileUtils.readLines(ocrfile, FilesystemHelper.getFileEncoding(ocrfile.toPath()));
+                StringBuilder response = new StringBuilder();
+                for (String line : contents) {
+                    response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
+                }
+                return response.toString();
 
-			} else if (xmlFolder.exists()) {
-				// try to return content from xml folder
-				ocrfile = new File(xmlFolder, ocrFile + ".xml");
-				ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
-				AltoDocument alto = converter.convertToASM(ocrfile, new Date());
-				String result = alto.getContent().replaceAll("\n", "<br/>");
-				return result;
-			}
-		} catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException e) {
-			logger.error("Problem reading the OCR file", e);
-		}
-		return "- no ocr content -";
-	}
-	
-	public static void main(String[] args) throws IOException, XMLStreamException {
-		ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
-		AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
-		String result = alto.getContent().replaceAll("\n", "<br/>");
-		System.out.println(result);
-	}
-	
+            } else if (xmlFolder.exists()) {
+                // try to return content from xml folder
+                ocrfile = new File(xmlFolder, ocrFile + ".xml");
+                ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
+                AltoDocument alto = converter.convertToASM(ocrfile, new Date());
+                String result = alto.getContent().replaceAll("\n", "<br/>");
+                return result;
+            }
+        } catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException e) {
+            logger.error("Problem reading the OCR file", e);
+        }
+        return "- no ocr content -";
+    }
+
+    public static void main(String[] args) throws IOException, XMLStreamException {
+        ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
+        AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
+        String result = alto.getContent().replaceAll("\n", "<br/>");
+        System.out.println(result);
+    }
+
 }

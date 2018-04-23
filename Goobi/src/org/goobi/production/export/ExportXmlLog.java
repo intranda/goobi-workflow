@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -66,12 +65,12 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -210,7 +209,7 @@ public class ExportXmlLog implements IProcessDataExport {
         }
 
         List<Element> processProperties = new ArrayList<Element>();
-        List<ProcessProperty> propertyList =  PropertyParser.getPropertiesForProcess(process);
+        List<ProcessProperty> propertyList = PropertyParser.getPropertiesForProcess(process);
         for (ProcessProperty prop : propertyList) {
             Element property = new Element("property", xmlns);
             property.setAttribute("propertyIdentifier", prop.getName());
@@ -364,7 +363,7 @@ public class ExportXmlLog implements IProcessDataExport {
                 element.setAttribute("id", "" + event.getId());
                 element.setAttribute("date", Helper.getDateAsFormattedString(event.getDate()));
                 element.setAttribute("type", event.getHistoryType().getTitle());
-               
+
                 if (event.getNumericValue() != null) {
                     element.setAttribute("numeric_value", "" + event.getNumericValue());
                 }
@@ -411,7 +410,7 @@ public class ExportXmlLog implements IProcessDataExport {
             Document anchorDoc = null;
             String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
             Path anchorFile = Paths.get(anchorfilename);
-            if (Files.exists(anchorFile) && Files.isReadable(anchorFile)) {
+            if (StorageProvider.getInstance().isFileExists(anchorFile) && StorageProvider.getInstance().isReadable(anchorFile)) {
                 anchorDoc = new SAXBuilder().build(anchorfilename);
             }
 
@@ -570,7 +569,7 @@ public class ExportXmlLog implements IProcessDataExport {
         HashMap<String, String> fields = new HashMap<String, String>();
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
-            if (Files.exists(file) && Files.isReadable(file)) {
+            if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
                 XMLConfiguration config = new XMLConfiguration(file.toFile());
                 config.setListDelimiter('&');
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
@@ -592,7 +591,7 @@ public class ExportXmlLog implements IProcessDataExport {
         List<Namespace> nss = new ArrayList<Namespace>();
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
-            if (Files.exists(file) && Files.isReadable(file)) {
+            if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
                 XMLConfiguration config = new XMLConfiguration(file.toFile());
                 config.setListDelimiter('&');
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());

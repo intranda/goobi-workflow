@@ -28,16 +28,12 @@ package org.goobi.production.flow.jobs;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
@@ -98,21 +94,20 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @throws InterruptedException
      * @throws IOException
      */
-    public static Boolean updateHistory(Process inProcess)
-            throws IOException, InterruptedException, SwapException, DAOException {
+    public static Boolean updateHistory(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
         boolean updated = false;
         /* storage */
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getProcessDataDirectory())))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference, getCurrentStorageSize(Paths.get(inProcess
+                .getProcessDataDirectory())))) {
             updated = true;
         }
 
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(true))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference, getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(
+                true))))) {
             updated = true;
         }
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(true))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference, getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(
+                true))))) {
             updated = true;
         }
 
@@ -129,14 +124,12 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         }
 
         /* metadata */
-        if (updateHistoryEvent(inProcess, HistoryEventType.metadataDiff,
-                inProcess.getSortHelperMetadata().longValue())) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.metadataDiff, inProcess.getSortHelperMetadata().longValue())) {
             updated = true;
         }
 
         /* docstruct */
-        if (updateHistoryEvent(inProcess, HistoryEventType.docstructDiff,
-                inProcess.getSortHelperDocstructs().longValue())) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.docstructDiff, inProcess.getSortHelperDocstructs().longValue())) {
             updated = true;
         }
 
@@ -201,8 +194,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                     // attempts to add a history event,
                     // exists method returns null if event already exists
-                    he = addHistoryEvent(step.getBearbeitungsende(), step.getReihenfolge(), step.getTitel(),
-                            HistoryEventType.stepDone, inProcess);
+                    he = addHistoryEvent(step.getBearbeitungsende(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepDone, inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -210,8 +202,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                     // for each step done we need to create a step open event on
                     // that step based on the latest timestamp for the previous step
-                    he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(),
-                            step.getTitel(), HistoryEventType.stepOpen, inProcess);
+                    he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
+                            HistoryEventType.stepOpen, inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -243,8 +235,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                         isDirty = true;
                     }
 
-                    he = addHistoryEvent(step.getBearbeitungsbeginn(), step.getReihenfolge(), step.getTitel(),
-                            HistoryEventType.stepInWork, inProcess);
+                    he = addHistoryEvent(step.getBearbeitungsbeginn(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepInWork,
+                            inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -254,8 +246,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                     // for each step inwork we need to create a step open event on
                     // that step based on the latest timestamp from the previous
                     // step
-                    he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(),
-                            step.getTitel(), HistoryEventType.stepOpen, inProcess);
+                    he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
+                            HistoryEventType.stepOpen, inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -283,8 +275,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                         isDirty = true;
                     }
 
-                    he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(),
-                            HistoryEventType.stepOpen, inProcess);
+                    he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
+                            inProcess);
 
                     if (he != null) {
                         isDirty = true;
@@ -299,8 +291,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
             // adds for each step a step locked on the basis of the process
             // creation timestamp (new in 1.6)
-            he = addHistoryEvent(inProcess.getErstellungsdatum(), step.getReihenfolge(), step.getTitel(),
-                    HistoryEventType.stepLocked, inProcess);
+            he = addHistoryEvent(inProcess.getErstellungsdatum(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepLocked, inProcess);
 
             if (he != null) {
                 isDirty = true;
@@ -325,8 +316,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @param inProcess
      * @return History event if event needs to be added, null if event(same kind, same time, same process ) already exists
      */
-    private static HistoryEvent addHistoryEvent(Date timeStamp, Integer stepOrder, String stepName,
-            HistoryEventType type, Process inProcess) {
+    private static HistoryEvent addHistoryEvent(Date timeStamp, Integer stepOrder, String stepName, HistoryEventType type, Process inProcess) {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
         if (!getHistoryContainsEventAlready(he, inProcess)) {
@@ -402,52 +392,14 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @throws IOException
      */
     private static long getCurrentStorageSize(Path directory) throws IOException {
-        if (!Files.exists(directory)) {
+        if (!StorageProvider.getInstance().isFileExists(directory)) {
             return 0;
         }
-        if (Files.isDirectory(directory)) {
-            return size(directory);
+        if (StorageProvider.getInstance().isDirectory(directory)) {
+            return StorageProvider.getInstance().getDirectorySize(directory);
         } else {
-            return Files.size(directory);
+            return StorageProvider.getInstance().getFileSize(directory);
         }
-    }
-
-    /**
-     * Calculate the size of a directory by using NIOs walkFileTree it ignores symlinks, folders without permissions and concurrent modification
-     */
-    private static long size(Path path) {
-
-        final AtomicLong size = new AtomicLong(0);
-
-        try {
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    size.addAndGet(attrs.size());
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException e) {
-                    log.debug("skipped: " + file, e);
-                    // Skip folders that can't be traversed
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException e) {
-                    if (e != null) {
-                        log.debug("had trouble traversing: " + dir, e);
-                    }
-                    // Ignore errors traversing a folder
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (IOException e) {
-            throw new AssertionError("walkFileTree will not throw IOException if the FileVisitor does not");
-        }
-
-        return size.get();
     }
 
     /**
@@ -520,8 +472,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                 Calendar cal = Calendar.getInstance();
                 cal.set(2007, 0, 1, 0, 0, 0);
                 eventTimestamp = cal.getTime();
-                log.info("We had to use 2007-1-1 date '" + eventTimestamp.toString()
-                        + "' for a history event as a fallback");
+                log.info("We had to use 2007-1-1 date '" + eventTimestamp.toString() + "' for a history event as a fallback");
             }
 
         }

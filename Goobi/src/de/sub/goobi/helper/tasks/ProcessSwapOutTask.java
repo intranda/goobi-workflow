@@ -30,7 +30,6 @@ package de.sub.goobi.helper.tasks;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -80,7 +79,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             return;
         }
         Path swapFile = Paths.get(swapPath);
-        if (!Files.exists(swapFile)) {
+        if (!StorageProvider.getInstance().isFileExists(swapFile)) {
             setStatusMessage("Swap folder does not exist or is not mounted");
             setStatusProgress(-1);
             return;
@@ -98,13 +97,13 @@ public class ProcessSwapOutTask extends LongRunningTask {
 
         Path fileIn = Paths.get(processDirectory);
         Path fileOut = Paths.get(swapPath + getProzess().getId() + FileSystems.getDefault().getSeparator());
-        if (Files.exists(fileOut)) {
+        if (StorageProvider.getInstance().isFileExists(fileOut)) {
             setStatusMessage(getProzess().getTitel() + ": swappingOutTarget already exists");
             setStatusProgress(-1);
             return;
         }
         try {
-            Files.createDirectories(fileOut);
+            StorageProvider.getInstance().createDirectories(fileOut);
         } catch (IOException e1) {
             logger.error(e1);
         }

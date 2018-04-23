@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -39,6 +38,7 @@ import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -72,7 +72,7 @@ public class RulesetBean extends BasicBean {
 
 	private boolean hasValidRulesetFilePath(Ruleset r, String pathToRulesets) {
 		Path rulesetFile = Paths.get(pathToRulesets + r.getDatei());
-		return Files.exists(rulesetFile);
+		return StorageProvider.getInstance().isFileExists(rulesetFile);
 	}
 
 	public String Loeschen() {

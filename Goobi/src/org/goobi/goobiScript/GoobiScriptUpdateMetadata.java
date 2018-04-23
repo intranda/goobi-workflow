@@ -1,7 +1,6 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -62,7 +62,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 
 		                pairs = HelperSchritte.extractMetadata(metadataFile, pairs);
 
-		                if (Files.exists(anchorFile)) {
+		                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
 		                    pairs = (HelperSchritte.extractMetadata(anchorFile, pairs));
 		                }
 		                MetadataManager.updateMetadata(p.getId(), pairs);
