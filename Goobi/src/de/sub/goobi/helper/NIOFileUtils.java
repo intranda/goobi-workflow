@@ -342,6 +342,16 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     @Override
+    public void uploadDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target);
+    }
+
+    @Override
+    public void downloadDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target);
+    }
+
+    @Override
     public Path renameTo(Path oldName, String newNameString) throws IOException {
         if (newNameString == null || newNameString.isEmpty() || oldName == null) {
             return null;
@@ -533,6 +543,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         Files.delete(path);
     }
 
+    @Override
     public void move(Path oldPath, Path newPath) throws IOException {
         Files.move(oldPath, newPath);
     }

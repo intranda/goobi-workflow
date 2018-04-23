@@ -25,6 +25,10 @@ public interface StorageProviderInterface {
 
     public void copyDirectory(final Path source, final Path target) throws IOException;
 
+    public void uploadDirectory(final Path source, final Path target) throws IOException;
+
+    public void downloadDirectory(final Path source, final Path target) throws IOException;
+
     public Path renameTo(Path oldName, String newNameString) throws IOException;
 
     public void copyFile(Path srcFile, Path destFile) throws IOException;
@@ -47,23 +51,23 @@ public interface StorageProviderInterface {
 
     public void createDirectories(Path path) throws IOException;
 
-    public long getLastModifiedDate(Path path)throws IOException;
+    public long getLastModifiedDate(Path path) throws IOException;
 
     public long getCreationDate(Path path) throws IOException;
 
     public Path createTemporaryFile(String prefix, String suffix) throws IOException;
 
     public void deleteFile(Path path) throws IOException;
-    
+
     public void move(Path oldPath, Path newPath) throws IOException;
-    
+
     public boolean isWritable(Path path);
-    
+
     public boolean isReadable(Path path);
 
     public long getFileSize(Path path) throws IOException;
-    
+
     public long getDirectorySize(Path path) throws IOException;
-    
+
     public void createFile(Path path) throws IOException;
 }

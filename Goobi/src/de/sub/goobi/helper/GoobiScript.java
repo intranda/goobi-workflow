@@ -263,11 +263,12 @@ public class GoobiScript {
                             + "] has allready data in image folder");
                 } else {
                     Path sourceFolderProzess = Paths.get(sourceFolder.toString(), p.getTitel());
-                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess) || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
+                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess) || !StorageProvider.getInstance().isDirectory(
+                            sourceFolder)) {
                         Helper.setFehlerMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is not existing");
                     } else {
-                        StorageProvider.getInstance().copyDirectory(sourceFolderProzess, imagesFolder);
+                        StorageProvider.getInstance().uploadDirectory(sourceFolderProzess, imagesFolder);
                         Helper.setMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is copied");
                     }

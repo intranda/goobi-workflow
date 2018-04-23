@@ -5,10 +5,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -55,6 +57,13 @@ public class S3FileUtils implements StorageProviderInterface {
 
     private String getBucket() {
         return ConfigurationHelper.getInstance().getS3Bucket();
+    }
+
+    private void copyS3Object(String sourcePrefix, String targetPrefix, S3ObjectSummary os) {
+        String sourceKey = os.getKey();
+        String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
+        CopyObjectRequest copyReq = new CopyObjectRequest(getBucket(), sourceKey, getBucket(), destinationKey);
+        s3.copyObject(copyReq);
     }
 
     @Override
@@ -121,6 +130,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 objs.add(key2Path(os.getKey()));
             }
         }
+        Collections.sort(objs);
         return objs;
     }
 
@@ -138,23 +148,52 @@ public class S3FileUtils implements StorageProviderInterface {
                 log.error(e);
             }
         }
-        return null;
+        return filteredObjs;
     }
 
     @Override
     public List<String> list(String folder) {
-        //TODO: implement method
-        return null;
+        List<Path> objs = listFiles(folder);
+        List<String> strObjs = new ArrayList<String>();
+        for (Path p : objs) {
+            strObjs.add(p.toAbsolutePath().toString());
+        }
+        return strObjs;
     }
 
     @Override
     public List<String> list(String folder, DirectoryStream.Filter<Path> filter) {
-        //TODO: implement method
-        return null;
+        List<Path> objs = listFiles(folder, filter);
+        List<String> strObjs = new ArrayList<String>();
+        for (Path p : objs) {
+            strObjs.add(p.toAbsolutePath().toString());
+        }
+        return strObjs;
     }
 
     @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
+        String sourcePrefix = path2Prefix(source);
+        String targetPrefix = path2Prefix(target);
+        ObjectListing listing = s3.listObjects(getBucket(), path2Prefix(source));
+        for (S3ObjectSummary os : listing.getObjectSummaries()) {
+            copyS3Object(sourcePrefix, targetPrefix, os);
+        }
+        while (listing.isTruncated()) {
+            listing = s3.listNextBatchOfObjects(listing);
+            for (S3ObjectSummary os : listing.getObjectSummaries()) {
+                copyS3Object(sourcePrefix, targetPrefix, os);
+            }
+        }
+    }
+
+    @Override
+    public void uploadDirectory(final Path source, final Path target) throws IOException {
+
+    }
+
+    @Override
+    public void downloadDirectory(final Path source, final Path target) throws IOException {
         //TODO: implement method
     }
 
@@ -215,5 +254,71 @@ public class S3FileUtils implements StorageProviderInterface {
     public boolean isDirectory(Path path) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public void createDirectories(Path path) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public long getLastModifiedDate(Path path) throws IOException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public long getCreationDate(Path path) throws IOException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public Path createTemporaryFile(String prefix, String suffix) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteFile(Path path) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void move(Path oldPath, Path newPath) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean isWritable(Path path) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isReadable(Path path) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public long getFileSize(Path path) throws IOException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public long getDirectorySize(Path path) throws IOException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void createFile(Path path) throws IOException {
+        // TODO Auto-generated method stub
+
     }
 }
