@@ -28,7 +28,6 @@ package de.sub.goobi.export.download;
  * exception statement from your version.
  */
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -45,6 +44,19 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.goobi.beans.Process;
+
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
+import de.sub.goobi.metadaten.MetadatenHelper;
 import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -52,20 +64,6 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-
-import org.goobi.beans.Process;
-
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
-import de.sub.goobi.metadaten.MetadatenHelper;
-import de.unigoettingen.sub.commons.util.Filters;
 
 public class ExportPdf extends ExportMets {
 
@@ -99,12 +97,12 @@ public class ExportPdf extends ExportMets {
         String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
         Path imagesPath = Paths.get(myProzess.getImagesTifDirectory(true));
-        if(!Files.exists(imagesPath) || NIOFileUtils.list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
+        if (!Files.exists(imagesPath) || StorageProvider.getInstance().list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
             imagesPath = Paths.get(myProzess.getImagesOrigDirectory(true));
         }
         Path pdfPath = Paths.get(myProzess.getOcrPdfDirectory());
         Path altoPath = Paths.get(myProzess.getOcrAltoDirectory());
-        
+
         if (!ConfigurationHelper.getInstance().isPdfAsDownload()) {
             /*
              * -------------------------------- use contentserver api for creation of pdf-file --------------------------------
@@ -134,7 +132,7 @@ public class ExportPdf extends ExportMets {
                 String imageSource = "&imageSource=" + imagesPath.toUri();
                 String pdfSource = "&pdfSource=" + pdfPath.toUri();
                 String altoSource = "&altoSource=" + altoPath.toUri();
-                
+
                 /*
                  * -------------------------------- using mets file --------------------------------
                  */
@@ -146,7 +144,8 @@ public class ExportPdf extends ExportMets {
                     }
 
                     goobiContentServerUrl =
-                            new URL(contentServerUrl + metsTempFile.toUri().toURL() +  imageSource + pdfSource + altoSource + "&targetFileName=" + myProzess.getTitel() + ".pdf");
+                            new URL(contentServerUrl + metsTempFile.toUri().toURL() + imageSource + pdfSource + altoSource + "&targetFileName="
+                                    + myProzess.getTitel() + ".pdf");
                     /*
                      * -------------------------------- mets data does not exist or is invalid --------------------------------
                      */
@@ -156,7 +155,7 @@ public class ExportPdf extends ExportMets {
                         contentServerUrl = myBasisUrl + "/cs/cs?action=pdf&images=";
                     }
                     String url = "";
-                    List<Path> meta = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+                    List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
                     ArrayList<String> filenames = new ArrayList<String>();
                     for (Path data : meta) {
                         String file = "";
@@ -179,7 +178,7 @@ public class ExportPdf extends ExportMets {
                  */
 
                 if (!context.getResponseComplete()) {
-                    if(logger.isDebugEnabled()) {
+                    if (logger.isDebugEnabled()) {
                         logger.debug("Redirecting pdf request to " + goobiContentServerUrl.toString());
                     }
                     HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
@@ -191,10 +190,10 @@ public class ExportPdf extends ExportMets {
                     response.sendRedirect(goobiContentServerUrl.toString());
                     context.responseComplete();
                 }
-//                if (Files.exists(metsTempFile)) {
-//                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
-//                    Files.delete(metsTempFile);
-//                }
+                //                if (Files.exists(metsTempFile)) {
+                //                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
+                //                    Files.delete(metsTempFile);
+                //                }
             } catch (Exception e) {
 
                 /*

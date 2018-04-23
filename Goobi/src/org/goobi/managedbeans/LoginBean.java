@@ -51,7 +51,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
@@ -275,7 +275,7 @@ public class LoginBean {
         /* Pages-Verzeichnis mit den temporären Images ermitteln */
         String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
-        List<String> dateien = NIOFileUtils.list(myPfad, pngfilter);
+        List<String> dateien = StorageProvider.getInstance().list(myPfad, pngfilter);
 
         /* alle Dateien durchlaufen und die alten löschen */
         if (!dateien.isEmpty()) {

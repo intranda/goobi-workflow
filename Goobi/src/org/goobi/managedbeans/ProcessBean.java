@@ -117,8 +117,8 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.PropertyListObject;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -330,7 +330,7 @@ public class ProcessBean extends BasicBean {
                             String imageDirectory = myProzess.getImagesDirectory();
                             Path dir = Paths.get(imageDirectory);
                             if (Files.exists(dir) && Files.isDirectory(dir)) {
-                                List<Path> subdirs = NIOFileUtils.listFiles(imageDirectory);
+                                List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                                 for (Path imagedir : subdirs) {
                                     if (Files.isDirectory(imagedir)) {
                                         Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
@@ -343,7 +343,7 @@ public class ProcessBean extends BasicBean {
                             String ocrDirectory = myProzess.getOcrDirectory();
                             Path dir = Paths.get(ocrDirectory);
                             if (Files.exists(dir) && Files.isDirectory(dir)) {
-                                List<Path> subdirs = NIOFileUtils.listFiles(ocrDirectory);
+                                List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                                 for (Path imagedir : subdirs) {
                                     if (Files.isDirectory(imagedir)) {
                                         Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
@@ -444,11 +444,11 @@ public class ProcessBean extends BasicBean {
         try {
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
             if (Files.exists(ocr)) {
-                NIOFileUtils.deleteDir(ocr);
+                StorageProvider.getInstance().deleteDir(ocr);
             }
             Path images = Paths.get(this.myProzess.getImagesDirectory());
             if (Files.exists(images)) {
-                NIOFileUtils.deleteDir(images);
+                StorageProvider.getInstance().deleteDir(images);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -465,10 +465,10 @@ public class ProcessBean extends BasicBean {
             deleteSymlinksFromUserHomes();
         }
         try {
-            NIOFileUtils.deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
+            StorageProvider.getInstance().deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
             if (Files.exists(ocr)) {
-                NIOFileUtils.deleteDir(ocr);
+                StorageProvider.getInstance().deleteDir(ocr);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -2019,7 +2019,7 @@ public class ProcessBean extends BasicBean {
         List<String> answer = new ArrayList<String>();
         Path folder = Paths.get("xsltFolder");
         if (Files.exists(folder) && Files.isDirectory(folder)) {
-            List<String> files = NIOFileUtils.list(folder.toString());
+            List<String> files = StorageProvider.getInstance().list(folder.toString());
 
             for (String file : files) {
                 if (file.endsWith(".xslt") || file.endsWith(".xsl")) {

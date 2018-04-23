@@ -59,8 +59,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.zip.CRC32;
 
-import lombok.extern.log4j.Log4j;
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.extern.log4j.Log4j;
 
 /**
  * File Utils collection
@@ -68,7 +68,7 @@ import de.sub.goobi.config.ConfigurationHelper;
  * @author Steffen Hankiewicz
  */
 @Log4j
-public class NIOFileUtils {
+public class NIOFileUtils implements StorageProviderInterface {
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING,
             StandardCopyOption.COPY_ATTRIBUTES };
@@ -80,7 +80,8 @@ public class NIOFileUtils {
      * @param ext the file extension to use for counting, not case sensitive
      * @return number of files as Integer
      */
-    public static Integer getNumberOfFiles(Path inDir) {
+    @Override
+    public Integer getNumberOfFiles(Path inDir) {
         int anzahl = 0;
         if (Files.isDirectory(inDir)) {
             /* --------------------------------
@@ -91,7 +92,7 @@ public class NIOFileUtils {
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
-            List<String> children = NIOFileUtils.list(inDir.toString());
+            List<String> children = this.list(inDir.toString());
             for (String child : children) {
                 anzahl += getNumberOfPaths(Paths.get(inDir.toString(), child));
             }
@@ -99,7 +100,8 @@ public class NIOFileUtils {
         return anzahl;
     }
 
-    public static Integer getNumberOfPaths(Path inDir) {
+    @Override
+    public Integer getNumberOfPaths(Path inDir) {
         int anzahl = 0;
         if (Files.isDirectory(inDir)) {
             /* --------------------------------
@@ -110,7 +112,7 @@ public class NIOFileUtils {
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
-            List<String> children = NIOFileUtils.list(inDir.toString());
+            List<String> children = this.list(inDir.toString());
             for (String child : children) {
                 anzahl += getNumberOfPaths(Paths.get(inDir.toString(), child));
             }
@@ -118,11 +120,13 @@ public class NIOFileUtils {
         return anzahl;
     }
 
-    public static Integer getNumberOfFiles(String inDir) {
+    @Override
+    public Integer getNumberOfFiles(String inDir) {
         return getNumberOfFiles(Paths.get(inDir));
     }
 
-    public static Integer getNumberOfFiles(Path dir, final String suffix) {
+    @Override
+    public Integer getNumberOfFiles(Path dir, final String suffix) {
         int anzahl = 0;
         if (Files.isDirectory(dir)) {
             /* --------------------------------
@@ -140,7 +144,7 @@ public class NIOFileUtils {
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
-            List<String> children = NIOFileUtils.list(dir.toString());
+            List<String> children = this.list(dir.toString());
             for (String child : children) {
                 anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffix);
             }
@@ -150,7 +154,8 @@ public class NIOFileUtils {
     }
 
     // replace listFiles
-    public static List<Path> listFiles(String folder) {
+    @Override
+    public List<Path> listFiles(String folder) {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
@@ -163,7 +168,8 @@ public class NIOFileUtils {
     }
 
     // replace listFiles(FilenameFilter)
-    public static List<Path> listFiles(String folder, DirectoryStream.Filter<Path> filter) {
+    @Override
+    public List<Path> listFiles(String folder, DirectoryStream.Filter<Path> filter) {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
@@ -176,7 +182,8 @@ public class NIOFileUtils {
     }
 
     // replace list
-    public static List<String> list(String folder) {
+    @Override
+    public List<String> list(String folder) {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
@@ -189,7 +196,8 @@ public class NIOFileUtils {
     }
 
     // replace list(FilenameFilter)
-    public static List<String> list(String folder, DirectoryStream.Filter<Path> filter) {
+    @Override
+    public List<String> list(String folder, DirectoryStream.Filter<Path> filter) {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
@@ -289,7 +297,8 @@ public class NIOFileUtils {
         }
     };
 
-    public static void copyDirectory(final Path source, final Path target) throws IOException {
+    @Override
+    public void copyDirectory(final Path source, final Path target) throws IOException {
         Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {
 
             @Override
@@ -307,7 +316,7 @@ public class NIOFileUtils {
                 DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
                 if (dosAttrs != null) {
                     if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
-                    DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
+                        DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
                         DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
                         targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
                         targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
@@ -325,7 +334,7 @@ public class NIOFileUtils {
                 PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
                 if (posixAttrs != null) {
                     if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                    PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                        PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
                         PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
                         targetPosix.setPermissions(sourcePosix.permissions());
                         targetPosix.setGroup(sourcePosix.group());
@@ -365,14 +374,16 @@ public class NIOFileUtils {
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                if (e != null)
+                if (e != null) {
                     throw e;
+                }
                 return FileVisitResult.CONTINUE;
             }
         });
     }
 
-    public static Path renameTo(Path oldName, String newNameString) throws IOException {
+    @Override
+    public Path renameTo(Path oldName, String newNameString) throws IOException {
         if (newNameString == null || newNameString.isEmpty() || oldName == null) {
             return null;
         }
@@ -380,13 +391,15 @@ public class NIOFileUtils {
     }
 
     // program options initialized to default values
-    private static int bufferSize = 4 * 1024;
+    private int bufferSize = 4 * 1024;
 
-    public static void copyFile(Path srcFile, Path destFile) throws IOException {
+    @Override
+    public void copyFile(Path srcFile, Path destFile) throws IOException {
         Files.copy(srcFile, destFile, STANDARD_COPY_OPTIONS);
     }
 
-    public static Long createChecksum(Path file) throws IOException {
+    @Override
+    public Long createChecksum(Path file) throws IOException {
         InputStream in = new FileInputStream(file.toString());
         CRC32 checksum = new CRC32();
         checksum.reset();
@@ -399,7 +412,8 @@ public class NIOFileUtils {
         return Long.valueOf(checksum.getValue());
     }
 
-    public static Long start(Path srcFile, Path destFile) throws IOException {
+    @Override
+    public Long start(Path srcFile, Path destFile) throws IOException {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
             log.error("Not a readable file: " + srcFile.getFileName().toString());
@@ -423,7 +437,8 @@ public class NIOFileUtils {
 
     }
 
-    public static long checksumMappedFile(String filepath) throws IOException {
+    @Override
+    public long checksumMappedFile(String filepath) throws IOException {
 
         FileInputStream inputStream = null;
         try {
@@ -453,12 +468,13 @@ public class NIOFileUtils {
         }
     }
 
-    public static boolean deleteDir(Path dir) {
+    @Override
+    public boolean deleteDir(Path dir) {
         if (!Files.exists(dir)) {
             return true;
         }
         if (Files.isDirectory(dir)) {
-            List<Path> children = NIOFileUtils.listFiles(dir.toString());
+            List<Path> children = this.listFiles(dir.toString());
             for (Path child : children) {
                 if (Files.isDirectory(child)) {
                     boolean success = deleteDir(child);
@@ -490,9 +506,10 @@ public class NIOFileUtils {
     /**
      * Deletes all files and subdirectories under dir. But not the dir itself
      */
-    public static boolean deleteInDir(Path dir) {
+    @Override
+    public boolean deleteInDir(Path dir) {
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-            List<String> children = NIOFileUtils.list(dir.toString());
+            List<String> children = this.list(dir.toString());
             for (String child : children) {
                 boolean success = deleteDir(Paths.get(dir.toString(), child));
                 if (!success) {
@@ -506,9 +523,10 @@ public class NIOFileUtils {
     /**
      * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
      */
-    public static boolean deleteDataInDir(Path dir) {
+    @Override
+    public boolean deleteDataInDir(Path dir) {
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-            List<String> children = NIOFileUtils.list(dir.toString());
+            List<String> children = this.list(dir.toString());
             for (String child : children) {
                 if (!child.endsWith(".xml")) {
                     boolean success = deleteDir(Paths.get(dir.toString(), child));

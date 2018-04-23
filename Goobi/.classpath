@@ -106,7 +106,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-collections-3.2.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar" sourcepath="/ugh_new"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/normdataimporter.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geonames-1.1.13.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-jaxrs-json-provider-2.6.3.jar"/>

@@ -77,6 +77,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
 import de.sub.goobi.helper.TreeNode;
 import de.sub.goobi.helper.VariableReplacer;
@@ -264,7 +265,7 @@ public class Metadaten {
     private IMetadataPlugin currentPlugin;
 
     private boolean displayHiddenMetadata = false;
-    
+
     /**
      * Konstruktor ================================================================
      */
@@ -1173,7 +1174,8 @@ public class Metadaten {
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
-            this.myProzess.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            this.myProzess.setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(
+                    true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1245,7 +1247,8 @@ public class Metadaten {
         /*
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
-        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), false, this.myProzess, displayHiddenMetadata);
+        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(),
+                false, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -1257,14 +1260,16 @@ public class Metadaten {
         /*
          * -------------------------------- alle Personen und die DefaultDisplay-Werte ermitteln --------------------------------
          */
-        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), true, this.myProzess, displayHiddenMetadata);
+        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), true, this.myProzess,
+                displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
             }
         }
 
-        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
+        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(),
+                this.myProzess);
         if (groups != null) {
             for (MetadataGroup mg : groups) {
                 metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
@@ -1504,8 +1509,9 @@ public class Metadaten {
                     Reference last = references.get(references.size() - 1);
                     Integer pageNo = Integer.parseInt(last.getTarget().getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0)
                             .getValue());
-                    if (alleSeitenNeu.length > pageNo)
+                    if (alleSeitenNeu.length > pageNo) {
                         ds.addReferenceTo(this.alleSeitenNeu[pageNo].getMd().getDocStruct(), "logical_physical");
+                    }
 
                 }
                 siblings.add(index + 1, ds);
@@ -1961,8 +1967,8 @@ public class Metadaten {
                 mode = Paginator.Mode.RECTOVERSO_FOLIATION;
                 break;
             case 6:
-            	mode = Paginator.Mode.DOUBLE_PAGES;
-            	break;
+                mode = Paginator.Mode.DOUBLE_PAGES;
+                break;
             default:
                 mode = Paginator.Mode.PAGES;
         }
@@ -2062,7 +2068,7 @@ public class Metadaten {
         this.allTifFolders = new ArrayList<String>();
         Path dir = Paths.get(this.myProzess.getImagesDirectory());
 
-        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), NIOFileUtils.folderFilter);
+        List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.folderFilter);
         for (int i = 0; i < verzeichnisse.size(); i++) {
             this.allTifFolders.add(verzeichnisse.get(i));
         }
@@ -2771,18 +2777,18 @@ public class Metadaten {
      */
 
     public boolean isImageHasOcr() {
-    		try {
-    			return FilesystemHelper.isOcrFileExists(myProzess, image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")));
-    		}catch(Exception e) {
-    			return false;
-    		}
+        try {
+            return FilesystemHelper.isOcrFileExists(myProzess, image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean isShowOcrButton() {
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
         } else {
-        		return isImageHasOcr();
+            return isImageHasOcr();
         }
     }
 
@@ -2825,23 +2831,23 @@ public class Metadaten {
                 }
             }
         } else {
-        		String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
-        		ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew);
-        		
-//        		String ocrFile = "";
-//			try {
-//				Path textFolder = Paths.get(myProzess.getTxtDirectory());
-//				Path altoFolder = Paths.get(myProzess.getAltoDirectory());
-//				if (Files.exists(textFolder)) {
-//	            		ocrFile = myProzess.getTxtDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-//	            } else if (Files.exists(altoFolder)) {
-//	            		ocrFile = myProzess.getAltoDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".xml";
-//	            }
-//				ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
-//	        } catch (SwapException | DAOException | IOException | InterruptedException e) {
-//				logger.error("Error while reading the OCR result", e);
-//				ocrResult = "";
-//			}
+            String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew);
+
+            //        		String ocrFile = "";
+            //			try {
+            //				Path textFolder = Paths.get(myProzess.getTxtDirectory());
+            //				Path altoFolder = Paths.get(myProzess.getAltoDirectory());
+            //				if (Files.exists(textFolder)) {
+            //	            		ocrFile = myProzess.getTxtDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+            //	            } else if (Files.exists(altoFolder)) {
+            //	            		ocrFile = myProzess.getAltoDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".xml";
+            //	            }
+            //				ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
+            //	        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            //				logger.error("Error while reading the OCR result", e);
+            //				ocrResult = "";
+            //			}
         }
         return ocrResult;
     }
@@ -3410,7 +3416,7 @@ public class Metadaten {
     }
 
     public List<String> autocomplete(String suggest) {
-        String pref =  suggest;
+        String pref = suggest;
         List<String> result = new ArrayList<String>();
         List<String> alle = new ArrayList<String>();
         for (SelectItem si : this.alleSeiten) {
@@ -3525,7 +3531,7 @@ public class Metadaten {
         List<String> newSelectionList = new ArrayList<String>();
         for (Integer pageIndex : selectedPages) {
             if (pageIndex + positions > allPages.size()) {
-                positions = allPages.size() - pageIndex-1;
+                positions = allPages.size() - pageIndex - 1;
             }
             DocStruct image = allPages.get(pageIndex);
             allPages.remove(image);
@@ -3647,7 +3653,7 @@ public class Metadaten {
             for (String folder : allTifFolders) {
                 // check if folder is empty, otherwise get extension for folder
                 Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
+                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
                 if (files != null && !files.isEmpty()) {
                     String fileExtension = Metadaten.getFileExtension(imagename);
                     Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
@@ -3663,10 +3669,10 @@ public class Metadaten {
             try {
                 Path ocr = Paths.get(myProzess.getOcrDirectory());
                 if (Files.exists(ocr)) {
-                    List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
+                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
-                        List<String> files = NIOFileUtils.list(folder.toString());
+                        List<String> files = StorageProvider.getInstance().list(folder.toString());
 
                         if (files != null && !files.isEmpty()) {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
@@ -3695,7 +3701,7 @@ public class Metadaten {
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             for (String folder : allTifFolders) {
                 Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
+                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
                 if (files != null && !files.isEmpty()) {
                     String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                     Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
@@ -3712,10 +3718,10 @@ public class Metadaten {
 
                 Path ocr = Paths.get(myProzess.getOcrDirectory());
                 if (Files.exists(ocr)) {
-                    List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
+                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
-                        List<String> files = NIOFileUtils.list(folder.toString());
+                        List<String> files = StorageProvider.getInstance().list(folder.toString());
                         if (files != null && !files.isEmpty()) {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
@@ -3751,7 +3757,7 @@ public class Metadaten {
             String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
                 Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
-                List<Path> filesInFolder = NIOFileUtils.listFiles(imageFolder.toString());
+                List<Path> filesInFolder = StorageProvider.getInstance().listFiles(imageFolder.toString());
                 for (Path currentFile : filesInFolder) {
                     String filename = currentFile.getFileName().toString();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");
@@ -3763,10 +3769,10 @@ public class Metadaten {
 
             Path ocr = Paths.get(myProzess.getOcrDirectory());
             if (Files.exists(ocr)) {
-                List<Path> folder = NIOFileUtils.listFiles(ocr.toString());
+                List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
                 for (Path dir : folder) {
-                    if (Files.isDirectory(dir) && !NIOFileUtils.list(dir.toString()).isEmpty()) {
-                        List<Path> filesInFolder = NIOFileUtils.listFiles(dir.toString());
+                    if (Files.isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
+                        List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
                         for (Path currentFile : filesInFolder) {
                             String filename = currentFile.getFileName().toString();
                             String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
@@ -4059,8 +4065,9 @@ public class Metadaten {
         } else {
             progress = (int) (currentImageNo / totalImageNo * 100);
 
-            if (progress > 100)
+            if (progress > 100) {
                 progress = 100;
+            }
         }
 
         return progress;
@@ -4111,7 +4118,8 @@ public class Metadaten {
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), false, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), false,
+                            this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4130,7 +4138,8 @@ public class Metadaten {
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), true, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), true,
+                            this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
@@ -4582,15 +4591,15 @@ public class Metadaten {
     public void setDanteSearchValue(String danteSearchValue) {
         this.danteSearchValue = danteSearchValue;
     }
-    
+
     public boolean isDisplayHiddenMetadata() {
         return displayHiddenMetadata;
     }
-    
+
     public void setDisplayHiddenMetadata(boolean displayHiddenMetadata) {
         this.displayHiddenMetadata = displayHiddenMetadata;
     }
-    
+
     public void reloadMetadataList() {
         MetadatenalsBeanSpeichern(currentTopstruct);
     }

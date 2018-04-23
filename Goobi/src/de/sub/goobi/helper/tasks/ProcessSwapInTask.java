@@ -1,4 +1,5 @@
 package de.sub.goobi.helper.tasks;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -34,174 +35,174 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
-import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class ProcessSwapInTask extends LongRunningTask {
 
-	@Override
-	public void initialize(org.goobi.beans.Process inProzess) {
-		super.initialize(inProzess);
-		setTitle("Einlagerung: " + inProzess.getTitel());
-	}
+    @Override
+    public void initialize(org.goobi.beans.Process inProzess) {
+        super.initialize(inProzess);
+        setTitle("Einlagerung: " + inProzess.getTitel());
+    }
 
-	/**
-	 * Aufruf als Thread ================================================================
-	 */
+    /**
+     * Aufruf als Thread ================================================================
+     */
     @SuppressWarnings("deprecation")
     @Override
-	public void run() {
-		setStatusProgress(5);
-		String swapPath = null;
-//		ProzessDAO dao = new ProzessDAO();
-		String processDirectory = "";
+    public void run() {
+        setStatusProgress(5);
+        String swapPath = null;
+        //		ProzessDAO dao = new ProzessDAO();
+        String processDirectory = "";
 
-		if (ConfigurationHelper.getInstance().isUseSwapping()) {
-			swapPath = ConfigurationHelper.getInstance().getSwapPath();
-		} else {
-			setStatusMessage("swapping not activated");
-			setStatusProgress(-1);
-			return;
-		}
-		if (swapPath == null || swapPath.length() == 0) {
-			setStatusMessage("no swappingPath defined");
-			setStatusProgress(-1);
-			return;
-		}
-		Path swapFile = Paths.get(swapPath);
-		if (!Files.exists(swapFile)) {
-			setStatusMessage("Swap folder does not exist or is not mounted");
-			setStatusProgress(-1);
-			return;
-		}
-		try {
-			processDirectory = getProzess().getProcessDataDirectoryIgnoreSwapping();
-			// TODO: Don't catch Exception (the super class)
-		} catch (Exception e) {
-			logger.warn("Exception:", e);
-			setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
-			setStatusProgress(-1);
-			return;
-		}
+        if (ConfigurationHelper.getInstance().isUseSwapping()) {
+            swapPath = ConfigurationHelper.getInstance().getSwapPath();
+        } else {
+            setStatusMessage("swapping not activated");
+            setStatusProgress(-1);
+            return;
+        }
+        if (swapPath == null || swapPath.length() == 0) {
+            setStatusMessage("no swappingPath defined");
+            setStatusProgress(-1);
+            return;
+        }
+        Path swapFile = Paths.get(swapPath);
+        if (!Files.exists(swapFile)) {
+            setStatusMessage("Swap folder does not exist or is not mounted");
+            setStatusProgress(-1);
+            return;
+        }
+        try {
+            processDirectory = getProzess().getProcessDataDirectoryIgnoreSwapping();
+            // TODO: Don't catch Exception (the super class)
+        } catch (Exception e) {
+            logger.warn("Exception:", e);
+            setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
+            setStatusProgress(-1);
+            return;
+        }
 
-		Path fileIn = Paths.get(processDirectory);
-		Path fileOut = Paths.get(swapPath + getProzess().getId() + FileSystems.getDefault().getSeparator());
+        Path fileIn = Paths.get(processDirectory);
+        Path fileOut = Paths.get(swapPath + getProzess().getId() + FileSystems.getDefault().getSeparator());
 
-		if (!Files.exists(fileOut)) {
-			setStatusMessage(getProzess().getTitel() + ": swappingOutTarget does not exist");
-			setStatusProgress(-1);
-			return;
-		}
-		if (!Files.exists(fileIn)) {
-			setStatusMessage(getProzess().getTitel() + ": process data folder does not exist");
-			setStatusProgress(-1);
-			return;
-		}
+        if (!Files.exists(fileOut)) {
+            setStatusMessage(getProzess().getTitel() + ": swappingOutTarget does not exist");
+            setStatusProgress(-1);
+            return;
+        }
+        if (!Files.exists(fileIn)) {
+            setStatusMessage(getProzess().getTitel() + ": process data folder does not exist");
+            setStatusProgress(-1);
+            return;
+        }
 
-		SAXBuilder builder = new SAXBuilder();
-		Document docOld;
-		try {
-		    Path swapLogFile = Paths.get(processDirectory, "swapped.xml");
-			docOld = builder.build(swapLogFile.toFile());
-			// TODO: Don't catch Exception (the super class)
-		} catch (Exception e) {
-			logger.warn("Exception:", e);
-			setStatusMessage("Error while reading swapped.xml in process data folder: " + e.getClass().getName() + " - " + e.getMessage());
-			setStatusProgress(-1);
-			return;
-		}
+        SAXBuilder builder = new SAXBuilder();
+        Document docOld;
+        try {
+            Path swapLogFile = Paths.get(processDirectory, "swapped.xml");
+            docOld = builder.build(swapLogFile.toFile());
+            // TODO: Don't catch Exception (the super class)
+        } catch (Exception e) {
+            logger.warn("Exception:", e);
+            setStatusMessage("Error while reading swapped.xml in process data folder: " + e.getClass().getName() + " - " + e.getMessage());
+            setStatusProgress(-1);
+            return;
+        }
 
-		/*
-		 * --------------------- alte Checksummen in HashMap schreiben -------------------
-		 */
-		setStatusMessage("reading checksums");
-		Element rootOld = docOld.getRootElement();
+        /*
+         * --------------------- alte Checksummen in HashMap schreiben -------------------
+         */
+        setStatusMessage("reading checksums");
+        Element rootOld = docOld.getRootElement();
 
-		HashMap<String, String> crcMap = new HashMap<String, String>();
+        HashMap<String, String> crcMap = new HashMap<String, String>();
 
-		// TODO: Don't use Iterators
-		for (Iterator<Element> it = rootOld.getChildren("file").iterator(); it.hasNext();) {
-			Element el = it.next();
-			crcMap.put(el.getAttribute("path").getValue(), el.getAttribute("crc32").getValue());
-		}
-		NIOFileUtils.deleteDataInDir(fileIn);
+        // TODO: Don't use Iterators
+        for (Iterator<Element> it = rootOld.getChildren("file").iterator(); it.hasNext();) {
+            Element el = it.next();
+            crcMap.put(el.getAttribute("path").getValue(), el.getAttribute("crc32").getValue());
+        }
+        StorageProvider.getInstance().deleteDataInDir(fileIn);
 
-		/*
-		 * --------------------- Dateien kopieren und Checksummen ermitteln -------------------
-		 */
-		Document doc = new Document();
-		Element root = new Element("goobiArchive");
-		doc.setRootElement(root);
+        /*
+         * --------------------- Dateien kopieren und Checksummen ermitteln -------------------
+         */
+        Document doc = new Document();
+        Element root = new Element("goobiArchive");
+        doc.setRootElement(root);
 
-		/*
-		 * --------------------- Verzeichnisse und Dateien kopieren und anschliessend den Ordner leeren -------------------
-		 */
-		setStatusProgress(50);
-		try {
-			setStatusMessage("copying process files");
-			Helper.copyDirectoryWithCrc32Check(fileOut, fileIn, swapPath.length(), root);
-		} catch (IOException e) {
-			logger.warn("IOException:", e);
-			setStatusMessage("IOException in copyDirectory: " + e.getMessage());
-			setStatusProgress(-1);
-			return;
-		}
-		setStatusProgress(80);
+        /*
+         * --------------------- Verzeichnisse und Dateien kopieren und anschliessend den Ordner leeren -------------------
+         */
+        setStatusProgress(50);
+        try {
+            setStatusMessage("copying process files");
+            Helper.copyDirectoryWithCrc32Check(fileOut, fileIn, swapPath.length(), root);
+        } catch (IOException e) {
+            logger.warn("IOException:", e);
+            setStatusMessage("IOException in copyDirectory: " + e.getMessage());
+            setStatusProgress(-1);
+            return;
+        }
+        setStatusProgress(80);
 
-		/*
-		 * --------------------- Checksummen vergleichen -------------------
-		 */
-		setStatusMessage("checking checksums");
-		// TODO: Don't use Iterators
-		for (Iterator<Element> it = root.getChildren("file").iterator(); it.hasNext();) {
-			Element el = it.next();
-			String newPath = el.getAttribute("path").getValue();
-			String newCrc = el.getAttribute("crc32").getValue();
-			if (crcMap.containsKey(newPath)) {
-				if (!crcMap.get(newPath).equals(newCrc)) {
-					setLongMessage(getLongMessage() + "File " + newPath + " has different checksum<br/>");
-				}
-				crcMap.remove(newPath);
-			}
-		}
+        /*
+         * --------------------- Checksummen vergleichen -------------------
+         */
+        setStatusMessage("checking checksums");
+        // TODO: Don't use Iterators
+        for (Iterator<Element> it = root.getChildren("file").iterator(); it.hasNext();) {
+            Element el = it.next();
+            String newPath = el.getAttribute("path").getValue();
+            String newCrc = el.getAttribute("crc32").getValue();
+            if (crcMap.containsKey(newPath)) {
+                if (!crcMap.get(newPath).equals(newCrc)) {
+                    setLongMessage(getLongMessage() + "File " + newPath + " has different checksum<br/>");
+                }
+                crcMap.remove(newPath);
+            }
+        }
 
-		setStatusProgress(85);
-		/*
-		 * --------------------- prüfen, ob noch Dateien fehlen -------------------
-		 */
-		setStatusMessage("checking missing files");
-		if (crcMap.size() > 0) {
-			for (String myFile : crcMap.keySet()) {
-				setLongMessage(getLongMessage() + "File " + myFile + " is missing<br/>");
-			}
-		}
+        setStatusProgress(85);
+        /*
+         * --------------------- prüfen, ob noch Dateien fehlen -------------------
+         */
+        setStatusMessage("checking missing files");
+        if (crcMap.size() > 0) {
+            for (String myFile : crcMap.keySet()) {
+                setLongMessage(getLongMessage() + "File " + myFile + " is missing<br/>");
+            }
+        }
 
-		setStatusProgress(90);
+        setStatusProgress(90);
 
-		/* in Prozess speichern */
-		NIOFileUtils.deleteDir(fileOut);
-		try {
-			setStatusMessage("saving process");
-			Process myProzess = ProcessManager.getProcessById(getProzess().getId());
-			myProzess.setSwappedOutGui(false);
-			ProcessManager.saveProcess(myProzess);
-		} catch (DAOException e) {
-			setStatusMessage("DAOException while saving process: " + e.getMessage());
-			logger.warn("DAOException:", e);
-			setStatusProgress(-1);
-			return;
-		}
-		setStatusMessage("done");
+        /* in Prozess speichern */
+        StorageProvider.getInstance().deleteDir(fileOut);
+        try {
+            setStatusMessage("saving process");
+            Process myProzess = ProcessManager.getProcessById(getProzess().getId());
+            myProzess.setSwappedOutGui(false);
+            ProcessManager.saveProcess(myProzess);
+        } catch (DAOException e) {
+            setStatusMessage("DAOException while saving process: " + e.getMessage());
+            logger.warn("DAOException:", e);
+            setStatusProgress(-1);
+            return;
+        }
+        setStatusMessage("done");
 
-		setStatusProgress(100);
-	}
+        setStatusProgress(100);
+    }
 
 }

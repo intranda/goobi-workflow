@@ -79,7 +79,7 @@ public class WebDav implements Serializable {
 			return rueckgabe;
 		}
 
-        List<String> dateien = NIOFileUtils.list(VerzeichnisAlle, new WebDavFilter());
+        List<String> dateien = StorageProvider.getInstance().list(VerzeichnisAlle, new WebDavFilter());
 
         return dateien;
 
@@ -246,7 +246,7 @@ public class WebDav implements Serializable {
 			User aktuellerBenutzer = Helper.getCurrentUser();
 			String VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 
-            return NIOFileUtils.list(VerzeichnisAlle, new WebDavFilter()).size();
+            return StorageProvider.getInstance().list(VerzeichnisAlle, new WebDavFilter()).size();
 		} catch (Exception e) {
 			logger.error(e);
 			return 0;

@@ -57,6 +57,20 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
+import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -70,19 +84,6 @@ import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HttpClientHelper;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.InvalidImagesException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
-import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
-import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
-import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
 
 public class MetadatenImagesHelper {
     private static final Logger logger = Logger.getLogger(MetadatenImagesHelper.class);
@@ -113,7 +114,7 @@ public class MetadatenImagesHelper {
         // get image names in directory
         Path folder = Paths.get(myProzess.getImagesTifDirectory(true));
 
-        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageNameFilter);
+        List<String> imagenames = StorageProvider.getInstance().list(folder.toString(), NIOFileUtils.imageNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
             return;
@@ -522,7 +523,7 @@ public class MetadatenImagesHelper {
                 logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
                 RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
                 logger.trace("ri");
-                 pi = new JpegInterpreter(ri);
+                pi = new JpegInterpreter(ri);
                 logger.trace("pi");
                 pi.setXResolution(outputResolution.width);
                 logger.trace("xres = " + pi.getXResolution());
@@ -621,7 +622,7 @@ public class MetadatenImagesHelper {
          * --------------------------------*/
         Path dir = Paths.get(folder);
         if (Files.exists(dir)) {
-            List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+            List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             if (dateien == null || dateien.isEmpty()) {
                 String value = Helper.getTranslation("noObjectsFound", title);
 
@@ -702,7 +703,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         /* alle Dateien durchlaufen */
         if (dateien != null && !dateien.isEmpty()) {
@@ -720,7 +721,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
         /* alle Dateien durchlaufen */
         if (dateien != null && !dateien.isEmpty()) {
@@ -746,7 +747,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         List<String> orderedFilenameList = new ArrayList<String>();
         if (dateien != null && !dateien.isEmpty()) {

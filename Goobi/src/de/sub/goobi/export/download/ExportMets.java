@@ -35,10 +35,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.MetadatenHelper;
+import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -53,26 +66,11 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
-import org.goobi.beans.Process;
-
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FilesystemHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.VariableReplacer;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
-import de.sub.goobi.helper.exceptions.InvalidImagesException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.metadaten.MetadatenHelper;
-import de.sub.goobi.metadaten.MetadatenImagesHelper;
-
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
     protected List<String> problems = new ArrayList<>();
-    
+
     protected static final Logger logger = Logger.getLogger(ExportMets.class);
 
     /**
@@ -99,8 +97,8 @@ public class ExportMets {
         String benutzerHome = "";
         if (login != null) {
             benutzerHome = login.getMyBenutzer().getHomeDir();
-        }else{
-        	benutzerHome = myProzess.getProjekt().getDmsImportImagesPath();
+        } else {
+            benutzerHome = myProzess.getProjekt().getDmsImportImagesPath();
         }
         return startExport(myProzess, benutzerHome);
     }
@@ -232,7 +230,7 @@ public class ExportMets {
                 // If the file's location string shoes no sign of any protocol,
                 // use the file protocol.
                 if (!location.contains("://")) {
-                    if(!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
+                    if (!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
                         //is a relative path
                         Path f = Paths.get(imageFolder.toString(), location);
                         location = f.toString();
@@ -260,7 +258,7 @@ public class ExportMets {
                     String foldername = myProzess.getMethodFromName(pfg.getFolder());
                     if (foldername != null) {
                         Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && Files.exists(folder) && !NIOFileUtils.list(folder.toString()).isEmpty()) {
+                        if (folder != null && Files.exists(folder) && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
                             VirtualFileGroup v = new VirtualFileGroup();
                             v.setName(pfg.getName());
                             v.setPathToFiles(vp.replace(pfg.getPath()));
@@ -308,7 +306,7 @@ public class ExportMets {
         mm.setMptrAnchorUrl(pointer);
 
         mm.setGoobiID(String.valueOf(myProzess.getId()));
-        
+
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<String>();
         if (ConfigurationHelper.getInstance().isExportValidateImages()) {

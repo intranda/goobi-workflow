@@ -16,7 +16,7 @@ import org.goobi.beans.Ruleset;
 import org.junit.rules.TemporaryFolder;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 
 public class MockProcess {
 
@@ -97,11 +97,11 @@ public class MockProcess {
         }
         Path digitalCollectionTemplate = Paths.get(tempfolder + "goobi_digitalCollections.xml");
         Path digitalCollection = Paths.get(configFolder.toString(), "goobi_digitalCollections.xml");
-        NIOFileUtils.copyFile(digitalCollectionTemplate, digitalCollection);
+        StorageProvider.getInstance().copyFile(digitalCollectionTemplate, digitalCollection);
 
         Path projectsTemplate = Paths.get(tempfolder + "goobi_projects.xml");
         Path projects = Paths.get(configFolder.toString(), "goobi_projects.xml");
-        NIOFileUtils.copyFile(projectsTemplate, projects);
+        StorageProvider.getInstance().copyFile(projectsTemplate, projects);
 
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", configFolder.toString() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("localMessages", "/opt/digiverso/junit/data/");
@@ -116,7 +116,7 @@ public class MockProcess {
         }
         Path rulesetTemplate = Paths.get(tempfolder + RULESET_NAME);
         Path rulesetFile = Paths.get(rulesetFolder.toString(), RULESET_NAME);
-        NIOFileUtils.copyFile(rulesetTemplate, rulesetFile);
+        StorageProvider.getInstance().copyFile(rulesetTemplate, rulesetFile);
         Ruleset ruleset = new Ruleset();
         ruleset.setId(11111);
         ruleset.setOrderMetadataByRuleset(true);
@@ -148,15 +148,15 @@ public class MockProcess {
         Path metsTemplate = Paths.get(tempfolder + "metadata.xml");
 
         Path metsFile = Paths.get(processFolder.toString(), "meta.xml");
-        NIOFileUtils.copyFile(metsTemplate, metsFile);
+        StorageProvider.getInstance().copyFile(metsTemplate, metsFile);
 
         Path imageTemplate = Paths.get(tempfolder, "00000001.tif");
 
         Path masterfile = Paths.get(masterfolder.toString(), "00000001.tif");
 
-        NIOFileUtils.copyFile(imageTemplate, masterfile);
+        StorageProvider.getInstance().copyFile(imageTemplate, masterfile);
         Path mediafile = Paths.get(mediafolder.toString(), "00000001.tif");
-        NIOFileUtils.copyFile(imageTemplate, mediafile);
+        StorageProvider.getInstance().copyFile(imageTemplate, mediafile);
         Path altofile = Paths.get(altofolder.toString(), "00000001.xml");
         Files.createFile(altofile);
         Path sourcefile = Paths.get(sourceFolder.toString(), "source");

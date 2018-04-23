@@ -35,25 +35,23 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.CopyProcess;
 import org.goobi.production.importer.ImportObject;
 
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
-
-import org.goobi.beans.Process;
-import org.goobi.beans.Step;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.WriteException;
 
 public class JobCreation {
     private static final Logger logger = Logger.getLogger(JobCreation.class);
@@ -166,17 +164,17 @@ public class JobCreation {
         // new folder structure for process imports
         Path importFolder = Paths.get(basepath);
         if (Files.exists(importFolder) && Files.isDirectory(importFolder)) {
-            List<Path> folderList = NIOFileUtils.listFiles(basepath);
+            List<Path> folderList = StorageProvider.getInstance().listFiles(basepath);
             for (Path directory : folderList) {
                 Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
                 if (Files.isDirectory(directory)) {
-//                    if (!Files.exists(destination)) {
-//                        Files.move(directory, destination);
-//                    } else {
+                    //                    if (!Files.exists(destination)) {
+                    //                        Files.move(directory, destination);
+                    //                    } else {
                     FileUtils.copyDirectory(directory.toFile(), destination.toFile());
-//                        NIOFileUtils.copyDirectory(directory, destination);
-                        deleteDirectory(directory);
-//                    }
+                    //                        StorageProvider.getInstance().copyDirectory(directory, destination);
+                    deleteDirectory(directory);
+                    //                    }
 
                 } else {
                     Files.move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
@@ -188,6 +186,6 @@ public class JobCreation {
     }
 
     private static void deleteDirectory(Path directory) {
-        NIOFileUtils.deleteDir(directory);
+        StorageProvider.getInstance().deleteDir(directory);
     }
 }

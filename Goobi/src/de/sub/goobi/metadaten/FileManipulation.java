@@ -42,7 +42,16 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
 
+import de.schlichtherle.io.FileInputStream;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -52,15 +61,6 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedForParentException;
-import de.schlichtherle.io.FileInputStream;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
-
-import org.goobi.beans.Process;
 
 public class FileManipulation {
     private static final Logger logger = Logger.getLogger(FileManipulation.class);
@@ -175,7 +175,7 @@ public class FileManipulation {
         }
         metadataBean.retrieveAllImages();
     }
-    
+
     private String getFileName(final Part part) {
         for (String content : part.getHeader("content-disposition").split(";")) {
             if (content.trim().startsWith("filename")) {
@@ -320,7 +320,7 @@ public class FileManipulation {
         String imagename = page.getImageName();
         String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
         try {
-            List<Path> filesInFolder = NIOFileUtils.listFiles(metadataBean.getMyProzess().getImagesDirectory() + currentFolder);
+            List<Path> filesInFolder = StorageProvider.getInstance().listFiles(metadataBean.getMyProzess().getImagesDirectory() + currentFolder);
             for (Path currentFile : filesInFolder) {
                 String currentFileName = currentFile.getFileName().toString();
                 String currentFileNamePrefix = currentFileName.substring(0, currentFileName.lastIndexOf("."));
@@ -426,7 +426,7 @@ public class FileManipulation {
             String processTitle = metadataBean.getMyProzess().getTitel();
             for (String folder : metadataBean.getAllTifFolders()) {
                 try {
-                   List<Path> filesInFolder = NIOFileUtils.listFiles(metadataBean.getMyProzess().getImagesDirectory() + folder);
+                    List<Path> filesInFolder = StorageProvider.getInstance().listFiles(metadataBean.getMyProzess().getImagesDirectory() + folder);
                     for (Path currentFile : filesInFolder) {
 
                         String filenameInFolder = currentFile.getFileName().toString();
@@ -503,9 +503,9 @@ public class FileManipulation {
         Path fileuploadFolder = Paths.get(tempDirectory + "fileupload");
 
         allImportFolder = new ArrayList<String>();
-        
+
         if (Files.isDirectory(fileuploadFolder)) {
-            allImportFolder.addAll(NIOFileUtils.list(fileuploadFolder.toString(), NIOFileUtils.folderFilter));
+            allImportFolder.addAll(StorageProvider.getInstance().list(fileuploadFolder.toString(), NIOFileUtils.folderFilter));
         }
         return allImportFolder;
     }
@@ -531,7 +531,8 @@ public class FileManipulation {
         Process currentProcess = metadataBean.getMyProzess();
         List<String> importedFilenames = new ArrayList<String>();
         for (String importName : selectedFiles) {
-            List<Path> subfolderList = NIOFileUtils.listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator() + importName);
+            List<Path> subfolderList = StorageProvider.getInstance().listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator()
+                    + importName);
             for (Path subfolder : subfolderList) {
 
                 if (useMasterFolder) {
@@ -543,7 +544,7 @@ public class FileManipulation {
                             if (!Files.exists(masterDirectory)) {
                                 Files.createDirectories(masterDirectory);
                             }
-                            List<Path >objectInFolder = NIOFileUtils.listFiles(subfolder.toString());
+                            List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
                             for (Path object : objectInFolder) {
                                 Path dest = Paths.get(masterDirectory.toString(), object.getFileName().toString());
                                 Files.copy(object, dest, NIOFileUtils.STANDARD_COPY_OPTIONS);
@@ -553,14 +554,16 @@ public class FileManipulation {
                         }
                     } else {
                         if (subfolder.getFileName().toString().contains("_")) {
-                            String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
+                            String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_")
+                                    + 1);
                             String folderName = currentProcess.getMethodFromName(folderSuffix);
                             if (folderName != null) {
                                 try {
                                     Path directory = Paths.get(folderName);
-                                    List<Path >objectInFolder = NIOFileUtils.listFiles(subfolder.toString());
+                                    List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
                                     for (Path object : objectInFolder) {
-                                        if (currentProcess.getImagesTifDirectory(false).equals(folderName + FileSystems.getDefault().getSeparator())) {
+                                        if (currentProcess.getImagesTifDirectory(false).equals(folderName + FileSystems.getDefault()
+                                                .getSeparator())) {
                                             importedFilenames.add(object.getFileName().toString());
                                         }
                                         Path dest = Paths.get(directory.toString(), object.getFileName().toString());
@@ -581,7 +584,7 @@ public class FileManipulation {
                         String folderName = currentProcess.getMethodFromName(folderSuffix);
                         if (folderName != null) {
                             Path directory = Paths.get(folderName);
-                            List<Path >objectInFolder = NIOFileUtils.listFiles(subfolder.toString());
+                            List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
                             for (Path object : objectInFolder) {
                                 try {
                                     if (currentProcess.getImagesTifDirectory(false).equals(folderName + FileSystems.getDefault().getSeparator())) {
@@ -618,7 +621,7 @@ public class FileManipulation {
 
         for (String importName : selectedFiles) {
             Path importfolder = Paths.get(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator() + importName);
-            NIOFileUtils.deleteDir(importfolder);
+            StorageProvider.getInstance().deleteDir(importfolder);
         }
         metadataBean.retrieveAllImages();
     }

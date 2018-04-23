@@ -259,7 +259,7 @@ public class GoobiScript {
             for (Integer processId : inProzesse) {
                 Process p = ProcessManager.getProcessById(processId);
                 Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
-                if (NIOFileUtils.list(imagesFolder.toString()).isEmpty()) {
+                if (StorageProvider.getInstance().list(imagesFolder.toString()).isEmpty()) {
                     Helper.setFehlerMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue()
                             + "] has allready data in image folder");
                 } else {
@@ -268,7 +268,7 @@ public class GoobiScript {
                         Helper.setFehlerMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is not existing");
                     } else {
-                        NIOFileUtils.copyDirectory(sourceFolderProzess, imagesFolder);
+                        StorageProvider.getInstance().copyDirectory(sourceFolderProzess, imagesFolder);
                         Helper.setMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
                                 + "] is copied");
                     }

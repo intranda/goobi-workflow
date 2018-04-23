@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 
 public class DmsImportThread extends Thread {
     private static final Logger logger = Logger.getLogger(DmsImportThread.class);
@@ -111,7 +111,8 @@ public class DmsImportThread extends Thread {
 
                     }
                     if (Files.exists(this.fileSuccess)
-                            && Files.readAttributes(this.fileSuccess, BasicFileAttributes.class).lastModifiedTime().toMillis() > this.timeFileSuccess) {
+                            && Files.readAttributes(this.fileSuccess, BasicFileAttributes.class).lastModifiedTime()
+                                    .toMillis() > this.timeFileSuccess) {
                         this.stop = true;
                     }
                 }
@@ -121,7 +122,7 @@ public class DmsImportThread extends Thread {
         }
         if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
             /* Images wieder löschen */
-            NIOFileUtils.deleteDir(this.folderImages);
+            StorageProvider.getInstance().deleteDir(this.folderImages);
         }
     }
 

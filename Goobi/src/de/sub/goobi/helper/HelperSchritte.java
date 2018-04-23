@@ -202,7 +202,7 @@ public class HelperSchritte {
 
         try {
 
-            int numberOfFiles = NIOFileUtils.getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }

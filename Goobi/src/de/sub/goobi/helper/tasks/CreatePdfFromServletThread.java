@@ -55,6 +55,7 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
@@ -91,7 +92,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             setStatusProgress(-1);
             return;
         }
-        CloseableHttpClient httpclient =null;
+        CloseableHttpClient httpclient = null;
         HttpGet method = null;
         try {
             httpclient = HttpClientBuilder.create().build();
@@ -107,17 +108,17 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             String imageSource = "";
             String pdfSource = "";
             String altoSource = "";
-            
-            if(StringUtils.isNotBlank(imageSource)) {                
+
+            if (StringUtils.isNotBlank(imageSource)) {
                 imageSource = "&imageSource=" + getImagePath().toUri();
             }
-            if(StringUtils.isNotBlank(pdfSource)) {                
+            if (StringUtils.isNotBlank(pdfSource)) {
                 pdfSource = "&pdfSource=" + getPdfPath().toUri();
             }
-            if(StringUtils.isNotBlank(altoSource)) {                
+            if (StringUtils.isNotBlank(altoSource)) {
                 altoSource = "&altoSource=" + getAltoPath().toUri();
             }
-            
+
             /* --------------------------------
              * using mets file
              * --------------------------------*/
@@ -138,8 +139,9 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                     contentServerUrl = this.internalServletPath + "/cs/cs?action=pdf&images=";
                 }
                 String url = "";
-           
-                List<Path> meta = NIOFileUtils.listFiles(this.getProzess().getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+
+                List<Path> meta = StorageProvider.getInstance().listFiles(this.getProzess().getImagesTifDirectory(true),
+                        NIOFileUtils.imageNameFilter);
                 ArrayList<String> filenames = new ArrayList<String>();
                 for (Path data : meta) {
                     String file = "";
@@ -152,7 +154,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 }
                 String imageString = url.substring(0, url.length() - 1);
                 String targetFileName = "&targetFileName=" + this.getProzess().getTitel() + ".pdf";
-                goobiContentServerUrl = new URL(contentServerUrl + imageString +  imageSource + pdfSource + altoSource + targetFileName);
+                goobiContentServerUrl = new URL(contentServerUrl + imageString + imageSource + pdfSource + altoSource + targetFileName);
             }
 
             /* --------------------------------
@@ -212,7 +214,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             if (logger.isDebugEnabled()) {
                 logger.debug("pdf file created: " + tempPdf.toString() + "; now copy it to " + finalPdf.toString());
             }
-           NIOFileUtils.copyFile(tempPdf, finalPdf);
+            StorageProvider.getInstance().copyFile(tempPdf, finalPdf);
             if (logger.isDebugEnabled()) {
                 logger.debug("pdf copied to " + finalPdf.toString() + "; now start cleaning up");
             }
@@ -317,7 +319,5 @@ public class CreatePdfFromServletThread extends LongRunningTask {
     public void setAltoPath(Path altoPath) {
         this.altoPath = altoPath;
     }
-    
-    
 
 }

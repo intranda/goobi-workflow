@@ -28,14 +28,14 @@
 
 package org.goobi.io;
 
-import org.apache.log4j.Logger;
-
-import de.sub.goobi.helper.NIOFileUtils;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import de.sub.goobi.helper.StorageProvider;
 
 /**
  * Creates backup for files in a given directory that match a regular expression.
@@ -112,7 +112,7 @@ public class BackupFileRotation {
 
     private void rename(String oldFileName, String newFileName) {
         try {
-            NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
+            StorageProvider.getInstance().renameTo(Paths.get(oldFileName), newFileName);
         } catch (IOException ioe) {
             logger.trace("Renaming file from " + oldFileName + " to " + newFileName + " failed. Reason: " + ioe.getMessage());
         }
@@ -135,7 +135,7 @@ public class BackupFileRotation {
     }
 
     private List<Path> generateBackupBaseNameFileList(String filterFormat, String directoryOfBackupFiles) {
-        return NIOFileUtils.listFiles(directoryOfBackupFiles, new FileListFilter(filterFormat));
+        return StorageProvider.getInstance().listFiles(directoryOfBackupFiles, new FileListFilter(filterFormat));
     }
 
 }

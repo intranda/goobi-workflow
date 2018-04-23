@@ -52,10 +52,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.goobi.beans.Docket;
-import org.goobi.beans.Project;
-import org.goobi.beans.Ruleset;
-import org.goobi.beans.User;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -63,16 +59,13 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.export.ExportDocket;
 
-import ugh.dl.Fileformat;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -91,6 +84,10 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
+import ugh.dl.Fileformat;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.WriteException;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = Logger.getLogger(Process.class);
@@ -326,7 +323,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         /* nur die _tif-Ordner anzeigen, die nicht mir orig_ anfangen */
 
         String tifOrdner = "";
-        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterMediaFolder);
+        List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), filterMediaFolder);
 
         if (verzeichnisse != null) {
             for (int i = 0; i < verzeichnisse.size(); i++) {
@@ -340,7 +337,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (tifOrdner.equals("") && useFallBack) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             if (!suffix.equals("")) {
-                List<String> folderList = NIOFileUtils.list(dir.toString());
+                List<String> folderList = StorageProvider.getInstance().list(dir.toString());
                 for (String folder : folderList) {
                     if (folder.endsWith(suffix) && !folder.startsWith(DIRECTORY_PREFIX)) {
                         tifOrdner = folder;
@@ -354,9 +351,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             if (!suffix.equals("")) {
                 Path tif = Paths.get(tifOrdner);
-                List<String> files = NIOFileUtils.list(getImagesDirectory() + tif.toString());
+                List<String> files = StorageProvider.getInstance().list(getImagesDirectory() + tif.toString());
                 if (files == null || files.size() == 0) {
-                    List<String> folderList = NIOFileUtils.list(dir.toString());
+                    List<String> folderList = StorageProvider.getInstance().list(dir.toString());
                     for (String folder : folderList) {
                         if (folder.endsWith(suffix) && !folder.startsWith(DIRECTORY_PREFIX)) {
                             tifOrdner = folder;
@@ -398,7 +395,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return false;
         }
 
-        if (Files.exists(testMe) && !NIOFileUtils.list(testMe.toString()).isEmpty()) {
+        if (Files.exists(testMe) && !StorageProvider.getInstance().list(testMe.toString()).isEmpty()) {
             return true;
         } else {
             return false;
@@ -440,7 +437,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             /* nur die _tif-Ordner anzeigen, die mit orig_ anfangen */
 
             String origOrdner = "";
-            List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterMasterFolder);
+            List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), filterMasterFolder);
             for (int i = 0; i < verzeichnisse.size(); i++) {
                 origOrdner = verzeichnisse.get(i);
             }
@@ -448,7 +445,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (origOrdner.equals("") && useFallBack) {
                 String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
-                    List<String> folderList = NIOFileUtils.list(dir.toString());
+                    List<String> folderList = StorageProvider.getInstance().list(dir.toString());
                     for (String folder : folderList) {
                         if (folder.endsWith(suffix)) {
                             origOrdner = folder;
@@ -462,9 +459,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
                     Path tif = Paths.get(origOrdner);
-                    List<String> files = NIOFileUtils.list(tif.toString());
+                    List<String> files = StorageProvider.getInstance().list(tif.toString());
                     if (files == null || files.isEmpty()) {
-                        List<String> folderList = NIOFileUtils.list(dir.toString());
+                        List<String> folderList = StorageProvider.getInstance().list(dir.toString());
                         for (String folder : folderList) {
                             if (folder.endsWith(suffix)) {
                                 origOrdner = folder;
@@ -499,7 +496,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Path dir = Paths.get(getImagesDirectory());
 
         Path sourceFolder = null;
-        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), filterSourceFolder);
+        List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), filterSourceFolder);
         if (verzeichnisse == null || verzeichnisse.isEmpty()) {
             sourceFolder = Paths.get(dir.toString(), titel + "_source");
             if (ConfigurationHelper.getInstance().isCreateSourceFolder()) {
@@ -550,7 +547,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
     }
-    
+
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
     }
@@ -972,7 +969,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (!Files.exists(metadataFile)) {
             return;
         }
-        List<Path> meta = NIOFileUtils.listFiles(metaFilePath.toString(), filter);
+        List<Path> meta = StorageProvider.getInstance().listFiles(metaFilePath.toString(), filter);
         if (meta != null) {
             List<Path> files = new ArrayList<>(meta);
             Collections.reverse(files);
@@ -1080,7 +1077,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         DirectoryStream.Filter<Path> filter = new FileListFilter("temp.*\\.xml.*+");
 
         try {
-            List<Path> temporaryFiles = NIOFileUtils.listFiles(getProcessDataDirectory(), filter);
+            List<Path> temporaryFiles = StorageProvider.getInstance().listFiles(getProcessDataDirectory(), filter);
             if (!temporaryFiles.isEmpty()) {
                 for (Path file : temporaryFiles) {
                     Files.delete(file);
@@ -1105,11 +1102,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             if (Files.exists(temporaryFile)) {
                 Path meta = Paths.get(getProcessDataDirectory(), "meta.xml");
-                NIOFileUtils.copyFile(temporaryFile, meta);
+                StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
             if (Files.exists(temporaryAnchorFile)) {
                 Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
-                NIOFileUtils.copyFile(temporaryAnchorFile, metaAnchor);
+                StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
@@ -1331,6 +1328,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.docketId = docketId;
     }
 
+    @Override
     public Process clone() {
         Process p = new Process();
         p.setDocket(docket);
@@ -1425,9 +1423,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
             try {
-                List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+                List<Path> images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
                 if (images == null || images.size() == 0) {
-                    images = NIOFileUtils.listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
+                    images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
                 }
 
                 if (images != null && !images.isEmpty()) {

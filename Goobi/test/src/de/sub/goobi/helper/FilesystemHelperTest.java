@@ -49,27 +49,27 @@ public class FilesystemHelperTest {
         String oldFileName = "old.xml";
         String newFileName = "new.xml";
 
-        NIOFileUtils.renameTo(Paths.get(oldFileName), newFileName);
+        StorageProvider.getInstance().renameTo(Paths.get(oldFileName), newFileName);
     }
 
     @Test
     public void shouldRenameAFile() throws IOException {
         Path oldPath = createFile();
-        Path newPath = NIOFileUtils.renameTo(oldPath, "new.xml");
+        Path newPath = StorageProvider.getInstance().renameTo(oldPath, "new.xml");
         assertTrue(Files.exists(newPath));
         assertFalse(Files.exists(oldPath));
     }
 
     @Test
     public void nothingHappensIfSourceFilenameIsNotSet() throws IOException {
-        Path p = NIOFileUtils.renameTo(null, "new.xml");
+        Path p = StorageProvider.getInstance().renameTo(null, "new.xml");
         assertNull(p);
     }
 
     @Test
     public void nothingHappensIfTargetFilenameIsNotSet() throws IOException {
         Path path = createFile();
-        Path p = NIOFileUtils.renameTo(path, null);
+        Path p = StorageProvider.getInstance().renameTo(path, null);
         assertNull(p);
     }
 

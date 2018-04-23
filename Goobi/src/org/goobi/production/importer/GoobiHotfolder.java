@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 import org.goobi.production.plugin.interfaces.IGoobiHotfolder;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 
 public class GoobiHotfolder implements IGoobiHotfolder {
 
@@ -72,7 +72,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<Path> getCurrentFiles() {
-        List<Path> files = NIOFileUtils.listFiles(this.folder.toString());
+        List<Path> files = StorageProvider.getInstance().listFiles(this.folder.toString());
         return files;
     }
 
@@ -84,7 +84,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<String> getFilesByName(String name) {
-        List<String> files = NIOFileUtils.list(folder.toString());
+        List<String> files = StorageProvider.getInstance().list(folder.toString());
         List<String> answer = new ArrayList<String>();
         for (String file : files) {
             if (file.contains(name) && !file.contains("anchor")) {
@@ -102,7 +102,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<String> getFileNamesByFilter(DirectoryStream.Filter<Path> filter) {
-        return NIOFileUtils.list(folder.toString(), filter);
+        return StorageProvider.getInstance().list(folder.toString(), filter);
     }
 
     /**
@@ -113,7 +113,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<Path> getFilesByFilter(DirectoryStream.Filter<Path> filter) {
-        return NIOFileUtils.listFiles(folder.toString(), filter);
+        return StorageProvider.getInstance().listFiles(folder.toString(), filter);
     }
 
     @Override
