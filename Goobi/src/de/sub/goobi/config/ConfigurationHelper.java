@@ -85,9 +85,9 @@ public class ConfigurationHelper implements Serializable {
         String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
         return goobiFolder;
     }
-    
+
     private String getConfigLocalPath() {
-    	return getGoobiFolder() + "config/";
+        return getGoobiFolder() + "config/";
     }
 
     private int getLocalInt(String inPath, int inDefault) {
@@ -199,27 +199,27 @@ public class ConfigurationHelper implements Serializable {
     // folder
 
     public String getConfigurationFolder() {
-    	return getGoobiFolder() + "config/";
+        return getGoobiFolder() + "config/";
     }
 
     public String getTemporaryFolder() {
-    	return getGoobiFolder() + "tmp/";
+        return getGoobiFolder() + "tmp/";
     }
 
     public String getXsltFolder() {
-    	return getGoobiFolder() + "xslt/";
+        return getGoobiFolder() + "xslt/";
     }
 
     public String getMetadataFolder() {
-    	return getLocalString("dataFolder", getGoobiFolder() + "metadata/");
+        return getLocalString("dataFolder", getGoobiFolder() + "metadata/");
     }
 
     public String getRulesetFolder() {
-    	return getGoobiFolder() + "rulesets/";
+        return getGoobiFolder() + "rulesets/";
     }
 
     public String getScriptsFolder() {
-    	return getGoobiFolder() + "scripts/";
+        return getGoobiFolder() + "scripts/";
     }
 
     public String getUserFolder() {
@@ -231,11 +231,11 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getPluginFolder() {
-    	return getGoobiFolder() + "plugins/";
+        return getGoobiFolder() + "plugins/";
     }
 
     public String getPathForLocalMessages() {
-    	return getGoobiFolder() + "config/";
+        return getGoobiFolder() + "config/";
     }
 
     public String getDoneDirectoryName() {
@@ -320,6 +320,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("batchMaxSize", 100);
     }
 
+    public boolean useS3() {
+        return getLocalBoolean("useS3", false);
+    }
+
     // process creation
 
     public String getTiffHeaderArtists() {
@@ -327,43 +331,43 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirMeta() {
-//        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
-    	String s = getLocalString("script_createDirMeta", "");
-    	if (s.isEmpty()){
-    		return "";
-    	} else{
-    		return getScriptsFolder() + s;
-    	}
+        //        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
+        String s = getLocalString("script_createDirMeta", "");
+        if (s.isEmpty()) {
+            return "";
+        } else {
+            return getScriptsFolder() + s;
+        }
     }
 
     public String getScriptCreateDirUserHome() {
-//        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
-    	String s = getLocalString("script_createDirUserHome", "");
-    	if (s.isEmpty()){
-    		return "";
-    	} else{
-    		return getScriptsFolder() + s;
-    	}
+        //        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
+        String s = getLocalString("script_createDirUserHome", "");
+        if (s.isEmpty()) {
+            return "";
+        } else {
+            return getScriptsFolder() + s;
+        }
     }
 
     public String getScriptDeleteSymLink() {
         //  return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
-    	String s = getLocalString("script_deleteSymLink", "");
-    	if (s.isEmpty()){
-    		return "";
-    	} else{
-    		return getScriptsFolder() + s;
-    	}
+        String s = getLocalString("script_deleteSymLink", "");
+        if (s.isEmpty()) {
+            return "";
+        } else {
+            return getScriptsFolder() + s;
+        }
     }
 
     public String getScriptCreateSymLink() {
-    	// return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
+        // return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
         String s = getLocalString("script_createSymLink", "");
-    	if (s.isEmpty()){
-    		return "";
-    	} else{
-    		return getScriptsFolder() + s;
-    	}
+        if (s.isEmpty()) {
+            return "";
+        } else {
+            return getScriptsFolder() + s;
+        }
     }
 
     public boolean isMassImportAllowed() {
@@ -656,19 +660,19 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isShowSecondLogField() {
-     return getLocalBoolean("ProcessLogShowSecondField", false);
-        
+        return getLocalBoolean("ProcessLogShowSecondField", false);
+
     }
-    
+
     public boolean isShowThirdLogField() {
-     return getLocalBoolean("ProcessLogShowThirdField", false);
-        
+        return getLocalBoolean("ProcessLogShowThirdField", false);
+
     }
-    
-    public List<String> getExcludeMonitoringAgentNames(){
+
+    public List<String> getExcludeMonitoringAgentNames() {
         return getLocalList("excludeMonitoringAgentName");
     }
-    
+
     /**
      * Check if Mysql or H2 is used as internal database
      *
@@ -678,5 +682,5 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseH2DB() {
         return MySQLHelper.isUsingH2();
     }
-    
+
 }
