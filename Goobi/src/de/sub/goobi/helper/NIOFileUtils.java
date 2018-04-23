@@ -538,14 +538,39 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
         return true;
     }
-    
+
     @Override
     public boolean isFileExists(Path path) {
         return Files.exists(path);
     }
-    
+
     @Override
     public boolean isDirectory(Path path) {
         return Files.isDirectory(path);
+    }
+
+    @Override
+    public void createDirectories(Path path) throws IOException {
+        Files.createDirectories(path);
+    }
+
+    @Override
+    public long getLastModifiedDate(Path path) throws IOException {
+        return Files.readAttributes(path, BasicFileAttributes.class).lastModifiedTime().toMillis();
+    }
+
+    @Override
+    public long getCreationDate(Path path) throws IOException {
+        return Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
+    }
+
+    @Override
+    public Path createTemporaryFile(String prefix, String suffix) throws IOException {
+        return Files.createTempFile(prefix, suffix);
+    }
+
+    @Override
+    public void deleteFile(Path path) throws IOException {
+        Files.delete(path);
     }
 }
