@@ -28,7 +28,6 @@ package de.sub.goobi.export.download;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -258,7 +257,7 @@ public class ExportMets {
                     String foldername = myProzess.getMethodFromName(pfg.getFolder());
                     if (foldername != null) {
                         Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && Files.exists(folder) && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
+                        if (folder != null && StorageProvider.getInstance().isFileExists(folder) && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
                             VirtualFileGroup v = new VirtualFileGroup();
                             v.setName(pfg.getName());
                             v.setPathToFiles(vp.replace(pfg.getPath()));
@@ -338,17 +337,17 @@ public class ExportMets {
 
         }
         if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
-            Path tempFile = Files.createTempFile(myProzess.getTitel(), ".xml");
+            Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
             String filename = tempFile.toString();
             mm.write(filename);
-            Files.copy(tempFile, Paths.get(targetFileName));
+            StorageProvider.getInstance().copyFile(tempFile, Paths.get(targetFileName));
 
             Path anchorFile = Paths.get(filename.replace(".xml", "_anchor.xml"));
-            if (Files.exists(anchorFile)) {
-                Files.copy(anchorFile, Paths.get(targetFileName.replace(".xml", "_anchor.xml")));
-                Files.delete(anchorFile);
+            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+                StorageProvider.getInstance().copyFile(anchorFile, Paths.get(targetFileName.replace(".xml", "_anchor.xml")));
+                StorageProvider.getInstance().deleteDir(anchorFile);
             }
-            Files.delete(tempFile);
+            StorageProvider.getInstance().deleteDir(tempFile);
         } else {
             mm.write(targetFileName);
         }

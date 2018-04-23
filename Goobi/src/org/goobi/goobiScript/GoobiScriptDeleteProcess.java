@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -66,11 +65,11 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                     if (contentOnly) {
                         try {
                             Path ocr = Paths.get(p.getOcrDirectory());
-                            if (Files.exists(ocr)) {
+                            if (StorageProvider.getInstance().isFileExists(ocr)) {
                                 StorageProvider.getInstance().deleteDir(ocr);
                             }
                             Path images = Paths.get(p.getImagesDirectory());
-                            if (Files.exists(images)) {
+                            if (StorageProvider.getInstance().isFileExists(images)) {
                                 StorageProvider.getInstance().deleteDir(images);
                             }
                             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -90,7 +89,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         try {
                             StorageProvider.getInstance().deleteDir(Paths.get(p.getProcessDataDirectory()));
                             Path ocr = Paths.get(p.getOcrDirectory());
-                            if (Files.exists(ocr)) {
+                            if (StorageProvider.getInstance().isFileExists(ocr)) {
                                 StorageProvider.getInstance().deleteDir(ocr);
                             }
                             ProcessManager.deleteProcess(p);

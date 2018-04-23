@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -242,6 +241,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
      */
     public Integer getTemplate() {
         return this.template;
+
     }
 
     /**
@@ -278,20 +278,20 @@ public class GoobiHotfolder implements IGoobiHotfolder {
     }
 
     public boolean isLocked() {
-        return Files.exists(getLockFile());
+        return StorageProvider.getInstance().isFileExists(getLockFile());
     }
 
     public void lock() throws IOException {
         Path f = getLockFile();
-        if (!Files.exists(getLockFile())) {
-            Files.createFile(f);
+        if (!StorageProvider.getInstance().isFileExists(getLockFile())) {
+            StorageProvider.getInstance().createFile(f);
         }
     }
 
     public void unlock() throws IOException {
         Path f = getLockFile();
-        if (Files.exists(getLockFile())) {
-            Files.delete(f);
+        if (StorageProvider.getInstance().isFileExists(getLockFile())) {
+            StorageProvider.getInstance().deleteDir(f);
         }
     }
 }

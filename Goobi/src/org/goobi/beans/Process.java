@@ -32,11 +32,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -395,7 +392,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return false;
         }
 
-        if (Files.exists(testMe) && !StorageProvider.getInstance().list(testMe.toString()).isEmpty()) {
+        if (StorageProvider.getInstance().isFileExists(testMe) && !StorageProvider.getInstance().list(testMe.toString()).isEmpty()) {
             return true;
         } else {
             return false;
@@ -500,7 +497,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (verzeichnisse == null || verzeichnisse.isEmpty()) {
             sourceFolder = Paths.get(dir.toString(), titel + "_source");
             if (ConfigurationHelper.getInstance().isCreateSourceFolder()) {
-                Files.createDirectory(sourceFolder);
+                StorageProvider.getInstance().createDirectories(sourceFolder);
             }
         } else {
             sourceFolder = Paths.get(dir.toString(), verzeichnisse.get(0));
@@ -517,7 +514,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             pst.initialize(this);
             pst.execute();
             if (pst.getStatusProgress() == -1) {
-                if (!Files.exists(Paths.get(pfad, "images")) && !Files.exists(Paths.get(pfad, "meta.xml"))) {
+                if (!StorageProvider.getInstance().isFileExists(Paths.get(pfad, "images")) && !StorageProvider.getInstance().isFileExists(Paths.get(
+                        pfad, "meta.xml"))) {
                     throw new SwapException(pst.getStatusMessage());
                 } else {
                     setSwappedOutGui(false);
@@ -966,7 +964,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         DirectoryStream.Filter<Path> filter = new FileListFilter(FORMAT);
         Path metaFilePath = Paths.get(getProcessDataDirectory());
         Path metadataFile = Paths.get(getMetadataFilePath());
-        if (!Files.exists(metadataFile)) {
+        if (!StorageProvider.getInstance().isFileExists(metadataFile)) {
             return;
         }
         List<Path> meta = StorageProvider.getInstance().listFiles(metaFilePath.toString(), filter);
@@ -983,23 +981,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
                 while (count > 0) {
                     for (Path data : files) {
-                        if (Files.size(data) != 0) {
+                        if (StorageProvider.getInstance().getFileSize(data) != 0) {
 
                             if (data.getFileName().toString().endsWith("xml." + (count - 1))) {
-                                FileTime lastModified = Files.readAttributes(data, BasicFileAttributes.class).lastModifiedTime();
                                 Path newFile = Paths.get(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
-                                Files.copy(data, newFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
-                                if (lastModified.toMillis() > 0L) {
-                                    Files.setLastModifiedTime(newFile, lastModified);
-                                }
+                                StorageProvider.getInstance().copyFile(data, newFile);
                             }
                             if (data.getFileName().toString().endsWith(".xml") && count == 1) {
-                                FileTime lastModified = Files.readAttributes(data, BasicFileAttributes.class).lastModifiedTime();
                                 Path newFile = Paths.get(data.toString() + ".1");
-                                Files.copy(data, newFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
-                                if (lastModified.toMillis() > 0L) {
-                                    Files.setLastModifiedTime(newFile, lastModified);
-                                }
+                                StorageProvider.getInstance().copyFile(data, newFile);
+
                             }
                         }
                     }
@@ -1013,7 +1004,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             PreferencesException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
-        if (!Files.exists(f)) {
+        if (!StorageProvider.getInstance().isFileExists(f)) {
             result = false;
         }
 
@@ -1059,7 +1050,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
             DAOException {
-        if (Files.exists(Paths.get(getTemplateFilePath()))) {
+        if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
             if (logger.isDebugEnabled()) {
@@ -1080,7 +1071,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             List<Path> temporaryFiles = StorageProvider.getInstance().listFiles(getProcessDataDirectory(), filter);
             if (!temporaryFiles.isEmpty()) {
                 for (Path file : temporaryFiles) {
-                    Files.delete(file);
+                    StorageProvider.getInstance().deleteDir(file);
                 }
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
@@ -1100,11 +1091,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
             Path temporaryAnchorFile = Paths.get(getProcessDataDirectory(), "temp_anchor.xml");
 
-            if (Files.exists(temporaryFile)) {
+            if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 Path meta = Paths.get(getProcessDataDirectory(), "meta.xml");
                 StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
-            if (Files.exists(temporaryAnchorFile)) {
+            if (StorageProvider.getInstance().isFileExists(temporaryAnchorFile)) {
                 Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
@@ -1117,11 +1108,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public boolean checkForNewerTemporaryMetadataFiles() {
         try {
             Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
-            if (Files.exists(temporaryFile)) {
+            if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 Path metadataFile = Paths.get(getMetadataFilePath());
-                FileTime tempTime = (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
-                FileTime metaTime = (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
-                return tempTime.toMillis() > metaTime.toMillis();
+              long tempTime = StorageProvider.getInstance().getLastModifiedDate(temporaryFile);
+//              (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
+                long metaTime = StorageProvider.getInstance().getLastModifiedDate(metadataFile);
+//                        (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
+//                return tempTime.toMillis() > metaTime.toMillis();
+                return tempTime > metaTime;
 
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
@@ -1204,7 +1198,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Path xsltfile = Paths.get(rootpath, "docket.xsl");
         if (docket != null) {
             xsltfile = Paths.get(rootpath, docket.getFile());
-            if (!Files.exists(xsltfile)) {
+            if (!StorageProvider.getInstance().isFileExists(xsltfile)) {
                 Helper.setFehlerMeldung("docketMissing");
                 return "";
             }
@@ -1262,7 +1256,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String folder = this.getImagesTifDirectory(false);
             folder = folder.substring(0, folder.lastIndexOf("_"));
             folder = folder + "_" + methodName;
-            if (Files.exists(Paths.get(folder))) {
+            if (StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
                 return folder;
             }
 

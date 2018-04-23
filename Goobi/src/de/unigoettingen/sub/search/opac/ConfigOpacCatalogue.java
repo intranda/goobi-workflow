@@ -30,7 +30,6 @@ package de.unigoettingen.sub.search.opac;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,7 @@ import org.jdom2.output.XMLOutputter;
 import org.w3c.dom.Node;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import lombok.Getter;
 
 @Getter
@@ -150,7 +150,7 @@ public class ConfigOpacCatalogue {
         }
 
         /* Ausgabe des überarbeiteten Opac-Ergebnisses */
-        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
+        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && StorageProvider.getInstance().isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
             debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
         }
         return myHitlist;

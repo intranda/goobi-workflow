@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -138,6 +137,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jj2000.j2k.codestream.HeaderInfo.SOT;
 import ugh.dl.ContentFile;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -329,11 +329,11 @@ public class ProcessBean extends BasicBean {
                             // renaming image directories
                             String imageDirectory = myProzess.getImagesDirectory();
                             Path dir = Paths.get(imageDirectory);
-                            if (Files.exists(dir) && Files.isDirectory(dir)) {
+                            if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                                 List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                                 for (Path imagedir : subdirs) {
-                                    if (Files.isDirectory(imagedir)) {
-                                        Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                    if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -342,11 +342,11 @@ public class ProcessBean extends BasicBean {
                             // renaming ocr directories
                             String ocrDirectory = myProzess.getOcrDirectory();
                             Path dir = Paths.get(ocrDirectory);
-                            if (Files.exists(dir) && Files.isDirectory(dir)) {
+                            if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                                 List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                                 for (Path imagedir : subdirs) {
-                                    if (Files.isDirectory(imagedir)) {
-                                        Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                    if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -443,11 +443,11 @@ public class ProcessBean extends BasicBean {
         // deleteMetadataDirectory();
         try {
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
-            if (Files.exists(ocr)) {
+            if (StorageProvider.getInstance().isFileExists(ocr)) {
                 StorageProvider.getInstance().deleteDir(ocr);
             }
             Path images = Paths.get(this.myProzess.getImagesDirectory());
-            if (Files.exists(images)) {
+            if (StorageProvider.getInstance().isFileExists(images)) {
                 StorageProvider.getInstance().deleteDir(images);
             }
         } catch (Exception e) {
@@ -467,7 +467,7 @@ public class ProcessBean extends BasicBean {
         try {
             StorageProvider.getInstance().deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
-            if (Files.exists(ocr)) {
+            if (StorageProvider.getInstance().isFileExists(ocr)) {
                 StorageProvider.getInstance().deleteDir(ocr);
             }
         } catch (Exception e) {
@@ -2018,7 +2018,7 @@ public class ProcessBean extends BasicBean {
     public List<String> getXsltList() {
         List<String> answer = new ArrayList<String>();
         Path folder = Paths.get("xsltFolder");
-        if (Files.exists(folder) && Files.isDirectory(folder)) {
+        if (StorageProvider.getInstance().isFileExists(folder) && StorageProvider.getInstance().isDirectory(folder)) {
             List<String> files = StorageProvider.getInstance().list(folder.toString());
 
             for (String file : files) {

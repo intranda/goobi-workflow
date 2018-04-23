@@ -43,6 +43,7 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.AclFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributeView;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.CRC32;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -572,5 +574,66 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public void deleteFile(Path path) throws IOException {
         Files.delete(path);
+    }
+
+    public void move(Path oldPath, Path newPath) throws IOException {
+        Files.move(oldPath, newPath);
+    }
+
+    @Override
+    public boolean isWritable(Path path) {
+        return Files.isWritable(path);
+    }
+
+    @Override
+    public boolean isReadable(Path path) {
+        return Files.isReadable(path);
+    }
+
+    @Override
+    public long getFileSize(Path path) throws IOException {
+        return Files.size(path);
+    }
+
+    @Override
+    public long getDirectorySize(Path path) throws IOException {
+
+        final AtomicLong size = new AtomicLong(0);
+
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    size.addAndGet(attrs.size());
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException e) {
+                    log.debug("skipped: " + file, e);
+                    // Skip folders that can't be traversed
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+                    if (e != null) {
+                        log.debug("had trouble traversing: " + dir, e);
+                    }
+                    // Ignore errors traversing a folder
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new AssertionError("walkFileTree will not throw IOException if the FileVisitor does not");
+        }
+
+        return size.get();
+    }
+
+    @Override
+    public void createFile(Path path) throws IOException {
+        Files.createFile(path);
+
     }
 }

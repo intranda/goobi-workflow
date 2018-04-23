@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -128,9 +127,9 @@ public class WebDav implements Serializable {
 		if (inBenutzer != null && inBenutzer.isMitMassendownload()) {
             nach += myProzess.getProjekt().getTitel() + "/";
             Path projectDirectory = Paths.get(nach = nach.replaceAll(" ", "__"));
-            if (!Files.exists(projectDirectory)) {
+            if (!StorageProvider.getInstance().isFileExists(projectDirectory)) {
                 try {
-                    Files.createDirectories(projectDirectory);
+                    StorageProvider.getInstance().createDirectories(projectDirectory);
                 } catch (IOException e) {
                     logger.error(e);
 				Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", nach.replaceAll(" ", "__")));
@@ -199,7 +198,7 @@ public class WebDav implements Serializable {
         Path benutzerHome = Paths.get(nach);
 
 		// wenn der Ziellink schon existiert, dann abbrechen
-        if (Files.exists(benutzerHome)) {
+        if (StorageProvider.getInstance().isFileExists(benutzerHome)) {
 			return;
 		}
 
@@ -227,7 +226,7 @@ public class WebDav implements Serializable {
 	private void saveTiffHeader(Process inProzess) {
 		try {
 			/* prüfen, ob Tiff-Header schon existiert */
-            if (Files.exists(Paths.get(inProzess.getImagesDirectory() + "tiffwriter.conf"))) {
+            if (StorageProvider.getInstance().isFileExists(Paths.get(inProzess.getImagesDirectory() + "tiffwriter.conf"))) {
 				return;
 			}
 			TiffHeader tif = new TiffHeader(inProzess);

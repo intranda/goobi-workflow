@@ -54,5 +54,16 @@ public interface StorageProviderInterface {
     public Path createTemporaryFile(String prefix, String suffix) throws IOException;
 
     public void deleteFile(Path path) throws IOException;
+    
+    public void move(Path oldPath, Path newPath) throws IOException;
+    
+    public boolean isWritable(Path path);
+    
+    public boolean isReadable(Path path);
 
+    public long getFileSize(Path path) throws IOException;
+    
+    public long getDirectorySize(Path path) throws IOException;
+    
+    public void createFile(Path path) throws IOException;
 }

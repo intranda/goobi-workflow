@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -307,7 +306,7 @@ public class MetadatenImagesHelper {
                     } else {
                         imageFile = Paths.get(inProzess.getImagesDirectory() + directory, page.getImageName());
                     }
-                    if (Files.exists(imageFile)) {
+                    if (StorageProvider.getInstance().isFileExists(imageFile)) {
                         assignedImages.put(page.getImageName(), page);
                     } else {
                         try {
@@ -621,7 +620,7 @@ public class MetadatenImagesHelper {
          * die Seiten anlegen 
          * --------------------------------*/
         Path dir = Paths.get(folder);
-        if (Files.exists(dir)) {
+        if (StorageProvider.getInstance().isFileExists(dir)) {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             if (dateien == null || dateien.isEmpty()) {
                 String value = Helper.getTranslation("noObjectsFound", title);

@@ -29,7 +29,6 @@ package de.sub.goobi.helper.tasks;
  */
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -78,7 +77,7 @@ public class ProcessSwapInTask extends LongRunningTask {
             return;
         }
         Path swapFile = Paths.get(swapPath);
-        if (!Files.exists(swapFile)) {
+        if (!StorageProvider.getInstance().isFileExists(swapFile)) {
             setStatusMessage("Swap folder does not exist or is not mounted");
             setStatusProgress(-1);
             return;
@@ -96,12 +95,12 @@ public class ProcessSwapInTask extends LongRunningTask {
         Path fileIn = Paths.get(processDirectory);
         Path fileOut = Paths.get(swapPath + getProzess().getId() + FileSystems.getDefault().getSeparator());
 
-        if (!Files.exists(fileOut)) {
+        if (!StorageProvider.getInstance().isFileExists(fileOut)) {
             setStatusMessage(getProzess().getTitel() + ": swappingOutTarget does not exist");
             setStatusProgress(-1);
             return;
         }
-        if (!Files.exists(fileIn)) {
+        if (!StorageProvider.getInstance().isFileExists(fileIn)) {
             setStatusMessage(getProzess().getTitel() + ": process data folder does not exist");
             setStatusProgress(-1);
             return;

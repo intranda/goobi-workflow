@@ -32,7 +32,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -65,6 +64,7 @@ import org.goobi.beans.User;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.encryption.MD4;
 
 public class LdapAuthentication {
@@ -116,7 +116,7 @@ public class LdapAuthentication {
                 logger.debug("HomeVerzeichnis pruefen");
             }
             String homePath = getUserHomeDirectory(inBenutzer);
-            if (!Files.exists(Paths.get(homePath))) {
+            if (!StorageProvider.getInstance().isFileExists(Paths.get(homePath))) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("HomeVerzeichnis existiert noch nicht");
                 }
@@ -628,7 +628,7 @@ public class LdapAuthentication {
     private void loadCertificates(String path, String passwd) {
         /* wenn die Zertifikate noch nicht im Keystore sind, jetzt einlesen */
         Path myPfad = Paths.get(path);
-        if (!Files.exists(myPfad)) {
+        if (!StorageProvider.getInstance().isFileExists(myPfad)) {
             try {
                 FileOutputStream ksos = new FileOutputStream(path);
                 // TODO: Rename parameters to something more meaningful, this is quite specific for the GDZ

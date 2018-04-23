@@ -29,7 +29,6 @@ package de.sub.goobi.helper;
  */
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -124,7 +123,7 @@ public class HelperSchritte {
 
                 pairs = extractMetadata(metadataFile, pairs);
 
-                if (Files.exists(anchorFile)) {
+                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
                     pairs.putAll(extractMetadata(anchorFile, pairs));
                 }
 

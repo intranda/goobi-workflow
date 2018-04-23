@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -76,6 +75,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -188,7 +188,7 @@ public class MassImportForm {
         this.possibleDigitalCollection = new ArrayList<String>();
         ArrayList<String> defaultCollections = new ArrayList<String>();
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-        if (!Files.exists(Paths.get(filename))) {
+        if (!StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
@@ -426,11 +426,8 @@ public class MassImportForm {
         currentProcessNo = 0;
         this.idList = null;
         if (this.importFile != null) {
-            try {
-                Files.delete(this.importFile);
-            } catch (IOException e) {
-                log.error(e);
-            }
+            StorageProvider.getInstance().deleteDir(this.importFile);
+
             this.importFile = null;
         }
         if (selectedFilenames != null && !selectedFilenames.isEmpty()) {

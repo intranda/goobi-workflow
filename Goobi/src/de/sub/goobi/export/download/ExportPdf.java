@@ -32,7 +32,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class ExportPdf extends ExportMets {
          * -------------------------------- first of all write mets-file in images-Folder of process --------------------------------
          */
 
-        Path metsTempFile = Files.createTempFile(myProzess.getTitel(), ".xml");
+        Path metsTempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
         writeMetsFile(myProzess, metsTempFile.toString(), gdzfile, true);
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "mets file created");
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "start pdf generation now");
@@ -97,7 +96,7 @@ public class ExportPdf extends ExportMets {
         String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
         Path imagesPath = Paths.get(myProzess.getImagesTifDirectory(true));
-        if (!Files.exists(imagesPath) || StorageProvider.getInstance().list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
+        if (!StorageProvider.getInstance().isFileExists(imagesPath) || StorageProvider.getInstance().list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
             imagesPath = Paths.get(myProzess.getImagesOrigDirectory(true));
         }
         Path pdfPath = Paths.get(myProzess.getOcrPdfDirectory());
@@ -137,7 +136,7 @@ public class ExportPdf extends ExportMets {
                  * -------------------------------- using mets file --------------------------------
                  */
 
-                if (Files.exists(metsTempFile)) {
+                if (StorageProvider.getInstance().isFileExists(metsTempFile)) {
                     /* if no contentserverurl defined use internal goobiContentServerServlet */
                     if (contentServerUrl == null || contentServerUrl.length() == 0) {
                         contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";

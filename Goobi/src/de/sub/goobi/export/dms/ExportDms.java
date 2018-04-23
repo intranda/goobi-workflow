@@ -28,7 +28,6 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -191,8 +190,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     return false;
                 }
 
-                if (!Files.exists(benutzerHome)) {
-                    Files.createDirectories(benutzerHome);
+                if (!StorageProvider.getInstance().isFileExists(benutzerHome)) {
+                    StorageProvider.getInstance().createDirectories(benutzerHome);
                 }
             }
 
@@ -222,21 +221,21 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             String ed = myProzess.getExportDirectory();
             ed = replacer.replace(ed);
             Path exportFolder = Paths.get(ed);
-            if (Files.exists(exportFolder) && Files.isDirectory(exportFolder)) {
+            if (StorageProvider.getInstance().isFileExists(exportFolder) && StorageProvider.getInstance().isDirectory(exportFolder)) {
                 List<Path> subdir = StorageProvider.getInstance().listFiles(ed);
 
                 for (Path dir : subdir) {
-                    if (Files.isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
+                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
                         if (!dir.getFileName().toString().matches(".+\\.\\d+")) {
                             String suffix = dir.getFileName().toString().substring(dir.getFileName().toString().lastIndexOf("_"));
                             Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
-                            if (!Files.exists(destination)) {
-                                Files.createDirectories(destination);
+                            if (!StorageProvider.getInstance().isFileExists(destination)) {
+                                StorageProvider.getInstance().createDirectories(destination);
                             }
                             List<Path> files = StorageProvider.getInstance().listFiles(dir.toString());
                             for (Path file : files) {
                                 Path target = Paths.get(destination.toString(), file.getFileName().toString());
-                                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                                StorageProvider.getInstance().copyFile(file, target);
                             }
                         }
                     }
@@ -333,32 +332,32 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
         // download sources
         Path sources = Paths.get(myProzess.getSourceDirectory());
-        if (Files.exists(sources) && !StorageProvider.getInstance().list(sources.toString()).isEmpty()) {
+        if (StorageProvider.getInstance().isFileExists(sources) && !StorageProvider.getInstance().list(sources.toString()).isEmpty()) {
             Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + "_src");
-            if (!Files.exists(destination)) {
-                Files.createDirectories(destination);
+            if (!StorageProvider.getInstance().isFileExists(destination)) {
+                StorageProvider.getInstance().createDirectories(destination);
             }
             List<Path> dateien = StorageProvider.getInstance().listFiles(myProzess.getSourceDirectory());
             for (Path dir : dateien) {
                 Path meinZiel = Paths.get(destination.toString(), dir.getFileName().toString());
-                Files.copy(dir, meinZiel, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                StorageProvider.getInstance().copyFile(dir, meinZiel);
             }
         }
 
         Path ocr = Paths.get(myProzess.getOcrDirectory());
-        if (Files.exists(ocr)) {
+        if (StorageProvider.getInstance().isFileExists(ocr)) {
             List<Path> folder = StorageProvider.getInstance().listFiles(myProzess.getOcrDirectory());
             for (Path dir : folder) {
-                if (Files.isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
+                if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
                     String suffix = dir.getFileName().toString().substring(dir.getFileName().toString().lastIndexOf("_"));
                     Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
-                    if (!Files.exists(destination)) {
-                        Files.createDirectories(destination);
+                    if (!StorageProvider.getInstance().isFileExists(destination)) {
+                        StorageProvider.getInstance().createDirectories(destination);
                     }
                     List<Path> files = StorageProvider.getInstance().listFiles(dir.toString());
                     for (Path file : files) {
                         Path target = Paths.get(destination.toString(), file.getFileName().toString());
-                        Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                        StorageProvider.getInstance().copyFile(file, target);
                     }
                 }
             }
@@ -377,12 +376,12 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          * -------------------------------- jetzt die Ausgangsordner in die Zielordner kopieren --------------------------------
          */
         Path zielTif = Paths.get(benutzerHome.toString(), atsPpnBand + ordnerEndung);
-        if (Files.exists(tifOrdner) && !StorageProvider.getInstance().list(tifOrdner.toString()).isEmpty()) {
+        if (StorageProvider.getInstance().isFileExists(tifOrdner) && !StorageProvider.getInstance().list(tifOrdner.toString()).isEmpty()) {
 
             /* bei Agora-Import einfach den Ordner anlegen */
             if (myProzess.getProjekt().isUseDmsImport()) {
-                if (!Files.exists(zielTif)) {
-                    Files.createDirectories(zielTif);
+                if (!StorageProvider.getInstance().isFileExists(zielTif)) {
+                    StorageProvider.getInstance().createDirectories(zielTif);
                 }
             } else {
                 /*
@@ -391,7 +390,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
                 try {
                     if (myBenutzer == null) {
-                        Files.createDirectories(zielTif);
+                        StorageProvider.getInstance().createDirectories(zielTif);
                     } else {
                         FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
                     }
@@ -405,7 +404,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
             for (Path file : files) {
                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
-                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                StorageProvider.getInstance().copyFile(file, target);
             }
         }
 
@@ -417,11 +416,12 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     // check if source files exists
                     if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
                         Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && Files.exists(folder) && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
+                        if (folder != null && StorageProvider.getInstance().isFileExists(folder) && !StorageProvider.getInstance().list(folder
+                                .toString()).isEmpty()) {
                             List<Path> files = StorageProvider.getInstance().listFiles(folder.toString());
                             for (Path file : files) {
                                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
-                                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                                StorageProvider.getInstance().copyFile(file, target);
                             }
                         }
                     }
