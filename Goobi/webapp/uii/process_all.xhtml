@@ -40,7 +40,10 @@
 
 										<div class="col-md-1">
 											<div class="dataTables_length" style="margin-bottom: 10px;">
-												<h:outputText value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
+												<h:commandLink class="font-black" action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}" title="#{msgs.process_generateFilterQueryForHits}">
+													<i class="btn fa fa-filter margin-right-5" />
+													<h:outputText value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}"/>
+												</h:commandLink>
 											</div>
 										</div>
 
