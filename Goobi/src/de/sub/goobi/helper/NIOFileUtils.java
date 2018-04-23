@@ -248,53 +248,10 @@ public class NIOFileUtils implements StorageProviderInterface {
 
         @Override
         public boolean accept(Path path) {
-            boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
             String name = path.getFileName().toString();
-            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP]4")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP]3")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[dD][oO][cC][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX][lL][sS][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][pP][tT][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[tT][xX][tT]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[oO][bB][jJ]")) {
-                fileOk = true;
-            }
-
-            return fileOk;
+            return StorageProvider.dataFilterString(name);
         }
+
     };
 
     @Override
@@ -538,12 +495,12 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
         return true;
     }
-    
+
     @Override
     public boolean isFileExists(Path path) {
         return Files.exists(path);
     }
-    
+
     @Override
     public boolean isDirectory(Path path) {
         return Files.isDirectory(path);

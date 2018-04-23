@@ -324,6 +324,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("useS3", false);
     }
 
+    public String getS3Bucket() {
+        return getLocalString("s3bucket", null);
+    }
+
     // process creation
 
     public String getTiffHeaderArtists() {
