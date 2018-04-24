@@ -23,6 +23,8 @@ public interface StorageProviderInterface {
 
     public List<String> list(String folder, DirectoryStream.Filter<Path> filter);
 
+    public List<String> listDirNames(String folder);
+
     public void copyDirectory(final Path source, final Path target) throws IOException;
 
     public void uploadDirectory(final Path source, final Path target) throws IOException;

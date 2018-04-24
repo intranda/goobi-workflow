@@ -211,6 +211,11 @@ public class NIOFileUtils implements StorageProviderInterface {
         return fileNames;
     }
 
+    @Override
+    public List<String> listDirNames(String folder) {
+        return this.list(folder, folderFilter);
+    }
+
     public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {

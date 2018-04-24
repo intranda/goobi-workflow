@@ -76,6 +76,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
 import de.sub.goobi.helper.TreeNode;
@@ -2067,7 +2068,7 @@ public class Metadaten {
         this.allTifFolders = new ArrayList<String>();
         Path dir = Paths.get(this.myProzess.getImagesDirectory());
 
-        List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.folderFilter);
+        List<String> verzeichnisse = StorageProvider.getInstance().listDirNames(dir.toString());
         for (int i = 0; i < verzeichnisse.size(); i++) {
             this.allTifFolders.add(verzeichnisse.get(i));
         }
@@ -4229,8 +4230,10 @@ public class Metadaten {
     private Dimension getActualImageSize(Image image) {
         Dimension dim;
         try {
-            String imagePath = imageFolderName + image.getImageName();
-            String dimString = new GetImageDimensionAction().getDimensions("file://" + imagePath);
+            ConfigurationHelper conf = ConfigurationHelper.getInstance();
+            String imPath = image.getImageName();
+            String imageURIStr = conf.useS3() ? "s3://" + conf.getS3Bucket() + "/" + S3FileUtils.string2Key(imPath) : "file://" + imPath;
+            String dimString = new GetImageDimensionAction().getDimensions(imageURIStr);
             int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
             int height = Integer.parseInt(dimString.replaceAll(".*::", ""));
             dim = new Dimension(width, height);
@@ -4242,9 +4245,15 @@ public class Metadaten {
     }
 
     private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
         StringBuilder url = new StringBuilder(baseUrl);
-        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=").append("file://"
-                + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size);
+        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
+        if (conf.useS3()) {
+            url.append("s3://").append(conf.getS3Bucket()).append("/").append(S3FileUtils.string2Key(currentImage.getImageName()));
+        } else {
+            url.append("file://").append(currentImage.getImageName());
+        }
+        url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
     }
 

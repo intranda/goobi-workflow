@@ -34,6 +34,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -60,6 +62,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
@@ -496,6 +499,15 @@ public class MetadatenImagesHelper {
      */
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
             ImageManipulatorException {
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
+        Path inPath = Paths.get(inFileName);
+        URI s3URI = null;
+        try {
+            s3URI = new URI("s3://" + conf.getS3Bucket() + "/" + S3FileUtils.path2Key(inPath));
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
         logger.trace("start scaleFile");
 
         int tmpSize = inSize;
@@ -506,10 +518,9 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = null;
+            ImageManager im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
             JpegInterpreter pi = null;
             try {
-                im = new ImageManager(Paths.get(inFileName).toUri().toURL());
                 logger.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
                 Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
@@ -543,8 +554,9 @@ public class MetadatenImagesHelper {
                 }
             }
         } else {
+            String imageURIString = conf.useS3() ? s3URI.toString() : inFileName;
             String cs =
-                    ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
+                    conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation
                             + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);

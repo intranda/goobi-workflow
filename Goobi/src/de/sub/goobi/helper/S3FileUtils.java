@@ -13,7 +13,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -54,12 +56,20 @@ public class S3FileUtils implements StorageProviderInterface {
         return prefix;
     }
 
-    private String path2Key(Path path) {
-        String prefix = path.toAbsolutePath().toString().replace(ConfigurationHelper.getInstance().getMetadataFolder(), "");
-        if (prefix.startsWith("/")) {
-            prefix = prefix.substring(1);
+    public static String path2Key(Path path) {
+        String key = path.toAbsolutePath().toString().replace(ConfigurationHelper.getInstance().getMetadataFolder(), "");
+        if (key.startsWith("/")) {
+            key = key.substring(1);
         }
-        return prefix;
+        return key;
+    }
+
+    public static String string2Key(String absolutePathStr) {
+        String key = absolutePathStr.replace(ConfigurationHelper.getInstance().getMetadataFolder(), "");
+        if (key.startsWith("/")) {
+            key = key.substring(1);
+        }
+        return key;
     }
 
     private Path key2Path(String key) {
@@ -235,6 +245,31 @@ public class S3FileUtils implements StorageProviderInterface {
     }
 
     @Override
+    public List<String> listDirNames(String folder) {
+        if (!isPathOnS3(folder)) {
+            return nio.list(folder, NIOFileUtils.folderFilter);
+        }
+        String folderPrefix = string2Prefix(folder);
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
+        ObjectListing listing = s3.listObjects(req);
+        Set<String> objs = new HashSet<>();
+        for (S3ObjectSummary os : listing.getObjectSummaries()) {
+            String key = os.getKey().replace(folderPrefix, "");
+            objs.add(key.substring(0, key.indexOf('/')));
+        }
+        while (listing.isTruncated()) {
+            listing = s3.listNextBatchOfObjects(listing);
+            for (S3ObjectSummary os : listing.getObjectSummaries()) {
+                String key = os.getKey().replace(folderPrefix, "");
+                objs.add(key.substring(0, key.indexOf('/')));
+            }
+        }
+        List<String> folders = new ArrayList<>(objs);
+        Collections.sort(folders);
+        return folders;
+    }
+
+    @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
         if (!isPathOnS3(source)) {
             nio.copyDirectory(source, target);
@@ -378,7 +413,8 @@ public class S3FileUtils implements StorageProviderInterface {
         if (!isPathOnS3(path)) {
             return nio.isFileExists(path);
         }
-        return s3.doesObjectExist(getBucket(), path2Key(path));
+        // handle prefix, too
+        return s3.doesObjectExist(getBucket(), path2Key(path)) || s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().size() > 0;
     }
 
     @Override
@@ -501,7 +537,10 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public long getDirectorySize(Path path) throws IOException {
-        long size = nio.getDirectorySize(path);
+        long size = 0;
+        if (nio.isFileExists(path)) {
+            size += nio.getDirectorySize(path);
+        }
         if (isPathOnS3(path)) {
             ObjectListing listing = s3.listObjects(getBucket(), path2Key(path));
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
