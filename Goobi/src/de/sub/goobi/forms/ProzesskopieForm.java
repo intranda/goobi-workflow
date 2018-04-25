@@ -391,7 +391,9 @@ public class ProzesskopieForm {
                             String myautoren = "";
                             if (myTempStruct.getAllPersons() != null) {
                                 for (Person p : myTempStruct.getAllPersons()) {
-                                    myautoren += p.getLastname();
+                                    if (StringUtils.isNotBlank(p.getLastname())) {
+                                        myautoren += p.getLastname();
+                                    }
                                     if (StringUtils.isNotBlank(p.getFirstname())) {
                                         myautoren += ", " + p.getFirstname();
                                     }
