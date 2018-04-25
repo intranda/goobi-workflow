@@ -19,8 +19,21 @@ public interface StorageProviderInterface {
 
     public List<Path> listFiles(String folder, DirectoryStream.Filter<Path> filter);
 
+    /**
+     * Lists every file and directory in folder. Returns filenames only.
+     * 
+     * @param folder
+     * @return
+     */
     public List<String> list(String folder);
 
+    /**
+     * Lists every file and directory in folder, filtered by filter. Returns filenames only.
+     * 
+     * @param folder
+     * @param filter
+     * @return
+     */
     public List<String> list(String folder, DirectoryStream.Filter<Path> filter);
 
     public List<String> listDirNames(String folder);

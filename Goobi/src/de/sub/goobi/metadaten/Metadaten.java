@@ -4231,7 +4231,7 @@ public class Metadaten {
         Dimension dim;
         try {
             ConfigurationHelper conf = ConfigurationHelper.getInstance();
-            String imPath = image.getImageName();
+            String imPath = imageFolderName + image.getImageName();
             String imageURIStr = conf.useS3() ? "s3://" + conf.getS3Bucket() + "/" + S3FileUtils.string2Key(imPath) : "file://" + imPath;
             String dimString = new GetImageDimensionAction().getDimensions(imageURIStr);
             int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
@@ -4249,9 +4249,9 @@ public class Metadaten {
         StringBuilder url = new StringBuilder(baseUrl);
         url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
         if (conf.useS3()) {
-            url.append("s3://").append(conf.getS3Bucket()).append("/").append(S3FileUtils.string2Key(currentImage.getImageName()));
+            url.append("s3://").append(conf.getS3Bucket()).append("/").append(S3FileUtils.string2Key(imageFolderName + currentImage.getImageName()));
         } else {
-            url.append("file://").append(currentImage.getImageName());
+            url.append("file://").append(imageFolderName + currentImage.getImageName());
         }
         url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");

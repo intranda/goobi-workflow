@@ -203,20 +203,38 @@ public class S3FileUtils implements StorageProviderInterface {
         if (!isPathOnS3(folder)) {
             return nio.listFiles(folder);
         }
-        ListObjectsRequest req = new ListObjectsRequest().withDelimiter("/").withBucketName(getBucket()).withPrefix(string2Prefix(folder));
+        String folderPrefix = string2Prefix(folder);
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
         ObjectListing listing = s3.listObjects(req);
-        List<Path> objs = new ArrayList<>();
+        Set<String> objs = new HashSet<>();
         for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            objs.add(key2Path(os.getKey()));
+            String key = os.getKey().replace(folderPrefix, "");
+            int idx = key.indexOf('/');
+            if (idx > 0) {
+                objs.add(key.substring(0, idx));
+            } else {
+                objs.add(key);
+            }
         }
         while (listing.isTruncated()) {
             listing = s3.listNextBatchOfObjects(listing);
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                objs.add(key2Path(os.getKey()));
+                String key = os.getKey().replace(folderPrefix, "");
+                int idx = key.indexOf('/');
+                if (idx > 0) {
+                    objs.add(key.substring(0, idx));
+                } else {
+                    objs.add(key);
+                }
             }
         }
-        Collections.sort(objs);
-        return objs;
+        List<Path> paths = new ArrayList<>();
+        for (String key : objs) {
+            paths.add(key2Path(folderPrefix + key));
+        }
+
+        Collections.sort(paths);
+        return paths;
     }
 
     @Override
@@ -247,7 +265,7 @@ public class S3FileUtils implements StorageProviderInterface {
         List<Path> objs = listFiles(folder);
         List<String> strObjs = new ArrayList<String>();
         for (Path p : objs) {
-            strObjs.add(p.toAbsolutePath().toString());
+            strObjs.add(p.getFileName().toString());
         }
         return strObjs;
     }
@@ -260,7 +278,7 @@ public class S3FileUtils implements StorageProviderInterface {
         List<Path> objs = listFiles(folder, filter);
         List<String> strObjs = new ArrayList<String>();
         for (Path p : objs) {
-            strObjs.add(p.toAbsolutePath().toString());
+            strObjs.add(p.getFileName().toString());
         }
         return strObjs;
     }
