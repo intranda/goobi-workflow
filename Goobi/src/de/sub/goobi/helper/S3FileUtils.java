@@ -337,6 +337,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 String fileName = p.getFileName().toString();
                 String key = path2Prefix(target) + fileName;
                 ObjectMetadata om = new ObjectMetadata();
+                om.setContentType(Files.probeContentType(p));
                 try (InputStream is = Files.newInputStream(p)) {
                     s3.putObject(getBucket(), key, is, om);
                 }
@@ -391,11 +392,25 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void copyFile(Path srcFile, Path destFile) throws IOException {
-        //TODO: handle meta.xml
         if (!isPathOnS3(srcFile)) {
-            nio.copyFile(srcFile, destFile);
-            return;
+            if (!isPathOnS3(destFile)) {
+                //none on S3 => normal copy 
+                nio.copyFile(srcFile, destFile);
+            } else {
+                // src local, dest s3 => upload file
+                s3.putObject(getBucket(), path2Key(destFile), srcFile.toFile());
+            }
+        } else {
+            if (isPathOnS3(destFile)) {
+                // both on s3 => standard copy on s3
+                s3.copyObject(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
+            } else {
+                // src on s3 and dest local => download file from s3 to local location
+                S3Object s3o = s3.getObject(getBucket(), path2Key(srcFile));
+                Files.copy(s3o.getObjectContent(), destFile);
+            }
         }
+
         String oldKey = path2Key(srcFile);
         String newKey = path2Key(destFile);
         s3.copyObject(getBucket(), oldKey, getBucket(), newKey);
@@ -599,5 +614,29 @@ public class S3FileUtils implements StorageProviderInterface {
     public void createFile(Path path) throws IOException {
         // TODO not used anymore. Delete org.goobi.production.importer.GoobiHotFolder
 
+    }
+
+    @Override
+    public void uploadFile(InputStream in, Path dest) throws IOException {
+        if (!isPathOnS3(dest)) {
+            nio.uploadFile(in, dest);
+            return;
+        }
+        ObjectMetadata om = new ObjectMetadata();
+        om.setContentType(Files.probeContentType(dest));
+        s3.putObject(getBucket(), path2Key(dest), in, om);
+    }
+
+    @Override
+    public InputStream newInputStream(Path src) throws IOException {
+        if (!isPathOnS3(src)) {
+            return nio.newInputStream(src);
+        }
+        String key = path2Key(src);
+        if (!s3.doesObjectExist(getBucket(), key)) {
+            throw new IOException(String.format("Key '%s' not found in bucket '%s'", key, getBucket()));
+        }
+        S3Object so = s3.getObject(getBucket(), key);
+        return so.getObjectContent();
     }
 }

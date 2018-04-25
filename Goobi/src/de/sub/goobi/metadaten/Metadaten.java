@@ -3762,7 +3762,7 @@ public class Metadaten {
                     String filename = currentFile.getFileName().toString();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");
                     if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        StorageProvider.getInstance().deleteDir(currentFile);
+                        StorageProvider.getInstance().deleteFile(currentFile);
                     }
                 }
             }
@@ -3777,7 +3777,7 @@ public class Metadaten {
                             String filename = currentFile.getFileName().toString();
                             String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
                             if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                StorageProvider.getInstance().deleteDir(currentFile);
+                                StorageProvider.getInstance().deleteFile(currentFile);
                             }
                         }
                     }

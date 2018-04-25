@@ -1,6 +1,7 @@
 package de.sub.goobi.helper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.util.List;
@@ -85,4 +86,8 @@ public interface StorageProviderInterface {
     public long getDirectorySize(Path path) throws IOException;
 
     public void createFile(Path path) throws IOException;
+
+    public void uploadFile(InputStream in, Path destination) throws IOException;
+
+    public InputStream newInputStream(Path src) throws IOException;
 }

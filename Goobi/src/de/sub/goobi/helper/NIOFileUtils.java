@@ -609,4 +609,14 @@ public class NIOFileUtils implements StorageProviderInterface {
         Files.createFile(path);
 
     }
+
+    @Override
+    public void uploadFile(InputStream in, Path dest) throws IOException {
+        Files.copy(in, dest, STANDARD_COPY_OPTIONS);
+    }
+
+    @Override
+    public InputStream newInputStream(Path src) throws IOException {
+        return Files.newInputStream(src);
+    }
 }

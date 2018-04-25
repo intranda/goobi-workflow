@@ -1,29 +1,5 @@
 package de.sub.goobi.metadaten;
 
-/***************************************************************
- * Copyright notice
- *
- * (c) 2013 Robert Sehr <robert.sehr@intranda.com>
- *
- * All rights reserved
- *
- * This file is part of the Goobi project. The Goobi project is free software;
- * you can redistribute it and/or modify it under the terms of the GNU General
- * Public License as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
- *
- * This script is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * This copyright notice MUST APPEAR in all copies of this file!
- ***************************************************************/
-
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
-import de.schlichtherle.io.FileInputStream;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
@@ -135,13 +110,7 @@ public class FileManipulation {
             }
 
             inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(filename);
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, len);
-            }
+            StorageProvider.getInstance().uploadFile(inputStream, Paths.get(filename));
             logger.trace(filename + " was imported");
             // if file was uploaded into media folder, update pagination sequence
             if (metadataBean.getMyProzess().getImagesTifDirectory(false).equals(
@@ -350,7 +319,7 @@ public class FileManipulation {
             InputStream in = null;
             ServletOutputStream out = null;
             try {
-                in = new FileInputStream(downloadFile.toFile());
+                in = StorageProvider.getInstance().newInputStream(downloadFile);
                 out = response.getOutputStream();
                 byte[] buffer = new byte[4096];
                 int length;
