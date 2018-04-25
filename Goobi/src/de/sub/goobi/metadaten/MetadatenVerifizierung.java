@@ -55,7 +55,9 @@ import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public class MetadatenVerifizierung {
@@ -236,7 +238,8 @@ public class MetadatenVerifizierung {
             }
 
             try {
-                List<String> images = mih.getDataFiles(myProzess);
+                
+                List<String> images = mih.getDataFiles(myProzess, inProzess.getImagesTifDirectory(true));
                 if (images != null && !images.isEmpty()) {
                     int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                     int sizeOfImages = images.size();
@@ -247,7 +250,7 @@ public class MetadatenVerifizierung {
                         return false;
                     }
                 }
-            } catch (InvalidImagesException e1) {
+            } catch (InvalidImagesException | IOException | InterruptedException | SwapException | DAOException e1) {
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e1);
                 problems.add("InvalidImagesException: " + e1.getMessage());
                 ergebnis = false;

@@ -95,8 +95,8 @@ public class MetadatenImagesHelper {
         this.mydocument = inDocument;
     }
 
-    public void checkImageNames(Process myProzess) throws TypeNotAllowedForParentException, SwapException, DAOException, IOException,
-            InterruptedException {
+    public void checkImageNames(Process myProzess, String directory) throws TypeNotAllowedForParentException, SwapException, DAOException,
+            IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -106,12 +106,17 @@ public class MetadatenImagesHelper {
             }
         }
         if (physical == null) {
-            createPagination(myProzess, null);
+            createPagination(myProzess, directory);
             return;
         }
-
         // get image names in directory
-        Path folder = Paths.get(myProzess.getImagesTifDirectory(true));
+
+        Path folder;
+        if (directory == null) {
+            folder = Paths.get(myProzess.getImagesTifDirectory(true));
+        } else {
+            folder = Paths.get(myProzess.getImagesDirectory() + directory);
+        }
 
         List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
@@ -140,7 +145,7 @@ public class MetadatenImagesHelper {
 
         // if size differs, create new pagination
         if (imagenames.size() != imageNamesInMetsFile.size()) {
-            createPagination(myProzess, null);
+            createPagination(myProzess, directory);
             return;
         }
 
@@ -210,8 +215,8 @@ public class MetadatenImagesHelper {
             DocStruct currentPage = pagesWithoutFiles.get(i);
             currentPage.setImageName(folder.toString() + FileSystems.getDefault().getSeparator() + currentFile);
             if (logger.isDebugEnabled()) {
-                logger.debug("set image " + currentFile + " to docstruct "
-                        + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+                logger.debug("set image " + currentFile + " to docstruct " + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName(
+                        "physPageNumber")).get(0).getValue());
             }
         }
     }
@@ -324,7 +329,8 @@ public class MetadatenImagesHelper {
 
         }
         try {
-            List<String> imageNamesInMediaFolder = getDataFiles(inProzess);
+
+            List<String> imageNamesInMediaFolder = getDataFiles(inProzess, directory);
             if (imageNamesInMediaFolder != null && !imageNamesInMediaFolder.isEmpty()) {
                 for (String imageName : imageNamesInMediaFolder) {
                     if (!assignedImages.containsKey(imageName)) {
@@ -516,13 +522,12 @@ public class MetadatenImagesHelper {
                 logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
                 Dimension outputResolution = new Dimension(144, 144);
                 logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-                Dimension dim =
-                        new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
-                                / inputResolution.height);
+                Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
+                        / inputResolution.height);
                 logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
                 RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
                 logger.trace("ri");
-                 pi = new JpegInterpreter(ri);
+                pi = new JpegInterpreter(ri);
                 logger.trace("pi");
                 pi.setXResolution(outputResolution.width);
                 logger.trace("xres = " + pi.getXResolution());
@@ -543,9 +548,8 @@ public class MetadatenImagesHelper {
                 }
             }
         } else {
-            String cs =
-                    ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
-                            + "&format=jpg";
+            String cs = ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
+                    + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);
@@ -712,10 +716,15 @@ public class MetadatenImagesHelper {
 
     }
 
-    public List<String> getDataFiles(Process myProzess) throws InvalidImagesException {
+    public List<String> getDataFiles(Process myProzess, String directory) throws InvalidImagesException {
+
         Path dir;
         try {
-            dir = Paths.get(myProzess.getImagesTifDirectory(true));
+            if (directory == null) {
+                dir = Paths.get(myProzess.getImagesTifDirectory(true));
+            } else {
+                dir = Paths.get(myProzess.getImagesDirectory() + directory);
+            }
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }

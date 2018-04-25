@@ -1732,7 +1732,7 @@ public class Metadaten {
 
     private void checkImageNames() {
         try {
-            imagehelper.checkImageNames(this.myProzess);
+            imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException | InterruptedException e) {
             logger.error(e);
         }
