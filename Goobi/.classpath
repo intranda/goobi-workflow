@@ -163,7 +163,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar" sourcepath="/intrandaContentServer"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.0">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>

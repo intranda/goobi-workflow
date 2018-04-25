@@ -8,7 +8,7 @@
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
 	Path to local config file
 		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-<!-- 	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" /> -->
+ 	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" /> 
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
 		resulution for results of image processing * sample: <defaultResolution value="600" 
@@ -133,5 +133,12 @@
 	<pdfCache useCache="false" useShortFileNames="false" />
 
 	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="0"></memoryUsage>
+	
+    <S3>                                                                                                                                              
+        <useCustom>true</useCustom>                                                                                                                   
+        <AccessKeyID>changeme</AccessKeyID>                                                                                             
+        <SecretAccessKey>changeme</SecretAccessKey>                                                                     
+        <Endpoint>https://myendpoint.tld</Endpoint>                                                                                            
+    </S3> 
 
 </config>
