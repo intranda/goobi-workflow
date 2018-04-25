@@ -1134,6 +1134,16 @@ public class ProcessBean extends BasicBean {
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
     }
+    
+    @SuppressWarnings("unchecked")
+    public void generateFilterWithIdentfiers() {
+        String f = "\"id:";
+    	for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
+            f += proz.getId() + " ";
+        }
+        f+="\"";
+    	filter = f;
+    }
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenPage() throws DAOException {
