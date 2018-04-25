@@ -17,6 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
@@ -37,7 +43,22 @@ public class S3FileUtils implements StorageProviderInterface {
 
     public S3FileUtils() {
         super();
-        this.s3 = AmazonS3ClientBuilder.defaultClient();
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
+        if (conf.useCustomS3()) {
+            AWSCredentials credentials = new BasicAWSCredentials(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
+            ClientConfiguration clientConfiguration = new ClientConfiguration();
+            clientConfiguration.setSignerOverride("AWSS3V4SignerType");
+
+            this.s3 = AmazonS3ClientBuilder
+                    .standard()
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(), Regions.US_EAST_1.name()))
+                    .withPathStyleAccessEnabled(true)
+                    .withClientConfiguration(clientConfiguration)
+                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                    .build();
+        } else {
+            this.s3 = AmazonS3ClientBuilder.defaultClient();
+        }
         this.nio = new NIOFileUtils();
     }
 
@@ -117,8 +138,8 @@ public class S3FileUtils implements StorageProviderInterface {
     private boolean isPathOnS3(String path) {
         String filename = path.substring(path.lastIndexOf('/') + 1);
         return path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
-                || filename.startsWith("meta.xml")
-                || filename.startsWith("meta_anchor.xml");
+                && !filename.startsWith("meta.xml")
+                && !filename.startsWith("meta_anchor.xml");
     }
 
     @Override

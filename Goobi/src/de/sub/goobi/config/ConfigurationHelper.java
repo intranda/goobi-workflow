@@ -325,7 +325,23 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getS3Bucket() {
-        return getLocalString("s3bucket", null);
+        return getLocalString("S3bucket", null);
+    }
+
+    public boolean useCustomS3() {
+        return getLocalBoolean("useCustomS3", false);
+    }
+
+    public String getS3AccessKeyID() {
+        return getLocalString("S3AccessKeyID", "");
+    }
+
+    public String getS3SecretAccessKey() {
+        return getLocalString("S3SecretAccessKey", "");
+    }
+
+    public String getS3Endpoint() {
+        return getLocalString("S3Endpoint", "");
     }
 
     // process creation
