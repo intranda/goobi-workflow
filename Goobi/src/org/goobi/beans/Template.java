@@ -117,6 +117,19 @@ public class Template implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((eigenschaften == null) ? 0 : eigenschaften.hashCode());
+        result = prime * result + ((herkunft == null) ? 0 : herkunft.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + (panelAusgeklappt ? 1231 : 1237);
+        result = prime * result + ((processId == null) ? 0 : processId.hashCode());
+        result = prime * result + ((prozess == null) ? 0 : prozess.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -137,10 +150,4 @@ public class Template implements Serializable {
             return false;
         return true;
     }
-
-    @Override
-    public int hashCode() {
-    		return super.hashCode();
-    }
-    
 }

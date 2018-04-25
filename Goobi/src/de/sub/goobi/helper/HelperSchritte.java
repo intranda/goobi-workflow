@@ -132,7 +132,7 @@ public class HelperSchritte {
                 
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
-            } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
+            } catch (SwapException | DAOException | IOException | InterruptedException e1) {
                 logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
             }
         }
@@ -455,10 +455,14 @@ public class HelperSchritte {
 
     }
 
-    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) throws JDOMException,
-            IOException {
+    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs)  {
         SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(metadataFile.toString());
+        Document doc;
+        try {
+            doc = builder.build(metadataFile.toString());
+        } catch (JDOMException | IOException e1) {
+           return new HashMap<>();
+        }
         Element root = doc.getRootElement();
         try {
             Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)

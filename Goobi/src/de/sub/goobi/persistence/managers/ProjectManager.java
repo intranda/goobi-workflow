@@ -113,10 +113,10 @@ public class ProjectManager implements IManager, Serializable {
         return projectList;
     }
 
-    public static List<Project> getProjectsForUser(User user) throws DAOException {
+    public static List<Project> getProjectsForUser(User user, boolean activeProjectsOnly) throws DAOException {
         List<Project> answer = new ArrayList<Project>();
         try {
-            answer = ProjectMysqlHelper.getProjectsForUser(user);
+            answer = ProjectMysqlHelper.getProjectsForUser(user, activeProjectsOnly);
         } catch (SQLException e) {
             logger.error("error while getting Usergroups", e);
             throw new DAOException(e);

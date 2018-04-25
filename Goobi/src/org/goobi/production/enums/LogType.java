@@ -24,9 +24,9 @@ public enum LogType {
     WARN("warn"),
     INFO("info"),
     DEBUG("debug"),
+    USER("user"),
+    STATUS("status");
     
-    USER("user");
-
     @Getter
     private String title;
 

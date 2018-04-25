@@ -99,7 +99,7 @@ public class MetadataGroupImpl {
     }
 
     public String getName() {
-        String label = this.metadataGroup.getType().getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = this.metadataGroup.getType().getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = this.metadataGroup.getType().getName();
         }

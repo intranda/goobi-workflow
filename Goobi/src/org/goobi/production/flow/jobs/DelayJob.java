@@ -1,4 +1,4 @@
-package org.goobi.production.flow.delay;
+package org.goobi.production.flow.jobs;
 
 import java.util.Date;
 /**
@@ -26,7 +26,6 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.flow.jobs.AbstractGoobiJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;

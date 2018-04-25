@@ -45,6 +45,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.IProcessDataExport;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
 import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -59,6 +61,7 @@ import org.jdom2.transform.XSLTransformException;
 import org.jdom2.transform.XSLTransformer;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -72,6 +75,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 
 /**
@@ -177,6 +181,12 @@ public class ExportXmlLog implements IProcessDataExport {
             commentLine.setAttribute("type", entry.getType().getTitle());
             commentLine.setAttribute("user", entry.getUserName());
             commentLine.setText(entry.getContent());
+            if (StringUtils.isNotBlank(entry.getSecondContent())) {
+                comment.setAttribute("secondField", entry.getSecondContent());
+            }
+            if (StringUtils.isNotBlank(entry.getThirdContent())) {
+                comment.setAttribute("thirdField", entry.getThirdContent());
+            }
             comment.addContent(commentLine);
         }
 
@@ -189,28 +199,30 @@ public class ExportXmlLog implements IProcessDataExport {
                 batch.setAttribute("batchName", process.getBatch().getBatchName());
             }
             if (process.getBatch().getStartDate() != null) {
-                batch.setAttribute("startDate", Helper.getDateAsFormattedString(process.getBatch().getStartDate()));            }
-           
+                batch.setAttribute("startDate", Helper.getDateAsFormattedString(process.getBatch().getStartDate()));
+            }
+
             if (process.getBatch().getEndDate() != null) {
                 batch.setAttribute("endDate", Helper.getDateAsFormattedString(process.getBatch().getEndDate()));
             }
-           
+
             processElements.add(batch);
         }
 
         List<Element> processProperties = new ArrayList<Element>();
-        for (Processproperty prop : process.getEigenschaftenList()) {
+        List<ProcessProperty> propertyList =  PropertyParser.getPropertiesForProcess(process);
+        for (ProcessProperty prop : propertyList) {
             Element property = new Element("property", xmlns);
-            property.setAttribute("propertyIdentifier", prop.getTitel());
-            if (prop.getWert() != null) {
-                property.setAttribute("value", replacer(prop.getWert()));
+            property.setAttribute("propertyIdentifier", prop.getName());
+            if (prop.getValue() != null) {
+                property.setAttribute("value", replacer(prop.getValue()));
             } else {
                 property.setAttribute("value", "");
             }
 
             Element label = new Element("label", xmlns);
 
-            label.setText(prop.getTitel());
+            label.setText(prop.getName());
             property.addContent(label);
             processProperties.add(property);
         }
@@ -237,12 +249,12 @@ public class ExportXmlLog implements IProcessDataExport {
 
             Element begin = new Element("time", xmlns);
             begin.setAttribute("type", "start time");
-            begin.setText(String.valueOf(s.getBearbeitungsbeginn()));
+            begin.setText(s.getBearbeitungsbeginnAsFormattedString());
             stepElement.addContent(begin);
 
             Element end = new Element("time", xmlns);
             end.setAttribute("type", "end time");
-            end.setText(String.valueOf(s.getBearbeitungsendeAsFormattedString()));
+            end.setText(s.getBearbeitungsendeAsFormattedString());
             stepElement.addContent(end);
 
             if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
@@ -342,6 +354,33 @@ public class ExportXmlLog implements IProcessDataExport {
             digdoc.addContent(docElements);
             processElements.add(digdoc);
         }
+        // history
+        List<HistoryEvent> eventList = HistoryManager.getHistoryEvents(process.getId());
+        if (eventList != null && !eventList.isEmpty()) {
+            List<Element> eventElementList = new ArrayList<>(eventList.size());
+
+            for (HistoryEvent event : eventList) {
+                Element element = new Element("historyEvent", xmlns);
+                element.setAttribute("id", "" + event.getId());
+                element.setAttribute("date", Helper.getDateAsFormattedString(event.getDate()));
+                element.setAttribute("type", event.getHistoryType().getTitle());
+               
+                if (event.getNumericValue() != null) {
+                    element.setAttribute("numeric_value", "" + event.getNumericValue());
+                }
+                if (event.getStringValue() != null) {
+                    element.setText(event.getStringValue());
+                }
+                eventElementList.add(element);
+            }
+
+            if (!eventElementList.isEmpty()) {
+                Element metadataElement = new Element("history", xmlns);
+                metadataElement.addContent(eventElementList);
+                processElements.add(metadataElement);
+            }
+        }
+
         // metadata
         List<StringPair> metadata = MetadataManager.getMetadata(process.getId());
         if (metadata != null && !metadata.isEmpty()) {

@@ -27,7 +27,7 @@
 				</h:panelGroup>
 			</div>
             <div class="#{cc.attrs.classRight}">
-                <x:inputTextarea id="#{cc.attrs.name}" forceId="true" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" value="#{cc.attrs.field}"
+                <h:inputTextarea id="#{cc.attrs.name}" forceId="true" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" value="#{cc.attrs.field}"
                     required="#{cc.attrs.required}" readonly="#{cc.attrs.readonly}" />
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
                 <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{cc.attrs.help}" />

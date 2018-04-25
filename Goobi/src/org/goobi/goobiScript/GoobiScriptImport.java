@@ -45,6 +45,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             return false;
         }
 
+        batch = mi.getBatch();
+        
         //		batchId = 1;
         //        try {
         //            batchId += ProcessManager.getMaxBatchNumber();
@@ -77,6 +79,12 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             String pluginName = parameters.get("plugin");
             Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 
+            // set the overridden project if present
+            if (parameters.get("projectId") != null && !parameters.get("projectId").equals("")) {
+                int projectid = Integer.parseInt(parameters.get("projectId"));
+                template.setProjectId(projectid);
+            }
+            
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -96,7 +104,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                     List<Record> recordList = new ArrayList<Record>();
                     Record r = null;
 
-                    // there are records already to lets find the right one
+                    // there are records already so lets find the right one
                     if (records != null) {
                         for (Record record : records) {
                             if (record.getId().equals(gsr.getProcessTitle())) {
@@ -128,6 +136,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                                 gsr.setResultMessage("Import failed for id '" + gsr.getProcessTitle() + "'. Process cannot be created.");
                                 gsr.setResultType(GoobiScriptResultType.ERROR);
                             } else {
+                                gsr.setProcessId(p.getId());
+                                gsr.setProcessTitle(p.getTitel());
                                 gsr.setResultMessage("Import successfully finished for id '" + gsr.getProcessTitle() + "'. Processname is " + io
                                         .getProcessTitle() + ".");
                                 gsr.setResultType(GoobiScriptResultType.OK);

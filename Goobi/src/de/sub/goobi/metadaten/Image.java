@@ -71,6 +71,20 @@ public @Data class Image {
     public boolean hasImageLevels() {
         return !imageLevels.isEmpty();
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{")
+        .append("width : ").append(this.size.width).append(",")
+        .append("height : ").append(this.size.height).append(",")
+        .append("sizes : [");
+        for (ImageLevel imageLevel : imageLevels) {
+            sb.append(imageLevel.toString()).append(", ");
+        }
+        sb.append("]").append("}");
+        return sb.toString();
+    } 
 
     public enum Type {
         image("jpg", "tif", "png", "jp2"),

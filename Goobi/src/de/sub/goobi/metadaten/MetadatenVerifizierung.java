@@ -82,7 +82,7 @@ public class MetadatenVerifizierung {
     }
 
     public boolean validate(Fileformat gdzfile, Prefs inPrefs, Process inProzess) {
-        String metadataLanguage = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
+        String metadataLanguage = Helper.getMetadataLanguage();
         if (metadataLanguage == null){
         	metadataLanguage = "en";
         }
@@ -657,7 +657,7 @@ public class MetadatenVerifizierung {
     public boolean validateIdentifier(DocStruct uppermostStruct) {
 
         if (uppermostStruct.getType().isAnchor()) {
-            String language = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
+            String language = Helper.getMetadataLanguage();
             if (language==null){
             	language = "en";
             }

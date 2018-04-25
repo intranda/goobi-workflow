@@ -331,6 +331,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (verzeichnisse != null) {
             for (int i = 0; i < verzeichnisse.size(); i++) {
                 tifOrdner = verzeichnisse.get(i);
+                if (tifOrdner.equals(titel + "_" + DIRECTORY_SUFFIX)) {
+                    break;
+                }
             }
         }
 
@@ -532,20 +535,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getProcessDataDirectory() + "ocr" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_txt" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getWordDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrWcDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_pdf" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
+    }
+    
+    public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+        return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
@@ -907,9 +914,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
-        if (logger.isDebugEnabled()) {
-            logger.debug("current meta.xml file type for id " + getId() + ": " + type);
-        }
         Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
         if (ff == null) {
             String[] parameter = { titel, type };
@@ -1441,4 +1445,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return rootpath + representativeImage.replaceAll("\\\\", "/");
     }
 
+    // this method is needed for ajaxPlusMinusButton.xhtml
+    public String getTitelLokalisiert() {
+        return titel;
+    }
 }

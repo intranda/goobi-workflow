@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -40,12 +41,11 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 20;
+    public static final int EXPECTED_VERSION = 22;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -78,6 +78,7 @@ public class DatabaseVersion {
         return 0;
     }
 
+    @SuppressWarnings("fallthrough")
     public static void updateDatabase(int currentVersion) {
         switch (currentVersion) {
             case 0:
@@ -178,6 +179,17 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 20.");
                 }
                 updateToVersion20();
+
+            case 20:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 21.");
+                }
+                updateToVersion21();
+            case 21:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 22.");
+                }
+                updateToVersion22();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -185,32 +197,78 @@ public class DatabaseVersion {
                     logger.trace("Database is up to date.");
                 }
         }
+
+    }
+
+    /**
+     * version 22 introduces a new table that holds metadata values in JSON format. This is useful when searching and sorting processes by metadata
+     * field.
+     */
+    private static void updateToVersion22() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection,
+                    "CREATE TABLE `metadata_json` (`processid` int(11) DEFAULT NULL, `value` text DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+    }
+
+    private static void updateToVersion21() {
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table schritte add column generateDocket tinyint(1) DEFAULT '0'");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+
     }
 
     private static void updateToVersion20() {
-    		// just enhance the fulltext index for mysql databases
-    		if (!ConfigurationHelper.getInstance().isUseH2DB()) {
-	    		Connection connection = null;
-	        try {
-	            connection = MySQLHelper.getInstance().getConnection();
-	            new QueryRunner().update(connection, "CREATE FULLTEXT INDEX 'idx_metadata_value'  ON 'goobi'.'metadata' (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
-	        } catch (SQLException e) {
-	            logger.error(e);
-	        } finally {
-	            if (connection != null) {
-	                try {
-	                    MySQLHelper.closeConnection(connection);
-	                } catch (SQLException e) {
-	                }
-	            }
-	        }
-    		}
+        // just enhance the fulltext index for mysql databases
+        if (!MySQLHelper.isUsingH2()) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                new QueryRunner().update(connection,
+                        "CREATE FULLTEXT INDEX idx_metadata_value ON metadata (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
+            } catch (SQLException e) {
+                logger.error(e);
+            } finally {
+                if (connection != null) {
+                    try {
+                        MySQLHelper.closeConnection(connection);
+                    } catch (SQLException e) {
+                    }
+                }
+            }
+        }
     }
 
     private static void updateToVersion19() {
         String dropBatches = "drop table if exists batches;";
         StringBuilder createBatches = new StringBuilder();
-        if (ConfigurationHelper.getInstance().isUseH2DB()) {
+        if (MySQLHelper.isUsingH2()) {
             createBatches.append("CREATE TABLE `batches` (");
             createBatches.append("`id` int(11) NOT NULL AUTO_INCREMENT,");
             createBatches.append("`startDate` DATETIME DEFAULT NULL,");
@@ -226,7 +284,7 @@ public class DatabaseVersion {
             createBatches.append("PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
         }
         String insertBatches = "INSERT INTO batches (id) select distinct (batchId) from prozesse where batchID is not NULL";
-        
+
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -424,8 +482,15 @@ public class DatabaseVersion {
 
     private static void updateToVersion13() {
         Connection connection = null;
-        String sqlStatement =
-                "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+        String sqlStatement = null;
+        if (MySQLHelper.isUsingH2()) {
+            sqlStatement =
+                    "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+
+        } else {
+            sqlStatement =
+                    "CREATE TABLE `processlog` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`processID` int(10) unsigned NOT NULL,`creationDate` datetime DEFAULT NULL,`userName` varchar(255) DEFAULT NULL,`type` varchar(255) DEFAULT NULL,`content` text DEFAULT NULL,`secondContent` text DEFAULT NULL,`thirdContent` text DEFAULT NULL,PRIMARY KEY (`id`),KEY `processID` (`processID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+        }
         QueryRunner runner = new QueryRunner();
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -485,8 +550,9 @@ public class DatabaseVersion {
                                 try {
                                     date = getDate(dateString.substring(0, dateString.length() - 1));
                                 } catch (Exception e) {
-                                    if (logger.isDebugEnabled())
+                                    if (logger.isDebugEnabled()) {
                                         logger.debug("Process " + processId + ": cannot convert date " + dateString);
+                                    }
                                 }
                             }
 
@@ -916,4 +982,60 @@ public class DatabaseVersion {
             logger.error(e);
         }
     }
+
+    /**
+     * check if a table exists in the current database
+     * 
+     * @param tableName name of the table to check
+     * @return true if table exists, false otherwise
+     */
+
+    public boolean checkIfTableExists(String tableName) {
+        String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, "goobi", tableName);
+            return StringUtils.isNotBlank(value);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a column exist within a given table
+     * 
+     * @param tableName the table to check
+     * @param columnName the name of the column
+     * @return true if the column exists, false otherwise
+     */
+
+    public boolean checkIfColumnExists(String tableName, String columnName) {
+        String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, "goobi", tableName, columnName);
+            return StringUtils.isNotBlank(value);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        return false;
+    }
+
 }

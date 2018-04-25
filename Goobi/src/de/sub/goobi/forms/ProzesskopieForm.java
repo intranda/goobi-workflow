@@ -54,6 +54,7 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
@@ -102,6 +103,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
@@ -1573,6 +1575,12 @@ public class ProzesskopieForm {
 
     public void setAdditionalFields(List<AdditionalField> list) {
         this.additionalFields = list;
+    }
+    
+    public List<Project> getAvailableProjects() throws DAOException{
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        List<Project> temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), true);
+        return temp;
     }
 
 }

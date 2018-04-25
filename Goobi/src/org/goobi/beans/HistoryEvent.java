@@ -39,184 +39,183 @@ import de.sub.goobi.helper.enums.HistoryEventType;
  * @version 24.05.2009
  */
 public class HistoryEvent implements Serializable {
-	private static final long serialVersionUID = 991946177515032238L;
-	private Integer id;
-	private Date date;
-	private Double numericValue;
-	private String stringValue;
-	private Integer type;
-	private Process process;
+    private static final long serialVersionUID = 991946177515032238L;
+    private Integer id;
+    private Date date;
+    private Double numericValue;
+    private String stringValue;
+    private Integer type;
+    private Process process;
 
-	/**
-	 * This constructor is only public for hibernate usage. If you want to
-	 * create a new HistoryEvent please use HistoryEvent(Date date, Number
-	 * inNumericValue, String inStringValue, HistoryEventType
-	 * inHistoryEventType, Prozess process)
-	 * 
-	 * 
-	 */
-	public HistoryEvent() {
+    /**
+     * This constructor is only public for hibernate usage. If you want to create a new HistoryEvent please use HistoryEvent(Date date, Number
+     * inNumericValue, String inStringValue, HistoryEventType inHistoryEventType, Prozess process)
+     * 
+     * 
+     */
+    public HistoryEvent() {
 
-	}
+    }
 
-	/**
-	 * Please use only this constructor.
-	 * 
-	 * @param date
-	 *            Date of HistoryEvent
-	 * @param inNumericValue
-	 *            value as Number (pages, size,...)
-	 * @param inStringValue
-	 *            value as string
-	 * @param inHistoryEventType
-	 *            type of HistoryEvent ( {@link HistoryEventType} )
-	 * @param process
-	 *            process of HistoryEvent
-	 */
+    /**
+     * Please use only this constructor.
+     * 
+     * @param date Date of HistoryEvent
+     * @param inNumericValue value as Number (pages, size,...)
+     * @param inStringValue value as string
+     * @param inHistoryEventType type of HistoryEvent ( {@link HistoryEventType} )
+     * @param process process of HistoryEvent
+     */
 
-	public HistoryEvent(Date date, Number inNumericValue, String inStringValue, HistoryEventType inHistoryEventType, Process process) {
-		super();
-		this.date = date;
-		numericValue = inNumericValue.doubleValue();
-		stringValue = inStringValue;
-		type = inHistoryEventType.getValue();
-		this.process = process;
-	}
+    public HistoryEvent(Date date, Number inNumericValue, String inStringValue, HistoryEventType inHistoryEventType, Process process) {
+        super();
+        this.date = date;
+        numericValue = inNumericValue.doubleValue();
+        stringValue = inStringValue;
+        type = inHistoryEventType.getValue();
+        this.process = process;
+    }
 
-	/**
-	 * Getter for ID
-	 * 
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
+    /**
+     * Getter for ID
+     * 
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * Setter for ID
-	 * 
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    /**
+     * Setter for ID
+     * 
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	/**
-	 * Getter for date as {@link Date}
-	 * 
-	 * @return the date
-	 */
-	public Date getDate() {
-		return date;
-	}
+    /**
+     * Getter for date as {@link Date}
+     * 
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
 
-	/**
-	 * Setter for date
-	 * 
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    /**
+     * Setter for date
+     * 
+     * @param date the date to set
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	/**
-	 * Getter for {@link Prozess}
-	 * 
-	 * @return the process
-	 */
-	public Process getProcess() {
-		return process;
-	}
+    /**
+     * Getter for {@link Prozess}
+     * 
+     * @return the process
+     */
+    public Process getProcess() {
+        return process;
+    }
 
-	/**
-	 * Setter for {@link Prozess}
-	 * 
-	 * @param process
-	 *            the process to set
-	 */
-	public void setProcess(Process process) {
-		this.process = process;
-	}
+    /**
+     * Setter for {@link Prozess}
+     * 
+     * @param process the process to set
+     */
+    public void setProcess(Process process) {
+        this.process = process;
+    }
 
-	/**
-	 * Getter for numericValue
-	 * 
-	 * @return numericValue as Double
-	 */
-	public Double getNumericValue() {
-		return numericValue;
-	}
+    /**
+     * Getter for numericValue
+     * 
+     * @return numericValue as Double
+     */
+    public Double getNumericValue() {
+        return numericValue;
+    }
 
-	/**
-	 * Setter for numericValue
-	 * 
-	 * @param numericValue
-	 *            as Double
-	 */
-	public void setNumericValue(Double numericValue) {
-		this.numericValue = numericValue;
-	}
+    /**
+     * Setter for numericValue
+     * 
+     * @param numericValue as Double
+     */
+    public void setNumericValue(Double numericValue) {
+        this.numericValue = numericValue;
+    }
 
-	/**
-	 * Getter for stringValue
-	 * 
-	 * @return stringValue as String
-	 */
-	public String getStringValue() {
-		return stringValue;
-	}
+    /**
+     * Getter for stringValue
+     * 
+     * @return stringValue as String
+     */
+    public String getStringValue() {
+        return stringValue;
+    }
 
-	/**
-	 * Setter for stringValue
-	 * 
-	 * @param stringValue
-	 *            as String
-	 */
-	public void setStringValue(String stringValue) {
-		this.stringValue = stringValue;
-	}
+    /**
+     * Setter for stringValue
+     * 
+     * @param stringValue as String
+     */
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
 
-	/**
-	 * Getter for type as private method for Hibernate only
-	 * 
-	 * @return the type
-	 */
-	@SuppressWarnings("unused")
-	private Integer getType() {
-		return type;
-	}
+    /**
+     * Getter for type as private method for Hibernate only
+     * 
+     * @return the type
+     */
+    @SuppressWarnings("unused")
+    private Integer getType() {
+        return type;
+    }
 
-	/**
-	 * Setter for type as private method for Hibernate only
-	 * 
-	 * @param type
-	 *            the type to set
-	 */
-	@SuppressWarnings("unused")
-	private void setType(Integer type) {
-		this.type = type;
-	}
+    /**
+     * Setter for type as private method for Hibernate only
+     * 
+     * @param type the type to set
+     */
+    @SuppressWarnings("unused")
+    private void setType(Integer type) {
+        this.type = type;
+    }
 
-	/**
-	 * Getter for type
-	 * 
-	 * @return type as HistoryEventType
-	 */
-	public HistoryEventType getHistoryType() {
-		return HistoryEventType.getTypeFromValue(type);
-	}
+    /**
+     * Getter for type
+     * 
+     * @return type as HistoryEventType
+     */
+    public HistoryEventType getHistoryType() {
+        return HistoryEventType.getTypeFromValue(type);
+    }
 
-	/**
-	 * Setter for type
-	 * 
-	 * @param type
-	 *            as HistoryEventType
-	 */
-	public void setHistoryType(HistoryEventType type) {
-		this.type = type.getValue();
-	}
+    /**
+     * Setter for type
+     * 
+     * @param type as HistoryEventType
+     */
+    public void setHistoryType(HistoryEventType type) {
+        this.type = type.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((numericValue == null) ? 0 : numericValue.hashCode());
+        result = prime * result + ((process == null) ? 0 : process.hashCode());
+        result = prime * result + ((stringValue == null) ? 0 : stringValue.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -250,8 +249,4 @@ public class HistoryEvent implements Serializable {
         return true;
     }
     
-    @Override
-    public int hashCode() {
-    		return super.hashCode();
-    }
 }

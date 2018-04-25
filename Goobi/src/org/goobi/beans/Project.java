@@ -434,6 +434,49 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         return metsRightsLicense;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((benutzer == null) ? 0 : benutzer.hashCode());
+        result = prime * result + ((commonWorkFlow == null) ? 0 : commonWorkFlow.hashCode());
+        result = prime * result + ((dmsImportCreateProcessFolder == null) ? 0 : dmsImportCreateProcessFolder.hashCode());
+        result = prime * result + ((dmsImportErrorPath == null) ? 0 : dmsImportErrorPath.hashCode());
+        result = prime * result + ((dmsImportImagesPath == null) ? 0 : dmsImportImagesPath.hashCode());
+        result = prime * result + ((dmsImportRootPath == null) ? 0 : dmsImportRootPath.hashCode());
+        result = prime * result + ((dmsImportSuccessPath == null) ? 0 : dmsImportSuccessPath.hashCode());
+        result = prime * result + ((dmsImportTimeOut == null) ? 0 : dmsImportTimeOut.hashCode());
+        result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+        result = prime * result + ((fileFormatDmsExport == null) ? 0 : fileFormatDmsExport.hashCode());
+        result = prime * result + ((fileFormatInternal == null) ? 0 : fileFormatInternal.hashCode());
+        result = prime * result + ((filegroups == null) ? 0 : filegroups.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((metsContentIDs == null) ? 0 : metsContentIDs.hashCode());
+        result = prime * result + ((metsDigiprovPresentation == null) ? 0 : metsDigiprovPresentation.hashCode());
+        result = prime * result + ((metsDigiprovPresentationAnchor == null) ? 0 : metsDigiprovPresentationAnchor.hashCode());
+        result = prime * result + ((metsDigiprovReference == null) ? 0 : metsDigiprovReference.hashCode());
+        result = prime * result + ((metsDigiprovReferenceAnchor == null) ? 0 : metsDigiprovReferenceAnchor.hashCode());
+        result = prime * result + ((metsPointerPath == null) ? 0 : metsPointerPath.hashCode());
+        result = prime * result + ((metsPointerPathAnchor == null) ? 0 : metsPointerPathAnchor.hashCode());
+        result = prime * result + ((metsPurl == null) ? 0 : metsPurl.hashCode());
+        result = prime * result + ((metsRightsLicense == null) ? 0 : metsRightsLicense.hashCode());
+        result = prime * result + ((metsRightsOwner == null) ? 0 : metsRightsOwner.hashCode());
+        result = prime * result + ((metsRightsOwnerLogo == null) ? 0 : metsRightsOwnerLogo.hashCode());
+        result = prime * result + ((metsRightsOwnerMail == null) ? 0 : metsRightsOwnerMail.hashCode());
+        result = prime * result + ((metsRightsOwnerSite == null) ? 0 : metsRightsOwnerSite.hashCode());
+        result = prime * result + ((metsRightsSponsor == null) ? 0 : metsRightsSponsor.hashCode());
+        result = prime * result + ((metsRightsSponsorLogo == null) ? 0 : metsRightsSponsorLogo.hashCode());
+        result = prime * result + ((metsRightsSponsorSiteURL == null) ? 0 : metsRightsSponsorSiteURL.hashCode());
+        result = prime * result + ((numberOfPages == null) ? 0 : numberOfPages.hashCode());
+        result = prime * result + ((numberOfVolumes == null) ? 0 : numberOfVolumes.hashCode());
+        result = prime * result + ((projectIsArchived == null) ? 0 : projectIsArchived.hashCode());
+        result = prime * result + ((prozesse == null) ? 0 : prozesse.hashCode());
+        result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+        result = prime * result + ((titel == null) ? 0 : titel.hashCode());
+        result = prime * result + (useDmsImport ? 1231 : 1237);
+        return result;
+    }
+
     public void setMetsRightsLicense(String metsRightsLicense) {
         this.metsRightsLicense = metsRightsLicense;
     }
@@ -529,10 +572,5 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         ProjectManager.saveProjectFileGroups(projectFileGroupList);
 
         return p;
-    }
-
-    @Override
-    public int hashCode() {
-    		return super.hashCode();
     }
 }

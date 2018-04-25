@@ -337,10 +337,8 @@ public class Helper implements Serializable, Observer {
                 if (vb != null) {
                     try {
                         value = vb.getValue(context);
-                    } catch (PropertyNotFoundException e) {
-                        logger.error(e);
-                    } catch (EvaluationException e) {
-                        logger.error(e);
+                    } catch (Exception e) {
+                        logger.error("Error getting the object " + expr + " from context: " + e.getMessage());
                     }
                 }
             }
@@ -395,6 +393,29 @@ public class Helper implements Serializable, Observer {
         }
     }
 
+    public static String getMetadataLanguage() {
+        String userConfiguration = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
+        if (userConfiguration != null && !userConfiguration.isEmpty()) {
+            return userConfiguration;
+        } else {
+            return getSessionLocale().getLanguage();
+        }
+    }
+    
+    /**
+     * get locale of current user session
+     * @return locale of current user session
+     */
+    public static Locale getSessionLocale () {
+        Locale l = null;
+        try {
+            l = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
+        } catch (NullPointerException skip) {
+            l = Locale.ENGLISH;
+        }
+        return l;
+    }
+    
     public static String getTranslation(String dbTitel) {
         // running instance of ResourceBundle doesn't respond on user language
         // changes, workaround by instanciating it every time

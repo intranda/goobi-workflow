@@ -10,6 +10,7 @@
 		<composite:attribute name="name" />
 		<composite:attribute name="identifier" />
 		<composite:attribute name="label" />
+		<composite:attribute name="labelPopover" default="" />
 		<composite:attribute name="field" />
 		<composite:attribute name="help" />
 		<composite:attribute name="lowerLimit" />
@@ -32,7 +33,9 @@
 
 		<div class="form-group" style="">
 			<div class="#{cc.attrs.classLeft} control-label">
-				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" />
+				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}">
+					<f:passThroughAttribute name="title" value="#{cc.attrs.labelPopover}"></f:passThroughAttribute>
+				</h:outputLabel>
 				<h:panelGroup
 					rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
 					<i class="fa fa-asterisk pull-right font-asterisk" />

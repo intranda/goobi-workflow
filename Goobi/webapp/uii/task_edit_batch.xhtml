@@ -3,7 +3,7 @@
     template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{AktuelleSchritteForm.batchHelper.currentStep.titel}" />
+    <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
     
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />

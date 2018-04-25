@@ -43,6 +43,8 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private static final long serialVersionUID = 6831844584239811846L;
@@ -102,6 +104,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean delayStep;
 
     private boolean updateMetadataIndex;
+    
+    @Getter @Setter
+    private boolean generateDocket = false;
 
     public Step() {
         this.titel = "";
@@ -324,7 +329,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public String getTitelLokalisiert() {
-        return Helper.getTranslation(this.titel);
+        String translatedTitle = Helper.getTranslation("stepname_" + this.titel);
+        return translatedTitle.startsWith("stepname_") ? titel : translatedTitle;
     }
 
     public String getTitel() {

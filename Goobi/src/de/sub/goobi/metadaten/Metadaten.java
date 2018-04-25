@@ -796,7 +796,7 @@ public class Metadaten {
                 logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
-        if (StringUtils.isBlank(tempTyp)) {
+        if (StringUtils.isBlank(tempTyp) && !tempMetadatumList.isEmpty()) {
             tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
             selectedMetadatum = tempMetadatumList.get(0);
         }
@@ -1246,8 +1246,7 @@ public class Metadaten {
         /*
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
-        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper
-                .getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
+        List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), false, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -1259,16 +1258,14 @@ public class Metadaten {
         /*
          * -------------------------------- alle Personen und die DefaultDisplay-Werte ermitteln --------------------------------
          */
-        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
+        myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), true, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 lsPers.add(new MetaPerson((Person) metadata, 0, this.myPrefs, inStrukturelement, myProzess, this));
             }
         }
 
-        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, (String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"), this.myProzess);
+        List<MetadataGroup> groups = this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
         if (groups != null) {
             for (MetadataGroup mg : groups) {
                 metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
@@ -1324,8 +1321,7 @@ public class Metadaten {
         /*
          * -------------------------------- Die Struktur als Tree3 aufbereiten --------------------------------
          */
-        String label = inLogicalTopStruct.getType().getNameByLanguage((String) Helper.getManagedBeanValue(
-                "#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = inLogicalTopStruct.getType().getNameByLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inLogicalTopStruct.getType().getName();
         }
@@ -1382,7 +1378,7 @@ public class Metadaten {
         if (meineListe != null) {
             /* es gibt Kinder-Strukturelemente */
             for (DocStruct kind : meineListe) {
-                String label = kind.getType().getNameByLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+                String label = kind.getType().getNameByLanguage(Helper.getMetadataLanguage());
                 if (label == null) {
                     label = kind.getType().getName();
                 }
@@ -2775,27 +2771,19 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
-    private String getOcrFileNameForImage() {
-        String ocrFile = "";
-        ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-        return ocrFile;
-    }
-
     public boolean isImageHasOcr() {
-        return FilesystemHelper.isOcrFileExists(myProzess, getOcrFileNameForImage());
+    		try {
+    			return FilesystemHelper.isOcrFileExists(myProzess, image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")));
+    		}catch(Exception e) {
+    			return false;
+    		}
     }
 
     public boolean isShowOcrButton() {
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
             return ConfigurationHelper.getInstance().isMetsEditorShowOCRButton();
         } else {
-            try {
-                Path textFolder = Paths.get(myProzess.getTxtDirectory());
-                return Files.exists(textFolder);
-            } catch (SwapException | DAOException | IOException | InterruptedException e) {
-                logger.error(e);
-                return false;
-            }
+        		return isImageHasOcr();
         }
     }
 
@@ -2838,10 +2826,23 @@ public class Metadaten {
                 }
             }
         } else {
-            String ocrFile = "";
-            ocrFile = image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-            logger.trace("myPicture: " + ocrFile);
-            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
+        		String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+        		ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew);
+        		
+//        		String ocrFile = "";
+//			try {
+//				Path textFolder = Paths.get(myProzess.getTxtDirectory());
+//				Path altoFolder = Paths.get(myProzess.getAltoDirectory());
+//				if (Files.exists(textFolder)) {
+//	            		ocrFile = myProzess.getTxtDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
+//	            } else if (Files.exists(altoFolder)) {
+//	            		ocrFile = myProzess.getAltoDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".xml";
+//	            }
+//				ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
+//	        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+//				logger.error("Error while reading the OCR result", e);
+//				ocrResult = "";
+//			}
         }
         return ocrResult;
     }
@@ -3410,9 +3411,10 @@ public class Metadaten {
     }
 
     public List<String> autocomplete(String suggest) {
-        String pref = suggest;
-        ArrayList<String> result = new ArrayList<String>();
-        ArrayList<String> alle = new ArrayList<String>();
+
+        String pref =  suggest;
+        List<String> result = new ArrayList<String>();
+        List<String> alle = new ArrayList<String>();
         for (SelectItem si : this.alleSeiten) {
             alle.add(si.getLabel());
         }
@@ -4111,8 +4113,7 @@ public class Metadaten {
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), false, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), false, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4131,8 +4132,7 @@ public class Metadaten {
                 try {
                     DocStruct ds = this.mydocument.createDocStruct(dst);
 
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, (String) Helper.getManagedBeanValue(
-                            "#{LoginForm.myBenutzer.metadatenSprache}"), true, this.myProzess, displayHiddenMetadata);
+                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(), true, this.myProzess, displayHiddenMetadata);
                     if (myTempMetadata != null) {
                         for (Metadata metadata : myTempMetadata) {
                             MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
@@ -4248,7 +4248,7 @@ public class Metadaten {
     private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
         StringBuilder url = new StringBuilder(baseUrl);
         url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=").append("file://"
-                + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size).append("&steffen");
+                + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
     }
 

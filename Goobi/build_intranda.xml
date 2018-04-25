@@ -21,6 +21,7 @@
     <path id="classpath">
         <fileset dir="${dir.lib}" />
         <fileset dir="/opt/digiverso/libs" />
+    		<fileset dir="${dir.lib.test}" />
     </path>
 
     <!-- Testing classpath -->
@@ -118,8 +119,8 @@
     <!-- Normal build of application. -->
     <target name="compile" depends="copySources, git.revision" description="Normal build of application.">
 
-        <javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="7" encoding="UTF8" source="7" debug="true" debuglevel="lines,vars,source">
-            <compilerarg value="-Xlint" />
+        <javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="7" encoding="UTF8" source="7" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+            <compilerarg value="-Xlint:-path" />
             <classpath refid="classpath" />
         </javac>
     </target>
@@ -181,6 +182,24 @@
         <delete dir="${dir.build}/WEB-INF" />
         <echo>Alles ist gut</echo>
         <echo>building revision ${dist.name}-${git.revision}</echo>
+    	
+    		<echo>=======================================================================</echo>
+    		<echo> </echo>
+		<echo>        GGGGGGGG                                   bbb              i </echo>
+		<echo>    GGGGGG     GGG                                 bbb             iii</echo>
+		<echo>   GGG                                             bbb                </echo>
+		<echo>  GGG                                              bbb                </echo>
+		<echo> GGG                  oooooooooooooooooooooooooo   bbb bbbbbbbb    iii</echo>
+		<echo> GGG                 ooooo       oooo      oooooo  bbbb      bbbb  iii</echo>
+		<echo> GGG       GGGGGGGG  oooo  oooo      ooooo   oooo  bbb        bbb  iii</echo>
+		<echo> GGG            GGG  oooo ooooooo   ooooooo  oooo  bbb         bbb iii</echo>
+		<echo> GGGG           GGG  oooo ooooooo    oooooo  oooo  bbb         bb  iii</echo>
+		<echo>  GGGG          GGG  oooo   oo   oo    oo   ooooo  bbb        bbb  iii</echo>
+		<echo>    GGGGGG     GGGG  ooooooo   ooooooo   oooooooo  bb bb    bbbb   iii</echo>
+		<echo>       GGGGGGGGGG     ooooooooooooooooooooooooo    bb   bbbbb      iii</echo>
+		<echo> </echo>
+    		<echo>=======================================================================</echo>
+    	    		
     </target>
 
     <!-- Build all, not really needed yet. -->
@@ -192,7 +211,7 @@
         <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="7" encoding="UTF8" source="7">
 
             <classpath refid="test.classpath" />
-            <compilerarg value="-Xlint" />
+            <compilerarg value="-Xlint:-path" />
             <src path="${dir.build.src}" />
             <src path="${dir.tests}" />
         </javac>
@@ -211,7 +230,7 @@
         <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="7" encoding="UTF8" source="7">
 
             <classpath refid="test.classpath" />
-            <compilerarg value="-Xlint" />
+            <compilerarg value="-Xlint:-path" />
             <src path="${dir.build.src}" />
             <src path="${dir.tests}" />
         </javac>

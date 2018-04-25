@@ -28,10 +28,13 @@
 
 package de.sub.goobi.helper;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.mozilla.universalchardet.UniversalDetector;
 
+import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
+import de.intranda.digiverso.ocr.conversion.ConvertAbbyyToAltoStaX;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -46,6 +49,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Helper class for file system operations.
@@ -98,22 +105,22 @@ public class FilesystemHelper {
 	 */
 
 	public static void createDirectoryForUser(String dirName, String userName)
-			throws IOException, InterruptedException {
+	        throws IOException, InterruptedException {
 		if (!Files.exists(Paths.get(dirName))) {
 			if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
 				File confFile = new File(dirName);
 				confFile.mkdirs();
 			} else {
 				ShellScript createDirScript = new ShellScript(
-					Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
-					createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
+				        Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
+				createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
 			}
 		}
 	}
 
 	public static void deleteSymLink(String symLink) {
 		String command = ConfigurationHelper.getInstance().getScriptDeleteSymLink();
-		if (!command.isEmpty()){
+		if (!command.isEmpty()) {
 			ShellScript deleteSymLinkScript;
 			try {
 				deleteSymLinkScript = new ShellScript(Paths.get(command));
@@ -157,59 +164,51 @@ public class FilesystemHelper {
 	}
 
 	public static boolean isOcrFileExists(Process inProcess, String ocrFile) {
-		Path txtfile = null;
 		try {
-			txtfile = Paths.get(inProcess.getTxtDirectory() + ocrFile);
+			File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
+			File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
+			return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead());
 		} catch (SwapException | DAOException | IOException | InterruptedException e) {
+			return false;
 		}
-		return (Files.exists(txtfile) && Files.isReadable(txtfile));
 	}
 
 	public static String getOcrFileContent(Process inProcess, String ocrFile) {
-		String ocrResult = "";
-		InputStreamReader inputReader = null;
-		BufferedReader in = null;
-		FileInputStream fis = null;
 		try {
-			Path txtfile = Paths.get(inProcess.getTxtDirectory() + ocrFile);
+			File ocrfile = null;
+			File textFolder = new File(inProcess.getOcrTxtDirectory());
+			File xmlFolder = new File(inProcess.getOcrXmlDirectory());
 
-			StringBuilder response = new StringBuilder();
-			String line;
-			if (Files.exists(txtfile) && Files.isReadable(txtfile)) {
-				fis = new FileInputStream(txtfile.toFile());
-				inputReader = new InputStreamReader(fis, FilesystemHelper.getFileEncoding(txtfile));
-				in = new BufferedReader(inputReader);
-				while ((line = in.readLine()) != null) {
+			if (textFolder.exists()) {
+				// try to return content from txt folder
+				ocrfile = new File(textFolder, ocrFile + ".txt");
+				List<String> contents = FileUtils.readLines(ocrfile,
+				        FilesystemHelper.getFileEncoding(ocrfile.toPath()));
+				StringBuilder response = new StringBuilder();
+				for (String line : contents) {
 					response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
 				}
-				response.append("</p>");
-				ocrResult = response.toString();
+				return response.toString();
+
+			} else if (xmlFolder.exists()) {
+				// try to return content from xml folder
+				ocrfile = new File(xmlFolder, ocrFile + ".xml");
+				ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
+				AltoDocument alto = converter.convertToASM(ocrfile, new Date());
+				String result = alto.getContent().replaceAll("\n", "<br/>");
+				return result;
 			}
-		} catch (IOException | SwapException | DAOException | InterruptedException e) {
-			logger.error(e);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					in = null;
-				}
-			}
-			if (inputReader != null) {
-				try {
-					inputReader.close();
-				} catch (IOException e) {
-					inputReader = null;
-				}
-			}
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					fis = null;
-				}
-			}
+		} catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException e) {
+			logger.error("Problem reading the OCR file", e);
 		}
-		return ocrResult;
+		return "- no ocr content -";
 	}
+	
+	public static void main(String[] args) throws IOException, XMLStreamException {
+		ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
+		AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
+		String result = alto.getContent().replaceAll("\n", "<br/>");
+		System.out.println(result);
+	}
+	
 }

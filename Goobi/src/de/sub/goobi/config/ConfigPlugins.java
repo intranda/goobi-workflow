@@ -29,22 +29,34 @@ package de.sub.goobi.config;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.helper.Helper;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class ConfigPlugins {
 	
-	private static final Logger logger = Logger.getLogger(ConfigPlugins.class);
-
+    /**
+     * pass back the right configuration file by giving the plugin class
+     *
+     * @deprecated use getPluginConfig(String pluginname) for this instead
+     */
+    @Deprecated
 	public static XMLConfiguration getPluginConfig(IPlugin inPlugin) {
-		String file = "plugin_" + inPlugin.getClass().getSimpleName() + ".xml";
+	    return getPluginConfig(inPlugin.getClass().getSimpleName());
+	}
+	
+    /**
+     * pass back the right configuration file by giving the internal plugin name
+     */
+	public static XMLConfiguration getPluginConfig(String pluginname) {
+		String file = "plugin_" + pluginname + ".xml";
 		XMLConfiguration config;
 		try {
 			config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + file);
 		} catch (ConfigurationException e) {
-			logger.error(e);
+			log.error("Error while reading the configuration file " + file, e);
 			config = new XMLConfiguration();
 		}
 		config.setListDelimiter('&');

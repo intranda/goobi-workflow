@@ -102,8 +102,8 @@ public class ExportPdf extends ExportMets {
         if(!Files.exists(imagesPath) || NIOFileUtils.list(imagesPath.toString(), NIOFileUtils.imageOrObjectNameFilter).isEmpty()) {
             imagesPath = Paths.get(myProzess.getImagesOrigDirectory(true));
         }
-        Path pdfPath = Paths.get(myProzess.getPdfDirectory());
-        Path altoPath = Paths.get(myProzess.getAltoDirectory());
+        Path pdfPath = Paths.get(myProzess.getOcrPdfDirectory());
+        Path altoPath = Paths.get(myProzess.getOcrAltoDirectory());
         
         if (!ConfigurationHelper.getInstance().isPdfAsDownload()) {
             /*

@@ -36,12 +36,12 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.zeroturnaround.eclipse.rebelXmlBuilder</name>
+			<name>com.instantiations.assist.eclipse.coverage.instrumentationBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.instantiations.assist.eclipse.coverage.instrumentationBuilder</name>
+			<name>org.zeroturnaround.eclipse.rebelXmlBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

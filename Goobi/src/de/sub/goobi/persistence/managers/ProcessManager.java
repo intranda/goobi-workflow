@@ -100,6 +100,17 @@ public class ProcessManager implements IManager, Serializable {
         return p;
     }
 
+    public static Process getProcessByExactTitle(String inTitle) {
+        Process p = null;
+        try {
+            p = ProcessMysqlHelper.getProcessByExactTitle(inTitle);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+
+        return p;
+    }
+
     public static long getSumOfFieldValue(String columnname, String filter) {
         try {
             return ProcessMysqlHelper.getSumOfFieldValue(columnname, filter);
@@ -193,7 +204,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         return new ArrayList<>();
     }
-    
+
     public static Batch getBatchById(int id) {
 
         try {
@@ -211,7 +222,7 @@ public class ProcessManager implements IManager, Serializable {
             logger.error(e);
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
     public static List runSQL(String sql) {
         try {

@@ -43,7 +43,6 @@ import ugh.dl.Prefs;
 
 import org.goobi.beans.Process;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
-import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
 import de.sub.goobi.helper.Helper;
 
@@ -127,7 +126,7 @@ public class MetadatumImpl implements Metadatum {
     }
 
     public String getTyp() {
-        String label = this.md.getType().getLanguage((String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}"));
+        String label = this.md.getType().getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = this.md.getType().getName();
         }

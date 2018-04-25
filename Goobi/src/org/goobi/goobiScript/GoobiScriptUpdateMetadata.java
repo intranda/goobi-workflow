@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-import org.jdom2.JDOMException;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
@@ -71,7 +70,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 		                logger.info("Metadata updated using GoobiScript for process with ID " + p.getId());
 						gsr.setResultMessage("Metadata updated successfully.");
 						gsr.setResultType(GoobiScriptResultType.OK);
-		            } catch (SwapException | DAOException | IOException | InterruptedException | JDOMException e1) {
+		            } catch (SwapException | DAOException | IOException | InterruptedException e1) {
 		                logger.error("Problem while updating the metadata using GoobiScript for process with id: " + p.getId(), e1);
 		                gsr.setResultMessage("Error while updating metadata: " + e1.getMessage());
 						gsr.setResultType(GoobiScriptResultType.ERROR);

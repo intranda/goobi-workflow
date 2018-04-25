@@ -34,7 +34,7 @@
 
                     <h:panelGrid columns="2" styleClass="table table-hover table-bordered">
                         <h:outputText value="#{msgs.titel}:" />
-                        <h:outputText value="#{ProzessverwaltungForm.mySchritt.titel}" />
+                        <h:outputText value="#{ProzessverwaltungForm.mySchritt.titelLokalisiert}" title="#{ProzessverwaltungForm.mySchritt.titel}"/>
 
                         <h:outputText value="#{msgs.id}:" />
                         <h:outputText value="#{ProzessverwaltungForm.mySchritt.id}" />
@@ -96,6 +96,7 @@
                             <h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!='' and ProzessverwaltungForm.mySchritt.delayStep}" />
                             <h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
                             <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
+                            <h:outputText styleClass="block" value="#{msgs.laufzettelDrucken}" rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
                         </h:panelGroup>
 
                         <h:outputText value="#{msgs.script}:" />
@@ -237,6 +238,7 @@
 
                     <intranda:formInputCheckBox id="metadataIndex" label="#{msgs.updateMetadataIndex}" field="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" help="#{msgs.helpUpdateMetadataIndex}" name="updateMetadataIndex" />
 
+                    <intranda:formInputCheckBox id="generateDocket" label="#{msgs.laufzettelDrucken}" field="#{ProzessverwaltungForm.mySchritt.generateDocket}" help="#{msgs.helpPrintDocket}" name="generateDocket" />
 
                     <div class="form-actions">
 

@@ -55,6 +55,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -109,7 +110,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.export.download.ExportPdf;
-import de.sub.goobi.export.download.Multipage;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.forms.SessionForm;
@@ -119,6 +119,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.PropertyListObject;
+import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -137,11 +138,17 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import ugh.dl.ContentFile;
+import ugh.dl.DocStruct;
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @ManagedBean(name = "ProzessverwaltungForm")
@@ -282,9 +289,10 @@ public class ProcessBean extends BasicBean {
                     return "";
                 } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
                     this.modusBearbeiten = "prozess";
-                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse")); 
-                   return "";
-                    
+                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation(
+                            "ProcessCreationErrorTitleAllreadyInUse"));
+                    return "";
+
                 } else {
                     /* Prozesseigenschaften */
                     if (myProzess.getEigenschaftenList() != null && !myProzess.getEigenschaftenList().isEmpty()) {
@@ -347,28 +355,66 @@ public class ProcessBean extends BasicBean {
                         logger.trace("could not rename folder", e);
                     }
 
-                    /* Vorgangstitel */
-                    this.myProzess.setTitel(this.myNewProcessTitle);
-
                     if (!this.myProzess.isIstTemplate()) {
                         /* Tiffwriter-Datei löschen */
                         GoobiScript gs = new GoobiScript();
                         List<Integer> pro = new ArrayList<>();
                         pro.add(this.myProzess.getId());
                         gs.deleteTiffHeaderFile(pro);
-                        gs.updateImagePath(pro);
+
+                        // update paths in metadata file
+                        try {
+                            Fileformat fileFormat = myProzess.readMetadataFile();
+
+                            UghHelper ughhelp = new UghHelper();
+                            MetadataType mdt = ughhelp.getMetadataType(myProzess, "pathimagefiles");
+                            DocStruct physical = fileFormat.getDigitalDocument().getPhysicalDocStruct();
+                            List<? extends ugh.dl.Metadata> alleImagepfade = physical.getAllMetadataByType(mdt);
+                            if (alleImagepfade.size() > 0) {
+                                for (Metadata md : alleImagepfade) {
+                                    fileFormat.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
+                                }
+                            }
+                            Metadata newmd = new Metadata(mdt);
+                            if (SystemUtils.IS_OS_WINDOWS) {
+                                newmd.setValue("file:/" + myProzess.getImagesTifDirectory(false));
+                            } else {
+                                newmd.setValue("file://" + myProzess.getImagesTifDirectory(false));
+                            }
+                            fileFormat.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
+
+                            if (physical.getAllChildren() != null) {
+                                for (DocStruct page : physical.getAllChildren()) {
+                                    List<ContentFile> contentFileList = page.getAllContentFiles();
+                                    if (contentFileList != null) {
+                                        for (ContentFile cf : contentFileList) {
+                                            cf.setLocation(cf.getLocation().replace(myProzess.getTitel(), myNewProcessTitle));
+                                        }
+                                    }
+                                }
+                            }
+
+                            myProzess.writeMetadataFile(fileFormat);
+
+                        } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
+                            logger.info("Could not rename paths in metadata file", e);
+                        }
+
+                        /* Vorgangstitel */
+                        this.myProzess.setTitel(this.myNewProcessTitle);
+
                     }
+
                 }
 
             }
-
-            try {
-                ProcessManager.saveProcess(this.myProzess);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-            }
         } else {
             Helper.setFehlerMeldung("titleEmpty");
+        }
+        try {
+            ProcessManager.saveProcess(this.myProzess);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
         }
         if (paginator != null) {
             paginator.load();
@@ -407,7 +453,7 @@ public class ProcessBean extends BasicBean {
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
-        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Deleted content for this process in process details.");
+        Helper.addMessageToProcessLog(mySchritt.getProzess().getId(), LogType.DEBUG, "Deleted content for this process in process details.");
 
         Helper.setMeldung("Content deleted");
         return "";
@@ -1088,6 +1134,16 @@ public class ProcessBean extends BasicBean {
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
     }
+    
+    @SuppressWarnings("unchecked")
+    public void generateFilterWithIdentfiers() {
+        String f = "\"id:";
+    	for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
+            f += proz.getId() + " ";
+        }
+        f+="\"";
+    	filter = f;
+    }
 
     @SuppressWarnings("unchecked")
     public void BearbeitungsstatusHochsetzenPage() throws DAOException {
@@ -1433,7 +1489,7 @@ public class ProcessBean extends BasicBean {
         List<Project> temp = null;
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-            temp = ProjectManager.getProjectsForUser(login.getMyBenutzer());
+            temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), false);
         } else {
             temp = ProjectManager.getAllProjects();
 
@@ -1703,7 +1759,7 @@ public class ProcessBean extends BasicBean {
     }
 
     @SuppressWarnings("unchecked")
-	public int getGoobiScriptCountSelection() {
+    public int getGoobiScriptCountSelection() {
         List<Integer> idList = new ArrayList<>();
         for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
@@ -1796,11 +1852,6 @@ public class ProcessBean extends BasicBean {
     public void DownloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.myProzess);
         tiff.ExportStart();
-    }
-
-    public void DownloadMultiTiff() throws IOException, InterruptedException, SwapException, DAOException {
-        Multipage mp = new Multipage();
-        mp.ExportStart(this.myProzess);
     }
 
     public String getGoobiScript() {
@@ -2033,7 +2084,7 @@ public class ProcessBean extends BasicBean {
             }
         }
     }
-    
+
     public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         CSVPrinter csvFilePrinter = null;
@@ -2048,33 +2099,33 @@ public class ProcessBean extends BasicBean {
                 CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
                 csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat);
                 CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
-                
+
                 // add all headers
                 List<Object> csvHead = new ArrayList<Object>();
                 csvHead.add(csvr.getDataTable().getUnitLabel());
-            	for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
-                	csvHead.add(s);
-				}
+                for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
+                    csvHead.add(s);
+                }
                 csvFilePrinter.printRecord(csvHead);
 
                 // add all rows
                 for (DataRow dr : csvr.getDataTable().getDataRows()) {
-                	List<Object> csvColumns = new ArrayList<Object>();
-                	csvColumns.add(dr.getName());
-                	for (int j = 0; j < dr.getNumberValues(); j++) {
-						csvColumns.add(dr.getValue(j));
-					}
-                	csvFilePrinter.printRecord(csvColumns);
-				}
-                
+                    List<Object> csvColumns = new ArrayList<Object>();
+                    csvColumns.add(dr.getName());
+                    for (int j = 0; j < dr.getNumberValues(); j++) {
+                        csvColumns.add(dr.getValue(j));
+                    }
+                    csvFilePrinter.printRecord(csvColumns);
+                }
+
                 facesContext.responseComplete();
             } catch (Exception e) {
-                
+
             } finally {
                 try {
                     csvFilePrinter.close();
                 } catch (IOException e) {
-            
+
                 }
             }
         }

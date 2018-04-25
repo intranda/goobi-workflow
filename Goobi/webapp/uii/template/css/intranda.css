@@ -550,6 +550,10 @@ label {
     white-space: normal;
 }
 
+.box.box-bordered .table.table-bordered th:last-child, .box.box-bordered .table.table-bordered td:last-child {
+    border: 1px solid #ddd!important;
+}
+
 /* ------------- Statistics --------------- */
 .searchformfield {
     padding-top: 9px;
@@ -627,6 +631,10 @@ dropdown-menu>li>a {
 
 .font-light {
     color: #AAAAAA;
+}
+
+.font-bold {
+  font-weight: bold;
 }
 
 .font-asterisk {

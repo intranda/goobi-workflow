@@ -104,9 +104,10 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         String natSQL = "";
         // adding time restrictions
         if (stepname == null) {
-            natSQL = new ImprovedSQLProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(exactStepDone);
+            
+            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(exactStepDone);
         } else {
-            natSQL = new ImprovedSQLProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);
+            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);
         }
         //		Session session = Helper.getHibernateSession();
         //

@@ -87,7 +87,7 @@
                                             </h:commandLink>
                                         </f:facet>
 
-                                        <ui:include src="includes/ajaxPlusMinusButton.xhtml" />
+                                        <ui:include src="includes/ajaxPlusMinusButtonTask.xhtml" />
 
                                         <h:panelGroup styleClass="margin-top-10 block" id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
 
@@ -102,7 +102,7 @@
                                                     <h:panelGrid columns="2" class="table table-hover table-bordered">
 
                                                         <h:outputText value="#{msgs.titel}:" />
-                                                        <h:outputText value="#{item.titel}" />
+                                                        <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}"/>
                                                         <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
                                                         <h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" >
 <!--                                                         	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
@@ -234,8 +234,8 @@
                                                 <f:ajax render=":myform" />
                                             </h:commandLink>
                                         </f:facet>
-
-                                        <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}" />
+                                        <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}"/>
+                                        <h:outputText value=" (#{item.prozess.batch.batchName})" rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}"/>
                                     </x:column>
 
                                     <!-- ===================== Status ====================== -->

@@ -45,6 +45,7 @@ import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
@@ -57,7 +58,6 @@ import de.sub.goobi.persistence.managers.StepManager;
 public class JobCreation {
     private static final Logger logger = Logger.getLogger(JobCreation.class);
 
-    @SuppressWarnings("static-access")
     public static Process generateProcess(ImportObject io, Process vorlage) {
         String processTitle = io.getProcessTitle();
         logger.trace("processtitle is " + processTitle);
@@ -74,7 +74,7 @@ public class JobCreation {
             if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
                 deleteDirectory(imagesFolder);
             } else {
-                imagesFolder = Paths.get(basepath + "_" + vorlage.DIRECTORY_SUFFIX);
+                imagesFolder = Paths.get(basepath + "_" + ConfigurationHelper.getInstance().getMediaDirectorySuffix());
                 if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
                     deleteDirectory(imagesFolder);
                 }

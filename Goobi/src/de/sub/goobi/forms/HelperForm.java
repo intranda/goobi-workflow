@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.goobi.beans.Docket;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 import org.goobi.production.GoobiVersion;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -52,9 +53,11 @@ import ugh.dl.Fileformat;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
 
 @ManagedBean(name = "HelperForm")
 @SessionScoped
@@ -284,6 +287,12 @@ public class HelperForm {
         this.showError = showError;
     }
 
+    public void executeScriptsForStep(int id) {
+    	HelperSchritte hs = new HelperSchritte();
+    	Step s = StepManager.getStepById(id);
+    	hs.executeAllScriptsForStep(s, false);
+    }
+    
     public List<SelectItem> getPossibleShortcuts() {
         List<SelectItem> ret = new ArrayList<>();
         ret.add(new SelectItem("ctrl", Helper.getTranslation("mets_key_ctrl")));

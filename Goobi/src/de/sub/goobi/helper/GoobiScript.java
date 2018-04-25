@@ -33,6 +33,7 @@ import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
 import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
 import org.goobi.goobiScript.GoobiScriptSwapSteps;
+import org.goobi.goobiScript.GoobiScriptUpdateHistory;
 import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
 import org.goobi.goobiScript.GoobiScriptUpdateMetadata;
 import org.goobi.goobiScript.IGoobiScript;
@@ -92,7 +93,7 @@ public class GoobiScript {
              * -------------------------------- Aufruf der richtigen Methode über den Parameter --------------------------------
              */
             IGoobiScript igs = null;
-            
+
             if (this.myParameters.get("action").equals("swapSteps")) {
                 igs = new GoobiScriptSwapSteps();
             } else if (this.myParameters.get("action").equals("swapProzessesOut")) {
@@ -104,7 +105,7 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equals("addUser")) {
                 igs = new GoobiScriptAddUser();
             } else if (this.myParameters.get("action").equals("addUserGroup")) {
-            	igs = new GoobiScriptAddUserGroup();
+                igs = new GoobiScriptAddUserGroup();
             } else if (this.myParameters.get("action").equals("setTaskProperty")) {
                 igs = new GoobiScriptSetTaskProperty();
             } else if (this.myParameters.get("action").equals("deleteStep")) {
@@ -112,15 +113,17 @@ public class GoobiScript {
             } else if (this.myParameters.get("action").equals("addStep")) {
                 igs = new GoobiScriptAddStep();
             } else if (this.myParameters.get("action").equals("setStepNumber")) {
-            	igs = new GoobiScriptSetStepNumber();
+                igs = new GoobiScriptSetStepNumber();
             } else if (this.myParameters.get("action").equals("setStepStatus")) {
-               igs = new GoobiScriptSetStepStatus();
+                igs = new GoobiScriptSetStepStatus();
             } else if (this.myParameters.get("action").equals("addShellScriptToStep")) {
                 igs = new GoobiScriptAddShellScriptToStep();
             } else if (this.myParameters.get("action").equalsIgnoreCase("addPluginToStep")) {
                 igs = new GoobiScriptAddPluginToStep();
             } else if (this.myParameters.get("action").equals("updateImagePath")) {
                 igs = new GoobiScriptUpdateImagePath();
+            } else if (this.myParameters.get("action").equals("updateHistory")) {
+                igs = new GoobiScriptUpdateHistory();
             } else if (this.myParameters.get("action").equals("updateContentFiles")) {
                 updateContentFiles(inProzesse);
             } else if (this.myParameters.get("action").equals("deleteTiffHeaderFile")) {
@@ -129,14 +132,14 @@ public class GoobiScript {
                 igs = new GoobiScriptAddToProcessLog();
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 igs = new GoobiScriptSetRuleset();
-           } else if (this.myParameters.get("action").equals("export")) {
+            } else if (this.myParameters.get("action").equals("export")) {
                 igs = new GoobiScriptExportDMS();
-           } else if (this.myParameters.get("action").equals("runPlugin")) {
-               igs = new GoobiScriptRunPlugin();
+            } else if (this.myParameters.get("action").equals("runPlugin")) {
+                igs = new GoobiScriptRunPlugin();
             } else if (this.myParameters.get("action").equals("runScript")) {
-               igs = new GoobiScriptRunScript();
+                igs = new GoobiScriptRunScript();
             } else if (this.myParameters.get("action").equals("deleteProcess")) {
-            	igs = new GoobiScriptDeleteProcess();
+                igs = new GoobiScriptDeleteProcess();
             } else if (this.myParameters.get("action").equalsIgnoreCase("updateMetadata")) {
                 igs = new GoobiScriptUpdateMetadata();
             } else if (myParameters.get("action").equalsIgnoreCase("countImages")) {
@@ -156,15 +159,17 @@ public class GoobiScript {
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
-            
+            //            Class c = Class.forName("org.goobi.goobiscript.GoobiScriptMetadataChange");
+            //        Object o =    c.newInstance();
+            //       igs=  (IGoobiScript) o;
             // if the selected GoobiScript is a new implementation based on interface then execute it now
-            if(igs!=null){
-            	boolean scriptCallIsValid = igs.prepare(inProzesse, currentScript, this.myParameters);
-            	// just execute the scripts if the call was valid
-            	if(scriptCallIsValid){
-            		Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
-            		igs.execute();
-            	}
+            if (igs != null) {
+                boolean scriptCallIsValid = igs.prepare(inProzesse, currentScript, this.myParameters);
+                // just execute the scripts if the call was valid
+                if (scriptCallIsValid) {
+                    Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
+                    igs.execute();
+                }
             }
         }
         return "";
@@ -273,7 +278,7 @@ public class GoobiScript {
                 }
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung("goobiScriptfield","",e);
+            Helper.setFehlerMeldung("goobiScriptfield", "", e);
             logger.error(e);
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'importFromFileSystem' executed.");
