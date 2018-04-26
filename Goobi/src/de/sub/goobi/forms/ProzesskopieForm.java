@@ -1358,9 +1358,9 @@ public class ProzesskopieForm {
                      */
                     if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
                             .getWert() == null || myField.getWert().equals(""))) {
-                        if (atstsl == null || atstsl.length() == 0) {
+//                        if (atstsl == null || atstsl.length() == 0) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
-                        }
+//                        }
                         myField.setWert(this.atstsl);
                     }
 
