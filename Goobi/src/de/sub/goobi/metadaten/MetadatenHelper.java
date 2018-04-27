@@ -748,7 +748,7 @@ public class MetadatenHelper implements Comparator<Object> {
         return null;
     }
 
-    public static Map<String, List<String>> getMetadataOfFileformat(Fileformat gdzfile) {
+    public static Map<String, List<String>> getMetadataOfFileformat(Fileformat gdzfile, boolean includeAuthority) {
 
         Map<String, List<String>> metadataList = new HashMap<>();
         try {
@@ -758,6 +758,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 for (MetadataGroup mg : ds.getAllMetadataGroups()) {
                     if (mg.getPersonList() != null) {
                         for (Person p : mg.getPersonList()) {
+							if (includeAuthority) {
+								addAuthorityFromPerson(metadataList, p);
+							}
                             if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                                 if (metadataList.containsKey(p.getType().getName())) {
                                     List<String> oldValue = metadataList.get(p.getType().getName());
@@ -773,6 +776,9 @@ public class MetadatenHelper implements Comparator<Object> {
                     }
                     if (mg.getMetadataList() != null) {
                         for (Metadata md : mg.getMetadataList()) {
+							if (includeAuthority) {
+								addAuthorityFromMeta(metadataList, md);
+							}
                             if (StringUtils.isNotBlank(md.getValue())) {
                                 if (metadataList.containsKey(md.getType().getName())) {
                                     List<String> oldValue = metadataList.get(md.getType().getName());
@@ -790,6 +796,9 @@ public class MetadatenHelper implements Comparator<Object> {
             }
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
+					if (includeAuthority) {
+						addAuthorityFromMeta(metadataList, md);
+					}
                     if (StringUtils.isNotBlank(md.getValue())) {
                         if (metadataList.containsKey(md.getType().getName())) {
                             List<String> oldValue = metadataList.get(md.getType().getName());
@@ -805,6 +814,9 @@ public class MetadatenHelper implements Comparator<Object> {
             }
             if (ds.getAllPersons() != null) {
                 for (Person p : ds.getAllPersons()) {
+					if (includeAuthority) {
+						addAuthorityFromPerson(metadataList, p);
+					}
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                         if (metadataList.containsKey(p.getType().getName())) {
                             List<String> oldValue = metadataList.get(p.getType().getName());
@@ -823,6 +835,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 ds = ds.getAllChildren().get(0);
                 if (ds.getAllMetadata() != null) {
                     for (Metadata md : ds.getAllMetadata()) {
+						if (includeAuthority) {
+							addAuthorityFromMeta(metadataList, md);
+						}
                         if (StringUtils.isNotBlank(md.getValue())) {
                             if (metadataList.containsKey(md.getType().getName())) {
                                 List<String> oldValue = metadataList.get(md.getType().getName());
@@ -838,6 +853,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 }
                 if (ds.getAllPersons() != null) {
                     for (Person p : ds.getAllPersons()) {
+						if (includeAuthority) {
+							addAuthorityFromPerson(metadataList, p);
+						}
                         if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                             if (metadataList.containsKey(p.getType().getName())) {
                                 List<String> oldValue = metadataList.get(p.getType().getName());
@@ -855,6 +873,9 @@ public class MetadatenHelper implements Comparator<Object> {
             ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
+					if (includeAuthority) {
+						addAuthorityFromMeta(metadataList, md);
+					}
                     if (StringUtils.isNotBlank(md.getValue())) {
                         if (metadataList.containsKey(md.getType().getName())) {
                             List<String> oldValue = metadataList.get(md.getType().getName());
@@ -871,6 +892,9 @@ public class MetadatenHelper implements Comparator<Object> {
             if (ds.getAllPersons() != null) {
 
                 for (Person p : ds.getAllPersons()) {
+                	if (includeAuthority) {
+						addAuthorityFromPerson(metadataList, p);
+					}
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                         if (metadataList.containsKey(p.getType().getName())) {
                             List<String> oldValue = metadataList.get(p.getType().getName());
@@ -890,4 +914,28 @@ public class MetadatenHelper implements Comparator<Object> {
         }
         return metadataList;
     }
+
+	private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
+		if(StringUtils.isNotBlank(p.getAuthorityID())) {
+			String key = p.getType().getName() + "_authority";
+			List<String> value = metadataList.get(key);
+			if(value == null) {
+				value = new ArrayList<>();
+				metadataList.put(key, value);
+			}
+			value.add(p.getAuthorityID());
+		}
+	}
+
+	private static void addAuthorityFromMeta(Map<String, List<String>> metadataList, Metadata md) {
+		if(StringUtils.isNotBlank(md.getAuthorityID())) {
+			String key = md.getType().getName() + "_authority";
+			List<String> value = metadataList.get(key);
+			if(value == null) {
+				value = new ArrayList<>();
+				metadataList.put(key, value);
+			}
+			value.add(md.getAuthorityID());
+		}
+	}
 }

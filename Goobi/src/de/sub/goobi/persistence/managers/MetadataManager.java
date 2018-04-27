@@ -45,6 +45,15 @@ public class MetadataManager implements Serializable {
             logger.error(e);
         }
     }
+    
+    public static void insertJSONMetadata(int processID, Map<String, List<String>> metadata) {
+    	logger.trace("Insert new JSON metadata for process with id " + processID);
+        try {
+            MetadataMysqlHelper.insertMetadata(processID, metadata);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
 
     public static void insertMetadata(int processId, Map<String, List<String>> metadata) {
 
@@ -58,6 +67,16 @@ public class MetadataManager implements Serializable {
         }
     }
 
+    public static void updateJSONMetadata(int processID, Map<String, List<String>> metadata) {
+    	logger.trace("Update JSON metadata for process with id " + processID);
+        try {
+            MetadataMysqlHelper.removeJSONMetadata(processID);
+            insertJSONMetadata(processID, metadata);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+    
     public static void updateMetadata(int processId, Map<String, List<String>> metadata) {
         logger.trace("Update metadata for process with id " + processId);
         try {

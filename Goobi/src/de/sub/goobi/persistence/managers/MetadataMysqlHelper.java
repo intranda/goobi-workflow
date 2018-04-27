@@ -41,7 +41,26 @@ class MetadataMysqlHelper implements Serializable {
     private static final Gson gson = new Gson();
 
     /**
-     * deletes metadata values for processId from `metadata` and `metadata_json` tables
+     * deletes metadata for processID from  `metadata_json` table
+     * @param processID
+     * @throws SQLException
+     */
+    public static void removeJSONMetadata(int processID) throws SQLException {
+    	Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            String sql = "DELETE FROM metadata_json WHERE processid = " + processID;
+            run.update(connection, sql);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+    
+    /**
+     * deletes metadata values for processId from `metadata` table
      * 
      * @param processId
      * @throws SQLException
@@ -54,18 +73,24 @@ class MetadataMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             String sql = "DELETE FROM metadata WHERE processid = " + processId;
             run.update(connection, sql);
-            sql = "DELETE FROM metadata_json WHERE processid = " + processId;
-            run.update(connection, sql);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
         }
     }
+    
+    /**
+     * inserts metadata into table `metadata_json` with one row per process and the values as json object
+     * @param processid
+     * @param metadata
+     */
+    public static void insertJSONMetadata(int processid, Map<String, List<String>> metadata) {
+    	
+    }
 
     /**
-     * inserts metadata in two tables: `metadata` with one row per metadata value and `metadata_json` with one row per process and the values as json
-     * object
+     * inserts metadata in two tables: `metadata` with one row per metadata value
      * 
      * @param processid the process id for the metadata
      * @param metadata the metadata

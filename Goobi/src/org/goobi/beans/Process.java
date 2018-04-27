@@ -1038,9 +1038,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         ff.write(metadataFileName);
 
-        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
 
         MetadataManager.updateMetadata(id, metadata);
+        
+        Map<String, List<String>> jsonMetadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, true);
+        
+        MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
