@@ -1804,7 +1804,11 @@ public class Metadaten {
             physical.removeChild(physical.getAllChildren().get(0));
         }
 
-        return createPagination();
+//                BildErmitteln(0);
+                createPagination();
+                loadCurrentImages(true);
+                return "";
+//        return createPagination();
     }
 
     /**
