@@ -148,6 +148,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
+    private static final Object xmlWriteLock = new Object();
+
     public Process() {
         this.swappedOut = false;
         this.titel = "";
@@ -550,7 +552,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
     }
-    
+
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
     }
@@ -1023,8 +1025,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
+            WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1033,17 +1035,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         metadataFileName = getMetadataFilePath();
+        
+        synchronized (xmlWriteLock) {
+            ff.setDigitalDocument(gdzfile.getDigitalDocument());
 
-        ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-        ff.write(metadataFileName);
-
+            ff.write(metadataFileName);
+        }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
 
         MetadataManager.updateMetadata(id, metadata);
-        
+
         Map<String, List<String>> jsonMetadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, true);
-        
+
         MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
