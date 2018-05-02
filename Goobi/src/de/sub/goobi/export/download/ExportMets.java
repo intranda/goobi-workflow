@@ -191,7 +191,7 @@ public class ExportMets {
             Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
             mih.createPagination(myProzess, null);
         } else {
-            mih.checkImageNames(myProzess, imageFolderPath);
+            mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
         }
 
         /*

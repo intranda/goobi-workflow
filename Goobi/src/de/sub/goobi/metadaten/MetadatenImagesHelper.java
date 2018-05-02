@@ -95,7 +95,7 @@ public class MetadatenImagesHelper {
         this.mydocument = inDocument;
     }
 
-    public void checkImageNames(Process myProzess, String directory) throws TypeNotAllowedForParentException, SwapException, DAOException,
+    public void checkImageNames(Process myProzess, String directoryName) throws TypeNotAllowedForParentException, SwapException, DAOException,
             IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
@@ -106,16 +106,16 @@ public class MetadatenImagesHelper {
             }
         }
         if (physical == null) {
-            createPagination(myProzess, directory);
+            createPagination(myProzess, directoryName);
             return;
         }
         // get image names in directory
 
         Path folder;
-        if (directory == null) {
+        if (directoryName == null) {
             folder = Paths.get(myProzess.getImagesTifDirectory(true));
         } else {
-            folder = Paths.get(myProzess.getImagesDirectory() + directory);
+            folder = Paths.get(myProzess.getImagesDirectory() + directoryName);
         }
 
         List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageNameFilter);
@@ -145,7 +145,7 @@ public class MetadatenImagesHelper {
 
         // if size differs, create new pagination
         if (imagenames.size() != imageNamesInMetsFile.size()) {
-            createPagination(myProzess, directory);
+            createPagination(myProzess, directoryName);
             return;
         }
 
