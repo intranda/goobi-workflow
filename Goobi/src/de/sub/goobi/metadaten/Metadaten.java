@@ -56,6 +56,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -4244,8 +4245,13 @@ public class Metadaten {
 
     private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
         StringBuilder url = new StringBuilder(baseUrl);
-        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=").append("file://"
-                + imageFolderName + currentImage.getImageName()).append("&width=").append(size).append("&height=").append(size);
+        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
+        url.append("file://");
+        if (SystemUtils.IS_OS_WINDOWS) {
+        	url.append("/");
+        }
+        url.append(imageFolderName + currentImage.getImageName());
+        url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
     }
 
