@@ -4231,8 +4231,8 @@ public class Metadaten {
     private Dimension getActualImageSize(Image image) {
         Dimension dim;
         try {
-            String imagePath = imageFolderName + image.getImageName();
-            String dimString = new GetImageDimensionAction().getDimensions("file://" + imagePath);
+            Path imagePath = Paths.get(imageFolderName, image.getImageName());
+            String dimString = new GetImageDimensionAction().getDimensions(imagePath.toUri().toString());
             int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
             int height = Integer.parseInt(dimString.replaceAll(".*::", ""));
             dim = new Dimension(width, height);
