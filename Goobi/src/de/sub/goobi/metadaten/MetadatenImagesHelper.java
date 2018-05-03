@@ -515,7 +515,7 @@ public class MetadatenImagesHelper {
             ImageManager im = null;
             JpegInterpreter pi = null;
             try {
-                im = new ImageManager(Paths.get(inFileName).toUri().toURL());
+                im = new ImageManager(Paths.get(inFileName).toUri());
                 logger.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
                 Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
