@@ -449,7 +449,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getGeonamesCredentials() {
-        return getLocalString("genonames_account", null);
+        return getLocalString("geonames_account", null);
     }
 
     // mets editor
