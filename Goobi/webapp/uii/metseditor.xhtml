@@ -444,6 +444,8 @@
 
                                 <div class="col-sm-12">
                                     <x:inputText value="#{Metadaten.geonamesSearchValue}" styleClass="form-control input" id="geonamesSearch" />
+                                    
+                                    <h:message for="geonamesSearch" showDetail="true" styleClass="help-inline font-danger" />
                                 </div>
 
 
@@ -467,6 +469,7 @@
 
 
                             <h:panelGroup id="geonamesList" layout="block" styleClass="row pre-scrollable">
+                                    <h:message for="geonamesList" showDetail="true" styleClass="help-inline font-danger" />
 
                                 <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="geonames">
                                     <hr />
