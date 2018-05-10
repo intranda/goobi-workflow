@@ -28,6 +28,7 @@ import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
+import org.goobi.goobiScript.GoobiScriptSetProject;
 import org.goobi.goobiScript.GoobiScriptSetRuleset;
 import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
@@ -132,6 +133,8 @@ public class GoobiScript {
                 igs = new GoobiScriptAddToProcessLog();
             } else if (this.myParameters.get("action").equals("setRuleset")) {
                 igs = new GoobiScriptSetRuleset();
+            } else if (this.myParameters.get("action").equals("setProject")) {
+                igs = new GoobiScriptSetProject();
             } else if (this.myParameters.get("action").equals("export")) {
                 igs = new GoobiScriptExportDMS();
             } else if (this.myParameters.get("action").equals("runPlugin")) {
