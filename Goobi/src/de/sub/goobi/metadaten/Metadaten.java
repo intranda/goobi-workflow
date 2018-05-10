@@ -1508,8 +1508,9 @@ public class Metadaten {
                     Reference last = references.get(references.size() - 1);
                     Integer pageNo = Integer.parseInt(last.getTarget().getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0)
                             .getValue());
-                    if (alleSeitenNeu.length > pageNo)
+                    if (alleSeitenNeu.length > pageNo) {
                         ds.addReferenceTo(this.alleSeitenNeu[pageNo].getMd().getDocStruct(), "logical_physical");
+                    }
 
                 }
                 siblings.add(index + 1, ds);
@@ -1805,11 +1806,11 @@ public class Metadaten {
             physical.removeChild(physical.getAllChildren().get(0));
         }
 
-//                BildErmitteln(0);
-                createPagination();
-                loadCurrentImages(true);
-                return "";
-//        return createPagination();
+        //                BildErmitteln(0);
+        createPagination();
+        loadCurrentImages(true);
+        return "";
+        //        return createPagination();
     }
 
     /**
@@ -4067,8 +4068,9 @@ public class Metadaten {
         } else {
             progress = (int) (currentImageNo / totalImageNo * 100);
 
-            if (progress > 100)
+            if (progress > 100) {
                 progress = 100;
+            }
         }
 
         return progress;
@@ -4248,7 +4250,7 @@ public class Metadaten {
         url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
         url.append("file://");
         if (SystemUtils.IS_OS_WINDOWS) {
-        	url.append("/");
+            url.append("/");
         }
         url.append(imageFolderName + currentImage.getImageName());
         url.append("&width=").append(size).append("&height=").append(size);
@@ -4546,6 +4548,8 @@ public class Metadaten {
     }
 
     private void loadCurrentPlugin() {
+        logger.debug(rowIndex);
+        logger.debug(rowType);
         if (rowIndex != null) {
             if (rowType.equals("metadata")) {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
@@ -4585,6 +4589,9 @@ public class Metadaten {
     }
 
     public IMetadataPlugin getCurrentPlugin() {
+        if (currentPlugin != null) {
+            logger.debug(currentPlugin.getTitle());
+        }
         return currentPlugin;
     }
 
