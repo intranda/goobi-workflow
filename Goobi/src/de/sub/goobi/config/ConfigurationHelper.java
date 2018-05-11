@@ -678,5 +678,9 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseH2DB() {
         return MySQLHelper.isUsingH2();
     }
+
+    public boolean isAllowGravatar() {
+        return getLocalBoolean("enableGravatar", true);
+    }
     
 }

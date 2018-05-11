@@ -437,7 +437,7 @@ public class User implements DatabaseObject {
     }
 
     public String getImageUrl() {
-        if (StringUtils.isNotEmpty(email)) {
+        if (StringUtils.isNotEmpty(email) && ConfigurationHelper.getInstance().isAllowGravatar()) {
             Gravatar gravatar = new Gravatar();
             gravatar.setSize(IMAGE_SIZE);
             gravatar.setRating(GravatarRating.GENERAL_AUDIENCES);
