@@ -14,6 +14,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 	protected List<GoobiScriptResult> resultList;
 	protected String command;
 	protected String username;
+	protected GoobiScriptManager gsm;
 	
     public AbstractIGoobiScript() {
         super();
@@ -25,6 +26,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 		this.parameters = parameters;
 		this.command = command;
 		SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+		gsm = sf.getGsm();
 		resultList = sf.getGsm().getGoobiScriptResults();
 		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		username = login.getMyBenutzer().getNachVorname();

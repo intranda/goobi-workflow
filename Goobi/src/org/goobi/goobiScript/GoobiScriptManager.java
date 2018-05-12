@@ -281,4 +281,17 @@ public class GoobiScriptManager {
 			}
 		}
 	}
+
+    public boolean getAreScriptsWaiting(String command) {
+        boolean keepRunning = false;
+        for (GoobiScriptResult gsr : goobiScriptResults) {
+            if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                keepRunning = true;
+                break;
+            }
+        }
+        return keepRunning;
+    }
+	
+	
 }
