@@ -144,9 +144,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                                 gsr.setResultType(GoobiScriptResultType.OK);
                             }
                         } else {
-                            String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
-                            gsr.setResultMessage("Import failed for id '" + gsr.getProcessTitle() + "'. " + Helper.getTranslation("importFailedError",
-                                    parameter));
+                            String[] parameter = { gsr.getProcessTitle(), io.getErrorMessage() };
+                            gsr.setResultMessage(Helper.getTranslation("importFailedError", parameter));
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
                     }
