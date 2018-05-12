@@ -525,8 +525,7 @@ public class StepBean extends BasicBean {
         }
         if (processPropertyList != null) {
             for (ProcessProperty prop : processPropertyList) {
-                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue().equals(
-                        ""))) {
+                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && StringUtils.isBlank(prop.getReadValue())) {
                     Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " " + Helper.getTranslation(
                             "requiredValue"));
                     return "";
