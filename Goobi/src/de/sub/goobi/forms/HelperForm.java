@@ -302,4 +302,13 @@ public class HelperForm {
         ret.add(new SelectItem("ctrl+alt", Helper.getTranslation("mets_key_ctrlAlt")));
         return ret;
     }
+    
+    /** 
+     * 
+     * @return build date written by the ant scrip
+     */
+    
+    public String getBuildDate() {
+        return GoobiVersion.getBuilddate();
+    }
 }
