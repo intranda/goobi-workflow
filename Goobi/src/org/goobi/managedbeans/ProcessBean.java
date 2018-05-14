@@ -2641,6 +2641,15 @@ public class ProcessBean extends BasicBean {
         myProzess.clone();
         return FilterVorlagen();
     }
+    
+    
+    public List<String> getListOfDisplayColumns(){
+    	List<String> myColumns = new ArrayList<>();
+    	myColumns.add("{metas.CatalogueIDDigital}");
+    	myColumns.add("{origpath}");
+    	myColumns.add("{product.ATS}");
+    	return myColumns;
+    }
 
     private IStepPlugin currentPlugin;
 

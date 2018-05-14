@@ -36,6 +36,7 @@
 						<div class="box-content nopadding">
 							<div class="dataTables_wrapper">
 								<div class="row">
+								
 									<h:form id="searchform">
 
 										<div class="col-md-1">
@@ -117,6 +118,17 @@
 											<h:outputText value="#{item.id}" />
 										</x:column>
 
+										<!-- +++++++++++++++++  Flexible columns ++++++++++++++++++++++++
+										<c:forEach items="#{ProzessverwaltungForm.listOfDisplayColumns}" var="bla">
+											<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+												<f:facet name="header">
+													<h:outputText value="#{bla}" />
+												</f:facet>
+												<h:outputText value="#{item.getVariable(bla)}" />
+											</x:column>
+										</c:forEach>
+									    -->
+									 
 										<!-- +++++++++++++++++  Thumbnail ++++++++++++++++++++++++ -->
 										<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 											<f:facet name="header">
