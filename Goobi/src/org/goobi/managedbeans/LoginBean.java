@@ -263,6 +263,7 @@ public class LoginBean {
             temp.setMetsDisplayProcessID(myBenutzer.isMetsDisplayProcessID());
             temp.setDisplayThumbColumn(myBenutzer.isDisplayThumbColumn());
             temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
+            temp.setCustomColumns(myBenutzer.getCustomColumns());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

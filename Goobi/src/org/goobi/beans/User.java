@@ -112,6 +112,9 @@ public class User implements DatabaseObject {
 
     @Getter private static final int IMAGE_SIZE = 27;
 
+    
+    @Getter @Setter private String customColumns;
+    
     public void lazyLoad() {
         try {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);

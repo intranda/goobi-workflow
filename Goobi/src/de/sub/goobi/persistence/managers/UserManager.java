@@ -209,6 +209,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayGridView(rs.getBoolean("displayGridView"));
         r.setDisplayMetadataColumn(rs.getBoolean("displayMetadataColumn"));
         r.setDisplayThumbColumn(rs.getBoolean("displayThumbColumn"));
+        r.setCustomColumns(rs.getString("customColumns"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
