@@ -63,6 +63,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -141,6 +142,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
+
+    private static final Object xmlWriteLock = new Object();
 
     public Process() {
         this.swappedOut = false;
@@ -1011,8 +1014,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
+            WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1022,13 +1025,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         metadataFileName = getMetadataFilePath();
 
-        ff.setDigitalDocument(gdzfile.getDigitalDocument());
+        synchronized (xmlWriteLock) {
+            ff.setDigitalDocument(gdzfile.getDigitalDocument());
 
-        ff.write(metadataFileName);
-
-        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+            ff.write(metadataFileName);
+        }
+        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
 
         MetadataManager.updateMetadata(id, metadata);
+
+        Map<String, List<String>> jsonMetadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, true);
+
+        MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
@@ -1110,11 +1118,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 Path metadataFile = Paths.get(getMetadataFilePath());
-              long tempTime = StorageProvider.getInstance().getLastModifiedDate(temporaryFile);
-//              (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
+                long tempTime = StorageProvider.getInstance().getLastModifiedDate(temporaryFile);
+                //              (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
                 long metaTime = StorageProvider.getInstance().getLastModifiedDate(metadataFile);
-//                        (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
-//                return tempTime.toMillis() > metaTime.toMillis();
+                //                        (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
+                //                return tempTime.toMillis() > metaTime.toMillis();
                 return tempTime > metaTime;
 
             }
@@ -1440,5 +1448,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;
+    }
+
+    public String getVariable(String inVariable) {
+        VariableReplacer replacer = new VariableReplacer(null, null, this, null);
+        String result = replacer.replace(inVariable);
+        return result;
     }
 }

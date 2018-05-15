@@ -231,6 +231,8 @@ public class LoginBean {
     public String BenutzerkonfigurationSpeichern() {
         try {
             User temp = UserManager.getUserById(this.myBenutzer.getId());
+            temp.setVorname(myBenutzer.getVorname());
+            temp.setNachname(myBenutzer.getNachname());
             temp.setTabellengroesse(this.myBenutzer.getTabellengroesse());
             temp.setSessiontimeout(myBenutzer.getSessiontimeout());
             temp.setMetadatenSprache(this.myBenutzer.getMetadatenSprache());
@@ -259,6 +261,7 @@ public class LoginBean {
             temp.setMetsDisplayProcessID(myBenutzer.isMetsDisplayProcessID());
             temp.setDisplayThumbColumn(myBenutzer.isDisplayThumbColumn());
             temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
+            temp.setCustomColumns(myBenutzer.getCustomColumns());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

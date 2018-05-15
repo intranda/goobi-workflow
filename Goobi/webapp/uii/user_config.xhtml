@@ -96,12 +96,12 @@
 								<intranda:formInputText label="#{msgs.vorname}" id="firstname"
 									field="#{LoginForm.myBenutzer.vorname}"
 									help="#{msgs.helpVorname}" name="vorname"
-									fieldStyle="form-control" readonly="true" />
+									fieldStyle="form-control" readonly="false" />
 
 								<intranda:formInputText label="#{msgs.nachname}" id="lastname"
 									field="#{LoginForm.myBenutzer.nachname}"
 									help="#{msgs.helpNachname}" name="nachname"
-									fieldStyle="form-control" readonly="true" />
+									fieldStyle="form-control" readonly="false" />
 
 								<intranda:formInputText label="#{msgs.standort}" id="location"
 									field="#{LoginForm.myBenutzer.standort}"
@@ -193,6 +193,17 @@
 									field="#{LoginForm.myBenutzer.tabellengroesse}"
 									help="#{msgs.helpTabellengroesse}" name="tabellengroesse"
 									fieldStyle="form-control" />
+
+                                <intranda:formInputTextArea
+                                    label="#{msgs.user_config_additionalColumns}"
+                                    id="customColumns"
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    field="#{LoginForm.myBenutzer.customColumns}"
+                                    help="#{msgs.help_user_config_additionalColumns}"
+                                    name="customColumns"
+                                    fieldStyle="form-control" />
+
 
 							</h:panelGroup>
 

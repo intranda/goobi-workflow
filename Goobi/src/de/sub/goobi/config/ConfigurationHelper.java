@@ -473,7 +473,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getGeonamesCredentials() {
-        return getLocalString("genonames_account", null);
+        return getLocalString("geonames_account", null);
     }
 
     // mets editor
@@ -701,6 +701,10 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     public boolean isUseH2DB() {
         return MySQLHelper.isUsingH2();
+    }
+
+    public boolean isAllowGravatar() {
+        return getLocalBoolean("enableGravatar", true);
     }
 
 }

@@ -399,11 +399,9 @@ public class ProcessBean extends BasicBean {
                         } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
                             logger.info("Could not rename paths in metadata file", e);
                         }
-
-                        /* Vorgangstitel */
-                        this.myProzess.setTitel(this.myNewProcessTitle);
-
                     }
+                    /* Vorgangstitel */
+                    this.myProzess.setTitel(this.myNewProcessTitle);
 
                 }
 
@@ -453,7 +451,7 @@ public class ProcessBean extends BasicBean {
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
-        Helper.addMessageToProcessLog(mySchritt.getProzess().getId(), LogType.DEBUG, "Deleted content for this process in process details.");
+        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Deleted content for this process in process details.");
 
         Helper.setMeldung("Content deleted");
         return "";
@@ -773,7 +771,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void deleteSymlinksFromUserHomes() {
-        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Removed links in home directories for all users in process details.");
+        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Removed links in home directories for all users in process details.");
 
         WebDav myDav = new WebDav();
         /* alle Benutzer */
@@ -2642,6 +2640,15 @@ public class ProcessBean extends BasicBean {
     public String cloneProcess() {
         myProzess.clone();
         return FilterVorlagen();
+    }
+    
+    
+    public List<String> getListOfDisplayColumns(){
+    	List<String> myColumns = new ArrayList<>();
+    	myColumns.add("{metas.CatalogueIDDigital}");
+    	myColumns.add("{origpath}");
+    	myColumns.add("{product.ATS}");
+    	return myColumns;
     }
 
     private IStepPlugin currentPlugin;

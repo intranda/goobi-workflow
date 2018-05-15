@@ -55,6 +55,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -1738,7 +1739,7 @@ public class Metadaten {
 
     private void checkImageNames() {
         try {
-            imagehelper.checkImageNames(this.myProzess);
+            imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException | InterruptedException e) {
             logger.error(e);
         }
@@ -1807,7 +1808,11 @@ public class Metadaten {
             physical.removeChild(physical.getAllChildren().get(0));
         }
 
-        return createPagination();
+        //                BildErmitteln(0);
+        createPagination();
+        loadCurrentImages(true);
+        return "";
+        //        return createPagination();
     }
 
     /**
@@ -4273,7 +4278,9 @@ public class Metadaten {
         if (this.imageIndex >= getSizeOfImageList()) {
             this.imageIndex = getSizeOfImageList() - 1;
         }
-        setImage(allImages.get(this.imageIndex));
+        if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
+            setImage(allImages.get(this.imageIndex));
+        }
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
@@ -4546,6 +4553,8 @@ public class Metadaten {
     }
 
     private void loadCurrentPlugin() {
+        logger.debug(rowIndex);
+        logger.debug(rowType);
         if (rowIndex != null) {
             if (rowType.equals("metadata")) {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
@@ -4585,6 +4594,9 @@ public class Metadaten {
     }
 
     public IMetadataPlugin getCurrentPlugin() {
+        if (currentPlugin != null) {
+            logger.debug(currentPlugin.getTitle());
+        }
         return currentPlugin;
     }
 

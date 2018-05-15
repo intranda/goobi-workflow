@@ -188,7 +188,7 @@ public class ExportMets {
             Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
             mih.createPagination(myProzess, null);
         } else {
-            mih.checkImageNames(myProzess);
+            mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
         }
 
         /*
@@ -311,7 +311,7 @@ public class ExportMets {
         if (ConfigurationHelper.getInstance().isExportValidateImages()) {
             try {
                 // TODO andere Dateigruppen nicht mit image Namen ersetzen
-                images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess);
+                images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
 
                 int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                 if (images != null) {
