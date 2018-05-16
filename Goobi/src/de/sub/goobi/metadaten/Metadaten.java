@@ -4589,9 +4589,6 @@ public class Metadaten {
     }
 
     public IMetadataPlugin getCurrentPlugin() {
-        if (currentPlugin != null) {
-            logger.debug(currentPlugin.getTitle());
-        }
         return currentPlugin;
     }
 
