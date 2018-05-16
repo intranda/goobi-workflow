@@ -66,7 +66,7 @@ public class S3FileUtils implements StorageProviderInterface {
         return string2Prefix(inDir.toAbsolutePath().toString());
     }
 
-    private String string2Prefix(String inDir) {
+    public String string2Prefix(String inDir) {
         String prefix = inDir.replace(ConfigurationHelper.getInstance().getMetadataFolder(), "");
         if (prefix.startsWith("/")) {
             prefix = prefix.substring(1);
