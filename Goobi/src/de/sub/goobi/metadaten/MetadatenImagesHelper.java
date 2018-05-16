@@ -755,7 +755,8 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+
 
         List<String> orderedFilenameList = new ArrayList<String>();
         if (dateien != null && !dateien.isEmpty()) {

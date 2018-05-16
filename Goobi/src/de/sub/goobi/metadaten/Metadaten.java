@@ -1126,8 +1126,13 @@ public class Metadaten {
                 imageFolderName = imageFolderName.replaceAll("\\\\", "/");
                 int order = 1;
                 for (String imagename : imageNames) {
-                    Image currentImage = new Image(imagename, order++, "", "", imagename);
-                    allImages.add(currentImage);
+                    if (NIOFileUtils.checkImageType(imagename)) {
+                        Image currentImage = new Image(imagename, order++, "", "", imagename);
+                        allImages.add(currentImage);
+                    } else {
+                        Image currentImage = new Image("", order++, "", "", imagename);
+                        allImages.add(currentImage);                        
+                    }
                 }
                 if (jumpToFirstPage) {
                     setImageIndex(0);
@@ -4196,8 +4201,11 @@ public class Metadaten {
         }
         return subList;
     }
-
+// TODO
     private void createImage(Image currentImage, boolean createImageLevels) {
+        if (StringUtils.isBlank(currentImage.getImageName())) {
+            return ;
+        }
         String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);
         currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
