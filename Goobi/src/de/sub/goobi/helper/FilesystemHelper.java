@@ -28,7 +28,19 @@
 
 package de.sub.goobi.helper;
 
-import org.apache.commons.io.FileUtils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Date;
+
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -38,17 +50,6 @@ import de.intranda.digiverso.ocr.conversion.ConvertAbbyyToAltoStaX;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.stream.XMLStreamException;
 
 /**
  * Helper class for file system operations.
@@ -68,9 +69,8 @@ public class FilesystemHelper {
 
     public static void createDirectory(String dirName) throws IOException, InterruptedException {
         if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
-            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()) {
-                File confFile = new File(dirName);
-                confFile.mkdirs();
+            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty() || ConfigurationHelper.getInstance().useS3()) {
+                StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
                 createDirScript.run(Arrays.asList(new String[] { dirName }));
@@ -91,8 +91,7 @@ public class FilesystemHelper {
     public static void createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
         if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
             if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
-                File confFile = new File(dirName);
-                confFile.mkdirs();
+                StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
                 createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
@@ -102,7 +101,7 @@ public class FilesystemHelper {
 
     public static void deleteSymLink(String symLink) {
         String command = ConfigurationHelper.getInstance().getScriptDeleteSymLink();
-        if (!command.isEmpty()) {
+        if (!command.isEmpty() && !ConfigurationHelper.getInstance().useS3()) {
             ShellScript deleteSymLinkScript;
             try {
                 deleteSymLinkScript = new ShellScript(Paths.get(command));
@@ -123,8 +122,7 @@ public class FilesystemHelper {
     public static String getFileEncoding(Path file) throws IOException {
         byte[] buf = new byte[4096];
         String encoding = null;
-        FileInputStream fis = new FileInputStream(file.toFile());
-        try {
+        try (InputStream fis = StorageProvider.getInstance().newInputStream(file)) {
             UniversalDetector detector = new UniversalDetector(null);
             int nread;
             while (((nread = fis.read(buf)) > 0) && !detector.isDone()) {
@@ -133,10 +131,6 @@ public class FilesystemHelper {
             detector.dataEnd();
             encoding = detector.getDetectedCharset();
             detector.reset();
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
         }
         if (encoding == null) {
             return "UTF-8";
@@ -147,9 +141,16 @@ public class FilesystemHelper {
 
     public static boolean isOcrFileExists(Process inProcess, String ocrFile) {
         try {
-            File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
-            File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
-            return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead());
+            if (!ConfigurationHelper.getInstance().useS3()) {
+                File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
+                File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
+                return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead());
+            } else {
+                Path txt = Paths.get(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
+                Path xml = Paths.get(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
+                StorageProviderInterface sp = StorageProvider.getInstance();
+                return sp.isFileExists(xml) && sp.isFileExists(txt);
+            }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
             return false;
         }
@@ -157,27 +158,34 @@ public class FilesystemHelper {
 
     public static String getOcrFileContent(Process inProcess, String ocrFile) {
         try {
-            File ocrfile = null;
-            File textFolder = new File(inProcess.getOcrTxtDirectory());
-            File xmlFolder = new File(inProcess.getOcrXmlDirectory());
+            Path ocrfile = null;
+            StorageProviderInterface sp = StorageProvider.getInstance();
+            Path textFolder = Paths.get(inProcess.getOcrTxtDirectory());
+            Path xmlFolder = Paths.get(inProcess.getOcrXmlDirectory());
 
-            if (textFolder.exists()) {
+            if (sp.isFileExists(textFolder)) {
                 // try to return content from txt folder
-                ocrfile = new File(textFolder, ocrFile + ".txt");
-                List<String> contents = FileUtils.readLines(ocrfile, FilesystemHelper.getFileEncoding(ocrfile.toPath()));
+                ocrfile = textFolder.resolve(ocrFile + ".txt");
+
                 StringBuilder response = new StringBuilder();
-                for (String line : contents) {
-                    response.append(line.replaceAll("(\\s+)", " ")).append("<br/>\n");
+                String buffer = null;
+                String encoding = getFileEncoding(ocrfile);
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(sp.newInputStream(ocrfile), encoding))) {
+                    while ((buffer = in.readLine()) != null) {
+                        response.append(buffer.replaceAll("(\\s+)", " ")).append("<br/>\n");
+                    }
                 }
                 return response.toString();
 
-            } else if (xmlFolder.exists()) {
+            } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder
-                ocrfile = new File(xmlFolder, ocrFile + ".xml");
+                ocrfile = xmlFolder.resolve(ocrFile + ".xml");
                 ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
-                AltoDocument alto = converter.convertToASM(ocrfile, new Date());
-                String result = alto.getContent().replaceAll("\n", "<br/>");
-                return result;
+                try (InputStream input = sp.newInputStream(ocrfile)) {
+                    AltoDocument alto = converter.convertToASM(input, new Date(), ocrfile.getFileName().toString());
+                    String result = alto.getContent().replaceAll("\n", "<br/>");
+                    return result;
+                }
             }
         } catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException e) {
             logger.error("Problem reading the OCR file", e);
