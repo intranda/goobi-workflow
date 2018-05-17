@@ -302,13 +302,23 @@ public class S3FileUtils implements StorageProviderInterface {
         Set<String> objs = new HashSet<>();
         for (S3ObjectSummary os : listing.getObjectSummaries()) {
             String key = os.getKey().replace(folderPrefix, "");
-            objs.add(key.substring(0, key.indexOf('/')));
+            int idx = key.indexOf('/');
+            if (idx >= 0) {
+                objs.add(key.substring(0, key.indexOf('/')));
+            } else {
+                objs.add(key);
+            }
         }
         while (listing.isTruncated()) {
             listing = s3.listNextBatchOfObjects(listing);
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
                 String key = os.getKey().replace(folderPrefix, "");
-                objs.add(key.substring(0, key.indexOf('/')));
+                int idx = key.indexOf('/');
+                if (idx >= 0) {
+                    objs.add(key.substring(0, key.indexOf('/')));
+                } else {
+                    objs.add(key);
+                }
             }
         }
         List<String> folders = new ArrayList<>(objs);
