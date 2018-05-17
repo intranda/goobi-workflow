@@ -16,6 +16,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentials;
@@ -40,6 +41,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     private final AmazonS3 s3;
     private NIOFileUtils nio;
+    private Pattern processDirPattern;
 
     public S3FileUtils() {
         super();
@@ -60,6 +62,11 @@ public class S3FileUtils implements StorageProviderInterface {
             this.s3 = AmazonS3ClientBuilder.defaultClient();
         }
         this.nio = new NIOFileUtils();
+        String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
+        if (!metadataFolder.endsWith("/")) {
+            metadataFolder = metadataFolder + "/";
+        }
+        this.processDirPattern = Pattern.compile(metadataFolder + "\\d*?/?");
     }
 
     private String path2Prefix(Path inDir) {
@@ -139,7 +146,8 @@ public class S3FileUtils implements StorageProviderInterface {
         String filename = path.substring(path.lastIndexOf('/') + 1);
         return path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
                 && !filename.startsWith("meta.xml")
-                && !filename.startsWith("meta_anchor.xml");
+                && !filename.startsWith("meta_anchor.xml")
+                && !processDirPattern.matcher(path).matches();
     }
 
     @Override
