@@ -28,9 +28,8 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -231,14 +230,10 @@ public class WebDav implements Serializable {
                 return;
             }
             TiffHeader tif = new TiffHeader(inProzess);
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                try (BufferedWriter outwriter = new BufferedWriter(new OutputStreamWriter(baos, "utf-8"))) {
-                    outwriter.write(tif.getTiffAlles());
-                }
-                try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
-                    Path outPath = Paths.get(inProzess.getImagesDirectory() + "tiffwriter.conf");
-                    StorageProvider.getInstance().uploadFile(bais, outPath);
-                }
+            Path outPath = Paths.get(inProzess.getImagesDirectory() + "tiffwriter.conf");
+            try (OutputStream os = StorageProvider.getInstance().newOutputStream(outPath); BufferedWriter outwriter = new BufferedWriter(
+                    new OutputStreamWriter(os, "utf-8"))) {
+                outwriter.write(tif.getTiffAlles());
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Download aborted", e);
