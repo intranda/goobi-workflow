@@ -766,7 +766,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int inBearbeitung = 0;
         int abgeschlossen = 0;
         for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE || step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
