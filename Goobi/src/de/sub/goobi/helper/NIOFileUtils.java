@@ -31,6 +31,7 @@ package de.sub.goobi.helper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -618,5 +619,10 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public InputStream newInputStream(Path src) throws IOException {
         return Files.newInputStream(src);
+    }
+
+    @Override
+    public OutputStream newOutputStream(Path dest) throws IOException {
+        return Files.newOutputStream(dest);
     }
 }

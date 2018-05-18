@@ -2,6 +2,9 @@ package de.sub.goobi.helper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -656,5 +659,26 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         S3Object so = s3.getObject(getBucket(), key);
         return so.getObjectContent();
+    }
+
+    @Override
+    public OutputStream newOutputStream(final Path dest) throws IOException {
+        if (!isPathOnS3(dest)) {
+            return nio.newOutputStream(dest);
+        }
+        final PipedInputStream in = new PipedInputStream();
+        PipedOutputStream out = new PipedOutputStream(in);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    StorageProvider.getInstance().uploadFile(in, dest);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return out;
     }
 }
