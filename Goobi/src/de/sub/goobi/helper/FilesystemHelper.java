@@ -149,7 +149,7 @@ public class FilesystemHelper {
                 Path txt = Paths.get(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
                 Path xml = Paths.get(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
                 StorageProviderInterface sp = StorageProvider.getInstance();
-                return sp.isFileExists(xml) && sp.isFileExists(txt);
+                return sp.isFileExists(xml) || sp.isFileExists(txt);
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
             return false;
