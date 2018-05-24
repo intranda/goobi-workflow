@@ -27,7 +27,7 @@
                         </div>
                         <div class="box-content" style="padding-top: 0px;">
                             <!-- big image -->
-                            <h:panelGroup rendered="#{Metadaten.image != null}">
+                            <h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}" >
                                 <ui:include src="imageControls.xhtml" />
                             </h:panelGroup>
                             <div class="row margin-top-most margin-bottom-most" style="width: #{Metadaten.containerWidth}px;">
@@ -41,7 +41,11 @@
                                 	</h:panelGroup>
 
                                 <h:panelGroup styleClass="div-image" layout="block">
-                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null}" />
+                                    <h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}" layout="block" style="text-align: center;">
+                                        <i class="fa fa-ban fa-5x"/>
+                                    </h:panelGroup>
+                                
+                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}" />
 
                                     <script type="text/javascript">
 									var configViewer = {

@@ -62,7 +62,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
 			// execute all jobs that are still in waiting state
 			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
-				if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+				if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
 					gsr.setResultType(GoobiScriptResultType.RUNNING);

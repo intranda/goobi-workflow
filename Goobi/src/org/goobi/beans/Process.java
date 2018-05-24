@@ -73,6 +73,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -765,7 +766,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int inBearbeitung = 0;
         int abgeschlossen = 0;
         for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE || step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
@@ -1455,5 +1456,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;
+    }
+    
+    public String getVariable(String inVariable) {
+    	VariableReplacer replacer = new VariableReplacer(null, null, this, null);
+        String result = replacer.replace(inVariable);
+        return result;
     }
 }

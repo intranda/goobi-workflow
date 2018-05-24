@@ -17,6 +17,7 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -88,7 +89,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
-                if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
                     gsr.updateTimestamp();
                     gsr.setResultType(GoobiScriptResultType.RUNNING);
                     IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, pluginName);
@@ -143,9 +144,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                                 gsr.setResultType(GoobiScriptResultType.OK);
                             }
                         } else {
-                            String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
-                            gsr.setResultMessage("Import failed for id '" + gsr.getProcessTitle() + "'. " + Helper.getTranslation("importFailedError",
-                                    parameter));
+                            String[] parameter = { gsr.getProcessTitle(), io.getErrorMessage() };
+                            gsr.setResultMessage(Helper.getTranslation("importFailedError", parameter));
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
                     }

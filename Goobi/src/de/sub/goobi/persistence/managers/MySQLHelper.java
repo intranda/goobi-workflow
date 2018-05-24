@@ -59,8 +59,7 @@ public class MySQLHelper implements Serializable {
      * @return
      */
     public static boolean isUsingH2() {
-        try {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             DatabaseMetaData meta = connection.getMetaData();
             String dbType = meta.getDatabaseProductName();
             return (dbType.equals("H2"));
@@ -76,8 +75,7 @@ public class MySQLHelper implements Serializable {
      * @return true if MariaDB >= 10.2.3, else false
      */
     public static boolean isJsonCapable() {
-        try {
-            Connection connection = MySQLHelper.getInstance().getConnection();
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             DatabaseMetaData meta = connection.getMetaData();
             String dbVersion = meta.getDatabaseProductVersion();
             return (checkMariadbVersion(dbVersion));

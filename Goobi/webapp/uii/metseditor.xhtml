@@ -424,6 +424,31 @@
             </div>
 
 			<!-- process search modal #processesSearchBox -->
+			<style>
+				.searchgroup-container {
+					border: 1px solid #ddd;
+					margin-bottom: 5px;
+					padding: 25px 10px 10px 10px;					
+				}
+				.new-filter-btn {
+					display: block;
+					text-align: right;
+					margin-top: 7px;
+				}
+				.filter-row {
+					margin-top: 3px;
+				}
+				.controls-row {
+					margin-top: 12px;
+				}
+				.group-conjunction td {
+					padding: 3px;
+				}
+				.group-conjunction input[type="radio"] {
+					margin: -3px 5px 0 0;
+					vertical-align: middle;
+				}
+			</style>
 			<div class="modal fade" id="processesSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <h:panelGroup layout="block" styleClass="modal-content" id="processModalContent">
@@ -444,40 +469,98 @@
 
 
 
-                            <h:panelGroup layout="block" id="processes_search" styleClass="row" style="margin-top: 15px;">
+                            <h:panelGroup layout="block" id="processes_search" styleClass="row" style="margin-top: 15px;" rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
                                 <div class="col-sm-12">
-                                    <ui:repeat value="#{Metadaten.currentPlugin.searchRequest.metadataFilters}" var="group" >
+                                    <ui:repeat value="#{Metadaten.currentPlugin.searchRequest.metadataFilters}" var="group" varStatus="globStatus">
                                     	<div class="row">
-	                                   		<div class="col-sm-12 searchgroup-container">
-			                                   	<ui:repeat var="filter" value="#{group.filters}">
-			                                   		<div class="row">
-					                                    <div class="col-sm-4 control-label">
-					                                   		<h:selectOneMenu value="#{Metadaten.searchOption}" styleClass="form-control">
-						                                        <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" />
-						                                    </h:selectOneMenu>
-						                                </div>
-						                                <div class="col-sm-8">
-						                                    <!-- search button? -->
-						                                    <x:inputText value="#{Metadaten.gndSearchValue}" styleClass="form-control input" id="input_processes" />
+	                                   		<div class="col-sm-12">
+	                                   			<div class="searchgroup-container clearfloat">
+	                                   				<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.deleteSearchGroup(globStatus.index)}" styleClass="fa fa-times" style="position:absolute; top:5px; right:21px;">
+	                                   					<f:ajax execute=":processes_search" render=":processes_search" />
+	                                   				</h:commandLink>
+				                                   	<ui:repeat var="filter" value="#{group.filters}" varStatus="status">
+				                                   		<div class="row">
+				                                   			<div class="filter-row">
+							                                    <div class="col-sm-3 control-label">
+							                                   		<h:selectOneMenu value="#{filter.field}" styleClass="form-control">
+								                                        <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" />
+								                                    </h:selectOneMenu>
+								                                </div>
+								                                <div class="col-sm-2 control-label">
+								                                	<h:selectOneMenu value="#{filter.relation}" styleClass="form-control">
+								                                		<f:selectItems value="#{filter.operators}" />
+								                                	</h:selectOneMenu>
+								                                </div>
+								                                <div class="col-sm-6">
+<!-- 								                                    search button? -->
+								                                    <x:inputText value="#{filter.value}" styleClass="form-control input" id="input_processes" />
+							                               		</div>
+							                               		<div class="col-sm-1">
+							                               			<h:commandLink action="#{group.deleteFilter(status.index)}" styleClass="fa fa-trash pull-right">
+							                               				<f:ajax execute=":processes_search" render=":processes_search" />
+							                               			</h:commandLink>
+							                               		</div>
+						                               		</div>
 					                               		</div>
-				                               		</div>
-			                               		</ui:repeat>
-			                               		<h:commandLink action="#{group.newFilter}">
-			                               			<f:ajax render=":processes_search"/>
-			                               			#{msgs.NORM_newFilter}
-			                               		</h:commandLink>
+				                               		</ui:repeat>
+	                                   				<div class="row">
+	                                   					<div class="controls-row">
+		                                   					<h:panelGroup styleClass="group-conjunction" rendered="#{group.numFilters gt 1}">
+			                                   					<div class="col-sm-3" style="padding-top:4px;">
+			                                   						<strong><h:outputText value="#{msgs.NORM_filterconjunction}:"/></strong>
+			                                   					</div>
+			                                   					<div class="col-sm-5">
+			                                   						<h:selectOneRadio value="#{group.conjunctive}" >
+																		<f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+																		<f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+																		<f:ajax />	                                   						
+			                                   						</h:selectOneRadio>
+			                                   					</div>
+		                                   					</h:panelGroup>
+		                                   					<div class="#{group.numFilters gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+							                               		<div class="new-filter-btn">
+								                               		<h:commandLink action="#{group.newFilter}">
+								                               			<f:ajax execute=":processes_search" render=":processes_search"/>
+								                               			#{msgs.NORM_newFilter}
+								                               		</h:commandLink>
+							                               		</div>
+						                               		</div>
+					                               		</div>
+	                                   				</div>
+				                               		
+			                               		</div>
 		                               		</div>
 	                               		</div>
                                		</ui:repeat>
-                               		<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}">
-                               			<f:ajax render=":processes_search"/>
-                               			#{msgs.NORM_newGroup}
-                               		</h:commandLink>
+									<div class="row">
+										<div class="controls-row">
+											<h:panelGroup styleClass="group-conjunction" rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
+												<div class="col-sm-3" style="padding-top:4px;">
+													<strong><h:outputText value="#{msgs.NORM_groupconjunction}:" /></strong>
+												</div>
+												<div class="col-sm-5">
+													<h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.metadataConjunctive}">
+														<f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+														<f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+														<f:ajax />
+													</h:selectOneRadio>
+												</div>
+											</h:panelGroup>
+											<div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+												<div class="new-filter-btn">
+													<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}" >
+														<f:ajax execute=":processes_search" render=":processes_search" />
+				                               			#{msgs.NORM_newGroup}
+				                               		</h:commandLink>
+												</div>
+											</div>
+										</div>
+									</div>
                                 </div>
                                		
 
 
-	                            <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+	                            <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.currentPlugin.search}" title="#{msgs.search}">
 	                                <i class="fa fa-search margin-right-5"></i>
 	                                <h:outputText value="#{msgs.search}" />
 	                                <f:ajax execute="@form" render="processesList" />
@@ -496,10 +579,10 @@
 
                             </h:panelGroup>
 
-                            <h:panelGroup id="processesList" layout="block" styleClass="row pre-scrollable">
+                            <h:panelGroup id="processesList" layout="block" styleClass="row pre-scrollable" rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
                                     <h:message for="geonamesList" showDetail="true" styleClass="help-inline font-danger" />
 
-                                <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="process">
+                                <x:dataList value="#{Metadaten.currentPlugin.results}" var="process">
                                     <hr />
                                     <div class="row" style="margin: 20px;">
 

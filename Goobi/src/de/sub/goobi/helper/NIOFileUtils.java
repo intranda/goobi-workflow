@@ -201,24 +201,27 @@ public class NIOFileUtils {
         return fileNames;
     }
 
+    public static boolean checkImageType(String name) {
+        boolean fileOk = false;
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+        if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
+            fileOk = true;
+        }
+        return fileOk;
+    }
+
     public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-            String name = path.getFileName().toString();
-            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-                fileOk = true;
-            }
-            return fileOk;
+            return checkImageType(path.getFileName().toString());
         }
     };
 
@@ -307,7 +310,7 @@ public class NIOFileUtils {
                 DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
                 if (dosAttrs != null) {
                     if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
-                    DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
+                        DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
                         DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
                         targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
                         targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
@@ -325,7 +328,7 @@ public class NIOFileUtils {
                 PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
                 if (posixAttrs != null) {
                     if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                    PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                        PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
                         PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
                         targetPosix.setPermissions(sourcePosix.permissions());
                         targetPosix.setGroup(sourcePosix.group());

@@ -112,6 +112,9 @@ public class User implements DatabaseObject {
 
     @Getter private static final int IMAGE_SIZE = 27;
 
+    
+    @Getter @Setter private String customColumns;
+    
     public void lazyLoad() {
         try {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
@@ -437,7 +440,7 @@ public class User implements DatabaseObject {
     }
 
     public String getImageUrl() {
-        if (StringUtils.isNotEmpty(email)) {
+        if (StringUtils.isNotEmpty(email) && ConfigurationHelper.getInstance().isAllowGravatar()) {
             Gravatar gravatar = new Gravatar();
             gravatar.setSize(IMAGE_SIZE);
             gravatar.setRating(GravatarRating.GENERAL_AUDIENCES);
