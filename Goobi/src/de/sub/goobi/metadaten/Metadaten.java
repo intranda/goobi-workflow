@@ -290,6 +290,7 @@ public class Metadaten {
             this.treeProperties.put("showpagesasajax", Boolean.valueOf(false));
             this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
         }
+        treeProperties.put("showMetadataPopup", ConfigurationHelper.getInstance().isMetsEditorShowMetadataPopup());
     }
 
     /**
@@ -1131,7 +1132,7 @@ public class Metadaten {
                         allImages.add(currentImage);
                     } else {
                         Image currentImage = new Image("", order++, "", "", imagename);
-                        allImages.add(currentImage);                        
+                        allImages.add(currentImage);
                     }
                 }
                 if (jumpToFirstPage) {
@@ -4201,10 +4202,11 @@ public class Metadaten {
         }
         return subList;
     }
-// TODO
+
+    // TODO
     private void createImage(Image currentImage, boolean createImageLevels) {
         if (StringUtils.isBlank(currentImage.getImageName())) {
-            return ;
+            return;
         }
         String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
         currentImage.setThumbnailUrl(thumbUrl);

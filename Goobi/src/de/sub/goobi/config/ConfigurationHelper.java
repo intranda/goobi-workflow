@@ -498,6 +498,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("showOcrButton", false);
     }
 
+    public boolean isMetsEditorShowMetadataPopup() {
+        return getLocalBoolean("MetsEditorShowMetadataPopup", true);
+    }
+    
+    
     public String getFormatOfMetsBackup() {
         return getLocalString("formatOfMetaBackups");
     }
