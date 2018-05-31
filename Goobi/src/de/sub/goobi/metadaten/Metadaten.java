@@ -3756,7 +3756,7 @@ public class Metadaten {
         progress = null;
         totalImageNo = 0;
         currentImageNo = 0;
-
+        changeFolder();
         Helper.setMeldung("finishedFileRenaming");
     }
 

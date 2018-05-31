@@ -174,6 +174,8 @@ public class FileManipulation {
             }
         }
         metadataBean.retrieveAllImages();
+        
+        metadataBean.changeFolder();
     }
     
     private String getFileName(final Part part) {
