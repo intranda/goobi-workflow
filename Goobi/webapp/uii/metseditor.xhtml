@@ -436,7 +436,9 @@
 					margin-top: 7px;
 				}
 				.filter-row {
+					float: left;
 					margin-top: 3px;
+					width: calc(100% - 42px);
 				}
 				.controls-row {
 					margin-top: 12px;
@@ -448,9 +450,20 @@
 					margin: -3px 5px 0 0;
 					vertical-align: middle;
 				}
+				.group-conjunction table {
+					margin-top: 5px;
+				}
+				.modal-xxl {
+					width: 90vw;
+				}
+				.shrink {
+					float:left;
+					width: 16px;
+					margin-top: 9px;
+				}
 			</style>
 			<div class="modal fade" id="processesSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-xxl" role="document">
                     <h:panelGroup layout="block" styleClass="modal-content" id="processModalContent">
                         <div class="modal-header">
                             <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
@@ -481,35 +494,35 @@
 				                                   	<ui:repeat var="filter" value="#{group.filters}" varStatus="status">
 				                                   		<div class="row">
 				                                   			<div class="filter-row">
-							                                    <div class="col-sm-3 control-label">
+							                                    <div class="col-sm-2 control-label">
 							                                   		<h:selectOneMenu value="#{filter.field}" styleClass="form-control">
 								                                        <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" />
 								                                    </h:selectOneMenu>
 								                                </div>
-								                                <div class="col-sm-2 control-label">
+								                                <div class="col-sm-1 control-label">
 								                                	<h:selectOneMenu value="#{filter.relation}" styleClass="form-control">
 								                                		<f:selectItems value="#{filter.operators}" />
 								                                	</h:selectOneMenu>
 								                                </div>
-								                                <div class="col-sm-6">
+								                                <div class="col-sm-9">
 <!-- 								                                    search button? -->
 								                                    <x:inputText value="#{filter.value}" styleClass="form-control input" id="input_processes" />
 							                               		</div>
-							                               		<div class="col-sm-1">
-							                               			<h:commandLink action="#{group.deleteFilter(status.index)}" styleClass="fa fa-trash pull-right">
-							                               				<f:ajax execute=":processes_search" render=":processes_search" />
-							                               			</h:commandLink>
-							                               		</div>
 						                               		</div>
+						                               		<div class="shrink">
+						                               			<h:commandLink action="#{group.deleteFilter(status.index)}" styleClass="fa fa-trash pull-right">
+						                               				<f:ajax execute=":processes_search" render=":processes_search" />
+						                               			</h:commandLink>
+						                               		</div>
+						                               		
+						                               		<div class="clearfix"></div>
 					                               		</div>
 				                               		</ui:repeat>
 	                                   				<div class="row">
 	                                   					<div class="controls-row">
 		                                   					<h:panelGroup styleClass="group-conjunction" rendered="#{group.numFilters gt 1}">
-			                                   					<div class="col-sm-3" style="padding-top:4px;">
+			                                   					<div class="col-sm-8" style="padding-top:4px;">
 			                                   						<strong><h:outputText value="#{msgs.NORM_filterconjunction}:"/></strong>
-			                                   					</div>
-			                                   					<div class="col-sm-5">
 			                                   						<h:selectOneRadio value="#{group.conjunctive}" >
 																		<f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
 																		<f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
@@ -535,10 +548,8 @@
 									<div class="row">
 										<div class="controls-row">
 											<h:panelGroup styleClass="group-conjunction" rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
-												<div class="col-sm-3" style="padding-top:4px;">
+												<div class="col-sm-8" style="padding-top:4px;">
 													<strong><h:outputText value="#{msgs.NORM_groupconjunction}:" /></strong>
-												</div>
-												<div class="col-sm-5">
 													<h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.metadataConjunctive}">
 														<f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
 														<f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
@@ -563,7 +574,7 @@
 	                            <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.currentPlugin.search}" title="#{msgs.search}">
 	                                <i class="fa fa-search margin-right-5"></i>
 	                                <h:outputText value="#{msgs.search}" />
-	                                <f:ajax execute="@form" render="processesList" />
+	                                <f:ajax execute="@form" render="processResults" />
 	                            </h:commandLink>
 	
 	                            <script>
@@ -579,42 +590,27 @@
 
                             </h:panelGroup>
 
-                            <h:panelGroup id="processesList" layout="block" styleClass="row pre-scrollable" rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
-                                    <h:message for="geonamesList" showDetail="true" styleClass="help-inline font-danger" />
-
-                                <x:dataList value="#{Metadaten.currentPlugin.results}" var="process">
-                                    <hr />
-                                    <div class="row" style="margin: 20px;">
-
-
-                                        <div class="col-sm-11">
-
-                                            <div class="row">
-
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{process.id !=''}">
-                                                    <h:outputText value="#{msgs.geoNameId}" />
-                                                </h:panelGroup>
-
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{process.id !=''}">
-                                                    <h:outputText value="#{process.id}" />
-                                                </h:panelGroup>
-
-                                            </div>
-
-
-                                        </div>
-                                        <div class="col-sm-1">
-                                            <h:commandLink action="#{Metadaten.currentPlugin.getData}" styleClass="btn btn-green margin-left-5">
-                                                <f:setPropertyActionListener value="#{process}" target="#{Metadaten.currentPlugin.currentProcess}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.geonamesSearchValue}" />
-                                                <i class="fa fa-check" />
-                                            </h:commandLink>
-                                        </div>
-                                    </div>
-                                </x:dataList>
-
-                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
-
+							<h:panelGroup id="processResults" rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+	                            <h:panelGroup id="processesList" layout="block" styleClass="row pre-scrollable" rendered="#{not empty Metadaten.currentPlugin.results}">
+	                                    <h:message for="processesList" showDetail="true" styleClass="help-inline font-danger" />
+								
+								<div class="col-sm-12">
+		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
+		                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
+		                                		<h:column>
+		                                			<f:facet name="header">
+		                                				<!-- TODO: translation ? -->
+		                                				<h:outputText value="#{val}"/>
+		                                			</f:facet>
+		                                			<h:outputText value="#{process.metadata[val][0].value}" />
+		                                		</h:column>
+		                                	</c:forEach>
+		                                </h:dataTable>
+		
+		                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
+	                                </div>
+	
+	                            </h:panelGroup>
                             </h:panelGroup>
                         </div>
                		</h:panelGroup>
