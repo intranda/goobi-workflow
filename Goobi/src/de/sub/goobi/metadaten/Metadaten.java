@@ -3628,6 +3628,10 @@ public class Metadaten {
             setImageIndex(myBildNummer - 1);
 
         }
+        
+        // save current state
+        Reload();
+        
     }
 
     public void reOrderPagination() {
@@ -3756,7 +3760,13 @@ public class Metadaten {
         progress = null;
         totalImageNo = 0;
         currentImageNo = 0;
+
+        // load new file names
         changeFolder();
+
+        // save current state
+        Reload();
+        
         Helper.setMeldung("finishedFileRenaming");
     }
 
@@ -4203,7 +4213,7 @@ public class Metadaten {
         return subList;
     }
 
-    // TODO
+
     private void createImage(Image currentImage, boolean createImageLevels) {
         if (StringUtils.isBlank(currentImage.getImageName())) {
             return;

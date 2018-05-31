@@ -176,6 +176,8 @@ public class FileManipulation {
         metadataBean.retrieveAllImages();
         
         metadataBean.changeFolder();
+        // save current state
+        metadataBean.Reload();
     }
     
     private String getFileName(final Part part) {
@@ -623,6 +625,11 @@ public class FileManipulation {
             NIOFileUtils.deleteDir(importfolder);
         }
         metadataBean.retrieveAllImages();
+        
+        
+        metadataBean.changeFolder();
+        // save current state
+        metadataBean.Reload();
     }
 
     public String getCurrentFolder() {
