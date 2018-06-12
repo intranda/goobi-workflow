@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 22;
+    public static final int EXPECTED_VERSION = 23;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -190,6 +190,13 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 22.");
                 }
                 updateToVersion22();
+                
+            case 22:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 23.");
+                }
+                updateToVersion23();
+                
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -198,6 +205,25 @@ public class DatabaseVersion {
                 }
         }
 
+    }
+
+    private static void updateToVersion23() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table benutzer add column customColumns text DEFAULT null");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        
     }
 
     /**

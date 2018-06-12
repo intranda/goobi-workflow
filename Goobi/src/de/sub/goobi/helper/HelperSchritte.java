@@ -54,7 +54,10 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
+import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -122,13 +125,20 @@ public class HelperSchritte {
                 Path anchorFile = Paths.get(anchorPath);
                 Map<String, List<String>> pairs = new HashMap<>();
 
-                pairs = extractMetadata(metadataFile, pairs);
+                extractMetadata(metadataFile, pairs);
 
                 if (Files.exists(anchorFile)) {
-                    pairs.putAll(extractMetadata(anchorFile, pairs));
+                    extractMetadata(anchorFile, pairs);
                 }
 
                 MetadataManager.updateMetadata(currentStep.getProzess().getId(), pairs);
+                
+                // now add all authority fields to the metadata pairs
+                extractAuthorityMetadata(metadataFile, pairs);
+                if (Files.exists(anchorFile)) {
+                	extractAuthorityMetadata(anchorFile, pairs);
+                }
+                MetadataManager.updateJSONMetadata(processId, pairs);
                 
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
@@ -455,36 +465,62 @@ public class HelperSchritte {
 
     }
 
-    public static Map<String, List<String>> extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs)  {
+    public static void extractAuthorityMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
+    	XPathFactory xFactory = XPathFactory.instance();
+    	XPathExpression<Element> authorityMetaXpath = xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", 
+    			Filters.element(), null, mods, mets, goobiNamespace);
+    	SAXBuilder builder = new SAXBuilder();
+        Document doc;
+        try {
+            doc = builder.build(metadataFile.toString());
+        } catch (JDOMException | IOException e1) {
+           return;
+        }
+        for(Element meta : authorityMetaXpath.evaluate(doc)) {
+        	String name = meta.getAttributeValue("name");
+        	if(name == null) {
+        		continue;
+        	} else {
+        		String key = name + "_authority";
+        		List<String> values = metadataPairs.get(key);
+        		if(values == null) {
+        			values = new ArrayList<>();
+        			metadataPairs.put(key, values);
+        		}
+        		values.add(meta.getChildText("authorityValue", goobiNamespace));
+        	}
+        }
+    }
+    
+    public static void extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs)  {
         SAXBuilder builder = new SAXBuilder();
         Document doc;
         try {
             doc = builder.build(metadataFile.toString());
         } catch (JDOMException | IOException e1) {
-           return new HashMap<>();
+           return;
         }
         Element root = doc.getRootElement();
         try {
             Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
                     .getChild("extension", mods).getChild("goobi", goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
-            metadataPairs = getMetadata(metadataList, metadataPairs);
+            addMetadata(metadataList, metadataPairs);
             for (Element el : root.getChildren("dmdSec", mets)) {
                 if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
                     Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
                             "goobi", goobiNamespace);
                     List<Element> physList = phys.getChildren();
-                    metadataPairs = getMetadata(physList, metadataPairs);
+                    addMetadata(physList, metadataPairs);
                 }
             }
 
         } catch (Exception e) {
             logger.error("Cannot extract metadata from " + metadataFile.toString());
         }
-        return metadataPairs;
     }
 
-    private static Map<String, List<String>> getMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
+    private static void addMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
             String metadataValue = "";
@@ -511,6 +547,6 @@ public class HelperSchritte {
                 }
             }
         }
-        return metadataPairs;
+        return;
     }
 }

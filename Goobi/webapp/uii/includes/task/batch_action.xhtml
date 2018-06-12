@@ -25,11 +25,13 @@
 						<li class="active">
 							<a data-toggle="tab" href="#firsttab"><i class="fa fa-cog margin-right-5"></i> #{msgs.executeTask}</a>
 						</li>
-						<li class="">
-							<a data-toggle="tab" href="#secondtab"><i class="fa fa-bullhorn margin-right-5"></i>
-								#{msgs.reportError}</a>
-						</li>
-						<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet>9}">
+                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.sizeOfPreviousStepsForProblemReporting != 0}">
+    						<li class="">
+    							<a data-toggle="tab" href="#secondtab"><i class="fa fa-bullhorn margin-right-5"></i>
+    								#{msgs.reportError}</a>
+    						</li>
+                        </h:panelGroup>    
+						<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet>9 and  AktuelleSchritteForm.batchHelper.currentStep.sizeOfNextStepsForProblemSolution != 0}">
 							<li class="">
 								<a data-toggle="tab" href="#thirdtab"><i class="fa fa-check-circle margin-right-5"></i> #{msgs.reportSolution}</a>
 							</li>

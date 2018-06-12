@@ -73,6 +73,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -147,6 +148,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
+
+    private static final Object xmlWriteLock = new Object();
 
     public Process() {
         this.swappedOut = false;
@@ -550,7 +553,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
     }
-    
+
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
     }
@@ -763,7 +766,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         int inBearbeitung = 0;
         int abgeschlossen = 0;
         for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE || step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
                 abgeschlossen++;
             } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
                 offen++;
@@ -1023,8 +1026,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
+            WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1033,14 +1036,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         metadataFileName = getMetadataFilePath();
+        
+        synchronized (xmlWriteLock) {
+            ff.setDigitalDocument(gdzfile.getDigitalDocument());
 
-        ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-        ff.write(metadataFileName);
-
-        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+            ff.write(metadataFileName);
+        }
+        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
 
         MetadataManager.updateMetadata(id, metadata);
+
+        Map<String, List<String>> jsonMetadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, true);
+
+        MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
@@ -1448,5 +1456,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;
+    }
+    
+    public String getVariable(String inVariable) {
+    	VariableReplacer replacer = new VariableReplacer(null, null, this, null);
+        String result = replacer.replace(inVariable);
+        return result;
     }
 }

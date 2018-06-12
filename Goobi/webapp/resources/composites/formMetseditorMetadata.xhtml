@@ -66,7 +66,7 @@
                 <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'dante'}">
                     <div class="row" style="margin-top: 5px;">
                         <div class="col-sm-12">
-                            <h:inputText id="danteValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="danteValue" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="true">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>
@@ -100,6 +100,14 @@
                     <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
                     data-datatype="#{cc.attrs.datatype}"
                      data-target="#gndSearchBox">
+                        <i class="fa fa-search" style="margin-left: 3px" />
+                    </a>
+                </h:panelGroup>
+                
+                <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'process'}">
+                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#processIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                    data-datatype="#{cc.attrs.datatype}"
+                     data-target="#processesSearchBox">
                         <i class="fa fa-search" style="margin-left: 3px" />
                     </a>
                 </h:panelGroup>

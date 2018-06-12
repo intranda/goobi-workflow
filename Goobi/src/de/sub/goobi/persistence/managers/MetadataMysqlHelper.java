@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -41,7 +41,27 @@ class MetadataMysqlHelper implements Serializable {
     private static final Gson gson = new Gson();
 
     /**
-     * deletes metadata values for processId from `metadata` and `metadata_json` tables
+     * deletes metadata for processID from `metadata_json` table
+     * 
+     * @param processID
+     * @throws SQLException
+     */
+    public static void removeJSONMetadata(int processID) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            String sql = "DELETE FROM metadata_json WHERE processid = " + processID;
+            run.update(connection, sql);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    /**
+     * deletes metadata values for processId from `metadata` table
      * 
      * @param processId
      * @throws SQLException
@@ -54,8 +74,6 @@ class MetadataMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             String sql = "DELETE FROM metadata WHERE processid = " + processId;
             run.update(connection, sql);
-            sql = "DELETE FROM metadata_json WHERE processid = " + processId;
-            run.update(connection, sql);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -64,8 +82,29 @@ class MetadataMysqlHelper implements Serializable {
     }
 
     /**
-     * inserts metadata in two tables: `metadata` with one row per metadata value and `metadata_json` with one row per process and the values as json
-     * object
+     * inserts metadata into table `metadata_json` with one row per process and the values as json object
+     * 
+     * @param processid
+     * @param metadata
+     */
+    public static void insertJSONMetadata(int processid, Map<String, List<String>> metadata) throws SQLException {
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            String sqlString = "INSERT INTO metadata_json (processid, value) VALUES (?,?)";
+            Object[] param = new Object[] { processid, gson.toJson(metadata) };
+            run.update(connection, sqlString, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    /**
+     * inserts metadata in two tables: `metadata` with one row per metadata value
      * 
      * @param processid the process id for the metadata
      * @param metadata the metadata
@@ -75,7 +114,7 @@ class MetadataMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO metadata (processid, name, value, print) VALUES ");
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<>();
         for (Entry<String, List<String>> pair : metadata.entrySet()) {
             String metadataName = pair.getKey();
             List<String> valueList = pair.getValue();
@@ -105,9 +144,9 @@ class MetadataMysqlHelper implements Serializable {
                 run.update(connection, sqlString, param);
             }
 
-            sqlString = "INSERT INTO metadata_json (processid, value) VALUES (?,?)";
-            param = new Object[] { processid, gson.toJson(metadata) };
-            run.update(connection, sqlString, param);
+            //            sqlString = "INSERT INTO metadata_json (processid, value) VALUES (?,?)";
+            //            param = new Object[] { processid, gson.toJson(metadata) };
+            //            run.update(connection, sqlString, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -174,7 +213,7 @@ class MetadataMysqlHelper implements Serializable {
     public static ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<List<StringPair>>() {
         @Override
         public List<StringPair> handle(ResultSet rs) throws SQLException {
-            List<StringPair> answer = new ArrayList<StringPair>();
+            List<StringPair> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     String name = rs.getString("name");

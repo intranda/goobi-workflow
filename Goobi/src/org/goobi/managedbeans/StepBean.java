@@ -525,8 +525,7 @@ public class StepBean extends BasicBean {
         }
         if (processPropertyList != null) {
             for (ProcessProperty prop : processPropertyList) {
-                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue().equals(
-                        ""))) {
+                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && StringUtils.isBlank(prop.getReadValue())) {
                     Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " " + Helper.getTranslation(
                             "requiredValue"));
                     return "";
@@ -582,6 +581,12 @@ public class StepBean extends BasicBean {
     }
 
     public String ReportProblem() {
+        
+        if (myProblemID == null) {
+            Helper.setFehlerMeldung("task_cannotProceedWithoutTaskSelection");
+            return "";
+        }
+        
         if (logger.isDebugEnabled()) {
             logger.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
             logger.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
@@ -693,6 +698,12 @@ public class StepBean extends BasicBean {
     }
 
     public String SolveProblem() {
+        
+        if (mySolutionID == null) {
+            Helper.setFehlerMeldung("task_cannotProceedWithoutTaskSelection");
+            return "";
+        }
+        
         Date now = new Date();
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.DONE);

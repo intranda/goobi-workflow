@@ -38,7 +38,7 @@
                         <h:outputText value="#{msgs.mets_no_persons_assigned}" rendered="#{empty Metadaten.myPersonen}" />
 
                         <x:dataList var="currentPerson" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex" id="personList">
-                            <intranda:formMetseditorPerson id="person"  person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" index="#{rowIndex}" />
+                            <intranda:formMetseditorPerson id="person"  person="#{currentPerson}" fieldStyle="form-control" renderDelete="true" index="#{rowIndex}" />
                             <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
@@ -199,8 +199,8 @@
                             </div>
 
                         </div>
-
-                        <h:panelGroup layout="block" rendered="#{Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd'}" styleClass="row margin-top-regular">
+						
+                        <h:panelGroup layout="block" rendered="#{Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'process'}" styleClass="row margin-top-regular">
 
                             <div class="col-sm-3">
                                 <label class="control-label">#{msgs.normdata}:</label>
@@ -220,6 +220,11 @@
                                     </div>
 
                                     <div class="col-sm-1">
+                                    	<h:panelGroup rendered="#{Metadaten.outputType == 'process'}">
+                                    		<a title="#{msgs.search}" href="#" data-toggle="modal" data-target="#processesSearchBox">
+                                                <i class="fa fa-search" style="margin-right: 3px" />
+                                            </a>
+                                    	</h:panelGroup>
                                         <h:panelGroup rendered="#{Metadaten.outputType == 'geonames'}">
                                             <a title="#{msgs.search}" href="#" data-toggle="modal" data-target="#geonamesSearchBox">
                                                 <i class="fa fa-search" style="margin-right: 3px" />

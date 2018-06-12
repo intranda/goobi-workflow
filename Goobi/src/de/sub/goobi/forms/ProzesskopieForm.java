@@ -391,7 +391,9 @@ public class ProzesskopieForm {
                             String myautoren = "";
                             if (myTempStruct.getAllPersons() != null) {
                                 for (Person p : myTempStruct.getAllPersons()) {
-                                    myautoren += p.getLastname();
+                                    if (StringUtils.isNotBlank(p.getLastname())) {
+                                        myautoren += p.getLastname();
+                                    }
                                     if (StringUtils.isNotBlank(p.getFirstname())) {
                                         myautoren += ", " + p.getFirstname();
                                     }
@@ -1404,6 +1406,16 @@ public class ProzesskopieForm {
                 rueckgabe = "0000".substring(rueckgabe.length()) + rueckgabe;
             }
         }
+        
+        // TODO: temporary solution for shelfmark, replace it with configurable solution
+        if (inFeldName.equalsIgnoreCase("Signatur")||inFeldName.equalsIgnoreCase("Shelfmark")) {
+           if (StringUtils.isNotBlank(rueckgabe)) {
+               // replace white spaces with dash, remove other special characters
+               rueckgabe = rueckgabe.replace(" ", "-").replaceAll("[^\\w-]", "");
+               
+           }
+        }
+        
 
         return rueckgabe;
     }

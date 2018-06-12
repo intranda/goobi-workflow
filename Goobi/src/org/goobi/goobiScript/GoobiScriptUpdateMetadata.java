@@ -48,7 +48,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 			// execute all jobs that are still in waiting state
 			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
-				if (gsr.getResultType() == GoobiScriptResultType.WAITING) {
+				if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
 					Process p = ProcessManager.getProcessById(gsr.getProcessId());
 					gsr.setProcessTitle(p.getTitel());
 					gsr.setResultType(GoobiScriptResultType.RUNNING);
@@ -60,12 +60,21 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 		                Path anchorFile = Paths.get(anchorPath);
 		                Map<String, List<String>> pairs = new HashMap<>();
 
-		                pairs = HelperSchritte.extractMetadata(metadataFile, pairs);
+		                HelperSchritte.extractMetadata(metadataFile, pairs);
 
 		                if (Files.exists(anchorFile)) {
-		                    pairs = (HelperSchritte.extractMetadata(anchorFile, pairs));
+		                	HelperSchritte.extractMetadata(anchorFile, pairs);
 		                }
+
 		                MetadataManager.updateMetadata(p.getId(), pairs);
+		                
+		                // now add all authority fields to the metadata pairs
+		                HelperSchritte.extractAuthorityMetadata(metadataFile, pairs);
+		                if (Files.exists(anchorFile)) {
+		                	HelperSchritte.extractAuthorityMetadata(anchorFile, pairs);
+		                }
+		                MetadataManager.updateJSONMetadata(p.getId(), pairs);
+		                
 		                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata updated using GoobiScript.", username);
 		                logger.info("Metadata updated using GoobiScript for process with ID " + p.getId());
 						gsr.setResultMessage("Metadata updated successfully.");

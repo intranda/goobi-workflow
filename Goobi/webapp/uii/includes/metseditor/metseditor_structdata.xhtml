@@ -499,11 +499,11 @@
                                             <div class="col-sm-2" style="margin-top: 100px;">
                                                 <h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}" styleClass="btn margin-top-5 block" title="#{msgs.mets_addTheseImages}">
                                                     <i class="fa fa-arrow-right" />
-                                                    <f:ajax execute="@form" render="@form :treeform" />
+                                                    <f:ajax execute="@form" render="pageallocation" />
                                                 </h:commandLink>
                                                 <h:commandLink id="s2" action="#{Metadaten.SeitenWeg}" styleClass="btn margin-top-5 block" title="#{msgs.mets_removeTheseImages}">
                                                     <i class="fa fa-arrow-left" />
-                                                    <f:ajax execute="@form" render="@form :treeform" />
+                                                    <f:ajax execute="@form" render="pageallocation" />
                                                 </h:commandLink>
                                             </div>
                                             <div class="col-sm-5">

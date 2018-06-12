@@ -55,7 +55,9 @@ import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public class MetadatenVerifizierung {
@@ -83,8 +85,8 @@ public class MetadatenVerifizierung {
 
     public boolean validate(Fileformat gdzfile, Prefs inPrefs, Process inProzess) {
         String metadataLanguage = Helper.getMetadataLanguage();
-        if (metadataLanguage == null){
-        	metadataLanguage = "en";
+        if (metadataLanguage == null) {
+            metadataLanguage = "en";
         }
         this.myProzess = inProzess;
         boolean ergebnis = true;
@@ -138,7 +140,7 @@ public class MetadatenVerifizierung {
          * -------------------------------- PathImagesFiles prüfen --------------------------------
          */
         if (!this.isValidPathImageFiles(dd.getPhysicalDocStruct(), inPrefs)) {
-        	problems.add(Helper.getTranslation("InvalidImagePath"));
+            problems.add(Helper.getTranslation("InvalidImagePath"));
             ergebnis = false;
         }
 
@@ -226,7 +228,7 @@ public class MetadatenVerifizierung {
             MetadatenImagesHelper mih = new MetadatenImagesHelper(inPrefs, dd);
             try {
                 if (!mih.checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true))) {
-                	problems.add(Helper.getTranslation("ImagesNotValid"));
+                    problems.add(Helper.getTranslation("ImagesNotValid"));
                     ergebnis = false;
                 }
             } catch (Exception e) {
@@ -236,7 +238,8 @@ public class MetadatenVerifizierung {
             }
 
             try {
-                List<String> images = mih.getDataFiles(myProzess);
+
+                List<String> images = mih.getDataFiles(myProzess, inProzess.getImagesTifDirectory(true));
                 if (images != null && !images.isEmpty()) {
                     int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                     int sizeOfImages = images.size();
@@ -247,7 +250,7 @@ public class MetadatenVerifizierung {
                         return false;
                     }
                 }
-            } catch (InvalidImagesException e1) {
+            } catch (InvalidImagesException | IOException | InterruptedException | SwapException | DAOException e1) {
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e1);
                 problems.add("InvalidImagesException: " + e1.getMessage());
                 ergebnis = false;
@@ -262,7 +265,7 @@ public class MetadatenVerifizierung {
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error while writing metadata: " + inProzess.getTitel(), e);
-            problems.add(Helper.getTranslation("Error while writing metadata")  + ": " + e.getMessage());
+            problems.add(Helper.getTranslation("Error while writing metadata") + ": " + e.getMessage());
         }
         return ergebnis;
     }
@@ -336,30 +339,31 @@ public class MetadatenVerifizierung {
         for (MetadataType mdt : allMDTypes) {
             String number = dst.getNumberOfMetadataType(mdt);
             List<? extends Metadata> ll = null;
-//            if (!mdt.getIsPerson()) {
-                ll = inStruct.getAllMetadataByType(mdt);
-//            } else {
-//                ll = inStruct.getAllPersonsByType(mdt);
-//            }
+            //            if (!mdt.getIsPerson()) {
+            ll = inStruct.getAllMetadataByType(mdt);
+            //            } else {
+            //                ll = inStruct.getAllPersonsByType(mdt);
+            //            }
             int real = 0;
             // if (ll.size() > 0) {
             real = ll.size();
 
             if ((number.equals("1m") || number.equals("+")) && real == 1) {
-               if (mdt.getIsPerson()) {
-                   Person p = (Person) ll.get(0);
-                   if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
-                       inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
-                   }
-               } else {
-                   Metadata md = ll.get(0);
-                   if ( md.getValue() == null ||  md.getValue().equals("")) {
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
-                       
-                   }
-               }
-                
-                
+                if (mdt.getIsPerson()) {
+                    Person p = (Person) ll.get(0);
+                    if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                                "MetadataIsEmpty"));
+                    }
+                } else {
+                    Metadata md = ll.get(0);
+                    if (md.getValue() == null || md.getValue().equals("")) {
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(
+                                "MetadataIsEmpty"));
+
+                    }
+                }
+
             }
             /* jetzt die Typen prüfen */
             if (number.equals("1m") && real != 1) {
@@ -536,9 +540,13 @@ public class MetadatenVerifizierung {
                                     if (myValue.length() > 0) {
                                         myValue.append("; ");
                                     }
-                                    myValue.append(p.getLastname());
-                                    myValue.append(", ");
-                                    myValue.append(p.getFirstname());
+                                    if (StringUtils.isNotBlank(p.getLastname())) {
+                                        myValue.append(p.getLastname());
+                                    }
+                                    if (StringUtils.isNotBlank(p.getFirstname())) {
+                                        myValue.append(", ");
+                                        myValue.append(p.getFirstname());
+                                    }
                                 }
                             }
                         }
@@ -658,8 +666,8 @@ public class MetadatenVerifizierung {
 
         if (uppermostStruct.getType().isAnchor()) {
             String language = Helper.getMetadataLanguage();
-            if (language==null){
-            	language = "en";
+            if (language == null) {
+                language = "en";
             }
 
             if (uppermostStruct.getAllIdentifierMetadata() != null && uppermostStruct.getAllIdentifierMetadata().size() > 0) {
@@ -703,6 +711,6 @@ public class MetadatenVerifizierung {
     }
 
     public List<String> getProblems() {
-		return problems;
-	}
+        return problems;
+    }
 }

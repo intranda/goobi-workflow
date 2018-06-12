@@ -3,12 +3,12 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -61,8 +61,8 @@ import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
 
-import lombok.extern.log4j.Log4j;
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.extern.log4j.Log4j;
 
 /**
  * File Utils collection
@@ -138,7 +138,7 @@ public class NIOFileUtils {
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -206,26 +206,27 @@ public class NIOFileUtils {
         return fileNames;
     }
 
+    public static boolean checkImageType(String name) {
+        boolean fileOk = false;
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+        if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
+            fileOk = true;
+        }
+        return fileOk;
+    }
+
     public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance()
-                    .getImagePrefix();
-            String name = path.getFileName()
-                    .toString();
-            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-                fileOk = true;
-            }
-            return fileOk;
+            return checkImageType(path.getFileName().toString());
         }
     };
 
@@ -448,8 +449,9 @@ public class NIOFileUtils {
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                if (e != null)
+                if (e != null) {
                     throw e;
+                }
                 return FileVisitResult.CONTINUE;
             }
         });
@@ -486,7 +488,7 @@ public class NIOFileUtils {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
             log.error("Not a readable file: " + srcFile.getFileName()
-                    .toString());
+            .toString());
         }
 
         // copy file, optionally creating a checksum
