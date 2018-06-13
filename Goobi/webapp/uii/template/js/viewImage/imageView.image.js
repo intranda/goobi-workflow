@@ -12,11 +12,15 @@ var ImageView = ( function() {
      }
      
      imageView.Image.prototype.load = function() {
+         if(this.config.url) {             
              var tileSource = new OpenSeadragon.ImageTileSource({
                  url: this.config.url,
                  width: 800,
                  height: 607
              }) 
+         } else {
+             var tileSource = this.config.tileSource;
+         }
              console.log("loading tilesource ", tileSource);
              
              this.viewer = OpenSeadragon ({
