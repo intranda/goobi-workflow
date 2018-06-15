@@ -38,10 +38,7 @@ var ImageView = ( function(imageView) {
      * Position is in viewer element coordinates
      */
     imageView.Draw.prototype.createEmptyRectAt = function(position) {
-//        let rect = new OpenSeadragon.rect(position.x, position.y, 0,0);
-//        rect = ImageView.convertCoordinatesFromCanvasToImage(rect, this.viewer);
-//        this.currentOverlay = new ImageView.Overlay(rect, this.viewer, this.style);
-        
+
         this.currentRect = new OpenSeadragon.Rect(position.x, position.y, 0,0);
         this.startPoint = position;
         _drawRect(this.currentRect, this.style, this.viewer.drawer.context);
@@ -112,22 +109,6 @@ var ImageView = ( function(imageView) {
             event.preventDefaultAction = true;
             return true; 
         }
-//        else if ( _active && _drawPoint ) {
-//            var activeOverlay = drawRect.transform.currentOverlay;
-//            if ( activeOverlay && drawRect.transform.isActive()
-//                    && drawRect.transform.contains(_drawPoint, _minDistanceToExistingRect ) ) {
-//                _drawPoint = null;
-//                if ( _debug )
-//                    console.log( "Action overlaps active overlay" );
-//            }
-//            else {
-//                _drawing = true;
-//                var rect = new OpenSeadragon.Rect( _drawPoint.x, _drawPoint.y, 0, 0 );
-//                drawRect.drawOverlay(rect);
-//            }
-//            event.preventDefaultAction = true;
-//            return true;
-//        }
     }
     
     function _onViewerDragEnd( event, draw) {

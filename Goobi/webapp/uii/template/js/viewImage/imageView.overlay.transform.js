@@ -34,8 +34,11 @@ var ImageView = ( function(imageView) {
     }
     imageView.Transform.prototype.removeOverlay = function(overlay) {
         if(this.overlays.includes(overlay)) {
+            console.log("remove overlay");
             let index = this.overlays.indexOf(overlay);
+            console.log("overlays ", this.overlays);
             this.overlays.splice(index, 1);
+            console.log("overlays ", this.overlays);
             return true;
         }
         return false;
@@ -53,26 +56,6 @@ var ImageView = ( function(imageView) {
     imageView.Transform.prototype.isTransforming = function() {
         return this.transforming;
     }
-    imageView.Transform.prototype.startTransforming = function() {
-        if(!this.currentOverlay) {
-//            _removeOverlay(this.currentOverlay);
-            this.currentOverlay = _createOverlay(0,0,0,0);
-        }
-        _active = true;
-        _finishHook = finishHook;
-        $( this.currentOverlay.element ).addClass( _drawingStyleClass );
-    }
-    imageView.Transform.prototype.endTransforming = function() {
-        _drawing = false;
-        _finishHook = null;
-        _active = false;
-        if ( this.currentOverlay != null ) {
-            $( this.currentOverlay.element ).removeClass( _drawingStyleClass );
-            $( this.currentOverlay.element ).css( {
-                cursor: DEFAULT_CURSOR
-            } );
-        }
-    }
     imageView.Transform.prototype.getContainingOverlay = function(point) {
         for(let overlay of this.overlays) {
             if(overlay.contains(point, _sideClickPrecision)) {
@@ -89,10 +72,6 @@ var ImageView = ( function(imageView) {
                 tracker: "viewer",
                 handler: "clickHandler",
                 hookHandler: function(event) { _disableViewerEvent(event, transform) }
-            // }, {
-            // tracker : "viewer",
-            // handler : "scrollHandler",
-            // hookHandler : _disableViewerEvent
             }, {
                 tracker: "viewer",
                 handler: "dragHandler",
@@ -134,10 +113,6 @@ var ImageView = ( function(imageView) {
         return overlay;
     }
     
-    function _removeOverlay() {
-        this.viewer.removeOverlay(this.currentOverlay);
-    }
-    
     
     function _isInside( rect, point, extra ) {
 
@@ -146,7 +121,7 @@ var ImageView = ( function(imageView) {
     }
 
     function _onViewerMove( event, transform ) {
-        if ( !transform.isTransforming() && transform.isActive() ) {
+        if ( !transform.isTransforming() && transform.isActive() && transform.startCondition(event.originalEvent) ) {
             
             let coords = ImageView.convertPointFromCanvasToImage(event.position, transform.viewer);
             coords = ImageView.getPointInUnrotatedImage(coords, transform.viewer);
@@ -310,62 +285,6 @@ var ImageView = ( function(imageView) {
         if ( transform.isTransforming() ) {
             event.preventDefaultAction = true;
             return true;
-        }
-    }
-    function checkForRectHit( point ) {
-        var i;
-        for ( i = 0; i < _rects.length; i++ ) {
-            var x = _rects[ i ];
-            if ( point.x > x.hitBox.l && point.x < x.hitBox.r && point.y > x.hitBox.t && point.y < x.hitBox.b ) {
-                var topLeftHb = {
-                    l: x.x - _hbAdd,
-                    t: x.y - _hbAdd,
-                    r: x.x + _hbAdd,
-                    b: x.y + _hbAdd
-                };
-                var topRightHb = {
-                    l: x.x + x.width - _hbAdd,
-                    t: x.y - _hbAdd,
-                    r: x.x + x.width + _hbAdd,
-                    b: x.y + _hbAdd
-                };
-                var bottomRightHb = {
-                    l: x.x + x.width - _hbAdd,
-                    t: x.y + x.height - _hbAdd,
-                    r: x.x + x.width + _hbAdd,
-                    b: x.y + x.height + _hbAdd
-                };
-                var bottomLeftHb = {
-                    l: x.x - _hbAdd,
-                    t: x.y + x.height - _hbAdd,
-                    r: x.x + _hbAdd,
-                    b: x.y + x.height + _hbAdd
-                };
-                var topHb = {
-                    l: x.x + _hbAdd,
-                    t: x.y - _hbAdd,
-                    r: x.x + x.width - _hbAdd,
-                    b: x.y + _hbAdd
-                };
-                var rightHb = {
-                    l: x.x + x.width - _hbAdd,
-                    t: x.y + _hbAdd,
-                    r: x.x + x.width + _hbAdd,
-                    b: x.y + x.height - _hbAdd
-                };
-                var bottomHb = {
-                    l: x.x + _hbAdd,
-                    t: x.y + x.height - _hbAdd,
-                    r: x.x + x.width - _hbAdd,
-                    b: x.y + x.height + _hbAdd
-                };
-                var leftHb = {
-                    l: x.x - _hbAdd,
-                    t: x.y + _hbAdd,
-                    r: x.x + _hbAdd,
-                    b: x.y + x.height - _hbAdd
-                };
-            }
         }
     }
 
