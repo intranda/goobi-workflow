@@ -596,15 +596,17 @@
 								
 								<div class="col-sm-12">
 		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
-		                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
-		                                		<h:column>
-		                                			<f:facet name="header">
-		                                				<!-- TODO: translation ? -->
-		                                				<h:outputText value="#{val}"/>
-		                                			</f:facet>
-		                                			<h:outputText value="#{process.metadata[val][0].value}" />
-		                                		</h:column>
-		                                	</c:forEach>
+		                                	<c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+			                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
+			                                		<h:column>
+			                                			<f:facet name="header">
+			                                				<!-- TODO: translation ? -->
+			                                				<h:outputText value="#{val}"/>
+			                                			</f:facet>
+			                                			<h:outputText value="#{process.metadata[val][0].value}" />
+			                                		</h:column>
+			                                	</c:forEach>
+		                                	</c:if>
 		                                </h:dataTable>
 		
 		                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
