@@ -6,7 +6,7 @@ var ImageView = ( function(imageView) {
     }
     
     var DEFAULT_CURSOR = "default";
-    var REMOVE_CURSOR = "not-allowed";
+    var REMOVE_CURSOR = "default";
 
     var _hbAdd = 5;
     var _sideClickPrecision = 0.01;
@@ -82,10 +82,10 @@ var ImageView = ( function(imageView) {
     function _onViewerMove( event, remove ) {
         if (remove.isActive() && remove.startCondition(event.originalEvent) ) {
             
-            let coords = ImageView.convertPointFromCanvasToImage(event.position, transform.viewer);
-            coords = ImageView.getPointInUnrotatedImage(coords, transform.viewer);
-            let overlay = transform.getContainingOverlay(coords);
-            var viewerElement = transform.viewer.element;
+            let coords = ImageView.convertPointFromCanvasToImage(event.position, remove.viewer);
+            coords = ImageView.getPointInUnrotatedImage(coords, remove.viewer);
+            let overlay = remove.getContainingOverlay(coords);
+            var viewerElement = remove.viewer.element;
             if(overlay) {
 //                console.log("point is inside overlay ", overlay);
                 remove.currentOverlay = overlay;
@@ -120,8 +120,8 @@ var ImageView = ( function(imageView) {
             }
         }
     }
-    function _disableViewerEvent( event, transform ) {
-        if ( transform.isTransforming() ) {
+    function _disableViewerEvent( event, remove ) {
+        if ( remove.isTransforming() ) {
             event.preventDefaultAction = true;
             return true;
         }
