@@ -1433,9 +1433,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
             try {
-                List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+                List<Path> images = NIOFileUtils.listFiles(getImagesTifDirectory(true), NIOFileUtils.imageOrObjectNameFilter);
                 if (images == null || images.size() == 0) {
-                    images = NIOFileUtils.listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
+                    images = NIOFileUtils.listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageOrObjectNameFilter);
                 }
 
                 if (images != null && !images.isEmpty()) {

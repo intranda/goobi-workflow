@@ -3,12 +3,12 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -57,19 +57,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
-import ugh.dl.ContentFile;
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Prefs;
-import ugh.dl.Reference;
-import ugh.dl.RomanNumeral;
-import ugh.exceptions.ContentFileNotLinkedException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HttpClientHelper;
@@ -83,6 +70,19 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorExcept
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
+import ugh.dl.ContentFile;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.DocStructType;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.dl.Prefs;
+import ugh.dl.Reference;
+import ugh.dl.RomanNumeral;
+import ugh.exceptions.ContentFileNotLinkedException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
 
 public class MetadatenImagesHelper {
     private static final Logger logger = Logger.getLogger(MetadatenImagesHelper.class);
@@ -96,7 +96,7 @@ public class MetadatenImagesHelper {
     }
 
     public void checkImageNames(Process myProzess, String directoryName) throws TypeNotAllowedForParentException, SwapException, DAOException,
-            IOException, InterruptedException {
+    IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -118,7 +118,7 @@ public class MetadatenImagesHelper {
             folder = Paths.get(myProzess.getImagesDirectory() + directoryName);
         }
 
-        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageNameFilter);
+        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageOrObjectNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
             return;
@@ -126,7 +126,7 @@ public class MetadatenImagesHelper {
 
         // get image names in nets file
 
-        Map<String, DocStruct> imageNamesInMetsFile = new HashMap<String, DocStruct>();
+        Map<String, DocStruct> imageNamesInMetsFile = new HashMap<>();
 
         List<DocStruct> pages = physical.getAllChildren();
         if (pages != null && pages.size() > 0) {
@@ -149,8 +149,8 @@ public class MetadatenImagesHelper {
             return;
         }
 
-        List<String> imagesWithoutDocstruct = new LinkedList<String>();
-        List<DocStruct> pagesWithoutFiles = new LinkedList<DocStruct>();
+        List<String> imagesWithoutDocstruct = new LinkedList<>();
+        List<DocStruct> pagesWithoutFiles = new LinkedList<>();
 
         // search for page objects with invalid image names
         for (String imageNameInMets : imageNamesInMetsFile.keySet()) {
@@ -237,7 +237,7 @@ public class MetadatenImagesHelper {
      * @throws SwapException
      */
     public void createPagination(Process inProzess, String directory) throws TypeNotAllowedForParentException, IOException, InterruptedException,
-            SwapException, DAOException {
+    SwapException, DAOException {
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -248,7 +248,7 @@ public class MetadatenImagesHelper {
         }
         MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
 
-        /*-------------------------------- 
+        /*--------------------------------
          * der physische Baum wird nur
          * angelegt, wenn er noch nicht existierte
          * --------------------------------*/
@@ -280,16 +280,16 @@ public class MetadatenImagesHelper {
             checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesDirectory() + directory);
         }
 
-        /*------------------------------- 
+        /*-------------------------------
          * retrieve existing pages/images
          * -------------------------------*/
         DocStructType newPage = this.myPrefs.getDocStrctTypeByName("page");
         List<DocStruct> oldPages = physicaldocstruct.getAllChildrenByTypeAndMetadataType("page", "*");
         if (oldPages == null) {
-            oldPages = new ArrayList<DocStruct>();
+            oldPages = new ArrayList<>();
         }
 
-        /*-------------------------------- 
+        /*--------------------------------
          * add new page/images if necessary
          * --------------------------------*/
 
@@ -298,9 +298,9 @@ public class MetadatenImagesHelper {
         }
 
         String defaultPagination = ConfigurationHelper.getInstance().getMetsEditorDefaultPagination();
-        Map<String, DocStruct> assignedImages = new HashMap<String, DocStruct>();
-        List<DocStruct> pageElementsWithoutImages = new ArrayList<DocStruct>();
-        List<String> imagesWithoutPageElements = new ArrayList<String>();
+        Map<String, DocStruct> assignedImages = new HashMap<>();
+        List<DocStruct> pageElementsWithoutImages = new ArrayList<>();
+        List<String> imagesWithoutPageElements = new ArrayList<>();
 
         if (physicaldocstruct.getAllChildren() != null && !physicaldocstruct.getAllChildren().isEmpty()) {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
@@ -348,7 +348,7 @@ public class MetadatenImagesHelper {
         if (!pageElementsWithoutImages.isEmpty() && imagesWithoutPageElements.isEmpty()) {
             for (DocStruct pageToRemove : pageElementsWithoutImages) {
                 physicaldocstruct.removeChild(pageToRemove);
-                List<Reference> refs = new ArrayList<Reference>(pageToRemove.getAllFromReferences());
+                List<Reference> refs = new ArrayList<>(pageToRemove.getAllFromReferences());
                 for (ugh.dl.Reference ref : refs) {
                     ref.getSource().removeReferenceTo(pageToRemove);
                 }
@@ -419,7 +419,7 @@ public class MetadatenImagesHelper {
                 } else {
                     // remove page
                     physicaldocstruct.removeChild(page);
-                    List<Reference> refs = new ArrayList<Reference>(page.getAllFromReferences());
+                    List<Reference> refs = new ArrayList<>(page.getAllFromReferences());
                     for (ugh.dl.Reference ref : refs) {
                         ref.getSource().removeReferenceTo(page);
                     }
@@ -501,7 +501,7 @@ public class MetadatenImagesHelper {
      * @throws ImageManipulatorException
      */
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
-            ImageManipulatorException {
+    ImageManipulatorException {
         logger.trace("start scaleFile");
 
         int tmpSize = inSize;
@@ -619,9 +619,9 @@ public class MetadatenImagesHelper {
         boolean isValid = true;
         this.myLastImage = 0;
 
-        /*-------------------------------- 
+        /*--------------------------------
          * alle Bilder durchlaufen und dafür
-         * die Seiten anlegen 
+         * die Seiten anlegen
          * --------------------------------*/
         Path dir = Paths.get(folder);
         if (Files.exists(dir)) {
@@ -706,7 +706,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 
         /* alle Dateien durchlaufen */
         if (dateien != null && !dateien.isEmpty()) {
@@ -755,10 +755,10 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
+
         List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
-
-        List<String> orderedFilenameList = new ArrayList<String>();
+        List<String> orderedFilenameList = new ArrayList<>();
         if (dateien != null && !dateien.isEmpty()) {
             List<DocStruct> pagesList = mydocument.getPhysicalDocStruct().getAllChildren();
             if (pagesList != null) {
@@ -795,7 +795,7 @@ public class MetadatenImagesHelper {
     }
 
     public List<String> getImageFiles(DocStruct physical) {
-        List<String> orderedFileList = new ArrayList<String>();
+        List<String> orderedFileList = new ArrayList<>();
         List<DocStruct> pages = physical.getAllChildren();
         if (pages != null && pages.size() > 0) {
             for (DocStruct page : pages) {

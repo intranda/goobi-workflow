@@ -573,5 +573,4 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 
         return p;
     }
-
 }

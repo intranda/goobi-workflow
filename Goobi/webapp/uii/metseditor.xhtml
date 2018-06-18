@@ -595,16 +595,18 @@
 	                                    <h:message for="processesList" showDetail="true" styleClass="help-inline font-danger" />
 								
 								<div class="col-sm-12">
-		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" binding="#{table}" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
-		                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
-		                                		<h:column>
-		                                			<f:facet name="header">
-		                                				<!-- TODO: translation ? -->
-		                                				<h:outputText value="#{val}"/>
-		                                			</f:facet>
-		                                			<h:outputText value="#{process.metadata[val][0].value}" />
-		                                		</h:column>
-		                                	</c:forEach>
+		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
+		                                	<c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+			                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
+			                                		<h:column>
+			                                			<f:facet name="header">
+			                                				<!-- TODO: translation ? -->
+			                                				<h:outputText value="#{val}"/>
+			                                			</f:facet>
+			                                			<h:outputText value="#{process.metadata[val][0].value}" />
+			                                		</h:column>
+			                                	</c:forEach>
+		                                	</c:if>
 		                                	<h:column>
 		                                		<f:facet name="header">
 		                                			<h:outputText value="#{msgs.action}"/>

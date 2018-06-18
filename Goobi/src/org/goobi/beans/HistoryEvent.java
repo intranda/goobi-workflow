@@ -248,4 +248,5 @@ public class HistoryEvent implements Serializable {
             return false;
         return true;
     }
+    
 }

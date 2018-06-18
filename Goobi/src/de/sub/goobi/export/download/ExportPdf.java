@@ -99,7 +99,7 @@ public class ExportPdf extends ExportMets {
         String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
         Path imagesPath = Paths.get(myProzess.getImagesTifDirectory(true));
-        if(!Files.exists(imagesPath) || NIOFileUtils.list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
+        if(!Files.exists(imagesPath) || NIOFileUtils.list(imagesPath.toString(), NIOFileUtils.imageOrObjectNameFilter).isEmpty()) {
             imagesPath = Paths.get(myProzess.getImagesOrigDirectory(true));
         }
         Path pdfPath = Paths.get(myProzess.getOcrPdfDirectory());

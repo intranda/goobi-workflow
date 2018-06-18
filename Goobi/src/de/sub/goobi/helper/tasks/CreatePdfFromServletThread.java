@@ -139,7 +139,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 }
                 String url = "";
            
-                List<Path> meta = NIOFileUtils.listFiles(this.getProzess().getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+                List<Path> meta = NIOFileUtils.listFiles(this.getProzess().getImagesTifDirectory(true), NIOFileUtils.imageOrObjectNameFilter);
                 ArrayList<String> filenames = new ArrayList<String>();
                 for (Path data : meta) {
                     String file = "";

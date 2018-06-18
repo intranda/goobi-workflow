@@ -3,12 +3,12 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -59,8 +59,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.zip.CRC32;
 
-import lombok.extern.log4j.Log4j;
+import org.apache.commons.io.FilenameUtils;
+
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.extern.log4j.Log4j;
 
 /**
  * File Utils collection
@@ -70,8 +72,8 @@ import de.sub.goobi.config.ConfigurationHelper;
 @Log4j
 public class NIOFileUtils {
 
-    public static final CopyOption[] STANDARD_COPY_OPTIONS = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING,
-            StandardCopyOption.COPY_ATTRIBUTES };
+    public static final CopyOption[] STANDARD_COPY_OPTIONS =
+            new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
 
     /**
      * calculate all files with given file extension at specified directory recursivly
@@ -131,11 +133,12 @@ public class NIOFileUtils {
             anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
                 @Override
                 public boolean accept(Path path) {
-                    return path.getFileName().endsWith(suffix);
+                    return path.getFileName()
+                            .endsWith(suffix);
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -180,7 +183,8 @@ public class NIOFileUtils {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName().toString());
+                fileNames.add(path.getFileName()
+                        .toString());
             }
         } catch (IOException ex) {
         }
@@ -193,7 +197,8 @@ public class NIOFileUtils {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName().toString());
+                fileNames.add(path.getFileName()
+                        .toString());
             }
         } catch (IOException ex) {
         }
@@ -225,17 +230,84 @@ public class NIOFileUtils {
         }
     };
 
+    public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
+        @Override
+        public boolean accept(Path path) {
+            String prefix = ConfigurationHelper.getInstance()
+                    .getImagePrefix();
+            String name = path.getFileName()
+                    .toString();
+            boolean fileOk = false;
+            if (name.matches(prefix + "\\.[Oo][bB][jJ]?")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.3[dD][sS]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+                fileOk = true;
+            }
+            return fileOk;
+        }
+    };
+
+    public static final class ObjectHelperNameFilter implements DirectoryStream.Filter<Path> {
+
+        private String mainFileBaseName;
+
+        public ObjectHelperNameFilter(Path objFilePath) {
+            this.mainFileBaseName = FilenameUtils.getBaseName(objFilePath.getFileName()
+                    .toString());
+        }
+
+        @Override
+        public boolean accept(Path path) {
+            String baseName = FilenameUtils.getBaseName(path.getFileName()
+                    .toString());
+            boolean fileOk = false;
+            if (baseName.equals(mainFileBaseName)) {
+                String prefix = ConfigurationHelper.getInstance()
+                        .getImagePrefix();
+                String name = path.getFileName()
+                        .toString();
+                if (name.matches(prefix + "\\.[mM][tT][lL]?")) {
+                    fileOk = true;
+                } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+                    fileOk = true;
+                } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+                    fileOk = true;
+                } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+                    fileOk = true;
+                }
+            }
+            return fileOk;
+        }
+    };
+
+    public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<Path>() {
+        @Override
+        public boolean accept(Path path) throws IOException {
+            return imageNameFilter.accept(path) || objectNameFilter.accept(path);
+        }
+    };
+
     public static final DirectoryStream.Filter<Path> folderFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            return path.toFile().isDirectory();
+            return path.toFile()
+                    .isDirectory();
         }
     };
 
     public static final DirectoryStream.Filter<Path> fileFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            return path.toFile().isFile();
+            return path.toFile()
+                    .isFile();
         }
     };
 
@@ -244,8 +316,10 @@ public class NIOFileUtils {
         @Override
         public boolean accept(Path path) {
             boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-            String name = path.getFileName().toString();
+            String prefix = ConfigurationHelper.getInstance()
+                    .getImagePrefix();
+            String name = path.getFileName()
+                    .toString();
             if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
@@ -286,7 +360,14 @@ public class NIOFileUtils {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[oO][bB][jJ]")) {
                 fileOk = true;
+            } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+                fileOk = true;
             }
+
 
             return fileOk;
         }
@@ -368,8 +449,9 @@ public class NIOFileUtils {
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                if (e != null)
+                if (e != null) {
                     throw e;
+                }
                 return FileVisitResult.CONTINUE;
             }
         });
@@ -405,14 +487,16 @@ public class NIOFileUtils {
     public static Long start(Path srcFile, Path destFile) throws IOException {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
-            log.error("Not a readable file: " + srcFile.getFileName().toString());
+            log.error("Not a readable file: " + srcFile.getFileName()
+            .toString());
         }
 
         // copy file, optionally creating a checksum
         copyFile(srcFile, destFile);
 
         // copy timestamp of last modification
-        Files.setLastModifiedTime(destFile, Files.readAttributes(srcFile, BasicFileAttributes.class).lastModifiedTime());
+        Files.setLastModifiedTime(destFile, Files.readAttributes(srcFile, BasicFileAttributes.class)
+                .lastModifiedTime());
 
         // verify file
         long checksumSrc = checksumMappedFile(srcFile.toString());

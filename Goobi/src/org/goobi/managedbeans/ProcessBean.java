@@ -3,12 +3,12 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -179,12 +179,12 @@ public class ProcessBean extends BasicBean {
     private boolean showArchivedProjects = false;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
-    private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
+    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
     private Integer container;
     private String userDisplayMode = "";
 
     private boolean dispaySearchResult = false;
-    private List<SearchColumn> searchField = new ArrayList<SearchColumn>();
+    private List<SearchColumn> searchField = new ArrayList<>();
     private List<SelectItem> possibleItems = null;
     private SearchColumn currentField = null;
     private int order = 0;
@@ -196,14 +196,14 @@ public class ProcessBean extends BasicBean {
     private DatabasePaginator usergroupPaginator;
     private DatabasePaginator userPaginator;
 
-    private List<String> stepPluginList = new ArrayList<String>();
-    private List<String> validationPluginList = new ArrayList<String>();
+    private List<String> stepPluginList = new ArrayList<>();
+    private List<String> validationPluginList = new ArrayList<>();
     private int securityCheckNumber1 = 0;
     private int securityCheckNumber2 = 0;
     private int securityCheckResultGuess = 0;
 
     public ProcessBean() {
-        this.anzeigeAnpassen = new HashMap<String, Boolean>();
+        this.anzeigeAnpassen = new HashMap<>();
 
         this.sortierung = "titel";
         /*
@@ -868,7 +868,7 @@ public class ProcessBean extends BasicBean {
         this.myProzess.getVorlagen().add(this.myVorlage);
         this.myVorlage.setProzess(this.myProzess);
         TemplateManager.saveTemplate(myVorlage);
-        //        Speichern();        
+        //        Speichern();
         return "process_edit_template";
     }
 
@@ -1132,15 +1132,15 @@ public class ProcessBean extends BasicBean {
         }
         Helper.setMeldung(null, "createdInUserHomeAll", "");
     }
-    
+
     @SuppressWarnings("unchecked")
     public void generateFilterWithIdentfiers() {
         String f = "\"id:";
-    	for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
+        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             f += proz.getId() + " ";
         }
         f+="\"";
-    	filter = f;
+        filter = f;
     }
 
     @SuppressWarnings("unchecked")
@@ -1167,7 +1167,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void stepStatusUp(Process proz) throws DAOException {
-        List<Step> stepList = new ArrayList<Step>(proz.getSchritteList());
+        List<Step> stepList = new ArrayList<>(proz.getSchritteList());
 
         for (Step so : stepList) {
             if (!(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
@@ -1190,7 +1190,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void stepStatusDown(Process proz) throws DAOException {
-        List<Step> tempList = new ArrayList<Step>(proz.getSchritteList());
+        List<Step> tempList = new ArrayList<>(proz.getSchritteList());
 
         Collections.reverse(tempList);
 
@@ -1394,7 +1394,6 @@ public class ProcessBean extends BasicBean {
     }
 
     public void setModusAnzeige(String modusAnzeige) {
-        this.sortierung = "titelAsc";
         this.modusAnzeige = modusAnzeige;
     }
 
@@ -1411,7 +1410,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1425,7 +1424,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1483,7 +1482,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<SelectItem> getProjektAuswahlListe() throws DAOException {
-        List<SelectItem> myProjekte = new ArrayList<SelectItem>();
+        List<SelectItem> myProjekte = new ArrayList<>();
         List<Project> temp = null;
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
@@ -1521,7 +1520,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<SelectItem> getRulesetSelectionList() {
-        List<SelectItem> rulesets = new ArrayList<SelectItem>();
+        List<SelectItem> rulesets = new ArrayList<>();
         List<Ruleset> temp = RulesetManager.getAllRulesets();
         for (Ruleset ruleset : temp) {
             rulesets.add(new SelectItem(ruleset.getId(), ruleset.getTitel(), null));
@@ -1551,7 +1550,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<SelectItem> getDocketSelectionList() {
-        List<SelectItem> myProjekte = new ArrayList<SelectItem>();
+        List<SelectItem> myProjekte = new ArrayList<>();
         List<Docket> temp = DocketManager.getAllDockets();
         for (Docket docket : temp) {
             myProjekte.add(new SelectItem(docket.getId(), docket.getName(), null));
@@ -1570,7 +1569,7 @@ public class ProcessBean extends BasicBean {
 
     @SuppressWarnings("unchecked")
     public void CalcMetadataAndImagesSelection() throws IOException, InterruptedException, SwapException, DAOException {
-        ArrayList<Process> auswahl = new ArrayList<Process>();
+        ArrayList<Process> auswahl = new ArrayList<>();
         for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
                 auswahl.add(p);
@@ -1586,7 +1585,7 @@ public class ProcessBean extends BasicBean {
 
     private void CalcMetadataAndImages(List<Process> inListe) throws IOException, InterruptedException, SwapException, DAOException {
         //		XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
-        this.myAnzahlList = new ArrayList<ProcessCounterObject>();
+        this.myAnzahlList = new ArrayList<>();
         int allMetadata = 0;
         int allDocstructs = 0;
         int allImages = 0;
@@ -1657,7 +1656,7 @@ public class ProcessBean extends BasicBean {
         //		if (this.myAnzahlList != null && this.myAnzahlList.size() > 0) {
         //			faktor = this.myAnzahlList.size();
         //		}
-        this.myAnzahlSummary = new HashMap<String, Integer>();
+        this.myAnzahlSummary = new HashMap<>();
         this.myAnzahlSummary.put("sumProcesses", this.myAnzahlList.size());
         this.myAnzahlSummary.put("sumMetadata", allMetadata);
         this.myAnzahlSummary.put("sumDocstructs", allDocstructs);
@@ -2024,7 +2023,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<String> getXsltList() {
-        List<String> answer = new ArrayList<String>();
+        List<String> answer = new ArrayList<>();
         Path folder = Paths.get("xsltFolder");
         if (Files.exists(folder) && Files.isDirectory(folder)) {
             List<String> files = NIOFileUtils.list(folder.toString());
@@ -2099,7 +2098,7 @@ public class ProcessBean extends BasicBean {
                 CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
 
                 // add all headers
-                List<Object> csvHead = new ArrayList<Object>();
+                List<Object> csvHead = new ArrayList<>();
                 csvHead.add(csvr.getDataTable().getUnitLabel());
                 for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
                     csvHead.add(s);
@@ -2108,7 +2107,7 @@ public class ProcessBean extends BasicBean {
 
                 // add all rows
                 for (DataRow dr : csvr.getDataTable().getDataRows()) {
-                    List<Object> csvColumns = new ArrayList<Object>();
+                    List<Object> csvColumns = new ArrayList<>();
                     csvColumns.add(dr.getName());
                     for (int j = 0; j < dr.getNumberValues(); j++) {
                         csvColumns.add(dr.getValue(j));
@@ -2172,13 +2171,13 @@ public class ProcessBean extends BasicBean {
                 HSSFWorkbook wb = sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
                         this.showArchivedProjects);
 
-                List<List<HSSFCell>> rowList = new ArrayList<List<HSSFCell>>();
+                List<List<HSSFCell>> rowList = new ArrayList<>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
                 Iterator<Row> rowIter = mySheet.rowIterator();
                 while (rowIter.hasNext()) {
                     HSSFRow myRow = (HSSFRow) rowIter.next();
                     Iterator<Cell> cellIter = myRow.cellIterator();
-                    List<HSSFCell> row = new ArrayList<HSSFCell>();
+                    List<HSSFCell> row = new ArrayList<>();
                     while (cellIter.hasNext()) {
                         HSSFCell myCell = (HSSFCell) cellIter.next();
                         row.add(myCell);
@@ -2333,7 +2332,7 @@ public class ProcessBean extends BasicBean {
         } catch (Exception e) {
             logger.warn("could not refresh process with id " + this.myProzess.getId(), e);
         }
-        this.containers = new TreeMap<Integer, PropertyListObject>();
+        this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getPropertiesForProcess(this.myProzess);
 
         for (ProcessProperty pt : this.processPropertyList) {
@@ -2435,7 +2434,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<Integer> getContainerList() {
-        return new ArrayList<Integer>(this.containers.keySet());
+        return new ArrayList<>(this.containers.keySet());
     }
 
     public int getContainersSize() {
@@ -2479,7 +2478,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
 
         if (this.container != null && this.container > 0) {
             for (ProcessProperty pp : this.processPropertyList) {
@@ -2496,7 +2495,7 @@ public class ProcessBean extends BasicBean {
 
     public String duplicateContainer() {
         Integer currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() == currentContainer) {
@@ -2543,7 +2542,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
             if (pp.getContainer() == 0) {
                 answer.add(pp);
@@ -2554,7 +2553,7 @@ public class ProcessBean extends BasicBean {
 
     public void createNewProperty() {
         if (this.processPropertyList == null) {
-            this.processPropertyList = new ArrayList<ProcessProperty>();
+            this.processPropertyList = new ArrayList<>();
         }
         ProcessProperty pp = new ProcessProperty();
         pp.setType(Type.TEXT);
@@ -2641,14 +2640,14 @@ public class ProcessBean extends BasicBean {
         myProzess.clone();
         return FilterVorlagen();
     }
-    
-    
+
+
     public List<String> getListOfDisplayColumns(){
-    	List<String> myColumns = new ArrayList<>();
-    	myColumns.add("{metas.CatalogueIDDigital}");
-    	myColumns.add("{origpath}");
-    	myColumns.add("{product.ATS}");
-    	return myColumns;
+        List<String> myColumns = new ArrayList<>();
+        myColumns.add("{metas.CatalogueIDDigital}");
+        myColumns.add("{origpath}");
+        myColumns.add("{product.ATS}");
+        return myColumns;
     }
 
     private IStepPlugin currentPlugin;

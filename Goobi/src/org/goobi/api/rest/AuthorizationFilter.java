@@ -27,6 +27,10 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
         String pathInfo = req.getPathInfo();
+        
+        if(pathInfo.startsWith("/view/object/")) {
+            return;
+        }
 
         String ip = req.getHeader("x-forwarded-for");
         if (ip == null) {

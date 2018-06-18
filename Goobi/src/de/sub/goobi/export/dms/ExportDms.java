@@ -28,12 +28,15 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -51,6 +54,7 @@ import ugh.exceptions.WriteException;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
+import org.jfree.io.FileUtilities;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -409,6 +413,20 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             for (Path file : files) {
                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
                 Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                
+                //for 3d object files look for "helper files" with the same base name and copy them as well
+                if(NIOFileUtils.objectNameFilter.accept(file)) {
+                    List<Path> helperFiles = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), 
+                            new NIOFileUtils.ObjectHelperNameFilter(file));
+                    for (Path helperFile : helperFiles) {
+                        Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());
+                        if(Files.isDirectory(helperFile)) {
+                            FileUtils.copyDirectory(helperFile.toFile(), helperTarget.toFile());
+                        } else {
+                            Files.copy(helperFile, helperTarget, NIOFileUtils.STANDARD_COPY_OPTIONS);
+                        }
+                    }
+                }
             }
         }
 
