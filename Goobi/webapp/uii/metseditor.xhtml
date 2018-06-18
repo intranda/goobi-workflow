@@ -595,7 +595,7 @@
 	                                    <h:message for="processesList" showDetail="true" styleClass="help-inline font-danger" />
 								
 								<div class="col-sm-12">
-		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
+		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" binding="#{table}" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
 		                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
 		                                		<h:column>
 		                                			<f:facet name="header">
@@ -605,6 +605,12 @@
 		                                			<h:outputText value="#{process.metadata[val][0].value}" />
 		                                		</h:column>
 		                                	</c:forEach>
+		                                	<h:column>
+		                                		<f:facet name="header">
+		                                			<h:outputText value="#{msgs.action}"/>
+		                                		</f:facet>
+		                                		<h:commandLink styleClass="btn btn-primary fa fa-check" action="#{Metadaten.currentPlugin.linkProcess(process)}"/>
+		                                	</h:column>
 		                                </h:dataTable>
 		
 		                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
