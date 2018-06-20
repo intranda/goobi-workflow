@@ -8,7 +8,7 @@
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
 	Path to local config file
 		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" />
+<!-- 	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" /> -->
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
 		resulution for results of image processing * sample: <defaultResolution value="600" 
@@ -26,7 +26,7 @@
         useScalrForJpeg activates a different scaling method for jpeg-images which generally operates
         much slower, so it is recommended to set this option to "false"
          *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <scaling quality="QUALITY" maxStepSize="50" thumbnailQuality="QUALITY"></scaling>
+    <scaling quality="SPEED" maxStepSize="10" thumbnailQuality="QUALITY"></scaling>
     
        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
         General rendering options.
@@ -71,7 +71,7 @@
 		is empty, in the servlet request has to be a complete url * sample: <defaultRepositoryPath 
 		value="file:///home/goobi/imageRepository/" /> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- for digiverso -->
-	<defaultRepositoryPathImages value="file:///" />
+	<defaultRepositoryPathImages value="file:///opt/digiverso/goobi/metadata/" />
 	<!-- for ucc <defaultRepositoryPathImages value="file:///" /> -->
 
 	<defaultRepositoryPathPdf value="file:///"
@@ -117,6 +117,9 @@
 		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<pdfTitlePage use="false"
 		configFile="file:///opt/digiverso/goobi/config/config_pdfTitlePage.xml" />
+
+    <restapi use="true" useWatermark="false"></restapi>
+
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * path to 
 		contentCache and maximum size in MB * -path: path in file system * -size: 
