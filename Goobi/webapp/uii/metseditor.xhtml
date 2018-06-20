@@ -607,6 +607,12 @@
 			                                		</h:column>
 			                                	</c:forEach>
 		                                	</c:if>
+		                                	<h:column>
+		                                		<f:facet name="header">
+		                                			<h:outputText value="#{msgs.action}"/>
+		                                		</f:facet>
+		                                		<h:commandLink styleClass="btn btn-primary fa fa-check" action="#{Metadaten.currentPlugin.linkProcess(process)}"/>
+		                                	</h:column>
 		                                </h:dataTable>
 		
 		                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
