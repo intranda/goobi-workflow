@@ -1047,7 +1047,7 @@ public class Metadaten {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+            WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
@@ -2185,12 +2185,12 @@ public class Metadaten {
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                        .getSeparator() + this.myBild;
+                                .getSeparator() + this.myBild;
                         if (!Files.exists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                    .getFileName().toString());
+                                            .getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {
@@ -3348,6 +3348,10 @@ public class Metadaten {
         this.curMetadatum = curMetadatum;
     }
 
+    public Prefs getMyPrefs() {
+        return this.myPrefs;
+    }
+
     public MetaPerson getCurPerson() {
         return this.curPerson;
     }
@@ -4243,7 +4247,7 @@ public class Metadaten {
 
         } else if (currentImage.getType().equals(Type.object) || currentImage.getType().equals(Type.x3dom)) {
             String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName()
-            + "/info.json";
+                    + "/info.json";
             currentImage.setObjectUrl(url);
         } else {
             Helper.setFehlerMeldung("No representation for file " + currentImage.getImageName());
