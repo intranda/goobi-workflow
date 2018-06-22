@@ -65,6 +65,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -113,6 +114,7 @@ import de.sub.goobi.export.download.ExportPdf;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.forms.SessionForm;
+import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
@@ -138,6 +140,8 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.ContentFile;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -201,6 +205,15 @@ public class ProcessBean extends BasicBean {
     private int securityCheckNumber1 = 0;
     private int securityCheckNumber2 = 0;
     private int securityCheckResultGuess = 0;
+
+    private List<Process> availableProcessTemplates = null;
+
+    @Getter
+    @Setter
+    private Process processToChange;
+    @Getter
+    @Setter
+    private Process template;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -1139,7 +1152,7 @@ public class ProcessBean extends BasicBean {
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             f += proz.getId() + " ";
         }
-        f+="\"";
+        f += "\"";
         filter = f;
     }
 
@@ -2641,8 +2654,7 @@ public class ProcessBean extends BasicBean {
         return FilterVorlagen();
     }
 
-
-    public List<String> getListOfDisplayColumns(){
+    public List<String> getListOfDisplayColumns() {
         List<String> myColumns = new ArrayList<>();
         myColumns.add("{metas.CatalogueIDDigital}");
         myColumns.add("{origpath}");
@@ -2707,5 +2719,85 @@ public class ProcessBean extends BasicBean {
         }
 
         return "";
+    }
+
+    /**
+     * generate a list of all available process templates
+     * 
+     * @return
+     */
+
+    public List<Process> getAvailableProcessTemplates() {
+        if (availableProcessTemplates == null) {
+            String sql = FilterHelper.criteriaBuilder("", true, null, null, null, true, false);
+            availableProcessTemplates = ProcessManager.getProcesses("prozesse.titel", sql);
+        }
+        return availableProcessTemplates;
+    }
+
+    public void changeTemplate() {
+        // copy old tasks
+        List<Step> oldTaskList = new ArrayList<>(processToChange.getSchritte());
+
+        // remove tasks from process
+        processToChange.setSchritte(new ArrayList<Step>());
+        // copy tasks from template to process
+        BeanHelper bhelp = new BeanHelper();
+        bhelp.SchritteKopieren(template, processToChange);
+
+        // set task progress
+        for (Step newTask : processToChange.getSchritte()) {
+            for (Step oldTask : oldTaskList) {
+                if (oldTask.getTitel().equals(newTask.getTitel()) && oldTask.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+                    // if oldTask is finished, keep status, date, user in new task
+                    newTask.setBearbeitungsbeginn(oldTask.getBearbeitungsbeginn());
+                    newTask.setBearbeitungsende(oldTask.getBearbeitungsende());
+                    newTask.setBearbeitungsstatusEnum(oldTask.getBearbeitungsstatusEnum());
+                    newTask.setBearbeitungsbenutzer(oldTask.getBearbeitungsbenutzer());
+                    break;
+                }
+            }
+        }
+
+        // remove old tasks from database
+        for (Step oldTask : oldTaskList) {
+            StepManager.deleteStep(oldTask);
+        }
+        // update properties for template name + id
+        for (Processproperty property : processToChange.getEigenschaften()) {
+            if (property.getTitel().equals("Template")) {
+                property.setWert(template.getTitel());
+            } else if (property.getTitel().equals("TemplateID")) {
+                property.setWert(String.valueOf(template.getId()));
+            }
+        }
+
+        // add text to process log
+
+        LogEntry logEntry = new LogEntry();
+        logEntry.setContent("Changed process template to " + template.getTitel());
+        logEntry.setCreationDate(new Date());
+        logEntry.setProcessId(processToChange.getId());
+        logEntry.setType(LogType.DEBUG);
+        logEntry.setUserName(Helper.getCurrentUser().getNachVorname());
+        processToChange.getProcessLog().add(logEntry);
+
+        try {
+            // if no open task was found, open first locked  task
+            for (Step newTask : processToChange.getSchritte()) {
+                if (newTask.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+                    break;
+                } else if (newTask.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                    newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                    break;
+                }
+            }
+            // TODO what happens if task is automatic?
+
+            // save new tasks
+            ProcessManager.saveProcess(processToChange);
+        } catch (DAOException e) {
+            logger.error(e);
+        }
     }
 }

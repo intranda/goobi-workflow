@@ -3,12 +3,12 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.goobi.org
  *          - http://launchpad.net/goobi-production
  *          - http://gdz.sub.uni-goettingen.de
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -53,6 +53,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
@@ -71,25 +72,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-import ugh.fileformats.mets.XStream;
-
-import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -110,6 +92,22 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.DocStructType;
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.dl.Person;
+import ugh.dl.Prefs;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
+import ugh.fileformats.mets.XStream;
 
 @ManagedBean(name = "ProzesskopieForm")
 @SessionScoped
@@ -178,7 +176,7 @@ public class ProzesskopieForm {
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
         this.prozessKopie.setDocket(this.prozessVorlage.getDocket());
-        this.digitalCollections = new ArrayList<String>();
+        this.digitalCollections = new ArrayList<>();
 
         /*
          *  Kopie der Processvorlage anlegen
@@ -194,8 +192,8 @@ public class ProzesskopieForm {
     }
 
     private void readProjectConfigs() {
-        /*-------------------------------- 
-         * projektabhängig die richtigen Felder in der Gui anzeigen 
+        /*--------------------------------
+         * projektabhängig die richtigen Felder in der Gui anzeigen
          * --------------------------------*/
         ConfigProjects cp = null;
         try {
@@ -287,7 +285,7 @@ public class ProzesskopieForm {
     /* =============================================================== */
 
     public List<SelectItem> getProzessTemplates() throws DAOException {
-        List<SelectItem> myProcessTemplates = new ArrayList<SelectItem>();
+        List<SelectItem> myProcessTemplates = new ArrayList<>();
 
         String filter = " istTemplate = false AND inAuswahllisteAnzeigen = true ";
 
@@ -434,12 +432,12 @@ public class ProzesskopieForm {
         if (this.opacKatalog == null) {
             this.opacKatalog = "";
         }
-        this.standardFields = new HashMap<String, Boolean>();
+        this.standardFields = new HashMap<>();
         this.standardFields.put("collections", true);
         this.standardFields.put("doctype", true);
         this.standardFields.put("preferences", true);
         this.standardFields.put("images", true);
-        this.additionalFields = new ArrayList<AdditionalField>();
+        this.additionalFields = new ArrayList<>();
         this.tifHeader_documentname = "";
         this.tifHeader_imagedescription = "";
     }
@@ -606,7 +604,7 @@ public class ProzesskopieForm {
      * @throws WriteException
      */
     public String NeuenProzessAnlegen() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
         //        Helper.getHibernateSession().evict(this.prozessKopie);
 
         //        this.prozessKopie.setId(null);
@@ -675,10 +673,10 @@ public class ProzesskopieForm {
             createNewFileformat();
         }
 
-        /*-------------------------------- 
+        /*--------------------------------
          * wenn eine RDF-Konfiguration
          * vorhanden ist (z.B. aus dem Opac-Import, oder frisch angelegt), dann
-         * diese ergänzen 
+         * diese ergänzen
          * --------------------------------*/
         if (this.myRdf != null) {
             for (AdditionalField field : this.additionalFields) {
@@ -850,7 +848,7 @@ public class ProzesskopieForm {
     private void removeCollections(DocStruct colStruct) {
         try {
             MetadataType mdt = this.ughHelper.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
-            ArrayList<Metadata> myCollections = new ArrayList<Metadata>(colStruct.getAllMetadataByType(mdt));
+            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
             if (myCollections != null && myCollections.size() > 0) {
                 for (Metadata md : myCollections) {
                     colStruct.removeMetadata(md);
@@ -920,7 +918,7 @@ public class ProzesskopieForm {
         } else {
             vor = new Template();
             vor.setProzess(this.prozessKopie);
-            List<Template> vorlagen = new ArrayList<Template>();
+            List<Template> vorlagen = new ArrayList<>();
             vorlagen.add(vor);
             this.prozessKopie.setVorlagen(vorlagen);
         }
@@ -934,7 +932,7 @@ public class ProzesskopieForm {
         } else {
             werk = new Masterpiece();
             werk.setProzess(this.prozessKopie);
-            List<Masterpiece> werkstuecke = new ArrayList<Masterpiece>();
+            List<Masterpiece> werkstuecke = new ArrayList<>();
             werkstuecke.add(werk);
             this.prozessKopie.setWerkstuecke(werkstuecke);
         }
@@ -1045,7 +1043,7 @@ public class ProzesskopieForm {
     }
 
     public Collection<SelectItem> getArtists() {
-        ArrayList<SelectItem> artisten = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> artisten = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
         boolean tempBol = true;
         while (tokenizer.hasMoreTokens()) {
@@ -1107,15 +1105,15 @@ public class ProzesskopieForm {
     }
 
     private void initializePossibleDigitalCollections() {
-        this.possibleDigitalCollection = new ArrayList<String>();
-        ArrayList<String> defaultCollections = new ArrayList<String>();
+        this.possibleDigitalCollection = new ArrayList<>();
+        ArrayList<String> defaultCollections = new ArrayList<>();
 
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
         if (!Files.exists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
-        this.digitalCollections = new ArrayList<String>();
+        this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
@@ -1406,16 +1404,15 @@ public class ProzesskopieForm {
                 rueckgabe = "0000".substring(rueckgabe.length()) + rueckgabe;
             }
         }
-        
+
         // TODO: temporary solution for shelfmark, replace it with configurable solution
-        if (inFeldName.equalsIgnoreCase("Signatur")||inFeldName.equalsIgnoreCase("Shelfmark")) {
-           if (StringUtils.isNotBlank(rueckgabe)) {
-               // replace white spaces with dash, remove other special characters
-               rueckgabe = rueckgabe.replace(" ", "-").replaceAll("[^\\w-]", "");
-               
-           }
+        if (inFeldName.equalsIgnoreCase("Signatur") || inFeldName.equalsIgnoreCase("Shelfmark")) {
+            if (StringUtils.isNotBlank(rueckgabe)) {
+                // replace white spaces with dash, remove other special characters
+                rueckgabe = rueckgabe.replace(" ", "-").replaceAll("[^\\w-]", "");
+
+            }
         }
-        
 
         return rueckgabe;
     }
@@ -1548,7 +1545,7 @@ public class ProzesskopieForm {
     }
 
     public List<SelectItem> getRulesetSelectionList() {
-        List<SelectItem> rulesets = new ArrayList<SelectItem>();
+        List<SelectItem> rulesets = new ArrayList<>();
         List<Ruleset> temp = RulesetManager.getAllRulesets();
         for (Ruleset ruleset : temp) {
             rulesets.add(new SelectItem(ruleset.getId(), ruleset.getTitel(), null));
@@ -1588,11 +1585,10 @@ public class ProzesskopieForm {
     public void setAdditionalFields(List<AdditionalField> list) {
         this.additionalFields = list;
     }
-    
-    public List<Project> getAvailableProjects() throws DAOException{
+
+    public List<Project> getAvailableProjects() throws DAOException {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         List<Project> temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), true);
         return temp;
     }
-
 }
