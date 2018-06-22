@@ -8,7 +8,7 @@
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * 
 	Path to local config file
 		/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-<!-- 	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" /> -->
+	<localConfigPath value="/opt/digiverso/goobi/config/config_contentServer.xml" />
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
 		resulution for results of image processing * sample: <defaultResolution value="600" 
