@@ -281,7 +281,7 @@
                                     </li>
                                     <!-- Knoten loeschen -->
                                     <li class="action-li">
-                                        <h:commandLink id="deleteNode" action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}">
+                                        <h:commandLink id="deleteNode" action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <span class="btn margin-right-10 fa fa-trash fa-lg width-40" />
                                             <h:outputText value="#{msgs.strukturelementLoeschen}" />
                                             <f:ajax execute="@form" render="@form :treeform" />
