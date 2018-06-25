@@ -110,7 +110,7 @@
                                         <h:panelGroup>
                                             <hr class="margin-top-regular margin-bottom-regular" />
                                         </h:panelGroup>
-                                        <intranda:formMetseditorMetadata id="grpMetadata" metadata="#{metadata}" fieldStyle="form-control" renderDelete="false" renderDuplicate="false" />
+                                        <intranda:formMetseditorMetadata id="grpMetadata" metadata="#{metadata}" fieldStyle="form-control" renderDelete="false" renderDuplicate="false" datatype="group-metadata" groupindex="#{varIndex}" index="#{rowIndex}"/>
                                     </x:dataList>
 
 
@@ -118,7 +118,7 @@
                                         <h:panelGroup>
                                             <hr class="margin-top-regular margin-bottom-regular" />
                                         </h:panelGroup>
-                                        <intranda:formMetseditorPerson id="grpPerson" person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" />
+                                        <intranda:formMetseditorPerson id="grpPerson" person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" datatype="group-person" groupindex="#{varIndex}" index="#{rowIndex}" />
                                     </x:dataList>
 
                                 </div>

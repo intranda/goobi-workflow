@@ -8,6 +8,7 @@
         <composite:attribute name="renderDuplicate" default="true" />
         <composite:attribute name="renderDelete" default="true" />
         <composite:attribute name="index" />
+        <composite:attribute name="groupindex" />
         <composite:attribute name="datatype" default="metadata"/>
     </composite:interface>
 
@@ -106,7 +107,7 @@
                 
                 <h:panelGroup rendered="#{cc.attrs.metadata.outputType == 'process'}">
                     <a title="#{msgs.search}" href="#" data-toggle="modal" id="#processIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
-                    data-datatype="#{cc.attrs.datatype}"
+                    data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
                      data-target="#processesSearchBox">
                         <i class="fa fa-search" style="margin-left: 3px" />
                     </a>

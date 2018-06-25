@@ -92,6 +92,8 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageExcepti
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -257,6 +259,9 @@ public class Metadaten {
 
     private List<String> normdataList = new ArrayList<>();
     private String rowIndex;
+    @Getter
+    @Setter
+    private String groupIndex;
     private String rowType;
     private String gndSearchValue;
     private String geonamesSearchValue;
@@ -4579,7 +4584,7 @@ public class Metadaten {
         }
     }
 
-    private void loadCurrentPlugin() {
+    public void loadCurrentPlugin() {
         logger.debug(rowIndex);
         logger.debug(rowType);
         if (rowIndex != null) {
@@ -4591,6 +4596,10 @@ public class Metadaten {
                 currentPlugin = addablePersondata.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("addableMetadata")) {
                 currentPlugin = addableMetadata.get(Integer.parseInt(rowIndex)).getPlugin();
+            } else if (rowType.equals("group-metadata")) {
+                currentPlugin = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex)).getPlugin();
+            } else if (rowType.equals("group-person")) {
+                currentPlugin = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex)).getPlugin();
             }
 
         }

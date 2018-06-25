@@ -317,8 +317,9 @@
          <h:form id="normdataForm" prependId="false">
             <h:inputHidden id="rowType" value="#{Metadaten.rowType}" />
             <h:inputHidden id="rowIndex" value="#{Metadaten.rowIndex}" />
-            <h:commandLink id="updatePluginButton" style="display:none;">
-            	<f:ajax execute=":rowType :rowIndex" render=":processModalContent"/>
+            <h:inputHidden id="groupIndex" value="#{Metadaten.groupIndex}" />
+            <h:commandLink id="updatePluginButton" style="display:none;" action="#{Metadaten.loadCurrentPlugin}">
+            	<f:ajax execute=":rowType :rowIndex :groupIndex" render=":processModalContent"/>
             </h:commandLink>
                      <!-- Modal -->
             <div class="modal fade" id="gndSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -891,8 +892,10 @@
                                                     $( 'a[id*="processIndexTrigger-"]' ).on( 'click', function() {
                                                         var currIndex = $( this ).attr( 'data-row' );
                                                         var currType = $( this ).attr( 'data-datatype' );
-                                                        console.log(currIndex, currType);
+                                                        var currGroup = $( this ).attr( 'data-groupindex')
+                                                        console.log(currIndex, currType, currGroup);
                                                         $( '#rowIndex' ).val( currIndex );
+                                                        $( '#groupIndex' ).val( currGroup );
                                                         $( '#rowType' ).val( currType );
                                                         $('#updatePluginButton').click();
                                                     } );
