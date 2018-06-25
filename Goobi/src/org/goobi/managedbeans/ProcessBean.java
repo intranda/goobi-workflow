@@ -65,7 +65,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.beans.Docket;
-import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -2736,68 +2735,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public void changeTemplate() {
-        // copy old tasks
-        List<Step> oldTaskList = new ArrayList<>(processToChange.getSchritte());
-
-        // remove tasks from process
-        processToChange.setSchritte(new ArrayList<Step>());
-        // copy tasks from template to process
-        BeanHelper bhelp = new BeanHelper();
-        bhelp.SchritteKopieren(template, processToChange);
-
-        // set task progress
-        for (Step newTask : processToChange.getSchritte()) {
-            for (Step oldTask : oldTaskList) {
-                if (oldTask.getTitel().equals(newTask.getTitel()) && oldTask.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
-                    // if oldTask is finished, keep status, date, user in new task
-                    newTask.setBearbeitungsbeginn(oldTask.getBearbeitungsbeginn());
-                    newTask.setBearbeitungsende(oldTask.getBearbeitungsende());
-                    newTask.setBearbeitungsstatusEnum(oldTask.getBearbeitungsstatusEnum());
-                    newTask.setBearbeitungsbenutzer(oldTask.getBearbeitungsbenutzer());
-                    break;
-                }
-            }
-        }
-
-        // remove old tasks from database
-        for (Step oldTask : oldTaskList) {
-            StepManager.deleteStep(oldTask);
-        }
-        // update properties for template name + id
-        for (Processproperty property : processToChange.getEigenschaften()) {
-            if (property.getTitel().equals("Template")) {
-                property.setWert(template.getTitel());
-            } else if (property.getTitel().equals("TemplateID")) {
-                property.setWert(String.valueOf(template.getId()));
-            }
-        }
-
-        // add text to process log
-
-        LogEntry logEntry = new LogEntry();
-        logEntry.setContent("Changed process template to " + template.getTitel());
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processToChange.getId());
-        logEntry.setType(LogType.DEBUG);
-        logEntry.setUserName(Helper.getCurrentUser().getNachVorname());
-        processToChange.getProcessLog().add(logEntry);
-
-        try {
-            // if no open task was found, open first locked  task
-            for (Step newTask : processToChange.getSchritte()) {
-                if (newTask.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
-                    break;
-                } else if (newTask.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
-                    newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                    break;
-                }
-            }
-            // TODO what happens if task is automatic?
-
-            // save new tasks
-            ProcessManager.saveProcess(processToChange);
-        } catch (DAOException e) {
-            logger.error(e);
-        }
+        BeanHelper helper = new BeanHelper();
+        helper.changeProcessTemplate(processToChange, template);
     }
 }
