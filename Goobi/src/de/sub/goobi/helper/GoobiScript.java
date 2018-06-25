@@ -16,6 +16,7 @@ import org.goobi.goobiScript.GoobiScriptAddStep;
 import org.goobi.goobiScript.GoobiScriptAddToProcessLog;
 import org.goobi.goobiScript.GoobiScriptAddUser;
 import org.goobi.goobiScript.GoobiScriptAddUserGroup;
+import org.goobi.goobiScript.GoobiScriptChangeProcessTemplate;
 import org.goobi.goobiScript.GoobiScriptCountImages;
 import org.goobi.goobiScript.GoobiScriptCountMetadata;
 import org.goobi.goobiScript.GoobiScriptDeleteProcess;
@@ -65,7 +66,7 @@ public class GoobiScript {
         while (scriptTokenizer.hasNext()) {
             String currentScript = scriptTokenizer.nextToken();
 
-            this.myParameters = new HashMap<String, String>();
+            this.myParameters = new HashMap<>();
             /*
              * -------------------------------- alle Suchparameter zerlegen und erfassen --------------------------------
              */
@@ -159,6 +160,8 @@ public class GoobiScript {
                 igs = new GoobiScriptMetadataReplace();
             } else if (myParameters.get("action").equalsIgnoreCase("metadataChange")) {
                 igs = new GoobiScriptMetadataChange();
+            } else if (myParameters.get("action").equalsIgnoreCase("changeProcessTemplate")) {
+                igs = new GoobiScriptChangeProcessTemplate();
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
