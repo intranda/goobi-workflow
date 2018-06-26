@@ -1136,6 +1136,9 @@ public class Metadaten {
                     if (NIOFileUtils.checkImageType(imagename)) {
                         Image currentImage = new Image(imagename, order++, "", "", imagename);
                         allImages.add(currentImage);
+                    } else if (NIOFileUtils.check3DType(imagename)) {
+                        Image currentImage = new Image(imagename, order++, "", "", imagename);
+                        allImages.add(currentImage);
                     } else {
                         Image currentImage = new Image("", order++, "", "", imagename);
                         allImages.add(currentImage);

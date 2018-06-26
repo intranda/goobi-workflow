@@ -222,6 +222,25 @@ public class NIOFileUtils {
         }
         return fileOk;
     }
+    
+    public static boolean check3DType(String name) {
+        boolean fileOk = false;
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+        if (name.matches(prefix + "\\.[Oo][bB][jJ]?")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.3[dD][sS]")) {
+            fileOk = true;
+        } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+            fileOk = true;
+        }
+        return fileOk;
+    }
 
     public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
         @Override

@@ -99,6 +99,15 @@ var WorldGenerator = (function() {
 				console.log(item, loaded, total);
 			};
 			
+			//center sphere
+//			this.addSphere({
+//			    size:10,
+//			    material: {
+//			        color: "#0000ff"
+//			    },
+//			    position: {x:0,y:0,z:0}
+//			});
+			
 			// LIGHTS
 			if(config.light.ambient) {
 				var light = new THREE.AmbientLight( config.light.ambient.color, config.light.ambient.intensity );
@@ -208,8 +217,8 @@ var WorldGenerator = (function() {
 		addObject(object, config) {
 			
 			this.setSize(object, config.size);
-			this.center(object, config.position);
 			this.rotate(object, config.rotation);
+			this.center(object, config.position);
 			if(config.focus) {				
 				this.zoomToObject(object, this.config.camera.viewPadding, this.config.camera.fieldOfView);
 			}
