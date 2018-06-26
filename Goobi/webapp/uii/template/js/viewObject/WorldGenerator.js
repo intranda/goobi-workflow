@@ -47,6 +47,8 @@ var WorldGenerator = (function() {
 			return new THREE.FBXMeshLoader(manager, config.material.color);
 		case "3ds":
 			return new THREE.TDSMeshLoader(manager);
+		case "gltf":
+            return new THREE.GLTFDRACOLoader(manager);
 		default:
 			console.log("not loader defined for " + suffix);
 		}

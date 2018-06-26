@@ -30,6 +30,7 @@ THREE.FBXMeshLoader.prototype = {
 
 			loader.load(objUrl, function(geometry) {
 				console.log("loaded mesh ", geometry);
+//				geometry.computeVertexNormals();
 //				var material = new THREE.MeshStandardMaterial({
 //					color : color,
 //					shading : THREE.FlatShading

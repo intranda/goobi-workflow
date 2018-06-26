@@ -123,7 +123,7 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") String filename)
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filename)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
@@ -131,6 +131,25 @@ public class ObjectResource {
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
         if (!objectPath.toFile().isFile()) {
+            //try subfolders
+            DirectoryStream.Filter<? super java.nio.file.Path> filter = new DirectoryStream.Filter<java.nio.file.Path>() {
+
+                @Override
+                public boolean accept(java.nio.file.Path entry) throws IOException {
+                    return entry.endsWith(FilenameUtils.getBaseName(filename));
+                }
+                
+            };
+            
+            try (DirectoryStream<java.nio.file.Path> folders = Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername), filter)) {
+                for (java.nio.file.Path folder : folders) {
+                    java.nio.file.Path filePath = folder.resolve(filename);
+                    if(Files.isRegularFile(filePath)) {
+                        return new ObjectStreamingOutput(filePath);
+                    }
+                }
+            }
+            
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
             return new ObjectStreamingOutput(objectPath);
@@ -142,7 +161,7 @@ public class ObjectResource {
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder") String subfolder,
-            @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+            @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
 

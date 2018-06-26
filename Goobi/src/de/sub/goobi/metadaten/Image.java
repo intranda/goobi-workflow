@@ -88,7 +88,7 @@ public @Data class Image {
 
     public enum Type {
         image("jpg", "tif", "png", "jp2"),
-        object("obj", "stl", "ply", "fbx", "3ds"),
+        object("obj", "stl", "ply", "fbx", "3ds", "gltf"),
         x3dom("x3d"),
         unknown("");
 

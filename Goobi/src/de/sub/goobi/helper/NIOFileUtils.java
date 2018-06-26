@@ -238,6 +238,8 @@ public class NIOFileUtils {
             fileOk = true;
         } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
             fileOk = true;
+        } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
+            fileOk = true;
         }
         return fileOk;
     }
@@ -268,6 +270,8 @@ public class NIOFileUtils {
             } else if (name.matches(prefix + "\\.3[dD][sS]")) {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
                 fileOk = true;
             }
             return fileOk;
@@ -300,6 +304,8 @@ public class NIOFileUtils {
                 } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
                     fileOk = true;
                 } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+                    fileOk = true;
+                } else if (name.matches(prefix + "\\.[Bb][Ii][Nn]")) {
                     fileOk = true;
                 }
             }
@@ -386,6 +392,8 @@ public class NIOFileUtils {
             } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
+                fileOk = true;
+            } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
                 fileOk = true;
             }
 
