@@ -26,8 +26,9 @@ THREE.STLMeshLoader.prototype = {
 			console.log("loading object info = ", info);
 			var baseResourceUrl = info.uri.substring(0, info.uri.lastIndexOf("/"));
 			var objUrl = info.uri;
+            console.log("loader ", loader);
 		
-    			loader.load(url, function(geometry) {
+    			loader.load(objUrl, function(geometry) {
     				geometry.computeVertexNormals();
     				var material = new THREE.MeshStandardMaterial({
     					color : color,

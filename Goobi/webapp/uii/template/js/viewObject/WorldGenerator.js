@@ -96,17 +96,8 @@ var WorldGenerator = (function() {
 			// LOADING MANAGER//
 			this.loadingManager = new THREE.LoadingManager();
 			this.loadingManager.onProgress = function(item, loaded, total) {
-				console.log(item, loaded, total);
+				console.log("Progress on load ", item, loaded, total);
 			};
-			
-			//center sphere
-//			this.addSphere({
-//			    size:10,
-//			    material: {
-//			        color: "#0000ff"
-//			    },
-//			    position: {x:0,y:0,z:0}
-//			});
 			
 			// LIGHTS
 			if(config.light.ambient) {
