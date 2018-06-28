@@ -103,6 +103,10 @@
 	                                    <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}" rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
 <!-- 	                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
 	                                    </h:outputText>
+                                        
+                                        <h:outputText value="#{msgs.projekt}:" />
+                                       <h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.projekt.titel}" />
+                                        
 	                                </h:panelGrid>
 	                            </h:panelGroup>
 	                            <!-- / do not show the whole workflow -->
