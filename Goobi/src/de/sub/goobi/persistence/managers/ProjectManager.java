@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -32,6 +32,7 @@ import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
+import org.jfree.util.Log;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -76,7 +77,7 @@ public class ProjectManager implements IManager, Serializable {
     }
 
     public static List<Project> getProjects(String order, String filter, Integer start, Integer count) throws DAOException {
-        List<Project> answer = new ArrayList<Project>();
+        List<Project> answer = new ArrayList<>();
         try {
             answer = ProjectMysqlHelper.getProjects(order, filter, start, count);
         } catch (SQLException e) {
@@ -104,7 +105,7 @@ public class ProjectManager implements IManager, Serializable {
     }
 
     public static List<Project> getAllProjects() {
-        List<Project> projectList = new ArrayList<Project>();
+        List<Project> projectList = new ArrayList<>();
         try {
             projectList = ProjectMysqlHelper.getAllProjects();
         } catch (SQLException e) {
@@ -114,7 +115,7 @@ public class ProjectManager implements IManager, Serializable {
     }
 
     public static List<Project> getProjectsForUser(User user, boolean activeProjectsOnly) throws DAOException {
-        List<Project> answer = new ArrayList<Project>();
+        List<Project> answer = new ArrayList<>();
         try {
             answer = ProjectMysqlHelper.getProjectsForUser(user, activeProjectsOnly);
         } catch (SQLException e) {
@@ -128,7 +129,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             List<ProjectFileGroup> filegroups = ProjectMysqlHelper.getFilegroupsForProjectId(projectId);
             if (filegroups == null) {
-                filegroups = new ArrayList<ProjectFileGroup>();
+                filegroups = new ArrayList<>();
             }
             return filegroups;
         } catch (SQLException e) {
@@ -240,7 +241,7 @@ public class ProjectManager implements IManager, Serializable {
     public static ResultSetHandler<List<Project>> resultSetToProjectListHandler = new ResultSetHandler<List<Project>>() {
         @Override
         public List<Project> handle(ResultSet rs) throws SQLException {
-            List<Project> answer = new ArrayList<Project>();
+            List<Project> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     Project o = convert(rs);
@@ -260,5 +261,14 @@ public class ProjectManager implements IManager, Serializable {
     @Override
     public List<Integer> getIdList(String filter) {
         return null;
+    }
+
+    public static int countProjectTitle(String title) {
+        try {
+            return ProjectMysqlHelper.countProjectTitle(title);
+        } catch (SQLException e) {
+            Log.error(e);
+        }
+        return 0;
     }
 }

@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -75,7 +75,8 @@ class ProjectMysqlHelper implements Serializable {
         if (activeProjectsOnly) {
             activeOnly = "projectisarchived = false AND ";
         }
-        return getProjects("titel", activeOnly + "ProjekteID IN (SELECT ProjekteID FROM projektbenutzer WHERE BenutzerID=" + user.getId() + ")", null, null);
+        return getProjects("titel", activeOnly + "ProjekteID IN (SELECT ProjekteID FROM projektbenutzer WHERE BenutzerID=" + user.getId() + ")", null,
+                null);
     }
 
     public static int getProjectCount(String order, String filter) throws SQLException {
@@ -156,35 +157,35 @@ class ProjectMysqlHelper implements Serializable {
                                 .getDmsImportSuccessPath()) ? null : ro.getDmsImportSuccessPath(), StringUtils.isBlank(ro.getDmsImportErrorPath())
                                         ? null : ro.getDmsImportErrorPath(), ro.isDmsImportCreateProcessFolder(),
 
-                        StringUtils.isBlank(ro.getFileFormatInternal()) ? null : ro.getFileFormatInternal(), StringUtils.isBlank(ro
-                                .getFileFormatDmsExport()) ? null : ro.getFileFormatDmsExport(), StringUtils.isBlank(ro.getMetsRightsOwner()) ? null
-                                        : ro.getMetsRightsOwner(), StringUtils.isBlank(ro.getMetsRightsOwnerLogo()) ? null : ro
-                                                .getMetsRightsOwnerLogo(), StringUtils.isBlank(ro.getMetsRightsOwnerSite()) ? null : ro
-                                                        .getMetsRightsOwnerSite(), StringUtils.isBlank(ro.getMetsRightsOwnerMail()) ? null : ro
-                                                                .getMetsRightsOwnerMail(), StringUtils.isBlank(ro.getMetsDigiprovReference()) ? null
-                                                                        : ro.getMetsDigiprovReference(), StringUtils.isBlank(ro
-                                                                                .getMetsDigiprovPresentation()) ? null : ro
-                                                                                        .getMetsDigiprovPresentation(), StringUtils.isBlank(ro
-                                                                                                .getMetsDigiprovReferenceAnchor()) ? null : ro
-                                                                                                        .getMetsDigiprovReferenceAnchor(), StringUtils
-                                                                                                                .isBlank(ro
-                                                                                                                        .getMetsDigiprovPresentationAnchor())
+                                                StringUtils.isBlank(ro.getFileFormatInternal()) ? null : ro.getFileFormatInternal(), StringUtils.isBlank(ro
+                                                        .getFileFormatDmsExport()) ? null : ro.getFileFormatDmsExport(), StringUtils.isBlank(ro.getMetsRightsOwner()) ? null
+                                                                : ro.getMetsRightsOwner(), StringUtils.isBlank(ro.getMetsRightsOwnerLogo()) ? null : ro
+                                                                        .getMetsRightsOwnerLogo(), StringUtils.isBlank(ro.getMetsRightsOwnerSite()) ? null : ro
+                                                                                .getMetsRightsOwnerSite(), StringUtils.isBlank(ro.getMetsRightsOwnerMail()) ? null : ro
+                                                                                        .getMetsRightsOwnerMail(), StringUtils.isBlank(ro.getMetsDigiprovReference()) ? null
+                                                                                                : ro.getMetsDigiprovReference(), StringUtils.isBlank(ro
+                                                                                                        .getMetsDigiprovPresentation()) ? null : ro
+                                                                                                                .getMetsDigiprovPresentation(), StringUtils.isBlank(ro
+                                                                                                                        .getMetsDigiprovReferenceAnchor()) ? null : ro
+                                                                                                                                .getMetsDigiprovReferenceAnchor(), StringUtils
+                                                                                                                                .isBlank(ro
+                                                                                                                                        .getMetsDigiprovPresentationAnchor())
                                                                                                                                 ? null : ro
                                                                                                                                         .getMetsDigiprovPresentationAnchor(),
-                        StringUtils.isBlank(ro.getMetsPointerPath()) ? null : ro.getMetsPointerPath(), StringUtils.isBlank(ro
-                                .getMetsPointerPathAnchor()) ? null : ro.getMetsPointerPathAnchor(), StringUtils.isBlank(ro.getMetsPurl()) ? null : ro
-                                        .getMetsPurl(), StringUtils.isBlank(ro.getMetsContentIDs()) ? null : ro.getMetsContentIDs(), ro
-                                                .getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()), ro.getEndDate() == null
-                                                        ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro
-                                                                .getNumberOfVolumes(), ro.getProjectIsArchived(), StringUtils.isBlank(ro
-                                                                        .getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(), StringUtils
-                                                                                .isBlank(ro.getMetsRightsSponsorLogo()) ? null : ro
-                                                                                        .getMetsRightsSponsorLogo(), StringUtils.isBlank(ro
-                                                                                                .getMetsRightsSponsorSiteURL()) ? null : ro
-                                                                                                        .getMetsRightsSponsorSiteURL(), StringUtils
-                                                                                                                .isBlank(ro.getMetsRightsLicense())
-                                                                                                                        ? null : ro
-                                                                                                                                .getMetsRightsLicense() };
+                                                                                                                                        StringUtils.isBlank(ro.getMetsPointerPath()) ? null : ro.getMetsPointerPath(), StringUtils.isBlank(ro
+                                                                                                                                                .getMetsPointerPathAnchor()) ? null : ro.getMetsPointerPathAnchor(), StringUtils.isBlank(ro.getMetsPurl()) ? null : ro
+                                                                                                                                                        .getMetsPurl(), StringUtils.isBlank(ro.getMetsContentIDs()) ? null : ro.getMetsContentIDs(), ro
+                                                                                                                                                                .getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()), ro.getEndDate() == null
+                                                                                                                                                                ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro
+                                                                                                                                                                        .getNumberOfVolumes(), ro.getProjectIsArchived(), StringUtils.isBlank(ro
+                                                                                                                                                                                .getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(), StringUtils
+                                                                                                                                                                                        .isBlank(ro.getMetsRightsSponsorLogo()) ? null : ro
+                                                                                                                                                                                                .getMetsRightsSponsorLogo(), StringUtils.isBlank(ro
+                                                                                                                                                                                                        .getMetsRightsSponsorSiteURL()) ? null : ro
+                                                                                                                                                                                                                .getMetsRightsSponsorSiteURL(), StringUtils
+                                                                                                                                                                                                                .isBlank(ro.getMetsRightsLicense())
+                                                                                                                                                                                                                ? null : ro
+                                                                                                                                                                                                                        .getMetsRightsLicense() };
 
                 sql.append("INSERT INTO projekte (");
                 sql.append(propNames);
@@ -234,32 +235,32 @@ class ProjectMysqlHelper implements Serializable {
 
                 Object[] param = { ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(), StringUtils.isBlank(ro.getDmsImportRootPath()) ? null
                         : ro.getDmsImportRootPath(), StringUtils.isBlank(ro.getDmsImportImagesPath()) ? null : ro.getDmsImportImagesPath(),
-                        StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : ro.getDmsImportSuccessPath(), StringUtils.isBlank(ro
-                                .getDmsImportErrorPath()) ? null : ro.getDmsImportErrorPath(), ro.isDmsImportCreateProcessFolder(), StringUtils
-                                        .isBlank(ro.getFileFormatInternal()) ? null : ro.getFileFormatInternal(), StringUtils.isBlank(ro
-                                                .getFileFormatDmsExport()) ? null : ro.getFileFormatDmsExport(), StringUtils.isBlank(ro
-                                                        .getMetsRightsOwner()) ? null : ro.getMetsRightsOwner(), StringUtils.isBlank(ro
-                                                                .getMetsRightsOwnerLogo()) ? null : ro.getMetsRightsOwnerLogo(), StringUtils.isBlank(
-                                                                        ro.getMetsRightsOwnerSite()) ? null : ro.getMetsRightsOwnerSite(), StringUtils
-                                                                                .isBlank(ro.getMetsRightsOwnerMail()) ? null : ro
-                                                                                        .getMetsRightsOwnerMail(), StringUtils.isBlank(ro
-                                                                                                .getMetsDigiprovReference()) ? null : ro
-                                                                                                        .getMetsDigiprovReference(), StringUtils
+                                StringUtils.isBlank(ro.getDmsImportSuccessPath()) ? null : ro.getDmsImportSuccessPath(), StringUtils.isBlank(ro
+                                        .getDmsImportErrorPath()) ? null : ro.getDmsImportErrorPath(), ro.isDmsImportCreateProcessFolder(), StringUtils
+                                                .isBlank(ro.getFileFormatInternal()) ? null : ro.getFileFormatInternal(), StringUtils.isBlank(ro
+                                                        .getFileFormatDmsExport()) ? null : ro.getFileFormatDmsExport(), StringUtils.isBlank(ro
+                                                                .getMetsRightsOwner()) ? null : ro.getMetsRightsOwner(), StringUtils.isBlank(ro
+                                                                        .getMetsRightsOwnerLogo()) ? null : ro.getMetsRightsOwnerLogo(), StringUtils.isBlank(
+                                                                                ro.getMetsRightsOwnerSite()) ? null : ro.getMetsRightsOwnerSite(), StringUtils
+                                                                                        .isBlank(ro.getMetsRightsOwnerMail()) ? null : ro
+                                                                                                .getMetsRightsOwnerMail(), StringUtils.isBlank(ro
+                                                                                                        .getMetsDigiprovReference()) ? null : ro
+                                                                                                                .getMetsDigiprovReference(), StringUtils
                                                                                                                 .isBlank(ro
                                                                                                                         .getMetsDigiprovPresentation())
-                                                                                                                                ? null : ro
-                                                                                                                                        .getMetsDigiprovPresentation(),
-                        StringUtils.isBlank(ro.getMetsDigiprovReferenceAnchor()) ? null : ro.getMetsDigiprovReferenceAnchor(), StringUtils.isBlank(ro
-                                .getMetsDigiprovPresentationAnchor()) ? null : ro.getMetsDigiprovPresentationAnchor(), StringUtils.isBlank(ro
-                                        .getMetsPointerPath()) ? null : ro.getMetsPointerPath(), StringUtils.isBlank(ro.getMetsPointerPathAnchor())
-                                                ? null : ro.getMetsPointerPathAnchor(), StringUtils.isBlank(ro.getMetsPurl()) ? null : ro
-                                                        .getMetsPurl(), StringUtils.isBlank(ro.getMetsContentIDs()) ? null : ro.getMetsContentIDs(),
-                        ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()), ro.getEndDate() == null ? null : new Timestamp(
-                                ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(), ro.getProjectIsArchived(), StringUtils
-                                        .isBlank(ro.getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(), StringUtils.isBlank(ro
-                                                .getMetsRightsSponsorLogo()) ? null : ro.getMetsRightsSponsorLogo(), StringUtils.isBlank(ro
-                                                        .getMetsRightsSponsorSiteURL()) ? null : ro.getMetsRightsSponsorSiteURL(), StringUtils
-                                                                .isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense() };
+                                                                                                                ? null : ro
+                                                                                                                        .getMetsDigiprovPresentation(),
+                                                                                                                        StringUtils.isBlank(ro.getMetsDigiprovReferenceAnchor()) ? null : ro.getMetsDigiprovReferenceAnchor(), StringUtils.isBlank(ro
+                                                                                                                                .getMetsDigiprovPresentationAnchor()) ? null : ro.getMetsDigiprovPresentationAnchor(), StringUtils.isBlank(ro
+                                                                                                                                        .getMetsPointerPath()) ? null : ro.getMetsPointerPath(), StringUtils.isBlank(ro.getMetsPointerPathAnchor())
+                                                                                                                                                ? null : ro.getMetsPointerPathAnchor(), StringUtils.isBlank(ro.getMetsPurl()) ? null : ro
+                                                                                                                                                        .getMetsPurl(), StringUtils.isBlank(ro.getMetsContentIDs()) ? null : ro.getMetsContentIDs(),
+                                                                                                                                                                ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()), ro.getEndDate() == null ? null : new Timestamp(
+                                                                                                                                                                        ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(), ro.getProjectIsArchived(), StringUtils
+                                                                                                                                                                        .isBlank(ro.getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(), StringUtils.isBlank(ro
+                                                                                                                                                                                .getMetsRightsSponsorLogo()) ? null : ro.getMetsRightsSponsorLogo(), StringUtils.isBlank(ro
+                                                                                                                                                                                        .getMetsRightsSponsorSiteURL()) ? null : ro.getMetsRightsSponsorSiteURL(), StringUtils
+                                                                                                                                                                                                .isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense() };
 
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
                 if (logger.isTraceEnabled()) {
@@ -352,7 +353,7 @@ class ProjectMysqlHelper implements Serializable {
 
             Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(), StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(),
                     StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(), StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(),
-                    pfg.getProject().getId(), StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+                            pfg.getProject().getId(), StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
             if (pfg.getId() == null) {
                 String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
 
@@ -412,7 +413,7 @@ class ProjectMysqlHelper implements Serializable {
     public static ResultSetHandler<List<ProjectFileGroup>> resultSetToProjectFilegroupListHandler = new ResultSetHandler<List<ProjectFileGroup>>() {
         @Override
         public List<ProjectFileGroup> handle(ResultSet rs) throws SQLException {
-            List<ProjectFileGroup> answer = new ArrayList<ProjectFileGroup>();
+            List<ProjectFileGroup> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     int ProjectFileGroupID = rs.getInt("ProjectFileGroupID");
@@ -441,4 +442,17 @@ class ProjectMysqlHelper implements Serializable {
         }
     };
 
+
+    public static int countProjectTitle(String title) throws SQLException {
+        String sql = "SELECT count(titel) from projekte WHERE titel = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, title);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }
