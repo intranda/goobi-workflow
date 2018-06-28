@@ -1,0 +1,215 @@
+.viewer-control {
+    display: inline-block;
+    width: 2.8rem;
+    min-height: 2.8rem;
+    background-image: url(icons/viewer-controls-sprite.png);
+    background-repeat: no-repeat;
+    margin: 0 .4rem;
+}
+
+.viewer-control.viewer-control-start {
+    background-position: 0px 0px;
+}
+
+.viewer-control.viewer-control-back {
+    background-position: -28px 0px;
+}
+
+.viewer-control.viewer-control-back5 {
+    background-position: -56px 0px;
+}
+
+.viewer-control.viewer-control-back20 {
+    background-position: -84px 0px;
+}
+
+.viewer-control.viewer-control-back50 {
+    background-position: -112px 0px;
+}
+
+.viewer-control.viewer-control-reset {
+    background-position: -140px 0px;
+}
+
+.viewer-control.viewer-control-rotate-left {
+    background-position: -168px 0px;
+}
+
+.viewer-control.viewer-control-rotate-right {
+    background-position: -196px 0px;
+}
+
+.viewer-control.viewer-control-end {
+    background-position: 0px -28px;
+}
+
+.viewer-control.viewer-control-forward {
+    background-position: -28px -28px;
+}
+
+.viewer-control.viewer-control-forward5 {
+    background-position: -56px -28px;
+}
+
+.viewer-control.viewer-control-forward20 {
+    background-position: -84px -28px;
+}
+
+.viewer-control.viewer-control-forward50 {
+    background-position: -112px -28px;
+}
+
+.viewer-control.viewer-control-fullscreen {
+    background-position: -140px -28px;
+}
+
+.viewer-control.viewer-control-toc {
+    background-position: -168px -28px;
+}
+
+.viewer-control.viewer-control-pdf {
+    background-position: -196px -28px;
+}
+
+#viewer_controls_nav {
+    float: left;
+    width: 100%;
+    min-height: 2.8rem;
+    overflow: hidden;
+}
+
+#viewer_controls_nav ul {
+    position: relative;
+    padding-left: 0;
+}
+
+#viewer_controls_nav ul li {
+    display: inline-block;
+    position: relative;
+    float: left;
+    min-height: 40px;
+    margin: 0 0 5px;
+}
+
+#viewer_controls_nav ul li .btn2 {
+    display: inline;
+}
+
+#viewer_controls_nav ul li .control-select-box {
+    height: 28px;
+    line-height: 1.3125rem;
+    border: 0.0625rem solid #6f6f6f;
+}
+
+#viewer_controls_nav ul li .control-select-box select {
+    height: 1.625rem;
+    border: none;
+}
+
+#viewer_controls_nav ul li #zoomSliderLabel {
+	float:left;
+	width:55px;
+	padding: 0;
+	padding-top: 2px;
+	margin-top:0.1rem;
+}
+
+#viewer_controls_nav ul li #zoomSliderLabel input {
+	border: none;
+	background-color: transparent;
+	width:40px;
+	text-align: right
+}
+
+
+#viewer_controls_nav ul li #zoomSlider {
+    width: 12rem;
+    height: 1.5rem;
+    margin-top: 0.6rem;
+    margin-right: 0;
+    margin-left: 60px;
+    border: 1px solid #6f6f6f;
+    position: relative;
+}
+
+#viewer_controls_nav ul li #zoomSlider .zoomslider-handle {
+    top: -0.4rem;
+    height: 2.2rem;
+    width: 1rem;
+    background-color: #6f6f6f;
+    position: absolute;
+}
+
+#viewer_controls_nav ul li #zoomSlider a {
+    width: 1.45rem;
+    height: 1.45rem;
+    margin: 0;
+    background: #6f6f6f;
+}
+
+#image-control-wrapper {}
+
+#mainImage {
+	display: inline-block;
+	position: relative;
+    border: 1px solid #ccc;
+    padding: 0;
+    width: 75%;
+}
+
+#ajaxloader_image {
+	display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 999;
+}
+
+#ajaxloader_image img {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+/*     width: 140px; */
+/*     height: 84px; */
+/*     margin-left: -70px; */
+/*     margin-top: -42px; */
+    width: 70px;
+    height: 42px;
+    margin-left: -35px;
+    margin-top: -21px;
+    border: none;
+}
+
+
+#object_controls {
+	margin-top: 12px;
+	width: 23%;
+	float: right;
+	border: 1px solid #ccc;
+	padding: 4px;
+	text-align: left;
+	padding-bottom: 12px;
+	padding-top: 0px;
+}
+
+#object_controls .viewer-control {
+	margin-bottom: -8px;
+	margin-top: 8px;
+}
+
+
+#object_controls .controls_box {
+	width: 50%;
+}
+
+#object_controls label {
+	width: 50%;
+	margin-bottom: 0;
+	text-align: center;
+}
+

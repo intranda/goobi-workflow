@@ -102,6 +102,7 @@
 									        adaptContainerHeight: true,
 									        zoomSlider: "#zoomSlider",
 								            zoomSliderHandle: '.zoomslider-handle',
+								            zoomSliderLabel: '#zoomSliderLabel input',
 									        persistZoom: false,
 								            persistRotation: false,
 								            persistenceId: "#{Metadaten.myProzess.id}",
@@ -204,12 +205,13 @@
 									 	console.log("Media type = ", mediaType);
 									 	if(mediaType == "image") {
 									 		
-										    viewImage.init( configViewer )
-										    .then(function(osViewer) {
+										    var viewImage = new ImageView.Image( configViewer );
+										    viewImage.load()
+										    .then(function(image) {
 										    	//TODO: Hide loader?
 										       	if(configViewer.global.persistZoom || configViewer.global.persistRotation) {									       		
-												    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", viewImage.controls.persistence.storeLocation);
-												    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", viewImage.controls.persistence.storeLocation);
+												    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", image.controls.persistence.storeLocation);
+												    $( "#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", image.controls.persistence.storeLocation);
 										       	}
 										    })
 										    .catch(function(error){
