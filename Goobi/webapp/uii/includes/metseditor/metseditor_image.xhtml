@@ -27,10 +27,11 @@
                         </div>
                         <div class="box-content" style="padding-top: 0px;">
                             <!-- big image -->
-                            <h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}" >
+                            <h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}" >
                                 <ui:include src="imageControls.xhtml" />
                             </h:panelGroup>
-                            <div class="row margin-top-most margin-bottom-most" style="width: #{Metadaten.containerWidth}px;">
+      
+                            <div class="row margin-top-most margin-bottom-most" style="width: #{Metadaten.containerWidth*4/3}px;">
                             
                             
                             <div class="clearfix"></div>
@@ -40,12 +41,57 @@
                                        <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
                                 	</h:panelGroup>
 
+
                                 <h:panelGroup styleClass="div-image" layout="block">
                                     <h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}" layout="block" style="text-align: center;">
                                         <i class="fa fa-ban fa-5x"/>
                                     </h:panelGroup>
                                 
-                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}" />
+                                    <h:panelGroup layout="block" id="mainImage" class="margin-bottom-regular box box-bordered thin-margin box-title " rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
+                                    <div id="ajaxloader_image">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </div>
+                                    </h:panelGroup>
+
+                                    <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
+                                    <div id="object_controls">
+                                        <div id="controls-x">
+                                            <span class="controls_box">
+                                                <label>#{msgs.rotation_x_axis}</label>
+                                            </span>
+                                            <span class="controls_box">
+                                                <span id="rotate-left-x" class="viewer-control viewer-control-rotate-left"></span>
+                                                <span id="rotate-right-x" class="viewer-control viewer-control-rotate-right"></span>
+                                            </span>
+                                        </div>
+                                        <div id="controls-y">
+                                            <span class="controls_box">
+                                                <label>#{msgs.rotation_y_axis}</label>
+                                            </span>
+                                            <span class="controls_box">
+                                                <span id="rotate-left-y" class="viewer-control viewer-control-rotate-left"></span>
+                                                <span id="rotate-right-y" class="viewer-control viewer-control-rotate-right"></span>
+                                            </span>
+                                        </div>
+                                        <div id="controls-z">
+                                            <span class="controls_box">
+                                                <label>#{msgs.rotation_z_axis}</label>
+                                            </span>
+                                            <span class="controls_box">
+                                                <span id="rotate-left-z" class="viewer-control viewer-control-rotate-left"></span>
+                                                <span id="rotate-right-z" class="viewer-control viewer-control-rotate-right"></span>
+                                            </span>
+                                        </div>
+                                        <div id="controls_position">
+                                            <span class="controls_box">
+                                                <label>#{msgs.resetPosition}</label>
+                                            </span>
+                                            <span class="controls_box">
+                                                <span id="reset-position" class="viewer-control viewer-control-reset"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </ui:fragment>
 
                                     <script type="text/javascript">
 									var configViewer = {
@@ -66,7 +112,28 @@
 									    }
 									};		
 									
+									 var lightIntensity = 0.7;
 									 var worldConfig = {
+									 			controls: {
+									 			    xAxis: {
+									 			        rotateLeft: '#rotate-left-x',
+									 			        rotateRight: '#rotate-right-x'
+									 			    },
+									 			   yAxis: {
+									 			        rotateLeft: '#rotate-left-y',
+									 			        rotateRight: '#rotate-right-y'
+									 			    },
+									 			   zAxis: {
+									 			        rotateLeft: '#rotate-left-z',
+									 			        rotateRight: '#rotate-right-z'
+									 			    },
+									 			    position: {
+									 			    	reset: '#reset-position'   
+									 			    },
+									 			    zoom: {
+									 			        resetZoom: '#reset#zoom'
+									 			    }
+									 			},    
 									    		camera: {
 									    			fieldOfView: 35,
 									    			viewPadding: 0,
@@ -84,39 +151,54 @@
 									    			},
 									    			ambient: {
 									    				color: 0x909090,
-									    				intensity: 0.8
+									    				intensity: lightIntensity
 									    			},
 									    			directional: [
-									    				{//front spot
-										    				color: 0xaaaaaa,
-										    				intensity: 1,
-										    				position: { x:0, y:0, z:10 },
-										    				castShadow: true,
-										    				showHelper: false
-										    			},
-										    			{//back spot
-										    				color: 0xaaaaaa,
-										    				intensity: 1,
-										    				position: { x:0, y:0, z:-10 },
-										    				castShadow: true,
-										    				showHelper: false
-										    			},
+// 									    				{//front spot
+// 										    				color: 0xaaaaaa,
+// 										    				intensity: lightIntensity,
+// 										    				position: { x:0, y:0, z:10 },
+// 										    				castShadow: true,
+// 										    				showHelper: false
+// 										    			},
+// 										    			{//back spot
+// 										    				color: 0xaaaaaa,
+// 										    				intensity: lightIntensity,
+// 										    				position: { x:0, y:0, z:-10 },
+// 										    				castShadow: true,
+// 										    				showHelper: false
+// 										    			},
 										    			{//top spot
 										    				color: 0xaaaaaa,
-										    				intensity: 1,
+										    				intensity: lightIntensity,
 										    				position: { x:0, y:10, z:0 },
 										    				castShadow: true,
 										    				showHelper: false
 										    			},
 										    			{//bottom spot
 										    				color: 0xaaaaaa,
-										    				intensity: 1,
+										    				intensity: lightIntensity,
 										    				position: { x:0, y:-10, z:0 },
+										    				castShadow: true,
+										    				showHelper: false
+										    			},
+										    			{//left spot
+										    				color: 0xaaaaaa,
+										    				intensity: lightIntensity,
+										    				position: { x:-10, y:0, z:0 },
+										    				castShadow: true,
+										    				showHelper: false
+										    			},
+										    			{//right spot
+										    				color: 0xaaaaaa,
+										    				intensity: lightIntensity,
+										    				position: { x:10, y:0, z:0 },
 										    				castShadow: true,
 										    				showHelper: false
 										    			}
 									    			]
-									    		}
+									    		},
+									    		
 										 };
 									 	var mediaType = "#{Metadaten.image.type}";
 									 	console.log("Media type = ", mediaType);
@@ -184,7 +266,7 @@
                             </div>
                             <!-- // big image -->
                         </div>
-                        <div id="object_controls"></div>
+
                     </h:form>
                 </h:panelGroup>
 

@@ -58,6 +58,51 @@ var WorldGenerator = (function() {
 		return Math.sqrt(vector.x*vector.x + vector.y*vector.y + vector.z*vector.z);
 	}
 	
+	var _getRotated = function(origRotation, rotateBy) {
+	    var rot = {
+	            x : rotateBy.x === undefined ? origRotation._x*180/Math.PI : origRotation._x*180/Math.PI+rotateBy.x,
+	            y : rotateBy.y === undefined ? origRotation._y*180/Math.PI : origRotation._y*180/Math.PI+rotateBy.y,
+	            z : rotateBy.z === undefined ? origRotation._z*180/Math.PI : origRotation._z*180/Math.PI+rotateBy.z,
+	    }
+	    return rot;
+	}
+	
+	var _rotate = function(point, degrees, axis, pivot) {
+	    if(!pivot) {
+	        pivot = {x:0, y:0, z:0};
+	    }
+	    var rad = degrees/180.0*Math.PI;
+	
+	    var p0 = {
+	            x: point.x-pivot.x,
+	            y: point.y-pivot.y,
+	            z: point.z-pivot.z
+	    }
+	    var p1 = {x:p0.x, y:p0.y, z:p0.z};
+	    switch(axis) {
+	        case 'x':
+	            p1.y = p0.y * Math.cos(rad) - p0.z * Math.sin(rad);
+	            p1.z = p0.y * Math.sin(rad) + p0.z * Math.cos(rad);
+	            break;
+	        case 'y':
+                p1.x = p0.x * Math.cos(rad) - p0.z * Math.sin(rad);
+                p1.z = p0.x * Math.sin(rad) + p0.z * Math.cos(rad);
+                break;
+	        case 'z':
+                p1.x = p0.x * Math.cos(rad) - p0.y * Math.sin(rad);
+                p1.y = p0.x * Math.sin(rad) + p0.y * Math.cos(rad);
+                break;
+            default:
+                throw "Third parameter 'axis' must be one of 'x', 'y' or 'z'";
+	    }
+	    var p2 = {
+                x: p1.x+pivot.x,
+                y: p1.y+pivot.y,
+                z: p1.z+pivot.z
+        }
+	    return p2;
+	}
+	
 	var Generator = {
 			
 			create: function(config) {
@@ -101,10 +146,22 @@ var WorldGenerator = (function() {
 				console.log("Progress on load ", item, loaded, total);
 			};
 			
+//			this.addSphere({
+//			    size: 3,
+//			    material: {
+//			        color: 'blue'
+//			    },
+//			    position: {
+//			        x:0,y:0,z:0
+//			    }
+//			})
+			
 			// LIGHTS
+			this.directionalLights = [];
 			if(config.light.ambient) {
 				var light = new THREE.AmbientLight( config.light.ambient.color, config.light.ambient.intensity );
 				this.scene.add(light);
+				this.ambientLight = light;
 			}
 			if(config.light.directional) {
 				var lights = config.light.directional
@@ -120,12 +177,95 @@ var WorldGenerator = (function() {
 							_getDistance(lightConfig.position),
 							lightConfig.castShadow,
 							lightConfig.showHelper);
+					this.directionalLights.push(light);
 					this.scene.add(light);
 				}			
 			}
+
 			
 			this.tick = new Rx.Subject();
 		}
+		
+		initControls(object, controlsConfig, objectConfig) {
+		    var world = this;
+		    if(controlsConfig.xAxis) {
+		        var $rotateLeftX = $(controlsConfig.xAxis.rotateLeft);
+		        if($rotateLeftX.length > 0) {
+		            $rotateLeftX.on("click", function(event) {
+		                world.rotate(object, _getRotated(object.rotation, {x:-90}));
+		                world.center(object, object.position);
+//		                world.rotateLights(-90, 'x');
+		            })
+		        }
+		        var $rotateRightX = $(controlsConfig.xAxis.rotateRight);
+                if($rotateRightX.length > 0) {
+                    $rotateRightX.on("click", function(event) {
+                        world.rotate(object, _getRotated(object.rotation, {x:90}));
+                        world.center(object, object.position);
+//                        world.rotateLights(90, 'x');
+                    })
+                }
+		    }
+		    
+		    if(controlsConfig.yAxis) {
+                var $rotateLeftY= $(controlsConfig.yAxis.rotateLeft);
+                if($rotateLeftY.length > 0) {
+                    $rotateLeftY.on("click", function(event) {
+                        world.rotate(object, _getRotated(object.rotation, {y:-90}));
+                        world.center(object, object.position);
+//                        world.rotateLights(-90, 'y');
+                    })
+                }
+                var $rotateRightY = $(controlsConfig.yAxis.rotateRight);
+                if($rotateRightY.length > 0) {
+                    $rotateRightY.on("click", function(event) {
+                        world.rotate(object, _getRotated(object.rotation, {y:90}));
+                        world.center(object, object.position);
+//                        world.rotateLights(90, 'y');
+                    })
+                }
+            }
+		    
+		    if(controlsConfig.zAxis) {
+                var $rotateLeftZ = $(controlsConfig.zAxis.rotateLeft);
+                if($rotateLeftZ.length > 0) {
+                    $rotateLeftZ.on("click", function(event) {
+                        world.rotate(object, _getRotated(object.rotation, {z:-90}));
+                        console.log("object ", object);
+                        world.center(object, object.position);
+//                        world.rotateLights(-90, 'z');
+                    })
+                }
+                var $rotateRightZ = $(controlsConfig.zAxis.rotateRight);
+                if($rotateRightZ.length > 0) {
+                    $rotateRightZ.on("click", function(event) {
+                        world.rotate(object, _getRotated(object.rotation, {z:90}));
+                        world.center(object, object.position);
+//                        world.rotateLights(90, 'z');
+                    })
+                }
+            }
+		    
+            if(controlsConfig.position) {                    
+                var $resetPosition = $(controlsConfig.position.reset);
+                if($resetPosition.length > 0) {
+                    $resetPosition.on("click", function(event) {
+                        world.controls.reset();
+                    })
+                }
+            }
+		}
+		
+		rotateLights(degrees, axis) {
+		    for(var index in this.directionalLights) {
+		        var light = this.directionalLights[index];
+		        var pos = _rotate(light.position, degrees, axis);
+	            light.position.x = pos.x;
+	            light.position.y = pos.y;
+	            light.position.z = pos.z;
+		    } 
+		}
+		
 		/**
 		 * config.size: diameter of sphere config.material.color: color of the
 		 * sphere config.material.opacity: if defined, opacity of sphere
@@ -212,6 +352,7 @@ var WorldGenerator = (function() {
 			this.setSize(object, config.size);
 			this.rotate(object, config.rotation);
 			this.center(object, config.position);
+			this.initControls(object, this.config.controls, config);
 			if(config.focus) {				
 				this.zoomToObject(object, this.config.camera.viewPadding, this.config.camera.fieldOfView);
 			}
@@ -221,6 +362,7 @@ var WorldGenerator = (function() {
 				})
 			}
 			this.scene.add(object);
+			this.controls.saveState();
 			this.object = object;
 			return object;
 		}
