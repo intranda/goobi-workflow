@@ -124,6 +124,7 @@ var ImageView = ( function( imageView ) {
             if(this.$label.length && this.image.sizes) {
                 var imageWidth = this.image.sizes.originalImageSize.x;
                 var imageViewWidth = this.image.container.width();
+                console.log("imageWidth ", imageWidth);
                 scale = parseFloat(scale)/imageWidth*imageViewWidth;
                 this.$label.val((scale*100).toFixed(1));
             }

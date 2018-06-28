@@ -26,7 +26,7 @@ var ImageView = ( function() {
                 imageControlsActive: true,
                 visibilityRatio: 0.4,
                 loadImageTimeout: 10 * 60 * 1000,
-                maxParallelImageLoads: 1,
+                maxParallelImageLoads: 2,
                 adaptContainerHeight: false,
                 footerHeight: 50,
                 rememberZoom: false,
@@ -159,6 +159,10 @@ var ImageView = ( function() {
                  blendTime: .5,
                  alwaysBlend: false,
                  imageLoaderLimit: this.config.global.maxParallelImageLoads,
+                 loadTilesWithAjax: true,
+                 ajaxHeaders: {
+                     "token" : this.config.global.webApiToken
+                 },
                  viewportMargins: {
                      top: 0,
                      left: 0,
@@ -166,6 +170,7 @@ var ImageView = ( function() {
                      bottom: this.config.global.footerHeight
                  }
              } );
+             console.log("token ", this.viewer.ajaxHeaders);
              var result = Q.defer();
                  
              this.observables = _createObservables(window, this);  
