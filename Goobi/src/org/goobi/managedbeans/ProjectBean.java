@@ -3,12 +3,12 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -69,14 +69,16 @@ import org.joda.time.Years;
 
 import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.renderer.ChartRenderer;
-import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.ChartDraw.ChartType;
+import de.intranda.commons.chart.results.DataRow;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @ManagedBean(name = "ProjekteForm")
 @SessionScoped
@@ -89,8 +91,8 @@ public class ProjectBean extends BasicBean {
 
     // lists accepting the preliminary actions of adding and delting filegroups
     // it needs the execution of commit fileGroups to make these changes permanent
-    private List<Integer> newFileGroups = new ArrayList<Integer>();
-    private List<Integer> deletedFileGroups = new ArrayList<Integer>();
+    private List<Integer> newFileGroups = new ArrayList<>();
+    private List<Integer> deletedFileGroups = new ArrayList<>();
 
     private StatisticsManager statisticsManager1 = null;
     private StatisticsManager statisticsManager2 = null;
@@ -103,6 +105,10 @@ public class ProjectBean extends BasicBean {
     private String projectStatVolumes;
     private boolean showStatistics;
     private String displayMode = "";
+
+    @Getter
+    @Setter
+    private String newProjectTitle;
 
     // making sure its cleaned up
     @Override
@@ -132,11 +138,11 @@ public class ProjectBean extends BasicBean {
      */
     private void commitFileGroups() {
         // resetting the List of new fileGroups
-        this.newFileGroups = new ArrayList<Integer>();
+        this.newFileGroups = new ArrayList<>();
         // deleting the fileGroups marked for deletion
         deleteFileGroups(this.deletedFileGroups);
         // resetting the List of fileGroups marked for deletion
-        this.deletedFileGroups = new ArrayList<Integer>();
+        this.deletedFileGroups = new ArrayList<>();
     }
 
     /**
@@ -148,9 +154,9 @@ public class ProjectBean extends BasicBean {
         // flushing new fileGroups
         deleteFileGroups(this.newFileGroups);
         // resetting the List of new fileGroups
-        this.newFileGroups = new ArrayList<Integer>();
+        this.newFileGroups = new ArrayList<>();
         // resetting the List of fileGroups marked for deletion
-        this.deletedFileGroups = new ArrayList<Integer>();
+        this.deletedFileGroups = new ArrayList<>();
         this.projectProgressImage = null;
         this.projectStatImages = null;
         this.projectStatVolumes = null;
@@ -159,12 +165,18 @@ public class ProjectBean extends BasicBean {
     }
 
     public String Neu() {
+        newProjectTitle = "";
         this.myProjekt = new Project();
         return "project_edit";
     }
 
     public String Speichern() {
         // call this to make saving and deleting permanent
+
+        if (!checkProjectTitle()) {
+            return "";
+        }
+
         this.commitFileGroups();
         try {
             ProjectManager.saveProject(this.myProjekt);
@@ -180,6 +192,9 @@ public class ProjectBean extends BasicBean {
     public String Apply() {
         // call this to make saving and deleting permanent
         logger.trace("Apply wird aufgerufen...");
+        if (!checkProjectTitle()) {
+            return "";
+        }
         this.commitFileGroups();
         try {
             ProjectManager.saveProject(this.myProjekt);
@@ -189,6 +204,18 @@ public class ProjectBean extends BasicBean {
             Helper.setFehlerMeldung("could not save", e.getMessage());
             return "";
         }
+    }
+
+    private boolean checkProjectTitle() {
+        if (!myProjekt.getTitel().equals(newProjectTitle)) {
+            if (ProjectManager.countProjectTitle(newProjectTitle) != 0) {
+                Helper.setFehlerMeldung("project_error_titleIsInUse");
+                return false;
+            } else {
+                myProjekt.setTitel(newProjectTitle);
+            }
+        }
+        return true;
     }
 
     public String Loeschen() {
@@ -274,6 +301,7 @@ public class ProjectBean extends BasicBean {
         // has to be called if a page back move was done
         this.Cancel();
         this.myProjekt = inProjekt;
+        newProjectTitle = myProjekt.getTitel();
     }
 
     /**
@@ -283,7 +311,7 @@ public class ProjectBean extends BasicBean {
      * @return modified ArrayList
      */
     public ArrayList<ProjectFileGroup> getFileGroupList() {
-        ArrayList<ProjectFileGroup> filteredFileGroupList = new ArrayList<ProjectFileGroup>(this.myProjekt.getFilegroups());
+        ArrayList<ProjectFileGroup> filteredFileGroupList = new ArrayList<>(this.myProjekt.getFilegroups());
 
         for (Integer id : this.deletedFileGroups) {
             for (ProjectFileGroup f : this.myProjekt.getFilegroups()) {
@@ -556,7 +584,7 @@ public class ProjectBean extends BasicBean {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData.setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel())
-                        + "\"", false, null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                + "\"", false, null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
@@ -695,7 +723,7 @@ public class ProjectBean extends BasicBean {
         if (!facesContext.getResponseComplete()) {
 
             /*
-             *  Vorbereiten der Header-Informationen 
+             *  Vorbereiten der Header-Informationen
              */
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
@@ -714,7 +742,7 @@ public class ProjectBean extends BasicBean {
             }
         }
     }
-    
+
     public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         CSVPrinter csvFilePrinter = null;
@@ -729,33 +757,33 @@ public class ProjectBean extends BasicBean {
                 CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
                 csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat);
                 CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
-                
+
                 // add all headers
-                List<Object> csvHead = new ArrayList<Object>();
+                List<Object> csvHead = new ArrayList<>();
                 csvHead.add(csvr.getDataTable().getUnitLabel());
-            	for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
-                	csvHead.add(s);
-				}
+                for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
+                    csvHead.add(s);
+                }
                 csvFilePrinter.printRecord(csvHead);
 
                 // add all rows
                 for (DataRow dr : csvr.getDataTable().getDataRows()) {
-                	List<Object> csvColumns = new ArrayList<Object>();
-                	csvColumns.add(dr.getName());
-                	for (int j = 0; j < dr.getNumberValues(); j++) {
-						csvColumns.add(dr.getValue(j));
-					}
-                	csvFilePrinter.printRecord(csvColumns);
-				}
-                
+                    List<Object> csvColumns = new ArrayList<>();
+                    csvColumns.add(dr.getName());
+                    for (int j = 0; j < dr.getNumberValues(); j++) {
+                        csvColumns.add(dr.getValue(j));
+                    }
+                    csvFilePrinter.printRecord(csvColumns);
+                }
+
                 facesContext.responseComplete();
             } catch (Exception e) {
-                
+
             } finally {
                 try {
                     csvFilePrinter.close();
                 } catch (IOException e) {
-            
+
                 }
             }
         }
