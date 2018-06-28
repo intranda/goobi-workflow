@@ -110,15 +110,18 @@
 	float:left;
 	width:55px;
 	padding: 0;
-	padding-top: 2px;
-	margin-top:0.1rem;
+	margin-top:0.3rem;
+	margin-left: 5px;
+	height: 2.2rem;
+	
 }
 
 #viewer_controls_nav ul li #zoomSliderLabel input {
 	border: none;
 	background-color: transparent;
 	width:40px;
-	text-align: right
+	text-align: right;
+	
 }
 
 
@@ -127,7 +130,7 @@
     height: 1.5rem;
     margin-top: 0.6rem;
     margin-right: 0;
-    margin-left: 60px;
+    margin-left: 65px;
     border: 1px solid #6f6f6f;
     position: relative;
 }
