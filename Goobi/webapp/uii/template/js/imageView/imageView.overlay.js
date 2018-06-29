@@ -31,8 +31,6 @@ var ImageView = ( function(imageView) {
     }
 
     imageView.Overlay.prototype.draw = function() {
-        console.log("style = ", this.style);
-        console.log("rect = ", this.rect)
         _drawRect({userData: this});
         this.eventHandler = function(event) {
             _drawRect(event)

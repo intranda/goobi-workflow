@@ -64,7 +64,9 @@ var ImageView = ( function() {
          this.config = jQuery.extend(true, {}, _defaults);
          jQuery.extend(true, this.config, config);
          this.container = $( "#" + this.config.global.divId );
-         console.log("initializing image view with config ", this.config);
+         if(_debug) {             
+             console.log("initializing image view with config ", this.config);
+         }
 
 //         this.originalImageSize = {x:this.config.imageWidth, y:this.config.imageHeight};
 //         this.imageViewWidth = parseFloat($('#'+this.config.div).css("width"));
@@ -170,7 +172,6 @@ var ImageView = ( function() {
                      bottom: this.config.global.footerHeight
                  }
              } );
-             console.log("token ", this.viewer.ajaxHeaders);
              var result = Q.defer();
                  
              this.observables = _createObservables(window, this);  
@@ -430,7 +431,6 @@ var ImageView = ( function() {
       */
      imageView.Image.prototype.scaleToOpenSeadragonCoordinates = function(roi) {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
-         console.log("displayImageSize ", displayImageSize);
          var originalImageSize = {x:this.config.imageWidth, y:this.config.imageHeight};
          
          var displayImageRect = new OpenSeadragon.Rect(0,0,displayImageSize.x, displayImageSize.y);
@@ -557,7 +557,7 @@ var ImageView = ( function() {
              } );
              image.viewer.addOnceHandler( 'open-failed', function( event ) {
                  event.osState = "open-failed";
-                 console.log("Failed to open openseadragon ");
+                 console.error("Failed to open openseadragon ");
                  
                  return observer.onError(event);
              } );
@@ -571,7 +571,7 @@ var ImageView = ( function() {
              } );
              image.viewer.addOnceHandler( 'tile-load-failed', function( event ) {
                  event.osState = "tile-load-failed";
-                 console.log("Failed to load tile");
+                 console.error("Failed to load tile");
                  
                  return observer.onError(event);
              } );
@@ -904,7 +904,6 @@ var ImageView = ( function() {
                      if(imageInfo.tiles && imageInfo.tiles.length > 0) {
                          tileSource = new OpenSeadragon.IIIFTileSource(imageInfo);                    
                      } else {                
-                         console.log("tiles? ", imageInfo.tiles);
                          tileSource  = _createPyramid(imageInfo, config);                    
                      }
                      

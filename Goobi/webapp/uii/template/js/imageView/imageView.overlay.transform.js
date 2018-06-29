@@ -9,7 +9,7 @@ var ImageView = ( function(imageView) {
 
     var _hbAdd = 5;
     var _sideClickPrecision = 0.01;
-    var _debug = true;
+    var _debug = false;
     
     imageView.Transform = function(viewer, style, startCondition) {
 
@@ -34,11 +34,8 @@ var ImageView = ( function(imageView) {
     }
     imageView.Transform.prototype.removeOverlay = function(overlay) {
         if(this.overlays.includes(overlay)) {
-            console.log("remove overlay");
             let index = this.overlays.indexOf(overlay);
-            console.log("overlays ", this.overlays);
             this.overlays.splice(index, 1);
-            console.log("overlays ", this.overlays);
             return true;
         }
         return false;
@@ -151,7 +148,6 @@ var ImageView = ( function(imageView) {
     }
     
     function _onViewerPress( event, transform ) {
-        console.log("pressed ", transform);
         if ( transform.isActive()  && transform.startCondition(event.originalEvent)) {
             if ( transform.currentOverlay && transform.drawArea ) {
                 let coords = ImageView.convertPointFromCanvasToImage(event.position, transform.viewer);
@@ -159,7 +155,9 @@ var ImageView = ( function(imageView) {
                 transform.startPoint = coords;
                 transform.transforming = true;
                 event.preventDefaultAction = true;
-                console.log("start transforming at ", transform.startPoint);
+                if(_debug) {                    
+                    console.log("start transforming at ", transform.startPoint);
+                }
                 return true;
             } else {
                 transform.transforming = false;
@@ -255,14 +253,11 @@ var ImageView = ( function(imageView) {
         var p2 = rect.getBottomRight();
         var topLeft = {x: Math.min(p1.x, p2.x), y : Math.min(p1.y, p2.y)};
         var bottomRight = {x: Math.max(p1.x, p2.x),y: Math.max(p1.y, p2.y)}
-        console.log("top left ", topLeft);
-        console.log("bottom right ", bottomRight);
         var norm = new OpenSeadragon.Rect(topLeft.x, topLeft.y, bottomRight.x-topLeft.x, bottomRight.y-topLeft.y);
         return norm;
     }
     
     function _onViewerRelease( event, transform ) {
-        console.log("release ", transform);
         if ( transform.isActive() ) {
             if ( transform.transforming ) {
                 transform.finishedObservable.onNext(transform.currentOverlay);

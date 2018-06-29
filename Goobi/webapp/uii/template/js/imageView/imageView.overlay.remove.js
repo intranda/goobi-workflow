@@ -10,7 +10,7 @@ var ImageView = ( function(imageView) {
 
     var _hbAdd = 5;
     var _sideClickPrecision = 0.01;
-    var _debug = true;
+    var _debug = false;
     
     imageView.Remove = function(viewer, startCondition) {
         this.viewer = viewer;
@@ -108,7 +108,6 @@ var ImageView = ( function(imageView) {
     }
     
     function _onViewerPress( event, remove ) {
-        console.log("pressed ", remove);
         if ( remove.isActive()  && remove.startCondition(event.originalEvent)) {
             if ( remove.currentOverlay) {
                 remove.currentOverlay.remove();
