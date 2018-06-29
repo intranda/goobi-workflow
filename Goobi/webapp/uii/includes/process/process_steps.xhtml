@@ -29,41 +29,34 @@ color: #fff;
                             <h:outputText value="#{msgs.arbeitsschritte}" />
                         </h3>
 
-
                         <div class="actions">
-
-
-                            <h:panelGroup
-                                layout="block"
-                                title="#{msgs.process_changeTemplate}"
-                                data-toggle="tooltip"
-                                styleClass="btn-group"
-                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
-
-                                <a id="changeTemplate"
-                                    class="btn btn-mini dropdown-toggle fa fa-exchange"
-                                    data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu pull-right">
-                                    <ui:repeat
-                                        var="template"
-                                        value="#{ProzessverwaltungForm.availableProcessTemplates}">
-                                        <li>
-                                            <h:commandLink action="#{ProzessverwaltungForm.changeTemplate}">
-                                                <h:outputText value="#{template.titel}" />
-                                                <x:updateActionListener
-                                                    property="#{ProzessverwaltungForm.template}"
-                                                    value="#{template}" />
-                                                <x:updateActionListener
-                                                    property="#{ProzessverwaltungForm.processToChange}"
-                                                    value="#{ProzessverwaltungForm.myProzess}" />
-                                            </h:commandLink>
-                                        </li>
-                                    </ui:repeat>
-
-                                </ul>
-
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
+								<div title="#{msgs.process_changeTemplate}" class="btn-group"
+	                                data-toggle="tooltip">
+	                                <a id="changeTemplate"
+	                                    class="btn btn-mini dropdown-toggle"
+	                                    data-toggle="dropdown">
+	                                    <i class="fa fa-exchange margin-right-5" />
+	                                    <span class="caret"></span>
+	                                </a>
+	                                <ul class="dropdown-menu pull-right">
+	                                    <ui:repeat
+	                                        var="template"
+	                                        value="#{ProzessverwaltungForm.availableProcessTemplates}">
+	                                        <li>
+	                                            <h:commandLink action="#{ProzessverwaltungForm.changeTemplate}" title="#{msgs.process_changeTemplate}">
+	                                                <h:outputText value="#{template.titel}" />
+	                                                <x:updateActionListener
+	                                                    property="#{ProzessverwaltungForm.template}"
+	                                                    value="#{template}" />
+	                                                <x:updateActionListener
+	                                                    property="#{ProzessverwaltungForm.processToChange}"
+	                                                    value="#{ProzessverwaltungForm.myProzess}" />
+	                                            </h:commandLink>
+	                                        </li>
+	                                    </ui:repeat>
+	                                </ul>
+								</div>
                             </h:panelGroup>
                         </div>
                     </div>
@@ -523,10 +516,13 @@ color: #fff;
                                     </h:commandLink>
 
                                     <h:commandLink
-                                        id="runPlugin"
+                                        id="runPlugin" title="#{msgs.executePlugin}"
                                         rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
                                         action="#{ProzessverwaltungForm.startPlugin}">
                                         <span class="btn fa fa-puzzle-piece margin-right-5" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus.pluginSimulation}"
                                             value="#{true}" />
@@ -536,9 +532,12 @@ color: #fff;
                                     </h:commandLink>
 
                                     <h:commandLink
-                                        id="executeScript"
+                                        id="executeScript" title="#{msgs.executeScripts}"
                                         rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
                                         action="#{HelperForm.executeScriptsForStep(item.id)}">
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5" />
                                     </h:commandLink>
 
