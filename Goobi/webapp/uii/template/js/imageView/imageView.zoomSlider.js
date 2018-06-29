@@ -124,7 +124,6 @@ var ImageView = ( function( imageView ) {
             if(this.$label.length && this.image.sizes) {
                 var imageWidth = this.image.sizes.originalImageSize.x;
                 var imageViewWidth = this.image.container.width();
-                console.log("imageWidth ", imageWidth);
                 scale = parseFloat(scale)/imageWidth*imageViewWidth;
                 this.$label.val((scale*100).toFixed(1));
             }
@@ -174,6 +173,13 @@ var ImageView = ( function( imageView ) {
             if(this.$label.length) {
                 this.$label.on("change", function(event) {
                     slider.inputToZoom(event.target.value)
+                    return false;
+                });
+                this.$label.on("keypress", function(e) {
+                    if (e.which == 13) {
+                        slider.inputToZoom(e.target.value)
+                        return false;
+                    }
                 });
             }
             $( document ).on( 'mouseup', function(event) {
