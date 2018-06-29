@@ -211,6 +211,16 @@ public class HelperForm {
         ExternalContext external = context.getExternalContext();
         return external.getRequestContextPath() + "/";
     }
+    
+    public String getItmPathAsUrl() {
+    	FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        String scheme = request.getScheme(); // http
+        String serverName = request.getServerName(); // hostname.com
+        int serverPort = request.getServerPort(); // 80    
+        String reqUrl = scheme + "://" + serverName + ":" + serverPort + "/itm/";
+        return reqUrl;
+    }
 
     public String getServletPathWithHostAsUrl() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
