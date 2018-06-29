@@ -19,6 +19,7 @@ var ImageView = ( function(imageView) {
         this.currentRect = null;
         this.startPoint = null;
         this.finishedObservable = new Rx.Subject();
+        
         _addInputHook(this);
     }
     imageView.Draw.prototype.finishedDrawing = function() {
@@ -38,7 +39,7 @@ var ImageView = ( function(imageView) {
      * Position is in viewer element coordinates
      */
     imageView.Draw.prototype.createEmptyRectAt = function(position) {
-
+        
         this.currentRect = new OpenSeadragon.Rect(position.x, position.y, 0,0);
         this.startPoint = position;
         _drawRect(this.currentRect, this.style, this.viewer.drawer.context);
@@ -59,6 +60,7 @@ var ImageView = ( function(imageView) {
     }
     
     function _drawRect(rect, style, context) {
+        rect = rect.times(window.devicePixelRatio);
         context.beginPath();
         context.lineWidth = style.borderWidth;
         context.strokeStyle = style.borderColor;
@@ -96,7 +98,8 @@ var ImageView = ( function(imageView) {
 
     function _onViewerPress( event, draw) {
         if ( draw.isActive() && draw.startCondition(event.originalEvent)) {
-            draw.createEmptyRectAt(event.position);
+            let position = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(window.devicePixelRatio);
+            draw.createEmptyRectAt(position);
             event.preventDefaultAction = false;
             draw.drawing = true;
             return true;
@@ -105,7 +108,8 @@ var ImageView = ( function(imageView) {
     
     function _onViewerDrag( event, draw) {
         if ( draw.isDrawing() ) {
-            draw.updateOverlay(event.position);
+            let position = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(window.devicePixelRatio);
+            draw.updateOverlay(position);
             event.preventDefaultAction = true;
             return true; 
         }
@@ -116,6 +120,7 @@ var ImageView = ( function(imageView) {
             draw.drawing = false;
             let rect = ImageView.convertCoordinatesFromCanvasToImage(draw.currentRect, draw.viewer);
             let overlay = new ImageView.Overlay(rect, draw.viewer, draw.style);
+            console.log("rect ", overlay);
             draw.finishedObservable.onNext(overlay);
             event.preventDefaultAction = true;
             return true;

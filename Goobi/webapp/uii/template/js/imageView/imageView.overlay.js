@@ -39,19 +39,21 @@ var ImageView = ( function(imageView) {
         this.viewer.addHandler( 'update-viewport', this.eventHandler, this );
     }
     
-    imageView.Overlay.prototype.contains = function(point, extra) {
-        return _isInside(this.rect, point, extra);
+    imageView.Overlay.prototype.contains = function(point, extra, pointInCanvas) {
+        var rect = pointInCanvas ? imageView.convertCoordinatesFromImageToCanvas(this.rect, this.viewer) : this.rect;
+        return _isInside(rect, point, extra);
     }
     
-    imageView.Overlay.prototype.getHitArea = function(point, extra) {
-        if(_isInside(this.rect, point, extra)) {
-            var area = _findCorner(this.rect, point, extra);
+    imageView.Overlay.prototype.getHitArea = function(point, extra, pointInCanvas) {
+        var rect = pointInCanvas ? imageView.convertCoordinatesFromImageToCanvas(this.rect, this.viewer) : this.rect;
+        if(_isInside(rect, point, extra)) {
+            var area = _findCorner(rect, point, extra);
             if(!area) {
-                area = _findEdge(this.rect, point, extra);
+                area = _findEdge(rect, point, extra);
             }
-            if(!area && _isInside(this.rect, point, 0)){
-                area = imageView.Overlay.HitAreas.CENTER;
-            }
+//            if(!area && _isInside(rect, point, 0)){
+//                area = imageView.Overlay.HitAreas.CENTER;
+//            }
         }
         return area;
     }
@@ -73,6 +75,15 @@ var ImageView = ( function(imageView) {
         return rect.x.toFixed(decimalPlaces) + "," +  rect.y.toFixed(decimalPlaces) + "," +  rect.width.toFixed(decimalPlaces) + "," +  rect.height.toFixed(decimalPlaces);
     }
     
+    imageView.Overlay.drawPoint = function(point, viewer, color, radius) {
+        _drawPoint({userData: [point, viewer, color, radius] });
+//        var eventHandler = function(event) {
+//            _drawPoint(event)
+//        }
+//        this.viewer.removeHandler( 'update-viewport', _drawRect, this );
+//        viewer.addHandler( 'update-viewport', eventHandler, [point, viewer, color, radius] );
+    }
+    
     imageView.Overlay.HitAreas = {
             TOP: "t",
             BOTTOM: "b",
@@ -90,7 +101,7 @@ var ImageView = ( function(imageView) {
                 return area === this.TOP || area === this.BOTTOM || area === this.LEFT || area === this.RIGHT;
             },
             getCursor: function( area ) {
-                var rotated = draw.viewer.viewport.getRotation() % 180 === 90;
+                var rotated = false;//draw.viewer.viewport.getRotation() % 180 === 90;
                 if ( area === this.TOPLEFT || area === this.BOTTOMRIGHT ) {
                     return rotated ? "nesw-resize" : "nwse-resize";
                 }
@@ -115,13 +126,29 @@ var ImageView = ( function(imageView) {
     function _drawRect(event) {
         var overlay = event.userData;
         var context = overlay.viewer.drawer.context;
-        var rect = ImageView.convertCoordinatesFromImageToCanvas(overlay.rect, overlay.viewer);
+        var rect = ImageView.convertCoordinatesFromImageToCanvas(overlay.rect, overlay.viewer).times(window.devicePixelRatio);
         context.beginPath();
         context.lineWidth = overlay.style.borderWidth;
         context.strokeStyle = overlay.style.borderColor;
         context.rect(rect.x, rect.y, rect.width, rect.height);
         context.stroke();
 
+    }
+    
+    function _drawPoint(event) {
+        var point = event.userData[0].times(window.devicePixelRatio);
+        var viewer = event.userData[1];
+        var color = event.userData[2];
+        var radius = event.userData[3];
+        var context = viewer.drawer.context;
+//        console.log("draw on canvas ", viewer.drawer.context)
+//        var point_canvas = ImageView.convertPointFromImageToCanvas(point, viewer);
+        context.beginPath();
+        if(color) {
+            context.fillStyle = color;
+        }
+        context.arc(point.x, point.y, radius, 0, 2*Math.PI, true);
+        context.fill();
     }
     
     function _isInside( rect, point, extra ) {

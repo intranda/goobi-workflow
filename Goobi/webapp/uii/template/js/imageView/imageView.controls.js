@@ -58,23 +58,25 @@ var ImageView = ( function( imageView ) {
                 });
                 
                 // zoom home if min zoom reached
-                image.observables.viewerZoom.subscribe( function( event ) {
-                    if ( _debug ) {
-                        console.log( "zoom to " + image.viewer.viewport.getZoom( true ) );
-                    }
-                    if ( !controls.isPanning() ) {
-                        var currentZoom = image.viewer.viewport.getZoom();                   
-                        if ( currentZoom <= image.viewer.viewport.minZoomLevel ) {
-                            if ( _debug ) {
-                                console.log( "Zoomed out: Panning home" );
-                            }
-                            
-                            controls.setPanning(true);
-                            controls.goHome( true );
-                            controls.setPanning(false);
+                if(image.config.global.panHomeOnZoomOut) {                    
+                    image.observables.viewerZoom.subscribe( function( event ) {
+                        if ( _debug ) {
+                            console.log( "zoom to " + image.viewer.viewport.getZoom( true ) );
                         }
-                    }
-                } );
+                        if ( !controls.isPanning() ) {
+                            var currentZoom = image.viewer.viewport.getZoom();                   
+                            if ( currentZoom <= image.viewer.viewport.minZoomLevel ) {
+                                if ( _debug ) {
+                                    console.log( "Zoomed out: Panning home" );
+                                }
+                                
+                                controls.setPanning(true);
+                                controls.goHome( true );
+                                controls.setPanning(false);
+                            }
+                        }
+                    } );
+                }
             }
             
             // fade out fullscreen controls
@@ -274,31 +276,30 @@ var ImageView = ( function( imageView ) {
                 console.log("target location: ", event.targetLocation);
                 console.log("Home zoom = ", this.image.viewer.viewport.getHomeZoom());
             }
-             this.image.viewer.viewport.minZoomLevel = this.image.viewer.viewport.getHomeZoom() * this.config.global.minZoomLevel;
-             var targetZoom = event.targetLocation.zoom;
-             var targetLocation = new OpenSeadragon.Point(event.targetLocation.x, event.targetLocation.y);
-             var zoomDiff = targetZoom * this.image.viewer.viewport.getHomeZoom() - (this.image.viewer.viewport.minZoomLevel);
-    // console.log("zoomDiff: " + targetZoom + " * " + osViewer.viewer.viewport.getHomeZoom()
-    // + " - " + osViewer.viewer.viewport.minZoomLevel + " = ", zoomDiff);
-    // console.log("zoomDiff: " + targetZoom + " - " + osViewer.viewer.viewport.minZoomLevel +
-    // "/" + osViewer.controls.getCurrentRotationZooming() + " = ", zoomDiff);
-             var zoomedOut = zoomDiff < 0.001 || !targetZoom;
-             if(zoomedOut) {
-                 if(_debug) {                         
-                     console.log("Zooming home")
-                 }
-                 this.goHome( true );
-             } else {
-                 if(_debug) {                         
-                     console.log( "Zooming to " + targetZoom + " * " + this.getCurrentRotationZooming() );
-                     console.log("panning to ", targetLocation);
-                 }
-                 this.image.viewer.viewport.zoomTo( targetZoom * this.getCurrentRotationZooming(), null, true);
-                 this.setCenter( targetLocation);
-             }
-             if(event.osState === "open" && event.targetLocation.rotation !== 0) {
-                this.rotateTo(event.targetLocation.rotation);
-             }
+                this.image.viewer.viewport.minZoomLevel = this.image.viewer.viewport.getHomeZoom() * this.config.global.minZoomLevel;
+                var targetZoom = event.targetLocation.zoom;
+                var targetLocation = new OpenSeadragon.Point(event.targetLocation.x, event.targetLocation.y);
+                var zoomDiff = targetZoom * this.image.viewer.viewport.getHomeZoom() - (this.image.viewer.viewport.minZoomLevel);
+                
+                var zoomedOut = zoomDiff < 0.001 || !targetZoom;
+                if(zoomedOut && this.image.config.global.fitToContainer) {
+                    if(_debug) {                         
+                        console.log("Zooming home")
+                    }
+                    this.goHome( true );
+                } else {
+                    if(_debug) {                         
+                        console.log( "Zooming to " + targetZoom + " * " + this.getCurrentRotationZooming() );
+                        console.log("panning to ", targetLocation);
+                    }
+                    if(this.image.config.global.fitToContainer) {
+                        this.image.viewer.viewport.zoomTo( targetZoom * this.getCurrentRotationZooming(), null, true);
+                    }
+                    this.setCenter( targetLocation);
+                }
+                if(event.osState === "open" && event.targetLocation.rotation !== 0) {
+                    this.rotateTo(event.targetLocation.rotation);
+                }    
         }
 
     return imageView;

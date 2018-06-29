@@ -22,23 +22,17 @@ var ImageView = ( function( imageView ) {
         this.config = $.extend( true, {}, _defaults );
         $.extend( true, this.config, config.global );
         this.image = image;
-//        console.log("image info = ", this.image.getImageInfo());
-//        this.imageWidth = image.sizes.originalImageSize.x;
-//        this.imageViewWidth = image.container.width();
-        this.init();
     }
     
     imageView.ZoomSlider.prototype.init = function() {
             if ( _debug ) {
                 console.log( '##############################' );
                 console.log( 'imageView.zoomSlider.init' );
-                console.log("config - ", this.config);
                 console.log( '##############################' );
             }
             if ( $(this.config.zoomSlider).length > 0 ) {
                 this.addZoomSlider(this.config.zoomSlider );
-                
-                // handler for openSeadragon Object
+                this.buttonToZoom(this.image.viewer.viewport.getHomeZoom());
                 var zoom = this;
                 this.image.viewer.addHandler( 'zoom', function( data ) {
                     zoom.buttonToZoom( data.zoom );

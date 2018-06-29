@@ -6,11 +6,11 @@ var ImageView = ( function(imageView) {
     }
     
     var DEFAULT_CURSOR = "default";
-    var REMOVE_CURSOR = "default";
+    var REMOVE_CURSOR = "not-allowed";
 
     var _hbAdd = 5;
-    var _sideClickPrecision = 0.01;
-    var _debug = false;
+    var _sideClickPrecision = 4;
+    var _debug = true;
     
     imageView.Remove = function(viewer, startCondition) {
         this.viewer = viewer;
@@ -48,7 +48,7 @@ var ImageView = ( function(imageView) {
     }
     imageView.Remove.prototype.getContainingOverlay = function(point) {
         for(let overlay of this.overlays) {
-            if(overlay.contains(point, _sideClickPrecision)) {
+            if(overlay.contains(point, _sideClickPrecision, true)) {
                 return overlay;
             } 
         }
@@ -82,12 +82,10 @@ var ImageView = ( function(imageView) {
     function _onViewerMove( event, remove ) {
         if (remove.isActive() && remove.startCondition(event.originalEvent) ) {
             
-            let coords = ImageView.convertPointFromCanvasToImage(event.position, remove.viewer);
-            coords = ImageView.getPointInUnrotatedImage(coords, remove.viewer);
+            let coords = event.position;
             let overlay = remove.getContainingOverlay(coords);
             var viewerElement = remove.viewer.element;
             if(overlay) {
-//                console.log("point is inside overlay ", overlay);
                 remove.currentOverlay = overlay;
             } else {
                 remove.currentOverlay = null;

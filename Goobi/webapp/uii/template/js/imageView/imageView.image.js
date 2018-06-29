@@ -11,28 +11,33 @@ var ImageView = ( function() {
                 zoomSlider: ".zoom-slider",
                 zoomSliderHandle: '.zoom-slider-handle',
                 overlayGroups: [ {
-                    name: "searchHighlighting",
-                    styleClass: "coords-highlighting",
-                    interactive: false
-                }, {
-                    name: "ugc",
-                    styleClass: "ugcBox",
-                    interactive: true
-                
-                } ],
+                        name: "searchHighlighting",
+                        styleClass: "coords-highlighting",
+                        interactive: false
+                    }, {
+                        name: "ugc",
+                        styleClass: "ugcBox",
+                        interactive: true
+                    
+                    }],
                 zoomSpeed: 1.25,
                 maxZoomLevel: 20,
                 minZoomLevel: 1,
                 imageControlsActive: true,
-                visibilityRatio: 0.4,
+                visibilityRatio: 0.2,
                 loadImageTimeout: 10 * 60 * 1000,
                 maxParallelImageLoads: 2,
                 adaptContainerHeight: false,
-                footerHeight: 50,
+                fitToContainer: true,
+                footerHeight: 0,
                 rememberZoom: false,
                 rememberRotation: false,
+                panHomeOnZoomOut: true,
             },
-            image: {},
+            image: {
+                initialRotation: 0,
+                mimeType: "image/jpeg"
+            },
             getOverlayGroup: function( name ) {
                 var allGroups = this.global.overlayGroups;
                 for ( var int = 0; int < allGroups.length; int++ ) {
@@ -139,45 +144,53 @@ var ImageView = ( function() {
              }
                
              this.loadFooter();            
-          
-             this.viewer = new OpenSeadragon( {
-                 immediateRender: false,
-                 visibilityRatio: this.config.global.visibilityRatio,
-                 sequenceMode: false,
-                 id: this.config.global.divId,
-                 controlsEnabled: false,
-                 prefixUrl: "/openseadragon-bin/images/",
-                 zoomPerClick: 1,
-                 maxZoomLevel: this.config.global.maxZoomLevel,
-                 minZoomLevel: this.config.global.minZoomLevel,
-                 zoomPerScroll: this.config.global.zoomSpeed,
-                 mouseNavEnabled: this.config.global.zoomSpeed > 1,
-                 showNavigationControl: false,
-                 showZoomControl: false,
-                 showHomeControl: false,
-                 showFullPageControl: true,
-                 timeout: this.config.global.loadImageTimeout,
-                 tileSources: tileSources,
-                 blendTime: .5,
-                 alwaysBlend: false,
-                 imageLoaderLimit: this.config.global.maxParallelImageLoads,
-                 loadTilesWithAjax: true,
-                 ajaxHeaders: {
-                     "token" : this.config.global.webApiToken
-                 },
-                 viewportMargins: {
-                     top: 0,
-                     left: 0,
-                     right: 0,
-                     bottom: this.config.global.footerHeight
+
+             
+             var osConfig = {
+                     tileSources: tileSources,
+                     id: this.config.global.divId,
+                     prefixUrl: this.config.resourcePath + "/javascript/openseadragon/images/",
+                     immediateRender: false,
+                     visibilityRatio: this.config.global.visibilityRatio,
+                     sequenceMode: false,
+                     degrees: this.config.image.initialRotation ? this.config.image.initialRotation : 0,
+                     zoomPerClick: 1.0,
+                     showRotationControl: true,
+                     minZoomLevel: this.config.global.minZoomLevel,
+                     maxZoomLevel: this.config.global.maxZoomLevel,
+                     zoomPerScroll: this.config.global.zoomSpeed,
+                     mouseNavEnabled: this.config.global.zoomSpeed > 1,
+                     homeButton: this.config.global.zoomHome,
+                     rotateLeftButton: this.config.global.rotateLeft,
+                     rotateRightButton: this.config.global.rotateRight,
+                     timeout: this.config.global.loadImageTimeout,
+                     blendTime: .5,
+                     alwaysBlend: false,
+                     imageLoaderLimit: this.config.global.maxParallelImageLoads,
+                     loadTilesWithAjax: true,
+                     ajaxHeaders: {
+                         "token" : this.config.global.webApiToken
+                     },
+                     viewportMargins: {
+                         top: 0,
+                         left: 0,
+                         right: 0,
+                         bottom: this.config.global.footerHeight
+                     }
                  }
-             } );
+             
+//             console.log("osconfig ", osConfig);
+             
+             this.viewer = new OpenSeadragon( osConfig );
              var result = Q.defer();
                  
              this.observables = _createObservables(window, this);  
+             if(this.config.global.rotationSlider || this.config.global.rotationInput) {                 
+                 _setupRotation(this);
+             }
              
              var image = this;
-             this.observables.viewerOpen.subscribe(function(openevent, loadevent) {            
+             this.observables.viewerOpen.subscribe(function(openevent, loadevent) {
                  result.resolve(image);                
              }, function(error) {            
                  result.reject(error);                
@@ -193,6 +206,7 @@ var ImageView = ( function() {
                  
                  image.redraw();
              });
+             
                  
              if ( imageView.Controls ) {
                  this.controls = new imageView.Controls(this.config, this);
@@ -201,6 +215,13 @@ var ImageView = ( function() {
              
              if ( imageView.ZoomSlider ) {
                  this.zoomSlider = new imageView.ZoomSlider(this.config, this);
+                 this.onFirstTileLoaded()
+                 .then(function() {
+                     if(image.zoomSlider) {
+                         image.zoomSlider.init();
+                         
+                     }
+                 })
 //                 osViewer.zoomSlider.init( _defaults );                
              }
              
@@ -410,8 +431,9 @@ var ImageView = ( function() {
       */
      imageView.Image.prototype.scaleToRotatedImage = function(roi) {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
-         var originalImageSize = {x:this.config.imageWidth, y:this.config.imageHeight};
-         
+         var originalImageSize = {x:this.sizes.originalImageSize.x, y:this.sizes.originalImageSize.y};
+         console.log("displayImageSize", displayImageSize);
+         console.log("originalImageSize", originalImageSize)
          var displayImageRect = new OpenSeadragon.Rect(0,0,displayImageSize.x, displayImageSize.y);
          var originalImageRect = new OpenSeadragon.Rect(0,0,originalImageSize.x, originalImageSize.y);
          
@@ -542,6 +564,29 @@ var ImageView = ( function() {
          var rect_unrotated = new OpenSeadragon.Rect(rect_fromTopLeft_unrotated.x-rect.width/2.0, rect_fromTopLeft_unrotated.y-rect.height/2.0, rect.width, rect.height);
          return rect_unrotated;
      }
+     
+     imageView.getPointInRotatedImage = function(point, viewer) {
+         let aspectRatio = viewer.source.width/viewer.source.height;
+         let rotation = viewer.viewport.getRotation();
+         let imageTopLeft_fromImageCenter = new OpenSeadragon.Point(0.5, 0.5/aspectRatio).times(-1);
+         
+         let point_fromImageCenter = imageTopLeft_fromImageCenter.plus(point);
+         let point_fromImageCenter_rotated = _rotate(point_fromImageCenter, rotation, false);
+         let point_fromImageTopLeft_rotated = point_fromImageCenter_rotated.minus(imageTopLeft_fromImageCenter);
+         return point_fromImageTopLeft_rotated;
+     }
+     
+     imageView.getPointInUnrotatedImage = function(point, viewer) {
+         let aspectRatio = viewer.source.width/viewer.source.height;
+         let rotation = viewer.viewport.getRotation();
+         let imageTopLeft_fromImageCenter = new OpenSeadragon.Point(0.5, 0.5/aspectRatio).times(-1);
+         let imageTopLeft_fromImageCenter_rotated = _rotate(imageTopLeft_fromImageCenter, rotation, false);
+         
+         let point_fromImageCenter_rotated = imageTopLeft_fromImageCenter_rotated.plus(point);
+         let point_fromImageCenter = _rotate(point_fromImageCenter_rotated, rotation, true);
+         let point_fromImageTopLeft = point_fromImageCenter.minus(imageTopLeft_fromImageCenter);
+         return point_fromImageTopLeft;
+     }
 
      function _createObservables(window, image) {
          var observables = {};
@@ -651,7 +696,8 @@ var ImageView = ( function() {
              event.targetLocation = location;
              
              return event;
-         }).publish();
+         })
+         .publish();
          
          return observables;
      }
@@ -693,10 +739,10 @@ var ImageView = ( function() {
      function _setupRotation(image) {
                   
          //set initial rotation
-         var degrees = image.config.initialRotation;
+         var degrees = image.config.image.initialRotation;
          var deskew = _getDeskewAngle(degrees);
          image.rotation = _getRotation(degrees);
-         var config = image.config.rotation;
+         var config = image.config.global;
          var viewer = image.viewer;
          
          //setup deskew slider

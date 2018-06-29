@@ -8,8 +8,8 @@ var ImageView = ( function(imageView) {
     var DEFAULT_CURSOR = "default";
 
     var _hbAdd = 5;
-    var _sideClickPrecision = 0.01;
-    var _debug = false;
+    var _sideClickPrecision = 4;
+    var _debug = true;
     
     imageView.Transform = function(viewer, style, startCondition) {
 
@@ -55,7 +55,7 @@ var ImageView = ( function(imageView) {
     }
     imageView.Transform.prototype.getContainingOverlay = function(point) {
         for(let overlay of this.overlays) {
-            if(overlay.contains(point, _sideClickPrecision)) {
+            if(overlay.contains(point, _sideClickPrecision, true)) {
                 return overlay;
             } 
         }
@@ -120,14 +120,12 @@ var ImageView = ( function(imageView) {
     function _onViewerMove( event, transform ) {
         if ( !transform.isTransforming() && transform.isActive() && transform.startCondition(event.originalEvent) ) {
             
-            let coords = ImageView.convertPointFromCanvasToImage(event.position, transform.viewer);
-            coords = ImageView.getPointInUnrotatedImage(coords, transform.viewer);
+            let coords = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
             let overlay = transform.getContainingOverlay(coords);
             var viewerElement = transform.viewer.element;
             if(overlay) {
-//                console.log("point is inside overlay ", overlay);
                 transform.currentOverlay = overlay;
-                transform.drawArea = overlay.getHitArea(coords, _sideClickPrecision);
+                transform.drawArea = overlay.getHitArea(coords, _sideClickPrecision, true);
             } else {
                 transform.currentOverlay = null;
                 transform.drawArea = null;
@@ -150,14 +148,11 @@ var ImageView = ( function(imageView) {
     function _onViewerPress( event, transform ) {
         if ( transform.isActive()  && transform.startCondition(event.originalEvent)) {
             if ( transform.currentOverlay && transform.drawArea ) {
-                let coords = ImageView.convertPointFromCanvasToImage(event.position, transform.viewer);
-                coords = ImageView.getPointInUnrotatedImage(coords, transform.viewer);
+                let coords = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
                 transform.startPoint = coords;
                 transform.transforming = true;
                 event.preventDefaultAction = true;
-                if(_debug) {                    
-                    console.log("start transforming at ", transform.startPoint);
-                }
+                console.log("start transforming at ", transform.startPoint);
                 return true;
             } else {
                 transform.transforming = false;
@@ -168,9 +163,8 @@ var ImageView = ( function(imageView) {
     
     function _onViewerDrag( event, transform ) {
         if ( transform.isTransforming() ) {
-            let newPoint = ImageView.convertPointFromCanvasToImage(event.position, transform.viewer);
-            newPoint = ImageView.getPointInUnrotatedImage(newPoint, transform.viewer);
-            let rect = transform.currentOverlay.rect;
+            let newPoint = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
+            let rect = imageView.convertCoordinatesFromImageToCanvas(transform.currentOverlay.rect, transform.viewer);
             var topLeft = null;//rect.getTopLeft();
             var bottomRight = null;//rect.getBottomRight();
             // if(_debug)console.log("Draw location = " + newPoint);
@@ -222,7 +216,7 @@ var ImageView = ( function(imageView) {
                 rect = new OpenSeadragon.Rect(topLeft.x, topLeft.y, bottomRight.x-topLeft.x, bottomRight.y-topLeft.y);
             }
 
-            transform.currentOverlay.rect = rect;
+            transform.currentOverlay.rect = imageView.convertCoordinatesFromCanvasToImage(rect, transform.viewer);
             transform.viewer.forceRedraw();
             event.preventDefaultAction = true;
             return true;
@@ -253,6 +247,8 @@ var ImageView = ( function(imageView) {
         var p2 = rect.getBottomRight();
         var topLeft = {x: Math.min(p1.x, p2.x), y : Math.min(p1.y, p2.y)};
         var bottomRight = {x: Math.max(p1.x, p2.x),y: Math.max(p1.y, p2.y)}
+        console.log("top left ", topLeft);
+        console.log("bottom right ", bottomRight);
         var norm = new OpenSeadragon.Rect(topLeft.x, topLeft.y, bottomRight.x-topLeft.x, bottomRight.y-topLeft.y);
         return norm;
     }
