@@ -28,7 +28,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
         String pathInfo = req.getPathInfo();
         
-        if(pathInfo.startsWith("/view/object/")) {
+        //Always open for image and 3d obejct requests
+        if(pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/image/")) {
             return;
         }
 
