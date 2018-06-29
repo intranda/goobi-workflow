@@ -33,6 +33,7 @@ var ImageView = ( function() {
                 rememberZoom: false,
                 rememberRotation: false,
                 panHomeOnZoomOut: true,
+                showControls: false
             },
             image: {
                 initialRotation: 0,
@@ -156,6 +157,7 @@ var ImageView = ( function() {
                      degrees: this.config.image.initialRotation ? this.config.image.initialRotation : 0,
                      zoomPerClick: 1.0,
                      showRotationControl: true,
+                     showNavigationControl: this.config.global.showControls,
                      minZoomLevel: this.config.global.minZoomLevel,
                      maxZoomLevel: this.config.global.maxZoomLevel,
                      zoomPerScroll: this.config.global.zoomSpeed,
