@@ -1892,7 +1892,7 @@ public class ProcessBean extends BasicBean {
     }
 
     /*************************************************************************************
-     * Getter for showStatistics
+     * Getter for showStatistics  loadProcessProperties();
      * 
      * @return the showStatistics
      *************************************************************************************/
@@ -2737,5 +2737,6 @@ public class ProcessBean extends BasicBean {
     public void changeTemplate() {
         BeanHelper helper = new BeanHelper();
         helper.changeProcessTemplate(processToChange, template);
+        loadProcessProperties();
     }
 }
