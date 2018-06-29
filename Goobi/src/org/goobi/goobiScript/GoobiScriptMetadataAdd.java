@@ -93,7 +93,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
 						// now add the new metadata and save the file
 						addMetadata(ds, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences());
 						p.writeMetadataFile(ff);
-						
+						Thread.sleep(2000);
 						Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata added using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
 		                logger.info("Metadata added using GoobiScript for process with ID " + p.getId());
 						gsr.setResultMessage("Metadata added successfully.");

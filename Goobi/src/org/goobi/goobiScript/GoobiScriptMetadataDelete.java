@@ -98,7 +98,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
 						// now find the metadata field to delete
 						deleteMetadata(ds, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
 						p.writeMetadataFile(ff);
-						
+						Thread.sleep(2000);
 		                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata deleted using GoobiScript: " +  parameters.get("field") + " - " + parameters.get("value"), username);
 		                logger.info("Metadata deleted using GoobiScript for process with ID " + p.getId());
 						gsr.setResultMessage("Metadata deleted successfully.");

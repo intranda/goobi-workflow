@@ -103,7 +103,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
 						// now change the searched metadata and save the file
 						replaceMetadata(ds, parameters.get("field"), parameters.get("search"), replace, p.getRegelsatz().getPreferences());
 						p.writeMetadataFile(ff);
-						
+						Thread.sleep(2000);
 		                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
 		                logger.info("Metadata changed using GoobiScript for process with ID " + p.getId());
 						gsr.setResultMessage("Metadata changed successfully.");
