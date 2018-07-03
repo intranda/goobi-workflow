@@ -1,12 +1,12 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.enums.LogType;
 
@@ -108,8 +109,9 @@ public class ShellScript {
      * @throws FileNotFoundException is thrown if the given executable does not exist.
      */
     public ShellScript(Path executable) throws FileNotFoundException {
-        if (!Files.exists(executable))
+        if (!Files.exists(executable)) {
             throw new FileNotFoundException("Could not find executable: " + executable.toString());
+        }
         command = executable.toString();
     }
 
@@ -144,10 +146,11 @@ public class ShellScript {
      */
     public int run(List<String> args) throws IOException, InterruptedException {
 
-        List<String> commandLine = new ArrayList<String>();
+        List<String> commandLine = new ArrayList<>();
         commandLine.add(command);
-        if (args != null)
+        if (args != null) {
             commandLine.addAll(args);
+        }
         Process process = null;
         try {
             String[] callSequence = commandLine.toArray(new String[commandLine.size()]);
@@ -175,7 +178,7 @@ public class ShellScript {
      * @return A linked list holding the single lines.
      */
     public static LinkedList<String> inputStreamToLinkedList(InputStream myInputStream) {
-        LinkedList<String> result = new LinkedList<String>();
+        LinkedList<String> result = new LinkedList<>();
         Scanner inputLines = null;
         try {
             inputLines = new Scanner(myInputStream);
@@ -184,8 +187,9 @@ public class ShellScript {
                 result.add(myLine);
             }
         } finally {
-            if (inputLines != null)
+            if (inputLines != null) {
                 inputLines.close();
+            }
         }
         return result;
     }
@@ -196,8 +200,9 @@ public class ShellScript {
      * @param inputStream A stream to close.
      */
     private static void closeStream(Closeable inputStream) {
-        if (inputStream == null)
+        if (inputStream == null) {
             return;
+        }
         try {
             inputStream.close();
         } catch (IOException e) {
@@ -212,15 +217,15 @@ public class ShellScript {
         if (parameter.isEmpty()) {
             return 0;
         }
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug(parameter);
         }
-        
+
         String scriptname = parameter.get(0);
         List<String> parameterWithoutCommand = null;
         if (parameter.size() > 1) {
-            parameterWithoutCommand =  parameter.subList(1, parameter.size());
+            parameterWithoutCommand = parameter.subList(1, parameter.size());
         }
         try {
             ShellScript s = new ShellScript(Paths.get(scriptname));
@@ -275,7 +280,7 @@ public class ShellScript {
             }
             s = new ShellScript(Paths.get(scriptname));
 
-            List<String> scriptingArgs = new ArrayList<String>();
+            List<String> scriptingArgs = new ArrayList<>();
             if (paramList != null && !paramList.isEmpty()) {
                 String[] params = null;
                 if (paramList.contains("\"")) {
@@ -301,7 +306,9 @@ public class ShellScript {
                 //                Helper.setMeldung(line);
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + msg);
-            Helper.setMeldung(msg);
+            if (StringUtils.isNotBlank(msg)) {
+                Helper.setMeldung(msg);
+            }
             if (s.getStdErr().size() > 0) {
                 err = ShellScript.ERRORLEVEL_ERROR;
                 String message = "";
@@ -310,7 +317,9 @@ public class ShellScript {
                 }
                 Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + nonSpacesafeScriptingCommand
                         + "': " + message);
-                Helper.setFehlerMeldung(message);
+                if (StringUtils.isNotBlank(message)) {
+                    Helper.setFehlerMeldung(message);
+                }
             }
         } catch (FileNotFoundException e) {
             logger.error("FileNotFoundException in callShell2()", e);
