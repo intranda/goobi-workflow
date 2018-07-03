@@ -3,12 +3,12 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.goobi.org
  *          - http://launchpad.net/goobi-production
  *          - http://gdz.sub.uni-goettingen.de
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
+import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -57,7 +58,6 @@ import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -83,7 +83,7 @@ public class BatchStepHelper {
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
-    private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
+    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
     private Integer container;
     private String myProblemStep;
     private String mySolutionStep;
@@ -94,10 +94,10 @@ public class BatchStepHelper {
     @Getter @Setter private String secondContent = "";
     @Getter @Setter private String thirdContent = "";
     private HashMap <Integer, Boolean> containerAccess;
-    
+
     private String script;
     private WebDav myDav = new WebDav();
-    private List<String> processNameList = new ArrayList<String>();
+    private List<String> processNameList = new ArrayList<>();
 
     public BatchStepHelper(List<Step> steps) {
         this.steps = steps;
@@ -111,7 +111,7 @@ public class BatchStepHelper {
             loadProcessProperties(this.currentStep);
         }
     }
-    
+
     public BatchStepHelper(List<Step> steps, Step inStep) {
         this.steps = steps;
         for (Step s : steps) {
@@ -176,7 +176,7 @@ public class BatchStepHelper {
             if (s.getProzess().getTitel().equals(processName)) {
                 this.currentStep = s;
                 loadProcessProperties(this.currentStep);
-                
+
                 //try to load the same step in step-managed-bean
                 StepBean sb = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
                 sb.setMySchritt(s);
@@ -263,22 +263,22 @@ public class BatchStepHelper {
     }
 
     public HashMap<Integer, Boolean> getContainerAccess() {
-		return containerAccess;
-	}
-    
+        return containerAccess;
+    }
+
     private void loadProcessProperties(Step s) {
-    	containerAccess = new HashMap<>();
-    	this.containers = new TreeMap<Integer, PropertyListObject>();
+        containerAccess = new HashMap<>();
+        this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getPropertiesForStep(s);
-        List<Process> pList = new ArrayList<Process>();
+        List<Process> pList = new ArrayList<>();
         for (Step step : this.steps) {
             pList.add(step.getProzess());
         }
         for (ProcessProperty pt : this.processPropertyList) {
-        	if (pt.getContainer()!=0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ){
-            	containerAccess.put(pt.getContainer(), true);
+            if (pt.getContainer()!=0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ){
+                containerAccess.put(pt.getContainer(), true);
             }
-        	if (pt.getProzesseigenschaft() == null) {
+            if (pt.getProzesseigenschaft() == null) {
                 Processproperty pe = new Processproperty();
                 pe.setProzess(s.getProzess());
                 pt.setProzesseigenschaft(pe);
@@ -323,7 +323,7 @@ public class BatchStepHelper {
     }
 
     public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
             if (pp.getContainer() == 0 && pp.getName() != null) {
                 answer.add(pp);
@@ -344,7 +344,7 @@ public class BatchStepHelper {
     }
 
     public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
 
         if (this.container != null && this.container > 0) {
             for (ProcessProperty pp : this.processPropertyList) {
@@ -361,7 +361,7 @@ public class BatchStepHelper {
 
     public String duplicateContainerForSingle() {
         Integer currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() == currentContainer) {
@@ -411,7 +411,7 @@ public class BatchStepHelper {
 
     public String duplicateContainerForAll() {
         Integer currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() == currentContainer) {
@@ -521,8 +521,8 @@ public class BatchStepHelper {
                  */
 
                 List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess()
-                        .getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
-                        Integer.MAX_VALUE);
+                .getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
+                Integer.MAX_VALUE);
 
                 //              List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
                 //                      .add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
@@ -531,7 +531,7 @@ public class BatchStepHelper {
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
                     if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
-                    	step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+                        step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
                     }
                     step.setCorrectionStep();
                     step.setBearbeitungsende(null);
@@ -554,7 +554,7 @@ public class BatchStepHelper {
     }
 
     public List<SelectItem> getPreviousStepsForProblemReporting() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
                 + " AND Reihenfolge < " + this.currentStep.getReihenfolge(), 0, Integer.MAX_VALUE);
 
@@ -564,8 +564,12 @@ public class BatchStepHelper {
         return answer;
     }
 
+    public int getSizeOfPreviousStepsForProblemReporting() {
+        return getPreviousStepsForProblemReporting().size();
+    }
+
     public List<SelectItem> getNextStepsForProblemSolution() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
                 + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
@@ -573,6 +577,10 @@ public class BatchStepHelper {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
         }
         return answer;
+    }
+
+    public int getSizeOfNextStepsForProblemSolution() {
+        return getNextStepsForProblemSolution().size();
     }
 
     public String SolveProblemForSingle() {
@@ -622,13 +630,13 @@ public class BatchStepHelper {
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
                 List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess()
-                        .getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
-                        Integer.MAX_VALUE);
+                .getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
+                Integer.MAX_VALUE);
 
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
                     if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
-                    	step.setBearbeitungsstatusEnum(StepStatus.DONE);
+                        step.setBearbeitungsstatusEnum(StepStatus.DONE);
                     }
                     step.setBearbeitungsende(now);
                     step.setPrioritaet(Integer.valueOf(0));
@@ -898,13 +906,13 @@ public class BatchStepHelper {
     }
 
     public List<String> getScriptnames() {
-        List<String> answer = new ArrayList<String>();
+        List<String> answer = new ArrayList<>();
         answer.addAll(getCurrentStep().getAllScripts().keySet());
         return answer;
     }
 
     public List<Integer> getContainerList() {
-        return new ArrayList<Integer>(this.containers.keySet());
+        return new ArrayList<>(this.containers.keySet());
     }
 
     // needed for junit
