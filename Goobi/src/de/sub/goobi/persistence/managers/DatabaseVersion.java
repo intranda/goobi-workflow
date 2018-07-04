@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 23;
+    public static final int EXPECTED_VERSION = 24;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -78,7 +78,6 @@ public class DatabaseVersion {
         return 0;
     }
 
-    @SuppressWarnings("fallthrough")
     public static void updateDatabase(int currentVersion) {
         switch (currentVersion) {
             case 0:
@@ -190,13 +189,17 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 22.");
                 }
                 updateToVersion22();
-                
+
             case 22:
                 if (logger.isTraceEnabled()) {
                     logger.trace("Update database to version 23.");
                 }
                 updateToVersion23();
-                
+            case 23:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 24.");
+                }
+                updateToVersion24();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -204,7 +207,24 @@ public class DatabaseVersion {
                     logger.trace("Database is up to date.");
                 }
         }
+    }
 
+    private static void updateToVersion24() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table processlog modify creationDate datetime default CURRENT_TIMESTAMP ");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
     private static void updateToVersion23() {
@@ -223,7 +243,7 @@ public class DatabaseVersion {
                 }
             }
         }
-        
+
     }
 
     /**
@@ -651,7 +671,7 @@ public class DatabaseVersion {
     }
 
     public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
-        List<MatchResult> results = new ArrayList<MatchResult>();
+        List<MatchResult> results = new ArrayList<>();
         for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
             results.add(m.toMatchResult());
         }
