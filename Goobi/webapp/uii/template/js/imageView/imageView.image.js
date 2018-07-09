@@ -455,8 +455,7 @@ var ImageView = ( function() {
       */
      imageView.Image.prototype.scaleToOpenSeadragonCoordinates = function(roi) {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
-         var originalImageSize = {x:this.config.imageWidth, y:this.config.imageHeight};
-         
+         var originalImageSize = {x:this.viewer.tileSources[0].tileSource.width, y:this.viewer.tileSources[0].tileSource.height};
          var displayImageRect = new OpenSeadragon.Rect(0,0,displayImageSize.x, displayImageSize.y);
          var originalImageRect = new OpenSeadragon.Rect(0,0,originalImageSize.x, originalImageSize.y);
          

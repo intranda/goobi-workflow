@@ -127,13 +127,14 @@ var ImageView = ( function(imageView) {
         var overlay = event.userData;
         var context = overlay.viewer.drawer.context;
         var rect = ImageView.convertCoordinatesFromImageToCanvas(overlay.rect, overlay.viewer).times(window.devicePixelRatio);
-        context.beginPath();
+        context.beginPath();        
         context.lineWidth = overlay.style.borderWidth;
         context.strokeStyle = overlay.style.borderColor;
         context.rect(rect.x, rect.y, rect.width, rect.height);
         context.stroke();
-
     }
+    
+    
     
     function _drawPoint(event) {
         var point = event.userData[0].times(window.devicePixelRatio);
