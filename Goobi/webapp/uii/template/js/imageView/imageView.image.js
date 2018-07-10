@@ -118,8 +118,16 @@ var ImageView = ( function() {
                      minWidth = Math.min(minWidth, tileSource.width);
                      minHeight = Math.min(minHeight, tileSource.height);
                      minAspectRatio = Math.min(minAspectRatio, tileSource.aspectRatio);
+                     //make sure we have some values for original image size in config
+                     if(!image.config.image.originalImageWidth) {
+                         image.config.image.originalImageWidth = tileSource.width;
+                     }
+                     if(!image.config.image.originalImageHeight) {
+                         image.config.image.originalImageHeight = tileSource.height;
+                     }
                  }
-                 if(_debug) {                    
+                 if(_debug) {      
+                     console.log("original image size: ",  image.config.image.originalImageWidth,  image.config.image.originalImageHeight )
                      console.log("Min aspect ratio = " + minAspectRatio);                    
                  }
                  var x = 0;
@@ -132,7 +140,7 @@ var ImageView = ( function() {
                              y: 0,
                          }
                      x += tileSources[i].width;
-                     }              
+                     } 
                  var pr = image.loadImage(tileSources);
                  return pr;
              });
@@ -145,7 +153,7 @@ var ImageView = ( function() {
              }
                
              this.loadFooter();            
-
+             var $div = $("#" + this.config.global.divId);
              
              var osConfig = {
                      tileSources: tileSources,
@@ -159,7 +167,7 @@ var ImageView = ( function() {
                      showRotationControl: true,
                      showNavigationControl: this.config.global.showControls,
                      minZoomLevel: this.config.global.minZoomLevel,
-                     maxZoomLevel: this.config.global.maxZoomLevel,
+                     maxZoomLevel: this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width(),
                      zoomPerScroll: this.config.global.zoomSpeed,
                      mouseNavEnabled: this.config.global.zoomSpeed > 1,
                      homeButton: this.config.global.zoomHome,
@@ -180,7 +188,6 @@ var ImageView = ( function() {
                          bottom: this.config.global.footerHeight
                      }
                  }
-             
 //             console.log("osconfig ", osConfig);
              
              this.viewer = new OpenSeadragon( osConfig );
@@ -433,9 +440,9 @@ var ImageView = ( function() {
       */
      imageView.Image.prototype.scaleToRotatedImage = function(roi) {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
-         var originalImageSize = {x:this.sizes.originalImageSize.x, y:this.sizes.originalImageSize.y};
-         console.log("displayImageSize", displayImageSize);
-         console.log("originalImageSize", originalImageSize)
+//         var originalImageSize = {x:this.sizes.originalImageSize.x, y:this.sizes.originalImageSize.y};
+         var originalImageSize = {x:this.config.image.originalImageWidth, y:this.config.image.originalImageHeight};
+
          var displayImageRect = new OpenSeadragon.Rect(0,0,displayImageSize.x, displayImageSize.y);
          var originalImageRect = new OpenSeadragon.Rect(0,0,originalImageSize.x, originalImageSize.y);
          
@@ -455,7 +462,10 @@ var ImageView = ( function() {
       */
      imageView.Image.prototype.scaleToOpenSeadragonCoordinates = function(roi) {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
-         var originalImageSize = {x:this.viewer.tileSources[0].tileSource.width, y:this.viewer.tileSources[0].tileSource.height};
+//         var originalImageSize = {x:this.viewer.tileSources[0].tileSource.width, y:this.viewer.tileSources[0].tileSource.height};
+         var originalImageSize = {x:this.config.image.originalImageWidth, y:this.config.image.originalImageHeight};
+
+//         console.log("originalImageSize", originalImageSize);
          var displayImageRect = new OpenSeadragon.Rect(0,0,displayImageSize.x, displayImageSize.y);
          var originalImageRect = new OpenSeadragon.Rect(0,0,originalImageSize.x, originalImageSize.y);
          

@@ -116,7 +116,7 @@ var ImageView = ( function( imageView ) {
         },
         imageView.ZoomSlider.prototype.setLabel = function(scale) {
             if(this.$label.length && this.image.sizes) {
-                var imageWidth = this.image.sizes.originalImageSize.x;
+                var imageWidth = this.image.config.image.originalImageWidth;
                 var imageViewWidth = this.image.container.width();
                 scale = parseFloat(scale)/imageWidth*imageViewWidth;
                 this.$label.val((scale*100).toFixed(1));
@@ -128,7 +128,7 @@ var ImageView = ( function( imageView ) {
                 if(_debug) {
                     console.log("scale to ", input);
                 }
-                var imageWidth = this.image.sizes.originalImageSize.x;
+                var imageWidth = this.image.config.image.originalImageWidth;
                 var imageViewWidth = this.image.container.width();
                 var scale = imageScale*imageWidth/imageViewWidth/100.0;
                 if(scale < this.image.viewer.viewport.getMinZoom()) {
