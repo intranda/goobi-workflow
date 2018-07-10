@@ -113,7 +113,6 @@
 									    }
 									};		
 									
-									 var lightIntensity = 0.7;
 									 var worldConfig = {
 									 			controls: {
 									 			    xAxis: {
@@ -134,72 +133,10 @@
 									 			    zoom: {
 									 			        resetZoom: '#reset#zoom'
 									 			    }
-									 			},    
-									    		camera: {
-									    			fieldOfView: 35,
-									    			viewPadding: 0,
-									    			nearPlane: 0.1,
-									    			farPlane: 10000,
-									    			position:  { x:0, y:0, z: 0 },
-									    			offset:  { x:0, y:0, z:0 },
-									    		},
+									 			},
 									    		container: {
 									    			id: "mainImage"
 									    		},
-									    		light: {
-									    			background: {
-									    				color: 0xffffff
-									    			},
-									    			ambient: {
-									    				color: 0x909090,
-									    				intensity: lightIntensity
-									    			},
-									    			directional: [
-// 									    				{//front spot
-// 										    				color: 0xaaaaaa,
-// 										    				intensity: lightIntensity,
-// 										    				position: { x:0, y:0, z:10 },
-// 										    				castShadow: true,
-// 										    				showHelper: false
-// 										    			},
-// 										    			{//back spot
-// 										    				color: 0xaaaaaa,
-// 										    				intensity: lightIntensity,
-// 										    				position: { x:0, y:0, z:-10 },
-// 										    				castShadow: true,
-// 										    				showHelper: false
-// 										    			},
-										    			{//top spot
-										    				color: 0xaaaaaa,
-										    				intensity: lightIntensity,
-										    				position: { x:0, y:10, z:0 },
-										    				castShadow: true,
-										    				showHelper: false
-										    			},
-										    			{//bottom spot
-										    				color: 0xaaaaaa,
-										    				intensity: lightIntensity,
-										    				position: { x:0, y:-10, z:0 },
-										    				castShadow: true,
-										    				showHelper: false
-										    			},
-										    			{//left spot
-										    				color: 0xaaaaaa,
-										    				intensity: lightIntensity,
-										    				position: { x:-10, y:0, z:0 },
-										    				castShadow: true,
-										    				showHelper: false
-										    			},
-										    			{//right spot
-										    				color: 0xaaaaaa,
-										    				intensity: lightIntensity,
-										    				position: { x:10, y:0, z:0 },
-										    				castShadow: true,
-										    				showHelper: false
-										    			}
-									    			]
-									    		},
-									    		
 										 };
 									 	var mediaType = "#{Metadaten.image.type}";
 									 	console.log("Media type = ", mediaType);

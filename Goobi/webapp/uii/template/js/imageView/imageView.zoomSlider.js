@@ -30,14 +30,13 @@ var ImageView = ( function( imageView ) {
                 console.log( 'imageView.zoomSlider.init' );
                 console.log( '##############################' );
             }
-            if ( $(this.config.zoomSlider).length > 0 ) {
                 this.addZoomSlider(this.config.zoomSlider );
                 this.buttonToZoom(this.image.viewer.viewport.getHomeZoom());
                 var zoom = this;
-                this.image.viewer.addHandler( 'zoom', function( data ) {
-                    zoom.buttonToZoom( data.zoom );
-                } );
-            }
+                    this.image.observables.viewerZoom.subscribe( function( event ) {
+                        var scale = zoom.image.viewer.viewport.getZoom();
+                        zoom.buttonToZoom( scale );
+                    });
         };
         imageView.ZoomSlider.prototype.exists = function() {
             return this.$element.length && this.$button.length;
@@ -94,24 +93,26 @@ var ImageView = ( function( imageView ) {
                 return;
             }
 
-            var factor = ( scale - this.image.viewer.viewport.getMinZoom() ) / ( this.image.viewer.viewport.getMaxZoom() - this.image.viewer.viewport.getMinZoom() );
-
-            factor = 1 / Math.atan( this.config.sliderDilation ) * Math.atan( this.config.sliderDilation * factor );
-            var newPos = factor * ( this.absoluteWidth - this.$button.width() );
-
-            
-            if ( Math.abs( this.image.viewer.viewport.getMaxZoom() - scale ) < 0.0000000001 ) {
-                newPos = this.absoluteWidth - this.$button.width();
+            if(this.$button) { 
+                var factor = ( scale - this.image.viewer.viewport.getMinZoom() ) / ( this.image.viewer.viewport.getMaxZoom() - this.image.viewer.viewport.getMinZoom() );
+                
+                factor = 1 / Math.atan( this.config.sliderDilation ) * Math.atan( this.config.sliderDilation * factor );
+                var newPos = factor * ( this.absoluteWidth - this.$button.width() );
+                
+                
+                if ( Math.abs( this.image.viewer.viewport.getMaxZoom() - scale ) < 0.0000000001 ) {
+                    newPos = this.absoluteWidth - this.$button.width();
+                }
+                
+                if ( newPos < 0 ) {
+                    newPos = 0;
+                }
+                
+                this.$button.css( {
+                    left: newPos
+                } );
+                this.buttonPosition = newPos;
             }
-            
-            if ( newPos < 0 ) {
-                newPos = 0;
-            }
-            
-            this.$button.css( {
-                left: newPos
-            } );
-            this.buttonPosition = newPos;
             this.setLabel(scale);
         },
         imageView.ZoomSlider.prototype.setLabel = function(scale) {

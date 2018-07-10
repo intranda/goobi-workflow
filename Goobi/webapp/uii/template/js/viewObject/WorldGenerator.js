@@ -3,32 +3,72 @@
  */
 
 var WorldGenerator = (function() {
-	
+    var _lightIntensity = 0.7;
 	var _defaultConfig = {
-    		camera: {
-    			fieldOfView: 35,
-    			nearPlane: 0.1,
-    			farPlane: 10000,
-    			offset:  { x:0, y:0, z:5 },
-    		},
+	        camera: {
+                fieldOfView: 35,
+                viewPadding: 0,
+                nearPlane: 0.1,
+                farPlane: 10000,
+                position:  { x:0, y:0, z: 0 },
+                offset:  { x:0, y:0, z:0 },
+            },
     		container: {
     			id: "container"
     		},
     		light: {
-    			background: {
-    				color: 0xffffff
-    			},
-    			ambient: {
-    				color: 0x909090,
-    				intensity: 0.5
-    			},
-    			directional: {
-    				color: 0xaaaaaa,
-    				intensity: 1,
-    				position: { x:100, y:100, z:100 },
-    				castShadow: true
-    			}
-    		}
+                background: {
+                    color: 0xffffff
+                },
+                ambient: {
+                    color: 0x909090,
+                    intensity: _lightIntensity
+                },
+                directional: [
+//                  {//front spot
+//                      color: 0xaaaaaa,
+//                      intensity: lightIntensity,
+//                      position: { x:0, y:0, z:10 },
+//                      castShadow: true,
+//                      showHelper: false
+//                  },
+//                  {//back spot
+//                      color: 0xaaaaaa,
+//                      intensity: lightIntensity,
+//                      position: { x:0, y:0, z:-10 },
+//                      castShadow: true,
+//                      showHelper: false
+//                  },
+                    {//top spot
+                        color: 0xaaaaaa,
+                        intensity: _lightIntensity,
+                        position: { x:0, y:10, z:0 },
+                        castShadow: true,
+                        showHelper: false
+                    },
+                    {//bottom spot
+                        color: 0xaaaaaa,
+                        intensity: _lightIntensity,
+                        position: { x:0, y:-10, z:0 },
+                        castShadow: true,
+                        showHelper: false
+                    },
+                    {//left spot
+                        color: 0xaaaaaa,
+                        intensity: _lightIntensity,
+                        position: { x:-10, y:0, z:0 },
+                        castShadow: true,
+                        showHelper: false
+                    },
+                    {//right spot
+                        color: 0xaaaaaa,
+                        intensity: _lightIntensity,
+                        position: { x:10, y:0, z:0 },
+                        castShadow: true,
+                        showHelper: false
+                    }
+                ]
+            }
     };
 	
 	var _getObjectLoader = function(config, manager) {

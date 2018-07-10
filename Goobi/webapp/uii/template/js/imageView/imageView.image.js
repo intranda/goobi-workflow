@@ -21,7 +21,7 @@ var ImageView = ( function() {
                     
                     }],
                 zoomSpeed: 1.25,
-                maxZoomLevel: 20,
+                maxZoomLevel: 2,
                 minZoomLevel: 1,
                 imageControlsActive: true,
                 visibilityRatio: 0.2,
@@ -154,7 +154,6 @@ var ImageView = ( function() {
                
              this.loadFooter();            
              var $div = $("#" + this.config.global.divId);
-             
              var osConfig = {
                      tileSources: tileSources,
                      id: this.config.global.divId,
@@ -166,7 +165,7 @@ var ImageView = ( function() {
                      zoomPerClick: 1.0,
                      showRotationControl: true,
                      showNavigationControl: this.config.global.showControls,
-                     minZoomLevel: this.config.global.minZoomLevel,
+                     minZoomLevel: this.config.global.minZoomLeve,//Math.min(this.config.global.minZoomLevel, this.config.global.minZoomLevel*this.config.image.originalImageWidth/$div.width()),
                      maxZoomLevel: this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width(),
                      zoomPerScroll: this.config.global.zoomSpeed,
                      mouseNavEnabled: this.config.global.zoomSpeed > 1,
@@ -188,7 +187,7 @@ var ImageView = ( function() {
                          bottom: this.config.global.footerHeight
                      }
                  }
-//             console.log("osconfig ", osConfig);
+             console.log("osconfig ", osConfig);
              
              this.viewer = new OpenSeadragon( osConfig );
              var result = Q.defer();
