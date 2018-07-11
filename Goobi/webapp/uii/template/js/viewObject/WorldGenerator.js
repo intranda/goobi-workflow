@@ -90,7 +90,7 @@ var WorldGenerator = (function() {
 		case "gltf":
             return new THREE.GLTFDRACOLoader(manager);
 		default:
-			console.log("not loader defined for " + suffix);
+			console.log("no loader defined for " + suffix);
 		}
 	}
 	
@@ -271,7 +271,6 @@ var WorldGenerator = (function() {
                 if($rotateLeftZ.length > 0) {
                     $rotateLeftZ.on("click", function(event) {
                         world.rotate(object, _getRotated(object.rotation, {z:-90}));
-                        console.log("object ", object);
                         world.center(object, object.position);
 //                        world.rotateLights(-90, 'z');
                     })
@@ -374,6 +373,8 @@ var WorldGenerator = (function() {
 			this.scene.add(plane);
 		}
 		loadObject(config) {
+		    console.log("Load object ", config);
+		    
 			var loader = _getObjectLoader(config, this.loadingManager);
 			var world = this;
 			var deferred = Q.defer();
@@ -423,7 +424,6 @@ var WorldGenerator = (function() {
 		getBoundingSphere(object) {
 			var sphere;
 			if(object.geometry && object.geometry.computeBoundingSphere) {
-				console.log("geometry = ", object.geometry);
 				if(!object.geometry.boundingSphere) {				
 					object.geometry.computeBoundingSphere();
 				}
@@ -491,7 +491,6 @@ var WorldGenerator = (function() {
 		    for(var index in object.children) {
 		        this.disposeObject(object.children[index]);
 		    }
-		    console.log("disposing of object ", object);
 		    if(object.geometry) {
 		        if(object.geometry.dispose) {		            
 		            object.geometry.dispose();
