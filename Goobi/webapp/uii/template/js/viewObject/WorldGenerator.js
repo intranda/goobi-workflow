@@ -470,6 +470,9 @@ var WorldGenerator = (function() {
 			return directionalLight;
 		}
 		render() {
+		    if(this.disposed) {
+		        return;
+		    }
 			this.time +=1;
 			this.renderer.render(this.scene, this.camera);
 			this.tick.onNext(this.time);
@@ -477,6 +480,36 @@ var WorldGenerator = (function() {
 			window.requestAnimationFrame(function() {
 				world.render();
 			});
+		}
+		
+		dispose() {
+		    this.disposeObject(this.object);
+		    this.disposed = true;
+		}
+		
+		disposeObject(object) {
+		    for(var index in object.children) {
+		        this.disposeObject(object.children[index]);
+		    }
+		    console.log("disposing of object ", object);
+		    if(object.geometry) {
+		        if(object.geometry.dispose) {		            
+		            object.geometry.dispose();
+		        }
+		        object.geometry = undefined;
+		    }
+		    if(object.material) {
+		        if(object.material.map) {
+		            if(object.material.map.dispose) {		                
+		                object.material.map.dispose();
+		            }
+	                object.material.map = undefined;
+	            }
+		        if(object.material.dispose) {		            
+		            object.material.dispose();
+		        }
+                object.material = undefined;
+            }
 		}
 	}
 	

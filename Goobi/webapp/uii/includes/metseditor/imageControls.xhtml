@@ -32,7 +32,7 @@
                             <i class="fa fa-file-text-o"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                              <f:setPropertyActionListener value="#{NavigationForm.uiStatus.mets_showOcr eq 'on'?'':'on'}" target="#{NavigationForm.uiStatus.mets_showOcr}" />
-                            <f:ajax execute="@form" render="@form :bigimage" />
+                            <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources"/>
                         </h:commandLink>
                     </li>
 
@@ -42,14 +42,14 @@
                       
                         <p:autoComplete id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('goButton',event)" />
                         <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
-                            <f:ajax execute="@form" render="@form :bigimage" />
+                            <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources" />
                         </h:commandButton>
                     </li>
 
                     <li>
                         <h:commandLink action="#{Metadaten.reduceContainerWidth}" title="#{msgs.mets_zoomOut}" id="zoomMinus" styleClass="btn2 font-bigger">
                             <i class="fa fa-search-minus" />
-                            <f:ajax execute="@form" render="@form :bigimage" />
+                            <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources"/>
                         </h:commandLink>
                         <!-- change Zoom -->
                         <x:outputText id="txtZoom1" forceId="true" value="#{Metadaten.containerWidth}px" onclick="document.getElementById('txtZoom2').style.display='inline';
@@ -64,7 +64,7 @@
 
                         <h:commandLink action="#{Metadaten.increaseContainerWidth}" title="#{msgs.mets_zoomIn}" id="zoomPlus" styleClass="btn2 font-bigger">
                             <i class="fa fa-search-plus" />
-                            <f:ajax execute="@form" render="@form :bigimage" />
+                            <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources"/>
                         </h:commandLink>
                     </li>
                 </ul>

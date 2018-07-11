@@ -199,7 +199,18 @@
 									 	            })
 									 	}
 									 
-									    
+									    function freeJSResources(data) {
+									        if(!data || data.status == 'begin') {									            
+    									        if(viewImage) {
+    									            console.log("closing OpenSeadragon viewer");
+    									            viewImage.close();
+    									        }
+    									        if(world) {
+    									            console.log("disposing 3d scene");
+    									            world.dispose();
+    									        }
+									        }
+									    }
                                     </script>
                                 </h:panelGroup>
                             </div>
