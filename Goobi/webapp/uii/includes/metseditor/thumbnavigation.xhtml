@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
     </composite:interface>
@@ -42,6 +42,16 @@
             </h:commandLink>
 
 			<h:outputText styleClass="font-light" value="#{msgs.countImages}: #{Metadaten.sizeOfImageList}"></h:outputText>
+            
+            
+                        <!-- gehezu-Schaltknopf -->
+<!--                         <h:outputText value="#{msgs.geheZuBild}:" styleClass="margin-left-10 margin-right-10" title="#{msgs.geheZuImage}" /> -->
+                      
+<!--                         <p:autoComplete id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('top:loadThumbnails',event)" /> -->
+<!--                         <h:commandButton value="go" id="loadThumbnails" action="#{Metadaten.loadImageInThumbnailList}" style="margin-left:5px; display:none"> -->
+<!--                             <f:ajax execute="@form" render="@form" /> -->
+<!--                         </h:commandButton> -->
+                    
         </div>
         <!-- // navigation buttons for Thumbnail list -->
 
