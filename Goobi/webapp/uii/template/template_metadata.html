@@ -330,8 +330,10 @@
     
     function paginierungWertAnzeigen() {
     	var paginationInputFields = document.getElementById("paginationInputFields");
+    	var fictitiousField = document.getElementById("fictitious");
     	var inputBoxElement = document.getElementById("paginierungWert");
     	paginationInputFields.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
+    	fictitiousField.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
         if ($("#paginationType").val() == 2 || $("#paginationType").val() == 5) {
             inputBoxElement.value = 'I';
         }

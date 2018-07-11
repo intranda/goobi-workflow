@@ -227,16 +227,44 @@
 	 		<!-- thumbnailview -->
 	        <h:panelGroup rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
 	            <h:form prependId="false" id="thumbnails" style="padding-left:20px;">
-  
-	                <div class="row pull-center" style="margin-left:20px">
-                         <div class="row box-title image-navigation">
-                         <f:subview id="top">
-                         	 <ui:include id="firstNav" src="thumbnavigation.xhtml" />
-                             </f:subview>
-                         </div>
-                     </div>
-	             
-	                <!-- Thumbnail list -->
+
+                        <div
+                            class="row pull-center"
+                            style="margin-left: 20px">
+                            <div class="row box-title image-navigation">
+                                <f:subview id="top">
+                                    <ui:include
+                                        id="firstNav"
+                                        src="thumbnavigation.xhtml" />
+                                    <!-- gehezu-Schaltknopf -->
+                                    <h:panelGroup style="margin-top: 10px;" layout="block">
+                                        <h:outputText
+                                            value="#{msgs.geheZuBild}:"
+                                            styleClass="margin-left-10 margin-right-10"
+                                            title="#{msgs.geheZuImage}" />
+    
+                                        <p:autoComplete 
+                                            id="jumpToImage"
+                                            forceId="true"
+                                            value="#{Metadaten.bildNummerGeheZuCompleteString}"
+                                            styleClass="autocomplete"
+                                            completeMethod="#{Metadaten.autocomplete}"
+                                            onkeypress="return submitEnter('top:loadThumbnails',event)" />
+                                        <h:commandButton
+                                            value="go"
+                                            id="loadThumbnails"
+                                            action="#{Metadaten.loadImageInThumbnailList}"
+                                            style="margin-left:5px; display:none">
+                                            <f:ajax
+                                                execute="@form"
+                                                render="@form" />
+                                        </h:commandButton>
+                                    </h:panelGroup>
+                                </f:subview>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnail list -->
 	                <div class="row margin-top-most margin-bottom-most" style="margin-left:20px">
 	             
 			             <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
@@ -270,7 +298,6 @@
                     <f:subview id="bottom">
 	                    <ui:include  src="thumbnavigation.xhtml" />
                         </f:subview>
-<!-- 	                    <x:inputText id="hiddenImageNoThumb" style="display: none" value="#{Metadaten.imageIndex}" /> -->
 	                </div>
 	                
 	                <script type="text/javascript">
