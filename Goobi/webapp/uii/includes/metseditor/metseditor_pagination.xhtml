@@ -127,8 +127,8 @@ xmlns:p="http://primefaces.org/ui">
 							</div>
                			</div>
 
-                        <div class="margin-bottom-10" id="fictitious">
-                            <h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}" />
+                        <div class="margin-bottom-10" id="fictitious"  style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
+                            <h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}"/>
                             <h:outputLabel for="checkbox-fictitious" value=" #{msgs.paginationFictitious}" styleClass="font-normal margin-left-5" />
                         </div>
 
