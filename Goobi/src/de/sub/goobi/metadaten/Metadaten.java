@@ -2004,6 +2004,9 @@ public class Metadaten {
                 break;
             default:
                 type = Paginator.Type.UNCOUNTED;
+                fictitious = false;
+                paginationPrefix = "";
+                paginationSuffix = "";
                 break;
         }
 
