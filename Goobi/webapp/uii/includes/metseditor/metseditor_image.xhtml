@@ -274,7 +274,10 @@
     										<ui:fragment rendered="#{image.type == 'image'}">
                                                 <canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}" title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}" id="thumbnail-#{status.index}"></canvas>
                                             </ui:fragment>
-                                            <ui:fragment rendered="#{image.type != 'image'}">
+                                            <ui:fragment rendered="#{image.type == 'object' or image.type == 'x3dom'}">
+                                                <img class="thumbnail_placeholder" src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/goobi_3d_object_placeholder.png"/>
+                                            </ui:fragment>
+                                            <ui:fragment rendered="#{image.type != 'image' and image.type != 'object' and  image.type != 'x3dom'}">
                                                 <img class="thumbnail_placeholder" src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/thumbnail-placeholder.png"/>
                                             </ui:fragment>
     										<x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
