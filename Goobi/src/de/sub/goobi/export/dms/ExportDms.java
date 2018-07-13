@@ -61,6 +61,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.DeepCopyFileVisitor;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -409,25 +410,28 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             /* jetzt den eigentlichen Kopiervorgang */
-            List<Path> files = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
-            for (Path file : files) {
-                Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
-                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
-                
-                //for 3d object files look for "helper files" with the same base name and copy them as well
-                if(NIOFileUtils.objectNameFilter.accept(file)) {
-                    List<Path> helperFiles = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), 
-                            new NIOFileUtils.ObjectHelperNameFilter(file));
-                    for (Path helperFile : helperFiles) {
-                        Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());
-                        if(Files.isDirectory(helperFile)) {
-                            FileUtils.copyDirectory(helperFile.toFile(), helperTarget.toFile());
-                        } else {
-                            Files.copy(helperFile, helperTarget, NIOFileUtils.STANDARD_COPY_OPTIONS);
-                        }
-                    }
-                }
-            }
+//            List<Path> files = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
+//            for (Path file : files) {
+//                Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
+//                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
+//                
+//                //for 3d object files look for "helper files" with the same base name and copy them as well
+//                if(NIOFileUtils.objectNameFilter.accept(file)) {
+//                    List<Path> helperFiles = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), 
+//                            new NIOFileUtils.ObjectHelperNameFilter(file));
+//                    for (Path helperFile : helperFiles) {
+//                        Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());
+//                        if(Files.isDirectory(helperFile)) {
+//                            FileUtils.copyDirectory(helperFile.toFile(), helperTarget.toFile());
+//                        } else {
+//                            Files.copy(helperFile, helperTarget, NIOFileUtils.STANDARD_COPY_OPTIONS);
+//                        }
+//                    }
+//                }
+//            }
+            
+            //deep copy of the tiff dir using walk file tree
+            Files.walkFileTree(Paths.get(myProzess.getImagesTifDirectory(true)), new DeepCopyFileVisitor(zielTif));
         }
 
         if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {

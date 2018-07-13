@@ -30,7 +30,7 @@ THREE.OBJMTLLoader.prototype = {
 			var textureLoader = new THREE.MTLLoader(this.manager);
 			var objectLoader = new THREE.OBJLoader(this.manager);
 
-			textureLoader.setTexturePath(baseResourceUrl);
+			textureLoader.setTexturePath(mtlUrl.substring(0, mtlUrl.lastIndexOf("/")) + "/");
 
 			var texture = textureLoader.load(mtlUrl, function(materials) {
 				materials.preload();
