@@ -434,7 +434,7 @@ var ImageView = ( function() {
 //     
      
      /**
-      * input: a rectangle in the OpenSeadragon coordinate system
+      * input: a rectangle or point in the OpenSeadragon coordinate system
       * output: the same rectangle scaled to the size of the original image rotated by the current viewport rotation
       */
      imageView.Image.prototype.scaleToRotatedImage = function(roi) {
@@ -456,8 +456,8 @@ var ImageView = ( function() {
      }
      
      /**
-      * input: a rectangle in the original image rotated by the current viewport rotation
-      * output: the same rectangle scaled to OpenSeadragon coordinates
+      * input: a rectangle or point in the original image rotated by the current viewport rotation
+      * output: the same rectangle/point scaled to OpenSeadragon coordinates
       */
      imageView.Image.prototype.scaleToOpenSeadragonCoordinates = function(roi) {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
@@ -477,6 +477,19 @@ var ImageView = ( function() {
          roi = roi.times(1/scale);
          return roi;
      }
+     
+     imageView.Image.prototype.convertRectFromOpenSeadragonToImage = function(rect) {
+         var rectInCanvas = ImageView.convertRectFromImageToRotatedImage(rect, this.viewer);
+         var rectInImage = this.scaleToRotatedImage(rectInCanvas);
+         return rectInImage;
+     }
+     
+     imageView.Image.prototype.convertRectFromImageToOpenSeadragon = function(rect) {
+         var rectInCanvas = this.scaleToOpenSeadragonCoordinates(rect);
+         var rectInOS = ImageView.convertRectFromRotatedImageToImage(rectInCanvas, this.viewer);
+         return rectInOS;
+     }
+     
      
      imageView.convertCoordinatesFromImageToCanvas = function(rect, viewer) {
          var scale = viewer.drawer.context.canvas.width/viewer.viewport.getBoundsNoRotate(true).width;
@@ -573,6 +586,52 @@ var ImageView = ( function() {
          var rect_fromTopLeft_unrotated = rect_fromCenter_unrotated.minus(topLeft_fromCenter_unrotated);
          var rect_unrotated = new OpenSeadragon.Rect(rect_fromTopLeft_unrotated.x-rect.width/2.0, rect_fromTopLeft_unrotated.y-rect.height/2.0, rect.width, rect.height);
          return rect_unrotated;
+     }
+     
+     imageView.convertPointFromImageToRotatedImage = function(point, viewer) {
+         
+         var rotation = viewer.viewport.getRotation();
+         var sourceBounds = new OpenSeadragon.Rect(0,0,viewer.source.width, viewer.source.height);
+         var sourceBounds_rotated = _getRotatedBounds(sourceBounds, rotation);
+         var aspectRatio_unrotated = sourceBounds.width/sourceBounds.height;
+         var aspectRatio_rotated = sourceBounds_rotated.width/sourceBounds_rotated.height;
+         
+         var imageBounds_unrotated = new OpenSeadragon.Rect(0,0, 1.0, 1/aspectRatio_unrotated); 
+         var imageBounds_rotated = _getRotatedBounds(imageBounds_unrotated, rotation);
+
+         
+         var point_fromTopLeft_unrotated = point
+         var topLeft_fromCenter_unrotated = imageBounds_unrotated.getCenter().times(-1);
+         var point_fromCenter_unrotated = topLeft_fromCenter_unrotated.plus(point_fromTopLeft_unrotated);
+
+         var point_fromCenter_rotated = _rotate(point_fromCenter_unrotated, rotation, true);
+
+         var topLeft_fromCenter_rotated = new OpenSeadragon.Point(imageBounds_rotated.width/2.0, imageBounds_rotated.height/2.0).times(-1);
+         var point_fromTopLeft_rotated = point_fromCenter_rotated.minus(topLeft_fromCenter_rotated);
+         return point_fromTopLeft_rotated;
+     }
+     
+     imageView.convertPointFromRotatedImageToImage = function(point, viewer) {
+
+         var rotation = viewer.viewport.getRotation();
+         var sourceBounds = new OpenSeadragon.Rect(0,0,viewer.source.width, viewer.source.height);
+         var sourceBounds_rotated = _getRotatedBounds(sourceBounds, rotation);
+         var aspectRatio_unrotated = sourceBounds.width/sourceBounds.height;
+         var aspectRatio_rotated = sourceBounds_rotated.width/sourceBounds_rotated.height;
+         
+         var imageBounds_unrotated = new OpenSeadragon.Rect(0,0, 1.0, 1/aspectRatio_unrotated); 
+         var imageBounds_rotated = _getRotatedBounds(imageBounds_unrotated, rotation);
+
+         var topLeft_fromCenter_unrotated = imageBounds_unrotated.getCenter().times(-1);
+         var topLeft_fromCenter_rotated = new OpenSeadragon.Point(imageBounds_rotated.width/2.0, imageBounds_rotated.height/2.0).times(-1);
+         
+         var point_fromTopLeft_rotated = point;
+         var point_fromCenter_rotated = topLeft_fromCenter_rotated.plus(point_fromTopLeft_rotated);
+
+         var point_fromCenter_unrotated = _rotate(point_fromCenter_rotated, rotation, false);
+
+         var point_fromTopLeft_unrotated = point_fromCenter_unrotated.minus(topLeft_fromCenter_unrotated);
+         return point_fromTopLeft_unrotated;
      }
      
      imageView.getPointInRotatedImage = function(point, viewer) {

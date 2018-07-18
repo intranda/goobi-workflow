@@ -31,11 +31,13 @@ var ImageView = ( function(imageView) {
     }
 
     imageView.Overlay.prototype.draw = function() {
+        if(this.eventHandler) {            
+            this.viewer.removeHandler( 'update-viewport', this.eventHandler, this );
+        }
         _drawRect({userData: this});
         this.eventHandler = function(event) {
             _drawRect(event)
         }
-//        this.viewer.removeHandler( 'update-viewport', _drawRect, this );
         this.viewer.addHandler( 'update-viewport', this.eventHandler, this );
     }
     
