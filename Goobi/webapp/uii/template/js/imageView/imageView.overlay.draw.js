@@ -47,7 +47,7 @@ var ImageView = ( function(imageView) {
     }
     imageView.Draw.prototype.updateOverlay = function(position) {
             this.viewer.forceRedraw();
-            let draw = this;
+            var draw = this;
             this.viewer.addOnceHandler( 'update-viewport', function( event ) {
                 if(draw.isDrawing()) {
                     draw.currentRect.x = Math.min(draw.startPoint.x, position.x);
@@ -98,7 +98,7 @@ var ImageView = ( function(imageView) {
 
     function _onViewerPress( event, draw) {
         if ( draw.isActive() && draw.startCondition(event.originalEvent)) {
-            let position = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(window.devicePixelRatio);
+            var position = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(window.devicePixelRatio);
             draw.createEmptyRectAt(position);
             event.preventDefaultAction = false;
             draw.drawing = true;
@@ -108,7 +108,7 @@ var ImageView = ( function(imageView) {
     
     function _onViewerDrag( event, draw) {
         if ( draw.isDrawing() ) {
-            let position = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(window.devicePixelRatio);
+            var position = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(window.devicePixelRatio);
             draw.updateOverlay(position);
             event.preventDefaultAction = true;
             return true; 
@@ -118,8 +118,8 @@ var ImageView = ( function(imageView) {
     function _onViewerDragEnd( event, draw) {
         if ( draw.isDrawing() ) {
             draw.drawing = false;
-            let rect = ImageView.convertCoordinatesFromCanvasToImage(draw.currentRect, draw.viewer);
-            let overlay = new ImageView.Overlay(rect, draw.viewer, draw.style);
+            var rect = ImageView.convertCoordinatesFromCanvasToImage(draw.currentRect, draw.viewer);
+            var overlay = new ImageView.Overlay(rect, draw.viewer, draw.style);
             console.log("rect ", overlay);
             draw.finishedObservable.onNext(overlay);
             event.preventDefaultAction = true;

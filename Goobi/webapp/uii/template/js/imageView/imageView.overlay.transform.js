@@ -34,7 +34,7 @@ var ImageView = ( function(imageView) {
     }
     imageView.Transform.prototype.removeOverlay = function(overlay) {
         if(this.overlays.includes(overlay)) {
-            let index = this.overlays.indexOf(overlay);
+            var index = this.overlays.indexOf(overlay);
             this.overlays.splice(index, 1);
             return true;
         }
@@ -54,7 +54,8 @@ var ImageView = ( function(imageView) {
         return this.transforming;
     }
     imageView.Transform.prototype.getContainingOverlay = function(point) {
-        for(let overlay of this.overlays) {
+        for(var index in this.overlays) {
+            var overlay = this.overlays[i];
             if(overlay.contains(point, _sideClickPrecision, true)) {
                 return overlay;
             } 
@@ -120,8 +121,8 @@ var ImageView = ( function(imageView) {
     function _onViewerMove( event, transform ) {
         if ( !transform.isTransforming() && transform.isActive() && transform.startCondition(event.originalEvent) ) {
             
-            let coords = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
-            let overlay = transform.getContainingOverlay(coords);
+            var coords = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
+            var overlay = transform.getContainingOverlay(coords);
             var viewerElement = transform.viewer.element;
             if(overlay) {
                 transform.currentOverlay = overlay;
@@ -148,7 +149,7 @@ var ImageView = ( function(imageView) {
     function _onViewerPress( event, transform ) {
         if ( transform.isActive()  && transform.startCondition(event.originalEvent)) {
             if ( transform.currentOverlay && transform.drawArea ) {
-                let coords = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
+                var coords = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
                 transform.startPoint = coords;
                 transform.transforming = true;
                 event.preventDefaultAction = true;
@@ -163,8 +164,8 @@ var ImageView = ( function(imageView) {
     
     function _onViewerDrag( event, transform ) {
         if ( transform.isTransforming() ) {
-            let newPoint = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
-            let rect = imageView.convertCoordinatesFromImageToCanvas(transform.currentOverlay.rect, transform.viewer);
+            var newPoint = new OpenSeadragon.Point(event.position.x, event.position.y);//.times(1/window.devicePixelRatio);
+            var rect = imageView.convertCoordinatesFromImageToCanvas(transform.currentOverlay.rect, transform.viewer);
             var topLeft = null;//rect.getTopLeft();
             var bottomRight = null;//rect.getBottomRight();
             // if(_debug)console.log("Draw location = " + newPoint);

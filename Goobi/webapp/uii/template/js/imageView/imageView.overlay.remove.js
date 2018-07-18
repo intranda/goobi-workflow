@@ -30,7 +30,7 @@ var ImageView = ( function(imageView) {
     }
     imageView.Remove.prototype.removeOverlay = function(overlay) {
         if(this.overlays.includes(overlay)) {
-            let index = this.overlays.indexOf(overlay);
+            var index = this.overlays.indexOf(overlay);
             this.overlays.splice(index, 1);
             return true;
         }
@@ -47,7 +47,8 @@ var ImageView = ( function(imageView) {
         return this.active;
     }
     imageView.Remove.prototype.getContainingOverlay = function(point) {
-        for(let overlay of this.overlays) {
+        for(var index in this.overlays) {
+            var overlay = this.overlays[index];
             if(overlay.contains(point, _sideClickPrecision, true)) {
                 return overlay;
             } 
@@ -82,8 +83,8 @@ var ImageView = ( function(imageView) {
     function _onViewerMove( event, remove ) {
         if (remove.isActive() && remove.startCondition(event.originalEvent) ) {
             
-            let coords = event.position;
-            let overlay = remove.getContainingOverlay(coords);
+            var coords = event.position;
+            var overlay = remove.getContainingOverlay(coords);
             var viewerElement = remove.viewer.element;
             if(overlay) {
                 remove.currentOverlay = overlay;

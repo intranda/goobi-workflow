@@ -635,25 +635,25 @@ var ImageView = ( function() {
      }
      
      imageView.getPointInRotatedImage = function(point, viewer) {
-         let aspectRatio = viewer.source.width/viewer.source.height;
-         let rotation = viewer.viewport.getRotation();
-         let imageTopLeft_fromImageCenter = new OpenSeadragon.Point(0.5, 0.5/aspectRatio).times(-1);
+         var aspectRatio = viewer.source.width/viewer.source.height;
+         var rotation = viewer.viewport.getRotation();
+         var imageTopLeft_fromImageCenter = new OpenSeadragon.Point(0.5, 0.5/aspectRatio).times(-1);
          
-         let point_fromImageCenter = imageTopLeft_fromImageCenter.plus(point);
-         let point_fromImageCenter_rotated = _rotate(point_fromImageCenter, rotation, false);
-         let point_fromImageTopLeft_rotated = point_fromImageCenter_rotated.minus(imageTopLeft_fromImageCenter);
+         var point_fromImageCenter = imageTopLeft_fromImageCenter.plus(point);
+         var point_fromImageCenter_rotated = _rotate(point_fromImageCenter, rotation, false);
+         var point_fromImageTopLeft_rotated = point_fromImageCenter_rotated.minus(imageTopLeft_fromImageCenter);
          return point_fromImageTopLeft_rotated;
      }
      
      imageView.getPointInUnrotatedImage = function(point, viewer) {
-         let aspectRatio = viewer.source.width/viewer.source.height;
-         let rotation = viewer.viewport.getRotation();
-         let imageTopLeft_fromImageCenter = new OpenSeadragon.Point(0.5, 0.5/aspectRatio).times(-1);
-         let imageTopLeft_fromImageCenter_rotated = _rotate(imageTopLeft_fromImageCenter, rotation, false);
+         var aspectRatio = viewer.source.width/viewer.source.height;
+         var rotation = viewer.viewport.getRotation();
+         var imageTopLeft_fromImageCenter = new OpenSeadragon.Point(0.5, 0.5/aspectRatio).times(-1);
+         var imageTopLeft_fromImageCenter_rotated = _rotate(imageTopLeft_fromImageCenter, rotation, false);
          
-         let point_fromImageCenter_rotated = imageTopLeft_fromImageCenter_rotated.plus(point);
-         let point_fromImageCenter = _rotate(point_fromImageCenter_rotated, rotation, true);
-         let point_fromImageTopLeft = point_fromImageCenter.minus(imageTopLeft_fromImageCenter);
+         var point_fromImageCenter_rotated = imageTopLeft_fromImageCenter_rotated.plus(point);
+         var point_fromImageCenter = _rotate(point_fromImageCenter_rotated, rotation, true);
+         var point_fromImageTopLeft = point_fromImageCenter.minus(imageTopLeft_fromImageCenter);
          return point_fromImageTopLeft;
      }
 
@@ -967,7 +967,7 @@ var ImageView = ( function() {
       * 
       * @param rect  the rectangle to rotate. must be an object with properties height and width
       * @param degrees   the rotation angle in degrees
-      * @returns     An OpenSeadragon.Rect containing the rotated rectangle in the original coordinate system
+      * @return     An OpenSeadragon.Rect containing the rotated rectangle in the original coordinate system
       */
      function _getRotatedBounds(rect, degrees) {
              
@@ -1161,7 +1161,7 @@ var ImageView = ( function() {
       * get the rotation as a value between 0 and 360 degrees and rounded to 90 degrees 
       * 
       * @param degrees
-      * @returns
+      * @return    the rotation in 90 degree multiples
       */
      function _getRotation(degrees) {
          degrees += _MAX_DESKEW_ANGLE;
@@ -1175,7 +1175,7 @@ var ImageView = ( function() {
       * get the rotation modulo 90 degrees as a value between 0 and 45 degrees or between 315 and 360 degrees
       * 
       * @param degrees
-      * @returns
+      * @return the deskew part of the rotation
       */
      function _getDeskewAngle(degrees) {
          degrees += _MAX_DESKEW_ANGLE;

@@ -48,6 +48,17 @@ var ImageView = ( function( imageView ) {
             if(_debug) {                
                 console.log("Setting viewer location to", config.image.location);
             }
+            if(this.config.global.controls) {
+                $(this.config.global.controls.rotateLeft).on("click", function() {
+                    controls.rotateLeft();
+                })
+                $(this.config.global.controls.rotateRight).on("click", function() {
+                    controls.rotateRight();
+                })
+                $(this.config.global.controls.reset).on("click", function() {
+                    controls.reset(true);
+                })
+            }
             if( image.observables ) {
                 // set location after viewport update
                 image.observables.redrawRequired
