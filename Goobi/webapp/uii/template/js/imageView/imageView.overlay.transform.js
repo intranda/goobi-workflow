@@ -55,7 +55,7 @@ var ImageView = ( function(imageView) {
     }
     imageView.Transform.prototype.getContainingOverlay = function(point) {
         for(var index in this.overlays) {
-            var overlay = this.overlays[i];
+            var overlay = this.overlays[index];
             if(overlay.contains(point, _sideClickPrecision, true)) {
                 return overlay;
             } 

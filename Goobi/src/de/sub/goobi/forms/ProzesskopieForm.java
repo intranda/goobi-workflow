@@ -355,6 +355,7 @@ public class ProzesskopieForm {
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on reading opac ", e);
+            logger.error(e.toString(), e);
         }
         return "";
     }
