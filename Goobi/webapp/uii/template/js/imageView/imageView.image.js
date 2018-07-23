@@ -1117,8 +1117,10 @@ var ImageView = ( function() {
       */
      function _setImageSizes(imageInfo, sizes) {
          if(sizes) {             
-             var string = sizes.replace(/[\{\}]/, "");
-             var sizes = JSON.parse(sizes);
+             if(typeof sizes == 'string') {                 
+                 var string = sizes.replace(/[\{\}]/, "");
+                 var sizes = JSON.parse(sizes);
+             }
              var iiifSizes = [];
              sizes.forEach(function(size) {
                  iiifSizes.push({"width": parseInt(size), "height": parseInt(size)});
