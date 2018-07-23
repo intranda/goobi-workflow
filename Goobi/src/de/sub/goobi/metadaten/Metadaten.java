@@ -129,6 +129,7 @@ public class Metadaten {
     MetadatenHelper metahelper;
     private boolean treeReloaden = false;
     private Fileformat gdzfile;
+    @Getter
     private DocStruct myDocStruct;
     private DocStruct tempStrukturelement;
     private List<MetadatumImpl> myMetadaten = new LinkedList<>();
@@ -1052,7 +1053,7 @@ public class Metadaten {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+            WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
@@ -2081,10 +2082,10 @@ public class Metadaten {
         return "";
     }
 
-    public String loadImageInThumbnailList () {
+    public String loadImageInThumbnailList() {
         int imageNumber = 0;
         try {
-            imageNumber =Integer.parseInt(this.bildNummerGeheZu);
+            imageNumber = Integer.parseInt(this.bildNummerGeheZu);
         } catch (Exception e) {
             imageNumber = this.myBildNummer;
         }
@@ -2095,7 +2096,6 @@ public class Metadaten {
         getPaginatorList();
         return "";
     }
-
 
     public List<String> getAllTifFolders() {
         return this.allTifFolders;
@@ -2212,12 +2212,12 @@ public class Metadaten {
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                        .getSeparator() + this.myBild;
+                                .getSeparator() + this.myBild;
                         if (!Files.exists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                    .getFileName().toString());
+                                            .getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {
@@ -4274,7 +4274,7 @@ public class Metadaten {
 
         } else if (currentImage.getType().equals(Type.object) || currentImage.getType().equals(Type.x3dom)) {
             String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName()
-            + "/info.json";
+                    + "/info.json";
             currentImage.setObjectUrl(url);
         } else {
             Helper.setFehlerMeldung("No representation for file " + currentImage.getImageName());
@@ -4609,7 +4609,7 @@ public class Metadaten {
     public void loadCurrentPlugin() {
         logger.debug(rowIndex);
         logger.debug(rowType);
-        if (rowIndex != null) {
+        if (rowIndex != null && !rowIndex.isEmpty() && !StringUtils.isBlank(groupIndex)) {
             if (rowType.equals("metadata")) {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("person")) {
