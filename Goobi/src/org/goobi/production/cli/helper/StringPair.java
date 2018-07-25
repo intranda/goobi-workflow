@@ -1,10 +1,11 @@
 package org.goobi.production.cli.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -20,43 +21,18 @@ package org.goobi.production.cli.helper;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class StringPair {
 
     private String one;
     private String two;
 
-    public StringPair(String one, String two) {
-        this.one = one;
-        this.two = two;
-    }
-
-    /**
-     * @return the one
-     */
-    public String getOne() {
-        return one;
-    }
-
-    /**
-     * @param one the one to set
-     */
-    public void setOne(String one) {
-        this.one = one;
-    }
-
-    /**
-     * @return the two
-     */
-    public String getTwo() {
-        return two;
-    }
-
-    /**
-     * @param two the two to set
-     */
-    public void setTwo(String two) {
-        this.two = two;
-    }
 
     public static class OneComparator implements Comparator<StringPair>, Serializable {
 
