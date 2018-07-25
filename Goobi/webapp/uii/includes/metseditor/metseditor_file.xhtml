@@ -61,7 +61,7 @@
 									id="paginationSelection" styleClass="form-control" >
 									<f:selectItems value="#{Metadaten.alleSeiten}" />
 									<f:selectItem itemLabel="#{msgs.asLastPage}"
-										itemValue="#{msgs.asLastPage}" />
+										itemValue="lastPage" />
 								</h:selectOneMenu>
 							</div>
 						</div>
@@ -252,7 +252,7 @@
 								<h:selectOneMenu value="#{Metadaten.fileManipulation.insertPage}"
 									id="paginationSelection2" styleClass="form-control" rendered="#{Metadaten.alleSeiten != null}">
 									<f:selectItems value="#{Metadaten.alleSeiten}" />
-									<f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="#{msgs.asLastPage}" />
+									<f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
 								</h:selectOneMenu>
 							</div>
 						</div>
