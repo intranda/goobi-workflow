@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/clibwrapper_jiio.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-compress-1.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-configuration-1.6.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-configuration-1.6.jar" sourcepath="/home/robert/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6-sources.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-dbutils-1.6-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-digester-1.8.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-discovery-0.4.jar"/>
@@ -153,7 +153,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/joda-time-2.8.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jaxb-api-2.2.8.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.websocket-api-1.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/primefaces-6.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/primefaces-6.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
