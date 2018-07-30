@@ -4609,7 +4609,7 @@ public class Metadaten {
     public void loadCurrentPlugin() {
         logger.debug(rowIndex);
         logger.debug(rowType);
-        if (rowIndex != null && !rowIndex.isEmpty() && !StringUtils.isBlank(groupIndex)) {
+        if (rowIndex != null && !rowIndex.isEmpty()) {
             if (rowType.equals("metadata")) {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("person")) {
@@ -4618,9 +4618,9 @@ public class Metadaten {
                 currentPlugin = addablePersondata.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("addableMetadata")) {
                 currentPlugin = addableMetadata.get(Integer.parseInt(rowIndex)).getPlugin();
-            } else if (rowType.equals("group-metadata")) {
+            } else if (rowType.equals("group-metadata") && !StringUtils.isBlank(groupIndex)) {
                 currentPlugin = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex)).getPlugin();
-            } else if (rowType.equals("group-person")) {
+            } else if (rowType.equals("group-person") && !StringUtils.isBlank(groupIndex)) {
                 currentPlugin = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex)).getPlugin();
             }
 
