@@ -8,6 +8,7 @@ import org.junit.Test;
 public class MySQLHelperTest {
     @Test
     public void testCheckMariadbVersion() {
+        assertTrue(MySQLHelper.checkMariadbVersion("5.5.5-10.3.8-MariaDB-1:10.3.8+maria~xenial"));
         assertTrue(MySQLHelper.checkMariadbVersion("5.5.5-10.2.13-MariaDB-10.2.13+maria~stretch"));
         assertTrue(MySQLHelper.checkMariadbVersion("5.5.5-10.2.3-MariaDB-10.2.3+maria~stretch"));
         assertFalse(MySQLHelper.checkMariadbVersion("5.5.5-10.2.2-MariaDB-10.2.2+maria~stretch"));

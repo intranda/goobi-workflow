@@ -106,6 +106,9 @@ public class MySQLHelper implements Serializable {
             version = dbv.substring(0, dbv.indexOf('-'));
         }
         String[] numStrs = version.split("\\.");
+        if (numStrs[0].contains(":")) {
+            numStrs[0] = numStrs[0].split(":")[1];
+        }
         int[] nums = new int[numStrs.length];
         for (int i = 0; i < numStrs.length; i++) {
             try {
