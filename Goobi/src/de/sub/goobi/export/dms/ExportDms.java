@@ -28,19 +28,32 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.interfaces.IExportPlugin;
 
+import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.export.download.ExportMets;
+import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.MetadatenHelper;
+import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
@@ -50,26 +63,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
-
-import org.goobi.beans.Process;
-import org.goobi.production.enums.PluginType;
-import org.goobi.production.plugin.interfaces.IExportPlugin;
-import org.jfree.io.FileUtilities;
-
-import de.sub.goobi.config.ConfigProjects;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.export.download.ExportMets;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.VariableReplacer;
-import de.sub.goobi.helper.DeepCopyFileVisitor;
-import de.sub.goobi.helper.FilesystemHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.metadaten.MetadatenHelper;
-import de.sub.goobi.metadaten.MetadatenVerifizierung;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = Logger.getLogger(ExportDms.class);
@@ -431,7 +424,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 //            }
             
             //deep copy of the tiff dir using walk file tree
-            Files.walkFileTree(Paths.get(myProzess.getImagesTifDirectory(true)), new DeepCopyFileVisitor(zielTif));
+            NIOFileUtils.copyDirectory(Paths.get(myProzess.getImagesTifDirectory(true)), zielTif);
         }
 
         if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {
