@@ -1036,12 +1036,12 @@ public class DatabaseVersion {
      * @return true if table exists, false otherwise
      */
 
-    public boolean checkIfTableExists(String tableName) {
+    public static boolean checkIfTableExists(String tableName) {
         String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, "goobi", tableName);
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName);
             return StringUtils.isNotBlank(value);
         } catch (SQLException e) {
             logger.error(e);
@@ -1064,12 +1064,12 @@ public class DatabaseVersion {
      * @return true if the column exists, false otherwise
      */
 
-    public boolean checkIfColumnExists(String tableName, String columnName) {
+    public static boolean checkIfColumnExists(String tableName, String columnName) {
         String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, "goobi", tableName, columnName);
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
             return StringUtils.isNotBlank(value);
         } catch (SQLException e) {
             logger.error(e);
@@ -1082,6 +1082,23 @@ public class DatabaseVersion {
             }
         }
         return false;
+    }
+
+    public static void runSql(String sql) {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            new QueryRunner().update(connection, sql);
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
 }
