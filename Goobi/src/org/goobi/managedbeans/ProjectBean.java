@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Project;
@@ -207,7 +208,7 @@ public class ProjectBean extends BasicBean {
     }
 
     private boolean checkProjectTitle() {
-        if (!myProjekt.getTitel().equals(newProjectTitle)) {
+        if (StringUtils.isBlank(myProjekt.getTitel()) || !myProjekt.getTitel().equals(newProjectTitle)) {
             if (ProjectManager.countProjectTitle(newProjectTitle) != 0) {
                 Helper.setFehlerMeldung("project_error_titleIsInUse");
                 return false;
