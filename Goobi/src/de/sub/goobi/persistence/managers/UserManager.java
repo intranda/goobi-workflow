@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -84,7 +84,7 @@ public class UserManager implements IManager, Serializable {
     }
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws DAOException {
-        List<User> answer = new ArrayList<User>();
+        List<User> answer = new ArrayList<>();
         try {
             answer = UserMysqlHelper.getUsers(order, filter, start, count);
         } catch (SQLException e) {
@@ -95,7 +95,7 @@ public class UserManager implements IManager, Serializable {
     }
 
     public static List<User> getUsersForUsergroup(Usergroup usergroup) throws DAOException {
-        List<User> answer = new ArrayList<User>();
+        List<User> answer = new ArrayList<>();
         try {
             answer = UserMysqlHelper.getUsersForUsergroup(usergroup);
         } catch (SQLException e) {
@@ -146,7 +146,7 @@ public class UserManager implements IManager, Serializable {
     }
 
     public static List<String> getFilters(int userId) {
-        List<String> answer = new ArrayList<String>();
+        List<String> answer = new ArrayList<>();
         try {
             answer = UserMysqlHelper.getFilterForUser(userId);
         } catch (SQLException e) {
@@ -157,7 +157,7 @@ public class UserManager implements IManager, Serializable {
     }
 
     public static List<User> getUserForStep(int stepId) {
-        List<User> userList = new ArrayList<User>();
+        List<User> userList = new ArrayList<>();
         try {
             userList = UserMysqlHelper.getUserForStep(stepId);
         } catch (SQLException e) {
@@ -210,6 +210,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayMetadataColumn(rs.getBoolean("displayMetadataColumn"));
         r.setDisplayThumbColumn(rs.getBoolean("displayThumbColumn"));
         r.setCustomColumns(rs.getString("customColumns"));
+        r.setCustomCss(rs.getString("customCss"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
@@ -242,7 +243,7 @@ public class UserManager implements IManager, Serializable {
     public static ResultSetHandler<List<User>> resultSetToUserListHandler = new ResultSetHandler<List<User>>() {
         @Override
         public List<User> handle(ResultSet rs) throws SQLException {
-            List<User> answer = new ArrayList<User>();
+            List<User> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     User o = convert(rs);

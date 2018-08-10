@@ -3,12 +3,12 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -35,11 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jgravatar.Gravatar;
-import jgravatar.GravatarRating;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -52,6 +47,10 @@ import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jgravatar.Gravatar;
+import jgravatar.GravatarRating;
+import lombok.Getter;
+import lombok.Setter;
 
 public class User implements DatabaseObject {
 
@@ -107,14 +106,17 @@ public class User implements DatabaseObject {
     @Getter @Setter private boolean metsDisplayPageAssignments = false;
     @Getter @Setter private boolean metsDisplayHierarchy = false;
     @Getter @Setter private boolean metsDisplayProcessID = false;
-    
+
     @Getter @Setter private Integer metsEditorTime;
 
     @Getter private static final int IMAGE_SIZE = 27;
 
-    
+
     @Getter @Setter private String customColumns;
-    
+    @Getter @Setter private String customCss;
+
+
+    @Override
     public void lazyLoad() {
         try {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
@@ -397,40 +399,54 @@ public class User implements DatabaseObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         User other = (User) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         if (isVisible == null) {
-            if (other.isVisible != null)
+            if (other.isVisible != null) {
                 return false;
-        } else if (!isVisible.equals(other.isVisible))
+            }
+        } else if (!isVisible.equals(other.isVisible)) {
             return false;
-        if (istAktiv != other.istAktiv)
+        }
+        if (istAktiv != other.istAktiv) {
             return false;
+        }
         if (login == null) {
-            if (other.login != null)
+            if (other.login != null) {
                 return false;
-        } else if (!login.equals(other.login))
+            }
+        } else if (!login.equals(other.login)) {
             return false;
+        }
         if (nachname == null) {
-            if (other.nachname != null)
+            if (other.nachname != null) {
                 return false;
-        } else if (!nachname.equals(other.nachname))
+            }
+        } else if (!nachname.equals(other.nachname)) {
             return false;
+        }
         if (vorname == null) {
-            if (other.vorname != null)
+            if (other.vorname != null) {
                 return false;
-        } else if (!vorname.equals(other.vorname))
+            }
+        } else if (!vorname.equals(other.vorname)) {
             return false;
+        }
         return true;
     }
 
@@ -456,7 +472,7 @@ public class User implements DatabaseObject {
         for (Usergroup group : getBenutzergruppen()) {
             hs.addAll(group.getUserRoles());
         }
-        List<String> roles = new ArrayList<String>();
+        List<String> roles = new ArrayList<>();
         roles.addAll(hs);
         Collections.sort(roles);
         return roles;

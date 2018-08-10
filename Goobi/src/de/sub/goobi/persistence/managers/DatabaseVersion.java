@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 24;
+    public static final int EXPECTED_VERSION = 25;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -200,6 +200,12 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 24.");
                 }
                 updateToVersion24();
+
+            case 24:
+                if (!checkIfColumnExists("benutzer", "customCss")) {
+                    runSql("alter table benutzer add column customCss text DEFAULT null");
+                }
+
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
