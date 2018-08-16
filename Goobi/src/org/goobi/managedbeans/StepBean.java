@@ -3,12 +3,12 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
+import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -63,7 +64,6 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -80,9 +80,6 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -92,12 +89,6 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
 
 @ManagedBean(name = "AktuelleSchritteForm")
 @SessionScoped
@@ -128,7 +119,7 @@ public class StepBean extends BasicBean {
     private static String DONEDIRECTORYNAME = "fertig/";
     //	private Boolean flagWait = false;
     private BatchStepHelper batchHelper;
-    private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
+    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
     private Integer container;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
@@ -147,7 +138,7 @@ public class StepBean extends BasicBean {
     private IExportPlugin exportPlugin = null;
 
     public StepBean() {
-        this.anzeigeAnpassen = new HashMap<String, Boolean>();
+        this.anzeigeAnpassen = new HashMap<>();
 
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
@@ -203,6 +194,7 @@ public class StepBean extends BasicBean {
         return "task_all";
     }
 
+    @Override
     public DatabasePaginator getPaginator() {
         if (paginator == null) {
             FilterAlleStart();
@@ -341,7 +333,7 @@ public class StepBean extends BasicBean {
 
     public String TakeOverBatch() {
         // find all steps with same batch id and step status
-        List<Step> currentStepsOfBatch = new ArrayList<Step>();
+        List<Step> currentStepsOfBatch = new ArrayList<>();
 
         String steptitle = this.mySchritt.getTitel();
         Integer batchNumber = null;
@@ -368,7 +360,7 @@ public class StepBean extends BasicBean {
 
         for (Step s : currentStepsOfBatch) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
-                s.setBearbeitungsstatusEnum(StepStatus.INWORK);
+
                 s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 s.setBearbeitungszeitpunkt(new Date());
                 User ben = Helper.getCurrentUser();
@@ -381,31 +373,36 @@ public class StepBean extends BasicBean {
                     s.setBearbeitungsbeginn(myDate);
                 }
 
-                HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork
-                        .getValue(), s.getProzess().getId());
-
                 if (s.isTypImagesLesen() || s.isTypImagesSchreiben()) {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
 
                     }
-                    s.setBearbeitungszeitpunkt(new Date());
-
-                    if (ben != null) {
-                        s.setBearbeitungsbenutzer(ben);
-                    }
+                    // removed, because it was already set
+                    //                    s.setBearbeitungszeitpunkt(new Date());
+                    //
+                    //                    if (ben != null) {
+                    //                        s.setBearbeitungsbenutzer(ben);
+                    //                    }
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
 
                 }
             }
+        }
+        for (Step s : currentStepsOfBatch) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+                s.setBearbeitungsstatusEnum(StepStatus.INWORK);
+                HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork
+                        .getValue(), s.getProzess().getId());
+                try {
+                    //                ProcessManager.saveProcess(s.getProzess());
+                    StepManager.saveStep(s);
+                } catch (DAOException e) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
+                    logger.error("step couldn't get saved", e);
+                }
 
-            try {
-                //                ProcessManager.saveProcess(s.getProzess());
-                StepManager.saveStep(s);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
-                logger.error("step couldn't get saved", e);
             }
         }
 
@@ -415,7 +412,7 @@ public class StepBean extends BasicBean {
 
     public String BatchesEdit() {
         // find all steps with same batch id and step status
-        List<Step> currentStepsOfBatch = new ArrayList<Step>();
+        List<Step> currentStepsOfBatch = new ArrayList<>();
 
         String steptitle = this.mySchritt.getTitel();
         Integer batchNumber = null;
@@ -563,7 +560,7 @@ public class StepBean extends BasicBean {
     }
 
     /*
-     * Korrekturmeldung an vorherige Schritte 
+     * Korrekturmeldung an vorherige Schritte
      */
 
     public List<Step> getPreviousStepsForProblemReporting() {
@@ -581,12 +578,12 @@ public class StepBean extends BasicBean {
     }
 
     public String ReportProblem() {
-        
+
         if (myProblemID == null) {
             Helper.setFehlerMeldung("task_cannotProceedWithoutTaskSelection");
             return "";
         }
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
             logger.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
@@ -638,8 +635,8 @@ public class StepBean extends BasicBean {
              */
 
             List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess()
-                    .getId() + " AND Reihenfolge <= " + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
-                    Integer.MAX_VALUE);
+            .getId() + " AND Reihenfolge <= " + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
+            Integer.MAX_VALUE);
 
             //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
             //					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
@@ -698,12 +695,12 @@ public class StepBean extends BasicBean {
     }
 
     public String SolveProblem() {
-        
+
         if (mySolutionID == null) {
             Helper.setFehlerMeldung("task_cannotProceedWithoutTaskSelection");
             return "";
         }
-        
+
         Date now = new Date();
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.DONE);
@@ -820,7 +817,7 @@ public class StepBean extends BasicBean {
     public String UploadFromHomeAlle() throws NumberFormatException, DAOException {
 
         List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
-        List<String> geprueft = new ArrayList<String>();
+        List<String> geprueft = new ArrayList<>();
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
          */
@@ -1103,7 +1100,7 @@ public class StepBean extends BasicBean {
     //    }
 
     /*
-     * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden 
+     * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden
      */
 
     /**
@@ -1127,7 +1124,7 @@ public class StepBean extends BasicBean {
         }
     }
 
-    /* 
+    /*
      * Auswahl mittels Selectboxen
      */
 
@@ -1238,7 +1235,7 @@ public class StepBean extends BasicBean {
 
     private void loadProcessProperties() {
         containerAccess = new HashMap<>();
-        this.containers = new TreeMap<Integer, PropertyListObject>();
+        this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getPropertiesForStep(this.mySchritt);
 
         for (ProcessProperty pt : this.processPropertyList) {
@@ -1350,7 +1347,7 @@ public class StepBean extends BasicBean {
     }
 
     public List<Integer> getContainerList() {
-        return new ArrayList<Integer>(this.containers.keySet());
+        return new ArrayList<>(this.containers.keySet());
     }
 
     public int getPropertyListSize() {
@@ -1407,7 +1404,7 @@ public class StepBean extends BasicBean {
     }
 
     public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
             if (pp.getContainer() == 0) {
                 answer.add(pp);
@@ -1428,7 +1425,7 @@ public class StepBean extends BasicBean {
     }
 
     public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
         // int currentContainer = this.processProperty.getContainer();
 
         if (this.container != null && this.container > 0) {
@@ -1446,7 +1443,7 @@ public class StepBean extends BasicBean {
 
     public String duplicateContainer() {
         Integer currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() == currentContainer) {
