@@ -152,13 +152,13 @@ var ImageView = ( function() {
                  console.log( 'Loading image with tilesource: ', tileSources );
              }
              
+             this.loadFooter();            
+             var $div = $("#" + this.config.global.divId);
              var maxZoomLevel = this.config.global.maxZoomLevel
              if(this.config.image.originalImageWidth && $div.width() > 0) {
                  maxZoomLevel = this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width();
              }
                
-             this.loadFooter();            
-             var $div = $("#" + this.config.global.divId);
              var osConfig = {
                      tileSources: tileSources,
                      id: this.config.global.divId,
