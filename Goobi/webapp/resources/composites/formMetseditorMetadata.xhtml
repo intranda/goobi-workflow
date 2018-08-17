@@ -46,6 +46,11 @@
                 <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
                 <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
+                <!-- ++++++++++++++++++ Text Area for html ++++++++++++++++++ -->
+                <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
+                    <f:ajax execute="@form" event="valueChange" />
+                </x:inputTextarea>
+
                 <!-- ++++++++++++++++++ Authority data - no dante ++++++++++++++++++ -->
                 <h:panelGroup rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
                     <div class="row" style="margin-top: 5px;">

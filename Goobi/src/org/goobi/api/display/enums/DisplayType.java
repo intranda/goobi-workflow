@@ -92,7 +92,8 @@ public enum DisplayType {
     dantePrizepapersFoldingtechnique,
     danteMarcrelator,
     danteLanguageIso6392,
-    process;
+    process,
+    htmlInput;
 
     public IMetadataPlugin getPlugin() {
         IMetadataPlugin plugin = null;
