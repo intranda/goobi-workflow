@@ -377,9 +377,9 @@ var ImageView = ( function() {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
          var originalImageSize = this.sizes.originalImageSize;
          var scale = originalImageSize.x/displayImageSize.x;
-         roi = roi.times(displayImageSize.x);
-         roi = roi.times(scale);
-         return roi;
+         point = point.times(displayImageSize.x);
+         point = point.times(scale);
+         return point;
      }
 
 //     imageView.Image.prototype.convertDisplayToImageCoordinates = function(overlay) {
