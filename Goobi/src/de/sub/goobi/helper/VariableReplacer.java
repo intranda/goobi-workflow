@@ -38,26 +38,24 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
-import org.goobi.production.properties.ProcessProperty;
-import org.goobi.production.properties.PropertyParser;
-
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Prefs;
-
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.dl.Prefs;
 
 public class VariableReplacer {
 
@@ -94,14 +92,14 @@ public class VariableReplacer {
     }
 
     /**
-     * converts input string into list of arguments. 
+     * converts input string into list of arguments.
      * 
      * First the input string gets tokenized, either on double quotation or on white space. Afterwards each parameter gets replaced
      * 
      * @param inString
      * @return
      */
-    
+
     public List<String> replaceBashScript(String inString) {
         List<String> returnList = new ArrayList<>();
         StrTokenizer tokenizer = new StrTokenizer(inString, ' ', '\"');
@@ -208,6 +206,31 @@ public class VariableReplacer {
                 }
             }
 
+            if (inString.contains("(s3_tifpath)")) {
+                inString = inString.replace("(s3_tifpath)", S3FileUtils.string2Prefix(tifpath));
+            }
+            if (inString.contains("(s3_origpath)")) {
+                inString = inString.replace("(s3_origpath)", S3FileUtils.string2Prefix(origpath));
+            }
+            if (inString.contains("(s3_imagepath)")) {
+                inString = inString.replace("(s3_imagepath)", S3FileUtils.string2Prefix(imagepath));
+            }
+            if (inString.contains("(s3_processpath)")) {
+                inString = inString.replace("(s3_processpath)", S3FileUtils.string2Prefix(processpath));
+            }
+            if (inString.contains("(s3_importpath)")) {
+                inString = inString.replace("(s3_importpath)", S3FileUtils.string2Prefix(importPath));
+            }
+            if (inString.contains("(s3_sourcepath)")) {
+                inString = inString.replace("(s3_sourcepath)", S3FileUtils.string2Prefix(sourcePath));
+            }
+            if (inString.contains("(s3_ocrbasispath)")) {
+                inString = inString.replace("(s3_ocrbasispath)", S3FileUtils.string2Prefix(ocrBasisPath));
+            }
+            if (inString.contains("(s3_ocrplaintextpath)")) {
+                inString = inString.replace("(s3_ocrplaintextpath)", S3FileUtils.string2Prefix(ocrPlaintextPath));
+            }
+
             if (inString.contains("(tifpath)")) {
                 inString = inString.replace("(tifpath)", tifpath);
             }
@@ -226,7 +249,6 @@ public class VariableReplacer {
             if (inString.contains("(sourcepath)")) {
                 inString = inString.replace("(sourcepath)", sourcePath);
             }
-
             if (inString.contains("(ocrbasispath)")) {
                 inString = inString.replace("(ocrbasispath)", ocrBasisPath);
             }
@@ -239,17 +261,18 @@ public class VariableReplacer {
             if (inString.contains("(processid)")) {
                 inString = inString.replace("(processid)", String.valueOf(this.process.getId().intValue()));
             }
-            if (inString.contains("(metaFile)")) {
-                inString = inString.replace("(metaFile)", metaFile);
-            }
-            if (inString.contains("(prefs)")) {
-                inString = inString.replace("(prefs)", myprefs);
-            }
             if (inString.contains("(goobiFolder)")) {
                 inString = inString.replace("(goobiFolder)", ConfigurationHelper.getInstance().getGoobiFolder());
             }
             if (inString.contains("(scriptsFolder)")) {
                 inString = inString.replace("(scriptsFolder)", ConfigurationHelper.getInstance().getScriptsFolder());
+            }
+
+            if (inString.contains("(prefs)")) {
+                inString = inString.replace("(prefs)", myprefs);
+            }
+            if (inString.contains("(metaFile)")) {
+                inString = inString.replace("(metaFile)", metaFile);
             }
 
             if (this.step != null) {
