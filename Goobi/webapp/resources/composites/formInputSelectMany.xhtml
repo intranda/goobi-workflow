@@ -17,6 +17,7 @@
         <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
         <composite:attribute name="classLeft" default="col-sm-3" />
         <composite:attribute name="classRight" default="col-sm-9" />
+        <composite:attribute name="tabindex" default="0" />
     </composite:interface>
 
     <composite:implementation>
@@ -29,7 +30,7 @@
 				</h:panelGroup>
 			</div>
             <div class="#{cc.attrs.classRight}">
-                <h:selectManyListbox id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}">
+                <h:selectManyListbox id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
                     <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}"
                         itemValue="#{cc.attrs.itemValue}" />
                 </h:selectManyListbox>
