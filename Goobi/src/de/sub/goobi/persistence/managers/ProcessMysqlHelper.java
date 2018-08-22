@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  *          - http://www.goobi.org
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -259,9 +259,9 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(" WHERE " + filter);
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -284,9 +284,9 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT  * FROM prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT * FROM prozesse left join batches on prozesse.batchID = batches.id left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(" WHERE " + filter);
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
@@ -358,7 +358,7 @@ class ProcessMysqlHelper implements Serializable {
     public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
         @Override
         public List<Process> handle(ResultSet rs) throws SQLException {
-            List<Process> answer = new ArrayList<Process>();
+            List<Process> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     try {
@@ -463,8 +463,8 @@ class ProcessMysqlHelper implements Serializable {
         } else {
             Object[] param = { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o
                     .isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o
-                            .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null
-                                    ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId() };
+                    .getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null
+                    ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId() };
 
             return param;
         }
@@ -801,7 +801,7 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             run.update(connection, sql, logEntry.getProcessId(), logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate()
                     .getTime()), logEntry.getUserName(), logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry
-                            .getThirdContent(), logEntry.getId());
+                    .getThirdContent(), logEntry.getId());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -820,7 +820,7 @@ class ProcessMysqlHelper implements Serializable {
                     ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(), logEntry.getType().getTitle(), logEntry
                             .getContent(), logEntry.getSecondContent(), logEntry.getThirdContent()
 
-            );
+                    );
             logEntry.setId(id);
             return logEntry;
         } finally {
@@ -918,7 +918,7 @@ class ProcessMysqlHelper implements Serializable {
     public static ResultSetHandler<List<LogEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<LogEntry>>() {
         @Override
         public List<LogEntry> handle(ResultSet rs) throws SQLException {
-            List<LogEntry> answer = new ArrayList<LogEntry>();
+            List<LogEntry> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
 
