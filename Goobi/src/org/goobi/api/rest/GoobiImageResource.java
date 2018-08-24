@@ -54,23 +54,20 @@ public class GoobiImageResource extends ImageResource {
         try {
             
             String repository = ContentServerConfiguration.getInstance().getRepositoryPathImages();
-            
-            try {
-                path = Paths.get(repository);
-            } catch(InvalidPathException e) {
+
                 path = PathConverter.getPath(new URI(repository));
-            }
-            path = path.resolve(process);
+
+                path = path.resolve(process);
             if (Files.isDirectory(path)) {
                 path = path.resolve("images");
                 if(folder.startsWith("thumbnails_")) {
                   path = path.resolve("layoutWizzard-temp").resolve(folder);  
-                  return path.toString();
+                  return PathConverter.toURI(path).toString();
                 } 
                 try (DirectoryStream<java.nio.file.Path> stream = Files.newDirectoryStream(path)) {
                     for (java.nio.file.Path subPath : stream) {
                         if(Files.isDirectory(subPath) && matchesFolder(subPath.getFileName().toString(), folder)) {
-                            return subPath.toString();
+                            return PathConverter.toURI(subPath).toString();
                         }
                     }
                 } catch (IOException e) {
