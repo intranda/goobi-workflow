@@ -17,6 +17,7 @@
 		<composite:attribute name="classLeft" default="col-sm-3" />
         <composite:attribute name="classRight" default="col-sm-9" />
         <composite:attribute name="onfocus" default="" />
+        <composite:attribute name="tabindex" default="0" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -31,7 +32,7 @@
 			<div class="#{cc.attrs.classRight}">
 				<x:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
 					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}"/>
+					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}"/>
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
 				<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 					value="#{cc.attrs.help}" />

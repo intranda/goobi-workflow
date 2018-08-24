@@ -22,6 +22,7 @@
         <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
         <composite:attribute name="classLeft" default="col-sm-3" />
         <composite:attribute name="classRight" default="col-sm-9" />
+        <composite:attribute name="tabindex" default="0" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -37,7 +38,7 @@
 			</div>
 			<div class="#{cc.attrs.classRight}">
 				<h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}" >
+					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
 <!-- 					<f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true"/> -->
 					<f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
 				</h:selectOneMenu>

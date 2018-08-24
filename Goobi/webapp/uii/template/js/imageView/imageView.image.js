@@ -151,9 +151,14 @@ var ImageView = ( function() {
              if ( _debug ) {
                  console.log( 'Loading image with tilesource: ', tileSources );
              }
-               
+             
              this.loadFooter();            
              var $div = $("#" + this.config.global.divId);
+             var maxZoomLevel = this.config.global.maxZoomLevel
+             if(this.config.image.originalImageWidth && $div.width() > 0) {
+                 maxZoomLevel = this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width();
+             }
+               
              var osConfig = {
                      tileSources: tileSources,
                      id: this.config.global.divId,
@@ -165,8 +170,8 @@ var ImageView = ( function() {
                      zoomPerClick: 1.0,
                      showRotationControl: true,
                      showNavigationControl: this.config.global.showControls,
-                     minZoomLevel: this.config.global.minZoomLeve,//Math.min(this.config.global.minZoomLevel, this.config.global.minZoomLevel*this.config.image.originalImageWidth/$div.width()),
-                     maxZoomLevel: this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width(),
+                     minZoomLevel: this.config.global.minZoomLevel,//Math.min(this.config.global.minZoomLevel, this.config.global.minZoomLevel*this.config.image.originalImageWidth/$div.width()),
+                     maxZoomLevel: maxZoomLevel,
                      zoomPerScroll: this.config.global.zoomSpeed,
                      mouseNavEnabled: this.config.global.zoomSpeed > 1,
                      homeButton: this.config.global.zoomHome,
@@ -372,9 +377,9 @@ var ImageView = ( function() {
          var displayImageSize = this.viewer.world.getItemAt(0).source.dimensions;
          var originalImageSize = this.sizes.originalImageSize;
          var scale = originalImageSize.x/displayImageSize.x;
-         roi = roi.times(displayImageSize.x);
-         roi = roi.times(scale);
-         return roi;
+         point = point.times(displayImageSize.x);
+         point = point.times(scale);
+         return point;
      }
 
 //     imageView.Image.prototype.convertDisplayToImageCoordinates = function(overlay) {
@@ -1118,8 +1123,8 @@ var ImageView = ( function() {
      function _setImageSizes(imageInfo, sizes) {
          if(sizes) {             
              if(typeof sizes == 'string') {                 
-                 var string = sizes.replace(/[\{\}]/, "");
-                 var sizes = JSON.parse(sizes);
+             var string = sizes.replace(/[\{\}]/, "");
+             var sizes = JSON.parse(sizes);
              }
              var iiifSizes = [];
              sizes.forEach(function(size) {
