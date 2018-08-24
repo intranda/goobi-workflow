@@ -12,7 +12,7 @@
         <composite:attribute name="forceId" default="true" />
         <composite:attribute name="classLeft" default="col-sm-3" />
         <composite:attribute name="classRight" default="col-sm-9" />
-
+        <composite:attribute name="tabindex" default="0" />
     </composite:interface>
 
     <composite:implementation>
@@ -20,7 +20,7 @@
         <div class="form-group" style="#{cc.attrs.style}">
             <h:outputLabel for="#{cc.attrs.name}" styleClass="control-label #{cc.attrs.classLeft}" value="#{cc.attrs.label}" />
             <div class="#{cc.attrs.classRight}">
-                <x:outputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" />
+                <x:outputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}"/>
             	<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 					value="#{cc.attrs.help}" />
             </div>

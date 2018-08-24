@@ -15,6 +15,7 @@
         <composite:attribute name="height" default="" />
         <composite:attribute name="classLeft" default="col-sm-3" />
         <composite:attribute name="classRight" default="col-sm-9" />
+        <composite:attribute name="tabindex" default="0" />
     </composite:interface>
 
     <composite:implementation>
@@ -28,7 +29,7 @@
 			</div>
             <div class="#{cc.attrs.classRight}">
                 <h:inputTextarea id="#{cc.attrs.name}" forceId="true" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" value="#{cc.attrs.field}"
-                    required="#{cc.attrs.required}" readonly="#{cc.attrs.readonly}" />
+                    required="#{cc.attrs.required}" readonly="#{cc.attrs.readonly}" tabindex="#{cc.attrs.tabindex}"/>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
                 <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{cc.attrs.help}" />
             </div>
