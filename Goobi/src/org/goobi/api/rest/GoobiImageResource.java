@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestExceptio
 import de.unigoettingen.sub.commons.contentlib.servlet.model.ContentServerConfiguration;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
+import de.unigoettingen.sub.commons.util.PathConverter;
 
 /**
  * A IIIF image resource for goobi image urls
@@ -50,7 +52,14 @@ public class GoobiImageResource extends ImageResource {
     private static String getDirectory(String process, String folder) throws ContentNotFoundException {
         java.nio.file.Path path = null;
         try {
-            path = Paths.get(new URL(ContentServerConfiguration.getInstance().getRepositoryPathImages()).getPath());
+            
+            String repository = ContentServerConfiguration.getInstance().getRepositoryPathImages();
+            
+            try {
+                path = Paths.get(repository);
+            } catch(InvalidPathException e) {
+                path = PathConverter.getPath(new URI(repository));
+            }
             path = path.resolve(process);
             if (Files.isDirectory(path)) {
                 path = path.resolve("images");
@@ -68,7 +77,7 @@ public class GoobiImageResource extends ImageResource {
                     logger.error(e.toString(), e);
                 }
             }
-        } catch (MalformedURLException e) {
+        } catch (URISyntaxException e) {
             logger.error(e.toString(), e);
         }
         throw new ContentNotFoundException("Found no content in " + path);
