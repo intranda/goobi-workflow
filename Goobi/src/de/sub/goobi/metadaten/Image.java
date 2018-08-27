@@ -250,7 +250,7 @@ public @Data class Image {
      */
     @Deprecated
     public boolean hasImageLevels() {
-        return getImageLevels().isEmpty();
+        return !getImageLevels().isEmpty();
     }
 
     /**
@@ -260,13 +260,13 @@ public @Data class Image {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-                .append("width : ")
-                .append(this.size.width)
-                .append(",")
-                .append("height : ")
-                .append(this.size.height)
-                .append(",")
-                .append("sizes : [");
+        .append("width : ")
+        .append(this.size.width)
+        .append(",")
+        .append("height : ")
+        .append(this.size.height)
+        .append(",")
+        .append("sizes : [");
         for (ImageLevel imageLevel : imageLevels) {
             sb.append(imageLevel.toString()).append(", ");
         }
@@ -361,12 +361,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/image/")
-                .append(process.getId())
-                .append("/")
-                .append(getImageFolderShort(imageFolderName))
-                .append("/")
-                .append(filename)
-                .append("/info.json");
+        .append(process.getId())
+        .append("/")
+        .append(getImageFolderShort(imageFolderName))
+        .append("/")
+        .append(filename)
+        .append("/info.json");
         return sb.toString();
     }
 
