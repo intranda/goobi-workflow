@@ -174,6 +174,16 @@ public class ObjectResource {
         }
     }
     
+
+    @GET
+    @Path("/{processId}/{foldername}//{subfolder}/{filename}")
+    @Produces({ MediaType.APPLICATION_OCTET_STREAM })
+    public StreamingOutput getObjectResource2(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder") String subfolder,
+            @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
+        return getObjectResource(request, response, processId, foldername, subfolder, filename);
+    }
+    
     @GET
     @Path("/{processId}/{foldername}/{subfolder1}/{subfolder2}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
@@ -190,6 +200,15 @@ public class ObjectResource {
         } else {
             return new ObjectStreamingOutput(objectPath);
         }
+    }
+    
+    @GET
+    @Path("/{processId}/{foldername}//{subfolder1}/{subfolder2}/{filename}")
+    @Produces({ MediaType.APPLICATION_OCTET_STREAM })
+    public StreamingOutput getObjectResource2(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1, @PathParam("subfolder2") String subfolder2,
+            @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+        return getObjectResource(request, response, processId, foldername, subfolder1, subfolder2, filename);
     }
 
     public static class ObjectStreamingOutput implements StreamingOutput {

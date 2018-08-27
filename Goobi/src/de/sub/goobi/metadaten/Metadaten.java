@@ -1134,16 +1134,8 @@ public class Metadaten {
                 imageFolderName = imageFolderName.replaceAll("\\\\", "/");
                 int order = 1;
                 for (String imagename : imageNames) {
-                    if (NIOFileUtils.checkImageType(imagename)) {
-                        Image currentImage = new Image(imagename, order++, "", "", imagename);
-                        allImages.add(currentImage);
-                    } else if (NIOFileUtils.check3DType(imagename)) {
-                        Image currentImage = new Image(imagename, order++, "", "", imagename);
-                        allImages.add(currentImage);
-                    } else {
-                        Image currentImage = new Image("", order++, "", "", imagename);
-                        allImages.add(currentImage);
-                    }
+                    Image image = new Image(myProzess, imageFolderName, imagename, order, thumbnailSizeInPixel);
+                    allImages.add(image);
                 }
                 if (jumpToFirstPage) {
                     setImageIndex(0);
@@ -4238,49 +4230,13 @@ public class Metadaten {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
         }
         for (Image currentImage : subList) {
-            if (StringUtils.isEmpty(currentImage.getThumbnailUrl()) || sizeChanged) {
-                createImage(currentImage, false);
+            if (sizeChanged) {
+                currentImage.createThumbnailUrls(thumbnailSizeInPixel);
             }
         }
         return subList;
     }
 
-    private void createImage(Image currentImage, boolean createImageLevels) {
-        String contextPath = getContextPath();
-        HelperForm hf = (HelperForm) Helper.getManagedBeanValue("#{HelperForm}");
-        contextPath = hf.getServletPathWithHostAsUrl();
-        if (currentImage.getType().equals(Type.image)) {
-
-            String thumbUrl = createImageUrl(currentImage, thumbnailSizeInPixel, THUMBNAIL_FORMAT, "");
-            currentImage.setThumbnailUrl(thumbUrl);
-            currentImage.setLargeThumbnailUrl(createImageUrl(currentImage, thumbnailSizeInPixel * 3, THUMBNAIL_FORMAT, ""));
-            currentImage.setBookmarkUrl(createImageUrl(currentImage, 1000, THUMBNAIL_FORMAT, ""));
-
-            if (createImageLevels && !currentImage.hasImageLevels()) {
-                if (currentImage.getSize() == null) {
-                    currentImage.setSize(getActualImageSize(currentImage));
-                }
-                for (String sizeString : imageSizes) {
-                    try {
-                        int size = Integer.parseInt(sizeString);
-                        String imageUrl = createImageUrl(currentImage, size, MAINIMAGE_FORMAT, contextPath);
-                        currentImage.addImageLevel(imageUrl, size);
-                    } catch (NullPointerException | NumberFormatException e) {
-                        logger.error("Cannot build image with size " + sizeString);
-                    }
-                }
-                Collections.sort(currentImage.getImageLevels());
-            }
-
-        } else if (currentImage.getType().equals(Type.object) || currentImage.getType().equals(Type.x3dom)) {
-            String url = contextPath + "/api/view/object/" + getMyProzess().getId() + "/" + currentTifFolder + "/" + currentImage.getImageName()
-                    + "/info.json";
-            currentImage.setObjectUrl(url);
-        } else {
-            Helper.setFehlerMeldung("No representation for file " + currentImage.getImageName());
-        }
-
-    }
 
     private String getContextPath() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -4378,7 +4334,6 @@ public class Metadaten {
 
     public void setImage(final Image image) {
         this.image = image;
-        createImage(image, true);
     }
 
     public int getPageNo() {
@@ -4512,7 +4467,7 @@ public class Metadaten {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
                 int order = 1;
                 for (String imagename : imageNames) {
-                    Image currentImage = new Image(imagename, order++, "", "", imagename);
+                    Image currentImage = new Image(myProzess, imageFolderName, imagename, order, thumbnailSizeInPixel);
                     allImages.add(currentImage);
                 }
                 setImageIndex(imageIndex);
