@@ -250,7 +250,7 @@ public @Data class Image {
      */
     @Deprecated
     public boolean hasImageLevels() {
-        return !imageLevels.isEmpty();
+        return getImageLevels().isEmpty();
     }
 
     /**
