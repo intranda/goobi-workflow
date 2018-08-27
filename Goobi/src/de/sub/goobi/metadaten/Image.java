@@ -236,9 +236,14 @@ public @Data class Image {
     @Deprecated
     public void addImageLevel(String imageUrl, int size) {
 
-        double scale = size / (double) (Math.max(getSize().height, getSize().width));
-        Dimension dim = new Dimension((int) (getSize().width * scale), (int) (getSize().height * scale));
-        ImageLevel layer = new ImageLevel(imageUrl, dim);
+        Dimension dim = getSize();
+        if(dim == null || dim.getHeight()*dim.getWidth() == 0) {
+            dim = new Dimension(size, size);
+        }
+        
+        double scale = size / (double) (Math.max(dim.height, dim.width));
+        Dimension dim2 = new Dimension((int) (dim.width * scale), (int) (dim.height * scale));
+        ImageLevel layer = new ImageLevel(imageUrl, dim2);
         imageLevels.add(layer);
     }
 
@@ -288,6 +293,7 @@ public @Data class Image {
             } catch (ImageManagerException | FileNotFoundException e) {
                 logger.error("Error reading image size of " + getImagePath(), e);
             }
+
         }
         return this.size;
     }
