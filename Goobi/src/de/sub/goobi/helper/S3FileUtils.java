@@ -432,9 +432,9 @@ public class S3FileUtils implements StorageProviderInterface {
             }
         }
 
-        String oldKey = path2Key(srcFile);
+        /*String oldKey = path2Key(srcFile);
         String newKey = path2Key(destFile);
-        s3.copyObject(getBucket(), oldKey, getBucket(), newKey);
+        s3.copyObject(getBucket(), oldKey, getBucket(), newKey);*/
     }
 
     @Override
