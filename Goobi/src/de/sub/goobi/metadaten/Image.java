@@ -26,7 +26,9 @@ package de.sub.goobi.metadaten;
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,9 +67,7 @@ public @Data class Image {
     /**
      * The image format for the main image urls contained in imageLevels
      * 
-     * @deprecated imageLevels are deprecated, and iiif does its own format handling
      */
-    @Deprecated
     private String largeImageFormat = "jpeg";
     /**
      * The image filename
@@ -97,9 +97,7 @@ public @Data class Image {
     /**
      * Url and size information for different resolutions of this image. Used to create layer urls for pyramid image display
      * 
-     * @deprecated not required if using iiif for image display
      */
-    @Deprecated
     private List<ImageLevel> imageLevels = null;
     /**
      * Url for bookmarking this image in the metsEditor
@@ -112,9 +110,7 @@ public @Data class Image {
     /**
      * Size of this image as determined by the ContentServer from image metadata
      * 
-     * @deprecated not required if using iiif for image display
      */
-    @Deprecated
     private Dimension size = null;
     /**
      * The media type of this object. Usually 'image', but can also be 'object' or 'x3dom' for 3D objects
@@ -161,6 +157,53 @@ public @Data class Image {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
         } else if (Type.unknown.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
+        } else if (Type.audio.equals(this.type)) {
+            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_AUDIO;
+        } else if (Type.video.equals(this.type)) {
+            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_VIDEO;
+        } else {
+            throw new IOException("Filetype handling not implemented at " + this.imagePath);
+        }
+        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize());
+    }
+    
+    /**
+     * Creates an image object from the given filepath. All required urls are either set in the constructor or
+     * created when needed. This class can also contain other media objects link 3D obects, video and audio. In these cases a default image is used for
+     * thumbnails and image display.
+     * This constructor doesn't refer to a goobi process and this may be used to display arbitrary images. However, this means that the complete image
+     * path is encoded within the IIIF url which only works if theServer is configured to allow encoded slashes. Otherwise, the image levels need to be used to create the image
+     * Also, the 3D api will not work with images created by this constructor, since this also requires a Goobi process.
+     * 
+     * The most important call method is {@link #getObjectUrl()} which returns a IIIF image info object url for images (which can be directly passed
+     * to an OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the
+     * object. For audio and videos, the thumbnails placeholder is returned
+     * 
+     * For thumbnail display, use #{@link #getThumbnailUrl()} and for zoomed thumbnails {@link #getLargeThumbnailUrl()}
+     * 
+     * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
+     * 
+     * @param imagePath The path to the image file
+     * @param order The order of the image within the goobi process
+     * @param thumbnailSize The size of the thumbnails to create. May be null, in which case the configured default is used
+     * @throws IOException If the image file could not be read
+     */
+    public Image(Path imagePath, int order, Integer thumbnailSize)
+            throws IOException {
+        this.imagePath = imagePath.toAbsolutePath();
+        this.imageName = this.imagePath.getFileName().toString();
+        this.type = Type.getFromPath(imagePath);
+        this.order = order;
+        this.tooltip = imagePath.getFileName().toString();
+        if (!Files.exists(this.imagePath)) {
+            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
+        } else if (Type.image.equals(this.type)) {
+            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
+            this.objectUrl = createIIIFUrl(imagePath);
+        } else if (Type.unknown.equals(this.type)) {
+            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
+        } else if (Type.object.equals(this.type)) {
+            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_3D;
         } else if (Type.audio.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_AUDIO;
         } else if (Type.video.equals(this.type)) {
@@ -231,11 +274,13 @@ public @Data class Image {
      * 
      * @param imageUrl The url to call
      * @param size The size of this level
-     * @deprecated Image levels are replaced by IIIF image delivery
      */
-    @Deprecated
     public void addImageLevel(String imageUrl, int size) {
 
+        if(imageLevels == null) {
+            this.imageLevels = new ArrayList<>();
+        }
+        
         Dimension dim = getSize();
         if(dim == null || dim.getHeight()*dim.getWidth() == 0) {
             dim = new Dimension(size, size);
@@ -251,9 +296,7 @@ public @Data class Image {
      * Returns true if any image levels were created, false otherwise
      * 
      * @return true if any image levels were created, false otherwise
-     * @deprecated Image levels are replaced by IIIF image delivery
      */
-    @Deprecated
     public boolean hasImageLevels() {
         return !getImageLevels().isEmpty();
     }
@@ -266,13 +309,13 @@ public @Data class Image {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
         .append("width : ")
-        .append(this.size.width)
+        .append(getSize().width)
         .append(",")
         .append("height : ")
-        .append(this.size.height)
+        .append(getSize().height)
         .append(",")
         .append("sizes : [");
-        for (ImageLevel imageLevel : imageLevels) {
+        for (ImageLevel imageLevel : getImageLevels()) {
             sb.append(imageLevel.toString()).append(", ");
         }
         sb.append("]").append("}");
@@ -283,9 +326,7 @@ public @Data class Image {
      * Gets the size of the image
      * 
      * @return The size of the images, or null if the size could not be determined
-     * @deprecated Not needed if displaying image via iiif url
      */
-    @Deprecated
     public Dimension getSize() {
         if (this.size == null) {
             if(Type.image.equals(getType())) {                
@@ -306,9 +347,7 @@ public @Data class Image {
      * Returns the image levels with urls and sizes in different resolutions for image pyramid display
      * 
      * @return The image levels with urls and sizes in different resolutions for image pyramid display
-     * @deprecated Use IIIF url instead which creates the levels when requested
      */
-    @Deprecated
     public List<ImageLevel> getImageLevels() {
         if (this.imageLevels == null) {
             if (Type.image.equals(getType())) {
@@ -378,6 +417,26 @@ public @Data class Image {
         .append(filename)
         .append("/info.json");
         return sb.toString();
+    }
+    
+    /**
+     * Creates a rest url to the iiif image information about this image
+     * 
+     * @param process The process containing the image
+     * @param imageFolderName The name of the image folder used
+     * @param filename The filename of the image
+     * @return A goobi rest api iiif url
+     */
+    public static String createIIIFUrl(Path path) {
+        try {
+            StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+            sb.append("/api/image/file/")
+            .append(URLEncoder.encode(path.toString(), "utf-8"))
+            .append("/info.json");
+            return sb.toString();
+        } catch (UnsupportedEncodingException e) {
+           throw new IllegalStateException("Failed to encode with 'utf-8'", e);
+        }
     }
 
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)

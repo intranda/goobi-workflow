@@ -94,6 +94,7 @@ var ImageView = ( function() {
              //create image source array
              var sources = this.config.image.tileSource;
              if(typeof sources === 'string' && sources.startsWith("[")) {
+                 console.log("Sources = ", sources);
                  sources = JSON.parse(sources);
              } else if(!$.isArray(sources)) {
                  sources = [sources];

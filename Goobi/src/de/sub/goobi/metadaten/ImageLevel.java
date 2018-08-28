@@ -62,9 +62,9 @@ public class ImageLevel implements Comparable<ImageLevel>{
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-        .append("url : '").append(this.url).append("',")
-        .append("width : ").append(this.size.width).append(",")
-        .append("height : ").append(this.size.height).append(",")
+        .append("\"url\" : \"").append(this.url).append("\",")
+        .append("\"width\" : ").append(this.size.width).append(",")
+        .append("\"height\" : ").append(this.size.height)
         .append("}");
         return sb.toString();
     }
