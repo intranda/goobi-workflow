@@ -16,6 +16,7 @@
  */
 package de.sub.goobi.metadaten.object;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,7 +112,8 @@ public class ObjectResource {
         if (resourceFolderPath.toFile().isDirectory()) {
             try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) {
                 for (java.nio.file.Path path : directoryStream) {
-                    resourceURIs.add(new URI(baseURI + resourceFolderPath.getParent().relativize(path)));
+                    java.nio.file.Path relPath = resourceFolderPath.getParent().relativize(path);
+                    resourceURIs.add(new URI(baseURI + relPath.toString().replace(File.separator, "/")));
                 }
             }
         }
