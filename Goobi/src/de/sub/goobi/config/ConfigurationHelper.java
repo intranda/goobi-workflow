@@ -659,6 +659,21 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("MetsEditorImageSize");
 
     }
+    
+    public List<String> getMetsEditorImageTileSizes() {
+        return getLocalList("MetsEditorImageTileSize");
+
+    }
+    
+    public List<String> getMetsEditorImageTileScales() {
+        return getLocalList("MetsEditorImageTileScale");
+
+    }
+    
+    public boolean getMetsEditorUseImageTiles() {
+        return getLocalBoolean("MetsEditorUseImageTiles", true);
+
+    }
 
     public boolean isShowSecondLogField() {
      return getLocalBoolean("ProcessLogShowSecondField", false);

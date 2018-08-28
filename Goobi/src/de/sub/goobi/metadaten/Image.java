@@ -504,6 +504,10 @@ public @Data class Image {
         return levels;
     }
 
+    public String getUrl() {
+        return getObjectUrl();
+    }
+    
     /**
      * Enum for media types to be handled
      * 
