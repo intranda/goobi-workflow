@@ -33,6 +33,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -51,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 
 /**
  * @author Florian Alpers
@@ -74,7 +76,9 @@ public class ObjectResource {
         String baseURI = objectURI.replace(filename, "");
         String baseFilename = FilenameUtils.getBaseName(filename);
         Process process = ProcessManager.getProcessById(processId);
-
+        if(process == null) {
+            throw new NotFoundException("No process found with identifier " + processId);
+        }
 
         try {
             List<URI> resourceURIs = getResources(Paths.get(process.getImagesDirectory(), foldername).toString(), baseFilename, baseURI);

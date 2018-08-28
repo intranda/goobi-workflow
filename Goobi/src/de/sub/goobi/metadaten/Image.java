@@ -288,10 +288,14 @@ public @Data class Image {
     @Deprecated
     public Dimension getSize() {
         if (this.size == null) {
-            try {
-                this.size = getImageSize(getImagePath());
-            } catch (ImageManagerException | FileNotFoundException e) {
-                logger.error("Error reading image size of " + getImagePath(), e);
+            if(Type.image.equals(getType())) {                
+                try {
+                    this.size = getImageSize(getImagePath());
+                } catch (ImageManagerException | FileNotFoundException e) {
+                    logger.error("Error reading image size of " + getImagePath(), e);
+                }
+            } else {
+                this.size = new Dimension();
             }
 
         }
