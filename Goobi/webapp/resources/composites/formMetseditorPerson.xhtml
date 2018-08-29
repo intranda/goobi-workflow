@@ -12,20 +12,20 @@
 
     <composite:implementation>
 
-        <div class="row">
+        <div class="row no-margin">
 
             <!-- ++++++++++++++++++ Label ++++++++++++++++++ -->
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.vorname}" />
 
             <!-- ++++++++++++++++++ First name ++++++++++++++++++ -->
-            <div class="col-sm-8 nopadding">
+            <div class="col-sm-7 nopadding">
                 <x:inputText id="firstname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
             </div>
 
             <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
-            <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
+            <div id="duplicatebuttons" class="col-sm-2 no-padding-left text-right">
                 <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
                     <i class="fa fa-copy" />
                     <f:param name="ID" value="#{cc.attrs.person.identifier}" />
@@ -52,9 +52,9 @@
         </div>
 
         <!-- ++++++++++++++++++ Last name ++++++++++++++++++ -->
-        <div class="row margin-top-regular">
+        <div class="row no-margin margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.nachname}" />
-            <div class="col-sm-8 nopadding">
+            <div class="col-sm-7 nopadding">
                 <x:inputText id="lastname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputText>
@@ -62,9 +62,9 @@
         </div>
 
         <!-- ++++++++++++++++++ Role ++++++++++++++++++ -->
-        <div class="row margin-top-regular">
+        <div class="row no-margin margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.rolle}" title="#{cc.attrs.person.p.role}"/>
-            <div class="col-sm-8 nopadding">
+            <div class="col-sm-7 nopadding">
                 <h:selectOneMenu id="role" value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.person.addableRollen}" />
@@ -73,10 +73,10 @@
         </div>
 
         <!-- ++++++++++++++++++ Authority data ++++++++++++++++++ -->
-        <h:panelGroup class="row margin-top-regular" style="display:block;" rendered="#{cc.attrs.person.normdata}">
+        <h:panelGroup class="row no-margin margin-top-regular" style="display:block;" rendered="#{cc.attrs.person.normdata}">
             
                 <h:outputText styleClass="control-label col-sm-3" value="#{msgs.mets_authority_data}" />
-                <h:panelGroup styleClass="col-sm-8 nopadding">
+                <h:panelGroup styleClass="col-sm-7 nopadding">
                     <div class="row">
                         <div class="col-sm-6">
                             <h:selectOneMenu id="normDatabase" value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
@@ -98,9 +98,9 @@
 
         <x:dataList var="part" value="#{cc.attrs.person.additionalNameParts}" rendered="#{cc.attrs.person.additionalParts}">
 
-            <div class="row margin-top-regular">
+            <div class="row no-margin margin-top-regular">
                 <h:outputText styleClass="control-label col-sm-3" value="#{msgs.mets_namePart}" />
-                <div class="col-sm-8 nopadding">
+                <div class="col-sm-7 nopadding">
                     <div class="row">
                         <div class="col-sm-6">
                             <h:selectOneMenu id="namepartType" value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">

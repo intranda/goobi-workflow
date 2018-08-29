@@ -7,7 +7,6 @@
         <h:form id="structureform" prependId="false" style="height: auto;">
             <div id="structdata" style="padding-right: 10px">
                 <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
-
                     <div class="box box-bordered box-small box-color lightgrey" id="struct">
                         <div class="box-title">
                             <h3>
@@ -576,38 +575,36 @@
 
 
                 <script>
-                                                    var height = null;
-                                                    var totalwidth = null;
-                                                    var width = null;
-                                                    $( document ).ready( function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 13 * 5;
-                                                        
-                                                        $( '#structdata' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } );
-                                                    
-                                                    $( window ).on( 'resize', function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 12 * 5;
-                                                        $( '#structdata' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } )
-                                                </script>
+                    var height = null;
+                    var totalwidth = null;
+                    var width = null;
+                    $(document).ready(function () {
+                        // height = $('#left').height();
+                        // totalwidth = $(window).width();
+                        // width = (totalwidth - $('#left').width()) / 13 * 5;
+
+                        // $('#structdata').css({
+                        //     'height': height + 'px',
+                        //     'width': width + 'px'
+                        // });
+                        // $('#metseditorImage').css({
+                        //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                        // });
+                    });
+
+                    $(window).on('resize', function () {
+                        // height = $('#left').height();
+                        // totalwidth = $(window).width();
+                        // width = (totalwidth - $('#left').width()) / 12 * 5;
+                        // $('#structdata').css({
+                        //     'height': height + 'px',
+                        //     'width': width + 'px'
+                        // });
+                        // $('#metseditorImage').css({
+                        //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                        // });
+                    })
+                </script>
 
                 <!-- ########################################
 

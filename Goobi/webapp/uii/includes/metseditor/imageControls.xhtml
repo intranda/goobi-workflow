@@ -20,47 +20,49 @@
            
                     <li>
                         <div id="zoomSliderLabel" class="form-control">
-                            <input></input><span>%</span>
+                            <input /><span>%</span>
                         </div>
                         <div id="zoomSlider">
                             <span class="zoomslider-handle"></span>
                         </div>
                     </li>
-                    <li>
-                        <!-- OCR -->
-                        <h:commandLink id="ocrButton" action="#{NavigationForm.Reload}" rendered="#{Metadaten.showOcrButton}" title="#{msgs.mets_showOcrForCurrentImage}" styleClass="btn2 font-bigger">
-                            <i class="fa fa-file-text-o"></i>
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                             <f:setPropertyActionListener value="#{NavigationForm.uiStatus.mets_showOcr eq 'on'?'':'on'}" target="#{NavigationForm.uiStatus.mets_showOcr}" />
-                            <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources"/>
-                        </h:commandLink>
-                    </li>
+
+                    <ui:fragment rendered="#{Metadaten.showOcrButton}">
+                        <li>
+                            <!-- OCR -->
+                            <h:commandLink id="ocrButton" action="#{NavigationForm.Reload}" title="#{msgs.mets_showOcrForCurrentImage}" styleClass="btn2 font-bigger">
+                                <i class="fa fa-file-text-o"></i>
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:setPropertyActionListener value="#{NavigationForm.uiStatus.mets_showOcr eq 'on'?'':'on'}" target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                                <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources"/>
+                            </h:commandLink>
+                        </li>
+                    </ui:fragment>
 
                     <li>
                         <!-- gehezu-Schaltknopf -->
-                        <h:outputText value="#{msgs.geheZuBild}:" styleClass="margin-left-10 margin-right-10" title="#{msgs.geheZuImage}" />
+                        <h:outputText value="#{msgs.geheZuBild}:" styleClass="goto-text" title="#{msgs.geheZuImage}" />
                       
-                        <p:autoComplete scrollHeight="300" id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" 
-                        onkeydown="return submitEnter('goButton',event)"                         
-                        />
+                        <p:autoComplete id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('goButton',event)" />
+                        
                         <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
                             <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources" />
                         </h:commandButton>
                     </li>
 
-                    <li>
+                    <!-- <li>
                         <h:commandLink action="#{Metadaten.reduceContainerWidth}" title="#{msgs.mets_zoomOut}" id="zoomMinus" styleClass="btn2 font-bigger">
                             <i class="fa fa-search-minus" />
                             <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources"/>
-                        </h:commandLink>
+                        </h:commandLink> -->
                         <!-- change Zoom -->
-                        <x:outputText id="txtZoom1" forceId="true" value="#{Metadaten.containerWidth}px" onclick="document.getElementById('txtZoom2').style.display='inline';
+                        <!-- <x:outputText id="txtZoom1" forceId="true" value="#{Metadaten.containerWidth}px" onclick="document.getElementById('txtZoom2').style.display='inline';
                                        document.getElementById('txtZoom1').style.display='none'; 
                                        document.getElementById('txtZoom2').focus();
-                                       document.getElementById('txtZoom2').select();" />
+                                       document.getElementById('txtZoom2').select();" /> -->
 
                         <!-- Zoom direkt eingeben -->
-                        <x:inputText id="txtZoom2" forceId="true" value="#{Metadaten.containerWidth}" required="true" onblur="document.getElementById('txtZoom2').style.display='none';
+                        <!-- <x:inputText id="txtZoom2" forceId="true" value="#{Metadaten.containerWidth}" required="true" onblur="document.getElementById('txtZoom2').style.display='none';
                                     document.getElementById('txtZoom1').style.display='inline';" onkeypress="return submitEnter('cmdZoom',event)" />
                         <x:commandButton action="#{Metadaten.AnsichtAendern}" id="cmdZoom" forceId="true" value="go" style="display:none" />
 
@@ -68,7 +70,7 @@
                             <i class="fa fa-search-plus" />
                             <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources"/>
                         </h:commandLink>
-                    </li>
+                    </li> -->
                 </ul>
             </nav>
         </div>

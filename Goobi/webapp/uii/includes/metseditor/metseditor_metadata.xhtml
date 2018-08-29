@@ -12,8 +12,6 @@
         <h:outputText styleClass="alert alert-warning margin-top-10" value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" rendered="#{Metadaten.nurLesenModus}" />
 
         <h:form id="metadataform" styleClass="form-horizontal" prependId="false">
-
-
             <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
 
                 <!-- ++++++++++++++++++ Existing persons ++++++++++++++++++ -->
@@ -416,42 +414,38 @@
             </h:panelGroup>
 
 
- <script>
-                                                    var height = null;
-                                                    var totalwidth = null;
-                                                    var width = null;
-                                                    $( document ).ready( function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 13 * 5;
-                                                        
-                                                        $( '#contentArea' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } );
-                                                    
-                                                    $( window ).on( 'resize', function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 12 * 5;
-                                                        $( '#contentArea' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } )
-                                                    
-                                                    
-                                                    
-     var extendedTinyMceConfig = {
+            <script>
+                var height = null;
+                var totalwidth = null;
+                var width = null;
+                $(document).ready(function () {
+                    // height = $('#left').height();
+                    // totalwidth = $(window).width();
+                    // width = (totalwidth - $('#left').width()) / 13 * 5;
+
+                    // $('#contentArea').css({
+                    //     'height': height + 'px',
+                    //     'width': width + 'px'
+                    // });
+                    // $('#metseditorImage').css({
+                    //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                    // });
+                });
+
+                $(window).on('resize', function () {
+                    // height = $('#left').height();
+                    // totalwidth = $(window).width();
+                    // width = (totalwidth - $('#left').width()) / 12 * 5;
+                    // $('#contentArea').css({
+                    //     'height': height + 'px',
+                    //     'width': width + 'px'
+                    // });
+                    // $('#metseditorImage').css({
+                    //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                    // });
+                })
+                
+                 var extendedTinyMceConfig = {
 	selector : '.metsEditorHtml',
 	extended_valid_elements: 'p,span',
 	statusbar : true,
@@ -552,7 +546,7 @@
                                                     	renderInputFields();
                                                     
                                                     })
-                                                </script>
+            </script>
         </h:form>
     </composite:implementation>
 

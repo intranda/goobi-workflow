@@ -95,7 +95,6 @@ var ImageView = ( function() {
              //create image source array
              var sources = this.config.image.tileSource;
              if(typeof sources === 'string' && sources.startsWith("[")) {
-                 console.log("Sources = ", sources);
                  sources = JSON.parse(sources);
              } else if(!$.isArray(sources)) {
                  sources = [sources];
@@ -153,7 +152,7 @@ var ImageView = ( function() {
              if ( _debug ) {
                  console.log( 'Loading image with tilesource: ', tileSources );
              }
-             
+               
              this.loadFooter();            
              var $div = $("#" + this.config.global.divId);
              var maxZoomLevel = this.config.global.maxZoomLevel
@@ -194,7 +193,6 @@ var ImageView = ( function() {
                          bottom: this.config.global.footerHeight
                      }
                  }
-             console.log("osconfig ", osConfig);
              
              this.viewer = new OpenSeadragon( osConfig );
              var result = Q.defer();
@@ -1125,8 +1123,8 @@ var ImageView = ( function() {
      function _setImageSizes(imageInfo, sizes) {
          if(sizes) {             
              if(typeof sizes == 'string') {                 
-             var string = sizes.replace(/[\{\}]/, "");
-             var sizes = JSON.parse(sizes);
+                 var string = sizes.replace(/[\{\}]/, "");
+                 var sizes = JSON.parse(sizes);
              }
              var iiifSizes = [];
              sizes.forEach(function(size) {

@@ -1018,11 +1018,6 @@ a.badge:focus {
   	cursor: pointer;
 }
 
-
-
-
-
-
 .pointer {
     cursor: pointer;
 }
@@ -1036,11 +1031,88 @@ a.badge:focus {
     content: "\f105\f105";
 }
 
+/* ------------- IMAGE NAVIGATION ------------- */
+.image-navigation {
+    padding: 12px 0;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+.image-navigation + .box-content {
+    padding: 10px 0;
+}
+.image-navigation__imagecount {
+    display: inline-block;
+    padding: 6px 0;
+}
+#imageBack,
+#imageNext,
+.image-navigation__imagecount {
+    margin-right: 7px;
+    margin-left: 7px;
+}
+.goto-text {
+    margin-right: 5px;
+}
+#jumpToImage {
+    max-width: 80px;
+}
+
+@media screen and (max-width: 1000px) {
+    #imageBack span,
+    #imageNext span {
+        display: none;
+    }
+}
+
+/* ------------- METS-Editor Layout --------------- */
+.row.no-margin { margin: 0; }
+[class*="col-"].no-padding { padding: 0; }
+[class*="col-"].no-padding-left { padding-left: 0; }
+[class*="col-"].no-padding-right { padding-right: 0; }
+
+#left {
+    border-right: 2px solid #368ee0; 
+    z-index: 100;
+}
+
+#main {
+    overflow: inherit;
+    padding-bottom: 0;
+}
+
+#pageSelectBox {
+    margin-top: 12px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    overflow-y: auto;
+}
+#pageSelectBox .box-title {
+    margin: 0;
+    border-top: none;
+}
+#pageSelectBox .box-content {
+    border-bottom: none;
+}
+
+#myCheckboxes {
+    width: 95%;
+}
+
+/* ------------- METS-Editor Image --------------- */
+#metseditorImage {
+    background-color: #fff;
+}
+
+.metseditor-ocr {
+    width: 75%;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+}
+
 /* ------------- METS-Editor --------------- */
 #treeform {
     padding: 5px;
 }
-
 /* .popover-content { */
 /* 	background-color:white;  */
 /* 	padding: 7px; */
@@ -1240,7 +1312,7 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     color: #555;
     height: 25px;
     border: 1px solid #ccc;
-    width: 120px;
+    width: 100%;
 }
 
 #ui-datepicker-div {
@@ -1397,11 +1469,11 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     color: white;
 }
 
-#structdata, #contentArea {
+/* #structdata, #contentArea {
     position: fixed;
     overflow-x: hidden !important;
     overflow-y: auto !important;
-}
+} */
 
 /* ------------- step progressbar --------------- */
 #progressSteps {
@@ -1762,9 +1834,8 @@ ul>li.yellow, .label-yellow {
 /* 	#tableUserAll tr td:nth-child(3) { */
 /* 		display: none; */
 /* 	} */
-/* 	/* Ein Element verstecken, welches eine dynamische ID hat */
-*
-/
+/* 	Ein Element verstecken, welches eine dynamische ID hat */
+
 /* 	.dataTables_filter a[id*="tableUserAllShowActiveUsers"] { */
 /* 		display: none; */
 /* 	} */

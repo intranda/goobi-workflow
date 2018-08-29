@@ -14,12 +14,14 @@
 
     <composite:implementation>
 
-        <div class="row">
+        <div class="row no-margin">
             <!-- ++++++++++++++++++ Label ++++++++++++++++++ -->
-            <h:outputText styleClass="control-label col-sm-3" value="#{cc.attrs.metadata.typ}" title="#{cc.attrs.metadata.md.type.name}" />
+            <div class="col-sm-3">
+                <h:outputText styleClass="control-label" value="#{cc.attrs.metadata.typ}" title="#{cc.attrs.metadata.md.type.name}" />
+            </div>
 
             <!-- ++++++++++++++++++ Metadata value ++++++++++++++++++ -->
-            <div class="col-sm-8 nopadding">
+            <div class="col-sm-7 no-padding">
 
                 <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
                 <x:inputTextarea id="textarea" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
@@ -81,7 +83,7 @@
             </div>
 
             <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
-            <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
+            <div id="duplicatebuttons" class="col-sm-2 no-padding-left text-right">
                 <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}" rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
                     <i class="fa fa-copy" />
                     <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />

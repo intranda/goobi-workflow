@@ -263,6 +263,7 @@ function scrolledClone($el, $cloned) {
     $el.parent().removeClass("open");
 }
 
+/*
 function resizeContent() {
     if ($("#main").height() < $(window).height()) {
         var height = 40;
@@ -289,10 +290,19 @@ function resizeContent() {
         $("#footer").attr("style", "");
     }
 }
+*/
+
+function resizePageSelectBox() {
+    var windowHeight = $( window ).outerHeight();
+    var navigationHeight = $( '#navigation' ).outerHeight();
+    var additionalHeight = 24;
+    var totalHeight = windowHeight - ( navigationHeight + additionalHeight );
+
+    $( '#pageSelectBox' ).css( 'max-height', totalHeight );
+}
 
 $(document).ready(function () {
-
-    resizeContent();
+    resizePageSelectBox();
 
     if ($(".username-check").length > 0) {
         var timeout;
@@ -449,9 +459,9 @@ $(document).ready(function () {
         if ($(this).find(".subnav-menu").is(":visible")) $(this).find(".subnav-menu").hide();
     });
 
-//    setTimeout(function () {
-//        slimScrollUpdate($(".messages").parent(), 9999);
-//    }, 1000);
+    //    setTimeout(function () {
+    //        slimScrollUpdate($(".messages").parent(), 9999);
+    //    }, 1000);
 
     // createSubNav();
     // hide breadcrumbs
@@ -958,8 +968,6 @@ $(window).scroll(function (e) {
         }
     }
 
-
-
     getSidebarScrollHeight();
     resizeHandlerHeight();
 });
@@ -967,7 +975,7 @@ $(window).scroll(function (e) {
 $(window).resize(function (e) {
     checkLeftNav();
     getSidebarScrollHeight();
-    resizeContent();
+    resizePageSelectBox();
     resizeHandlerHeight();
 
     if ($('.dataTable').length > 0) {
