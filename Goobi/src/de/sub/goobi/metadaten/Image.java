@@ -49,6 +49,35 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import lombok.Data;
 
+/** 
+ * This class encapsulates all functionality required to display an image in Goobi. It provides methods to get thumbnail urls,
+ * IIIF urls and legacy ContentServer urls. It can also be used to display 3D objects rather than actual images, and can also hold videos and audio files.
+ * 
+ * There are two constructors: {@link #Image(Process, String, String, int, Integer)} creates an image based on an image file within a goobi process,
+ * while {@link #Image(Path, int, Integer)} creates an image based on an arbitrary image file. Note though that the latter has limited support for IIIF image delivery
+ * and no support for 3D objects
+ * 
+ * The most important call method is {@link #getUrl()} which returns a IIIF image info object url for images (which can be directly passed
+ * to an OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the
+ * object. For audio and videos, the thumbnails placeholder is returned
+ * Alternatively {@link #getImageLevels()} can be used to retrieve a non-IIIF and non-REST image. In this case the original image size should
+ * be transmitted as well. The image property of the javascript ImageView config should then look this way:
+ *     image: {
+ *         mimeType: "image/jpeg",
+ *         tileSource : [#{image.imageLevels}],
+ *         originalImageWidth: "#{image.size.width}",
+ *         originalImageHeight: "#{image.size.height}",
+ *     } 
+ * Conversly if using the IIIF api the same property should read:
+ *     image: {
+ *         mimeType: "image/jpeg",
+ *         tileSource: "#{AktuelleSchritteForm.myPlugin.image.url}"
+ *     }
+ * 
+ * For thumbnail display, use #{@link #getThumbnailUrl()} and for zoomed thumbnails {@link #getLargeThumbnailUrl()}
+ * 
+ * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
+ */
 public @Data class Image {
 
     private static final Logger logger = Logger.getLogger(Image.class);
@@ -122,14 +151,6 @@ public @Data class Image {
      * created when needed This class can also contain other media objects link 3D obects, video and audio. In these cases a default image is used for
      * thumbnails.
      * 
-     * The most important call method is {@link #getObjectUrl()} which returns a IIIF image info object url for images (which can be directly passed
-     * to an OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the
-     * object. For audio and videos, the thumbnails placeholder is returned
-     * 
-     * For thumbnail display, use #{@link #getThumbnailUrl()} and for zoomed thumbnails {@link #getLargeThumbnailUrl()}
-     * 
-     * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
-     * 
      * @param process The goobi process containing the image
      * @param imageFolderName The name of the image folder (typically ..._media or master_..._media)
      * @param filename The filename of the image file
@@ -174,14 +195,6 @@ public @Data class Image {
      * This constructor doesn't refer to a goobi process and this may be used to display arbitrary images. However, this means that the complete image
      * path is encoded within the IIIF url which only works if theServer is configured to allow encoded slashes. Otherwise, the image levels need to be used to create the image
      * Also, the 3D api will not work with images created by this constructor, since this also requires a Goobi process.
-     * 
-     * The most important call method is {@link #getObjectUrl()} which returns a IIIF image info object url for images (which can be directly passed
-     * to an OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the
-     * object. For audio and videos, the thumbnails placeholder is returned
-     * 
-     * For thumbnail display, use #{@link #getThumbnailUrl()} and for zoomed thumbnails {@link #getLargeThumbnailUrl()}
-     * 
-     * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
      * 
      * @param imagePath The path to the image file
      * @param order The order of the image within the goobi process
